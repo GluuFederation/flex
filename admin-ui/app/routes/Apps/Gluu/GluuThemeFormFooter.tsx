@@ -5,9 +5,11 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuButton } from '@/components'
+import { ChevronIcon } from '@/components/SVG'
 import {
   useStyles,
   BUTTON_STYLES,
+  STEP_NAV_SIZES,
   getButtonColors,
 } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import type { GluuThemeFormFooterProps } from './types'
@@ -43,6 +45,7 @@ const GluuThemeFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
+  stepNavigation,
 }: GluuThemeFormFooterProps) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -101,6 +104,16 @@ const GluuThemeFormFooter = ({
     </GluuButton>
   )
 
+  const isFirstStep = useMemo(
+    () => !stepNavigation || stepNavigation.currentIndex === 0,
+    [stepNavigation],
+  )
+
+  const isLastStep = useMemo(
+    () => !stepNavigation || stepNavigation.currentIndex === stepNavigation.total - 1,
+    [stepNavigation],
+  )
+
   if (!buttonStates.hasAnyButton) {
     return null
   }
@@ -108,6 +121,56 @@ const GluuThemeFormFooter = ({
   return (
     <>
       <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
+        {stepNavigation && (
+          <Box className={classes.centerGroup}>
+            <GluuButton
+              type="button"
+              disabled={isFirstStep}
+              onClick={stepNavigation.onPrev}
+              aria-label={t('messages.previous_page')}
+              backgroundColor="transparent"
+              borderColor="transparent"
+              textColor={buttonColors.back.backgroundColor}
+              minHeight={STEP_NAV_SIZES.buttonSize}
+              padding="0"
+              style={{ minWidth: STEP_NAV_SIZES.buttonSize }}
+              useOpacityOnHover
+              hoverOpacity={0.7}
+            >
+              <ChevronIcon
+                width={STEP_NAV_SIZES.iconSize}
+                height={STEP_NAV_SIZES.iconSize}
+                direction="left"
+              />
+            </GluuButton>
+            <span
+              className={classes.stepNavLabel}
+              style={{ color: buttonColors.back.backgroundColor }}
+            >
+              {`${stepNavigation.currentIndex + 1} / ${stepNavigation.total}`}
+            </span>
+            <GluuButton
+              type="button"
+              disabled={isLastStep}
+              onClick={stepNavigation.onNextStep}
+              aria-label={t('messages.next_page')}
+              backgroundColor="transparent"
+              borderColor="transparent"
+              textColor={buttonColors.back.backgroundColor}
+              minHeight={STEP_NAV_SIZES.buttonSize}
+              padding="0"
+              style={{ minWidth: STEP_NAV_SIZES.buttonSize }}
+              useOpacityOnHover
+              hoverOpacity={0.7}
+            >
+              <ChevronIcon
+                width={STEP_NAV_SIZES.iconSize}
+                height={STEP_NAV_SIZES.iconSize}
+                direction="right"
+              />
+            </GluuButton>
+          </Box>
+        )}
         <Box className={classes.leftGroup}>
           {buttonStates.showBack && (
             <GluuButton

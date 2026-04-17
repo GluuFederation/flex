@@ -13,7 +13,7 @@ export type HealthServiceKey =
 export type KnownHealthServices = Partial<Record<HealthServiceKey, HealthStatus>>
 
 export type HealthStatusResponse = KnownHealthServices & {
-  [serviceName: string]: HealthStatus
+  [serviceName: string]: HealthStatus | undefined
 }
 
 export type HealthState = {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { createSsaTestStore, createSsaTestWrapper } from '../helpers/ssaTestUtils'
-import SsaAddPage from '../../components/SsaAddPage'
+import { SsaAddPage } from '../..'
 
 describe('SsaAddPage', () => {
   let Wrapper: React.ComponentType<{ children: React.ReactNode }>

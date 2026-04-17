@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from 'react'
-import { Container } from 'Components'
+import { Container, ApiKey } from 'Components'
 import { useTranslation } from 'react-i18next'
-import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import UploadSSA from './UploadSSA'

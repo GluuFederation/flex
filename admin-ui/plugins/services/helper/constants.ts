@@ -45,10 +45,6 @@ export const CACHE_FIELD_LABELS_BY_PROVIDER: Record<string, CacheFieldLabel[]> =
   NATIVE_PERSISTENCE: [...COMMON_FIELDS, ...NATIVE_PERSISTENCE_FIELDS],
 }
 
-export const servicesConstants = {
-  DOC_CATEGORY: 'cache',
-} as const
-
 export const CACHE_PROVIDER_OPTIONS = [
   { value: 'IN_MEMORY', label: 'In Memory' },
   { value: 'MEMCACHED', label: 'Memcached' },

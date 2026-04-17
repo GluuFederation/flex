@@ -1,13 +1,7 @@
 import React, { Suspense, lazy } from 'react'
-import ScopeListPage from './components/Scopes/ScopeListPage'
-import ScopeAddPage from './components/Scopes/ScopeAddPage'
-import ScopeEditPage from './components/Scopes/ScopeEditPage'
-
-import ClientListPage from './components/Clients/ClientListPage'
-import ClientAddPage from './components/Clients/ClientAddPage'
-import ClientEditPage from './components/Clients/ClientEditPage'
-
-import SessionListPage from './components/Sessions/SessionListPage'
+import { ScopeListPage, ScopeAddPage, ScopeEditPage } from './components/Scopes'
+import { ClientListPage, ClientAddPage, ClientEditPage } from './components/OidcClients'
+import { SessionListPage } from './components/Sessions'
 
 import PropertiesPage from './components/AuthServerProperties'
 import KeysPage from './components/Keys'
@@ -18,10 +12,6 @@ import ConfigApiPage from './components/ConfigApiProperties'
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
 
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
-import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
-import scopesSaga from './redux/sagas/OAuthScopeSaga'
-import oidcSaga from './redux/sagas/OIDCSaga'
-import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 
 import {
   ACR_READ,
@@ -38,8 +28,7 @@ import {
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/components/SsaListPage'
-import SsaAddPage from './components/Ssa/components/SsaAddPage'
+import { SsaListPage, SsaAddPage } from './components/Ssa'
 import AuthNPage from './components/AuthN'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
@@ -218,9 +207,8 @@ const pluginMetadata = {
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
-    { name: 'umaResourceReducer', reducer: umaResourceReducer },
   ],
-  sagas: [scopesSaga(), oidcSaga(), umaResourceSaga()],
+  sagas: [],
 }
 
 export default pluginMetadata

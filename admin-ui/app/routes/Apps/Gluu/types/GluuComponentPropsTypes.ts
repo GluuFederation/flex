@@ -11,12 +11,12 @@ export type GluuAlertProps = {
   show?: boolean
 }
 
-export type GluuBooleanSelectBoxProps = {
+export type GluuBooleanSelectBoxProps<T extends object = Record<string, JsonValue>> = {
   label: string
   name: string
   value?: boolean | string
-  formik: FormikProps<Record<string, JsonValue>>
-  handler?: () => void
+  formik: FormikProps<T>
+  handler?: (event: React.ChangeEvent<HTMLInputElement>) => void
   lsize?: number
   rsize?: number
   doc_category?: string
@@ -295,6 +295,13 @@ export type GluuTextProps = HTMLAttributes<HTMLElement> & {
   onLightSurface?: boolean
 }
 
+export type GluuThemeFormFooterStepNavigation = {
+  currentIndex: number
+  total: number
+  onPrev: () => void
+  onNextStep: () => void
+}
+
 export type GluuThemeFormFooterBaseProps = {
   showBack?: boolean
   backButtonLabel?: string
@@ -310,6 +317,7 @@ export type GluuThemeFormFooterBaseProps = {
   isLoading?: boolean
   className?: string
   hideDivider?: boolean
+  stepNavigation?: GluuThemeFormFooterStepNavigation
 }
 
 export type GluuThemeFormFooterProps = GluuThemeFormFooterBaseProps &
@@ -325,7 +333,19 @@ export type GluuTooltipProps = {
   children?: ReactNode
   tooltipOnly?: boolean
   zIndex?: number
-  place?: 'top' | 'right' | 'bottom' | 'left'
+  place?:
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'right'
+    | 'right-start'
+    | 'right-end'
+    | 'bottom'
+    | 'bottom-start'
+    | 'bottom-end'
+    | 'left'
+    | 'left-start'
+    | 'left-end'
   content?: ReactNode
   positionStrategy?: 'absolute' | 'fixed'
   offset?: number

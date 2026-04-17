@@ -1,20 +1,17 @@
 import type { AppConfigResponse } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-/** Response from API protection token endpoints */
-export interface ApiTokenResponse {
+export type ApiTokenResponse = {
   access_token: string
 }
 
-/** Payload for putServerConfiguration (admin-ui config update) */
-export interface PutServerConfigPayload {
+export type PutServerConfigPayload = {
   props: AppConfigResponse
   token?: string
 }
 
-/** Payload sent to the audit logging endpoint */
-export interface UserActionPayload {
-  headers?: Record<string, string>
+export type UserActionPayload = {
+  headers?: Record<string, string | undefined>
   client_id?: string
   ip_address?: string
   status?: string
@@ -28,8 +25,7 @@ export interface UserActionPayload {
   date?: Date
 }
 
-/** Params for fetching user info from the OIDC userinfo endpoint */
-export interface FetchUserInfoParams {
+export type FetchUserInfoParams = {
   userInfoEndpoint: string
   token_type: string
   access_token: string
@@ -37,14 +33,12 @@ export interface FetchUserInfoParams {
 
 export type FetchUserInfoResult = string | -1
 
-/** Policy store API response shape */
 export type PolicyStoreApiResponse =
   | { success: true; responseBytes: string; responseMessage?: string; responseCode?: number }
   | { success: false; responseMessage?: string; responseCode?: number }
   | { success?: undefined; responseMessage?: string; responseCode?: number }
 
-/** Geolocation API response (geolocation-db.com) */
-export interface UserIpAndLocationResponse {
+export type UserIpAndLocationResponse = {
   IPv4?: string
   city?: string
   country_code?: string

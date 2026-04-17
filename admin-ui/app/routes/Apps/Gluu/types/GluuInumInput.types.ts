@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from 'react'
 
-export interface GluuInumInputProps {
+export type GluuInumInputProps = {
   label: string
   name: string
   value?: string | number

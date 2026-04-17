@@ -1,12 +1,12 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface BackendStatus {
+export type BackendStatus = {
   active: boolean
   errorMessage: string | null
   statusCode: number | null
 }
 
-export interface UserInfo {
+export type UserInfo = {
   inum?: string
   user_name?: string
   name?: string
@@ -15,15 +15,15 @@ export interface UserInfo {
   [key: string]: string | string[] | number | boolean | undefined | null
 }
 
-export interface Config {
+export type Config = {
   [key: string]: JsonValue | undefined
 }
 
-export interface Location {
+export type Location = {
   [key: string]: string | number | null | undefined
 }
 
-export interface AuthState {
+export type AuthState = {
   isAuthenticated: boolean
   userinfo: UserInfo | null
   userinfo_jwt: string | null
