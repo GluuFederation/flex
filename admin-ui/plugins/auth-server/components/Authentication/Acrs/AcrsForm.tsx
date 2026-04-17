@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, type ReactElement, type FormEvent } from 'react'
+import { useState, useCallback, useMemo, useRef, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
 import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -107,7 +107,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
       hashAlgorithm: item?.hashAlgorithm || '',
       bindDN: item?.bindDN || '',
       maxConnections: item?.maxConnections || '',
-      remotePrimaryKey: item?.localPrimaryKey || '',
+      remotePrimaryKey: item?.primaryKey || '',
       localPrimaryKey: item?.localPrimaryKey || '',
       servers: Array.isArray(item?.servers) ? item.servers : item?.servers ? [item.servers] : [],
       baseDNs: Array.isArray(item?.baseDNs) ? item.baseDNs : item?.baseDNs ? [item.baseDNs] : [],
@@ -135,6 +135,9 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
     },
   })
 
+  const formikValuesRef = useRef(formik.values)
+  formikValuesRef.current = formik.values
+
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
@@ -142,9 +145,9 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   const submitForm = useCallback(
     (_userMessage: string): void => {
       toggle()
-      handleSubmit(formik.values)
+      handleSubmit(formikValuesRef.current)
     },
-    [toggle, handleSubmit, formik.values],
+    [toggle, handleSubmit],
   )
 
   const handleApply = useCallback((): void => {
@@ -215,9 +218,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
       <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
 
       <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
-        {/* ── 2-column grid ── */}
         <div className={classes.formGrid}>
-          {/* ACR (always shown, disabled) */}
           <div className={classes.fieldItem}>
             <GluuInputRow
               name="acr"
@@ -233,7 +234,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             />
           </div>
 
-          {/* Level */}
           <div className={classes.fieldItem}>
             <GluuInputRow
               name="level"
@@ -250,7 +250,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             />
           </div>
 
-          {/* Default AuthN Method */}
           <div className={classes.fieldItem}>
             <GluuSelectRow
               name="defaultAuthNMethod"
@@ -265,7 +264,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             />
           </div>
 
-          {/* SAML ACR */}
           {showSamlAndDescription && (
             <div className={classes.fieldItem}>
               <GluuInputRow
@@ -282,7 +280,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </div>
           )}
 
-          {/* Description */}
           {showSamlAndDescription && (
             <div className={classes.fieldItem}>
               <GluuInputRow
@@ -299,13 +296,12 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </div>
           )}
 
-          {/* Primary Key (simple_password_auth only) */}
           {isSimplePassword && (
             <div className={classes.fieldItem}>
               <GluuInputRow
                 name="primaryKey"
                 label="fields.primary_key"
-                value={item?.primaryKey || ''}
+                value={formik.values.primaryKey}
                 formik={formik}
                 lsize={12}
                 rsize={12}
@@ -314,7 +310,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </div>
           )}
 
-          {/* Password Attribute (simple_password_auth only) */}
           {isSimplePassword && (
             <div className={classes.fieldItem}>
               <GluuInputRow
@@ -329,7 +324,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </div>
           )}
 
-          {/* Hash Algorithm (simple_password_auth only) */}
           {isSimplePassword && (
             <div className={classes.fieldItem}>
               <GluuSelectRow
@@ -345,7 +339,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </div>
           )}
 
-          {/* LDAP fields */}
           {isLdap && (
             <>
               <div className={classes.fieldItem}>
@@ -409,7 +402,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 />
               </div>
 
-              {/* Servers — full width typeahead */}
               <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
                 <GluuTypeAhead
                   name="servers"
@@ -425,7 +417,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 />
               </div>
 
-              {/* Base DNs — full width typeahead */}
               <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
                 <GluuTypeAhead
                   name="baseDNs"
@@ -440,7 +431,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 />
               </div>
 
-              {/* Toggles */}
               <div className={classes.toggleRow}>
                 <GluuToogleRow
                   name="useSSL"
@@ -465,7 +455,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </>
           )}
 
-          {/* Script configuration properties — full width */}
           {isScript && (
             <div
               className={`${classes.propsBox} ${!configurationProperties.length ? classes.propsBoxEmpty : ''}`}

@@ -163,7 +163,7 @@ const AgamaFlows: React.FC = () => {
     data: agamaRepositoriesData,
     isLoading: repositoriesLoading,
     refetch: refetchRepositories,
-  } = useGetAgamaRepositories({
+  } = useGetAgamaRepositories<AgamaRepositoriesResponse>({
     query: {
       enabled: false,
     },
@@ -187,7 +187,7 @@ const AgamaFlows: React.FC = () => {
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(
-        (agamaRepositoriesData as AgamaRepositoriesResponse) ?? {
+        agamaRepositoriesData ?? {
           projects: [],
         },
       )
@@ -648,7 +648,7 @@ const AgamaFlows: React.FC = () => {
                     }}
                   >
                     {fileLoading ? (
-                      <CircularProgress />
+                      <CircularProgress sx={{ color: themeColors.badges.statusActive }} />
                     ) : agamaRepositoriesList?.projects?.length ? (
                       agamaRepositoriesList?.projects?.map((item: AgamaRepository) => (
                         <FormControlLabel
@@ -660,7 +660,7 @@ const AgamaFlows: React.FC = () => {
                               sx={{
                                 'color': isDark ? '#3B638B' : undefined,
                                 '&.Mui-checked': {
-                                  color: themeColors.badges?.statusActive ?? '#00b875',
+                                  color: themeColors.badges.statusActive,
                                 },
                               }}
                             />
@@ -983,7 +983,6 @@ const AgamaFlows: React.FC = () => {
             <GluuTable<AgamaTableRow>
               columns={columns}
               data={listData}
-              loading={loading}
               actions={actions}
               getRowKey={getRowKey}
               pagination={pagination}

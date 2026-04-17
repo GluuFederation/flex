@@ -1,7 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { ICON_SIZE, SPACING } from '@/constants'
-import { fontFamily, lineHeights } from '@/styles/fonts'
+import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import { fontFamily, fontSizes, lineHeights } from '@/styles/fonts'
+import customColors from '@/customColors'
 
 interface AcrsStylesParams {
   themeColors: ThemeConfig
@@ -39,15 +40,15 @@ export const useStyles = makeStyles<AcrsStylesParams>()((_, { themeColors }) => 
     justifyContent: 'center',
     width: ICON_SIZE.LG,
     height: ICON_SIZE.LG,
-    borderRadius: '50%',
+    borderRadius: BORDER_RADIUS.CIRCLE,
     backgroundColor: themeColors.badges.statusActive,
     flexShrink: 0 as const,
   },
   defaultInnerIcon: {
-    color: '#ffffff !important',
-    fontSize: '12px',
-    width: '12px',
-    height: '12px',
+    color: `${customColors.white} !important`,
+    fontSize: fontSizes.sm,
+    width: fontSizes.sm,
+    height: fontSizes.sm,
     flexShrink: 0 as const,
   },
 }))

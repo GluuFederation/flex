@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { useFormik } from 'formik'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCedarling } from '@/cedarling'
@@ -22,7 +22,8 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { getScripts } from 'Redux/features/initSlice'
+import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
+import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
 import {
   buildAgamaFlowsArray,
   buildDropdownOptions,
@@ -34,19 +35,6 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
 import { useStyles } from './DefaultAcr.style'
 
-interface CustomScript {
-  name: string
-  scriptType: string
-  enabled: boolean
-}
-
-interface RootState {
-  initReducer: {
-    scripts: CustomScript[]
-    loadingScripts: boolean
-  }
-}
-
 interface DefaultAcrFormValues {
   defaultAcr: string
 }
@@ -55,14 +43,13 @@ const MAX_AGAMA_PROJECTS_FOR_ACR = 500
 
 function DefaultAcr(): React.ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAcrUpdate } = useAcrAudit()
 
-  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
-  const loadingScripts = useSelector((state: RootState) => state.initReducer.loadingScripts)
+  const { data: scriptsResponse, isLoading: loadingScripts } =
+    useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
 
-  // Fetch ACR config using Orval hook
   const {
     data: acrs,
     isLoading: acrLoading,
@@ -132,10 +119,6 @@ function DefaultAcr(): React.ReactElement {
     }
   }, [authorizeHelper, authScopes])
 
-  useEffect(() => {
-    dispatch(getScripts({ action: { action_data: null } }))
-  }, [dispatch])
-
   // Surface ACR fetch failures
   useEffect(() => {
     if (acrError) {
@@ -155,15 +138,15 @@ function DefaultAcr(): React.ReactElement {
   }, [error, dispatch])
 
   const authScripts = useMemo<DropdownOption[]>(() => {
-    const filteredScripts = (scripts || [])
-      .filter((item) => item?.scriptType === 'person_authentication' && item?.enabled)
-      .map((item) => ({ key: item.name, value: item.name }))
+    const filteredScripts = (scriptsResponse?.entries || [])
+      .filter((item) => item?.enabled)
+      .map((item) => ({ key: item.name as string, value: item.name as string }))
     const agamaList = projectsResponse?.entries || []
     const agamaFlows = buildAgamaFlowsArray(agamaList)
     const dropdownOptions = buildDropdownOptions(filteredScripts, agamaFlows)
 
     return dropdownOptions
-  }, [scripts, projectsResponse])
+  }, [scriptsResponse, projectsResponse])
 
   const selectOptions = useMemo(
     () =>

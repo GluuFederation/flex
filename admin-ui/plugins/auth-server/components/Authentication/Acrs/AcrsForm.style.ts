@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { makeStyles } from 'tss-react/mui'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -17,9 +17,6 @@ interface AcrsFormStylesParams {
   themeColors: ThemeConfig
 }
 
-const INPUT_HEIGHT = 52
-const INPUT_PADDING_VERTICAL = 14
-const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const CONTENT_HORIZONTAL_PADDING = 52
@@ -191,12 +188,12 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         color: 'var(--theme-input-color) !important',
         WebkitTextFillColor: 'var(--theme-input-color) !important',
         caretColor: 'var(--theme-input-color)',
-        minHeight: INPUT_HEIGHT,
+        minHeight: INPUT.HEIGHT,
         height: 'auto',
-        paddingTop: INPUT_PADDING_VERTICAL,
-        paddingBottom: INPUT_PADDING_VERTICAL,
-        paddingLeft: INPUT_PADDING_HORIZONTAL,
-        paddingRight: INPUT_PADDING_HORIZONTAL,
+        paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+        paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+        paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+        paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,

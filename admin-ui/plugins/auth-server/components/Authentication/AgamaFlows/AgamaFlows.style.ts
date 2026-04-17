@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, MAPPING_SPACING, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, SPACING } from '@/constants'
+import customColors from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import {
@@ -10,8 +11,6 @@ import {
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
 
-const ICON_SIZE_SM = 18
-const ICON_SIZE_MD = 20
 const CARD_INNER_PADDING = 20
 const TABLE_LINE_HEIGHT = lineHeights.relaxed
 
@@ -65,10 +64,10 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: TABLE_LINE_HEIGHT },
       '& table th': { verticalAlign: 'middle', lineHeight: TABLE_LINE_HEIGHT },
     },
-    addIcon: { fontSize: ICON_SIZE_MD },
-    infoIcon: { fontSize: ICON_SIZE_SM },
-    settingsIcon: { fontSize: ICON_SIZE_SM },
-    deleteIcon: { fontSize: ICON_SIZE_SM },
+    addIcon: { fontSize: ICON_SIZE.MD },
+    infoIcon: { fontSize: ICON_SIZE.SM },
+    settingsIcon: { fontSize: ICON_SIZE.SM },
+    deleteIcon: { fontSize: ICON_SIZE.SM },
     addModalContainer: {
       ...getCardBorderStyle({ isDark }),
       position: 'fixed' as const,
@@ -147,7 +146,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontFamily,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
-      color: themeColors.badges?.statusActive ?? '#22c55e',
+      color: themeColors.badges?.statusActive ?? customColors.statusActive,
       margin: 0,
       minHeight: 18,
     },
@@ -168,7 +167,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontFamily,
       fontWeight: fontWeights.semiBold,
       fontSize: fontSizes.base,
-      lineHeight: 'normal',
+      lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
       margin: 0,
     },

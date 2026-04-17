@@ -14,7 +14,7 @@ import {
   type CustomScript,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/redux/hooks'
 import { currentAuthNItemAtom, type ConfigurationProperty } from '../atoms'
 import { type AcrsFormValues } from './AcrsForm'
 import { devLogger } from '@/utils/devLogger'
@@ -45,7 +45,7 @@ const transformConfigurationProperties = (
 }
 
 const AcrsEditPage = (): ReactElement => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
   const location = useLocation()
@@ -117,10 +117,12 @@ const AcrsEditPage = (): ReactElement => {
     setIsSubmitting(true)
     setErrorMessage(undefined)
 
+    const isDefault = isDefaultAuthNMethod(data.defaultAuthNMethod)
+
     try {
       if (atomItem.name === 'simple_password_auth') {
         try {
-          const acrData: AuthenticationMethod = isDefaultAuthNMethod(data.defaultAuthNMethod)
+          const acrData: AuthenticationMethod = isDefault
             ? { defaultAcr: 'simple_password_auth' }
             : { defaultAcr: '' }
           await putAcrsMutation.mutateAsync({ data: acrData })
@@ -149,7 +151,7 @@ const AcrsEditPage = (): ReactElement => {
 
         await putLdapMutation.mutateAsync({ data: ldapPayload })
 
-        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
+        if (isDefault) {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: data.configId }
             await putAcrsMutation.mutateAsync({ data: acrData })
@@ -182,7 +184,7 @@ const AcrsEditPage = (): ReactElement => {
 
         await putScriptMutation.mutateAsync({ data: scriptPayload })
 
-        if (isDefaultAuthNMethod(data.defaultAuthNMethod)) {
+        if (isDefault) {
           try {
             const acrData: AuthenticationMethod = { defaultAcr: atomItem.acrName || '' }
             await putAcrsMutation.mutateAsync({ data: acrData })

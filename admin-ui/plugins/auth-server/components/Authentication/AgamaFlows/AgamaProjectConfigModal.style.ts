@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { fontWeights } from '@/styles/fonts'
 
 const MODAL_BODY_MAX_HEIGHT = '60vh'
 
@@ -62,7 +63,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       '& .MuiTableHead-root .MuiTableCell-root': {
         backgroundColor: `${themeColors.table.headerBg} !important`,
         color: `${themeColors.table.headerColor} !important`,
-        fontWeight: 600,
+        fontWeight: fontWeights.semiBold,
       },
       '& .MuiTableBody-root .MuiTableRow-root:hover td': {
         backgroundColor: `${themeColors.table.rowHoverBg} !important`,

@@ -91,10 +91,6 @@ jest.mock('@/helpers/navigation', () => ({
   },
 }))
 
-jest.mock('Redux/features/initSlice', () => ({
-  getScripts: jest.fn(() => ({ type: 'initReducer/getScripts', payload: null })),
-}))
-
 jest.mock('jotai', () => ({
   ...jest.requireActual('jotai'),
   useSetAtom: jest.fn(() => jest.fn()),
@@ -116,11 +112,6 @@ const defaultWebhookReducerState = {
   },
   featureToTrigger: '',
   showErrorModal: false,
-}
-
-const defaultInitReducerState = {
-  scripts: [],
-  loadingScripts: false,
 }
 
 const defaultAuthReducerState: AuthState = {
@@ -153,7 +144,6 @@ export const createAuthenticationTestStore = (): Store =>
     reducer: combineReducers({
       authReducer: (state = defaultAuthReducerState) => state,
       webhookReducer: (state = defaultWebhookReducerState) => state,
-      initReducer: (state = defaultInitReducerState) => state,
     }),
   })
 

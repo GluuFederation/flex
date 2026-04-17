@@ -252,7 +252,6 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
     setShowAddModal(true)
   }, [canWriteAuth, formik, initialFormValues])
 
-  // Register the add handler with the parent (tab header button)
   useEffect(() => {
     onRegisterAddHandler?.(handleAddClick)
   }, [onRegisterAddHandler, handleAddClick])
@@ -486,7 +485,6 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
           <GluuTable<AcrMappingTableRow>
             columns={columns}
             data={listData}
-            loading={loading}
             actions={actions}
             getRowKey={getRowKey}
             pagination={{

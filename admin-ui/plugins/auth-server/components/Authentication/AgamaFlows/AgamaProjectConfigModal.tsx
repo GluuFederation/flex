@@ -28,6 +28,9 @@ import type {
 } from './types'
 import { useAppDispatch } from '@/redux/hooks'
 
+const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
+  error instanceof Error ? error.message : error?.message || fallback
+
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
   row,
@@ -36,7 +39,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   manageConfig = false,
 }) => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark, selectedTheme } = useMemo(
@@ -125,9 +128,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     },
   })
 
-  const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
-    error instanceof Error ? error.message : error?.message || fallback
-
   useEffect(() => {
     if (projectDetailsData) {
       const tableOptions: FlowError[] = []
@@ -181,18 +181,9 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   }, [configDetailsData])
 
   useEffect(() => {
-    setProjectDetails((prevState) => ({
-      ...prevState,
-      isLoading: projectDetailsLoading,
-    }))
-  }, [projectDetailsLoading])
-
-  useEffect(() => {
-    setConfigDetails((prevState) => ({
-      ...prevState,
-      isLoading: configDetailsLoading,
-    }))
-  }, [configDetailsLoading])
+    setProjectDetails((prevState) => ({ ...prevState, isLoading: projectDetailsLoading }))
+    setConfigDetails((prevState) => ({ ...prevState, isLoading: configDetailsLoading }))
+  }, [projectDetailsLoading, configDetailsLoading])
 
   const [isCopied, setIsCopied] = useState<boolean>(false)
   const projectConfigs = projectDetails?.data?.details?.projectMetadata?.configs
@@ -373,15 +364,13 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
             id="agama-config-modal-title"
           >
             {manageConfig
-              ? `Manage Configuration for Project ${name}`
-              : `Details of project ${name}`}
+              ? t('titles.agama_manage_config_title', { name })
+              : t('titles.agama_project_details_title', { name })}
           </GluuText>
 
           <div className={classes.modalBody}>
             {projectDetails?.data?.statusCode === 204 && (
-              <p>
-                Project <b>{name}</b> is still being deployed. Try again in 1 minute.
-              </p>
+              <p>{t('messages.agama_project_deploying', { name })}</p>
             )}
 
             {projectDetails.data.statusCode === 200 && (
