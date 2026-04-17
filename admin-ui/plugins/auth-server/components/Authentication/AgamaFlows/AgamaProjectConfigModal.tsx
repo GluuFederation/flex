@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Box, Divider } from '@mui/material'
 import MaterialTable from '@material-table/core'
 import type { Column } from '@material-table/core'
-import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
@@ -27,6 +26,7 @@ import type {
   JsonObject,
   ApiError,
 } from './types'
+import { useAppDispatch } from '@/redux/hooks'
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,

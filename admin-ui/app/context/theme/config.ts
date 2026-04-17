@@ -76,7 +76,7 @@ const createLightTheme = (): ThemeConfig => {
     table: {
       headerText: customColors.tableHeaderTextLight,
       background: customColors.tableRowBgLight,
-      rowHoverBg: customColors.lightBackground,
+      rowHoverBg: customColors.lightGray,
       headerBg: customColors.tableHeaderLight,
       headerColor: customColors.tableHeaderTextLight,
       expandButtonBg: customColors.tableExpandButtonBgLight,
@@ -174,7 +174,7 @@ const createDarkTheme = (): ThemeConfig => {
       headerBg: customColors.tableHeaderBgDark,
       headerColor: customColors.tableHeaderTextDark,
       expandButtonBg: customColors.tableExpandButtonBgDark,
-      expandButtonHoverBg: customColors.darkDropdownBg,
+      expandButtonHoverBg: customColors.tableRowBgDark,
     },
     settings: {
       cardBackground: customColors.darkCardBg,

@@ -1,15 +1,15 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionType'
 import { SCOPE } from '../../../redux/audit/Resources'
-import type { Scope, ModifiedFields, ScopeRootState } from '../types'
+import type { Scope, ModifiedFields } from '../types'
 import { toScopeJsonRecord } from '../helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useAppSelector } from '@/redux/hooks'
 
 export const useScopeActions = () => {
   const { navigateToRoute } = useAppNavigation()
-  const authState = useSelector((state: ScopeRootState) => state.authReducer)
+  const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 

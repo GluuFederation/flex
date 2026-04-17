@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -34,6 +33,7 @@ import {
   type BrokerIdentityProviderForm,
 } from './hooks'
 import type { LocationState } from '../types'
+import { useAppDispatch } from '@/redux/hooks'
 
 interface WebsiteSsoIdentityProviderFormProps {
   configs?: IdentityProvider | null
@@ -80,7 +80,7 @@ const WebsiteSsoIdentityProviderForm = ({
   const loading = isCreatePending || isUpdatePending
   const savedForm = createSavedForm || updateSavedForm
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
   const { navigateBack } = useAppNavigation()

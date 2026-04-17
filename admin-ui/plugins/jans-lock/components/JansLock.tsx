@@ -15,6 +15,7 @@ import {
 import { PatchOperation } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
+import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -57,7 +58,18 @@ const JansLock: React.FC = () => {
 
   SetTitle(t('titles.jans_lock'))
 
-  const { data: lockConfiguration, isLoading } = useGetLockProperties()
+  const {
+    data: lockConfiguration,
+    isLoading,
+    isError: isLockError,
+    error: lockError,
+  } = useGetLockProperties()
+  useEffect(() => {
+    if (!isLockError) return
+    const errorMsg = getQueryErrorMessage(lockError, t('messages.error_in_loading'))
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [isLockError, lockError, dispatch, t])
+
   const patchMutation = usePatchLockProperties({
     mutation: {
       onSuccess: () => {

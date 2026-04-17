@@ -145,40 +145,82 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
         isDark={isDark}
       />
       <Col sm={rsize} className={classes.colWrapper}>
-        <div ref={containerRef} style={{ position: 'relative' }}>
-          <div
-            className={triggerClasses}
-            onClick={toggleDropdown}
-            onBlur={() => formik.setFieldTouched(name, true)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                if ((e.target as HTMLElement).closest('button')) return
-                e.preventDefault()
-                toggleDropdown()
-              }
-            }}
-            role="combobox"
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-            tabIndex={disabled ? -1 : 0}
-          >
-            {selectedValues.length === 0 ? (
+        <div ref={containerRef}>
+          <div style={{ position: 'relative' }}>
+            <div
+              className={triggerClasses}
+              onClick={toggleDropdown}
+              onBlur={() => formik.setFieldTouched(name, true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  if ((e.target as HTMLElement).closest('button')) return
+                  e.preventDefault()
+                  toggleDropdown()
+                }
+              }}
+              role="combobox"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+              tabIndex={disabled ? -1 : 0}
+            >
               <GluuText variant="span" className={classes.placeholder} disableThemeColor>
                 {placeholderText}
               </GluuText>
-            ) : (
-              selectedValues.map((val, idx) => (
-                <GluuText
-                  key={`${val}-${idx}`}
-                  variant="span"
-                  className={classes.chip}
-                  disableThemeColor
-                >
-                  {getOptionLabel(val)}
+              <GluuText
+                variant="span"
+                className={classes.chevronWrapper}
+                disableThemeColor
+                aria-hidden
+              >
+                <ChevronIcon width={20} height={20} direction={isOpen ? 'up' : 'down'} />
+              </GluuText>
+            </div>
+
+            {isOpen && (
+              <div className={classes.dropdownList} role="listbox" aria-multiselectable="true">
+                {options.map((option, idx) => {
+                  const isSelected = selectedValues.includes(option.value)
+                  return (
+                    <div
+                      key={`${option.value}-${idx}`}
+                      className={`${classes.optionItem} ${isSelected ? classes.optionItemSelected : ''}`}
+                      onClick={() => handleOptionClick(option.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          handleOptionClick(option.value)
+                        }
+                      }}
+                      role="option"
+                      aria-selected={isSelected}
+                      tabIndex={0}
+                    >
+                      <GluuText
+                        variant="span"
+                        className={`${classes.checkbox} ${isSelected ? classes.checkboxChecked : ''}`}
+                        disableThemeColor
+                      >
+                        <CheckIcon />
+                      </GluuText>
+                      {option.label}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {selectedValues.length > 0 && (
+            <div className={classes.tags}>
+              {selectedValues.map((val, idx) => (
+                <span key={`${val}-${idx}`} className={classes.tag} title={getOptionLabel(val)}>
+                  <GluuText variant="span" className={classes.tagLabel} disableThemeColor>
+                    {getOptionLabel(val)}
+                  </GluuText>
                   {!disabled && (
                     <button
                       type="button"
-                      className={classes.chipRemove}
+                      className={classes.tagRemove}
                       onClick={(e) => handleRemoveChip(e, val)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -187,52 +229,11 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                       }}
                       aria-label={`Remove ${getOptionLabel(val)}`}
                     >
-                      &times;
+                      <i className="fa fa-fw fa-close" />
                     </button>
                   )}
-                </GluuText>
-              ))
-            )}
-            <GluuText
-              variant="span"
-              className={classes.chevronWrapper}
-              disableThemeColor
-              aria-hidden
-            >
-              <ChevronIcon width={20} height={20} direction={isOpen ? 'up' : 'down'} />
-            </GluuText>
-          </div>
-
-          {isOpen && (
-            <div className={classes.dropdownList} role="listbox" aria-multiselectable="true">
-              {options.map((option, idx) => {
-                const isSelected = selectedValues.includes(option.value)
-                return (
-                  <div
-                    key={`${option.value}-${idx}`}
-                    className={`${classes.optionItem} ${isSelected ? classes.optionItemSelected : ''}`}
-                    onClick={() => handleOptionClick(option.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        handleOptionClick(option.value)
-                      }
-                    }}
-                    role="option"
-                    aria-selected={isSelected}
-                    tabIndex={0}
-                  >
-                    <GluuText
-                      variant="span"
-                      className={`${classes.checkbox} ${isSelected ? classes.checkboxChecked : ''}`}
-                      disableThemeColor
-                    >
-                      <CheckIcon />
-                    </GluuText>
-                    {option.label}
-                  </div>
-                )
-              })}
+                </span>
+              ))}
             </div>
           )}
         </div>

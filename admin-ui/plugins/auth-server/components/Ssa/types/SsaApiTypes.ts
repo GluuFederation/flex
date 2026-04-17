@@ -1,4 +1,5 @@
 import type { Dayjs } from 'dayjs'
+import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 
 export interface SsaDetails {
   [key: string]: string | string[] | boolean
@@ -19,7 +20,7 @@ export interface SsaData {
   name?: string
 }
 
-export interface SsaJwtResponse {
+export interface SsaJwtResponse extends JsonObject {
   ssa: string
 }
 

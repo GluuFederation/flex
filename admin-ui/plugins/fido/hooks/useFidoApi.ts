@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
+import { getQueryErrorMessage } from '@/utils/errorHandler'
 import {
   useGetPropertiesFido2,
   usePutPropertiesFido2,
@@ -21,15 +22,25 @@ const FIDO_CACHE_CONFIG = {
 }
 
 export const useFidoConfig = () => {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
-  return useGetPropertiesFido2({
+  const query = useGetPropertiesFido2({
     query: {
       enabled: hasSession === true,
       staleTime: FIDO_CACHE_CONFIG.STALE_TIME,
       gcTime: FIDO_CACHE_CONFIG.GC_TIME,
     },
   })
+
+  useEffect(() => {
+    if (!query.isError) return
+    const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [query.isError, query.error, dispatch, t])
+
+  return query
 }
 
 export const useUpdateFidoConfig = () => {

@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, getHoverOpacity, OPACITY, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  getHoverOpacity,
+  getLoadingOverlayOpacity,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
@@ -19,14 +25,17 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
 ) => {
   const rowBg = themeColors.table.background
   const rowBorder = themeColors.borderColor
-  const hoverBg = themeColors.table.rowHoverBg
-  const expandButtonBg = themeColors.table.expandButtonBg
+  const hoverBg = themeColors.background
+  const expandButtonBg = themeColors.background
   const expandButtonHoverBg = themeColors.table.expandButtonHoverBg
-  const headerBg = themeColors.table.headerBg
+  const headerBg = themeColors.background
   const headerColor = themeColors.table.headerColor
   const paginationAccent =
     themeColors.formFooter?.back?.backgroundColor ?? customColors.statusActive
-  const loadingOverlayBg = getLoadingOverlayRgba(themeColors.background, isDark ? 0.4 : 0.6)
+  const loadingOverlayBg = getLoadingOverlayRgba(
+    themeColors.background,
+    getLoadingOverlayOpacity(isDark),
+  )
 
   return {
     root: {
@@ -126,7 +135,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     headerCellExpand: {
-      width: 40,
+      width: 72,
       padding: '14px 8px',
       verticalAlign: 'middle',
     },
@@ -176,6 +185,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       overflowWrap: 'break-word',
       wordBreak: 'break-word',
       minWidth: 0,
+      overflow: 'hidden',
+      maxWidth: 0,
     },
     dividerRow: {
       backgroundColor: 'transparent',
@@ -193,9 +204,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       verticalAlign: 'top',
     },
     cellExpand: {
-      width: 40,
-      padding: '14px 8px',
+      width: 72,
+      minWidth: 72,
+      maxWidth: 72,
+      padding: '14px 20px 14px 12px',
       verticalAlign: 'top',
+      overflow: 'visible',
     },
     cellExpandInner: {
       display: 'flex',
@@ -207,7 +221,6 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'transition': 'background-color 0.15s ease',
       'border': `1px solid ${rowBorder}`,
       'borderRadius': BORDER_RADIUS.CIRCLE,
-      'boxShadow': `0 0 0 1px ${rowBorder}`,
       'cursor': 'pointer',
       'padding': '6px',
       'display': 'inline-flex',

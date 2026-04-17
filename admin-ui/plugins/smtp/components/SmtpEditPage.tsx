@@ -21,6 +21,7 @@ import {
   SmtpTest,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
+import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import { devLogger } from '@/utils/devLogger'
@@ -66,7 +67,12 @@ const SmtpEditPage = () => {
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
   const formikRef = useRef<FormikProps<SmtpFormValues> | null>(null)
-  const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
+  const {
+    data: smtpConfiguration,
+    isLoading,
+    isError: isSmtpError,
+    error: smtpError,
+  } = useGetConfigSmtp()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -92,6 +98,12 @@ const SmtpEditPage = () => {
       authorizeHelper(smtpScopes)
     }
   }, [authorizeHelper])
+
+  useEffect(() => {
+    if (!isSmtpError) return
+    const errorMsg = getQueryErrorMessage(smtpError, t('messages.error_in_loading'))
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [isSmtpError, smtpError, dispatch, t])
 
   const testButtonEnabled = !!smtpConfiguration
 

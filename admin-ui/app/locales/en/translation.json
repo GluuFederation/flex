@@ -16,6 +16,8 @@
     "add_attribute_mapping": "Add Attribute Mapping",
     "finish": "Finish",
     "add": "Add",
+    "add_url": "Add URL",
+    "add_redirect_url": "Add Redirect URL",
     "add_ldap_configuration": "Add LDAP Configuration",
     "add_mapping": "Add Mapping",
     "new_project": "New Project",
@@ -73,7 +75,8 @@
     "copy_to_clipboard": "Copy To Clipboard",
     "export_csv": "Export CSV",
     "add_custom_attributes": "Add custom attributes",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "view_current": "View Current"
   },
   "password": {
     "show": "Show password",
@@ -98,6 +101,7 @@
   "licenseScreen": {
     "redirecting": "Redirecting...",
     "welcomeTitle": "Welcome to Admin UI",
+    "expiredTitle": "License Expired",
     "uploadSsaLabel": "Please upload ssa here :",
     "selectedFile": "Selected File :",
     "dropzoneHint": "Drag 'n' drop .jwt file here, or click to select file"
@@ -172,6 +176,7 @@
     "gluuFlexVersion": "Gluu Flex Version",
     "adminui_default_acr": "Admin UI authentication method (ACR)",
     "download_summary": "Download Summary",
+    "view_spontaneous_scopes": "Spontaneous Scopes",
     "metadata_location": "Metadata Location",
     "enable_kc": "Enable Jannssen Keycloak Link",
     "ldap_search_limit": "LDAP Search Size Limit",
@@ -709,7 +714,8 @@
     "nothingToShowInTheList": "Nothing to show in the list",
     "auiPolicyStoreUrl": "Admin UI Remote Policy Store",
     "configApiPolicyStoreUrl": "Config API Policy Store",
-    "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point"
+    "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point",
+    "search_filter": "Search Filter"
   },
   "languages": {
     "french": "French",
@@ -760,7 +766,7 @@
     "keycloack_configuration": "Keycloack Configuration",
     "lock": "Lock",
     "cache": "Cache",
-    "clients": "Clients",
+    "clients": "OIDC Clients",
     "configuration": "Configuration",
     "couchbase": "Couchbase",
     "defaults": "Defaults",
@@ -1053,6 +1059,7 @@
     "error_loading_scripts": "Error loading scripts",
     "script_not_found": "Script not found",
     "no_scripts_found": "No scripts found",
+    "no_scripts_for_client": "No scripts are available to assign. Enable scripts of the required types in the Scripts section first.",
     "script_name_pattern": "Name must contain only letters, digits, and underscores",
     "script_name_required": "Name is required",
     "script_name_min": "Name must be at least {{count}} characters",
@@ -1165,9 +1172,9 @@
     "fido_empty_row_value": "Value is required for each entry.",
     "fido_empty_row_metadata_server": "Both URL and root certificate are required for each metadata server.",
     "scope_id_required": "Scope ID is required",
-    "scope_id_min_length": "Scope ID must be at least 2 characters",
+    "scope_id_min_length": "Scope ID must be at least 5 characters",
     "scope_display_name_required": "Display Name is required",
-    "scope_display_name_min_length": "Display Name must be at least 2 characters",
+    "scope_display_name_min_length": "Display Name must be at least 5 characters",
     "scope_type_required": "Scope Type is required",
     "scope_dynamic_scripts_required": "Select at least one dynamic scope script",
     "scope_claims_required": "Select at least one claim",
@@ -1180,6 +1187,9 @@
     "must_be_non_negative": "Must be non-negative",
     "required_field": "This field is required",
     "invalid_number": "Must be a valid number",
+    "client_name_required": "Client name is required",
+    "redirect_uri_required": "At least one redirect URI is required",
+    "must_be_at_least_one": "Must be at least 1",
     "invalid_email": "Must be a valid email address",
     "invalid_json": "Must be valid JSON",
     "invalid_pattern": "Invalid format",
@@ -1206,7 +1216,16 @@
     "expiration_date_future": "Expiration date must be in the future",
     "software_id_min_length": "Software ID must be at least 3 characters",
     "org_id_min_length": "Organization ID must be at least 3 characters",
-    "description_min_length": "Description must be at least 10 characters"
+    "description_min_length": "Description must be at least 10 characters",
+    "min_length": "Must be at least {{min}} characters",
+    "max_length": "Must be at most {{max}} characters",
+    "invalid_regex": "Must be a valid regular expression",
+    "field_min_length": "{{field}} must be at least {{min}} characters",
+    "field_max_length": "{{field}} must be at most {{max}} characters",
+    "field_invalid_url": "{{field}} must be a valid URL",
+    "field_invalid_number": "{{field}} must be a valid integer",
+    "field_must_be_positive": "{{field}} must be at least 1",
+    "field_invalid_regex": "{{field}} must be a valid regular expression"
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
@@ -1241,7 +1260,16 @@
     "view_ssa": "View SSA",
     "download_ssa": "Download SSA",
     "delete_ssa": "Delete SSA",
-    "click_to_add": "Click to add to the form"
+    "click_to_add": "Click to add to the form",
+    "step_basic": "Configure core client settings: name, client ID, secret, grant types, redirect URIs, and scopes.",
+    "step_tokens": "Control token lifetimes, access token type, and refresh token behavior.",
+    "step_logout": "Set front-channel and back-channel logout URIs and session requirements.",
+    "step_software_info": "Provide software metadata: client URI, logo, policy, terms of service, and contacts.",
+    "step_ciba_par_uma": "Configure CIBA delivery mode, PAR lifetime, UMA RPT claims, and claim redirect URIs.",
+    "step_encryption_signing": "Set signing and encryption algorithms for ID tokens, request objects, and user info.",
+    "step_advanced": "Fine-tune authorization controls, ACR values, login URI, and client expiry.",
+    "step_client_scripts": "Assign custom scripts to this client for spontaneous scopes, token updates, and more.",
+    "step_active_tokens": "View all currently active tokens issued to this client."
   },
   "placeholders": {
     "id": "Enter id",
@@ -1295,6 +1323,7 @@
     "search_scope": "Search by scope",
     "search_token": "Search by token code",
     "search_date": "Search by creation date",
+    "search_filter": "Search Filter",
     "sector_uri": "Enter the sector URI",
     "sender_email": "Enter the sender email",
     "sender_name": "Enter the sender name",
@@ -1335,7 +1364,12 @@
     "enter_policies_zip_uris_authorization_token": "Enter the ZIP policy URI authorization token",
     "enter_policies_zip_uris": "Enter the ZIP policy URI",
     "enter_token_channels": "Enter the token channels",
-    "type_value": "Type {{field}} value"
+    "type_value": "Type {{field}} value",
+    "email_example": "E.g. sample@org.com",
+    "valid_origin_uri": "Enter a valid origin URI (e.g. https://...)",
+    "valid_request_uri": "Enter a valid request URI (e.g. https://...)",
+    "valid_claim_uri": "Enter a valid claim URI (e.g. https://...)",
+    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1369,7 +1403,7 @@
     "all_attributes": "Attributes/Claims",
     "all_user_claims": "User Claims",
     "all_custom_scripts": "Custom Scripts",
-    "all_oidc_clients": "OpenID Clients",
+    "all_oidc_clients": "OIDC Clients",
     "all_scopes": "OAuth/OpenID Scopes",
     "audit_logs": "Admin UI Audit Log",
     "webhooks": "Webhooks",
@@ -1378,10 +1412,19 @@
     "authentication": "Authentication",
     "couchbase_authentication": "Couchbase Authentication",
     "client_advanced": "Advanced Client Properties",
+    "client_details": "Client Details",
     "client_attributes": "Client Attributes",
     "client_basic": "Basic",
     "client_encryption_signing": "Encryption/Signing",
     "client_scripts": "Client Scripts",
+    "protocol_settings": "Protocol Settings",
+    "access_and_redirects": "Access & Redirects",
+    "token_configuration": "Token Configuration",
+    "token_processing": "Token Processing",
+    "authorization_controls": "Authorization Controls",
+    "scope_controls": "Scope Controls",
+    "login_and_acr": "Login & ACR",
+    "expiration_settings": "Expiration Settings",
     "config_api_roles": "Config API Roles",
     "config_api_permissions": "Config API Permissions",
     "connectionUri": "Connection URI",
@@ -1404,7 +1447,7 @@
     "cedarling_config": "Cedarling Configuration",
     "modules_properties": "Module Properties",
     "oauth_server_status_title": "OAuth server status",
-    "oidc_clients": "OpenID Connect Clients",
+    "oidc_clients": "OIDC Clients",
     "private_keys": "Private Keys",
     "public_keys": "Public Keys",
     "profile_detail": "Profile Details",
@@ -1432,6 +1475,7 @@
     "UMA": "UMA",
     "id_token": "id_token",
     "access_token": "Access token",
+    "refresh_token": "Refresh Token",
     "userinfo": "Userinfo",
     "JARM": "JARM",
     "request_object": "Request Object",
@@ -1457,7 +1501,8 @@
     "create_identity_provider": "Create Identity Provider",
     "view_identity_provider": "View Identity Provider",
     "delete_identity_provider": "Delete Identity Provider",
-    "search_filter": "Search Filter"
+    "search_filter": "Search Filter",
+    "uma_resource_detail": "UMA Resource Detail"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1509,7 +1554,9 @@
     "log_level_warn": "WARN",
     "log_level_error": "ERROR",
     "log_layout_text": "Text",
-    "log_layout_json": "JSON"
+    "log_layout_json": "JSON",
+    "jwt": "JWT",
+    "reference": "Reference"
   },
   "documentation": {
     "asset": {
@@ -2153,7 +2200,13 @@
       "platform": "Platform",
       "createdBy": "Created By",
       "type": "Type",
-      "domain": "Domain"
+      "domain": "Domain",
+      "creationDate": "The date and time the token was created",
+      "expirationDate": "The date and time the token expires",
+      "token_type": "The type of the token (e.g. access_token, refresh_token)",
+      "scope": "The scopes granted to this token",
+      "deletable": "Whether this token can be deleted/revoked",
+      "attributes": "Additional attributes associated with this token"
     },
     "sessions": {
       "expirationDate": "Expiration Date",

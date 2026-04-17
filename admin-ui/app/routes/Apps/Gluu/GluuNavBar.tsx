@@ -1,5 +1,4 @@
 import { useEffect, useRef, useMemo, useCallback, memo } from 'react'
-import { useSelector } from 'react-redux'
 import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
 import { Notifications, ChevronIcon } from 'Components'
@@ -13,12 +12,13 @@ import { UserIcon } from './components/UserIcon'
 import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
+import { useAppSelector } from '@/redux/hooks'
 
 const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =>
   state.authReducer.userinfo
 
 const GluuNavBar = () => {
-  const userInfo = useSelector(selectUserInfo)
+  const userInfo = useAppSelector(selectUserInfo)
 
   const { navbarColors } = useNavbarTheme()
   const { classes } = useStyles({ navbarColors })

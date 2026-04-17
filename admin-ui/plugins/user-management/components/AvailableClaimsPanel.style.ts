@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily } from '@/styles/fonts'
 import { getLoadingOverlayRgba } from '@/customColors'
+import { getDividerOpacity, getListHoverOpacity } from '@/constants'
 
 interface AvailableClaimsPanelStylesParams {
   themeColors: ThemeConfig
@@ -14,9 +15,9 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
 ) => {
   const claimsBg = isDark ? themeColors.inputBackground : themeColors.background
   const claimsInnerBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const hoverBg = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.12 : 0.08)
+  const hoverBg = getLoadingOverlayRgba(themeColors.fontColor, getListHoverOpacity(isDark))
   const focusOutline = themeColors.availableClaims.focusOutline
-  const dividerColor = getLoadingOverlayRgba(themeColors.fontColor, isDark ? 0.25 : 0.18)
+  const dividerColor = getLoadingOverlayRgba(themeColors.fontColor, getDividerOpacity(isDark))
 
   return {
     root: {

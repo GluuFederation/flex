@@ -92,29 +92,77 @@ const CachePage: React.FC = () => {
     }
   }, [authorizeHelper, cacheScopes])
 
-  const { data: cacheData = {} as CacheConfiguration, isLoading: cacheLoading } = useGetConfigCache(
-    {
-      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
-    },
-  )
-  const { data: cacheMemoryData = {} as InMemoryConfiguration, isLoading: memoryLoading } =
-    useGetConfigCacheInMemory({
-      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
-    })
-  const { data: cacheMemData = {} as MemcachedConfiguration, isLoading: memcachedLoading } =
-    useGetConfigCacheMemcached({
-      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
-    })
-  const { data: cacheNativeData = {} as NativePersistenceConfiguration, isLoading: nativeLoading } =
-    useGetConfigCacheNativePersistence({
-      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
-    })
-  const { data: cacheRedisData = {} as RedisConfiguration, isLoading: redisLoading } =
-    useGetConfigCacheRedis({
-      query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
-    })
+  const {
+    data: cacheData = {} as CacheConfiguration,
+    isLoading: cacheLoading,
+    isError: isCacheError,
+    error: cacheError,
+  } = useGetConfigCache({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
+  })
+  const {
+    data: cacheMemoryData = {} as InMemoryConfiguration,
+    isLoading: memoryLoading,
+    isError: isMemoryError,
+    error: memoryError,
+  } = useGetConfigCacheInMemory({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
+  })
+  const {
+    data: cacheMemData = {} as MemcachedConfiguration,
+    isLoading: memcachedLoading,
+    isError: isMemcachedError,
+    error: memcachedError,
+  } = useGetConfigCacheMemcached({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
+  })
+  const {
+    data: cacheNativeData = {} as NativePersistenceConfiguration,
+    isLoading: nativeLoading,
+    isError: isNativeError,
+    error: nativeError,
+  } = useGetConfigCacheNativePersistence({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
+  })
+  const {
+    data: cacheRedisData = {} as RedisConfiguration,
+    isLoading: redisLoading,
+    isError: isRedisError,
+    error: redisError,
+  } = useGetConfigCacheRedis({
+    query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
+  })
 
   const loading = cacheLoading || memoryLoading || memcachedLoading || nativeLoading || redisLoading
+
+  useEffect(() => {
+    const firstError = [
+      isCacheError && cacheError,
+      isMemoryError && memoryError,
+      isMemcachedError && memcachedError,
+      isNativeError && nativeError,
+      isRedisError && redisError,
+    ].find(Boolean)
+    if (!firstError) return
+    const err = firstError as { response?: { data?: { message?: string } } }
+    const errorMsg =
+      err?.response?.data?.message ||
+      t('fields.cache_configuration') + ': ' + t('messages.error_in_loading')
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [
+    isCacheError,
+    cacheError,
+    isMemoryError,
+    memoryError,
+    isMemcachedError,
+    memcachedError,
+    isNativeError,
+    nativeError,
+    isRedisError,
+    redisError,
+    dispatch,
+    t,
+  ])
 
   const patchCacheMutation = usePatchConfigCache({
     mutation: {

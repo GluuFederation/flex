@@ -1,6 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, getHoverOpacity, MAPPING_SPACING, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  getHoverOpacity,
+  getErrorBgOpacity,
+  getErrorBorderOpacity,
+  MAPPING_SPACING,
+  OPACITY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -43,8 +51,6 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
 
-  // Match Settings page custom parameters: box uses form input background,
-  // inner inputs use card background so they visually pop inside the box.
   const headersBoxBg = formInputBg
   const headersInputBg = cardBg
   const headersBorderColor =
@@ -135,10 +141,10 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       justifyContent: 'center',
     },
     errorBox: {
-      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.15 : 0.06)} !important`,
+      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, getErrorBgOpacity(isDark))} !important`,
       'borderRadius': BORDER_RADIUS.SMALL,
       'padding': `${INPUT_PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
-      'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.4 : 0.25)}`,
+      'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, getErrorBorderOpacity(isDark))}`,
       'minHeight': INPUT_HEIGHT,
       'display': 'flex',
       'alignItems': 'center',
@@ -225,9 +231,9 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'marginBottom': SPACING.PAGE,
       'minHeight': INPUT_HEIGHT,
       'padding': `${INPUT_PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
-      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.15 : 0.06)} !important`,
+      'backgroundColor': `${getLoadingOverlayRgba(customColors.accentRed, getErrorBgOpacity(isDark))} !important`,
       'color': `${themeColors.formFooter.back.textColor} !important`,
-      'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, isDark ? 0.4 : 0.25)}`,
+      'border': `1px solid ${getLoadingOverlayRgba(customColors.accentRed, getErrorBorderOpacity(isDark))}`,
       'borderRadius': `${BORDER_RADIUS.SMALL}px !important`,
       'display': 'flex',
       'alignItems': 'center',

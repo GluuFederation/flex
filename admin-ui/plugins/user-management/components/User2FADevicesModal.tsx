@@ -17,6 +17,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
+import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { formatDate } from '@/utils/dayjsUtils'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
@@ -54,11 +55,19 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     data: fidoRegistrationData,
     refetch: refetchFido2Details,
     isLoading: isFido2Loading,
+    isError: isFido2Error,
+    error: fido2Error,
   } = useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
     query: {
       enabled: isOpen && !!userDetails?.userId,
     },
   })
+
+  useEffect(() => {
+    if (!isFido2Error) return
+    const errorMsg = getQueryErrorMessage(fido2Error, t('messages.error_in_loading'))
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [isFido2Error, fido2Error, dispatch, t])
 
   const fidoDetails = useMemo(() => fidoRegistrationData?.entries || [], [fidoRegistrationData])
 
