@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=2704ccb713232ae25ce9eb8a5926a74ad0915b66
+ENV FLEX_SOURCE_VERSION=8034a3f5ced79101bbd9e74046fdfffe381fb466
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \

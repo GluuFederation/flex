@@ -255,6 +255,9 @@ class Upgrade:
             else:
                 scopes = entry.attrs["jansScope"]
 
+            if not isinstance(scopes, list):
+                scopes = [scopes]
+
             for idx, scope in enumerate(scopes):
                 if scope == old_name:
                     scopes[idx] = new_name
@@ -282,6 +285,9 @@ class Upgrade:
                 scopes = entry.attrs["jansScope"]["v"]
             else:
                 scopes = entry.attrs["jansScope"]
+
+            if not isinstance(scopes, list):
+                scopes = [scopes]
 
             if new_scope not in scopes:
                 scopes.append(new_scope)
