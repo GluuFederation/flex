@@ -217,6 +217,7 @@ export type GluuStatusMessageProps = {
 export type NamedTab = {
   name: string
   path?: string | null
+  id?: string
 }
 
 export type NavigationTab = NamedTab & {

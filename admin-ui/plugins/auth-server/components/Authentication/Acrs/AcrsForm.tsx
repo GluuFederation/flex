@@ -80,7 +80,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   const initialValues: AcrsFormValues = useMemo(
     () => ({
       acr: item?.acrName || '',
-      level: parseInt(String(item.level)) || 0,
+      level: Number(item.level) || 0,
       defaultAuthNMethod: acrs?.defaultAcr === item.acrName,
       samlACR: item?.samlACR || '',
       description: item?.description || '',

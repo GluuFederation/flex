@@ -379,21 +379,38 @@ const Aliases = ({
     </GluuLoader>
   ) : null
 
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
+
+  const paginatedData = useMemo(
+    () => listData.slice(page * rowsPerPage, (page + 1) * rowsPerPage),
+    [listData, page, rowsPerPage],
+  )
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+  }, [])
+
+  const handleRowsPerPageChange = useCallback((newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage)
+    setPage(0)
+  }, [])
+
   return (
     <GluuLoader blocking={loading && !showAddModal}>
       <GluuViewWrapper canShow={canReadAuth}>
         <div className={classes.page}>
           <GluuTable<AcrMappingTableRow>
             columns={columns}
-            data={listData}
+            data={paginatedData}
             actions={actions}
             getRowKey={getRowKey}
             pagination={{
-              page: 0,
-              rowsPerPage: PAGE_SIZE,
+              page,
+              rowsPerPage,
               totalItems: listData.length,
-              onPageChange: () => {},
-              onRowsPerPageChange: () => {},
+              onPageChange: handlePageChange,
+              onRowsPerPageChange: handleRowsPerPageChange,
             }}
             emptyMessage={t('messages.no_data')}
           />

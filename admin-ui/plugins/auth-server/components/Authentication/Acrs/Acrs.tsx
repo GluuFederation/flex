@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, type ReactElement } from 'react'
+import { useEffect, useCallback, useMemo, useState, type ReactElement } from 'react'
 import { Edit, Check, Close } from '@mui/icons-material'
 import { useSetAtom } from 'jotai'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -251,23 +251,40 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   const isLoading = ldapLoading || scriptsLoading || acrsLoading
 
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
+
+  const paginatedData = useMemo(
+    () => tableData.slice(page * rowsPerPage, (page + 1) * rowsPerPage),
+    [tableData, page, rowsPerPage],
+  )
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+  }, [])
+
+  const handleRowsPerPageChange = useCallback((newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage)
+    setPage(0)
+  }, [])
+
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
       <div className={classes.page}>
         <GluuTable<AuthNItem>
           columns={columns}
-          data={tableData}
+          data={paginatedData}
           loading={isLoading}
           expandable
           renderExpandedRow={renderExpandedRow}
           actions={actions}
           getRowKey={getRowKey}
           pagination={{
-            page: 0,
-            rowsPerPage: PAGE_SIZE,
+            page,
+            rowsPerPage,
             totalItems: tableData.length,
-            onPageChange: () => {},
-            onRowsPerPageChange: () => {},
+            onPageChange: handlePageChange,
+            onRowsPerPageChange: handleRowsPerPageChange,
           }}
           emptyMessage={t('messages.no_data')}
         />

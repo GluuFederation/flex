@@ -45,8 +45,16 @@ function DefaultAcr(): React.ReactElement {
   const queryClient = useQueryClient()
   const { logAcrUpdate } = useAcrAudit()
 
-  const { data: scriptsResponse, isLoading: loadingScripts } =
-    useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
+    [hasCedarReadPermission],
+  )
+
+  const { data: scriptsResponse, isLoading: loadingScripts } = useCustomScriptsByType(
+    DEFAULT_SCRIPT_TYPE,
+    undefined,
+    { enabled: canReadAuth },
+  )
 
   const {
     data: acrs,
@@ -55,6 +63,7 @@ function DefaultAcr(): React.ReactElement {
   } = useGetAcrs({
     query: {
       staleTime: 30000,
+      enabled: canReadAuth,
     },
   })
 
@@ -84,10 +93,10 @@ function DefaultAcr(): React.ReactElement {
     data: projectsResponse,
     isLoading: agamaLoading,
     error,
-  } = useGetAgamaPrj({
-    count: MAX_AGAMA_PROJECTS_FOR_ACR,
-    start: 0,
-  })
+  } = useGetAgamaPrj(
+    { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
+    { query: { enabled: canReadAuth } },
+  )
 
   const { t } = useTranslation()
 
@@ -99,10 +108,6 @@ function DefaultAcr(): React.ReactElement {
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ themeColors })
 
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
   const canWriteAuth = useMemo(
     () => hasCedarWritePermission(AUTH_RESOURCE_ID),
     [hasCedarWritePermission],

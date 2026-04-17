@@ -22,8 +22,8 @@ export const getPropertiesConfig = (entry: AuthNItem): PropertyConfig[] => {
   if (entry.configurationProperties && Array.isArray(entry.configurationProperties)) {
     return entry.configurationProperties.map((e) => ({
       id: crypto.randomUUID(),
-      key: e.value1 || '',
-      value: e.value2 || '',
+      key: e.key || e.value1 || '',
+      value: e.value || e.value2 || '',
     }))
   }
   return []

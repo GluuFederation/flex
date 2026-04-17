@@ -89,6 +89,14 @@ const GluuTabs = ({
     return tab.name
   }, [])
 
+  const getTabId = useCallback((tab: TabItem) => {
+    if (typeof tab === 'string') {
+      return tab
+    }
+
+    return tab.id ?? tab.name
+  }, [])
+
   const handleChange = useCallback(
     (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue)
@@ -104,6 +112,7 @@ const GluuTabs = ({
   )
 
   const tabLabels = useMemo(() => tabNames.map(getTabLabel), [tabNames, getTabLabel])
+  const tabIds = useMemo(() => tabNames.map(getTabId), [tabNames, getTabId])
 
   useEffect(() => {
     if (!withNavigation) {
@@ -147,10 +156,10 @@ const GluuTabs = ({
     () =>
       tabLabels.map((label, index) => (
         <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={0} py={2}>
-          {tabToShow(label)}
+          {tabToShow(tabIds[index] ?? label)}
         </TabPanel>
       )),
-    [tabLabels, value, tabToShow],
+    [tabLabels, tabIds, value, tabToShow],
   )
 
   return (
