@@ -15,13 +15,11 @@ import Acrs from './Acrs/Acrs'
 import Aliases from './Aliases/Aliases'
 import AgamaFlows from './AgamaFlows/AgamaFlows'
 import { useStyles } from './styles/Authentication.style'
+import { ALIASES_TAB_INDEX } from './constants'
 
-interface TabName {
+type TabName = {
   name: string
-  path: string
 }
-
-const ALIASES_TAB_INDEX = 3
 
 function Authentication(): ReactElement {
   const { t } = useTranslation()

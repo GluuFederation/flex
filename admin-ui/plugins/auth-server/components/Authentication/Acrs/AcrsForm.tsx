@@ -19,8 +19,10 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { type AuthNItem } from '../atoms'
 import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
+import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
+import { getPropertiesConfig } from './helper/acrUtils'
 
-export interface AcrsFormValues {
+export type AcrsFormValues = {
   acr: string
   level: number
   defaultAuthNMethod: boolean | string
@@ -49,22 +51,11 @@ export interface AcrsFormValues {
   }>
 }
 
-interface AcrsFormProps {
+type AcrsFormProps = {
   item: AuthNItem
   handleSubmit: (values: AcrsFormValues) => void
   isSubmitting?: boolean
 }
-
-interface PropertyConfig {
-  key: string
-  value: string
-}
-
-const HASH_ALGORITHM_OPTIONS = [{ value: 'bcrypt', label: 'bcrypt' }]
-const DEFAULT_AUTHN_OPTIONS = [
-  { value: 'true', label: 'true' },
-  { value: 'false', label: 'false' },
-]
 
 const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): ReactElement => {
   const { t } = useTranslation()
@@ -84,16 +75,6 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   const { classes } = useStyles({ isDark, themeColors })
 
   const { data: acrs } = useGetAcrs({ query: { staleTime: 30000 } })
-
-  const getPropertiesConfig = (entry: AuthNItem): PropertyConfig[] => {
-    if (entry.configurationProperties && Array.isArray(entry.configurationProperties)) {
-      return entry.configurationProperties.map((e) => ({
-        key: e.value1 || '',
-        value: e.value2 || '',
-      }))
-    }
-    return []
-  }
 
   const initialValues: AcrsFormValues = useMemo(
     () => ({
@@ -260,7 +241,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               rsize={12}
               values={DEFAULT_AUTHN_OPTIONS}
               showError={!!(formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod)}
-              errorMessage={formik.errors.defaultAuthNMethod as string}
+              errorMessage={formik.errors.defaultAuthNMethod}
             />
           </div>
 
@@ -364,7 +345,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   rsize={12}
                   type="number"
                   showError={!!(formik.errors.maxConnections && formik.touched.maxConnections)}
-                  errorMessage={formik.errors.maxConnections as string}
+                  errorMessage={formik.errors.maxConnections}
                 />
               </div>
 
@@ -413,7 +394,9 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   options={[]}
                   value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
                   showError={!!(formik.errors.servers && formik.touched.servers)}
-                  errorMessage={formik.errors.servers as string}
+                  errorMessage={
+                    typeof formik.errors.servers === 'string' ? formik.errors.servers : undefined
+                  }
                 />
               </div>
 
@@ -427,7 +410,9 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   options={[]}
                   value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
                   showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
-                  errorMessage={formik.errors.baseDNs as string}
+                  errorMessage={
+                    typeof formik.errors.baseDNs === 'string' ? formik.errors.baseDNs : undefined
+                  }
                 />
               </div>
 

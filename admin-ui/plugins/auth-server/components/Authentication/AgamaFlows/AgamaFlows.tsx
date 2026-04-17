@@ -7,8 +7,6 @@ import { useAgamaActions } from './hooks/useAgamaActions'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useCedarling } from '@/cedarling'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -57,17 +55,17 @@ import type {
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
+import { DATE_TIME_FORMAT_OPTIONS } from './constants'
+import { AUTH_RESOURCE_ID, AUTH_SCOPES } from '../constants'
 
-const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
-  year: '2-digit',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
+const agamaButtonStyle = {
+  minHeight: BUTTON_STYLES.height,
+  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+  borderRadius: BUTTON_STYLES.borderRadius,
+  fontSize: BUTTON_STYLES.fontSize,
+  fontWeight: BUTTON_STYLES.fontWeight,
+  letterSpacing: BUTTON_STYLES.letterSpacing,
 }
-
-const authResourceId = ADMIN_UI_RESOURCES.Authentication
-const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId] || []
 
 const AgamaFlows: React.FC = () => {
   const {
@@ -118,7 +116,7 @@ const AgamaFlows: React.FC = () => {
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId),
+    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
   )
 
@@ -170,17 +168,17 @@ const AgamaFlows: React.FC = () => {
   })
 
   const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId),
-    [hasCedarWritePermission, authResourceId],
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
   const canDeleteAuth = useMemo(
-    () => hasCedarDeletePermission(authResourceId),
-    [hasCedarDeletePermission, authResourceId],
+    () => hasCedarDeletePermission(AUTH_RESOURCE_ID),
+    [hasCedarDeletePermission],
   )
 
   useEffect(() => {
-    if (authScopes.length > 0) {
-      authorizeHelper(authScopes)
+    if (AUTH_SCOPES.length > 0) {
+      authorizeHelper(AUTH_SCOPES)
     }
   }, [authorizeHelper])
 
@@ -327,7 +325,7 @@ const AgamaFlows: React.FC = () => {
               : ''
         const status = deploymentProject?.finishedAt ? 'Processed' : 'Pending'
         const deployed_on = deploymentProject?.finishedAt
-          ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(
+          ? new Intl.DateTimeFormat('en-US', DATE_TIME_FORMAT_OPTIONS).format(
               new Date(deploymentProject.createdAt || ''),
             )
           : '-'
@@ -414,7 +412,7 @@ const AgamaFlows: React.FC = () => {
             : ''
       const status = updatedData?.finishedAt ? 'Processed' : 'Pending'
       const deployed_on = updatedData?.finishedAt
-        ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(
+        ? new Intl.DateTimeFormat('en-US', DATE_TIME_FORMAT_OPTIONS).format(
             new Date(updatedData.createdAt || ''),
           )
         : '-'
@@ -590,14 +588,7 @@ const AgamaFlows: React.FC = () => {
                   textColor={themeColors.formFooter.apply.textColor}
                   borderColor={themeColors.formFooter.apply.borderColor}
                   useOpacityOnHover
-                  style={{
-                    minHeight: BUTTON_STYLES.height,
-                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                    borderRadius: BUTTON_STYLES.borderRadius,
-                    fontSize: BUTTON_STYLES.fontSize,
-                    fontWeight: BUTTON_STYLES.fontWeight,
-                    letterSpacing: BUTTON_STYLES.letterSpacing,
-                  }}
+                  style={agamaButtonStyle}
                 >
                   {t('actions.add')}
                 </GluuButton>
@@ -608,14 +599,7 @@ const AgamaFlows: React.FC = () => {
                   textColor={themeColors.formFooter.cancel.textColor}
                   borderColor={themeColors.formFooter.cancel.borderColor}
                   useOpacityOnHover
-                  style={{
-                    minHeight: BUTTON_STYLES.height,
-                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                    borderRadius: BUTTON_STYLES.borderRadius,
-                    fontSize: BUTTON_STYLES.fontSize,
-                    fontWeight: BUTTON_STYLES.fontWeight,
-                    letterSpacing: BUTTON_STYLES.letterSpacing,
-                  }}
+                  style={agamaButtonStyle}
                 >
                   {t('actions.cancel')}
                 </GluuButton>
@@ -625,28 +609,13 @@ const AgamaFlows: React.FC = () => {
         case t('menus.add_community_project'):
           return (
             <>
-              <div className={classes.modalBody} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              <div className={`${classes.modalBody} ${classes.communityModalBody}`}>
                 <FormGroup>
-                  <FormLabel
-                    style={{
-                      marginBottom: '16px',
-                      fontSize: '12px',
-                      fontWeight: '400',
-                      color: themeColors.fontColor,
-                    }}
-                  >
+                  <FormLabel className={classes.communityFormLabel}>
                     {t('titles.select_project_deploy')}
                   </FormLabel>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      maxHeight: '320px',
-                      overflowY: 'auto',
-                      overflowX: 'hidden',
-                    }}
-                  >
+                  <div className={classes.repoList}>
                     {fileLoading ? (
                       <CircularProgress sx={{ color: themeColors.badges.statusActive }} />
                     ) : agamaRepositoriesList?.projects?.length ? (
@@ -667,33 +636,15 @@ const AgamaFlows: React.FC = () => {
                           }
                           label={
                             <div>
-                              <div style={{ color: themeColors.fontColor, fontWeight: 600 }}>
-                                {item['repository-name']}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: '12px',
-                                  color: themeColors.textMuted,
-                                  marginTop: 4,
-                                }}
-                              >
-                                {item.description}
-                              </div>
+                              <div className={classes.repoItemName}>{item['repository-name']}</div>
+                              <div className={classes.repoItemDescription}>{item.description}</div>
                             </div>
                           }
                           sx={{ alignItems: 'flex-start', marginBottom: '16px' }}
                         />
                       ))
                     ) : (
-                      <div
-                        style={{
-                          fontSize: '15px',
-                          padding: '14px 0',
-                          color: themeColors.fontColor,
-                        }}
-                      >
-                        {t('messages.no_data_found')}
-                      </div>
+                      <div className={classes.repoEmptyState}>{t('messages.no_data_found')}</div>
                     )}
                   </div>
                 </FormGroup>
@@ -709,14 +660,7 @@ const AgamaFlows: React.FC = () => {
                   textColor={themeColors.formFooter.apply.textColor}
                   borderColor={themeColors.formFooter.apply.borderColor}
                   useOpacityOnHover
-                  style={{
-                    minHeight: BUTTON_STYLES.height,
-                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                    borderRadius: BUTTON_STYLES.borderRadius,
-                    fontSize: BUTTON_STYLES.fontSize,
-                    fontWeight: BUTTON_STYLES.fontWeight,
-                    letterSpacing: BUTTON_STYLES.letterSpacing,
-                  }}
+                  style={agamaButtonStyle}
                 >
                   {t('actions.deploy')}
                 </GluuButton>
@@ -727,14 +671,7 @@ const AgamaFlows: React.FC = () => {
                   textColor={themeColors.formFooter.cancel.textColor}
                   borderColor={themeColors.formFooter.cancel.borderColor}
                   useOpacityOnHover
-                  style={{
-                    minHeight: BUTTON_STYLES.height,
-                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                    borderRadius: BUTTON_STYLES.borderRadius,
-                    fontSize: BUTTON_STYLES.fontSize,
-                    fontWeight: BUTTON_STYLES.fontWeight,
-                    letterSpacing: BUTTON_STYLES.letterSpacing,
-                  }}
+                  style={agamaButtonStyle}
                 >
                   {t('actions.cancel')}
                 </GluuButton>

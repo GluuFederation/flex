@@ -15,8 +15,9 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppDispatch } from '@/redux/hooks'
-import { currentAuthNItemAtom, type ConfigurationProperty } from '../atoms'
+import { currentAuthNItemAtom } from '../atoms'
 import { type AcrsFormValues } from './AcrsForm'
+import { isDefaultAuthNMethod, transformConfigurationProperties } from './helper/acrUtils'
 import { devLogger } from '@/utils/devLogger'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
@@ -24,25 +25,6 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './AcrsForm.style'
 import { useLocation } from 'react-router-dom'
-
-const isDefaultAuthNMethod = (value: boolean | string): boolean =>
-  value === 'true' || value === true
-
-const transformConfigurationProperties = (
-  properties: ConfigurationProperty[] | undefined,
-): Array<{ value1: string; value2: string; hide: boolean }> | undefined => {
-  if (!properties || properties.length === 0) {
-    return undefined
-  }
-  return properties
-    .filter((e): e is ConfigurationProperty => e != null)
-    .filter((e) => Object.keys(e).length !== 0)
-    .map((e) => ({
-      value1: e.key || e.value1 || '',
-      value2: e.value || e.value2 || '',
-      hide: false,
-    }))
-}
 
 const AcrsEditPage = (): ReactElement => {
   const dispatch = useAppDispatch()

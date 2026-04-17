@@ -27,9 +27,16 @@ import type {
   ApiError,
 } from './types'
 import { useAppDispatch } from '@/redux/hooks'
+import { getErrorMessage } from './helper'
 
-const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
-  error instanceof Error ? error.message : error?.message || fallback
+const buttonStyle = {
+  minHeight: BUTTON_STYLES.height,
+  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+  borderRadius: BUTTON_STYLES.borderRadius,
+  fontSize: BUTTON_STYLES.fontSize,
+  fontWeight: BUTTON_STYLES.fontWeight,
+  letterSpacing: BUTTON_STYLES.letterSpacing,
+}
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
@@ -188,12 +195,15 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const [isCopied, setIsCopied] = useState<boolean>(false)
   const projectConfigs = projectDetails?.data?.details?.projectMetadata?.configs
 
+  useEffect(() => {
+    if (!isCopied) return
+    const timer = setTimeout(() => setIsCopied(false), 6000)
+    return () => clearTimeout(timer)
+  }, [isCopied])
+
   const copyToClipboard = (): void => {
     setIsCopied(true)
     navigator.clipboard.writeText(JSON.stringify(projectConfigs, null, 2))
-    setTimeout(() => {
-      setIsCopied(false)
-    }, 6000)
   }
 
   const handleImportConfig = async (): Promise<void> => {
@@ -319,15 +329,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     },
     [handler],
   )
-
-  const buttonStyle = {
-    minHeight: BUTTON_STYLES.height,
-    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-    borderRadius: BUTTON_STYLES.borderRadius,
-    fontSize: BUTTON_STYLES.fontSize,
-    fontWeight: BUTTON_STYLES.fontWeight,
-    letterSpacing: BUTTON_STYLES.letterSpacing,
-  }
 
   if (!isOpen) return null
 

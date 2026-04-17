@@ -3,8 +3,6 @@ import { Edit, Check, Close } from '@mui/icons-material'
 import { useSetAtom } from 'jotai'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -18,20 +16,13 @@ import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
 import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 import { currentAuthNItemAtom, type AuthNItem } from '../atoms'
-import { BUILT_IN_ACRS } from '../constants'
+import { BUILT_IN_ACRS, AUTH_RESOURCE_ID, AUTH_SCOPES, PAGE_SIZE } from '../constants'
 import { useStyles } from './Acrs.style'
+import { displayOrDash } from './helper/acrUtils'
 
-interface AcrsProps {
+type AcrsProps = {
   isBuiltIn?: boolean
 }
-
-const PAGE_SIZE = 10
-const EMPTY_PLACEHOLDER = '-'
-
-const authNResourceId = ADMIN_UI_RESOURCES.Authentication
-
-const displayOrDash = (value: GluuDetailGridField['value']): GluuDetailGridField['value'] =>
-  value === null || value === undefined || value === '' ? EMPTY_PLACEHOLDER : value
 
 const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -59,20 +50,18 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   SetTitle(t('titles.authentication'))
 
-  const authNScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authNResourceId] || [], [])
-
   const canReadAuthN = useMemo(
-    () => hasCedarReadPermission(authNResourceId),
+    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
   )
   const canWriteAuthN = useMemo(
-    () => hasCedarWritePermission(authNResourceId),
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
     [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    authorizeHelper(authNScopes)
-  }, [authorizeHelper, authNScopes])
+    authorizeHelper(AUTH_SCOPES)
+  }, [authorizeHelper])
 
   const handleGoToAuthNEditPage = useCallback(
     (row: AuthNItem) => {

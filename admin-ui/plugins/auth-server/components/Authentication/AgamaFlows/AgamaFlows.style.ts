@@ -183,5 +183,36 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
         createFormInputAutofillStyles(inputColors),
     },
+    communityModalBody: {
+      maxHeight: '400px',
+      overflowY: 'auto' as const,
+    },
+    communityFormLabel: {
+      marginBottom: '16px',
+      fontSize: '12px',
+      fontWeight: '400',
+      color: themeColors.fontColor,
+    },
+    repoList: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      maxHeight: '320px',
+      overflowY: 'auto' as const,
+      overflowX: 'hidden' as const,
+    },
+    repoItemName: {
+      color: themeColors.fontColor,
+      fontWeight: 600,
+    },
+    repoItemDescription: {
+      fontSize: '12px',
+      color: themeColors.textMuted,
+      marginTop: 4,
+    },
+    repoEmptyState: {
+      fontSize: '15px',
+      padding: '14px 0',
+      color: themeColors.fontColor,
+    },
   }
 })

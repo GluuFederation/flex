@@ -3,8 +3,6 @@ import { useAppDispatch } from '@/redux/hooks'
 import { useFormik } from 'formik'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCedarling } from '@/cedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -34,12 +32,12 @@ import { useAcrAudit } from '../Acrs/hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
 import { useStyles } from './DefaultAcr.style'
+import { MAX_AGAMA_PROJECTS_FOR_ACR } from './constants'
+import { AUTH_RESOURCE_ID, AUTH_SCOPES } from '../constants'
 
-interface DefaultAcrFormValues {
+type DefaultAcrFormValues = {
   defaultAcr: string
 }
-
-const MAX_AGAMA_PROJECTS_FOR_ACR = 500
 
 function DefaultAcr(): React.ReactElement {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
@@ -101,23 +99,20 @@ function DefaultAcr(): React.ReactElement {
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ themeColors })
 
-  const authResourceId = ADMIN_UI_RESOURCES.Authentication
-  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
-
   const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId),
-    [hasCedarReadPermission, authResourceId],
+    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
+    [hasCedarReadPermission],
   )
   const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId),
-    [hasCedarWritePermission, authResourceId],
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   useEffect(() => {
-    if (authScopes && authScopes.length > 0) {
-      authorizeHelper(authScopes)
+    if (AUTH_SCOPES.length > 0) {
+      authorizeHelper(AUTH_SCOPES)
     }
-  }, [authorizeHelper, authScopes])
+  }, [authorizeHelper])
 
   // Surface ACR fetch failures
   useEffect(() => {

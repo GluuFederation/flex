@@ -16,22 +16,11 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useCedarling } from '@/cedarling'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import type { ThemeConfig } from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { ICON_SIZE, SPACING } from '@/constants'
-import { makeStyles } from 'tss-react/mui'
-import { fontFamily, lineHeights, fontWeights, fontSizes } from '@/styles/fonts'
-import {
-  createFormInputStyles,
-  createFormInputFocusStyles,
-  createFormInputAutofillStyles,
-  createFormInputPlaceholderStyles,
-} from '@/styles/formStyles'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { useStyles } from './Aliases.style'
+import { AUTH_RESOURCE_ID, AUTH_SCOPES, PAGE_SIZE } from '../constants'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import {
@@ -48,105 +37,9 @@ import {
   toActionData,
 } from '../AgamaFlows/helper'
 
-const authResourceId = ADMIN_UI_RESOURCES.Authentication
-const authScopes = CEDAR_RESOURCE_SCOPES[authResourceId]
-
-const TABLE_LINE_HEIGHT = lineHeights.relaxed
-
-const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
-  _,
-  { isDark, themeColors },
-) => {
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
-  const inputBg = themeColors.inputBackground
-  const cardBorderStyle = getCardBorderStyle({ isDark })
-
-  const inputColors = {
-    inputBg,
-    inputBorderColor,
-    fontColor: themeColors.fontColor,
-    textMuted: themeColors.textMuted,
-  }
-
-  return {
-    page: {
-      'fontFamily': fontFamily,
-      'width': '100%',
-      'maxWidth': '100%',
-      'minWidth': 0,
-      'boxSizing': 'border-box' as const,
-      'paddingTop': SPACING.CARD_CONTENT_GAP,
-      '& table td': {
-        verticalAlign: 'middle',
-        minWidth: 0,
-        lineHeight: TABLE_LINE_HEIGHT,
-        wordBreak: 'break-all',
-        overflowWrap: 'anywhere',
-      },
-      '& table th': {
-        verticalAlign: 'middle',
-        lineHeight: TABLE_LINE_HEIGHT,
-      },
-    },
-    editIcon: { fontSize: ICON_SIZE.SM },
-    deleteIcon: { fontSize: ICON_SIZE.SM },
-    modalContainer: {
-      ...cardBorderStyle,
-      position: 'fixed' as const,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: cardBg,
-      width: 'min(540px, 90vw)',
-      maxWidth: '540px',
-    },
-    fieldsColumn: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: 20,
-    },
-    fieldGroup: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: 6,
-    },
-    fieldLabel: {
-      fontFamily,
-      fontWeight: fontWeights.semiBold,
-      fontSize: fontSizes.base,
-      lineHeight: 'normal',
-      color: themeColors.fontColor,
-      margin: 0,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 4,
-    },
-    fieldInput: {
-      'width': '100%',
-      'boxSizing': 'border-box' as const,
-      fontFamily,
-      'fontSize': fontSizes.base,
-      'outline': 'none',
-      ...createFormInputStyles(inputColors),
-      '&::placeholder': createFormInputPlaceholderStyles(themeColors.textMuted),
-      '&:focus, &:focus-visible': createFormInputFocusStyles(inputColors),
-      '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
-        createFormInputAutofillStyles(inputColors),
-    },
-    inputWrapper: {
-      position: 'relative' as const,
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }
-})
-
-interface AliasesProps {
+type AliasesProps = {
   onRegisterAddHandler?: (fn: () => void) => void
 }
-
-const PAGE_SIZE = 10
 
 const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => {
   const { t } = useTranslation()
@@ -170,11 +63,11 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
   SetTitle(t('titles.authentication'))
 
   const canReadAuth = useMemo(
-    () => hasCedarReadPermission(authResourceId),
+    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
   )
   const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(authResourceId),
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
     [hasCedarWritePermission],
   )
 
@@ -231,8 +124,8 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
   initialFormValuesRef.current = initialFormValues
 
   useEffect(() => {
-    if (authScopes && authScopes.length > 0) {
-      authorizeHelper(authScopes)
+    if (AUTH_SCOPES && AUTH_SCOPES.length > 0) {
+      authorizeHelper(AUTH_SCOPES)
     }
   }, [authorizeHelper])
 
@@ -450,7 +343,7 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
             </div>
 
             <Divider sx={{ mt: 2 }} />
-            <div style={{ paddingTop: 16, paddingBottom: 8 }}>
+            <div className={classes.formFooter}>
               <GluuButton
                 type="submit"
                 disabled={isApplyDisabled}

@@ -1,5 +1,6 @@
 export { getAcrMappingValidationSchema } from './validations'
 export {
+  getErrorMessage,
   transformAcrMappingsToTableData,
   buildAcrMappingPayload,
   buildAcrMappingDeletePayload,
