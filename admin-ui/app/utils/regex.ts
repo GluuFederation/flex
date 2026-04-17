@@ -79,6 +79,8 @@ export const REGEX_PRIVATE_172_IP_PREFIX = /^172\.(\d+)\./
 /** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain, IPv4, or IPv6. Port: 1–5 digits (0–65535). */
 export const REGEX_WEBHOOK_URL =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+/** Validates an email address (RFC 5321-compatible surface check). */
+export const REGEX_EMAIL = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 const escapeRegexSpecialChars = (s: string): string => {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

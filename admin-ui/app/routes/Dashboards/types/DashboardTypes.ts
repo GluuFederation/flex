@@ -5,29 +5,29 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type { LicenseResponse, MauStatEntry, MauDateRange }
 
-export interface LockStatEntry {
+export type LockStatEntry = {
   monthly_active_users?: number
   monthly_active_clients?: number
   month?: string
 }
 
-export interface ReportCardData {
+export type ReportCardData = {
   name: string
   value: number
 }
 
-export interface ReportCardProps {
+export type ReportCardProps = {
   title: string
   data: ReportCardData[]
   upValue: number
   downValue: number
 }
 
-export interface ReportPiChartItemProps {
+export type ReportPiChartItemProps = {
   data: ReportCardData[]
 }
 
-export interface PieChartLabelProps {
+export type PieChartLabelProps = {
   cx: number
   cy: number
   midAngle: number
@@ -36,7 +36,7 @@ export interface PieChartLabelProps {
   percent: number
 }
 
-export interface DashboardSummaryItem {
+export type DashboardSummaryItem = {
   title: string
   value: number | string
   icon: React.ComponentType
@@ -45,13 +45,13 @@ export interface DashboardSummaryItem {
 
 export type ServiceStatusValue = 'up' | 'down' | 'degraded' | 'unknown'
 
-export interface ServiceHealth {
+export type ServiceHealth = {
   name: string
   status: ServiceStatusValue
   lastChecked?: Date
 }
 
-export interface DashboardChartProps {
+export type DashboardChartProps = {
   statData: MauStatEntry[]
   startMonth: string
   endMonth: string
@@ -62,7 +62,7 @@ export interface DashboardChartProps {
   isDark?: boolean
 }
 
-export interface TooltipPayloadItem {
+export type TooltipPayloadItem = {
   dataKey?: string | number
   value?: number
   payload?: Record<string, string | number | boolean | null>
@@ -70,7 +70,7 @@ export interface TooltipPayloadItem {
   name?: string
 }
 
-export interface TooltipDesignProps {
+export type TooltipDesignProps = {
   payload?: TooltipPayloadItem[]
   active?: boolean
   backgroundColor?: string

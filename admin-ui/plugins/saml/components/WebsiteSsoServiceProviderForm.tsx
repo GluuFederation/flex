@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik, setNestedObjectValues } from 'formik'
@@ -34,18 +33,21 @@ import {
   type TrustRelationshipForm,
 } from './hooks'
 import type { LocationState } from '../types'
+import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 
-const MAX_ATTRIBUTES_FOR_WEBSITE_SSO = 100
+interface ScopeOption {
+  dn: string
+  name: string
+  [key: string]: JsonValue | undefined
+}
 
 interface WebsiteSsoServiceProviderFormProps {
   configs?: TrustRelationship | null
   viewOnly?: boolean
 }
 
-interface ScopeOption {
-  dn: string
-  name: string
-}
+const MAX_ATTRIBUTES_FOR_WEBSITE_SSO = 100
 
 const DOC_SECTION = 'saml' as const
 
@@ -99,7 +101,7 @@ const WebsiteSsoServiceProviderForm = ({
   const loading = isCreatePending || isUpdatePending
   const savedForm = createSavedForm || updateSavedForm
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
   const [modal, setModal] = useState<boolean>(false)
 
@@ -130,9 +132,8 @@ const WebsiteSsoServiceProviderForm = ({
     [configs?.releasedAttributes, attributesList],
   )
 
-  const selectedClientScopes = useSelector(
-    (state: { scopeReducer: { selectedClientScopes: ScopeOption[] } }) =>
-      state.scopeReducer.selectedClientScopes,
+  const selectedClientScopes = useAppSelector(
+    (state) => state.scopeReducer?.selectedClientScopes ?? [],
   )
 
   const validationSchema = useMemo(() => websiteSsoServiceProviderValidationSchema(t), [t])
@@ -172,7 +173,11 @@ const WebsiteSsoServiceProviderForm = ({
       return attributesList.filter((item) => formikValue.includes(item.dn))
     }
 
-    if (selectedClientScopes?.length) return selectedClientScopes
+    if (selectedClientScopes?.length) {
+      return selectedClientScopes.filter(
+        (s): s is ScopeOption => typeof s['dn'] === 'string' && typeof s['name'] === 'string',
+      )
+    }
     return defaultScopeValue
   }, [formik.values.releasedAttributes, selectedClientScopes, defaultScopeValue, attributesList])
 

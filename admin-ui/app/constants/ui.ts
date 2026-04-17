@@ -1,15 +1,46 @@
 import type { ThemeConfig } from '@/context/theme/config'
 
 export const OPACITY = {
+  // Hover interactions
   HOVER_LIGHT: 0.04,
-  HOVER_DARK: 0.08,
+  HOVER_DARK: 0.08, // shared: also list-hover light
+  LIST_HOVER_DARK: 0.12,
+  // Error states
+  ERROR_BG_LIGHT: 0.06,
+  ERROR_BG_DARK: 0.15,
+  // Structural
+  DIVIDER_LIGHT: 0.18,
+  DIVIDER_DARK: 0.25, // shared: also error-border light
+  STRONG: 0.4,
+  // UI states
   DISABLED: 0.5,
-  PLACEHOLDER: 0.6,
+  PLACEHOLDER: 0.6, // shared: also loading overlay light
+  OVERLAY: 0.8,
   FULL: 1,
 } as const
 
 export const getHoverOpacity = (isDark: boolean): number => {
   return isDark ? OPACITY.HOVER_DARK : OPACITY.HOVER_LIGHT
+}
+
+export const getListHoverOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.LIST_HOVER_DARK : OPACITY.HOVER_DARK
+}
+
+export const getDividerOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.DIVIDER_DARK : OPACITY.DIVIDER_LIGHT
+}
+
+export const getErrorBgOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.ERROR_BG_DARK : OPACITY.ERROR_BG_LIGHT
+}
+
+export const getErrorBorderOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.STRONG : OPACITY.DIVIDER_DARK
+}
+
+export const getLoadingOverlayOpacity = (isDark: boolean): number => {
+  return isDark ? OPACITY.STRONG : OPACITY.PLACEHOLDER
 }
 
 export const SCROLLBAR = {
@@ -47,6 +78,7 @@ export const SPACING = {
   SECTION_GAP: 24,
   CARD_GAP: 24,
   CARD_PADDING: 24,
+  CARD_BUTTON_GAP: 16,
   CARD_CONTENT_GAP: 8,
 } as const
 

@@ -1,0 +1,5 @@
+export { default as ScopeListPage } from './ScopeListPage'
+export { default as ScopeAddPage } from './ScopeAddPage'
+export { default as ScopeEditPage } from './ScopeEditPage'
+export { default as ScopeDetailPage } from './ScopeDetailPage'
+export { default as ScopeForm } from './ScopeForm'

@@ -1,8 +1,8 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { useAppSelector, useAppDispatch, type RootState } from '../../../../app/redux/hooks'
-import { FormGroup, Form, Alert, Input, GluuPageContent } from 'Components'
+import { useAppSelector, useAppDispatch } from '../../../../app/redux/hooks'
+import { FormGroup, Form, Alert, GluuPageContent, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -10,7 +10,6 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { SETTINGS } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
@@ -51,6 +50,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from '@/utils/errorHandler'
 import { devLogger } from '@/utils/devLogger'
+import { SPACING } from '@/constants'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
@@ -68,8 +68,8 @@ const SettingsPage: React.FC = () => {
 
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
-  const userinfo = useAppSelector((state: RootState) => state.authReducer?.userinfo)
-  const clientId = useAppSelector((state: RootState) => state.authReducer?.config?.clientId)
+  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const {
     data: config,
@@ -240,7 +240,6 @@ const SettingsPage: React.FC = () => {
     if (isScriptsError) refetchScripts()
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
 
-  const isAdditionalParamsEmpty = (formik.values.additionalParameters || []).length === 0
   const additionalParametersError = formik.errors?.additionalParameters
   const showAdditionalParametersError = Boolean(
     additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
@@ -263,6 +262,43 @@ const SettingsPage: React.FC = () => {
     }
     return String(additionalParametersError)
   }, [additionalParametersError])
+
+  const additionalParameters = useMemo(
+    () => (formik.values.additionalParameters || []) as AdditionalParameterFormItem[],
+    [formik.values.additionalParameters],
+  )
+
+  const handleAddAdditionalParameter = useCallback(() => {
+    const currentParams = (formik.values.additionalParameters ||
+      []) as AdditionalParameterFormItem[]
+    formik.setFieldValue('additionalParameters', [
+      ...currentParams,
+      { id: crypto.randomUUID(), key: '', value: '' },
+    ])
+  }, [formik])
+
+  const handleChangeAdditionalParameter = useCallback(
+    (index: number, field: 'key' | 'value', value: string) => {
+      const currentParams = [
+        ...((formik.values.additionalParameters || []) as AdditionalParameterFormItem[]),
+      ]
+      currentParams[index] = { ...currentParams[index], [field]: value }
+      formik.setFieldValue('additionalParameters', currentParams)
+    },
+    [formik],
+  )
+
+  const handleRemoveAdditionalParameter = useCallback(
+    (index: number) => {
+      const currentParams = (formik.values.additionalParameters ||
+        []) as AdditionalParameterFormItem[]
+      formik.setFieldValue(
+        'additionalParameters',
+        currentParams.filter((_, itemIndex) => itemIndex !== index),
+      )
+    },
+    [formik],
+  )
 
   const renderErrorAlert = () => {
     if (!hasQueryError) return null
@@ -426,85 +462,23 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div
-                  className={`${classes.customParamsBox} ${isAdditionalParamsEmpty ? classes.customParamsBoxEmpty : ''}`.trim()}
-                >
-                  <div
-                    className={`${classes.customParamsHeader} ${isAdditionalParamsEmpty ? classes.customParamsHeaderEmpty : ''}`.trim()}
-                  >
-                    <GluuText variant="h5" disableThemeColor>
-                      <span className={classes.customParamsTitle}>
-                        {t('fields.custom_params_auth')}
-                      </span>
-                    </GluuText>
-                    <GluuButton
-                      type="button"
-                      disabled={!canWriteSettings}
-                      backgroundColor={themeColors.settings.addPropertyButton.bg}
-                      textColor={themeColors.settings.addPropertyButton.text}
-                      useOpacityOnHover
-                      className={classes.customParamsActionBtn}
-                      onClick={() => {
-                        const currentParams = formik.values.additionalParameters || []
-                        formik.setFieldValue('additionalParameters', [
-                          ...currentParams,
-                          { id: crypto.randomUUID(), key: '', value: '' },
-                        ])
-                      }}
-                    >
-                      <i className="fa fa-fw fa-plus" />
-                      {t('actions.add_property')}
-                    </GluuButton>
-                  </div>
-                  <div className={classes.customParamsBody}>
-                    {(
-                      (formik.values.additionalParameters || []) as AdditionalParameterFormItem[]
-                    ).map((param, index) => (
-                      <div key={param.id} className={classes.customParamsRow}>
-                        <Input
-                          name={`additionalParameters.${index}.key`}
-                          value={param.key || ''}
-                          onChange={formik.handleChange}
-                          placeholder={t('placeholders.enter_property_key')}
-                          disabled={!canWriteSettings}
-                          className={classes.customParamsInput}
-                        />
-                        <Input
-                          name={`additionalParameters.${index}.value`}
-                          value={param.value || ''}
-                          onChange={formik.handleChange}
-                          placeholder={t('placeholders.enter_property_value')}
-                          disabled={!canWriteSettings}
-                          className={classes.customParamsInput}
-                        />
-                        <GluuButton
-                          type="button"
-                          disabled={!canWriteSettings}
-                          backgroundColor={themeColors.settings.removeButton.bg}
-                          textColor={themeColors.settings.removeButton.text}
-                          useOpacityOnHover
-                          className={classes.customParamsActionBtn}
-                          onClick={() => {
-                            const currentParams = (formik.values.additionalParameters ??
-                              []) as AdditionalParameterFormItem[]
-                            const newParams = currentParams.filter((p) => p.id !== param.id)
-                            formik.setFieldValue('additionalParameters', newParams)
-                          }}
-                        >
-                          <i className="fa fa-fw fa-trash" />
-                          {t('actions.remove')}
-                        </GluuButton>
-                      </div>
-                    ))}
-                  </div>
-                  {showAdditionalParametersError &&
-                    additionalParametersErrorText &&
-                    additionalParametersErrorText.trim() && (
-                      <div className={classes.customParamsError}>
-                        {additionalParametersErrorText}
-                      </div>
-                    )}
-                </div>
+                <GluuDynamicList
+                  title={t('fields.custom_params_auth')}
+                  items={additionalParameters}
+                  mode="pair"
+                  disabled={!canWriteSettings}
+                  keyPlaceholder={t('placeholders.enter_property_key')}
+                  valuePlaceholder={t('placeholders.enter_property_value')}
+                  addButtonLabel={t('actions.add_property')}
+                  removeButtonLabel={t('actions.remove')}
+                  onAdd={handleAddAdditionalParameter}
+                  onChange={handleChangeAdditionalParameter}
+                  onRemove={handleRemoveAdditionalParameter}
+                  showError={showAdditionalParametersError}
+                  errorMessage={additionalParametersErrorText}
+                  getItemKey={(item, index) => item.id ?? index}
+                  style={{ marginTop: SPACING.CARD_CONTENT_GAP + 20 }}
+                />
 
                 <GluuThemeFormFooter
                   showBack

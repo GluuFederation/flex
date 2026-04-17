@@ -137,9 +137,9 @@ export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig })
         borderColor: 'transparent',
       },
       statusDisabledBadge: {
-        backgroundColor: themeColors.badges.disabledBg,
-        textColor: themeColors.badges.disabledText,
-        borderColor: 'transparent',
+        backgroundColor: themeColors.background,
+        textColor: themeColors.fontColor,
+        borderColor: themeColors.borderColor,
       },
     }),
     [themeColors],

@@ -1,4 +1,4 @@
-import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING } from '@/constants'
+import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 import type { DynamicListColorOptions } from './types'
 
@@ -77,6 +77,7 @@ export const getDynamicListStyles = (colors: DynamicListColorOptions) => ({
     'fontSize': fontSizes.base,
     '&::placeholder': {
       color: `${colors.textMuted} !important`,
+      opacity: OPACITY.PLACEHOLDER,
     },
     '&:focus, &:active': {
       backgroundColor: `${colors.inputBg} !important`,
@@ -92,6 +93,9 @@ export const getDynamicListStyles = (colors: DynamicListColorOptions) => ({
   },
   listActionBtn: {
     '&&': {
+      display: 'inline-flex' as const,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
       minWidth: BTN_WIDTH,
       width: BTN_WIDTH,
       minHeight: BTN_HEIGHT,

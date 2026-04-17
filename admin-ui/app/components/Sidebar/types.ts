@@ -4,7 +4,7 @@ import type { PageConfig } from '../Layout/types'
 
 export type { PageConfig }
 
-export interface SidebarProps {
+export type SidebarProps = {
   children?: React.ReactNode
   slim?: boolean
   collapsed?: boolean
@@ -12,7 +12,7 @@ export interface SidebarProps {
   pageConfig: PageConfig
 }
 
-export interface MenuItem {
+export type MenuItem = {
   icon?: string
   path?: string
   title?: string
@@ -24,14 +24,14 @@ export interface MenuItem {
 
 export type PluginMenu = MenuItem
 
-export interface ThemeColors {
+export type ThemeColors = {
   menu: {
     background: string
     [key: string]: string
   }
 }
 
-export interface ThemeContextState {
+export type ThemeContextState = {
   state: {
     theme: string
   }
@@ -43,15 +43,15 @@ export type VisibilityConditions = {
   readonly [P in HealthVisibilityPath]: HealthServiceKey
 }
 
-export interface IconStyles {
+export type IconStyles = {
   readonly [key: string]: React.CSSProperties
 }
 
-export interface MenuIconMap {
+export type MenuIconMap = {
   readonly [key: string]: React.ReactNode
 }
 
-export interface SidebarRootState {
+export type SidebarRootState = {
   authReducer: {
     token?: {
       scopes: string[]
