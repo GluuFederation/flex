@@ -1,6 +1,5 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
-import { useDispatch } from 'react-redux'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
@@ -18,12 +17,13 @@ import { transformToFormValues } from '../helper/utils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
 import type { SamlConfigurationFormValues } from '../types'
+import { useAppDispatch } from '@/redux/hooks'
 
 const DOC_SECTION = 'samlConfiguration' as const
 
 const SamlConfigurationForm: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const [modal, setModal] = useState<boolean>(false)
 

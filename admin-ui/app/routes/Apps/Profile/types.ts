@@ -1,12 +1,12 @@
 import type { UserInfo } from 'Redux/features/types/authTypes'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface CustomAttribute {
+export type CustomAttribute = {
   name: string
   values: string[]
 }
 
-export interface ProfileDetails {
+export type ProfileDetails = {
   displayName?: string
   givenName?: string
   mail?: string
@@ -18,24 +18,24 @@ export interface ProfileDetails {
   [key: string]: JsonValue | CustomAttribute[] | undefined
 }
 
-export interface ProfileDetailsState {
+export type ProfileDetailsState = {
   loading: boolean
   profileDetails: ProfileDetails | null
 }
 
-export interface AuthToken {
+export type AuthToken = {
   access_token?: string
   [key: string]: JsonValue | undefined
 }
 
-export interface AuthState {
+export type AuthState = {
   userinfo?: UserInfo
   token?: AuthToken | null
   issuer?: string | null
   userInum?: string | null
 }
 
-export interface ProfileRootState {
+export type ProfileRootState = {
   profileDetailsReducer: ProfileDetailsState
   authReducer: AuthState
 }
@@ -53,7 +53,7 @@ export type InfoRowProps = {
   }
 }
 
-export interface ThemeContextValue {
+export type ThemeContextValue = {
   state: {
     theme: string
   }

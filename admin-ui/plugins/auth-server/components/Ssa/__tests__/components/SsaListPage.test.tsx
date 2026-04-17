@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { createSsaTestStore, createSsaTestWrapper } from '../helpers/ssaTestUtils'
-import SsaListPage from '../../components/SsaListPage'
+import { SsaListPage } from '../..'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
 

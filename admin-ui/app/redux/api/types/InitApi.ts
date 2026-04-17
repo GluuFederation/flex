@@ -1,6 +1,6 @@
 import type { GenericItem, PagedResult } from 'Redux/types'
 
-export interface InitApiClient {
+export type InitApiClient = {
   getOauthScopes: (
     options: Record<string, string | number>,
     callback: (error: Error | null, data: GenericItem[]) => void,

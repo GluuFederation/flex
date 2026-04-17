@@ -108,29 +108,6 @@ export interface UpdateAssetActionPayload {
   }
 }
 
-export interface DeleteAssetSagaPayload {
-  action_message?: string
-  action: {
-    action_data: {
-      inum: string
-    }
-  }
-}
-
-export interface GetAssetsSagaPayload {
-  payload?: {
-    action?: {
-      limit?: number
-      pattern?: string
-      status?: string
-      startIndex?: number
-      sortBy?: string
-      sortOrder?: 'ascending' | 'descending'
-      fieldValuePair?: string
-    }
-  }
-}
-
 // Service and types response interfaces
 export interface AssetServicesResponse {
   data?: string[]

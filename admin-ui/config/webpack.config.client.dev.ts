@@ -263,6 +263,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     compress: true,
     historyApiFallback: {
       index: BASE_PATH,
+      disableDotRule: true,
     },
     host: '0.0.0.0',
     port: 4100,

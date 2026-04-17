@@ -34,11 +34,16 @@ jest.mock('@/routes/License/hooks/useLicenseDetails', () => ({
   })),
 }))
 
-jest.mock('Routes/Dashboards/hooks', () => ({
-  useDashboardClients: jest.fn(() => ({
+jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
+  useClients: jest.fn(() => ({
+    clients: [],
     totalCount: 5,
     isLoading: false,
+    refetch: jest.fn(),
   })),
+}))
+
+jest.mock('Routes/Dashboards/hooks', () => ({
   useDashboardLockStats: jest.fn(() => ({
     latestStats: null,
     isLoading: false,

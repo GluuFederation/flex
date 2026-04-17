@@ -1,5 +1,4 @@
-import type { SsaFormValues, ExpirationDate } from '../types/SsaApiTypes'
-import type { ModifiedFields } from '../types/SsaFormTypes'
+import type { SsaFormValues, ExpirationDate, ModifiedFields } from '../types'
 
 export const getSsaInitialValues = (): SsaFormValues => ({
   software_id: '',

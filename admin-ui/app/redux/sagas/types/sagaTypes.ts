@@ -13,22 +13,22 @@ export type SagaActionPayload = {
   options?: Record<string, JsonValue>
 }
 
-export interface HttpErrorLike {
+export type HttpErrorLike = {
   response?: { status?: number }
   status?: number
 }
 
-export interface PerformedBy {
+export type PerformedBy = {
   user_inum: string
   userId: string
 }
 
-export interface AuditLogHeaders {
+export type AuditLogHeaders = {
   Authorization?: string
   [key: string]: string | undefined
 }
 
-export interface AuditLog extends AuditRecord {
+export type AuditLog = AuditRecord & {
   headers?: AuditLogHeaders
   client_id?: string
   ip_address?: string
@@ -46,7 +46,7 @@ export type AuthReducerShape = {
   userinfo_jwt?: string | null
 }
 
-export interface AuthState {
+export type AuthState = {
   config: {
     clientId: string
   }
@@ -63,12 +63,12 @@ export interface AuthState {
   jwtToken: string | null
 }
 
-export interface RootState {
+export type RootState = {
   authReducer: AuthState
   webhookReducer: WebhookSliceState
 }
 
-export interface SagaError {
+export type SagaError = {
   response?: {
     status?: number
     body?: { responseMessage?: string }
@@ -76,7 +76,7 @@ export interface SagaError {
   message?: string
 }
 
-export interface ApiErrorLike {
+export type ApiErrorLike = {
   response?: { data?: { responseMessage?: string; message?: string }; status?: number }
   message?: string
 }

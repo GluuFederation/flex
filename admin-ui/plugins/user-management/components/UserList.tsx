@@ -14,6 +14,9 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useGetUser, getGetUserQueryKey } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
+import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { devLogger } from '@/utils/devLogger'
 import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
@@ -41,6 +44,7 @@ const UserList = (): JSX.Element => {
   const queryClient = useQueryClient()
 
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const [modal, setModal] = useState<boolean>(false)
   const [isViewDetailModalOpen, setIsViewDetailModalOpen] = useState<boolean>(false)
   const [selectedUserFor2FA, setSelectedUserFor2FA] = useState<UserTableRowData | null>(null)
@@ -73,6 +77,8 @@ const UserList = (): JSX.Element => {
   const {
     data: usersData,
     isLoading: loadingUsers,
+    isError: isUsersError,
+    error: usersError,
     refetch: refetchUsers,
   } = useGetUser(
     {
@@ -86,6 +92,12 @@ const UserList = (): JSX.Element => {
       },
     },
   )
+
+  useEffect(() => {
+    if (!isUsersError) return
+    const errorMsg = getQueryErrorMessage(usersError, t('messages.error_in_loading'))
+    dispatch(updateToast(true, 'error', errorMsg))
+  }, [isUsersError, usersError, dispatch, t])
 
   const usersList = useMemo(
     () => (usersData?.entries as UserTableRowData[]) ?? [],
