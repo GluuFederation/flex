@@ -20,7 +20,7 @@ import { type AuthNItem } from '../atoms'
 import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
 import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
-import { getPropertiesConfig } from './helper/acrUtils'
+import { getPropertiesConfig, type PropertyConfig } from './helper/acrUtils'
 
 export type AcrsFormValues = {
   acr: string
@@ -44,6 +44,7 @@ export type AcrsFormValues = {
   baseDn: string | undefined
   inum: string | undefined
   configurationProperties?: Array<{
+    id?: string
     key?: string
     value?: string
     value1?: string
@@ -162,31 +163,33 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   const addConfigProperty = useCallback(() => {
     formik.setFieldValue('configurationProperties', [
       ...configurationProperties,
-      { key: '', value: '' },
+      { id: crypto.randomUUID(), key: '', value: '' },
     ])
   }, [formik, configurationProperties])
 
   const removeConfigProperty = useCallback(
-    (index: number) => {
-      const updated = [...configurationProperties]
-      updated.splice(index, 1)
-      formik.setFieldValue('configurationProperties', updated)
+    (id: string) => {
+      formik.setFieldValue(
+        'configurationProperties',
+        configurationProperties.filter((p) => p.id !== id),
+      )
     },
     [formik, configurationProperties],
   )
 
   const changeConfigProperty = useCallback(
-    (index: number, field: 'key' | 'value', val: string) => {
-      const updated = [...configurationProperties]
-      updated[index] = { ...updated[index], [field]: val }
-      formik.setFieldValue('configurationProperties', updated)
+    (id: string, field: 'key' | 'value', val: string) => {
+      formik.setFieldValue(
+        'configurationProperties',
+        configurationProperties.map((p) => (p.id === id ? { ...p, [field]: val } : p)),
+      )
     },
     [formik, configurationProperties],
   )
 
   const isSimplePassword = item.name === 'simple_password_auth'
   const isLdap = item.name === 'default_ldap_password'
-  const isScript = item.name === 'myAuthnScript'
+  const isScript = !!item.isCustomScript
   const showSamlAndDescription = isSimplePassword || isScript
 
   return (
@@ -219,7 +222,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             <GluuInputRow
               name="level"
               label="fields.level"
-              value={formik.values.level || ''}
+              value={formik.values.level ?? ''}
               formik={formik}
               lsize={12}
               rsize={12}
@@ -466,12 +469,12 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             </GluuButton>
           </div>
           <div className={classes.propsBody}>
-            {configurationProperties.map((prop, index) => (
-              <div key={index} className={classes.propsRow}>
+            {configurationProperties.map((prop) => (
+              <div key={prop.id} className={classes.propsRow}>
                 <Input
                   value={prop.key || ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeConfigProperty(index, 'key', e.target.value)
+                    changeConfigProperty(prop.id, 'key', e.target.value)
                   }
                   placeholder={t('placeholders.enter_property_key')}
                   className={classes.propsInput}
@@ -479,7 +482,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 <Input
                   value={prop.value || ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeConfigProperty(index, 'value', e.target.value)
+                    changeConfigProperty(prop.id, 'value', e.target.value)
                   }
                   placeholder={t('placeholders.enter_property_value')}
                   className={classes.propsInput}
@@ -490,7 +493,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   textColor={themeColors.settings.removeButton.text}
                   useOpacityOnHover
                   className={classes.propsActionBtn}
-                  onClick={() => removeConfigProperty(index)}
+                  onClick={() => removeConfigProperty(prop.id)}
                 >
                   <i className="fa fa-fw fa-trash" />
                   {t('actions.remove')}

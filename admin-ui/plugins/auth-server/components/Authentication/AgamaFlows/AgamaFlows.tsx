@@ -130,7 +130,11 @@ const AgamaFlows: React.FC = () => {
   }
   const isAgamaEnabled = agamaConfig.agamaConfiguration?.enabled
 
-  const { data: projectsResponse, isLoading: loading } = useGetAgamaPrj(
+  const {
+    data: projectsResponse,
+    isLoading: loading,
+    refetch: refetchProjects,
+  } = useGetAgamaPrj(
     {
       count: limit,
       start: pageNumber * limit,
@@ -746,7 +750,6 @@ const AgamaFlows: React.FC = () => {
   )
 
   const actions = useMemo<ActionDef<AgamaTableRow>[]>(() => {
-    if (!canWriteAuth) return []
     const list: ActionDef<AgamaTableRow>[] = [
       {
         icon: <InfoIcon className={classes.infoIcon} />,
@@ -758,7 +761,9 @@ const AgamaFlows: React.FC = () => {
           setShowConfigModal(true)
         },
       },
-      {
+    ]
+    if (canWriteAuth) {
+      list.push({
         icon: <SettingsIcon className={classes.settingsIcon} />,
         tooltip: t('messages.manage_configurations'),
         id: 'settingsProject',
@@ -767,8 +772,8 @@ const AgamaFlows: React.FC = () => {
           setManageConfig(true)
           setShowConfigModal(true)
         },
-      },
-    ]
+      })
+    }
     if (canDeleteAuth) {
       list.push({
         icon: <DeleteOutlined className={classes.deleteIcon} />,
@@ -909,7 +914,7 @@ const AgamaFlows: React.FC = () => {
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
-                onRefresh={canReadAuth ? () => {} : undefined}
+                onRefresh={canReadAuth ? refetchProjects : undefined}
                 primaryAction={primaryAction}
                 disabled={loading}
               />

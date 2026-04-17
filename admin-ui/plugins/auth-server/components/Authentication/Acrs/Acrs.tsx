@@ -37,23 +37,27 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
   const { classes } = useStyles({ themeColors })
 
-  const { data: ldapConfigurations = [], isLoading: ldapLoading } = useGetConfigDatabaseLdap({
-    query: { staleTime: 30000 },
-  })
-
-  const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
-    query: { staleTime: 30000 },
-  })
-
-  const { data: scriptsResponse, isLoading: scriptsLoading } =
-    useCustomScriptsByType(DEFAULT_SCRIPT_TYPE)
-
-  SetTitle(t('titles.authentication'))
-
   const canReadAuthN = useMemo(
     () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
   )
+
+  const { data: ldapConfigurations = [], isLoading: ldapLoading } = useGetConfigDatabaseLdap({
+    query: { staleTime: 30000, enabled: canReadAuthN },
+  })
+
+  const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
+    query: { staleTime: 30000, enabled: canReadAuthN },
+  })
+
+  const { data: scriptsResponse, isLoading: scriptsLoading } = useCustomScriptsByType(
+    DEFAULT_SCRIPT_TYPE,
+    undefined,
+    { enabled: canReadAuthN },
+  )
+
+  SetTitle(t('titles.authentication'))
+
   const canWriteAuthN = useMemo(
     () => hasCedarWritePermission(AUTH_RESOURCE_ID),
     [hasCedarWritePermission],
@@ -108,6 +112,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
         ...item,
         name: 'myAuthnScript',
         acrName: item.name,
+        isCustomScript: true,
       }))
   }, [scriptsResponse, scriptsLoading])
 

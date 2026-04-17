@@ -143,16 +143,6 @@ function DefaultAcr(): React.ReactElement {
     return dropdownOptions
   }, [scriptsResponse, projectsResponse])
 
-  const selectOptions = useMemo(
-    () =>
-      authScripts.map((item) =>
-        typeof item === 'object'
-          ? { value: item.value, label: item.label }
-          : { value: item, label: item },
-      ),
-    [authScripts],
-  )
-
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
@@ -220,7 +210,7 @@ function DefaultAcr(): React.ReactElement {
                 rsize={12}
                 value={formik.values.defaultAcr}
                 formik={formik}
-                values={selectOptions}
+                values={authScripts}
                 doc_category="json_properties"
                 doc_entry="defaultAcr"
               />

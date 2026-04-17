@@ -1,10 +1,10 @@
 import type { AcrMapping, ApiError } from '../types'
-
-export const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
-  error instanceof Error ? error.message : error?.message || fallback
 import type { AgamaJsonPatchRequestBody } from '../types/agamaTypes'
 import type { AcrMappingFormValues } from '../types/formTypes'
 import type { ActionData } from 'Utils/PermChecker'
+
+export const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
+  error instanceof Error ? error.message || fallback : error?.message || fallback
 
 export const transformAcrMappingsToTableData = (
   acrMappings?: Record<string, string>,

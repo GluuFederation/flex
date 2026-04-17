@@ -4,7 +4,7 @@ import { type AuthNItem } from '../../atoms'
 export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.AnyObjectSchema => {
   const isBuiltIn = item?.name === 'simple_password_auth'
   const isLdap = item?.name === 'default_ldap_password'
-  const isScript = item?.name === 'myAuthnScript'
+  const isScript = !!item?.isCustomScript
 
   const baseSchema: Record<string, Yup.AnySchema> = {
     acr: Yup.string().required('ACR name is required.'),

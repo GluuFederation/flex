@@ -41,7 +41,7 @@ export const useStyles = makeStyles<AcrsStylesParams>()((_, { themeColors }) => 
     width: ICON_SIZE.LG,
     height: ICON_SIZE.LG,
     borderRadius: BORDER_RADIUS.CIRCLE,
-    backgroundColor: themeColors.badges.statusActive,
+    backgroundColor: themeColors.badges?.statusActive ?? customColors.statusActive,
     flexShrink: 0 as const,
   },
   defaultInnerIcon: {

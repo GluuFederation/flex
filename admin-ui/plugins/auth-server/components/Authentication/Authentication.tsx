@@ -19,6 +19,7 @@ import { ALIASES_TAB_INDEX } from './constants'
 
 type TabName = {
   name: string
+  path: string
 }
 
 function Authentication(): ReactElement {
@@ -37,6 +38,7 @@ function Authentication(): ReactElement {
   const { classes } = useStyles({ isDark, themeColors })
 
   const [activeTab, setActiveTab] = useState(defaultTab)
+  const [canEditAliases, setCanEditAliases] = useState(false)
   const aliasAddHandlerRef = useRef<(() => void) | null>(null)
 
   const handleRegisterAliasAdd = useCallback((fn: () => void) => {
@@ -60,7 +62,7 @@ function Authentication(): ReactElement {
 
   const addMappingButton = useMemo(
     () =>
-      activeTab === ALIASES_TAB_INDEX ? (
+      activeTab === ALIASES_TAB_INDEX && canEditAliases ? (
         <GluuButton
           type="button"
           size="md"
@@ -76,7 +78,7 @@ function Authentication(): ReactElement {
           {t('actions.add_mapping')}
         </GluuButton>
       ) : null,
-    [activeTab, themeColors, handleAddMapping, t, classes],
+    [activeTab, canEditAliases, themeColors, handleAddMapping, t, classes],
   )
 
   const tabToShow = useCallback(
@@ -89,7 +91,12 @@ function Authentication(): ReactElement {
         case t('menus.acrs'):
           return <Acrs />
         case t('menus.aliases'):
-          return <Aliases onRegisterAddHandler={handleRegisterAliasAdd} />
+          return (
+            <Aliases
+              onRegisterAddHandler={handleRegisterAliasAdd}
+              onWritePermissionChange={setCanEditAliases}
+            />
+          )
         case t('menus.agama_flows'):
           return <AgamaFlows />
         default:

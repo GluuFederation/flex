@@ -39,9 +39,13 @@ import {
 
 type AliasesProps = {
   onRegisterAddHandler?: (fn: () => void) => void
+  onWritePermissionChange?: (canWrite: boolean) => void
 }
 
-const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => {
+const Aliases = ({
+  onRegisterAddHandler,
+  onWritePermissionChange,
+}: AliasesProps): React.ReactElement => {
   const { t } = useTranslation()
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
 
@@ -148,6 +152,10 @@ const Aliases = ({ onRegisterAddHandler }: AliasesProps): React.ReactElement => 
   useEffect(() => {
     onRegisterAddHandler?.(handleAddClick)
   }, [onRegisterAddHandler, handleAddClick])
+
+  useEffect(() => {
+    onWritePermissionChange?.(canWriteAuth === true)
+  }, [onWritePermissionChange, canWriteAuth])
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialFormValues })

@@ -12,6 +12,7 @@ export interface AuthNItem {
   inum?: string
   name?: string
   acrName?: string
+  isCustomScript?: boolean
   level?: number
   samlACR?: string
   description?: string

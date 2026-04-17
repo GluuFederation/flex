@@ -1,7 +1,7 @@
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import type { Deployment } from 'JansConfigApi'
 import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
-import type { AuthNItem, ConfigurationProperty } from '../atoms'
+import type { AuthNItem, ConfigurationProperty } from '../../atoms'
 import { EMPTY_PLACEHOLDER } from '../constants'
 
 export interface DropdownOption {
@@ -10,6 +10,7 @@ export interface DropdownOption {
 }
 
 export type PropertyConfig = {
+  id: string
   key: string
   value: string
 }
@@ -20,6 +21,7 @@ export const displayOrDash = (value: GluuDetailGridField['value']): GluuDetailGr
 export const getPropertiesConfig = (entry: AuthNItem): PropertyConfig[] => {
   if (entry.configurationProperties && Array.isArray(entry.configurationProperties)) {
     return entry.configurationProperties.map((e) => ({
+      id: crypto.randomUUID(),
       key: e.value1 || '',
       value: e.value2 || '',
     }))

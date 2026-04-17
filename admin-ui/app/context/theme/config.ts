@@ -140,7 +140,7 @@ const createDarkTheme = (): ThemeConfig => {
       uncheckedBorder: customColors.cedarCardBorderDark,
     },
     errorColor: customColors.accentRed,
-    requiredColor: customColors.statusInactive,
+    requiredColor: customColors.accentRed,
     warningColor: customColors.orange,
     badges: {
       statusActiveBg: customColors.statusActiveBg,
