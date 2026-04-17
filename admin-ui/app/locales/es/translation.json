@@ -2269,6 +2269,8 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Almacén de políticas de la interfaz de administración de Gluu Flex",
       "auditPolicyStoreUrlUpdated": "Configuración de la URL del almacén de políticas actualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar rol con asignaciones de ámbitos",
+      "uploadConfirmTitle": "Confirmar carga del almacén de políticas",
+      "uploadConfirmMessage": "Tras la carga y el procesamiento exitosos del almacén de políticas, se cerrará su sesión en la interfaz de administración",
       "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado",
       "selectCjarFile": "Seleccione un archivo .cjar de almacén de políticas para cargar",
       "uploadPolicyStore": "Cargar",

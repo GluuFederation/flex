@@ -2201,6 +2201,8 @@
       "gluuFlexAdminUiPolicyStoreDisplay": "Magasin de politiques Gluu Flex Admin UI",
       "auditPolicyStoreUrlUpdated": "Configuration de l'URL du magasin de politiques mise à jour",
       "auditSyncRoleToScopesMappings": "Synchroniser les rôles avec les mappages de portées",
+      "uploadConfirmTitle": "Confirmer le téléversement du magasin de politiques",
+      "uploadConfirmMessage": "Après le téléversement et le traitement réussis du magasin de politiques, vous serez déconnecté de l'interface d'administration",
       "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut",
       "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à téléverser",
       "uploadPolicyStore": "Téléverser",

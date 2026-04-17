@@ -8,7 +8,12 @@ const isApiError = (error: CaughtError): error is ApiError => {
 
 const resolveErrorMessage = (error: CaughtError, getFallback: () => string): string => {
   if (isApiError(error)) {
-    return error?.response?.data?.message ?? error?.message ?? getFallback()
+    return (
+      error?.response?.data?.responseMessage ??
+      error?.response?.data?.message ??
+      error?.message ??
+      getFallback()
+    )
   }
   if (error instanceof Error) {
     return error.message || getFallback()
