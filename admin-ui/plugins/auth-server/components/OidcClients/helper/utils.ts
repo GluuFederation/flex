@@ -136,11 +136,15 @@ export const convertTokensToCSV = (rows: ClientTokenRow[]): string => {
   return [header, ...body].join('\n')
 }
 
-export const getNextStep = <T>(steps: readonly T[], current: T): T =>
-  steps[steps.indexOf(current) + 1]
+export const getNextStep = <T>(steps: readonly T[], current: T): T => {
+  const idx = steps.indexOf(current)
+  return idx < steps.length - 1 ? steps[idx + 1] : current
+}
 
-export const getPrevStep = <T>(steps: readonly T[], current: T): T =>
-  steps[steps.indexOf(current) - 1]
+export const getPrevStep = <T>(steps: readonly T[], current: T): T => {
+  const idx = steps.indexOf(current)
+  return idx > 0 ? steps[idx - 1] : current
+}
 
 export const getClientAttributeValue = <T extends JsonValue = JsonValue>(
   values: { attributes?: Record<string, JsonValue | undefined> | null | undefined },
@@ -159,11 +163,14 @@ export const downloadClientTokensCSV = (csv: string): void => {
   if (!csv || typeof window === 'undefined') return
   const blob = new Blob([csv], { type: TOKEN_CSV_MIME_TYPE })
   const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.setAttribute('download', TOKEN_CSV_FILENAME)
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  try {
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', TOKEN_CSV_FILENAME)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } finally {
+    URL.revokeObjectURL(url)
+  }
 }

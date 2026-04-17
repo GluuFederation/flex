@@ -28,6 +28,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   onChange,
   showError = false,
   errorMessage,
+  getItemError,
   getItemKey,
   className,
   style,
@@ -103,19 +104,42 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
                 />
               )}
 
-              <Input
-                value={item.value ?? ''}
-                disabled={disabled}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  onChange(index, 'value', event.target.value)
-                }
-                placeholder={valuePlaceholder}
-                className={joinClasses(
-                  classes.input,
-                  mode === 'single' && classes.singleInput,
-                  'gluu-dynamic-list-input',
-                )}
-              />
+              {mode === 'single' && getItemError ? (
+                <div className={classes.inputWrapper}>
+                  <Input
+                    value={item.value ?? ''}
+                    disabled={disabled}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      onChange(index, 'value', event.target.value)
+                    }
+                    placeholder={valuePlaceholder}
+                    className={joinClasses(
+                      classes.input,
+                      classes.singleInput,
+                      'gluu-dynamic-list-input',
+                    )}
+                  />
+                  {getItemError(item, index) && (
+                    <GluuText variant="span" className={classes.itemError} disableThemeColor>
+                      {getItemError(item, index)}
+                    </GluuText>
+                  )}
+                </div>
+              ) : (
+                <Input
+                  value={item.value ?? ''}
+                  disabled={disabled}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    onChange(index, 'value', event.target.value)
+                  }
+                  placeholder={valuePlaceholder}
+                  className={joinClasses(
+                    classes.input,
+                    mode === 'single' && classes.singleInput,
+                    'gluu-dynamic-list-input',
+                  )}
+                />
+              )}
 
               <GluuButton
                 type="button"

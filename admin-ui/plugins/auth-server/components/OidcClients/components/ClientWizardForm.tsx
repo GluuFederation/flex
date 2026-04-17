@@ -64,7 +64,7 @@ const ClientWizardForm = ({
 }: ClientWizardFormProps) => {
   const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef<FormikProps<ClientWizardFormValues>>(null)
-  const formTopRef = useRef<HTMLDivElement>(null)
+  const footerRef = useRef<HTMLDivElement>(null)
   const commitMessageRef = useRef('')
   const exportTokensFnRef = useRef<(() => void) | null>(null)
 
@@ -186,13 +186,8 @@ const ClientWizardForm = ({
 
   const validationSchema = useMemo(() => getClientValidationSchema(t), [t])
 
-  const scrollWizardToTop = useCallback(() => {
-    formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [])
-
   const changeStep = (stepId: string) => {
     setCurrentStep(stepId)
-    scrollWizardToTop()
   }
 
   const toggle = () => {
@@ -225,14 +220,22 @@ const ClientWizardForm = ({
     toggle()
   }, [toggle])
 
+  const scrollFromFooter = useRef(false)
+
+  useEffect(() => {
+    if (!scrollFromFooter.current) return
+    scrollFromFooter.current = false
+    footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [currentStep])
+
   const prevStep = () => {
+    scrollFromFooter.current = true
     setCurrentStep(getPrevStep(availableSteps, currentStep))
-    scrollWizardToTop()
   }
 
   const nextStep = () => {
+    scrollFromFooter.current = true
     setCurrentStep(getNextStep(availableSteps, currentStep))
-    scrollWizardToTop()
   }
 
   const isComplete = (stepId: string) => {
@@ -264,13 +267,14 @@ const ClientWizardForm = ({
                 client={clientSnapshot}
                 formik={formik}
                 viewOnly={viewOnly}
+                isEdit={isEdit}
                 oidcConfiguration={oidcConfiguration}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
             </div>
           )
-        case 'Tokens':
+        case WIZARD_STEP_IDS.TOKENS:
           return (
             <div>
               <ClientTokensPanel
@@ -281,7 +285,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'Logout':
+        case WIZARD_STEP_IDS.LOGOUT:
           return (
             <div>
               <ClientLogoutPanel
@@ -292,7 +296,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'SoftwareInfo':
+        case WIZARD_STEP_IDS.SOFTWARE_INFO:
           return (
             <div>
               <ClientSoftwarePanel
@@ -303,7 +307,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'CIBA/PAR/UMA':
+        case WIZARD_STEP_IDS.CIBA_PAR_UMA:
           return (
             <div>
               <ClientCibaParUmaPanel
@@ -318,7 +322,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'Encryption/Signing':
+        case WIZARD_STEP_IDS.ENCRYPTION_SIGNING:
           return (
             <div>
               <ClientEncryptionSigningPanel
@@ -330,7 +334,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'AdvancedClientProperties':
+        case WIZARD_STEP_IDS.ADVANCED_CLIENT_PROPERTIES:
           return (
             <div>
               <ClientAdvanced
@@ -342,7 +346,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'ClientScripts':
+        case WIZARD_STEP_IDS.CLIENT_SCRIPTS:
           return (
             <div>
               <ClientScript
@@ -354,7 +358,7 @@ const ClientWizardForm = ({
               />
             </div>
           )
-        case 'ClientActiveTokens':
+        case WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS:
           return (
             <div>
               <ClientActiveTokens
@@ -408,7 +412,7 @@ const ClientWizardForm = ({
 
   return (
     <React.Fragment>
-      <div ref={formTopRef}>
+      <div>
         <Formik<ClientWizardFormValues>
           innerRef={formRef}
           initialValues={initialValues}
@@ -418,9 +422,13 @@ const ClientWizardForm = ({
           validateOnMount={isEdit}
           enableReinitialize
           onSubmit={(values) => {
-            const { attributes, accessTokenAsJwt, rptAsJwt, ...rest } = omit(values, 'expirable')
+            const { attributes, accessTokenAsJwt, rptAsJwt, redirectUris, ...rest } = omit(
+              values,
+              'expirable',
+            )
             const submitPayload = {
               ...rest,
+              redirectUris: (redirectUris ?? []).filter(Boolean),
               accessTokenAsJwt: accessTokenAsJwt
                 ? JSON.parse(String(accessTokenAsJwt))
                 : accessTokenAsJwt,
@@ -463,6 +471,7 @@ const ClientWizardForm = ({
                         <GluuButton
                           type="button"
                           onClick={() => setTokenShowFilter((prev) => !prev)}
+                          onMouseDown={(e) => e.stopPropagation()}
                           title={t('titles.filters')}
                           backgroundColor={themeColors.formFooter.apply.backgroundColor}
                           textColor={themeColors.formFooter.apply.textColor}
@@ -582,7 +591,7 @@ const ClientWizardForm = ({
                 >
                   {renderActiveClientStep(formik)}
                 </CardBody>
-                <div className={classes.footer}>
+                <div ref={footerRef} className={classes.footer}>
                   <GluuThemeFormFooter
                     showBack
                     backButtonLabel={t('actions.back')}

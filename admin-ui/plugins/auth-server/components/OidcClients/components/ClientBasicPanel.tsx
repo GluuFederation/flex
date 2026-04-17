@@ -42,6 +42,7 @@ const ClientBasicPanel = ({
   formik,
   oidcConfiguration,
   viewOnly,
+  isEdit,
   setModifiedFields,
 }: ClientBasicPanelProps) => {
   const { t } = useTranslation()
@@ -159,13 +160,11 @@ const ClientBasicPanel = ({
 
   useEffect(() => {
     const nextRedirectUris = ((formik.values.redirectUris as string[] | undefined) ?? []).filter(
-      (value): value is string => typeof value === 'string' && value.trim().length > 0,
+      (value): value is string => typeof value === 'string',
     )
 
     setRedirectUriItems((currentItems) => {
-      const currentRedirectUris = currentItems
-        .map((item) => item.value?.trim() ?? '')
-        .filter((value): value is string => value.length > 0)
+      const currentRedirectUris = currentItems.map((item) => item.value ?? '')
 
       if (isRedirectUriSyncingRef.current) {
         isRedirectUriSyncingRef.current = false
@@ -185,22 +184,21 @@ const ClientBasicPanel = ({
   const syncRedirectUris = useCallback(
     (items: GluuDynamicListItem[]) => {
       setRedirectUriItems(items)
-      const nextRedirectUris = items
-        .map((item) => item.value?.trim() ?? '')
-        .filter((value): value is string => value.length > 0)
+      const nextRedirectUris = items.map((item) => item.value ?? '')
       isRedirectUriSyncingRef.current = true
       formik.setFieldValue('redirectUris', nextRedirectUris, true)
       setModifiedFields((prev) => ({
         ...prev,
-        [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris,
+        [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris.filter(Boolean),
       }))
     },
     [formik, setModifiedFields],
   )
 
   const handleAddRedirectUri = useCallback(() => {
-    setRedirectUriItems((current) => appendDynamicListItem(current))
-  }, [])
+    const newItems = appendDynamicListItem(redirectUriItems)
+    syncRedirectUris(newItems)
+  }, [redirectUriItems, syncRedirectUris])
 
   const handleChangeRedirectUri = useCallback(
     (index: number, _field: 'key' | 'value', value: string) => {
@@ -550,8 +548,16 @@ const ClientBasicPanel = ({
           addButtonLabel={t('actions.add_redirect_url')}
           removeButtonLabel={t('actions.remove')}
           validateItem={(item) => uriValidator(item.value ?? '')}
-          showError={!viewOnly && Boolean(redirectUrisError)}
-          errorMessage={redirectUrisError}
+          getItemError={
+            viewOnly
+              ? undefined
+              : (item) => {
+                  const val = item.value?.trim() ?? ''
+                  if (val.length === 0) return t('errors.fido_empty_row_value')
+                  if (!uriValidator(val)) return t('validation_messages.invalid_url_format')
+                  return undefined
+                }
+          }
           disabled={viewOnly}
           onAdd={handleAddRedirectUri}
           onChange={handleChangeRedirectUri}
@@ -564,7 +570,7 @@ const ClientBasicPanel = ({
   return (
     <div className={classes.root}>
       <div className={gridClass}>
-        {client.inum && (
+        {isEdit && (
           <div className={classes.fieldItemFullWidth}>
             <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="inum">
               <FormGroup>
@@ -574,7 +580,7 @@ const ClientBasicPanel = ({
                   id="inum"
                   name="inum"
                   disabled
-                  defaultValue={String(client.inum)}
+                  defaultValue={String(client.inum ?? '')}
                   readOnly
                   placeholder={t('placeholders.enter_here')}
                 />

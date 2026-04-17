@@ -78,7 +78,7 @@ it('Should render the basic panel without crashing', () => {
   expect(container).toBeTruthy()
 })
 
-it('Should render the inum field for an existing client', () => {
+it('Should render the inum field in edit mode', () => {
   const { container } = render(
     <Formik<ClientWizardFormValues> initialValues={mockValues} onSubmit={jest.fn()}>
       {(formik: ClientPanelFormik) => (
@@ -87,6 +87,7 @@ it('Should render the inum field for an existing client', () => {
           formik={formik}
           oidcConfiguration={mockOidcConfiguration as AppConfiguration}
           viewOnly={false}
+          isEdit={true}
           modifiedFields={{}}
           setModifiedFields={mockSetModifiedFields}
         />
@@ -94,22 +95,21 @@ it('Should render the inum field for an existing client', () => {
     </Formik>,
     { wrapper: Wrapper },
   )
-  // The inum input is rendered as a disabled field
+  // The inum input is rendered as a disabled field in edit mode
   const inumInput = container.querySelector('#inum')
   expect(inumInput).not.toBeNull()
 })
 
-it('Should not render inum field when client has no inum', () => {
-  const clientWithoutInum: ClientFormInitialData = { ...mockClientData, inum: undefined }
-  const valuesWithoutInum: ClientWizardFormValues = { ...mockValues, inum: undefined }
+it('Should not render inum field when isEdit is false', () => {
   const { container } = render(
-    <Formik<ClientWizardFormValues> initialValues={valuesWithoutInum} onSubmit={jest.fn()}>
+    <Formik<ClientWizardFormValues> initialValues={mockValues} onSubmit={jest.fn()}>
       {(formik: ClientPanelFormik) => (
         <ClientBasicPanel
-          client={clientWithoutInum}
+          client={mockClientData}
           formik={formik}
           oidcConfiguration={mockOidcConfiguration as AppConfiguration}
           viewOnly={false}
+          isEdit={false}
           modifiedFields={{}}
           setModifiedFields={mockSetModifiedFields}
         />

@@ -112,10 +112,15 @@ describe('redirectUris validation', () => {
     ).resolves.toBeDefined()
   })
 
-  it('rejects a custom scheme URI (validator requires a parseable URL)', async () => {
-    // The uriValidator uses URL parsing which rejects unknown schemes like myapp://
+  it('rejects a custom scheme URI (validator only allows http/https)', async () => {
     await expect(
       validate({ clientName: 'Valid Client', redirectUris: ['myapp://callback'] }),
+    ).rejects.toThrow()
+  })
+
+  it('rejects an empty string entry in redirectUris', async () => {
+    await expect(
+      validate({ clientName: 'Valid Client', redirectUris: ['https://example.com', ''] }),
     ).rejects.toThrow()
   })
 })

@@ -1110,8 +1110,7 @@
     "no_scope_in_spontaneous_client": "Nenhum dado de escopo espontâneo para este cliente",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added",
-    "error_uma_resources_unauthorized": "Não foi possível carregar os recursos UMA: permissões de escopo insuficientes."
+    "all_attributes_added": "All attributes have been added"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",

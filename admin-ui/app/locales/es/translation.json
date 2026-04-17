@@ -1141,8 +1141,7 @@
     "auth_error_no_code": "No se pudo obtener el código de autorización",
     "mau_loading": "Cargando estadísticas...",
     "vs_previous_period": "vs período anterior",
-    "no_valid_role_logout": "El usuario no tiene un rol válido. Se cerrará la sesión en {{seconds}} segundos.",
-    "error_uma_resources_unauthorized": "No se pueden cargar los recursos UMA: permisos de alcance insuficientes."
+    "no_valid_role_logout": "El usuario no tiene un rol válido. Se cerrará la sesión en {{seconds}} segundos."
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",

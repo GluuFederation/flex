@@ -48,7 +48,7 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     singleRow: {
       ...dl.listRow,
       'flexWrap': 'nowrap',
-      'alignItems': 'center',
+      'alignItems': 'flex-start',
       '@media (max-width: 768px)': {
         flexWrap: 'wrap',
       },
@@ -62,6 +62,18 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
         flex: '1 1 100%',
         width: '100%',
       },
+    },
+    inputWrapper: {
+      display: 'flex' as const,
+      flexDirection: 'column' as const,
+      flex: '1 1 auto',
+      minWidth: 0,
+      gap: 4,
+    },
+    itemError: {
+      ...dl.listError,
+      fontSize: '12px',
+      marginTop: 0,
     },
     actionBtn: {
       ...dl.listActionBtn,

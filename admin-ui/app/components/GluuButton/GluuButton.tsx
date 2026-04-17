@@ -36,6 +36,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     hoverOpacity,
     disableHoverStyles = false,
     onClick,
+    onMouseDown,
     type = 'button',
     title,
     'aria-expanded': ariaExpanded,
@@ -118,6 +119,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       className={className}
       style={buttonStyle}
       onClick={handleClick}
+      onMouseDown={onMouseDown}
       disabled={isDisabled}
       title={title}
       aria-expanded={ariaExpanded}

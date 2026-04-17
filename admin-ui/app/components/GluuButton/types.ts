@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, MouseEvent, ReactNode } from 'react'
 
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type ButtonTheme = 'light' | 'dark'
@@ -25,6 +25,7 @@ export type GluuButtonProps = {
   'hoverOpacity'?: number
   'disableHoverStyles'?: boolean
   'onClick'?: () => void
+  'onMouseDown'?: (e: MouseEvent<HTMLButtonElement>) => void
   'type'?: 'button' | 'submit' | 'reset'
   'title'?: string
   'aria-expanded'?: boolean

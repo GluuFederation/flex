@@ -222,8 +222,8 @@ describe('getNextStep', () => {
     expect(getNextStep(steps, 'Tokens')).toBe('Logout')
   })
 
-  it('returns undefined past the last step', () => {
-    expect(getNextStep(steps, 'Advanced')).toBeUndefined()
+  it('clamps to the last step when already at the end', () => {
+    expect(getNextStep(steps, 'Advanced')).toBe('Advanced')
   })
 })
 
@@ -235,8 +235,8 @@ describe('getPrevStep', () => {
     expect(getPrevStep(steps, 'Logout')).toBe('Tokens')
   })
 
-  it('returns undefined before the first step', () => {
-    expect(getPrevStep(steps, 'Basic')).toBeUndefined()
+  it('clamps to the first step when already at the start', () => {
+    expect(getPrevStep(steps, 'Basic')).toBe('Basic')
   })
 })
 

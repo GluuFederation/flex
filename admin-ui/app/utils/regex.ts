@@ -81,8 +81,6 @@ export const REGEX_WEBHOOK_URL =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 /** Validates an email address (RFC 5321-compatible surface check). */
 export const REGEX_EMAIL = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-/** Extracts the required scope URL(s) from a UMA 401 server error message. Capture group [1] is the scope list inside the brackets. */
-export const REGEX_UMA_REQUIRED_SCOPE = /Required scope:\s*\[([^\]]+)\]/
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 const escapeRegexSpecialChars = (s: string): string => {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

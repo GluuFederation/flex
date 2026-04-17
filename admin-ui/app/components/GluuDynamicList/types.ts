@@ -27,6 +27,7 @@ export type GluuDynamicListProps = {
   onChange: (index: number, field: GluuDynamicListField, value: string) => void
   showError?: boolean
   errorMessage?: string
+  getItemError?: (item: GluuDynamicListItem, index: number) => string | undefined
   getItemKey?: (item: GluuDynamicListItem, index: number) => string | number
   className?: string
   style?: React.CSSProperties

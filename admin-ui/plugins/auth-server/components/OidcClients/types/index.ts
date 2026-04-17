@@ -175,6 +175,7 @@ export type ClientBasicPanelProps = {
   client: ClientFormInitialData
   formik: ClientPanelFormik
   viewOnly?: boolean
+  isEdit?: boolean
   oidcConfiguration: AppConfiguration | undefined
   modifiedFields: ClientModifiedFields
   setModifiedFields: SetClientModifiedFields

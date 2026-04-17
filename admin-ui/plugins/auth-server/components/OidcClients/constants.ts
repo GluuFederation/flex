@@ -375,10 +375,6 @@ export const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [
   },
 ]
 
-export const UMA_I18N_KEYS = {
-  ERROR_UNAUTHORIZED: 'messages.error_uma_resources_unauthorized',
-} as const
-
 export const ORG_ATTR_NAME = 'o'
 export const ORG_ATTR_NAME_FULL = 'organization'
 

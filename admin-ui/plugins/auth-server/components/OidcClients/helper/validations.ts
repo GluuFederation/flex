@@ -65,14 +65,16 @@ export const getClientValidationSchema = (t: TFunction) =>
 
     redirectUris: Yup.array()
       .of(
-        Yup.string().test(
-          'valid-uri',
-          t('validation_messages.field_invalid_url', { field: t('fields.redirect_uris') }),
-          (value) => {
-            if (!value) return true
-            return uriValidator(value)
-          },
-        ),
+        Yup.string()
+          .min(1, t('validation_messages.field_invalid_url', { field: t('fields.redirect_uris') }))
+          .test(
+            'valid-uri',
+            t('validation_messages.field_invalid_url', { field: t('fields.redirect_uris') }),
+            (value) => {
+              if (!value) return true
+              return uriValidator(value)
+            },
+          ),
       )
       .min(1, t('validation_messages.redirect_uri_required')),
 
@@ -203,7 +205,8 @@ export const getClientValidationSchema = (t: TFunction) =>
           (value) => {
             if (value == null) return true
             try {
-              return new RegExp(value) instanceof RegExp
+              new RegExp(value)
+              return true
             } catch {
               return false
             }
@@ -245,7 +248,8 @@ export const getClientValidationSchema = (t: TFunction) =>
           const value = arr[0]
           if (typeof value !== 'string' || value.trim() === '') return true
           try {
-            return new RegExp(value) instanceof RegExp
+            new RegExp(value)
+            return true
           } catch {
             return false
           }

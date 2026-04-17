@@ -1121,8 +1121,7 @@
     "no_scope_in_spontaneous_client": "Aucune donnée de portée spontanée pour ce client",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added",
-    "error_uma_resources_unauthorized": "Impossible de charger les ressources UMA : autorisations de portée insuffisantes."
+    "all_attributes_added": "All attributes have been added"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
