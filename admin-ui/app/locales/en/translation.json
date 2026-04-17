@@ -2265,7 +2265,6 @@
       "selectCjarFile": "Select a .cjar policy store file to upload",
       "uploadPolicyStore": "Upload",
       "downloadPolicyStore": "Download",
-      "policyStoreUploaded": "Policy store uploaded successfully",
       "policyStoreDownloaded": "Policy store downloaded successfully",
       "noPolicyStoreToDownload": "No policy store available to download",
       "uploadFailed": "Failed to upload policy store",

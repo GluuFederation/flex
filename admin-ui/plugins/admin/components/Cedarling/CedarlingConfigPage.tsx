@@ -13,6 +13,7 @@ import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
+import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import { InfoOutlined } from '@mui/icons-material'
@@ -116,29 +117,30 @@ const CedarlingConfigPage: React.FC = () => {
 
       await uploadPolicyStore(selectedFile)
 
-      await logAudit({
+      logAudit({
         userinfo: userinfo ?? undefined,
         action: UPDATE,
         resource: ADMIN_UI_CEDARLING_CONFIG,
         message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
         client_id: client_id,
         payload: { fileName: selectedFile.name },
-      })
+      }).catch((e) => devLogger.error('Audit log failed after policy store upload:', e))
 
       await syncRoleToScopesMappingsMutation.mutateAsync()
 
-      await logAudit({
+      logAudit({
         userinfo: userinfo ?? undefined,
         action: UPDATE,
         resource: ADMIN_UI_CEDARLING_CONFIG,
         message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
         client_id: client_id,
         payload: { fileName: selectedFile.name },
-      })
+      }).catch((e) => devLogger.error('Audit log failed after role/scope sync:', e))
 
       setSelectedFile(null)
       navigateToRoute(ROUTES.LOGOUT)
     } catch (error) {
+      devLogger.error('Policy store upload flow failed:', error)
       const errorMessage = getErrorMessage(
         error as Error | ApiError,
         'documentation.cedarlingConfig.uploadFailed',

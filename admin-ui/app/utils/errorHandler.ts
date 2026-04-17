@@ -37,7 +37,12 @@ export const getQueryErrorMessage = (error: unknown, fallback: string): string =
   if (error !== null && error !== undefined && typeof error === 'object') {
     if ('response' in error) {
       const typedError = error as ApiError
-      return typedError.response?.data?.message || fallback
+      return (
+        typedError.response?.data?.responseMessage ??
+        typedError.response?.data?.message ??
+        typedError.message ??
+        fallback
+      )
     }
     if (error instanceof Error) {
       return error.message || fallback

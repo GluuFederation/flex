@@ -2194,7 +2194,6 @@
       "selectCjarFile": "Selecione um arquivo .cjar de repositório de políticas para enviar",
       "uploadPolicyStore": "Enviar",
       "downloadPolicyStore": "Baixar",
-      "policyStoreUploaded": "Repositório de políticas enviado com sucesso",
       "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
       "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
       "uploadFailed": "Falha ao enviar o repositório de políticas",

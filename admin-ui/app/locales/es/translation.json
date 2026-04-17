@@ -2275,7 +2275,6 @@
       "selectCjarFile": "Seleccione un archivo .cjar de almacén de políticas para cargar",
       "uploadPolicyStore": "Cargar",
       "downloadPolicyStore": "Descargar",
-      "policyStoreUploaded": "Almacén de políticas cargado exitosamente",
       "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
       "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
       "uploadFailed": "Error al cargar el almacén de políticas",

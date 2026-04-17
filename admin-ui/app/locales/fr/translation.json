@@ -2207,7 +2207,6 @@
       "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à téléverser",
       "uploadPolicyStore": "Téléverser",
       "downloadPolicyStore": "Télécharger",
-      "policyStoreUploaded": "Magasin de politiques téléversé avec succès",
       "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
       "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
