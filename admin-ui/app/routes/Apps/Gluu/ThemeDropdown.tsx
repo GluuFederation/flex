@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo } from 'react'
+import { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'

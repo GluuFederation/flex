@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
 import GluuInputRow from '../GluuInputRow'
 import AppTestWrapper from './Components/AppTestWrapper'

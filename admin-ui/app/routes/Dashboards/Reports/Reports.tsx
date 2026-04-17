@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Container, Row, Col } from 'Components'
 import {
   useGetAttributes,

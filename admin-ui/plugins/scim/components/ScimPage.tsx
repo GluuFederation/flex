@@ -14,7 +14,7 @@ import { createJsonPatchFromDifferences, AUDIT_RESOURCE, triggerScimWebhook } fr
 import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { ScimFormValues, ApiErrorResponse, MutationContext, AppConfiguration3 } from '../types'
 import { logAudit } from 'Utils/AuditLogger'
-import { PATCH } from '@/audit/UserActionType'
+import { PATCH } from '@/audit'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { useCedarling } from '@/cedarling'
@@ -23,21 +23,11 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { useStyles } from './styles/ScimFormPage.style'
 
 const scimResourceId = ADMIN_UI_RESOURCES.SCIM
 const scimScopes = CEDAR_RESOURCE_SCOPES[scimResourceId]
-
-const isApiError = (error: Error | ApiErrorResponse): error is ApiErrorResponse => {
-  return 'response' in error && typeof (error as ApiErrorResponse).response === 'object'
-}
-
-const getErrorMessage = (error: Error | ApiErrorResponse, fallback: string): string => {
-  if (isApiError(error) && error.response?.data?.message) {
-    return error.response.data.message
-  }
-  return fallback
-}
 
 const ScimPage: React.FC = () => {
   const { t } = useTranslation()
@@ -127,7 +117,9 @@ const ScimPage: React.FC = () => {
         _variables: { data: JsonPatch[] },
         context: MutationContext | undefined,
       ) => {
-        const errorMessage = getErrorMessage(error, t('messages.error_in_saving'))
+        const errorMessage = resolveApiErrorMessage(error, {
+          fallback: t('messages.error_in_saving'),
+        })
         dispatch(updateToast(true, 'error', errorMessage))
         if (context?.previousConfig) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), context.previousConfig)

@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext, ReactNode, useEffect, useRef } from 'react'
+import { createContext, useReducer, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 import { devLogger } from '@/utils/devLogger'
 import type { ThemeState, ThemeAction, ThemeContextType } from './types'

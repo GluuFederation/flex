@@ -7,7 +7,7 @@ import {
   NO_TEXT_SELECT,
 } from '@/components/GluuDropdown/sharedDropdownStyles'
 
-export const useStyles = makeStyles<{ isDark: boolean }>()((theme, { isDark }) => ({
+export const useStyles = makeStyles<{ isDark: boolean }>()((_theme, { isDark }) => ({
   trigger: {
     'border': `1px solid ${isDark ? customColors.white : customColors.primaryDark}`,
     'borderRadius': '4px',

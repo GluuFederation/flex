@@ -1,10 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
 
-export interface UserIconStylesProps {
+interface UserIconStylesProps {
   iconSize: number
 }
 
-export const useStyles = makeStyles<UserIconStylesProps>()((theme, { iconSize }) => ({
+export const useStyles = makeStyles<UserIconStylesProps>()((_theme, { iconSize }) => ({
   container: {
     position: 'relative',
     width: `${iconSize}px`,

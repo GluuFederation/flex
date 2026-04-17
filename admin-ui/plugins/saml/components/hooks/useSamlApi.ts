@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useAuditContext as useSharedAuditContext, CREATE, UPDATE, DELETION } from '@/audit'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
@@ -125,11 +125,9 @@ const samlApi = {
 }
 
 function useAuditContext(): SamlAuditContext {
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
-  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
-  const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4)
+  const { userinfo, client_id, ip_address } = useSharedAuditContext()
 
-  return { userinfo, clientId, ipAddress }
+  return { userinfo, clientId: client_id, ipAddress: ip_address }
 }
 
 type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION

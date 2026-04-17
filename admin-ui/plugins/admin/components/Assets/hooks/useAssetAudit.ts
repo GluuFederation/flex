@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
-import { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
+import { createSuccessAuditInit, useAuditContext, CREATE, UPDATE, DELETION, FETCH } from '@/audit'
 import { devLogger } from '@/utils/devLogger'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type {
@@ -13,7 +13,6 @@ import type {
   SanitizableValue,
   SanitizedValue,
 } from '../types'
-import { useAppSelector } from '@/redux/hooks'
 
 const MAX_STRING_LENGTH = 500
 const MAX_DEPTH = 5
@@ -53,21 +52,11 @@ const sanitizeActionData = (
 }
 
 export const useAssetAudit = () => {
-  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId ?? '')
-  const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4 ?? '')
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const auditContext = useAuditContext()
 
   const initAudit = useCallback(
-    (): AssetAuditInit => ({
-      client_id: clientId,
-      ip_address: ipAddress,
-      status: 'success',
-      performedBy: {
-        user_inum: userinfo?.inum || '-',
-        userId: userinfo?.name || '-',
-      },
-    }),
-    [clientId, ipAddress, userinfo],
+    (): AssetAuditInit => createSuccessAuditInit(auditContext) as AssetAuditInit,
+    [auditContext],
   )
 
   const logAction = useCallback(

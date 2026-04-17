@@ -61,6 +61,23 @@ export const createPatchOperations = (
 ): PatchOperation[] => {
   const differences: PatchOperation[] = []
 
+  const normalizeTokenChannels = (value: JsonValue | undefined): JsonValue => {
+    if (Array.isArray(value)) {
+      const channels = value.map((channel) => String(channel).trim()).filter(Boolean)
+      return channels.length > 0 ? channels : null
+    }
+
+    if (typeof value === 'string') {
+      const channels = value
+        .split(',')
+        .map((channel) => channel.trim())
+        .filter(Boolean)
+      return channels.length > 0 ? channels : null
+    }
+
+    return value ?? null
+  }
+
   const {
     policiesJsonUrisAuthorizationToken,
     policiesJsonUris,
@@ -71,13 +88,7 @@ export const createPatchOperations = (
 
   const normalizedValues: Record<string, JsonValue> = { ...flatValues }
 
-  if (typeof normalizedValues.tokenChannels === 'string') {
-    const channels = (normalizedValues.tokenChannels as string)
-      .split(',')
-      .map((c) => c.trim())
-      .filter(Boolean)
-    normalizedValues.tokenChannels = channels.length > 0 ? channels : null
-  }
+  normalizedValues.tokenChannels = normalizeTokenChannels(normalizedValues.tokenChannels)
 
   const booleanFields = [
     'metricReporterEnabled',
@@ -104,15 +115,18 @@ export const createPatchOperations = (
   })
 
   for (const key in normalizedValues) {
+    const originalValue =
+      key === 'tokenChannels' ? normalizeTokenChannels(originalConfig[key]) : originalConfig[key]
+
     if (Object.prototype.hasOwnProperty.call(originalConfig, key)) {
-      if (JSON.stringify(originalConfig[key]) !== JSON.stringify(normalizedValues[key])) {
+      if (JSON.stringify(originalValue) !== JSON.stringify(normalizedValues[key])) {
         if (normalizedValues[key] != null) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
             value: normalizedValues[key],
           })
-        } else if (originalConfig[key] != null) {
+        } else if (originalValue != null) {
           differences.push({
             op: 'replace',
             path: `/${key}`,

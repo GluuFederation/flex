@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import GluuLabel from '../GluuLabel'
 import i18n from '../../../../i18n'

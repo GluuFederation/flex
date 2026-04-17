@@ -2,8 +2,7 @@ import { addAdditionalData, isFourZeroThreeError } from 'Utils/TokenController'
 import type { AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
-import { FETCH, PATCH, DELETION } from '@/audit/UserActionType'
-import { getRootState } from '@/redux/hooks'
+import { FETCH, PATCH, DELETION, createSuccessAuditInit, getCurrentAuditContext } from '@/audit'
 import type { AuditLog, AuditRecord } from 'Redux/sagas/types'
 import type { UserAction } from 'Utils/PermChecker'
 import type { JsonPatch } from 'JansConfigApi'
@@ -14,18 +13,7 @@ import { callFetchJsonProperties, callPatchJsonProperties } from '../api/jsonPro
 import { redirectSessionExpired } from '../utils/sessionExpiredRedirect'
 
 const createAuditLog = (): AuditLog => {
-  const state = getRootState()
-  const authReducer = state.authReducer
-  const auditlog: AuditLog = {}
-  auditlog.client_id = authReducer.config?.clientId || ''
-  auditlog.ip_address = authReducer.location?.IPv4 || ''
-  auditlog.status = 'success'
-  const userinfo = authReducer.userinfo
-  auditlog.performedBy = {
-    user_inum: userinfo?.inum ?? '-',
-    userId: userinfo?.name ?? '-',
-  }
-  return auditlog
+  return createSuccessAuditInit(getCurrentAuditContext()) as AuditLog
 }
 
 type HttpErrorLike = Parameters<typeof isFourZeroThreeError>[0]

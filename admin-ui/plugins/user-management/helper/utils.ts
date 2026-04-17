@@ -1,11 +1,10 @@
-import { getRootState } from 'Redux/hooks'
-import type { RootState } from 'Redux/types'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import { createSuccessAuditInit, getCurrentAuditContext, DELETION, UPDATE, CREATE } from '@/audit'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { AuditLog, AuditPayload, CaughtError, ApiErrorLike } from '../types'
-import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
+import type { AuditLog, AuditPayload, CaughtError } from '../types'
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types/UserApiTypes'
 import { USER_PASSWORD_ATTR } from '../common/Constants'
@@ -49,28 +48,15 @@ const redactSensitiveData = (payload: AuditPayload): void => {
 }
 
 export const initAudit = (): AuditLog => {
-  const state: RootState = getRootState()
-  const authReducer = state.authReducer
-  const auditlog: AuditLog = {}
-  const client_id = authReducer.config?.clientId || ''
-  const ip_address = authReducer.location?.IPv4 || ''
-  const userinfo = authReducer.userinfo
-  const author = (userinfo?.name ?? userinfo?.user_name) || '-'
-  const inum = userinfo?.inum || '-'
-  auditlog.client_id = client_id
-  auditlog.ip_address = ip_address
-  auditlog.status = 'success'
-  auditlog.performedBy = { user_inum: String(inum), userId: String(author) }
-
-  return auditlog
+  const context = getCurrentAuditContext()
+  return createSuccessAuditInit(context, {
+    userId: (context.userinfo?.name ?? context.userinfo?.user_name) || '-',
+  }) as AuditLog
 }
 
-export const logUserCreation = async (data: CustomUser, payload: CustomUser): Promise<void> => {
+export const logUserCreation = async (_data: CustomUser, payload: CustomUser): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
 
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
@@ -93,12 +79,9 @@ export const logUserCreation = async (data: CustomUser, payload: CustomUser): Pr
   }
 }
 
-export const logUserUpdate = async (data: CustomUser, payload: CustomUser): Promise<void> => {
+export const logUserUpdate = async (_data: CustomUser, payload: CustomUser): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
 
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
@@ -123,10 +106,7 @@ export const logUserUpdate = async (data: CustomUser, payload: CustomUser): Prom
 
 export const logUserDeletion = async (inum: string, userData?: CustomUser): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
     const payload = userData || { inum }
     const extendedPayload = userData as AuditPayload | undefined
     const message = extendedPayload?.action_message || extendedPayload?.message || 'Deleted user'
@@ -143,37 +123,12 @@ export const logUserDeletion = async (inum: string, userData?: CustomUser): Prom
   }
 }
 
-export const logUserFetch = async (
-  payload: Record<string, string | string[] | boolean | object | object[]>,
-): Promise<void> => {
-  try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
-
-    await logAuditUserAction({
-      userinfo,
-      action: FETCH,
-      resource: API_USERS,
-      message: 'Fetched users',
-      client_id,
-      payload,
-    })
-  } catch (error) {
-    devLogger.error('Failed to log user fetch:', error)
-  }
-}
-
 export const logPasswordChange = async (
-  inum: string,
+  _inum: string,
   payload: Record<string, string | string[] | boolean | object | object[]>,
 ): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
 
     const auditPayload: AuditPayload = { ...payload }
     redactSensitiveData(auditPayload)
@@ -198,41 +153,11 @@ export const logPasswordChange = async (
 
 export type { ErrorResponse } from '../types'
 
-const pickFirstString = (...values: Array<string | undefined>): string | undefined => {
-  for (const value of values) {
-    if (typeof value === 'string' && value.trim().length > 0) {
-      return value.trim()
-    }
-  }
-  return undefined
-}
-
 export const getErrorMessage = (error: CaughtError): string => {
-  if (typeof error === 'string') {
-    return error
-  }
-  if (typeof error === 'object' && error !== null) {
-    const err = error as ApiErrorLike
-    const status = err.response?.status
-    const data = err.response?.data
-    const body = err.response?.body
-
-    const description = pickFirstString(
-      data?.description,
-      data?.error_description,
-      body?.description,
-      body?.error_description,
-    )
-
-    const message = pickFirstString(data?.message, body?.message)
-
-    if (status && status >= 400 && status < 500 && description) {
-      return description
-    }
-
-    return message || description || err?.response?.text || err?.message || 'An error occurred'
-  }
-  return 'An error occurred'
+  return resolveApiErrorMessage(error, {
+    trimString: false,
+    emptyStringFallback: false,
+  })
 }
 
 export const triggerUserWebhook = (

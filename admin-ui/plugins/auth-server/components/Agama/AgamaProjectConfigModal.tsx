@@ -11,6 +11,7 @@ import AceEditor from 'react-ace'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import customColors from '@/customColors'
 import type {
   AgamaProjectConfigModalProps,
@@ -105,15 +106,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         )
       },
       onError: (error: ApiError) => {
-        const errorMessage = getErrorMessage(error, 'Invalid JSON file')
+        const errorMessage = resolveApiErrorMessage(error, { fallback: 'Invalid JSON file' })
         devLogger.error('Error importing config:', error)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
-
-  const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
-    error instanceof Error ? error.message : error?.message || fallback
 
   useEffect(() => {
     if (projectDetailsData) {
@@ -220,7 +218,9 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
           devLogger.error('Error importing config:', importError)
-          const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
+          const errorMessage = resolveApiErrorMessage(importError, {
+            fallback: 'Invalid JSON file',
+          })
           dispatch(updateToast(true, 'error', errorMessage))
         } finally {
           setConfigDetails((prevState) => ({

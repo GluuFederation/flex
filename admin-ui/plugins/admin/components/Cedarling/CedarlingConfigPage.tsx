@@ -117,25 +117,33 @@ const CedarlingConfigPage: React.FC = () => {
 
       await uploadPolicyStore(selectedFile)
 
-      logAudit({
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
-        client_id: client_id,
-        payload: { fileName: selectedFile.name },
-      }).catch((e) => devLogger.error('Audit log failed after policy store upload:', e))
+      try {
+        await logAudit({
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
+          client_id: client_id,
+          payload: { fileName: selectedFile.name },
+        })
+      } catch (e) {
+        devLogger.error('Audit log failed after policy store upload:', e)
+      }
 
       await syncRoleToScopesMappingsMutation.mutateAsync()
 
-      logAudit({
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
-        client_id: client_id,
-        payload: { fileName: selectedFile.name },
-      }).catch((e) => devLogger.error('Audit log failed after role/scope sync:', e))
+      try {
+        await logAudit({
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
+          client_id: client_id,
+          payload: { fileName: selectedFile.name },
+        })
+      } catch (e) {
+        devLogger.error('Audit log failed after role/scope sync:', e)
+      }
 
       setSelectedFile(null)
       navigateToRoute(ROUTES.LOGOUT)

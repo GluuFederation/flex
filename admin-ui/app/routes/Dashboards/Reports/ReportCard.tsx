@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, CardBody, CardTitle, Badge } from 'Components'
 import ReportPiChartItem from './ReportPiChartItem'
 import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'

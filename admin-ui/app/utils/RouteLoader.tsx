@@ -1,12 +1,11 @@
-import React, { Suspense, lazy, ComponentType } from 'react'
-import { devLogger } from '@/utils/devLogger'
+import { Suspense, lazy, type ComponentType } from 'react'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
 type LazyRouteWrapper<P extends object = object> = ComponentType<P> & {
   preload: () => Promise<{ default: ComponentType<P> }>
 }
 
-export const createLazyRoute = <P extends object = object>(
+const createLazyRoute = <P extends object = object>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
 ): LazyRouteWrapper<P> => {
   const LazyComponent = lazy(importFn)
@@ -34,41 +33,4 @@ export const LazyRoutes = {
   GluuWebhookErrorDialog: createLazyRoute(
     () => import('../routes/Apps/Gluu/GluuWebhookErrorDialog'),
   ),
-}
-
-export const loadPluginRoute = (pluginName: string, routePath?: string): LazyRouteWrapper => {
-  const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
-
-  return createLazyRoute(() =>
-    import(`../../plugins/${pluginName}/components/${componentPath}`).catch((err) => {
-      devLogger.warn(`Failed to load plugin route: ${pluginName}/${componentPath}`, {
-        pluginName,
-        componentPath,
-        error: err,
-      })
-      return import(`../../plugins/${pluginName}/components/index`).catch((fallbackErr) => {
-        devLogger.warn(`Failed to load fallback plugin index for: ${pluginName}`, {
-          pluginName,
-          componentPath,
-          primaryError: err,
-          fallbackError: fallbackErr,
-        })
-        throw fallbackErr
-      })
-    }),
-  )
-}
-
-export const preloadRoute = (routeName: keyof typeof LazyRoutes): void => {
-  const route = LazyRoutes[routeName]
-  if (route && 'preload' in route) {
-    const lazyRoute = route as LazyRouteWrapper
-    lazyRoute.preload().catch((error) => {
-      devLogger.warn(`Failed to preload route: ${routeName}`, error)
-    })
-  }
-}
-
-export const preloadRoutes = (routeNames: (keyof typeof LazyRoutes)[]): void => {
-  routeNames.forEach(preloadRoute)
 }

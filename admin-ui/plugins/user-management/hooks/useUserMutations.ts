@@ -25,7 +25,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
   callbacksRef.current = callbacks
 
   const deleteUser = useCallback(
-    async (inum: string, userMessage?: string, userData?: CustomUser) => {
+    async (inum: string, _userMessage?: string, userData?: CustomUser) => {
       try {
         await mutation.mutateAsync({ inum })
       } catch (error) {

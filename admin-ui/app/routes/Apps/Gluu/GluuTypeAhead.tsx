@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo } from 'react'
+import { useMemo, useCallback, memo } from 'react'
 import { FormGroup, Col } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
