@@ -170,7 +170,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         lineHeight: `${lineHeights.normal} !important`,
       },
     },
-    propsBox: { ...dl.listBox, marginTop: PROPS_HEADER_MB, gridColumn: '1 / -1' },
+    propsBox: { ...dl.listBox, marginTop: PROPS_HEADER_MB },
     propsBoxEmpty: dl.listBoxEmpty,
     propsHeader: dl.listHeader,
     propsHeaderEmpty: dl.listHeaderEmpty,
@@ -182,12 +182,12 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
     propsActionBtn: dl.listActionBtn,
     formWithInputs: {
       '& input:not([type="checkbox"]), & select, & .custom-select, & textarea': {
-        backgroundColor: 'var(--theme-input-bg) !important',
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
-        color: 'var(--theme-input-color) !important',
-        WebkitTextFillColor: 'var(--theme-input-color) !important',
-        caretColor: 'var(--theme-input-color)',
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        caretColor: themeColors.fontColor,
         minHeight: INPUT.HEIGHT,
         height: 'auto',
         paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
@@ -202,9 +202,9 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       },
       '& input:not([type="checkbox"]):focus, & input:not([type="checkbox"]):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & textarea:focus, & textarea:active':
         {
-          backgroundColor: 'var(--theme-input-bg) !important',
-          color: 'var(--theme-input-color) !important',
-          WebkitTextFillColor: 'var(--theme-input-color) !important',
+          backgroundColor: `${formInputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           outline: 'none',
           boxShadow: 'none',
@@ -225,19 +225,19 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         },
       '& input.form-control, & input[type="text"], & input[type="number"], & textarea.form-control':
         {
-          backgroundColor: 'var(--theme-input-bg) !important',
-          color: 'var(--theme-input-color) !important',
-          WebkitTextFillColor: 'var(--theme-input-color) !important',
-          caretColor: 'var(--theme-input-color) !important',
+          backgroundColor: `${formInputBg} !important`,
+          color: `${themeColors.fontColor} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          caretColor: `${themeColors.fontColor} !important`,
         },
       '& input.form-control:focus, & input.form-control:active, & input.form-control:disabled': {
-        color: 'var(--theme-input-color) !important',
-        WebkitTextFillColor: 'var(--theme-input-color) !important',
-        caretColor: 'var(--theme-input-color) !important',
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        caretColor: `${themeColors.fontColor} !important`,
       },
       '& input:not([type="checkbox"])::selection, & textarea::selection': {
         backgroundColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)',
-        color: 'var(--theme-input-color) !important',
+        color: `${themeColors.fontColor} !important`,
       },
       '& input:not([type="checkbox"])::placeholder, & textarea::placeholder': {
         color: `${themeColors.textMuted} !important`,
@@ -245,9 +245,9 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       },
       '& input:not([type="checkbox"]):-webkit-autofill, & input:not([type="checkbox"]):-webkit-autofill:hover, & input:not([type="checkbox"]):-webkit-autofill:focus, & input:not([type="checkbox"]):-webkit-autofill:active':
         {
-          WebkitBoxShadow: '0 0 0 100px var(--theme-input-bg) inset !important',
-          WebkitTextFillColor: 'var(--theme-input-color) !important',
-          backgroundColor: 'var(--theme-input-bg) !important',
+          WebkitBoxShadow: `0 0 0 100px ${formInputBg} inset !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          backgroundColor: `${formInputBg} !important`,
           transition: 'background-color 5000s ease-in-out 0s',
         },
     },

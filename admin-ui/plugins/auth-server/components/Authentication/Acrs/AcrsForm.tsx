@@ -439,67 +439,67 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               </div>
             </>
           )}
-
-          {isScript && (
-            <div
-              className={`${classes.propsBox} ${!configurationProperties.length ? classes.propsBoxEmpty : ''}`}
-            >
-              <div
-                className={`${classes.propsHeader} ${!configurationProperties.length ? classes.propsHeaderEmpty : ''}`}
-              >
-                <GluuText variant="h5" disableThemeColor>
-                  <span className={classes.propsTitle}>{t('fields.script_properties')}</span>
-                </GluuText>
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.addPropertyButton.bg}
-                  textColor={themeColors.settings.addPropertyButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={addConfigProperty}
-                  disabled={!canAddProperty}
-                >
-                  <i className="fa fa-fw fa-plus" />
-                  {t('actions.add_property')}
-                </GluuButton>
-              </div>
-              <div className={classes.propsBody}>
-                {configurationProperties.map((prop, index) => (
-                  <div key={index} className={classes.propsRow}>
-                    <Input
-                      value={prop.key || ''}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        changeConfigProperty(index, 'key', e.target.value)
-                      }
-                      placeholder={t('placeholders.enter_property_key')}
-                      className={classes.propsInput}
-                    />
-                    <Input
-                      value={prop.value || ''}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        changeConfigProperty(index, 'value', e.target.value)
-                      }
-                      placeholder={t('placeholders.enter_property_value')}
-                      className={classes.propsInput}
-                    />
-                    <GluuButton
-                      type="button"
-                      backgroundColor={themeColors.settings.removeButton.bg}
-                      textColor={themeColors.settings.removeButton.text}
-                      useOpacityOnHover
-                      className={classes.propsActionBtn}
-                      onClick={() => removeConfigProperty(index)}
-                    >
-                      <i className="fa fa-fw fa-trash" />
-                      {t('actions.remove')}
-                    </GluuButton>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {isScript && (
+        <div
+          className={`${classes.propsBox} ${!configurationProperties.length ? classes.propsBoxEmpty : ''}`}
+        >
+          <div
+            className={`${classes.propsHeader} ${!configurationProperties.length ? classes.propsHeaderEmpty : ''}`}
+          >
+            <GluuText variant="h5" disableThemeColor>
+              <span className={classes.propsTitle}>{t('fields.script_properties')}</span>
+            </GluuText>
+            <GluuButton
+              type="button"
+              backgroundColor={themeColors.settings.addPropertyButton.bg}
+              textColor={themeColors.settings.addPropertyButton.text}
+              useOpacityOnHover
+              className={classes.propsActionBtn}
+              onClick={addConfigProperty}
+              disabled={!canAddProperty}
+            >
+              <i className="fa fa-fw fa-plus" />
+              {t('actions.add_property')}
+            </GluuButton>
+          </div>
+          <div className={classes.propsBody}>
+            {configurationProperties.map((prop, index) => (
+              <div key={index} className={classes.propsRow}>
+                <Input
+                  value={prop.key || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeConfigProperty(index, 'key', e.target.value)
+                  }
+                  placeholder={t('placeholders.enter_property_key')}
+                  className={classes.propsInput}
+                />
+                <Input
+                  value={prop.value || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    changeConfigProperty(index, 'value', e.target.value)
+                  }
+                  placeholder={t('placeholders.enter_property_value')}
+                  className={classes.propsInput}
+                />
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={() => removeConfigProperty(index)}
+                >
+                  <i className="fa fa-fw fa-trash" />
+                  {t('actions.remove')}
+                </GluuButton>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <GluuThemeFormFooter
         hideDivider
