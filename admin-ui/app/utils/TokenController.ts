@@ -5,8 +5,8 @@ import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } 
 
 export type { AdditionalPayload }
 
-export const isFourZeroThreeError = (error?: HttpError): boolean => {
-  if (!error) return false
+export const isFourZeroThreeError = (error?: HttpError | unknown): boolean => {
+  if (!error || typeof error !== 'object') return false
   const axiosStatus = (error as AxiosErrorLike)?.response?.status
   const directStatus = (error as DirectStatusError)?.status
   return axiosStatus === 403 || directStatus === 403

@@ -102,9 +102,9 @@ export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig })
         borderColor: 'transparent',
       },
       disabledBadge: {
-        backgroundColor: themeColors.badges.disabledBg,
-        textColor: themeColors.badges.disabledText,
-        borderColor: 'transparent',
+        backgroundColor: themeColors.background,
+        textColor: themeColors.fontColor,
+        borderColor: themeColors.borderColor,
       },
       errorBadge: {
         backgroundColor: themeColors.errorColor,

@@ -3,9 +3,9 @@ Version:        %VER%
 Release:        %RELEASE%
 Summary:        Gluu
 License:        Apache-2.0
-URL:            https://www.gluu.org/
+URL:            https://gluu.org
 Source0:        flex-%VER%.tar.gz
-Requires:       apache2, apache2-mod_auth_openidc, curl, wget, tar, xz, unzip, rsyslog, bzip2, python3-requests, python3-ruamel.yaml, python3-certifi, python3-PyMySQL, python3-cryptography, python3-psycopg2
+Requires:       openssl, apache2, apache2-mod_auth_openidc, curl, wget, tar, xz, unzip, rsyslog, bzip2, python3-requests, python3-ruamel.yaml, python3-certifi, python3-PyMySQL, python3-cryptography, python3-psycopg2
 AutoReqProv:    no
 %description
 Gluu enables organizations to build a scalable centralized authentication and authorization service using free open source software.
@@ -41,12 +41,6 @@ if [ $1 == 0 ]; then
     fi
     if [ -f /etc/systemd/system/jans-scim.service ]; then
         systemctl stop jans-scim.service
-    fi
-    if [ -f /etc/systemd/system/jans-eleven.service ]; then
-        systemctl stop jans-eleven.service
-    fi
-    if [ -f /etc/systemd/system/opendj.service ]; then
-        systemctl stop opendj.service
     fi
 
     if [ -d /opt/jans.saved ]; then
@@ -97,5 +91,4 @@ fi
 /opt/jans/*
 
 %changelog
-* Wed Jan 26 2022 The Packaging team <packaging@gluu.org> - 1-1
 - Initial release

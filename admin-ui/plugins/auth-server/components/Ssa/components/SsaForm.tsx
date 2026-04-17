@@ -10,7 +10,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import UserRoleAutocomplete from 'Routes/Apps/Gluu/UserRoleAutocomplete'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SSA } from 'Utils/ApiResources'
@@ -248,7 +248,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
 
                   <div className={classes.autocompleteFieldWrap}>
                     <div className={classes.autocompleteCardWrap}>
-                      <UserRoleAutocomplete
+                      <GluuAutocomplete
                         label={t('fields.software_roles')}
                         name="software_roles"
                         value={formik.values.software_roles}
@@ -277,7 +277,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
 
                   <div className={classes.autocompleteFieldWrap}>
                     <div className={classes.autocompleteCardWrap}>
-                      <UserRoleAutocomplete
+                      <GluuAutocomplete
                         label={t('fields.grant_types')}
                         name="grant_types"
                         value={formik.values.grant_types}

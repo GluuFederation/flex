@@ -3,7 +3,7 @@ Version:        %VER%
 Release:        %RELEASE%
 Summary:        Gluu
 License:        Apache-2.0
-URL:            https://www.gluu.org/
+URL:            https://gluu.org/
 Source0:        flex-%VER%.tar.gz
 Requires:       httpd, mod_ssl, mod_auth_openidc, curl, wget, tar, xz, unzip, rsyslog, bzip2, python3-requests, python3-ruamel-yaml, python3-certifi, python3-PyMySQL, python3-cryptography, python3-psycopg2
 %description
@@ -15,7 +15,7 @@ Gluu enables organizations to build a scalable centralized authentication and au
 %undefine __brp_python_bytecompile
 
 %prep
-%setup -q
+%setup -q 
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -41,12 +41,6 @@ if [ $1 == 0 ]; then
     if [ -f /etc/systemd/system/jans-scim.service ]; then
         systemctl stop jans-scim.service
     fi
-    if [ -f /etc/systemd/system/jans-eleven.service ]; then
-        systemctl stop jans-eleven.service
-    fi
-    if [ -f /etc/systemd/system/opendj.service ]; then
-        systemctl stop opendj.service
-    fi
 
     if [ -d /opt/jans.saved ]; then
         rm -rf /opt/jans.saved
@@ -68,7 +62,7 @@ if [ $1 == 0 ]; then
             cp -rp /opt/opendj /opt/jans.saved/
         fi
         if [ -e /opt/amazon-corretto-* ]; then
-            cp -rp /opt/amazon-corretto-* /opt/jans.saved/
+            cp -rp /opt/amazon-corretto-* /opt/jans.saved/ 
         fi
     fi
 fi
@@ -76,9 +70,9 @@ fi
 
 %postun
 if [ $1 == 0 ]; then
-    rm -rf /etc/systemd/system/jans-*.service
-    rm -rf /etc/systemd/system/opendj.service
-    rm -rf /etc/jans
+    rm -rf /etc/systemd/system/jans-*.service    
+    rm -rf /etc/systemd/system/opendj.service    
+    rm -rf /etc/jans 
     rm -rf /etc/certs
     rm -rf /etc/default/jans-*
     rm -rf /opt/jans
@@ -96,5 +90,4 @@ fi
 /opt/jans/*
 
 %changelog
-* Wed Jan 26 2022 The Packaging team <packaging@gluu.org> - 1-1
 - Initial release

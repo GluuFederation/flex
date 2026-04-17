@@ -17,6 +17,7 @@ export type FilterField = {
   onChange: (value: string) => void
   dateValue?: Dayjs | null
   onDateChange?: (date: Dayjs | null) => void
+  minDate?: Dayjs
   width?: number | string
   fullWidth?: boolean
 }
@@ -32,6 +33,7 @@ export type GluuFilterPopoverProps = {
   width?: number | string
   className?: string
   children?: ReactNode
+  applyDisabled?: boolean
 }
 
 export type StyleParams = {

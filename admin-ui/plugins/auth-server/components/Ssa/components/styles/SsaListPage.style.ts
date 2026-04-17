@@ -79,9 +79,9 @@ export const useStyles = makeStyles<SsaListPageStylesParams>()((_, { isDark, the
       border: '1px solid transparent !important',
     },
     disabledBadge: {
-      backgroundColor: `${themeColors.badges.disabledBg} !important`,
-      color: `${themeColors.badges.disabledText} !important`,
-      border: '1px solid transparent !important',
+      backgroundColor: `${themeColors.background} !important`,
+      color: `${themeColors.fontColor} !important`,
+      border: `1px solid ${themeColors.borderColor} !important`,
     },
     subtleActiveBadge: {
       backgroundColor: `${themeColors.badges.statusActiveBg} !important`,

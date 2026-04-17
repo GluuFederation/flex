@@ -27,6 +27,7 @@ const FilterFieldRenderer: React.FC<{
           label=""
           value={field.dateValue ?? null}
           onChange={field.onDateChange}
+          minDate={field.minDate}
           inputHeight={52}
         />
       </LocalizationProvider>
@@ -76,6 +77,7 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
   width,
   className,
   children,
+  applyDisabled,
 }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -97,9 +99,13 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
 
     const handleOutsideClick = (event: MouseEvent) => {
       if (!popoverRef.current) return
-      if (!popoverRef.current.contains(event.target as Node)) {
-        onCancel()
-      }
+      const target = event.target as Node
+      if (popoverRef.current.contains(target)) return
+      // MUI date pickers render their calendar in a portal outside the popover DOM —
+      // don't close when clicking inside that portal
+      const muiPopper = document.querySelector('.MuiPickersPopper-root')
+      if (muiPopper?.contains(target)) return
+      onCancel()
     }
 
     document.addEventListener('mousedown', handleOutsideClick)
@@ -136,6 +142,7 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
           size="md"
           block
           onClick={onApply}
+          disabled={applyDisabled}
           backgroundColor={applyButtonColors.backgroundColor}
           textColor={applyButtonColors.textColor}
           borderColor={applyButtonColors.backgroundColor}

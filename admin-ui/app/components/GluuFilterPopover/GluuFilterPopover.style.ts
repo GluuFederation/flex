@@ -14,7 +14,8 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, col
     container: {
       position: 'absolute',
       top: '100%',
-      right: 0,
+      left: '50%',
+      transform: 'translateX(-50%)',
       zIndex: 10,
       backgroundColor: cardBg,
       border: `1px solid ${popoverBorderColor}`,
@@ -23,7 +24,7 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, col
       padding: SPACING.CARD_CONTENT_GAP * 2,
       boxSizing: 'border-box',
       fontFamily,
-      marginTop: SPACING.CARD_CONTENT_GAP,
+      marginTop: SPACING.CARD_CONTENT_GAP / 2,
       overflow: 'visible',
     },
     fieldsGrid: {

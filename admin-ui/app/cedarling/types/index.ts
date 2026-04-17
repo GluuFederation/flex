@@ -1,17 +1,17 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface CedarlingConstants {
+export type CedarlingConstants = {
   readonly ACTION_TYPE: string
   readonly RESOURCE_TYPE: string
 }
 
-export interface IPermissionWithTags {
+export type IPermissionWithTags = {
   permission: string
   tag: string
   defaultPermissionInToken?: boolean
 }
 
-export interface IPrincipal {
+export type IPrincipal = {
   id: string
   role: string | null
   scopes: string[]
@@ -19,26 +19,26 @@ export interface IPrincipal {
   type: string
 }
 
-export interface ITokenEntry {
+export type ITokenEntry = {
   mapping: string
   payload: string
 }
 
-export interface ICedarEntityMappingResource {
+export type ICedarEntityMappingResource = {
   cedar_entity_mapping: {
     entity_type: string
     id: string
   }
 }
 
-export interface TokenAuthorizationRequest {
+export type TokenAuthorizationRequest = {
   tokens: ITokenEntry[]
   action: string
   resource: ICedarEntityMappingResource
   context: Record<string, JsonValue>
 }
 
-export interface AuthorizationResponse {
+export type AuthorizationResponse = {
   decision: boolean
   diagnostics?: {
     reason?: string[]
@@ -47,22 +47,22 @@ export interface AuthorizationResponse {
   [key: string]: JsonValue | undefined
 }
 
-export interface AuthorizationResult {
+export type AuthorizationResult = {
   isAuthorized: boolean
   response?: AuthorizationResponse
   error?: string
 }
 
-export interface BootStrapConfig {
+export type BootStrapConfig = {
   [key: string]: JsonValue | undefined
 }
 
-export interface ICedarlingClient {
+export type ICedarlingClient = {
   initialize: (config: BootStrapConfig, policyStoreBytes: Uint8Array) => Promise<void>
   token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
 }
 
-export interface CedarPermissionsState {
+export type CedarPermissionsState = {
   permissions: Record<string, boolean>
   loading: boolean
   error: string | null
@@ -72,7 +72,7 @@ export interface CedarPermissionsState {
   policyStoreBytes: string
 }
 
-export interface SetCedarlingPermissionPayload {
+export type SetCedarlingPermissionPayload = {
   resourceId: string
   isAuthorized: boolean
 }
@@ -82,7 +82,7 @@ export type ResourceScopeEntry = {
   resourceId: AdminUiFeatureResource
 }
 
-export interface UseCedarlingReturn {
+export type UseCedarlingReturn = {
   authorize: (resourceScope: ResourceScopeEntry[]) => Promise<AuthorizationResult>
   authorizeHelper: (resourceScopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
   hasCedarReadPermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
@@ -92,7 +92,7 @@ export interface UseCedarlingReturn {
   error: string | null
 }
 
-export interface ApiPermission {
+export type ApiPermission = {
   permission: string
   tag: string
   inum?: string
@@ -100,7 +100,7 @@ export interface ApiPermission {
   description?: string
 }
 
-export interface AuthReducerState {
+export type AuthReducerState = {
   userinfo_jwt?: string
   idToken?: string
   jwtToken?: string
@@ -114,24 +114,24 @@ export interface AuthReducerState {
   }
 }
 
-export interface RootState {
+export type RootState = {
   authReducer: AuthReducerState
   cedarPermissions: CedarPermissionsState
 }
 
-export interface Permission {
+export type Permission = {
   name: string
   tag: string
 }
 
-export interface RolePermissionEntry {
+export type RolePermissionEntry = {
   role: string
   permissions: Permission[]
 }
 
 export type RolePermissionMapping = RolePermissionEntry[]
 
-export interface RuntimePolicyStore {
+export type RuntimePolicyStore = {
   policies: Record<
     string,
     {
@@ -142,11 +142,11 @@ export interface RuntimePolicyStore {
   >
 }
 
-export interface RuntimePolicyStoreConfig {
+export type RuntimePolicyStoreConfig = {
   policy_stores: Record<string, RuntimePolicyStore>
 }
 
-export interface TrustedIssuer {
+export type TrustedIssuer = {
   name?: string
   description?: string
   openid_configuration_endpoint: string
@@ -154,7 +154,7 @@ export interface TrustedIssuer {
   [key: string]: JsonValue | undefined
 }
 
-export interface ExtendedPolicyStore extends RuntimePolicyStore {
+export type ExtendedPolicyStore = RuntimePolicyStore & {
   trusted_issuers?: Record<string, TrustedIssuer>
   name?: string
   description?: string
@@ -162,7 +162,7 @@ export interface ExtendedPolicyStore extends RuntimePolicyStore {
   [key: string]: JsonValue | Record<string, TrustedIssuer> | undefined
 }
 
-export interface ExtendedPolicyStoreConfig {
+export type ExtendedPolicyStoreConfig = {
   policy_stores: Record<string, ExtendedPolicyStore>
   cedar_version?: string
   [key: string]: JsonValue | Record<string, ExtendedPolicyStore> | undefined

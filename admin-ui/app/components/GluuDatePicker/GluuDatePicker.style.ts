@@ -1,35 +1,13 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
-import type { ThemeConfig } from '@/context/theme/config'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { getHoverOpacity } from '@/constants'
+import { getHoverOpacity, OPACITY } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
+import type { ThemeConfig } from '@/context/theme/config'
+import type { PickerThemeColors, GluuDatePickerStyleParams } from './types'
 
 const TEXT_FIELD_SIZE = 'small' as const
-
-interface PickerThemeColors {
-  labelBackground: string
-  inputBackground: string
-  inputTextColor: string
-  labelColor: string
-  borderColor: string
-  popupBg: string
-  selectedBg: string
-  selectedText: string
-  hoverBg: string
-  placeholderColor: string
-  iconColor: string
-}
-
-interface GluuDatePickerStyleParams {
-  themeColors: ThemeConfig
-  isDark: boolean
-  textColor?: string
-  backgroundColor?: string
-  inputHeight?: number
-  labelShrink?: boolean
-}
 
 const buildPickerThemeColors = (
   themeConfig: ThemeConfig,
@@ -50,7 +28,7 @@ const buildPickerThemeColors = (
     selectedBg: themeConfig.background,
     selectedText: themeConfig.fontColor,
     hoverBg,
-    placeholderColor: themeConfig.fontColor,
+    placeholderColor: themeConfig.textMuted,
     iconColor: themeConfig.fontColor,
   }
 }
@@ -123,7 +101,7 @@ const buildTextFieldSx = (
     fontFamily,
     'fontSize': fontSizes.base,
     'color': tc.inputTextColor,
-    '&::placeholder': { color: tc.placeholderColor, opacity: 1 },
+    '&::placeholder': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': { borderColor: tc.borderColor },
@@ -154,6 +132,7 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
         '&:hover': { backgroundColor: tc.selectedBg },
       },
       '&:hover': { backgroundColor: tc.hoverBg },
+      '&.Mui-disabled': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
     },
     '& .MuiDayCalendar-weekContainer': {
       '& .MuiTypography-root': { color: tc.inputTextColor },

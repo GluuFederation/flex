@@ -28,6 +28,6 @@ export type {
   ScopeTableRow,
 } from './componentTypes'
 
-export type { ScopeAuthState, ScopeAuthUserInfo, ScopeRootState } from './stateTypes'
+export type { ScopeAuthState, ScopeAuthUserInfo } from './stateTypes'
 export type { AttributeEntry, ConfigScriptEntry } from './apiTypes'
 export type { ScopePanelVisibility } from './helperTypes'
