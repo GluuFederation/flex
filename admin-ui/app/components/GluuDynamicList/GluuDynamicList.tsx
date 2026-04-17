@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { Input } from 'reactstrap'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import getThemeColor from '@/context/theme/config'
@@ -11,7 +11,7 @@ import type { GluuDynamicListProps } from './types'
 const joinClasses = (...classNames: Array<string | false | undefined>) =>
   classNames.filter(Boolean).join(' ')
 
-export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
+const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
   title,
   label,
   required = false,
@@ -39,24 +39,52 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const isEmpty = items.length === 0
-  const hasIncompleteItem = items.some((item) => {
-    const value = item.value?.trim() ?? ''
-    if (mode === 'single') return value.length === 0
-
-    const key = item.key?.trim() ?? ''
-    return key.length === 0 || value.length === 0
-  })
-  const hasInvalidItem = Boolean(
-    validateItem &&
-    items.some((item) => {
-      const value = item.value?.trim() ?? ''
-      const key = item.key?.trim() ?? ''
-      const isComplete = mode === 'single' ? value.length > 0 : key.length > 0 && value.length > 0
-
-      return isComplete && !validateItem(item, mode)
-    }),
+  const hasIncompleteItem = useMemo(
+    () =>
+      items.some((item) => {
+        const value = item.value?.trim() ?? ''
+        if (mode === 'single') return value.length === 0
+        const key = item.key?.trim() ?? ''
+        return key.length === 0 || value.length === 0
+      }),
+    [items, mode],
+  )
+  const hasInvalidItem = useMemo(
+    () =>
+      Boolean(
+        validateItem &&
+        items.some((item) => {
+          const value = item.value?.trim() ?? ''
+          const key = item.key?.trim() ?? ''
+          const isComplete =
+            mode === 'single' ? value.length > 0 : key.length > 0 && value.length > 0
+          return isComplete && !validateItem(item, mode)
+        }),
+      ),
+    [items, mode, validateItem],
   )
   const isAddDisabled = disabled || hasIncompleteItem || hasInvalidItem
+
+  const handleKeyChange = useCallback(
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(index, 'key', event.target.value)
+    },
+    [onChange],
+  )
+
+  const handleValueChange = useCallback(
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(index, 'value', event.target.value)
+    },
+    [onChange],
+  )
+
+  const handleRemove = useCallback(
+    (index: number) => () => {
+      onRemove(index)
+    },
+    [onRemove],
+  )
 
   return (
     <div className={joinClasses(classes.wrapper, className)} style={style}>
@@ -96,9 +124,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
                 <Input
                   value={item.key ?? ''}
                   disabled={disabled}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    onChange(index, 'key', event.target.value)
-                  }
+                  onChange={handleKeyChange(index)}
                   placeholder={keyPlaceholder}
                   className={joinClasses(classes.input, 'gluu-dynamic-list-input')}
                 />
@@ -109,9 +135,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
                   <Input
                     value={item.value ?? ''}
                     disabled={disabled}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      onChange(index, 'value', event.target.value)
-                    }
+                    onChange={handleValueChange(index)}
                     placeholder={valuePlaceholder}
                     className={joinClasses(
                       classes.input,
@@ -129,9 +153,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
                 <Input
                   value={item.value ?? ''}
                   disabled={disabled}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    onChange(index, 'value', event.target.value)
-                  }
+                  onChange={handleValueChange(index)}
                   placeholder={valuePlaceholder}
                   className={joinClasses(
                     classes.input,
@@ -148,7 +170,7 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
                 textColor={themeColors.settings.removeButton.text}
                 useOpacityOnHover
                 className={classes.actionBtn}
-                onClick={() => onRemove(index)}
+                onClick={handleRemove(index)}
               >
                 <i className="fa fa-fw fa-trash" />
                 {removeButtonLabel}
@@ -167,4 +189,5 @@ export const GluuDynamicList: React.FC<GluuDynamicListProps> = ({
   )
 }
 
+export const GluuDynamicList = React.memo(GluuDynamicListBase)
 export default GluuDynamicList

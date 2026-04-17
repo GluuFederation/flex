@@ -186,13 +186,13 @@ const ClientWizardForm = ({
 
   const validationSchema = useMemo(() => getClientValidationSchema(t), [t])
 
-  const changeStep = (stepId: string) => {
+  const changeStep = useCallback((stepId: string) => {
     setCurrentStep(stepId)
-  }
+  }, [])
 
-  const toggle = () => {
-    setModal(!modal)
-  }
+  const toggle = useCallback(() => {
+    setModal((v) => !v)
+  }, [])
 
   const validateFinish = useCallback(async () => {
     const formikRef = formRef.current
@@ -228,19 +228,20 @@ const ClientWizardForm = ({
     footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [currentStep])
 
-  const prevStep = () => {
+  const prevStep = useCallback(() => {
     scrollFromFooter.current = true
-    setCurrentStep(getPrevStep(availableSteps, currentStep))
-  }
+    setCurrentStep((s) => getPrevStep(availableSteps, s))
+  }, [availableSteps])
 
-  const nextStep = () => {
+  const nextStep = useCallback(() => {
     scrollFromFooter.current = true
-    setCurrentStep(getNextStep(availableSteps, currentStep))
-  }
+    setCurrentStep((s) => getNextStep(availableSteps, s))
+  }, [availableSteps])
 
-  const isComplete = (stepId: string) => {
-    return availableSteps.indexOf(stepId) < availableSteps.indexOf(currentStep)
-  }
+  const isComplete = useCallback(
+    (stepId: string) => availableSteps.indexOf(stepId) < availableSteps.indexOf(currentStep),
+    [availableSteps, currentStep],
+  )
 
   const submitForm = useCallback(
     (message: string) => {
@@ -396,7 +397,7 @@ const ClientWizardForm = ({
     }
   }
 
-  const downloadClientData = (values: ClientWizardFormValues) => {
+  const downloadClientData = useCallback((values: ClientWizardFormValues) => {
     const jsonData = JSON.stringify(values, null, 2)
     const blob = new Blob([jsonData], { type: 'application/json' })
     const link = document.createElement('a')
@@ -408,7 +409,7 @@ const ClientWizardForm = ({
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(link.href)
-  }
+  }, [])
 
   return (
     <React.Fragment>

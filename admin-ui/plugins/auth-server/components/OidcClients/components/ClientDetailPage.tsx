@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo } from 'react'
+import React, { useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -9,6 +9,9 @@ import type { DisplayValue, ClientDetailPageProps } from '../types'
 
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
+
+const formatBadgeList = (items: string[] | undefined): string =>
+  items?.length ? items.join(', ') : '—'
 
 const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
   const { t } = useTranslation()
@@ -31,13 +34,11 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
     return result?.values?.[0] || '—'
   }, [row.description, row.customAttributes])
 
-  const displayName = row.clientName || row.displayName || '—'
-  const isEnabled = !row.disabled
-
-  const formatBadgeList = useCallback(
-    (items: string[] | undefined): string => (items?.length ? items.join(', ') : '—'),
-    [],
+  const displayName = useMemo(
+    () => row.clientName || row.displayName || '—',
+    [row.clientName, row.displayName],
   )
+  const isEnabled = useMemo(() => !row.disabled, [row.disabled])
 
   const fields: GluuDetailGridField[] = useMemo(
     () => [
@@ -155,7 +156,7 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
         doc_category: DOC_CATEGORY,
       },
     ],
-    [row, displayName, description, isEnabled, clientScopes, t, themeColors, formatBadgeList],
+    [row, displayName, description, isEnabled, clientScopes, t, themeColors],
   )
 
   return (

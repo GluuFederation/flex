@@ -29,7 +29,6 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
   appendDynamicListItem,
   getClientSectionFields,
-  getDynamicListValidationMessage,
   mapDynamicListValues,
   uriValidator,
 } from 'Plugins/auth-server/utils'
@@ -218,17 +217,6 @@ const ClientBasicPanel = ({
   )
 
   const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
-  const redirectUrisError = useMemo(
-    () =>
-      getDynamicListValidationMessage({
-        items: redirectUriItems,
-        t,
-        validateItem: (item) => uriValidator(item.value ?? ''),
-        invalidMessage: t('validation_messages.invalid_url_format'),
-      }),
-    [redirectUriItems, t],
-  )
-
   const fieldMap = {
     clientName: (
       <div className={classes.fieldItem}>

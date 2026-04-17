@@ -106,6 +106,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     minHeight,
     useOpacityOnHover,
     hoverOpacity,
+    disableHoverStyles,
     style,
   ])
 
@@ -144,4 +145,4 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
   )
 }
 
-export default GluuButton
+export default React.memo(GluuButton)
