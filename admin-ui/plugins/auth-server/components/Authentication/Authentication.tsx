@@ -112,6 +112,7 @@ function Authentication(): ReactElement {
       <div className={classes.formCard}>
         <div className={classes.content}>
           <GluuTabs
+            key={defaultTab}
             tabNames={tabNames}
             tabToShow={tabToShow}
             withNavigation={true}

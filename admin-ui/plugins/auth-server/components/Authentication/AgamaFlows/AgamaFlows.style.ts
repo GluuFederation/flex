@@ -83,7 +83,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       padding: '8px 0 0',
       display: 'flex',
       flexDirection: 'column' as const,
-      gap: 12,
+      gap: 20,
     },
     modalFooter: {
       display: 'flex',
@@ -186,6 +186,9 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     communityModalBody: {
       maxHeight: '400px',
       overflowY: 'auto' as const,
+      overflowX: 'visible' as const,
+      paddingLeft: 8,
+      paddingRight: 8,
     },
     communityFormLabel: {
       marginBottom: '16px',
@@ -196,9 +199,6 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     repoList: {
       display: 'flex',
       flexDirection: 'column' as const,
-      maxHeight: '320px',
-      overflowY: 'auto' as const,
-      overflowX: 'hidden' as const,
     },
     repoItemName: {
       color: themeColors.fontColor,
@@ -210,8 +210,10 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       marginTop: 4,
     },
     repoEmptyState: {
-      fontSize: '15px',
-      padding: '14px 0',
+      fontSize: '18px',
+      fontWeight: fontWeights.medium,
+      padding: '24px 0',
+      textAlign: 'center' as const,
       color: themeColors.fontColor,
     },
   }

@@ -34,9 +34,9 @@ export const isDefaultAuthNMethod = (value: boolean | string): boolean =>
 
 export const transformConfigurationProperties = (
   properties: ConfigurationProperty[] | undefined,
-): Array<{ value1: string; value2: string; hide: boolean }> | undefined => {
+): Array<{ value1: string; value2: string; hide: boolean }> => {
   if (!properties || properties.length === 0) {
-    return undefined
+    return []
   }
   return properties
     .filter((e): e is ConfigurationProperty => e != null)

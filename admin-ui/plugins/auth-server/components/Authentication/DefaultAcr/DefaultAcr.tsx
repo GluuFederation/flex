@@ -154,7 +154,9 @@ function DefaultAcr(): React.ReactElement {
     initialValues,
     enableReinitialize: true,
     onSubmit: () => {
-      setModal(true)
+      if (canWriteAuth) {
+        setModal(true)
+      }
     },
   })
 
@@ -164,6 +166,9 @@ function DefaultAcr(): React.ReactElement {
 
   const submitForm = async (userMessage: string): Promise<void> => {
     toggle()
+    if (!canWriteAuth) {
+      return
+    }
     const acrValue = formik.values.defaultAcr
     if (!acrValue) {
       return

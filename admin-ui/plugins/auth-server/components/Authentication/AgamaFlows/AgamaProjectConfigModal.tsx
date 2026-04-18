@@ -21,8 +21,6 @@ import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
-  ProjectDetailsState,
-  ConfigDetailsState,
   JsonObject,
   ApiError,
 } from './types'
@@ -71,20 +69,9 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     return themeMap[selectedTheme] || 'xcode'
   }, [selectedTheme])
 
-  const [configDetails, setConfigDetails] = useState<ConfigDetailsState>({
-    isLoading: false,
-    data: {},
-  })
-  const [projectDetails, setProjectDetails] = useState<ProjectDetailsState>({
-    isLoading: true,
-    data: {
-      statusCode: undefined,
-      tableOptions: [],
-    },
-  })
   const [isCopied, setIsCopied] = useState<boolean>(false)
 
-  const { data: projectDetailsData, isLoading: projectDetailsLoading } = useGetAgamaPrjByName(
+  const { data: projectDetailsData, isFetching: projectDetailsFetching } = useGetAgamaPrjByName(
     name,
     {
       query: {
@@ -95,7 +82,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   const {
     data: configDetailsData,
-    isLoading: configDetailsLoading,
+    isFetching: configDetailsFetching,
     refetch: refetchConfig,
   } = useGetAgamaPrjConfigs(name, {
     query: {
@@ -103,27 +90,28 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     },
   })
 
+  const configData = useMemo<JsonObject>(() => {
+    if (!configDetailsData) return {}
+    try {
+      return typeof configDetailsData === 'string'
+        ? (JSON.parse(configDetailsData) as JsonObject)
+        : (configDetailsData as JsonObject)
+    } catch {
+      return {}
+    }
+  }, [configDetailsData])
+
+  const flowErrors = useMemo<FlowError[]>(() => {
+    if (!projectDetailsData?.details?.flowsError) return []
+    return Object.entries(projectDetailsData.details.flowsError).map(([flow, error]) => ({
+      flow,
+      error,
+    }))
+  }, [projectDetailsData])
+
   const updateConfigMutation = usePutAgamaPrj({
     mutation: {
-      onSuccess: (data: string | JsonObject) => {
-        let normalizedData: JsonObject = {}
-
-        if (typeof data === 'string') {
-          try {
-            const parsed = JSON.parse(data) as JsonObject
-            normalizedData = parsed
-          } catch (e) {
-            const parseError: Error = e instanceof Error ? e : new Error(String(e))
-            devLogger.error('Failed to parse config data JSON on success:', parseError)
-          }
-        } else if (data && typeof data === 'object' && !Array.isArray(data)) {
-          normalizedData = structuredClone(data) as JsonObject
-        }
-
-        setConfigDetails((prevState) => ({
-          ...prevState,
-          data: normalizedData,
-        }))
+      onSuccess: () => {
         dispatch(
           updateToast(true, 'success', `Configuration for project ${name} imported successfully.`),
         )
@@ -138,62 +126,11 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   useEffect(() => {
     if (projectDetailsData) {
-      const tableOptions: FlowError[] = []
-
-      if (projectDetailsData.details?.flowsError) {
-        for (const flow in projectDetailsData.details.flowsError) {
-          const error = projectDetailsData.details.flowsError[flow]
-          tableOptions.push({ flow: flow, error })
-        }
-      }
-
-      setProjectDetails({
-        isLoading: false,
-        data: {
-          ...projectDetailsData,
-          statusCode: 200,
-          tableOptions: tableOptions,
-        },
-      })
-
       handleUpdateRowData(projectDetailsData)
-    } else if (!projectDetailsLoading && isOpen) {
-      setProjectDetails({
-        isLoading: false,
-        data: {
-          statusCode: 204,
-          tableOptions: [],
-        },
-      })
     }
-  }, [projectDetailsData, projectDetailsLoading, handleUpdateRowData, isOpen])
+  }, [projectDetailsData, handleUpdateRowData])
 
-  useEffect(() => {
-    if (configDetailsData) {
-      try {
-        const parsedData =
-          typeof configDetailsData === 'string' ? JSON.parse(configDetailsData) : configDetailsData
-        setConfigDetails({
-          isLoading: false,
-          data: parsedData,
-        })
-      } catch (error) {
-        const parseError: Error = error instanceof Error ? error : new Error(String(error))
-        devLogger.error('Error parsing config data:', parseError)
-        setConfigDetails({
-          isLoading: false,
-          data: {},
-        })
-      }
-    }
-  }, [configDetailsData])
-
-  useEffect(() => {
-    setProjectDetails((prevState) => ({ ...prevState, isLoading: projectDetailsLoading }))
-    setConfigDetails((prevState) => ({ ...prevState, isLoading: configDetailsLoading }))
-  }, [projectDetailsLoading, configDetailsLoading])
-
-  const projectConfigs = projectDetails?.data?.details?.projectMetadata?.configs
+  const projectConfigs = projectDetailsData?.details?.projectMetadata?.configs
 
   useEffect(() => {
     if (!isCopied) return
@@ -223,7 +160,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           if (typeof result !== 'string') return
 
           parsedValue = JSON.parse(result) as JsonObject
-          setConfigDetails((prevState) => ({ ...prevState, isLoading: true }))
 
           await updateConfigMutation.mutateAsync({
             name,
@@ -236,26 +172,18 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           devLogger.error('Error importing config:', importError)
           const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
           dispatch(updateToast(true, 'error', errorMessage))
-        } finally {
-          setConfigDetails((prevState) => ({
-            ...prevState,
-            isLoading: false,
-          }))
         }
       }
       reader.onerror = () => {
         devLogger.error('Error reading file')
         dispatch(updateToast(true, 'error', 'Failed to read file'))
-        setConfigDetails((prevState) => ({
-          ...prevState,
-          isLoading: false,
-        }))
       }
       reader.readAsText(file, 'utf-8')
     }
+    document.body.appendChild(input)
     input.click()
     setTimeout(() => {
-      input.remove()
+      document.body.removeChild(input)
     }, 100)
   }
 
@@ -283,11 +211,11 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   }
 
   const handleExportCurrentConfig = (): void => {
-    if (isEmpty(configDetails.data)) {
+    if (isEmpty(configData)) {
       dispatch(updateToast(true, 'error', `No configurations defined for ${name}`))
       return
     }
-    save_data(JSON.stringify(configDetails.data))
+    save_data(JSON.stringify(configData))
   }
 
   const handleExportSampleConfig = (): void => {
@@ -336,7 +264,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   if (!isOpen) return null
 
   return createPortal(
-    <GluuLoader blocking={projectDetails.isLoading || configDetails.isLoading}>
+    <GluuLoader blocking={projectDetailsFetching || configDetailsFetching || updateConfigMutation.isPending}>
       <button
         type="button"
         className={commitClasses.overlay}
@@ -373,11 +301,11 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           </GluuText>
 
           <div className={classes.modalBody}>
-            {projectDetails?.data?.statusCode === 204 && (
+            {!projectDetailsFetching && !projectDetailsData && isOpen && (
               <p>{t('messages.agama_project_deploying', { name })}</p>
             )}
 
-            {projectDetails.data.statusCode === 200 && (
+            {!!projectDetailsData && (
               <>
                 {manageConfig ? (
                   <div className={classes.buttonGroup}>
@@ -419,27 +347,27 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                   <>
                     <Box className={classes.detailText}>
                       {t('fields.version')}:{' '}
-                      {projectDetails.data?.details?.projectMetadata?.version ?? '-'}
+                      {projectDetailsData?.details?.projectMetadata?.version ?? '-'}
                     </Box>
                     <Box className={classes.detailText}>
                       {t('fields.description')}:{' '}
-                      {projectDetails.data?.details?.projectMetadata?.description ?? '-'}
+                      {projectDetailsData?.details?.projectMetadata?.description ?? '-'}
                     </Box>
                     <Box className={classes.detailText}>
-                      {t('fields.deployed_started_on')}: {projectDetails.data?.createdAt ?? '-'}
+                      {t('fields.deployed_started_on')}: {projectDetailsData?.createdAt ?? '-'}
                     </Box>
                     <Box className={classes.detailText}>
-                      {t('fields.deployed_finished_on')}: {projectDetails.data?.finishedAt ?? '-'}
+                      {t('fields.deployed_finished_on')}: {projectDetailsData?.finishedAt ?? '-'}
                     </Box>
                     <Box className={classes.detailText}>
-                      {t('fields.errors')}: {projectDetails.data?.details?.error ?? 'No'}
+                      {t('fields.errors')}: {projectDetailsData?.details?.error ?? 'No'}
                     </Box>
                     <Box mt={2} className={classes.tableWrapper}>
                       <MaterialTable
                         components={tableComponents}
                         columns={tableColumns}
-                        data={projectDetails.data?.tableOptions || []}
-                        isLoading={projectDetails.isLoading}
+                        data={flowErrors}
+                        isLoading={projectDetailsFetching}
                         title=""
                         options={tableOptions}
                       />

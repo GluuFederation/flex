@@ -28,7 +28,6 @@ import Radio from '@mui/material/Radio'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
-import CircularProgress from '@mui/material/CircularProgress'
 import { useDropzone, type FileRejection } from 'react-dropzone'
 import JSZip from 'jszip'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
@@ -97,10 +96,6 @@ const AgamaFlows: React.FC = () => {
   const [listData, setListData] = useState<AgamaProject[]>([])
   const [selectedRow, setSelectedRow] = useState<AgamaProject | null>(null)
   const [repoName, setRepoName] = useState<string | null>(null)
-  const [agamaRepositoriesList, setAgamaRepositoriesList] = useState<AgamaRepositoriesResponse>({
-    projects: [],
-  })
-  const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
   const [deployLoading, setDeployLoading] = useState<boolean>(false)
 
@@ -120,11 +115,13 @@ const AgamaFlows: React.FC = () => {
     [hasCedarReadPermission],
   )
 
-  const { data: configuration = {}, isLoading: isConfigLoading } = useAuthServerJsonPropertiesQuery(
-    {
-      enabled: canReadAuth,
-    },
-  )
+  const {
+    data: configuration = {},
+    isLoading: isConfigLoading,
+    error: configError,
+  } = useAuthServerJsonPropertiesQuery({
+    enabled: canReadAuth,
+  })
   const agamaConfig = configuration as {
     agamaConfiguration?: { enabled?: boolean }
   }
@@ -134,6 +131,7 @@ const AgamaFlows: React.FC = () => {
     data: projectsResponse,
     isLoading: loading,
     refetch: refetchProjects,
+    error: projectsError,
   } = useGetAgamaPrj(
     {
       count: limit,
@@ -163,13 +161,19 @@ const AgamaFlows: React.FC = () => {
 
   const {
     data: agamaRepositoriesData,
-    isLoading: repositoriesLoading,
+    isFetching: repositoriesLoading,
     refetch: refetchRepositories,
+    error: repositoriesError,
   } = useGetAgamaRepositories<AgamaRepositoriesResponse>({
     query: {
       enabled: false,
     },
   })
+
+  const agamaRepositoriesList = useMemo<AgamaRepositoriesResponse>(
+    () => agamaRepositoriesData ?? { projects: [] },
+    [agamaRepositoriesData],
+  )
 
   const canWriteAuth = useMemo(
     () => hasCedarWritePermission(AUTH_RESOURCE_ID),
@@ -187,21 +191,20 @@ const AgamaFlows: React.FC = () => {
   }, [authorizeHelper])
 
   useEffect(() => {
-    if (agamaRepositoriesData) {
-      setAgamaRepositoriesList(
-        agamaRepositoriesData ?? {
-          projects: [],
-        },
-      )
-      setFileLoading(false)
+    if (repositoriesError) {
+      const errorMessage =
+        (repositoriesError as Error)?.message || t('messages.error_in_getting_data')
+      dispatch(updateToast(true, 'error', errorMessage))
     }
-  }, [agamaRepositoriesData])
+  }, [repositoriesError, dispatch, t])
 
   useEffect(() => {
-    if (repositoriesLoading) {
-      setFileLoading(true)
+    const firstError = projectsError ?? configError
+    if (firstError) {
+      const errorMessage = (firstError as Error)?.message || t('messages.error_in_getting_data')
+      dispatch(updateToast(true, 'error', errorMessage))
     }
-  }, [repositoriesLoading])
+  }, [projectsError, configError, dispatch, t])
 
   const submitData = async (): Promise<void> => {
     if (!selectedFile) return
@@ -232,6 +235,7 @@ const AgamaFlows: React.FC = () => {
 
   const onDrop = useCallback(async (acceptedFiles: File[]): Promise<void> => {
     setProjectName('')
+    setShaStatus(false)
     const file = acceptedFiles[0]
     if (!file) return
 
@@ -274,6 +278,7 @@ const AgamaFlows: React.FC = () => {
     const file = acceptedFiles[0]
     if (!file) return
 
+    setShaStatus(false)
     setShaFileName(file.name)
     setSHAfile(file)
   }, [])
@@ -378,7 +383,7 @@ const AgamaFlows: React.FC = () => {
 
     reader.onload = () => {
       const sha256sum = reader.result as string
-      const sha256sumValue = sha256sum.split(' ', 1)[0]
+      const sha256sumValue = sha256sum.trim().split(/\s+/)[0]?.toLowerCase()
       if (sha256sumValue) {
         getSHA256(sha256sumValue)
       }
@@ -625,15 +630,15 @@ const AgamaFlows: React.FC = () => {
             <>
               <div className={`${classes.modalBody} ${classes.communityModalBody}`}>
                 <FormGroup>
-                  <FormLabel className={classes.communityFormLabel}>
-                    {t('titles.select_project_deploy')}
-                  </FormLabel>
+                  {!repositoriesLoading && agamaRepositoriesList?.projects?.length > 0 && (
+                    <FormLabel className={classes.communityFormLabel}>
+                      {t('titles.select_project_deploy')}
+                    </FormLabel>
+                  )}
 
                   <div className={classes.repoList}>
-                    {fileLoading ? (
-                      <CircularProgress sx={{ color: themeColors.badges.statusActive }} />
-                    ) : agamaRepositoriesList?.projects?.length ? (
-                      agamaRepositoriesList?.projects?.map((item: AgamaRepository) => (
+                    <GluuLoader blocking={repositoriesLoading}>
+                      {agamaRepositoriesList?.projects?.map((item: AgamaRepository) => (
                         <FormControlLabel
                           key={item['repository-name']}
                           control={
@@ -649,12 +654,13 @@ const AgamaFlows: React.FC = () => {
                               <div className={classes.repoItemDescription}>{item.description}</div>
                             </div>
                           }
-                          sx={{ alignItems: 'flex-start', marginBottom: '16px' }}
+                          sx={{ alignItems: 'center', marginBottom: '16px', width: '100%' }}
                         />
-                      ))
-                    ) : (
-                      <div className={classes.repoEmptyState}>{t('messages.no_data_found')}</div>
-                    )}
+                      ))}
+                      {!repositoriesLoading && !agamaRepositoriesList?.projects?.length && (
+                        <div className={classes.repoEmptyState}>{t('messages.no_data_found')}</div>
+                      )}
+                    </GluuLoader>
                   </div>
                 </FormGroup>
               </div>
@@ -710,7 +716,7 @@ const AgamaFlows: React.FC = () => {
       uploadLoading,
       isConfigLoading,
       submitData,
-      fileLoading,
+      repositoriesLoading,
       deployLoading,
       agamaRepositoriesList,
       repoName,
@@ -812,20 +818,23 @@ const AgamaFlows: React.FC = () => {
       label: t('actions.new_project'),
       icon: <Add className={classes.addIcon} />,
       onClick: () => {
+        if (isConfigLoading) return
         setSelectedFile(null)
         setSelectedFileName(null)
         setGetProjectName(false)
         setSHAfile(null)
-        refetchRepositories()
+        if (!agamaRepositoriesData?.projects?.length) {
+          refetchRepositories()
+        }
         if (isAgamaEnabled) {
           setShowAddModal(true)
         } else {
           dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
         }
       },
-      disabled: !canWriteAuth,
+      disabled: !canWriteAuth || isConfigLoading,
     }),
-    [t, classes, canWriteAuth, isAgamaEnabled, dispatch, refetchRepositories],
+    [t, classes, canWriteAuth, isAgamaEnabled, isConfigLoading, dispatch, refetchRepositories, agamaRepositoriesData],
   )
 
   const deleteDialogLabel = useMemo(

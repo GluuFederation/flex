@@ -113,9 +113,14 @@ const GluuTabs = ({
 
   const tabLabels = useMemo(() => tabNames.map(getTabLabel), [tabNames, getTabLabel])
   const tabIds = useMemo(() => tabNames.map(getTabId), [tabNames, getTabId])
+  const hasNavTabs = useMemo(() => tabNames.some(isNavigationTab), [tabNames])
 
   useEffect(() => {
     if (!withNavigation) {
+      return
+    }
+
+    if (!hasNavTabs) {
       return
     }
 
@@ -142,7 +147,7 @@ const GluuTabs = ({
       navigateToRoute(activeTab.path, { replace: true })
     }
     setValue(activeIndex)
-  }, [withNavigation, tabNames, path.pathname, navigateToRoute, defaultTab])
+  }, [withNavigation, hasNavTabs, tabNames, path.pathname, navigateToRoute, defaultTab])
 
   const tabElements = useMemo(
     () =>

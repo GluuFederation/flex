@@ -49,6 +49,12 @@ const AcrsEditPage = (): ReactElement => {
   const { classes } = useStyles({ isDark, themeColors })
 
   useEffect(() => {
+    if (!atomItem) {
+      navigateToRoute(ROUTES.AUTH_SERVER_AUTHN, { replace: true })
+    }
+  }, [atomItem, navigateToRoute])
+
+  useEffect(() => {
     return () => {
       if (navigationTimeoutRef.current) {
         clearTimeout(navigationTimeoutRef.current)
@@ -122,7 +128,7 @@ const AcrsEditPage = (): ReactElement => {
             bindPassword: data.bindPassword,
             servers: Array.isArray(data.servers) ? data.servers : [data.servers],
             baseDNs: Array.isArray(data.baseDNs) ? data.baseDNs : [data.baseDNs],
-            primaryKey: data.primaryKey,
+            primaryKey: data.remotePrimaryKey,
             localPrimaryKey: data.localPrimaryKey,
             maxConnections:
               typeof data.maxConnections === 'string'
