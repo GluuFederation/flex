@@ -82,6 +82,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       tableOptions: [],
     },
   })
+  const [isCopied, setIsCopied] = useState<boolean>(false)
 
   const { data: projectDetailsData, isLoading: projectDetailsLoading } = useGetAgamaPrjByName(
     name,
@@ -192,7 +193,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     setConfigDetails((prevState) => ({ ...prevState, isLoading: configDetailsLoading }))
   }, [projectDetailsLoading, configDetailsLoading])
 
-  const [isCopied, setIsCopied] = useState<boolean>(false)
   const projectConfigs = projectDetails?.data?.details?.projectMetadata?.configs
 
   useEffect(() => {
@@ -330,6 +330,9 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     [handler],
   )
 
+  const tableComponents = useMemo(() => ({ Toolbar: () => null }), [])
+  const tableOptions = useMemo(() => ({ search: false, selection: false, paging: false }), [])
+
   if (!isOpen) return null
 
   return createPortal(
@@ -433,18 +436,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                     </Box>
                     <Box mt={2} className={classes.tableWrapper}>
                       <MaterialTable
-                        components={{
-                          Toolbar: () => null,
-                        }}
+                        components={tableComponents}
                         columns={tableColumns}
                         data={projectDetails.data?.tableOptions || []}
                         isLoading={projectDetails.isLoading}
                         title=""
-                        options={{
-                          search: false,
-                          selection: false,
-                          paging: false,
-                        }}
+                        options={tableOptions}
                       />
                     </Box>
                     {projectConfigs ? (

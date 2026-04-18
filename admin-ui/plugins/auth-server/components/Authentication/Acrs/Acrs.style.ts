@@ -4,7 +4,7 @@ import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { fontFamily, fontSizes, lineHeights } from '@/styles/fonts'
 import customColors from '@/customColors'
 
-interface AcrsStylesParams {
+type AcrsStylesParams = {
   themeColors: ThemeConfig
 }
 

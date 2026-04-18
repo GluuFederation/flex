@@ -1,30 +1,13 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_ACRS } from '@/audit/Resources'
 import type { AuthenticationMethod } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  } | null
-}
-
-interface RootState {
-  authReducer: AuthState
-}
-
 export function useAcrAudit() {
-  const authState = useSelector((state: RootState) => state.authReducer)
+  const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo
 

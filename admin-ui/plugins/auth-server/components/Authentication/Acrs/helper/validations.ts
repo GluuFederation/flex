@@ -1,9 +1,10 @@
 import * as Yup from 'yup'
-import { type AuthNItem } from '../../atoms'
+import type { AuthNItem } from '../../types'
+import { AUTH_METHOD_NAMES } from '../../constants'
 
 export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.AnyObjectSchema => {
-  const isBuiltIn = item?.name === 'simple_password_auth'
-  const isLdap = item?.name === 'default_ldap_password'
+  const isBuiltIn = item?.name === AUTH_METHOD_NAMES.SIMPLE_PASSWORD
+  const isLdap = item?.name === AUTH_METHOD_NAMES.DEFAULT_LDAP
   const isScript = !!item?.isCustomScript
 
   const baseSchema: Record<string, Yup.AnySchema> = {

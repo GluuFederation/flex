@@ -6,7 +6,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 
 const ICON_SIZE_MD = 20
 
-interface AuthenticationStylesParams {
+type AuthenticationStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }

@@ -16,10 +16,11 @@ import { useGetAcrs } from 'JansConfigApi'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { type AuthNItem } from '../atoms'
+import type { AuthNItem } from '../types'
 import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
 import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
+import { AUTH_METHOD_NAMES } from '../constants'
 import { getPropertiesConfig, type PropertyConfig } from './helper/acrUtils'
 
 export type AcrsFormValues = {
@@ -187,8 +188,8 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
     [formik, configurationProperties],
   )
 
-  const isSimplePassword = item.name === 'simple_password_auth'
-  const isLdap = item.name === 'default_ldap_password'
+  const isSimplePassword = item.name === AUTH_METHOD_NAMES.SIMPLE_PASSWORD
+  const isLdap = item.name === AUTH_METHOD_NAMES.DEFAULT_LDAP
   const isScript = !!item.isCustomScript
   const showSamlAndDescription = isSimplePassword || isScript
 

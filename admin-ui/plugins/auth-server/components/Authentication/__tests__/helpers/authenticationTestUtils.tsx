@@ -91,12 +91,6 @@ jest.mock('@/helpers/navigation', () => ({
   },
 }))
 
-jest.mock('jotai', () => ({
-  ...jest.requireActual('jotai'),
-  useSetAtom: jest.fn(() => jest.fn()),
-  useAtomValue: jest.fn(() => null),
-}))
-
 type WebhookRecord = Record<string, string>
 
 const defaultWebhookReducerState = {

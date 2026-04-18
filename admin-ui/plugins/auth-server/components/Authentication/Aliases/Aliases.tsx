@@ -63,6 +63,8 @@ const Aliases = ({
   const [selectedRow, setSelectedRow] = useState<AcrMappingTableRow | null>(null)
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
   const [itemToDelete, setItemToDelete] = useState<AcrMappingTableRow | null>(null)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
 
   SetTitle(t('titles.authentication'))
 
@@ -378,9 +380,6 @@ const Aliases = ({
       </div>
     </GluuLoader>
   ) : null
-
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
 
   const paginatedData = useMemo(
     () => listData.slice(page * rowsPerPage, (page + 1) * rowsPerPage),

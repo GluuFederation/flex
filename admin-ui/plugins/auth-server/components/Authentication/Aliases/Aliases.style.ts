@@ -57,8 +57,8 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       left: '50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: cardBg,
-      width: 'min(540px, 90vw)',
-      maxWidth: '540px',
+      width: 'min(720px, 90vw)',
+      maxWidth: '720px',
     },
     fieldsColumn: {
       display: 'flex',

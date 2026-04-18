@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import type { OidcState } from 'Redux/types'
+import type { OidcState } from 'Redux/types/authServerPluginState'
 import type { SetCurrentClientPayload, ViewOnlyPayload } from './types/oidcSlice'
 
 const initialState: OidcState = {

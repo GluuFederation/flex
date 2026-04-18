@@ -133,8 +133,8 @@ const PasswordChangeModal = ({
         try {
           await revokeSessionMutation.mutateAsync({ userDn })
           await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch {
-          // Silently ignore — 404 means the user has no active session
+        } catch (error) {
+          devLogger.warn('Session revoke failed (expected if user has no active session):', error)
         }
       }
 

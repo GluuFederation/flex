@@ -29,7 +29,7 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useDropzone } from 'react-dropzone'
+import { useDropzone, type FileRejection } from 'react-dropzone'
 import JSZip from 'jszip'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -55,7 +55,7 @@ import type {
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
-import { DATE_TIME_FORMAT_OPTIONS } from './constants'
+import { DATE_TIME_FORMAT_OPTIONS, ACCEPTED_PROJECT_TYPES, ACCEPTED_SHA_TYPES } from './constants'
 import { AUTH_RESOURCE_ID, AUTH_SCOPES } from '../constants'
 
 const agamaButtonStyle = {
@@ -278,23 +278,26 @@ const AgamaFlows: React.FC = () => {
     setSHAfile(file)
   }, [])
 
+  const handleProjectDropRejected = useCallback((fileRejections: FileRejection[]) => {
+    const error = fileRejections[0]?.errors[0]
+    if (error?.code === 'file-too-large') {
+      toast.error('File size exceeds 50MB limit')
+    }
+  }, [])
+
+  const handleShaDropRejected = useCallback(() => {
+    toast.error('SHA256 file size exceeds 1MB limit')
+  }, [])
+
   const {
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
     isDragActive: isDragActive1,
   } = useDropzone({
     onDrop: onDrop,
-    accept: {
-      'application/octet-stream': ['.gama'],
-      'application/x-zip-compressed': ['.zip'],
-    },
+    accept: ACCEPTED_PROJECT_TYPES,
     maxSize: 50 * 1024 * 1024,
-    onDropRejected: (fileRejections) => {
-      const error = fileRejections[0]?.errors[0]
-      if (error?.code === 'file-too-large') {
-        toast.error('File size exceeds 50MB limit')
-      }
-    },
+    onDropRejected: handleProjectDropRejected,
   })
 
   const {
@@ -303,13 +306,9 @@ const AgamaFlows: React.FC = () => {
     isDragActive: isDragActive2,
   } = useDropzone({
     onDrop: onSHA256FileDrop,
-    accept: {
-      'text/plain': ['.sha256sum'],
-    },
+    accept: ACCEPTED_SHA_TYPES,
     maxSize: 1024 * 1024,
-    onDropRejected: () => {
-      toast.error('SHA256 file size exceeds 1MB limit')
-    },
+    onDropRejected: handleShaDropRejected,
   })
 
   useSetTitle(t('titles.authentication'))
@@ -522,7 +521,18 @@ const AgamaFlows: React.FC = () => {
     [projectToDelete, deleteProjectMutation, logAgamaDeletion],
   )
 
-  const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
+  const radioSx = useMemo(
+    () => ({
+      'color': isDark ? '#3B638B' : undefined,
+      '&.Mui-checked': { color: themeColors.badges.statusActive },
+    }),
+    [isDark, themeColors.badges.statusActive],
+  )
+
+  const tabNames = useMemo(
+    () => [t('menus.upload_agama_project'), t('menus.add_community_project')],
+    [t],
+  )
 
   const tabToShow = useCallback(
     (tabName: string): React.ReactNode => {
@@ -630,12 +640,7 @@ const AgamaFlows: React.FC = () => {
                             <Radio
                               checked={repoName === item['repository-name']}
                               onChange={() => setRepoName(item['repository-name'])}
-                              sx={{
-                                'color': isDark ? '#3B638B' : undefined,
-                                '&.Mui-checked': {
-                                  color: themeColors.badges.statusActive,
-                                },
-                              }}
+                              sx={radioSx}
                             />
                           }
                           label={

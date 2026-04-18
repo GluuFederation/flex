@@ -5,24 +5,21 @@ import {
   createAuthenticationTestWrapper,
 } from '../../__tests__/helpers/authenticationTestUtils'
 import AcrsEditPage from '../AcrsEditPage'
-import { useAtomValue } from 'jotai'
+import type { AuthNItem } from '../../types'
 import {
   mockAuthenticationItem,
   mockBuiltInAuthenticationItem,
 } from '../../__tests__/fixtures/mockAuthenticationData'
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({
-    state: { authnTab: 2 },
-    pathname: '/auth-server/authn/edit/test',
-  })),
+type LocationState = { authnTab: number; selectedItem: AuthNItem | null }
+const mockUseLocation = jest.fn<{ state: LocationState; pathname: string }, []>(() => ({
+  state: { authnTab: 2, selectedItem: null },
+  pathname: '/auth-server/authn/edit/test',
 }))
 
-jest.mock('jotai', () => ({
-  ...jest.requireActual('jotai'),
-  useSetAtom: jest.fn(() => jest.fn()),
-  useAtomValue: jest.fn(() => null),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => mockUseLocation(),
 }))
 
 jest.mock('JansConfigApi', () => ({
@@ -53,20 +50,29 @@ describe('AcrsEditPage', () => {
     Wrapper = createAuthenticationTestWrapper(store)
   })
 
-  it('shows "No item selected" when no atom item is set', () => {
-    jest.mocked(useAtomValue).mockReturnValue(null)
+  it('shows "No item selected" when no item is in location state', () => {
+    mockUseLocation.mockReturnValue({
+      state: { authnTab: 2, selectedItem: null },
+      pathname: '/auth-server/authn/edit/test',
+    })
     render(<AcrsEditPage />, { wrapper: Wrapper })
     expect(screen.getByText(/No item selected/i)).toBeInTheDocument()
   })
 
-  it('renders AcrsForm when a script item is selected', () => {
-    jest.mocked(useAtomValue).mockReturnValue(mockAuthenticationItem)
+  it('renders AcrsForm when a script item is in location state', () => {
+    mockUseLocation.mockReturnValue({
+      state: { authnTab: 2, selectedItem: mockAuthenticationItem },
+      pathname: '/auth-server/authn/edit/test',
+    })
     render(<AcrsEditPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Level/i)).toBeInTheDocument()
   })
 
-  it('renders AcrsForm when a built-in item is selected', () => {
-    jest.mocked(useAtomValue).mockReturnValue(mockBuiltInAuthenticationItem)
+  it('renders AcrsForm when a built-in item is in location state', () => {
+    mockUseLocation.mockReturnValue({
+      state: { authnTab: 2, selectedItem: mockBuiltInAuthenticationItem },
+      pathname: '/auth-server/authn/edit/test',
+    })
     render(<AcrsEditPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Level/i)).toBeInTheDocument()
   })

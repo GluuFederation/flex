@@ -2,6 +2,7 @@ import type { AcrMapping, ApiError } from '../types'
 import type { AgamaJsonPatchRequestBody } from '../types/agamaTypes'
 import type { AcrMappingFormValues } from '../types/formTypes'
 import type { ActionData } from 'Utils/PermChecker'
+import { JSON_PATCH_PATHS, JSON_PATCH_OPS } from '../../constants'
 
 export const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>
   error instanceof Error ? error.message || fallback : error?.message || fallback
@@ -25,9 +26,9 @@ export const buildAcrMappingPayload = (
   return {
     requestBody: [
       {
-        path: '/acrMappings',
+        path: JSON_PATCH_PATHS.ACR_MAPPINGS,
         value: mappings,
-        op: existingMappings ? 'replace' : 'add',
+        op: existingMappings ? JSON_PATCH_OPS.REPLACE : JSON_PATCH_OPS.ADD,
       },
     ],
   }
@@ -41,8 +42,8 @@ export const buildAcrMappingDeletePayload = (
     return {
       requestBody: [
         {
-          path: '/acrMappings',
-          op: 'remove',
+          path: JSON_PATCH_PATHS.ACR_MAPPINGS,
+          op: JSON_PATCH_OPS.REMOVE,
         },
       ],
     }
@@ -50,9 +51,9 @@ export const buildAcrMappingDeletePayload = (
   return {
     requestBody: [
       {
-        path: '/acrMappings',
+        path: JSON_PATCH_PATHS.ACR_MAPPINGS,
         value: mappings,
-        op: existingMappings ? 'replace' : 'add',
+        op: existingMappings ? JSON_PATCH_OPS.REPLACE : JSON_PATCH_OPS.ADD,
       },
     ],
   }

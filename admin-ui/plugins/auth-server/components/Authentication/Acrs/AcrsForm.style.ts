@@ -12,7 +12,7 @@ export const errorTextStyle: CSSProperties = {
   marginTop: -12,
 }
 
-interface AcrsFormStylesParams {
+type AcrsFormStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }

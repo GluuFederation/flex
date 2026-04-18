@@ -3,7 +3,7 @@ import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY, SPACING } from
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
-interface DefaultAcrStylesParams {
+type DefaultAcrStylesParams = {
   themeColors: ThemeConfig
 }
 

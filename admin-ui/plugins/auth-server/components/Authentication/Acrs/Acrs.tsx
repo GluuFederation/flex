@@ -1,6 +1,5 @@
 import { useEffect, useCallback, useMemo, useState, type ReactElement } from 'react'
 import { Edit, Check, Close } from '@mui/icons-material'
-import { useSetAtom } from 'jotai'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -15,8 +14,15 @@ import { AUTHN } from 'Utils/ApiResources'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
 import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
-import { currentAuthNItemAtom, type AuthNItem } from '../atoms'
-import { BUILT_IN_ACRS, AUTH_RESOURCE_ID, AUTH_SCOPES, PAGE_SIZE } from '../constants'
+import type { AuthNItem } from '../types'
+import {
+  BUILT_IN_ACRS,
+  AUTH_RESOURCE_ID,
+  AUTH_SCOPES,
+  PAGE_SIZE,
+  AUTH_METHOD_NAMES,
+  SCRIPT_TYPES,
+} from '../constants'
 import { useStyles } from './Acrs.style'
 import { displayOrDash } from './helper/acrUtils'
 
@@ -27,7 +33,6 @@ type AcrsProps = {
 const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
-  const setCurrentItem = useSetAtom(currentAuthNItemAtom)
   const { navigateToRoute } = useAppNavigation()
 
   const { state: themeState } = useTheme()
@@ -37,19 +42,24 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
   const { classes } = useStyles({ themeColors })
 
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
+
   const canReadAuthN = useMemo(
     () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
+  )
+  const canWriteAuthN = useMemo(
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   const { data: ldapConfigurations = [], isLoading: ldapLoading } = useGetConfigDatabaseLdap({
     query: { staleTime: 30000, enabled: canReadAuthN },
   })
-
   const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
     query: { staleTime: 30000, enabled: canReadAuthN },
   })
-
   const { data: scriptsResponse, isLoading: scriptsLoading } = useCustomScriptsByType(
     DEFAULT_SCRIPT_TYPE,
     undefined,
@@ -58,24 +68,18 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   SetTitle(t('titles.authentication'))
 
-  const canWriteAuthN = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-
   useEffect(() => {
     authorizeHelper(AUTH_SCOPES)
   }, [authorizeHelper])
 
   const handleGoToAuthNEditPage = useCallback(
     (row: AuthNItem) => {
-      setCurrentItem(row)
       const id = row.inum || row.acrName || row.name || 'built-in'
       return navigateToRoute(ROUTES.AUTH_SERVER_AUTHN_EDIT(id), {
-        state: { authnTab: isBuiltIn ? 1 : 2 },
+        state: { authnTab: isBuiltIn ? 1 : 2, selectedItem: row },
       })
     },
-    [setCurrentItem, navigateToRoute, isBuiltIn],
+    [navigateToRoute, isBuiltIn],
   )
 
   const ldapItems = useMemo<AuthNItem[]>(() => {
@@ -96,7 +100,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
         localPrimaryKey: config.localPrimaryKey,
         enabled: config.enabled,
         level: config.level,
-        name: 'default_ldap_password',
+        name: AUTH_METHOD_NAMES.DEFAULT_LDAP,
         acrName: config.configId,
       }))
   }, [ldapConfigurations, ldapLoading])
@@ -110,7 +114,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       .filter((item: AuthNItem) => item.enabled === true)
       .map((item: AuthNItem) => ({
         ...item,
-        name: 'myAuthnScript',
+        name: item.scriptType || SCRIPT_TYPES.PERSON_AUTHENTICATION,
         acrName: item.name,
         isCustomScript: true,
       }))
@@ -250,9 +254,6 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
 
   const isLoading = ldapLoading || scriptsLoading || acrsLoading
-
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
 
   const paginatedData = useMemo(
     () => tableData.slice(page * rowsPerPage, (page + 1) * rowsPerPage),

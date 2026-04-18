@@ -15,7 +15,7 @@ import Acrs from './Acrs/Acrs'
 import Aliases from './Aliases/Aliases'
 import AgamaFlows from './AgamaFlows/AgamaFlows'
 import { useStyles } from './styles/Authentication.style'
-import { ALIASES_TAB_INDEX } from './constants'
+import { ALIASES_TAB_INDEX, TAB_IDS } from './constants'
 
 type TabName = {
   id: string
@@ -52,11 +52,11 @@ function Authentication(): ReactElement {
 
   const tabNames = useMemo<TabName[]>(
     () => [
-      { id: 'default_acr', name: t('menus.default_acr'), path: '' },
-      { id: 'builtIn', name: t('menus.builtIn'), path: '' },
-      { id: 'acrs', name: t('menus.acrs'), path: '' },
-      { id: 'aliases', name: t('menus.aliases'), path: '' },
-      { id: 'agama_flows', name: t('menus.agama_flows'), path: '' },
+      { id: TAB_IDS.DEFAULT_ACR, name: t('menus.default_acr'), path: '' },
+      { id: TAB_IDS.BUILT_IN, name: t('menus.builtIn'), path: '' },
+      { id: TAB_IDS.ACRS, name: t('menus.acrs'), path: '' },
+      { id: TAB_IDS.ALIASES, name: t('menus.aliases'), path: '' },
+      { id: TAB_IDS.AGAMA_FLOWS, name: t('menus.agama_flows'), path: '' },
     ],
     [t],
   )
@@ -85,20 +85,20 @@ function Authentication(): ReactElement {
   const tabToShow = useCallback(
     (tabId: string): ReactElement | undefined => {
       switch (tabId) {
-        case 'default_acr':
+        case TAB_IDS.DEFAULT_ACR:
           return <DefaultAcr />
-        case 'builtIn':
+        case TAB_IDS.BUILT_IN:
           return <BuiltIn />
-        case 'acrs':
+        case TAB_IDS.ACRS:
           return <Acrs />
-        case 'aliases':
+        case TAB_IDS.ALIASES:
           return (
             <Aliases
               onRegisterAddHandler={handleRegisterAliasAdd}
               onWritePermissionChange={setCanEditAliases}
             />
           )
-        case 'agama_flows':
+        case TAB_IDS.AGAMA_FLOWS:
           return <AgamaFlows />
         default:
           return undefined

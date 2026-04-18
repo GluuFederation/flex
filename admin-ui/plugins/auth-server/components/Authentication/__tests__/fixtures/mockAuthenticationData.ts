@@ -1,4 +1,4 @@
-import type { AuthNItem } from '../../atoms'
+import type { AuthNItem } from '../../types'
 
 export const mockAcrs = {
   defaultAcr: 'simple_password_auth',

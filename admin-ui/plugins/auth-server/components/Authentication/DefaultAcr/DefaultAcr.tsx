@@ -44,10 +44,22 @@ function DefaultAcr(): React.ReactElement {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAcrUpdate } = useAcrAudit()
+  const { t } = useTranslation()
+
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState.theme || DEFAULT_THEME
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ themeColors })
+
+  const [modal, setModal] = useState<boolean>(false)
 
   const canReadAuth = useMemo(
     () => hasCedarReadPermission(AUTH_RESOURCE_ID),
     [hasCedarReadPermission],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
+    [hasCedarWritePermission],
   )
 
   const { data: scriptsResponse, isLoading: loadingScripts } = useCustomScriptsByType(
@@ -55,7 +67,6 @@ function DefaultAcr(): React.ReactElement {
     undefined,
     { enabled: canReadAuth },
   )
-
   const {
     data: acrs,
     isLoading: acrLoading,
@@ -66,8 +77,15 @@ function DefaultAcr(): React.ReactElement {
       enabled: canReadAuth,
     },
   })
+  const {
+    data: projectsResponse,
+    isLoading: agamaLoading,
+    error,
+  } = useGetAgamaPrj(
+    { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
+    { query: { enabled: canReadAuth } },
+  )
 
-  // Mutation for updating ACR
   const handleUpdateSuccess = useCallback(() => {
     dispatch(updateToast(true, 'success'))
     queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
@@ -88,30 +106,7 @@ function DefaultAcr(): React.ReactElement {
     },
   })
 
-  // Fetch Agama projects using React Query
-  const {
-    data: projectsResponse,
-    isLoading: agamaLoading,
-    error,
-  } = useGetAgamaPrj(
-    { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
-    { query: { enabled: canReadAuth } },
-  )
-
-  const { t } = useTranslation()
-
-  const [modal, setModal] = useState<boolean>(false)
   SetTitle(t('titles.authentication'))
-
-  const { state: themeState } = useTheme()
-  const selectedTheme = themeState.theme || DEFAULT_THEME
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useStyles({ themeColors })
-
-  const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   useEffect(() => {
     if (AUTH_SCOPES.length > 0) {
@@ -119,7 +114,6 @@ function DefaultAcr(): React.ReactElement {
     }
   }, [authorizeHelper])
 
-  // Surface ACR fetch failures
   useEffect(() => {
     if (acrError) {
       const errorMessage = (acrError as Error)?.message || 'Failed to fetch ACR configuration'
@@ -127,7 +121,6 @@ function DefaultAcr(): React.ReactElement {
     }
   }, [acrError, dispatch])
 
-  // Surface Agama fetch failures
   useEffect(() => {
     if (error) {
       const errorMessage =
@@ -171,7 +164,6 @@ function DefaultAcr(): React.ReactElement {
 
   const submitForm = async (userMessage: string): Promise<void> => {
     toggle()
-
     const acrValue = formik.values.defaultAcr
     if (!acrValue) {
       return
@@ -192,8 +184,8 @@ function DefaultAcr(): React.ReactElement {
           ),
         )
       }
-    } catch {
-      // Mutation error handling is done in onError callback
+    } catch (error) {
+      devLogger.error('Failed to update ACR:', error)
     }
   }
 

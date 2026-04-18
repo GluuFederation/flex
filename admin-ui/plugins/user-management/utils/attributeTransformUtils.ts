@@ -104,7 +104,7 @@ export const hadOriginalValue = (originalAttr?: CustomAttribute): boolean => {
   if (!originalAttr) return false
   return Boolean(
     (originalAttr.values && originalAttr.values.length > 0) ||
-      (originalAttr.value !== undefined && originalAttr.value !== null),
+    (originalAttr.value !== undefined && originalAttr.value !== null),
   )
 }
 

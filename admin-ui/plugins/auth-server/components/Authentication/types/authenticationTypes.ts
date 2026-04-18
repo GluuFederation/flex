@@ -1,6 +1,4 @@
-import { atom } from 'jotai'
-
-export interface ConfigurationProperty {
+export type ConfigurationProperty = {
   key?: string
   value?: string
   value1?: string
@@ -8,11 +6,13 @@ export interface ConfigurationProperty {
   hide?: boolean
 }
 
-export interface AuthNItem {
+export type AuthNItem = {
   inum?: string
   name?: string
   acrName?: string
   isCustomScript?: boolean
+  scriptType?: string
+  defaultAuthNMethod?: boolean | string
   level?: number
   samlACR?: string
   description?: string
@@ -33,4 +33,14 @@ export interface AuthNItem {
   configurationProperties?: ConfigurationProperty[]
 }
 
-export const currentAuthNItemAtom = atom<AuthNItem | null>(null)
+export type BuiltInAcr = {
+  name: string
+  level: number
+  description: string
+  samlACR: string
+  primaryKey: string
+  passwordAttribute: string
+  hashAlgorithm: string
+  defaultAuthNMethod: boolean
+  acrName: string
+}

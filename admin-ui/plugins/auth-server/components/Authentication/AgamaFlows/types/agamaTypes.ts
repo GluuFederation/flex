@@ -1,30 +1,30 @@
 import type { Deployment } from 'JansConfigApi'
 import type { JsonValue, JsonObject } from 'Routes/Apps/Gluu/types/common'
 
-export interface AgamaProject extends Deployment {
+export type AgamaProject = Deployment & {
   deployed_on: string
   type: string
   status: 'Processed' | 'Pending'
   error: 'Yes' | 'No' | ''
 }
 
-export interface AgamaRepository {
+export type AgamaRepository = {
   'repository-name': string
   'download-link': string
   'description': string
   'sha256sum'?: string
 }
 
-export interface AgamaRepositoriesResponse {
+export type AgamaRepositoriesResponse = {
   projects: AgamaRepository[]
 }
 
-export interface AcrMapping {
+export type AcrMapping = {
   mapping: string
   source: string
 }
 
-export interface FlowError {
+export type FlowError = {
   flow: string
   error: string
 }
@@ -35,18 +35,18 @@ export type AcrMappingTableRow = AcrMapping & {
   }
 }
 
-export interface AgamaJsonPatch {
+export type AgamaJsonPatch = {
   op: 'add' | 'remove' | 'replace'
   path: string
   value?: Record<string, string>
-  [key: string]: unknown
+  [key: string]: JsonValue | undefined
 }
 
-export interface AgamaJsonPatchRequestBody {
+export type AgamaJsonPatchRequestBody = {
   requestBody: AgamaJsonPatch[]
 }
 
-export interface ProjectDetailsState {
+export type ProjectDetailsState = {
   isLoading: boolean
   data: {
     statusCode?: number
@@ -54,18 +54,18 @@ export interface ProjectDetailsState {
   } & Deployment
 }
 
-export interface ConfigDetailsState {
+export type ConfigDetailsState = {
   isLoading: boolean
   data: JsonObject
 }
 
-export interface AgamaTableRow extends AgamaProject {
+export type AgamaTableRow = AgamaProject & {
   tableData?: {
     id: number
   }
 }
 
-export interface ModifiedFields {
+export type ModifiedFields = {
   [key: string]: JsonValue
 }
 

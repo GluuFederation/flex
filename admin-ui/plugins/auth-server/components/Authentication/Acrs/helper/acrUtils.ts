@@ -1,10 +1,10 @@
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import type { Deployment } from 'JansConfigApi'
 import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
-import type { AuthNItem, ConfigurationProperty } from '../../atoms'
+import type { AuthNItem, ConfigurationProperty } from '../../types'
 import { EMPTY_PLACEHOLDER } from '../constants'
 
-export interface DropdownOption {
+export type DropdownOption = {
   label: string
   value: string
 }
@@ -48,7 +48,7 @@ export const transformConfigurationProperties = (
     }))
 }
 
-interface ScriptOption {
+type ScriptOption = {
   key: string
   value: string
 }
