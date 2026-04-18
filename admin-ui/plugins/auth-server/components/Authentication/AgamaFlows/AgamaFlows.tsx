@@ -834,7 +834,16 @@ const AgamaFlows: React.FC = () => {
       },
       disabled: !canWriteAuth || isConfigLoading,
     }),
-    [t, classes, canWriteAuth, isAgamaEnabled, isConfigLoading, dispatch, refetchRepositories, agamaRepositoriesData],
+    [
+      t,
+      classes,
+      canWriteAuth,
+      isAgamaEnabled,
+      isConfigLoading,
+      dispatch,
+      refetchRepositories,
+      agamaRepositoriesData,
+    ],
   )
 
   const deleteDialogLabel = useMemo(

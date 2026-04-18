@@ -3,6 +3,7 @@ import { Edit, Check, Close } from '@mui/icons-material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
@@ -271,25 +272,26 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
-      <div className={classes.page}>
-        <GluuTable<AuthNItem>
-          columns={columns}
-          data={paginatedData}
-          loading={isLoading}
-          expandable
-          renderExpandedRow={renderExpandedRow}
-          actions={actions}
-          getRowKey={getRowKey}
-          pagination={{
-            page,
-            rowsPerPage,
-            totalItems: tableData.length,
-            onPageChange: handlePageChange,
-            onRowsPerPageChange: handleRowsPerPageChange,
-          }}
-          emptyMessage={t('messages.no_data')}
-        />
-      </div>
+      <GluuLoader blocking={isLoading}>
+        <div className={classes.page}>
+          <GluuTable<AuthNItem>
+            columns={columns}
+            data={paginatedData}
+            expandable
+            renderExpandedRow={renderExpandedRow}
+            actions={actions}
+            getRowKey={getRowKey}
+            pagination={{
+              page,
+              rowsPerPage,
+              totalItems: tableData.length,
+              onPageChange: handlePageChange,
+              onRowsPerPageChange: handleRowsPerPageChange,
+            }}
+            emptyMessage={t('messages.no_data')}
+          />
+        </div>
+      </GluuLoader>
     </GluuViewWrapper>
   )
 }

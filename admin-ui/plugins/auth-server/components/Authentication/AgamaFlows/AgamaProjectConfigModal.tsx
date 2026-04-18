@@ -18,12 +18,7 @@ import getThemeColor from 'Context/theme/config'
 import { useStyles } from './AgamaProjectConfigModal.style'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
-import type {
-  AgamaProjectConfigModalProps,
-  FlowError,
-  JsonObject,
-  ApiError,
-} from './types'
+import type { AgamaProjectConfigModalProps, FlowError, JsonObject, ApiError } from './types'
 import { useAppDispatch } from '@/redux/hooks'
 import { getErrorMessage } from './helper'
 
@@ -264,7 +259,9 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   if (!isOpen) return null
 
   return createPortal(
-    <GluuLoader blocking={projectDetailsFetching || configDetailsFetching || updateConfigMutation.isPending}>
+    <GluuLoader
+      blocking={projectDetailsFetching || configDetailsFetching || updateConfigMutation.isPending}
+    >
       <button
         type="button"
         className={commitClasses.overlay}
