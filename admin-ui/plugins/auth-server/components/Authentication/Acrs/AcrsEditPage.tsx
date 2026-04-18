@@ -108,6 +108,10 @@ const AcrsEditPage = (): ReactElement => {
       setErrorMessage(undefined)
 
       const isDefault = isDefaultAuthNMethod(data.defaultAuthNMethod)
+      const originalIsDefault =
+        atomItem.defaultAuthNMethod !== undefined
+          ? isDefaultAuthNMethod(atomItem.defaultAuthNMethod)
+          : false
 
       try {
         if (atomItem.name === AUTH_METHOD_NAMES.SIMPLE_PASSWORD) {
@@ -159,6 +163,23 @@ const AcrsEditPage = (): ReactElement => {
               setIsSubmitting(false)
               return
             }
+          } else if (originalIsDefault) {
+            try {
+              await putAcrsMutation.mutateAsync({ data: { defaultAcr: '' } })
+            } catch {
+              dispatch(
+                updateToast(
+                  true,
+                  'warning',
+                  t(
+                    'messages.ldap_saved_acr_failed',
+                    'LDAP config saved, but failed to clear default ACR',
+                  ),
+                ),
+              )
+              setIsSubmitting(false)
+              return
+            }
           }
           handleSuccess()
         } else {
@@ -186,6 +207,23 @@ const AcrsEditPage = (): ReactElement => {
                   t(
                     'messages.script_saved_acr_failed',
                     'Script config saved, but failed to set default ACR',
+                  ),
+                ),
+              )
+              setIsSubmitting(false)
+              return
+            }
+          } else if (originalIsDefault) {
+            try {
+              await putAcrsMutation.mutateAsync({ data: { defaultAcr: '' } })
+            } catch {
+              dispatch(
+                updateToast(
+                  true,
+                  'warning',
+                  t(
+                    'messages.script_saved_acr_failed',
+                    'Script config saved, but failed to clear default ACR',
                   ),
                 ),
               )

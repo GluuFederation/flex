@@ -824,6 +824,7 @@
     "company_name": "Gluu Inc."
   },
   "messages": {
+    "copy_failed": "Failed to copy to clipboard",
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",

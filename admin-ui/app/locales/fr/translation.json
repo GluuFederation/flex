@@ -800,6 +800,7 @@
     "company_name": "Gluu Inc."
   },
   "messages": {
+    "copy_failed": "Échec de la copie dans le presse-papiers",
     "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
     "add_permission": "Ajouter une autorisation",
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",

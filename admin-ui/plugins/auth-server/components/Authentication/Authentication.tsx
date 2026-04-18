@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo, useState, useCallback, useRef } from 'react'
+import { type ReactElement, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { Add } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
@@ -40,6 +40,10 @@ function Authentication(): ReactElement {
 
   const [activeTab, setActiveTab] = useState(defaultTab)
   const [canEditAliases, setCanEditAliases] = useState(false)
+
+  useEffect(() => {
+    setActiveTab(defaultTab)
+  }, [defaultTab])
   const aliasAddHandlerRef = useRef<(() => void) | null>(null)
 
   const handleRegisterAliasAdd = useCallback((fn: () => void) => {

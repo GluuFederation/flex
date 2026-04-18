@@ -789,6 +789,7 @@
     "company_name": "Gluu Inc."
   },
   "messages": {
+    "copy_failed": "Falha ao copiar para a área de transferência",
     "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
     "add_permission": "Adicionar permissão",
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",

@@ -822,6 +822,7 @@
     "company_name": "Gluu Inc."
   },
   "messages": {
+    "copy_failed": "Error al copiar al portapapeles",
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",

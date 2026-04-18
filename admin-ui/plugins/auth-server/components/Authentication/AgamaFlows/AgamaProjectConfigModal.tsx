@@ -133,9 +133,14 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     return () => clearTimeout(timer)
   }, [isCopied])
 
-  const copyToClipboard = (): void => {
-    setIsCopied(true)
-    navigator.clipboard.writeText(JSON.stringify(projectConfigs, null, 2))
+  const copyToClipboard = async (): Promise<void> => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(projectConfigs, null, 2))
+      setIsCopied(true)
+    } catch (error) {
+      devLogger.error('Failed to copy to clipboard:', error)
+      dispatch(updateToast(true, 'error', t('messages.copy_failed')))
+    }
   }
 
   const handleImportConfig = async (): Promise<void> => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
@@ -98,6 +98,7 @@ const AgamaFlows: React.FC = () => {
   const [repoName, setRepoName] = useState<string | null>(null)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
   const [deployLoading, setDeployLoading] = useState<boolean>(false)
+  const shaRequestIdRef = useRef(0)
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -334,7 +335,7 @@ const AgamaFlows: React.FC = () => {
         const status = deploymentProject?.finishedAt ? 'Processed' : 'Pending'
         const deployed_on = deploymentProject?.finishedAt
           ? new Intl.DateTimeFormat('en-US', DATE_TIME_FORMAT_OPTIONS).format(
-              new Date(deploymentProject.createdAt || ''),
+              new Date(deploymentProject.finishedAt || ''),
             )
           : '-'
         data.push({
@@ -364,13 +365,14 @@ const AgamaFlows: React.FC = () => {
   }, [])
 
   const getSHA256 = useCallback(
-    async (sha256sum: string): Promise<void> => {
+    async (sha256sum: string, requestId: number): Promise<void> => {
       if (!selectedFile) return
 
       const uint8Array = new Uint8Array(await new Blob([selectedFile]).arrayBuffer())
       const hashBuffer = await crypto.subtle.digest('SHA-256', uint8Array)
       const hashArray = Array.from(new Uint8Array(hashBuffer))
       const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+      if (requestId !== shaRequestIdRef.current) return
       setShaStatus(hashHex === sha256sum)
     },
     [selectedFile],
@@ -379,13 +381,14 @@ const AgamaFlows: React.FC = () => {
   const verifySHA256Hash = useCallback((): void => {
     if (!shaFile) return
 
+    const requestId = ++shaRequestIdRef.current
     const reader = new FileReader()
 
     reader.onload = () => {
       const sha256sum = reader.result as string
       const sha256sumValue = sha256sum.trim().split(/\s+/)[0]?.toLowerCase()
       if (sha256sumValue) {
-        getSHA256(sha256sumValue)
+        getSHA256(sha256sumValue, requestId)
       }
     }
 
@@ -421,7 +424,7 @@ const AgamaFlows: React.FC = () => {
       const status = updatedData?.finishedAt ? 'Processed' : 'Pending'
       const deployed_on = updatedData?.finishedAt
         ? new Intl.DateTimeFormat('en-US', DATE_TIME_FORMAT_OPTIONS).format(
-            new Date(updatedData.createdAt || ''),
+            new Date(updatedData.finishedAt || ''),
           )
         : '-'
 
@@ -516,11 +519,16 @@ const AgamaFlows: React.FC = () => {
       if (!projName) return
       try {
         await deleteProjectMutation.mutateAsync({ name: projName })
-        await logAgamaDeletion(projectToDelete as Deployment, message)
-        setDeleteModal(false)
-        setProjectToDelete(null)
       } catch (error) {
         devLogger.error('Error deleting project:', error)
+        return
+      }
+      setDeleteModal(false)
+      setProjectToDelete(null)
+      try {
+        await logAgamaDeletion(projectToDelete as Deployment, message)
+      } catch (error) {
+        devLogger.error('Error logging agama deletion:', error)
       }
     },
     [projectToDelete, deleteProjectMutation, logAgamaDeletion],
