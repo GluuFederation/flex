@@ -46,10 +46,9 @@ import type { Dayjs } from 'dayjs'
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const sessionResourceId = ADMIN_UI_RESOURCES.Session
 const SESSION_SCOPES = CEDAR_RESOURCE_SCOPES[sessionResourceId] || []
-const SESSION_ATTRIBUTE_FILTER_FIELDS = ['client_id', 'auth_user'] as const
 const DATE_FILTER_FIELDS = ['expirationDate', 'authenticationTime'] as const
 const FILTER_FIELD_OPTIONS = [
-  { value: '', labelKey: 'options.none' },
+  { value: '', labelKey: 'options.choose' },
   { value: 'client_id', labelKey: 'fields.client_id_used' },
   { value: 'auth_user', labelKey: 'fields.username' },
   { value: 'expirationDate', labelKey: 'titles.expiration_date' },
@@ -58,13 +57,6 @@ const FILTER_FIELD_OPTIONS = [
 
 const displayOrDash = (value: JsonValue | undefined): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
-
-const isSessionAttributeFilter = (
-  field: string,
-): field is (typeof SESSION_ATTRIBUTE_FILTER_FIELDS)[number] =>
-  SESSION_ATTRIBUTE_FILTER_FIELDS.includes(
-    field as (typeof SESSION_ATTRIBUTE_FILTER_FIELDS)[number],
-  )
 
 const isDateFilterField = (field: string): field is (typeof DATE_FILTER_FIELDS)[number] =>
   DATE_FILTER_FIELDS.includes(field as (typeof DATE_FILTER_FIELDS)[number])
@@ -108,10 +100,8 @@ const SessionListPage: React.FC = () => {
   const [filterSearchField, setFilterSearchField] = useState('')
   const [filterTextValue, setFilterTextValue] = useState('')
   const [filterDateValue, setFilterDateValue] = useState<Dayjs | null>(null)
-  const [isFilterApplied, setIsFilterApplied] = useState(false)
-  const [appliedFilterField, setAppliedFilterField] = useState('')
-  const [appliedFilterValue, setAppliedFilterValue] = useState('')
   const [showFilter, setShowFilter] = useState(false)
+  const [filterPendingClose, setFilterPendingClose] = useState(false)
 
   const [deleteModal, setDeleteModal] = useState(false)
   const [revokeModal, setRevokeModal] = useState(false)
@@ -128,6 +118,13 @@ const SessionListPage: React.FC = () => {
       authorizeHelper(SESSION_SCOPES)
     }
   }, [authorizeHelper])
+
+  useEffect(() => {
+    if (filterPendingClose && !searchLoading && !sessionsLoading) {
+      setFilterPendingClose(false)
+      setShowFilter(false)
+    }
+  }, [filterPendingClose, searchLoading, sessionsLoading])
 
   const adaptSessionIdToSession = useCallback(
     (sessionId: SessionId): Session => ({
@@ -151,31 +148,15 @@ const SessionListPage: React.FC = () => {
   )
 
   const sessions = useMemo(() => {
-    let rawSessions: SessionId[] = []
-    if (searchParams && searchData) {
-      rawSessions = searchData.entries || []
-    } else if (!searchParams && sessionsData?.entries) {
-      rawSessions = sessionsData.entries
-    }
+    const rawSessions =
+      searchParams && searchData ? (searchData.entries ?? []) : (sessionsData?.entries ?? [])
     return rawSessions.map(adaptSessionIdToSession)
   }, [sessionsData, searchData, searchParams, adaptSessionIdToSession])
 
-  const authenticatedSessions = useMemo(() => {
-    let filtered = sessions.filter((session) => session.state === AUTHENTICATED_SESSION_STATE)
-
-    if (isFilterApplied && appliedFilterValue && isSessionAttributeFilter(appliedFilterField)) {
-      const searchValue = appliedFilterValue.toLowerCase()
-      filtered = filtered.filter((session) => {
-        const fieldValue =
-          appliedFilterField === 'client_id'
-            ? session.sessionAttributes?.client_id
-            : session.sessionAttributes?.auth_user
-        return fieldValue?.toLowerCase().includes(searchValue)
-      })
-    }
-
-    return filtered
-  }, [sessions, appliedFilterValue, appliedFilterField, isFilterApplied])
+  const authenticatedSessions = useMemo(
+    () => sessions.filter((session) => session.state === AUTHENTICATED_SESSION_STATE),
+    [sessions],
+  )
 
   const totalItems = authenticatedSessions.length
 
@@ -190,8 +171,11 @@ const SessionListPage: React.FC = () => {
     const usernames = [
       ...new Set(authenticatedSessions.map((s) => s.sessionAttributes?.auth_user).filter(Boolean)),
     ]
-    return usernames.map((u) => ({ value: u as string, label: u as string }))
-  }, [authenticatedSessions])
+    return [
+      { value: '', label: t('options.choose') },
+      ...usernames.map((u) => ({ value: u as string, label: u as string })),
+    ]
+  }, [authenticatedSessions, t])
 
   SetTitle(t('menus.sessions'))
 
@@ -270,7 +254,6 @@ const SessionListPage: React.FC = () => {
     setFilterTextValue('')
     setFilterDateValue(null)
     setSearchParams(undefined)
-    setIsFilterApplied(false)
   }, [])
 
   const handleFilterTextChange = useCallback((value: string) => {
@@ -283,35 +266,20 @@ const SessionListPage: React.FC = () => {
 
   const handleFilterApply = useCallback(() => {
     if (filterTextValue || filterDateValue) {
-      if (isSessionAttributeFilter(filterSearchField)) {
-        setSearchParams(undefined)
-        setAppliedFilterField(filterSearchField)
-        setAppliedFilterValue(filterTextValue)
-        setIsFilterApplied(true)
-      } else if (isDateFilterField(filterSearchField)) {
-        const searchValue = formatDate(filterDateValue, 'YYYY-MM-DD')
-        setSearchParams({
-          fieldValuePair: `${filterSearchField}=${searchValue}`,
-          limit: 100,
-        })
-        setIsFilterApplied(false)
-      }
+      const searchValue = isDateFilterField(filterSearchField)
+        ? formatDate(filterDateValue, 'YYYY-MM-DD')
+        : filterTextValue
+      setSearchParams({ fieldValuePair: `${filterSearchField}=${searchValue}`, limit: 100 })
     } else {
       setSearchParams(undefined)
-      setIsFilterApplied(false)
-      setAppliedFilterField('')
-      setAppliedFilterValue('')
     }
     setPageNumber(0)
-    setShowFilter(false)
+    setFilterPendingClose(true)
   }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber])
 
   const handleFilterCancel = useCallback(() => {
     setShowFilter(false)
     setSearchParams(undefined)
-    setIsFilterApplied(false)
-    setAppliedFilterField('')
-    setAppliedFilterValue('')
     setFilterSearchField('')
     setFilterTextValue('')
     setFilterDateValue(null)
@@ -319,6 +287,12 @@ const SessionListPage: React.FC = () => {
   }, [setPageNumber])
 
   const isDateFilter = isDateFilterField(filterSearchField)
+
+  const isApplyDisabled = useMemo(() => {
+    if (!filterSearchField) return true
+    if (isDateFilter) return !filterDateValue
+    return !filterTextValue.trim()
+  }, [filterSearchField, isDateFilter, filterDateValue, filterTextValue])
 
   const filterFields: FilterField[] = useMemo(
     () => [
@@ -574,11 +548,9 @@ const SessionListPage: React.FC = () => {
                 <div className={classes.searchToolbarWrapper}>
                   <GluuSearchToolbar
                     searchLabel={canDelete ? t('fields.selectUserRevoke') : undefined}
-                    searchPlaceholder={t('fields.username')}
                     searchValue={revokeUsername ?? ''}
                     selectOptions={usernameSelectOptions}
                     onSelectChange={handleUsernameSelectChange}
-                    selectPlaceholder={t('fields.username')}
                     disabled={loading}
                   />
                 </div>
@@ -636,6 +608,8 @@ const SessionListPage: React.FC = () => {
                     fields={filterFields}
                     onApply={handleFilterApply}
                     onCancel={handleFilterCancel}
+                    applyDisabled={isApplyDisabled}
+                    className={classes.filterPopover}
                   />
                 </div>
               </div>
