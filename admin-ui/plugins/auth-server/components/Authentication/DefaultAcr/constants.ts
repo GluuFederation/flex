@@ -1,0 +1,1 @@
+export const MAX_AGAMA_PROJECTS_FOR_ACR = 500

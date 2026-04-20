@@ -38,7 +38,7 @@ const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
 
 const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [{ value: 'openid', label: 'OpenID' }]
 
-const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
+const UserClaimsForm = memo((props: AttributeFormProps) => {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()

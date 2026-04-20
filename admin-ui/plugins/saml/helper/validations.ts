@@ -47,7 +47,7 @@ const urlFormatTest = (t: TFunction, fieldKey: string) =>
   Yup.string().test(
     'url-format',
     t('errors.must_be_valid_url', { field: t(fieldKey) }),
-    function (value) {
+    (value) => {
       if (!value || value.trim().length === 0) return true
       try {
         new URL(value)

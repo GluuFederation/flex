@@ -1,6 +1,6 @@
 import { REGEX_DATE_SEPARATOR_CHARS, REGEX_WHITESPACE_CHAR } from '@/utils/regex'
 
-export function downloadJwtFile(jwtString: string, softwareId: string): void {
+export const downloadJwtFile = (jwtString: string, softwareId: string): void => {
   const blob = new Blob([jwtString], { type: 'text/plain' })
   const link = document.createElement('a')
   const objectUrl = URL.createObjectURL(blob)
@@ -24,7 +24,7 @@ export function downloadJwtFile(jwtString: string, softwareId: string): void {
   URL.revokeObjectURL(objectUrl)
 }
 
-export function downloadJSONFile(data: object, filename: string = 'ssa.json'): void {
+export const downloadJSONFile = (data: object, filename: string = 'ssa.json'): void => {
   let jsonData: string
   try {
     jsonData = JSON.stringify(data, null, 2)

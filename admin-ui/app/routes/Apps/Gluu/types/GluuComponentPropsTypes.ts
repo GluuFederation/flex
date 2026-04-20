@@ -58,42 +58,6 @@ export type GluuFormDetailRowProps = {
   layout?: 'row' | 'column'
 }
 
-export type ButtonLabelProps = {
-  isLoading: boolean
-  iconClass: string
-  label: string
-  loadingIconClass?: string
-}
-
-type GluuFormFooterBaseProps = {
-  showBack?: boolean
-  backButtonLabel?: string
-  onBack?: () => void
-  disableBack?: boolean
-  backIconClass?: string
-  showCancel?: boolean
-  cancelButtonLabel?: string
-  onCancel?: () => void
-  disableCancel?: boolean
-  cancelButtonStyle?: CSSProperties
-  cancelButtonClassName?: string
-  cancelIconClass?: string
-  showApply?: boolean
-  disableApply?: boolean
-  applyButtonLabel?: string
-  applyButtonStyle?: CSSProperties
-  applyButtonClassName?: string
-  applyIconClass?: string
-  isLoading?: boolean
-  className?: string
-}
-
-export type GluuFormFooterProps = GluuFormFooterBaseProps &
-  (
-    | { applyButtonType?: 'submit'; onApply?: () => void }
-    | { applyButtonType: 'button'; onApply: () => void }
-  )
-
 export type GluuInlineInputProps = {
   label: string
   name: string
@@ -194,6 +158,7 @@ export type GluuStatusMessageProps = {
 type NamedTab = {
   name: string
   path?: string | null
+  id?: string
 }
 
 export type NavigationTab = NamedTab & {
@@ -214,6 +179,9 @@ export type GluuTabsProps = {
   tabNames: TabItem[]
   tabToShow: (tabName: string) => ReactNode
   withNavigation?: boolean
+  defaultTab?: number
+  rightAction?: ReactNode
+  onTabChange?: (index: number) => void
 }
 
 type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'
