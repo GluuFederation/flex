@@ -3,12 +3,12 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { useLocation } from 'react-router'
-import customColors from '@/customColors'
 import { useAppNavigation } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
-import { THEME_DARK } from '@/context/theme/constants'
 import type { GluuTabsProps, NavigationTab, TabItem, TabPanelProps } from './types'
-
+import { useStyles } from './styles/GluuTabs.style'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 const a11yProps = (index: number) => {
   return {
     'id': `simple-tab-${index}`,
@@ -53,15 +53,33 @@ const initTabValue = (tabNames: TabItem[], pathname: string) => {
   return tabIndex >= 0 ? tabIndex : 0
 }
 
-const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) => {
+const GluuTabs = ({
+  tabNames,
+  tabToShow,
+  withNavigation = false,
+  defaultTab = 0,
+  rightAction,
+  onTabChange,
+}: GluuTabsProps) => {
   const path = useLocation()
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
-  const isDark = themeState?.theme === THEME_DARK
-
-  const [value, setValue] = useState(() =>
-    withNavigation ? initTabValue(tabNames, path.pathname) : 0,
+  const { themeColors, isDark } = useMemo(
+    () => ({
+      themeColors: getThemeColor(themeState?.theme || DEFAULT_THEME),
+      isDark: themeState?.theme === THEME_DARK,
+    }),
+    [themeState?.theme],
   )
+  const { classes } = useStyles({ isDark, themeColors })
+
+  const [value, setValue] = useState(() => {
+    if (withNavigation) {
+      const pathIndex = initTabValue(tabNames, path.pathname)
+      return pathIndex > 0 ? pathIndex : defaultTab
+    }
+    return defaultTab
+  })
 
   const getTabLabel = useCallback((tab: TabItem) => {
     if (typeof tab === 'string') {
@@ -71,9 +89,18 @@ const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps
     return tab.name
   }, [])
 
+  const getTabId = useCallback((tab: TabItem) => {
+    if (typeof tab === 'string') {
+      return tab
+    }
+
+    return tab.id ?? tab.name
+  }, [])
+
   const handleChange = useCallback(
     (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue)
+      onTabChange?.(newValue)
       if (withNavigation) {
         const tab = tabNames[newValue] ?? null
         if (isNavigationTab(tab) && tab.path !== path.pathname) {
@@ -81,47 +108,19 @@ const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps
         }
       }
     },
-    [withNavigation, tabNames, navigateToRoute, path.pathname],
-  )
-
-  const inactiveTabColor = isDark ? customColors.lightBlue : customColors.textSecondary
-
-  const tabsSx = useMemo(
-    () => ({
-      '& .MuiTab-root': {
-        color: inactiveTabColor,
-      },
-      '& .MuiTab-root.Mui-selected': {
-        color: customColors.statusActive,
-        fontWeight: 600,
-        background: customColors.statusActive,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        position: 'relative',
-      },
-      '& .MuiTabs-indicator': {
-        background: customColors.statusActive,
-        height: 3,
-        borderRadius: '2px',
-        boxShadow: `0 2px 4px ${customColors.statusActive}`,
-      },
-    }),
-    [inactiveTabColor],
-  )
-
-  const tabsContainerSx = useMemo(
-    () => ({
-      borderBottom: 1,
-      borderColor: 'divider',
-    }),
-    [],
+    [withNavigation, tabNames, navigateToRoute, path.pathname, onTabChange],
   )
 
   const tabLabels = useMemo(() => tabNames.map(getTabLabel), [tabNames, getTabLabel])
+  const tabIds = useMemo(() => tabNames.map(getTabId), [tabNames, getTabId])
+  const hasNavTabs = useMemo(() => tabNames.some(isNavigationTab), [tabNames])
 
   useEffect(() => {
     if (!withNavigation) {
+      return
+    }
+
+    if (!hasNavTabs) {
       return
     }
 
@@ -138,7 +137,7 @@ const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps
         }
         setValue(firstNavIndex)
       } else {
-        setValue(0)
+        setValue(defaultTab)
       }
       return
     }
@@ -148,7 +147,7 @@ const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps
       navigateToRoute(activeTab.path, { replace: true })
     }
     setValue(activeIndex)
-  }, [withNavigation, tabNames, path.pathname, navigateToRoute])
+  }, [withNavigation, hasNavTabs, tabNames, path.pathname, navigateToRoute, defaultTab])
 
   const tabElements = useMemo(
     () =>
@@ -162,18 +161,21 @@ const GluuTabs = ({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps
     () =>
       tabLabels.map((label, index) => (
         <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={0} py={2}>
-          {tabToShow(label)}
+          {tabToShow(tabIds[index] ?? label)}
         </TabPanel>
       )),
-    [tabLabels, value, tabToShow],
+    [tabLabels, tabIds, value, tabToShow],
   )
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={tabsContainerSx}>
-        <Tabs value={value} variant="scrollable" onChange={handleChange} sx={tabsSx}>
-          {tabElements}
-        </Tabs>
+    <Box className={classes.root}>
+      <Box className={classes.tabsContainer}>
+        <Box className={classes.tabsScrollable}>
+          <Tabs value={value} variant="scrollable" onChange={handleChange} className={classes.tabs}>
+            {tabElements}
+          </Tabs>
+        </Box>
+        {rightAction && <Box className={classes.tabsRightAction}>{rightAction}</Box>}
       </Box>
       {tabPanels}
     </Box>

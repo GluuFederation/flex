@@ -45,7 +45,7 @@ import { buildKeyCandidates } from '@/utils/stringUtils'
 import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
-import { useAcrAudit } from '../../AuthN/hooks'
+import { useAcrAudit } from '../../Authentication/Acrs/hooks'
 import {
   FIGMA_PRIORITY_ROWS,
   DEFAULT_FORM_LABEL_SIZE,

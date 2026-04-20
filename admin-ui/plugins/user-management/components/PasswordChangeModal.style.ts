@@ -59,7 +59,7 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       gap: 4,
     },
     fieldRequired: {
-      color: themeColors.errorColor,
+      color: themeColors.requiredColor,
     },
     fieldInput: {
       'width': '100%',
