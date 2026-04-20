@@ -119,7 +119,7 @@ const samlApi = {
   },
 }
 
-const useAuditContext = (): SamlAuditContext => {
+const useSamlAuditContext = (): SamlAuditContext => {
   const { userinfo, client_id, ip_address } = useSharedAuditContext()
 
   return { userinfo, clientId: client_id, ipAddress: ip_address }
@@ -168,7 +168,7 @@ export const useSamlConfiguration = () => {
 export const useUpdateSamlConfiguration = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const baseMutation = useMutation({
     mutationFn: async ({ data }: { data: SamlAppConfiguration }): Promise<SamlAppConfiguration> => {
       const { data: result } = await AXIOS_INSTANCE.put<SamlAppConfiguration>(
@@ -227,7 +227,7 @@ export const useIdentityProviders = (params?: GetSamlIdentityProviderParams) => 
 export const useCreateIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const [savedForm, setSavedForm] = useState(false)
 
   const baseMutation = useMutation({
@@ -277,7 +277,7 @@ export const useCreateIdentityProvider = () => {
 export const useUpdateIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const [savedForm, setSavedForm] = useState(false)
 
   const baseMutation = useMutation({
@@ -327,7 +327,7 @@ export const useUpdateIdentityProvider = () => {
 export const useDeleteIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const baseMutation = useMutation({
     mutationFn: async ({ inum }: { inum: string }): Promise<void> => {
       await AXIOS_INSTANCE.delete(`/kc/saml/idp/${encodeURIComponent(inum)}`)
@@ -386,7 +386,7 @@ export const useTrustRelationships = () => {
 export const useCreateTrustRelationship = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const [savedForm, setSavedForm] = useState(false)
 
   const baseMutation = useMutation({
@@ -436,7 +436,7 @@ export const useCreateTrustRelationship = () => {
 export const useUpdateTrustRelationship = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const [savedForm, setSavedForm] = useState(false)
 
   const baseMutation = useMutation({
@@ -486,7 +486,7 @@ export const useUpdateTrustRelationship = () => {
 export const useDeleteTrustRelationshipMutation = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const auditContext = useAuditContext()
+  const auditContext = useSamlAuditContext()
   const baseMutation = useMutation({
     mutationFn: async ({ id }: { id: string }): Promise<void> => {
       await AXIOS_INSTANCE.delete(`/kc/saml/trust-relationship/${encodeURIComponent(id)}`)
