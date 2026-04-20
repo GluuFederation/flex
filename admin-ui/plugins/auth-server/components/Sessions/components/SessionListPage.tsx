@@ -285,6 +285,7 @@ const SessionListPage: React.FC = () => {
   }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber])
 
   const handleFilterCancel = useCallback(() => {
+    setFilterPendingClose(false)
     setShowFilter(false)
     setSearchParams(undefined)
     setFilterSearchField('')

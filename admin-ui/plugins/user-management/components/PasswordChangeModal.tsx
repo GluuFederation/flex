@@ -20,7 +20,12 @@ import {
   UserPatchRequest,
   useRevokeUserSession,
 } from 'JansConfigApi'
-import type { CaughtError, PasswordChangeFormValues, PasswordChangeModalProps } from '../types'
+import type {
+  CaughtError,
+  PasswordChangeFormValues,
+  PasswordChangeModalProps,
+  CustomUser,
+} from '../types'
 import { devLogger } from '@/utils/devLogger'
 import {
   getPasswordChangeValidationSchema,
@@ -28,7 +33,6 @@ import {
   getErrorMessage,
   triggerUserWebhook,
 } from '../helper'
-import { CustomUser } from '../types'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { usePasswordModalStyles } from './PasswordChangeModal.style'
