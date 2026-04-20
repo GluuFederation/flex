@@ -16,10 +16,10 @@ import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
 import { useAttribute, useUpdateAttribute, useMutationEffects } from '../hooks'
-import { getDefaultAttributeItem } from '../utils/formHelpers'
-import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper/utils'
+import { getDefaultAttributeItem } from '../utils'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper'
 import { getErrorMessage } from '@/utils/errorHandler'
-import type { AttributeItem, SubmitData } from './types/UserClaimsListPage.types'
+import type { AttributeItem, SubmitData } from './types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes

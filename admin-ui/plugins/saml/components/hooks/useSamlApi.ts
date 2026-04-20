@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useAuditContext as useSharedAuditContext, CREATE, UPDATE, DELETION } from '@/audit'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from '../../../../api-client'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
@@ -39,15 +39,15 @@ export type {
   IdentityProviderPagedResult,
 } from '../../types'
 
-function getGetSamlPropertiesQueryKey() {
+const getGetSamlPropertiesQueryKey = () => {
   return ['kc', 'saml', 'properties'] as const
 }
 
-function getGetSamlIdentityProviderQueryKey(params?: GetSamlIdentityProviderParams) {
+const getGetSamlIdentityProviderQueryKey = (params?: GetSamlIdentityProviderParams) => {
   return ['kc', 'saml', 'idp', params ?? {}] as const
 }
 
-function getGetTrustRelationshipsQueryKey() {
+const getGetTrustRelationshipsQueryKey = () => {
   return ['kc', 'saml', 'trust-relationships'] as const
 }
 
@@ -62,7 +62,7 @@ export const SAML_QUERY_KEYS = {
   trustRelationships: getGetTrustRelationshipsQueryKey,
 } as const
 
-function createIdentityProviderFormData(data: BrokerIdentityProviderForm): FormData {
+const createIdentityProviderFormData = (data: BrokerIdentityProviderForm): FormData => {
   const formData = new FormData()
 
   if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
@@ -77,7 +77,7 @@ function createIdentityProviderFormData(data: BrokerIdentityProviderForm): FormD
   return formData
 }
 
-function createTrustRelationshipFormData(data: TrustRelationshipForm): FormData {
+const createTrustRelationshipFormData = (data: TrustRelationshipForm): FormData => {
   const formData = new FormData()
 
   if (data.metaDataFile instanceof File && data.metaDataFile.size > 0) {
@@ -124,22 +124,20 @@ const samlApi = {
   },
 }
 
-function useAuditContext(): SamlAuditContext {
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
-  const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
-  const ipAddress = useAppSelector((state) => state.authReducer?.location?.IPv4)
+const useAuditContext = (): SamlAuditContext => {
+  const { userinfo, client_id, ip_address } = useSharedAuditContext()
 
-  return { userinfo, clientId, ipAddress }
+  return { userinfo, clientId: client_id, ipAddress: ip_address }
 }
 
 type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION
 
-function createAuditLogger<T>(
+const createAuditLogger = <T>(
   auditContext: SamlAuditContext,
   action: AuditAction,
   resource: string,
   payloadMapper: (data: T) => Record<string, T[keyof T] | T>,
-) {
+) => {
   return async (userMessage: string, data: T): Promise<void> => {
     try {
       await logAuditUserAction({
@@ -157,7 +155,7 @@ function createAuditLogger<T>(
   }
 }
 
-export function useSamlConfiguration() {
+export const useSamlConfiguration = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
@@ -172,7 +170,7 @@ export function useSamlConfiguration() {
   })
 }
 
-export function useUpdateSamlConfiguration() {
+export const useUpdateSamlConfiguration = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -214,7 +212,7 @@ export function useUpdateSamlConfiguration() {
   }
 }
 
-export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
+export const useIdentityProviders = (params?: GetSamlIdentityProviderParams) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
@@ -231,7 +229,7 @@ export function useIdentityProviders(params?: GetSamlIdentityProviderParams) {
   })
 }
 
-export function useCreateIdentityProvider() {
+export const useCreateIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -281,7 +279,7 @@ export function useCreateIdentityProvider() {
   }
 }
 
-export function useUpdateIdentityProvider() {
+export const useUpdateIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -331,7 +329,7 @@ export function useUpdateIdentityProvider() {
   }
 }
 
-export function useDeleteIdentityProvider() {
+export const useDeleteIdentityProvider = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -375,7 +373,7 @@ export function useDeleteIdentityProvider() {
   }
 }
 
-export function useTrustRelationships() {
+export const useTrustRelationships = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   return useQuery({
@@ -390,7 +388,7 @@ export function useTrustRelationships() {
   })
 }
 
-export function useCreateTrustRelationship() {
+export const useCreateTrustRelationship = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -440,7 +438,7 @@ export function useCreateTrustRelationship() {
   }
 }
 
-export function useUpdateTrustRelationship() {
+export const useUpdateTrustRelationship = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
@@ -490,7 +488,7 @@ export function useUpdateTrustRelationship() {
   }
 }
 
-export function useDeleteTrustRelationshipMutation() {
+export const useDeleteTrustRelationshipMutation = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const auditContext = useAuditContext()
