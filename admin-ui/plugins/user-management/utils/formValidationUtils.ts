@@ -1,5 +1,5 @@
-import { ModifiedFields } from '../types/ComponentTypes'
-import type { FormFieldValue } from '../types/CommonTypes'
+import { ModifiedFields } from '../types'
+import type { FormFieldValue } from '../types'
 
 export const isEmptyValue = (value: FormFieldValue): boolean => {
   if (value === null || value === undefined) return true

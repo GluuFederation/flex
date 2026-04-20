@@ -1,8 +1,7 @@
 import * as Yup from 'yup'
 import i18n from '@/i18n'
 import { formatDate, isValidDate } from '@/utils/dayjsUtils'
-import { CustomUser, PersonAttribute } from '../types/UserApiTypes'
-import { UserEditFormValues } from '../types/ComponentTypes'
+import { CustomUser, PersonAttribute, UserEditFormValues } from '../types'
 import { CustomObjectAttribute } from 'JansConfigApi'
 import { validatePassword } from '../utils'
 
