@@ -29,7 +29,7 @@ import {
   CustomUser,
   User2FADevicesModalProps,
 } from '../types'
-import type { CaughtError } from '../types'
+import type { CaughtError } from '../types/ErrorTypes'
 import { getErrorMessage, logUserUpdate } from '../helper'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './User2FADevicesModal.style'

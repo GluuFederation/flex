@@ -8,7 +8,7 @@ import type {
   WebhookTriggerResponseItem,
   TriggerPayloadActionPayload,
   TriggerWebhookReducerPayload,
-} from '../types'
+} from '../types/webhook'
 
 export type { WebhookSliceState, WebhookSliceTriggerPayload }
 
