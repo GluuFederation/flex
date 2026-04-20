@@ -47,7 +47,7 @@ const store = configureStore({
 
 sagaMiddleware.run(RootSaga)
 
-export function configStore() {
+export const configStore = () => {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {

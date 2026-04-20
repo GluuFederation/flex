@@ -66,7 +66,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   }
 })
 
-export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
+export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig }) => {
   const { classes } = useStylesBase(params)
   const { isDark, themeColors } = params
   const badgeStyles = useMemo(

@@ -6,7 +6,7 @@ import { API_ACRS } from '@/audit/Resources'
 import type { AuthenticationMethod } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export function useAcrAudit() {
+export const useAcrAudit = () => {
   const authState = useAppSelector((state) => state.authReducer)
   const client_id = authState?.config?.clientId
   const userinfo = authState?.userinfo

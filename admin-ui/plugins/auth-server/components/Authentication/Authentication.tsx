@@ -23,7 +23,7 @@ type TabName = {
   path: string
 }
 
-function Authentication(): ReactElement {
+const Authentication = (): ReactElement => {
   const { t } = useTranslation()
   const location = useLocation()
   const defaultTab: number = (location.state as { authnTab?: number } | null)?.authnTab ?? 0

@@ -39,7 +39,7 @@ type DefaultAcrFormValues = {
   defaultAcr: string
 }
 
-function DefaultAcr(): React.ReactElement {
+const DefaultAcr = (): React.ReactElement => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -165,7 +165,6 @@ function DefaultAcr(): React.ReactElement {
   }, [formik])
 
   const submitForm = async (userMessage: string): Promise<void> => {
-    toggle()
     if (!canWriteAuth) {
       return
     }

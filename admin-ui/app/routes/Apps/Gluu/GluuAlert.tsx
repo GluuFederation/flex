@@ -4,7 +4,7 @@ import styles from './styles/GluuAlert.style'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import type { GluuAlertProps } from './types'
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 

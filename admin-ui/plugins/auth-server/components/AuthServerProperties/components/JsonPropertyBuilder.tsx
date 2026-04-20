@@ -53,122 +53,120 @@ const toPairs = <T,>(items: T[]): Array<[T, T | null]> => {
   return pairs
 }
 
-const ArrayItemSelect = React.memo(function ArrayItemSelect({
-  index,
-  values,
-  options,
-  label,
-  path,
-  handler,
-  formResetKey,
-}: ArrayItemSelectProps) {
-  const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-    () => ({
-      setFieldValue: (_field: string, newValues: string[]) => {
-        handler({ op: 'replace', path, value: newValues })
+const ArrayItemSelect = React.memo(
+  ({ index, values, options, label, path, handler, formResetKey }: ArrayItemSelectProps) => {
+    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
+      () => ({
+        setFieldValue: (_field: string, newValues: string[]) => {
+          handler({ op: 'replace', path, value: newValues })
+        },
+        setFieldTouched: () => {},
+      }),
+      [handler, path],
+    )
+
+    return (
+      <GluuMultiSelectRow
+        key={`${path}-${formResetKey}`}
+        label={label}
+        name={String(index)}
+        value={values}
+        formik={formikAdapter}
+        options={options}
+        lsize={12}
+        rsize={12}
+      />
+    )
+  },
+)
+
+export const NumberField = React.memo(
+  ({
+    propKey,
+    value,
+    label,
+    path,
+    handler,
+    lSize,
+    formResetKey,
+    docCategory = 'json_properties',
+  }: {
+    propKey: string
+    value: number
+    label: string
+    path: string
+    handler: (patch: JsonPatch) => void
+    lSize: number
+    formResetKey: number
+    docCategory?: string
+  }) => {
+    const [localValue, setLocalValue] = useState<number>(value)
+
+    useEffect(() => {
+      setLocalValue(value)
+    }, [value])
+
+    const handleChange = useCallback(
+      (e: { target: { name: string; value: string } }) => {
+        const numVal = Number(e.target.value)
+        setLocalValue(numVal)
+        handler({ op: 'replace', path, value: numVal })
       },
-      setFieldTouched: () => {},
-    }),
-    [handler, path],
-  )
+      [handler, path],
+    )
 
-  return (
-    <GluuMultiSelectRow
-      key={`${path}-${formResetKey}`}
-      label={label}
-      name={String(index)}
-      value={values}
-      formik={formikAdapter}
-      options={options}
-      lsize={12}
-      rsize={12}
-    />
-  )
-})
+    return (
+      <GluuInputRow
+        key={`${path}-${formResetKey}`}
+        name={propKey}
+        type="number"
+        lsize={lSize}
+        rsize={lSize}
+        label={label}
+        value={localValue}
+        doc_category={docCategory}
+        doc_entry={propKey}
+        handleChange={handleChange}
+      />
+    )
+  },
+)
 
-export const NumberField = React.memo(function NumberField({
-  propKey,
-  value,
-  label,
-  path,
-  handler,
-  lSize,
-  formResetKey,
-  docCategory = 'json_properties',
-}: {
-  propKey: string
-  value: number
-  label: string
-  path: string
-  handler: (patch: JsonPatch) => void
-  lSize: number
-  formResetKey: number
-  docCategory?: string
-}) {
-  const [localValue, setLocalValue] = useState<number>(value)
+const StringArrayField = React.memo(
+  ({
+    propKey,
+    label,
+    values,
+    options,
+    path,
+    handler,
+    lSize,
+    formResetKey,
+  }: StringArrayFieldProps) => {
+    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
+      () => ({
+        setFieldValue: (_field: string, newValues: string[]) => {
+          handler({ op: 'replace', path, value: newValues })
+        },
+        setFieldTouched: () => {},
+      }),
+      [handler, path],
+    )
 
-  useEffect(() => {
-    setLocalValue(value)
-  }, [value])
-
-  const handleChange = useCallback(
-    (e: { target: { name: string; value: string } }) => {
-      const numVal = Number(e.target.value)
-      setLocalValue(numVal)
-      handler({ op: 'replace', path, value: numVal })
-    },
-    [handler, path],
-  )
-
-  return (
-    <GluuInputRow
-      key={`${path}-${formResetKey}`}
-      name={propKey}
-      type="number"
-      lsize={lSize}
-      rsize={lSize}
-      label={label}
-      value={localValue}
-      doc_category={docCategory}
-      doc_entry={propKey}
-      handleChange={handleChange}
-    />
-  )
-})
-
-const StringArrayField = React.memo(function StringArrayField({
-  propKey,
-  label,
-  values,
-  options,
-  path,
-  handler,
-  lSize,
-  formResetKey,
-}: StringArrayFieldProps) {
-  const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-    () => ({
-      setFieldValue: (_field: string, newValues: string[]) => {
-        handler({ op: 'replace', path, value: newValues })
-      },
-      setFieldTouched: () => {},
-    }),
-    [handler, path],
-  )
-
-  return (
-    <GluuMultiSelectRow
-      key={`${path}-${formResetKey}`}
-      label={label}
-      name={propKey}
-      value={values}
-      formik={formikAdapter}
-      options={options}
-      lsize={lSize}
-      rsize={lSize}
-    />
-  )
-})
+    return (
+      <GluuMultiSelectRow
+        key={`${path}-${formResetKey}`}
+        label={label}
+        name={propKey}
+        value={values}
+        formik={formikAdapter}
+        options={options}
+        lsize={lSize}
+        rsize={lSize}
+      />
+    )
+  },
+)
 
 const JsonPropertyBuilder = ({
   propKey,
