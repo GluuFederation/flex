@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
