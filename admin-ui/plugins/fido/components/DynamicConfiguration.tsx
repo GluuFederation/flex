@@ -24,7 +24,7 @@ import {
   LABEL_SIZE,
   INPUT_SIZE,
 } from '../helper'
-import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types'
+import type { DynamicConfigurationProps, DynamicConfigFormValues } from '../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { useStyles } from './styles/FidoConfiguration.style'
 

@@ -4,7 +4,7 @@ import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
-import { UserEditFormValues, ModifiedFields } from '../types'
+import { UserEditFormValues, ModifiedFields, type CaughtError } from '../types'
 import {
   usePostUser,
   getGetUserQueryKey,
@@ -14,7 +14,6 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
-import type { CaughtError } from '../types'
 import { logUserCreation, getErrorMessage, triggerUserWebhook } from '../helper'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { mapToPersonAttributes, buildCustomAttributesFromValues } from '../utils'

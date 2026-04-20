@@ -277,6 +277,9 @@ const CedarlingConfigPage: React.FC = () => {
                 applyButtonLabel={t('actions.yes')}
                 onApply={handleConfirmUpload}
                 applyButtonType="button"
+                showCancel
+                cancelButtonLabel={t('actions.no')}
+                onCancel={handleConfirmCancel}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
-import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
@@ -187,7 +187,7 @@ const SamlConfigurationForm: React.FC = () => {
             </Col>
           </Row>
         )}
-        <GluuCommitDialogLegacy
+        <GluuCommitDialog
           handler={toggle}
           modal={modal}
           onAccept={submitForm}

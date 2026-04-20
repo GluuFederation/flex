@@ -22,7 +22,7 @@ export const createSuccessAuditInit = (
   status: 'success',
   performedBy: {
     user_inum: context.userinfo?.inum ?? '-',
-    userId: options.userId ?? context.userinfo?.name ?? '-',
+    userId: options.userId ?? context.userinfo?.name ?? context.userinfo?.user_name ?? '-',
   },
 })
 

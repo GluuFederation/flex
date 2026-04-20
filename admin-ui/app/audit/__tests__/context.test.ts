@@ -17,6 +17,18 @@ describe('audit context helpers', () => {
     })
   })
 
+  it('selectAuditContext handles absent/null authReducer fields safely', () => {
+    const context = selectAuditContext({
+      authReducer: { config: {}, location: {}, userinfo: null },
+    } as never)
+
+    expect(context).toMatchObject({
+      client_id: '',
+      ip_address: '',
+      userinfo: null,
+    })
+  })
+
   it('createSuccessAuditInit creates default performedBy metadata', () => {
     expect(
       createSuccessAuditInit({

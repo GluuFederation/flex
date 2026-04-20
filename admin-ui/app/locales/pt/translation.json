@@ -2198,7 +2198,7 @@
       "auditPolicyStoreUrlUpdated": "Configuração do URL do repositório de políticas atualizada",
       "auditSyncRoleToScopesMappings": "Sincronizar função com mapeamentos de escopos",
       "uploadConfirmTitle": "Confirmar envio do repositório de políticas",
-      "uploadConfirmMessage": "Após o envio e processamento bem-sucedidos do repositório de políticas, você será desconectado da interface de administração",
+      "uploadConfirmMessage": "Após o envio e processamento bem-sucedidos do repositório de políticas, você será desconectado da interface de administração.",
       "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão",
       "selectCjarFile": "Selecione um arquivo .cjar de repositório de políticas para enviar",
       "uploadPolicyStore": "Enviar",

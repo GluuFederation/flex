@@ -2281,7 +2281,7 @@
       "auditPolicyStoreUploaded": "Policy store uploaded",
       "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
       "uploadConfirmTitle": "Confirm Policy Store Upload",
-      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI"
+      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI."
     },
     "mappings": {
       "note_prefix": "Configure",
