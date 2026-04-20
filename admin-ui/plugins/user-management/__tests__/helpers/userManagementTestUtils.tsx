@@ -118,7 +118,7 @@ const defaultAuthReducerState: AuthState = {
   hasSession: false,
 }
 
-export function createUserManagementTestStore(): Store {
+export const createUserManagementTestStore = (): Store => {
   return configureStore({
     reducer: combineReducers({
       authReducer: (state = defaultAuthReducerState) => state,
@@ -127,17 +127,17 @@ export function createUserManagementTestStore(): Store {
   })
 }
 
-export function createUserManagementQueryClient(): QueryClient {
+export const createUserManagementQueryClient = (): QueryClient => {
   return new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
 }
 
-export function createUserManagementTestWrapper(
+export const createUserManagementTestWrapper = (
   store: Store,
   client?: QueryClient,
-): (props: { children: React.ReactNode }) => JSX.Element {
-  return function Wrapper({ children }: { children: React.ReactNode }) {
+): ((props: { children: React.ReactNode }) => JSX.Element) => {
+  return ({ children }: { children: React.ReactNode }) => {
     const queryClientToUse = React.useMemo(
       () => client ?? createUserManagementQueryClient(),
       [client],

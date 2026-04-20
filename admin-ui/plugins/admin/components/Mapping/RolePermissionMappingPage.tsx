@@ -22,7 +22,7 @@ import { useStyles } from './styles/MappingPage.style'
 const MAPPING_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const MAPPING_SCOPES = CEDAR_RESOURCE_SCOPES[MAPPING_RESOURCE_ID] || []
 
-const RolePermissionMappingPage: React.FC = React.memo(function RolePermissionMappingPage() {
+const RolePermissionMappingPage: React.FC = React.memo(() => {
   const { t } = useTranslation()
   SetTitle(t('titles.mapping'))
 

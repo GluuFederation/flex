@@ -77,20 +77,20 @@ let capturedHandler: ((patch: JsonPatch) => void) | null = null
 type MockJsonPropertyBuilderConfigApiProps = JsonPropertyBuilderConfigApiProps
 
 jest.mock('../../components/JsonPropertyBuilderConfigApi', () => {
-  return function MockJsonPropertyBuilderConfigApi(props: MockJsonPropertyBuilderConfigApiProps) {
+  return (props: MockJsonPropertyBuilderConfigApiProps) => {
     capturedHandler = props.handler
     return <div data-testid="json-property-builder">Mock</div>
   }
 })
 
 jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => {
-  return function MockGluuCommitDialog() {
+  return () => {
     return <div data-testid="commit-dialog">Mock</div>
   }
 })
 
 jest.mock('Routes/Apps/Gluu/GluuThemeFormFooter', () => {
-  return function MockGluuThemeFormFooter() {
+  return () => {
     return <div data-testid="theme-form-footer">Mock</div>
   }
 })

@@ -26,9 +26,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('../Apps/Gluu/GluuCommitDialog', () => ({
   __esModule: true,
-  default: function MockGluuCommitDialog() {
-    return null
-  },
+  default: () => null,
 }))
 
 const mockLicense = {

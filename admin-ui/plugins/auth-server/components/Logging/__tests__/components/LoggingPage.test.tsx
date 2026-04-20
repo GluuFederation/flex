@@ -22,12 +22,12 @@ let commitDialogProps: {
 } | null = null
 
 jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => {
-  return function MockGluuCommitDialog(props: {
+  return (props: {
     modal: boolean
     operations: Array<{ path: string; value: JsonValue }>
     onAccept: (message: string) => void | Promise<void>
     handler: () => void
-  }) {
+  }) => {
     commitDialogProps = props
     return props.modal ? (
       <div data-testid="commit-dialog">
@@ -105,7 +105,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => (
   </AppTestWrapper>
 )
 
-function setupMocks() {
+const setupMocks = () => {
   const mockMutateAsync = jest.fn().mockResolvedValue(undefined)
   ;(useLoggingConfig as jest.Mock).mockReturnValue({
     data: mockLoggingConfig,
