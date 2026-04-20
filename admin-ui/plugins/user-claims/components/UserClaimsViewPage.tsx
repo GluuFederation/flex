@@ -18,9 +18,9 @@ import { useStyles } from './styles/UserClaimsFormPage.style'
 import { cloneDeep } from 'lodash'
 import { useAttribute } from '../hooks'
 import { getErrorMessage } from '@/utils/errorHandler'
-import { getDefaultAttributeItem } from '../utils/formHelpers'
-import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper/utils'
-import type { AttributeItem } from './types/UserClaimsListPage.types'
+import { getDefaultAttributeItem } from '../utils'
+import { DEFAULT_ATTRIBUTE_VALIDATION } from '../helper'
+import type { AttributeItem } from './types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes

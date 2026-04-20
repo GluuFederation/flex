@@ -28,7 +28,7 @@ import {
   getErrorMessage,
   triggerUserWebhook,
 } from '../helper'
-import { CustomUser } from '../types/UserApiTypes'
+import { CustomUser } from '../types'
 import { AXIOS_INSTANCE } from '../../../api-client'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { usePasswordModalStyles } from './PasswordChangeModal.style'

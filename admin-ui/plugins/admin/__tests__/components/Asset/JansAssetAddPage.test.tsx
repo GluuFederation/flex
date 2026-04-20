@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { createAssetTestStore, createAssetTestWrapper } from './assetTestUtils'
 import JansAssetAddPage from 'Plugins/admin/components/Assets/JansAssetAddPage'
