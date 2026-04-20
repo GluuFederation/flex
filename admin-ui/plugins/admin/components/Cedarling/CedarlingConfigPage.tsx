@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -12,6 +13,7 @@ import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
+import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import { InfoOutlined } from '@mui/icons-material'
@@ -21,6 +23,7 @@ import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
@@ -38,10 +41,11 @@ const CJAR_ACCEPT = {
 const CedarlingConfigPage: React.FC = () => {
   const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
-  const { navigateBack } = useAppNavigation()
+  const { navigateBack, navigateToRoute } = useAppNavigation()
   SetTitle(t('titles.cedarling_config'))
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
@@ -50,12 +54,15 @@ const CedarlingConfigPage: React.FC = () => {
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
   const { classes } = useStyles({ themeColors, isDark })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const dispatch = useAppDispatch()
+
+  const dialogRef = useRef<HTMLDivElement | null>(null)
 
   const canReadSecurity = useMemo(
     () => hasCedarReadPermission(SECURITY_RESOURCE_ID),
@@ -72,6 +79,12 @@ const CedarlingConfigPage: React.FC = () => {
     }
   }, [authorizeHelper])
 
+  useEffect(() => {
+    if (showConfirm) {
+      dialogRef.current?.focus()
+    }
+  }, [showConfirm])
+
   const handleFileDrop = useCallback((files: File[]) => {
     const [file] = files
     if (file) {
@@ -83,40 +96,59 @@ const CedarlingConfigPage: React.FC = () => {
     setSelectedFile(null)
   }, [])
 
-  const handleUpload = useCallback(async () => {
+  const handleUploadClick = useCallback(() => {
     if (!selectedFile) {
       dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.selectFileFirst')))
       return
     }
+    setShowConfirm(true)
+  }, [selectedFile, dispatch, t])
+
+  const handleConfirmCancel = useCallback(() => {
+    setShowConfirm(false)
+  }, [])
+
+  const handleConfirmUpload = useCallback(async () => {
+    setShowConfirm(false)
+    if (!selectedFile) return
 
     try {
       setIsLoading(true)
 
       await uploadPolicyStore(selectedFile)
 
-      await logAudit({
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
-        client_id: client_id,
-        payload: { fileName: selectedFile.name },
-      })
+      try {
+        await logAudit({
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
+          client_id: client_id,
+          payload: { fileName: selectedFile.name },
+        })
+      } catch (e) {
+        devLogger.error('Audit log failed after policy store upload:', e)
+      }
 
       await syncRoleToScopesMappingsMutation.mutateAsync()
 
-      await logAudit({
-        userinfo: userinfo ?? undefined,
-        action: UPDATE,
-        resource: ADMIN_UI_CEDARLING_CONFIG,
-        message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
-        client_id: client_id,
-        payload: { fileName: selectedFile.name },
-      })
+      try {
+        await logAudit({
+          userinfo: userinfo ?? undefined,
+          action: UPDATE,
+          resource: ADMIN_UI_CEDARLING_CONFIG,
+          message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
+          client_id: client_id,
+          payload: { fileName: selectedFile.name },
+        })
+      } catch (e) {
+        devLogger.error('Audit log failed after role/scope sync:', e)
+      }
 
-      dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.policyStoreUploaded')))
       setSelectedFile(null)
+      navigateToRoute(ROUTES.LOGOUT)
     } catch (error) {
+      devLogger.error('Policy store upload flow failed:', error)
       const errorMessage = getErrorMessage(
         error as Error | ApiError,
         'documentation.cedarlingConfig.uploadFailed',
@@ -126,7 +158,15 @@ const CedarlingConfigPage: React.FC = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [selectedFile, dispatch, t, userinfo, client_id, syncRoleToScopesMappingsMutation])
+  }, [
+    selectedFile,
+    dispatch,
+    t,
+    userinfo,
+    client_id,
+    syncRoleToScopesMappingsMutation,
+    navigateToRoute,
+  ])
 
   const handleDownload = useCallback(async () => {
     try {
@@ -173,6 +213,80 @@ const CedarlingConfigPage: React.FC = () => {
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.HOME_DASHBOARD)
   }, [navigateBack])
+
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleConfirmCancel()
+      }
+    },
+    [handleConfirmCancel],
+  )
+
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        e.stopPropagation()
+        handleConfirmCancel()
+      }
+    },
+    [handleConfirmCancel],
+  )
+
+  const confirmModal = showConfirm
+    ? createPortal(
+        <>
+          <button
+            type="button"
+            className={commitClasses.overlay}
+            onClick={handleConfirmCancel}
+            onKeyDown={handleOverlayKeyDown}
+            aria-label={t('actions.close')}
+          />
+          <div
+            ref={dialogRef}
+            className={commitClasses.modalContainer}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={handleModalKeyDown}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            aria-labelledby="confirm-upload-title"
+            style={{ outline: 'none' }}
+          >
+            <button
+              type="button"
+              onClick={handleConfirmCancel}
+              className={commitClasses.closeButton}
+              aria-label={t('actions.close')}
+              title={t('actions.close')}
+            >
+              <i className="fa fa-times" aria-hidden="true" />
+            </button>
+            <div className={commitClasses.contentArea}>
+              <GluuText variant="h2" className={commitClasses.title} id="confirm-upload-title">
+                {t('documentation.cedarlingConfig.uploadConfirmTitle')}
+              </GluuText>
+              <p className={commitClasses.description}>
+                {t('documentation.cedarlingConfig.uploadConfirmMessage')}
+              </p>
+              <GluuThemeFormFooter
+                showApply
+                applyButtonLabel={t('actions.yes')}
+                onApply={handleConfirmUpload}
+                applyButtonType="button"
+                showCancel
+                cancelButtonLabel={t('actions.no')}
+                onCancel={handleConfirmCancel}
+              />
+            </div>
+          </div>
+        </>,
+        document.body,
+      )
+    : null
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -282,7 +396,7 @@ const CedarlingConfigPage: React.FC = () => {
                 disableCancel={isLoading}
                 showApply={canWriteSecurity}
                 applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
-                onApply={handleUpload}
+                onApply={handleUploadClick}
                 disableApply={!selectedFile || isLoading}
                 applyButtonType="button"
                 isLoading={isLoading}
@@ -291,6 +405,8 @@ const CedarlingConfigPage: React.FC = () => {
           </Box>
         </GluuPageContent>
       </GluuViewWrapper>
+
+      {confirmModal}
     </GluuLoader>
   )
 }

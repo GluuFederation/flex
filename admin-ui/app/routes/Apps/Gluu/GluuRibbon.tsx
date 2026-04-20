@@ -1,4 +1,3 @@
-import React from 'react'
 import { useStyles } from './styles/GluuRibbon.style'
 import { useTranslation } from 'react-i18next'
 

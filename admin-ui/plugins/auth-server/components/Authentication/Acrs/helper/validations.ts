@@ -17,7 +17,6 @@ export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.AnyObjectS
     defaultAuthNMethod: Yup.mixed<boolean | string>().required('Default AuthN Method is required.'),
   }
 
-  // Built-in specific validations
   if (isBuiltIn) {
     baseSchema.samlACR = Yup.string().optional().nullable()
     baseSchema.description = Yup.string().optional().nullable()
@@ -26,7 +25,6 @@ export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.AnyObjectS
     baseSchema.hashAlgorithm = Yup.string().optional().nullable()
   }
 
-  // Script specific validations
   if (isScript) {
     baseSchema.samlACR = Yup.string().optional().nullable()
     baseSchema.description = Yup.string().optional().nullable()
@@ -37,7 +35,6 @@ export const getAuthNValidationSchema = (item: AuthNItem | null): Yup.AnyObjectS
       .min(0, 'Level must be at least 0.')
   }
 
-  // LDAP specific validations
   if (isLdap) {
     baseSchema.bindDN = Yup.string().required('Bind DN is required.')
     baseSchema.maxConnections = Yup.number()

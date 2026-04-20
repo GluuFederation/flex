@@ -1,4 +1,3 @@
-import React from 'react'
 import GluuViewWrapper from '../GluuViewWrapper'
 import { render, screen } from '@testing-library/react'
 import i18n from '../../../../i18n'

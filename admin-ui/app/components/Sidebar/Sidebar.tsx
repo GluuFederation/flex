@@ -4,7 +4,8 @@ import classNames from 'classnames'
 import { withPageConfig } from '../Layout'
 import type { SidebarProps } from './types'
 import SidebarEntryAnimate from '../dashboard-style-airframe/sidebar-entry-animate'
-import SlimSidebarAnimate from '../dashboard-style-airframe/slim-sidebar-animate'
+import createSlimSidebarAnimate from '../dashboard-style-airframe/slim-sidebar-animate'
+import type { SlimSidebarAnimateInstance } from '../dashboard-style-airframe/types'
 import SlimMenuAnimate from '../dashboard-style-airframe/slim-menu-animate'
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
@@ -13,7 +14,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [entryAnimationFinished, setEntryAnimationFinished] = useState(false)
   const entryAnimateRef = useRef<SidebarEntryAnimate | null>(null)
-  const slimAnimateRef = useRef<SlimSidebarAnimate | null>(null)
+  const slimAnimateRef = useRef<SlimSidebarAnimateInstance | null>(null)
   const menuAnimateRef = useRef<SlimMenuAnimate | null>(null)
 
   const animationsEnabled = !(animationsDisabled || pageConfig?.animationsDisabled)
@@ -28,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
     let cancelled = false
 
     const entryAnimate = new SidebarEntryAnimate()
-    const slimAnimate = new SlimSidebarAnimate()
+    const slimAnimate = createSlimSidebarAnimate()
     const menuAnimate = new SlimMenuAnimate()
     entryAnimateRef.current = entryAnimate
     slimAnimateRef.current = slimAnimate

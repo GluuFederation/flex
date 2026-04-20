@@ -1,4 +1,3 @@
-import React from 'react'
 import { FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'

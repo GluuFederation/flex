@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useContext } from 'react'
+import { useState, useEffect, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useMediaQuery } from 'react-responsive'

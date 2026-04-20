@@ -1,14 +1,17 @@
 import { parseDateStrict } from '@/utils/dayjsUtils'
 import { REGEX_DATE_YYYY_MM_DD } from '@/utils/regex'
-import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common/Constants'
+import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common'
 import {
   UserEditFormValues,
   FormValueEntry,
   ModifiedFields,
   ModifiedFieldValue,
   ValueExtractionRecord,
-} from '../types/ComponentTypes'
-import { PersonAttribute, CustomUser, CustomAttribute, AttributeValue } from '../types/UserApiTypes'
+  PersonAttribute,
+  CustomUser,
+  CustomAttribute,
+  AttributeValue,
+} from '../types'
 
 export const extractValueFromEntry = (entry: FormValueEntry, attributeName: string): string => {
   if (typeof entry === 'string') {

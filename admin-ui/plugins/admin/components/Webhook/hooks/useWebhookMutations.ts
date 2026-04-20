@@ -12,7 +12,8 @@ import {
 import queryUtils from '@/utils/queryUtils'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useWebhookAudit, CREATE, UPDATE, DELETION } from './useWebhookAudit'
+import { useWebhookAudit } from './useWebhookAudit'
+import { CREATE, UPDATE, DELETION } from '@/audit'
 import type {
   MutationCallbacks,
   WebhookApiError,

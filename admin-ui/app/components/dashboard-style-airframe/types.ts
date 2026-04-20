@@ -5,3 +5,8 @@ export type SlimSidebarAnimateOptions = {
   animationStaggerDelay?: number
   animationEasing?: string
 }
+
+export type SlimSidebarAnimateInstance = {
+  assignParentElement(parentElement: HTMLElement): void
+  destroy(): void
+}

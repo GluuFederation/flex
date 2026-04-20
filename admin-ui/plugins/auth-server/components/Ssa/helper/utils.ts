@@ -1,8 +1,9 @@
-import { getRootState } from 'Redux/hooks'
+import { getCurrentAuditContext } from '@/audit'
 import { devLogger } from '@/utils/devLogger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
-import type { CaughtError, ApiErrorLike } from '../types'
+import type { CaughtError } from '../types'
 import type { SsaAuditLogPayload } from '../types'
 import type { SsaFormValues } from '../types'
 import { CREATE, DELETION } from '../../../../../app/audit/UserActionType'
@@ -12,10 +13,7 @@ const toJsonObject = (input: object): JsonObject => JSON.parse(JSON.stringify(in
 
 export const logSsaCreation = async (payload: SsaFormValues, message?: string): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
 
     const { expirationDate, ...rest } = payload
     const serialized: JsonObject = toJsonObject(rest)
@@ -42,10 +40,7 @@ export const logSsaDeletion = async (
   message?: string,
 ): Promise<void> => {
   try {
-    const state = getRootState()
-    const authReducer = state.authReducer
-    const client_id = authReducer.config?.clientId || ''
-    const userinfo = authReducer.userinfo
+    const { client_id, userinfo } = getCurrentAuditContext()
 
     await logAuditUserAction({
       userinfo,
@@ -60,43 +55,6 @@ export const logSsaDeletion = async (
   }
 }
 
-const pickFirstString = (...values: Array<string | undefined>): string | undefined => {
-  for (const value of values) {
-    if (typeof value === 'string' && value.trim().length > 0) {
-      return value.trim()
-    }
-  }
-  return undefined
-}
-
 export const getErrorMessage = (error: CaughtError): string => {
-  if (typeof error === 'string') {
-    const trimmed = error.trim()
-    if (trimmed.length > 0) {
-      return trimmed
-    }
-    return 'An error occurred'
-  }
-  if (typeof error === 'object' && error !== null) {
-    const err = error as ApiErrorLike
-    const status = err.response?.status
-    const data = err.response?.data
-    const body = err.response?.body
-
-    const description = pickFirstString(
-      data?.description,
-      data?.error_description,
-      body?.description,
-      body?.error_description,
-    )
-
-    const message = pickFirstString(data?.message, body?.message)
-
-    if (status && status >= 400 && status < 500 && description) {
-      return description
-    }
-
-    return message || description || err?.response?.text || err?.message || 'An error occurred'
-  }
-  return 'An error occurred'
+  return resolveApiErrorMessage(error)
 }

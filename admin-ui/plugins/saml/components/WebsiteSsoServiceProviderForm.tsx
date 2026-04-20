@@ -5,7 +5,7 @@ import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik, setNestedObjectValues } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -612,7 +612,7 @@ const WebsiteSsoServiceProviderForm = ({
                 />
               </Col>
             </Row>
-            <GluuCommitDialogLegacy
+            <GluuCommitDialog
               handler={toggle}
               modal={modal}
               onAccept={submitForm}

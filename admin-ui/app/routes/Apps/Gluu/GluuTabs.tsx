@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState, type SyntheticEvent } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
@@ -16,7 +16,7 @@ const a11yProps = (index: number) => {
   }
 }
 
-const TabPanel = React.memo((props: TabPanelProps) => {
+const TabPanel = memo((props: TabPanelProps) => {
   const { children, value, px, py, index, ...other } = props
   return (
     <div
@@ -98,7 +98,7 @@ const GluuTabs = ({
   }, [])
 
   const handleChange = useCallback(
-    (event: React.SyntheticEvent, newValue: number) => {
+    (_event: SyntheticEvent, newValue: number) => {
       setValue(newValue)
       onTabChange?.(newValue)
       if (withNavigation) {

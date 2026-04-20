@@ -9,7 +9,7 @@ import type {
   PutPropertiesFido2Params,
   FidoFormValues,
   FidoFormValuePrimitive,
-} from '../types/fido'
+} from '../types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 
 const isStaticConfigType = (type?: string): type is typeof fidoConstants.STATIC => {

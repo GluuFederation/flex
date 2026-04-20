@@ -28,7 +28,6 @@ import {
   triggerUserWebhook,
   revokeSessionWhenFieldsModifiedInUserForm,
 } from '../helper'
-import { devLogger } from '@/utils/devLogger'
 import {
   mapToPersonAttributes,
   buildCustomAttributesFromValues,
@@ -116,8 +115,8 @@ const UserEditPage = () => {
             await AXIOS_INSTANCE.delete(
               `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
             )
-          } catch (error) {
-            devLogger.warn('Session revoke failed (expected if user has no active session):', error)
+          } catch {
+            // Silently ignore — 404 means the user has no active session
           }
         }
 

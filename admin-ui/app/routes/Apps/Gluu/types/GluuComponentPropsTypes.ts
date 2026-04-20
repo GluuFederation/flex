@@ -24,26 +24,7 @@ export type GluuBooleanSelectBoxProps<T extends object = Record<string, JsonValu
   toToggle?: boolean
 }
 
-export type GluuCommitFooterProps = {
-  extraOnClick?: () => void
-  saveHandler?: () => void
-  extraLabel?: string
-  hideButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  disableButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  type?: 'button' | 'submit'
-  disableBackButton?: boolean
-  cancelHandler?: () => void
-  backButtonLabel?: string
-  backButtonHandler?: () => void
-}
-
-export type DialogRow = {
+type DialogRow = {
   name?: string
   inum?: string
   id?: string
@@ -57,17 +38,6 @@ export type GluuDialogProps = {
   subject: string
   name?: string
   feature: string
-}
-
-export type GluuFormActionRowProps = {
-  label: string
-  value?: JsonValue
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  doc_entry?: string
-  isDirect?: boolean
-  onActionClick?: (value: JsonValue) => void
 }
 
 export type GluuFormDetailRowProps = {
@@ -127,12 +97,12 @@ export type GluuLabelProps = {
   isDirect?: boolean
 }
 
-export type CountryOption = {
+type CountryOption = {
   name: string
   cca2: string
 }
 
-export type RemovableModifiedFieldValue = string | string[] | boolean
+type RemovableModifiedFieldValue = string | string[] | boolean
 
 export type GluuRemovableSelectRowProps = {
   label: string
@@ -149,35 +119,6 @@ export type GluuRemovableSelectRowProps = {
   setModifiedFields: React.Dispatch<
     React.SetStateAction<Record<string, RemovableModifiedFieldValue>>
   >
-}
-
-export type TypeaheadOptionObject = {
-  role?: string
-  customOption?: boolean
-  label?: string
-  [key: string]: string | number | boolean | null | undefined | string[]
-}
-
-export type TypeaheadOption = string | TypeaheadOptionObject
-
-export type GluuRemovableTypeAheadProps = {
-  label: string
-  name: string
-  value?: TypeaheadOption[]
-  formik: FormikProps<Record<string, string | string[] | boolean | null | undefined>>
-  lsize?: number
-  rsize?: number
-  handler: () => void
-  doc_category?: string
-  options?: TypeaheadOption[]
-  isDirect?: boolean
-  allowNew?: boolean
-  modifiedFields?: Record<string, RemovableModifiedFieldValue>
-  setModifiedFields?: React.Dispatch<
-    React.SetStateAction<Record<string, RemovableModifiedFieldValue>>
-  >
-  disabled?: boolean
-  placeholder?: string
 }
 
 export type GluuScriptErrorModalProps = {
@@ -214,7 +155,7 @@ export type GluuStatusMessageProps = {
   inline?: boolean
 }
 
-export type NamedTab = {
+type NamedTab = {
   name: string
   path?: string | null
   id?: string
@@ -243,17 +184,7 @@ export type GluuTabsProps = {
   onTabChange?: (index: number) => void
 }
 
-export type GluuTextVariant =
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'p'
-  | 'span'
-  | 'small'
-  | 'div'
+type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'
 
 export type GluuTextProps = HTMLAttributes<HTMLElement> & {
   variant?: GluuTextVariant
@@ -263,14 +194,14 @@ export type GluuTextProps = HTMLAttributes<HTMLElement> & {
   onLightSurface?: boolean
 }
 
-export type GluuThemeFormFooterStepNavigation = {
+type GluuThemeFormFooterStepNavigation = {
   currentIndex: number
   total: number
   onPrev: () => void
   onNextStep: () => void
 }
 
-export type GluuThemeFormFooterBaseProps = {
+type GluuThemeFormFooterBaseProps = {
   showBack?: boolean
   backButtonLabel?: string
   onBack?: () => void

@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
 import GluuAdvancedSearch from '../GluuAdvancedSearch'
 import i18n from '../../../../i18n'

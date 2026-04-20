@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { render, waitFor } from '@testing-library/react'
 import GluuAppSidebar from '../GluuAppSidebar'
 import { MemoryRouter } from 'react-router-dom'

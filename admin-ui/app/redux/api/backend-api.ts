@@ -107,22 +107,6 @@ export const postUserAction = async (
   }
 }
 
-export const fetchApiAccessToken = async (
-  jwt: string,
-  permissionTag: string[],
-): Promise<ApiTokenResponse | -1> => {
-  try {
-    const response = await axios.post<ApiTokenResponse>(ENDPOINTS.API_PROTECTION_TOKEN, {
-      ujwt: jwt,
-      permissionTag: permissionTag || [],
-    })
-    return response.data
-  } catch (error) {
-    devLogger.error('Problems getting API access token in order to process api calls.', error)
-    return -1
-  }
-}
-
 export const fetchApiTokenWithDefaultScopes = async (): Promise<ApiTokenResponse> => {
   try {
     const response = await axios.post<ApiTokenResponse>(
