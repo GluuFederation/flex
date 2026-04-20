@@ -6,13 +6,14 @@ import type {
   WebsiteSsoIdentityProviderFormValues,
   FileLikeObject,
   WebsiteSsoServiceProviderFormValues,
-} from '../types'
+} from '../types/formValues'
 
+// Re-export types for backward compatibility
 export type {
   WebsiteSsoIdentityProviderFormValues,
   FileLikeObject,
   WebsiteSsoServiceProviderFormValues,
-} from '../types'
+} from '../types/formValues'
 export const samlConfigurationValidationSchema: Yup.ObjectSchema<SamlConfigurationFormValues> =
   Yup.object({
     enabled: Yup.boolean().required('Enabled field is required.'),
@@ -47,7 +48,7 @@ const urlFormatTest = (t: TFunction, fieldKey: string) =>
   Yup.string().test(
     'url-format',
     t('errors.must_be_valid_url', { field: t(fieldKey) }),
-    (value) => {
+    function (value) {
       if (!value || value.trim().length === 0) return true
       try {
         new URL(value)

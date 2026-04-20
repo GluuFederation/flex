@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling'
@@ -12,7 +12,8 @@ import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { samlConfigurationValidationSchema, transformToFormValues } from '../helper'
+import { samlConfigurationValidationSchema } from '../helper/validations'
+import { transformToFormValues } from '../helper/utils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
 import type { SamlConfigurationFormValues } from '../types'
@@ -186,7 +187,7 @@ const SamlConfigurationForm: React.FC = () => {
             </Col>
           </Row>
         )}
-        <GluuCommitDialog
+        <GluuCommitDialogLegacy
           handler={toggle}
           modal={modal}
           onAccept={submitForm}

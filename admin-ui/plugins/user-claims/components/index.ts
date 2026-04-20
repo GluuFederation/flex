@@ -1,6 +1,0 @@
-export { default as UserClaimsAddPage } from './UserClaimsAddPage'
-export { default as UserClaimsEditPage } from './UserClaimsEditPage'
-export { default as UserClaimsForm } from './UserClaimsForm'
-export { default as UserClaimsListPage } from './UserClaimsListPage'
-export { default as UserClaimsViewPage } from './UserClaimsViewPage'
-export * from './types'

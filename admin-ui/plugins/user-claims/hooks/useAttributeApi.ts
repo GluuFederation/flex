@@ -21,7 +21,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useSchemaAuditLogger } from './useSchemaAuditLogger'
 import { useSchemaWebhook } from './useSchemaWebhook'
 import { API_ATTRIBUTE, ATTRIBUTE_CACHE_CONFIG, QUERY_KEY_PREFIX_ATTRIBUTES } from '../constants'
-import type { ModifiedFields } from '../components/types'
+import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
 
 export const useAttributes = (params?: GetAttributesParams) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)

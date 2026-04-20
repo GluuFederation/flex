@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { REGEX_NO_WHITESPACE_STRICT } from '@/utils/regex'
 import { useMemo } from 'react'
-import type { AttributeFormValues } from '../components/types'
+import type { AttributeFormValues } from '../components/types/UserClaimsListPage.types'
 
 const buildAttributeSchemaParts = (validationEnabled = true) => {
   return {

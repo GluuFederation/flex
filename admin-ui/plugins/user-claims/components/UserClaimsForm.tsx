@@ -19,8 +19,8 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/UserClaimsFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useAttributeValidationSchema } from '../utils/validation'
 import {
-  useAttributeValidationSchema,
   useInitialAttributeValues,
   getInitialValidationState,
   handleAttributeSubmit,
@@ -28,8 +28,8 @@ import {
   getDefaultFormValues,
   isFormValid,
   computeModifiedFields,
-} from '../utils'
-import type { AttributeFormProps, AttributeFormValues } from './types'
+} from '../utils/formHelpers'
+import type { AttributeFormProps, AttributeFormValues } from './types/UserClaimsListPage.types'
 
 const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
   { value: 'admin', label: 'Admin' },
@@ -38,7 +38,7 @@ const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
 
 const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [{ value: 'openid', label: 'OpenID' }]
 
-const UserClaimsForm = memo((props: AttributeFormProps) => {
+const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()

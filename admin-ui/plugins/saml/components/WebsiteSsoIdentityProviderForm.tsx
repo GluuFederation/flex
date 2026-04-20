@@ -4,7 +4,7 @@ import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialogLegacy from 'Routes/Apps/Gluu/GluuCommitDialogLegacy'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -21,7 +21,7 @@ import {
   separateConfigFields,
   buildIdentityProviderPayload,
 } from '../helper'
-import type { WebsiteSsoIdentityProviderFormValues } from '../types'
+import type { WebsiteSsoIdentityProviderFormValues } from '../types/formValues'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -590,7 +590,7 @@ const WebsiteSsoIdentityProviderForm = ({
                 />
               </Col>
             </Row>
-            <GluuCommitDialog
+            <GluuCommitDialogLegacy
               handler={toggle}
               modal={modal}
               onAccept={submitForm}
