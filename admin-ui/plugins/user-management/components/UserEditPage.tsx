@@ -7,8 +7,13 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuPageContent } from '@/components'
 import Alert from '@mui/material/Alert'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { UserEditFormValues, ModifiedFields } from '../types/ComponentTypes'
-import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
+import type {
+  UserEditFormValues,
+  ModifiedFields,
+  PersonAttribute,
+  CustomUser,
+  CaughtError,
+} from '../types'
 import {
   usePutUser,
   getGetUserQueryKey,
@@ -21,7 +26,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
-import type { CaughtError } from '../types/ErrorTypes'
 import {
   logUserUpdate,
   getErrorMessage,

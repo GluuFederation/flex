@@ -5,7 +5,7 @@ import { useDeleteUser, getGetUserQueryKey } from 'JansConfigApi'
 import queryUtils from '@/utils/queryUtils'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
-import type { CaughtError } from '../types/ErrorTypes'
+import type { CaughtError } from '../types'
 import { logUserDeletion, getErrorMessage, triggerUserWebhook } from '../helper'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { CustomUser } from '../types'
@@ -25,7 +25,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
   callbacksRef.current = callbacks
 
   const deleteUser = useCallback(
-    async (inum: string, userMessage?: string, userData?: CustomUser) => {
+    async (inum: string, _userMessage?: string, userData?: CustomUser) => {
       try {
         await mutation.mutateAsync({ inum })
       } catch (error) {

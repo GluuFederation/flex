@@ -110,6 +110,10 @@ describe('CedarlingConfigPage', () => {
     const uploadButton = screen.getByText('Upload')
     fireEvent.click(uploadButton)
 
+    await screen.findByText('Confirm Policy Store Upload')
+
+    fireEvent.click(screen.getByText('Yes'))
+
     await waitFor(() => {
       expect(uploadPolicyStore).toHaveBeenCalledWith(expect.any(File))
     })

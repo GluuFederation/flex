@@ -1,7 +1,5 @@
-import type { AssetFormValues } from '../components/Assets/types/FormTypes'
-import type { Document } from '../components/Assets/types/AssetApiTypes'
+import type { AssetFormValues, Document } from '../components/Assets/types'
 
-/** Normalize service from API (may be service, jansService, or jansModuleProperty[0]) */
 export const getServiceFromAsset = (
   asset:
     | Document
