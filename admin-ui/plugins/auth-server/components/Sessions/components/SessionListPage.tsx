@@ -93,7 +93,11 @@ const SessionListPage: React.FC = () => {
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
   const [searchParams, setSearchParams] = useState<SearchSessionParams | undefined>(undefined)
-  const { data: searchData, isLoading: searchLoading } = useSearchSession(searchParams, {
+  const {
+    data: searchData,
+    isLoading: searchLoading,
+    isFetching: searchFetching,
+  } = useSearchSession(searchParams, {
     query: { enabled: !!searchParams },
   })
 
@@ -120,11 +124,11 @@ const SessionListPage: React.FC = () => {
   }, [authorizeHelper])
 
   useEffect(() => {
-    if (filterPendingClose && !searchLoading && !sessionsLoading) {
+    if (filterPendingClose && !searchFetching) {
       setFilterPendingClose(false)
       setShowFilter(false)
     }
-  }, [filterPendingClose, searchLoading, sessionsLoading])
+  }, [filterPendingClose, searchFetching])
 
   const adaptSessionIdToSession = useCallback(
     (sessionId: SessionId): Session => ({
@@ -265,11 +269,14 @@ const SessionListPage: React.FC = () => {
   }, [])
 
   const handleFilterApply = useCallback(() => {
-    if (filterTextValue || filterDateValue) {
-      const searchValue = isDateFilterField(filterSearchField)
-        ? formatDate(filterDateValue, 'YYYY-MM-DD')
-        : filterTextValue
-      setSearchParams({ fieldValuePair: `${filterSearchField}=${searchValue}`, limit: 100 })
+    const trimmedText = filterTextValue.trim()
+    if (isDateFilterField(filterSearchField) && filterDateValue) {
+      setSearchParams({
+        fieldValuePair: `${filterSearchField}=${formatDate(filterDateValue, 'YYYY-MM-DD')}`,
+        limit: 100,
+      })
+    } else if (!isDateFilterField(filterSearchField) && trimmedText) {
+      setSearchParams({ fieldValuePair: `${filterSearchField}=${trimmedText}`, limit: 100 })
     } else {
       setSearchParams(undefined)
     }
