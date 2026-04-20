@@ -5,7 +5,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { UserDeviceDetailViewPageProps } from '../types'
+import { UserDeviceDetailViewPageProps } from '../types/ComponentTypes'
 
 const DOC_SECTION = 'user'
 

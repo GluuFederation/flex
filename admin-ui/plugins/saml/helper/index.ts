@@ -8,7 +8,7 @@ export {
 export type {
   WebsiteSsoIdentityProviderFormValues,
   WebsiteSsoServiceProviderFormValues,
-} from '../types'
+} from '../types/formValues'
 export {
   transformToFormValues,
   transformToIdentityProviderFormValues,

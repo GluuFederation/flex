@@ -34,7 +34,8 @@ import {
   useSsaJwtQuery,
   SSA_QUERY_KEYS,
 } from '../hooks'
-import { formatExpirationDate, downloadJwtFile } from '../utils'
+import { formatExpirationDate } from '../utils'
+import { downloadJwtFile } from '../utils/fileDownload'
 import type { SsaData } from '../types/SsaApiTypes'
 import type { SsaTableRowData } from '../types/SsaFormTypes'
 

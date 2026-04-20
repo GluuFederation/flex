@@ -5,7 +5,7 @@ import type {
   TriggerWebhookApiResponse,
   TriggerWebhookApiPayload,
   AdminUIWebhooksApiInstance,
-} from '../types'
+} from '../types/webhook'
 import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 
 export type {

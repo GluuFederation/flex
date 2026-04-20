@@ -117,7 +117,6 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       display: 'flex',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      paddingTop: SPACING.CARD_CONTENT_GAP,
     },
     dynamicClaimsWrap: {
       'display': 'flex',
