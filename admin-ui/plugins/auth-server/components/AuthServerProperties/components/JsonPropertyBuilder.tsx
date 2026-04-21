@@ -5,12 +5,13 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
 import { buildKeyCandidates } from '@/utils/stringUtils'
-import { REGEX_LEADING_SLASH } from '@/utils/regex'
+import { REGEX_LEADING_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type {
   MultiSelectOption,
@@ -39,6 +40,8 @@ import {
   isObject,
   migratingTextIfRenamed,
   sortKeysByFieldType,
+  LOGGING_LEVEL_FIELD_KEYS,
+  LOGGING_LEVEL_OPTIONS,
 } from '../../ConfigApiProperties/utils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
@@ -277,6 +280,16 @@ const JsonPropertyBuilder = ({
     setShow(false)
   }, [path, handler])
 
+  const selectFormikAdapter = useMemo(
+    () => ({
+      handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        handler({ op: 'replace', path, value: event.target.value })
+      },
+      handleBlur: () => {},
+    }),
+    [handler, path],
+  )
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <>
@@ -300,6 +313,27 @@ const JsonPropertyBuilder = ({
   }
 
   if (isString(propValue) || shouldRenderAsString(schema)) {
+    const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
+    const isLoggingLevelField = LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey)
+
+    if (isLoggingLevelField) {
+      return (
+        <GluuSelectRow
+          label={getLocalizedLabelKey(propKey)}
+          name={propKey}
+          value={propValue as string}
+          formik={selectFormikAdapter}
+          values={LOGGING_LEVEL_OPTIONS}
+          lsize={lSize}
+          rsize={lSize}
+          doc_category="json_properties"
+          doc_entry={propKey}
+          showError={fieldTouched && typeof fieldError === 'string'}
+          errorMessage={typeof fieldError === 'string' ? fieldError : undefined}
+        />
+      )
+    }
+
     return (
       <>
         <GluuInlineInput
