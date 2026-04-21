@@ -48,6 +48,8 @@ export const REGEX_IDENTIFIER = /^[a-zA-Z0-9_]+$/
 export const REGEX_HAS_UPPERCASE = /[A-Z]/
 /** Password strength — at least one lowercase letter. */
 export const REGEX_HAS_LOWERCASE = /[a-z]/
+/** Matches any character that is not a lowercase ASCII letter; use with replace('') after lowercasing to normalize keys for comparisons. */
+export const REGEX_NON_LOWERCASE_ALPHA = /[^a-z]/g
 /** Password strength — at least one digit. */
 export const REGEX_HAS_DIGIT = /[0-9]/
 /** Password strength — at least one special character. */
