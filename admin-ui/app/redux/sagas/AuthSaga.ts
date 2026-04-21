@@ -34,8 +34,11 @@ import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import type { ApiErrorLike } from './types'
 import { devLogger } from '@/utils/devLogger'
 
-const asApiError = (error: Error | ApiErrorLike): ApiErrorLike =>
-  error instanceof Error ? { message: error.message } : error
+const asApiError = (error: Error | ApiErrorLike): ApiErrorLike => {
+  if (!(error instanceof Error)) return error
+  const axiosLike = error as Error & { response?: ApiErrorLike['response'] }
+  return { message: error.message, response: axiosLike.response }
+}
 
 function* getApiTokenWithDefaultScopes(): Generator {
   try {

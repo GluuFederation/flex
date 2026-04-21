@@ -8,7 +8,7 @@ type FormatStats = {
 const ESC = '\x1b'
 const cyan = (s: string): string => `${ESC}[36m${s}${ESC}[0m`
 
-const proc: ChildProcess = spawn('npx prettier --write "**/*.{js,jsx,ts,tsx,json}"', [], {
+const proc: ChildProcess = spawn('npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss}"', [], {
   shell: true,
   stdio: ['inherit', 'pipe', 'pipe'],
 })

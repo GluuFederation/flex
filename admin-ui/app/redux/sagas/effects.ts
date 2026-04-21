@@ -1,7 +1,7 @@
 import { takeEvery as sagaTakeEvery, takeLatest as sagaTakeLatest } from 'redux-saga/effects'
 import type { ActionPattern, ForkEffect } from 'redux-saga/effects'
 
-type BaseAction = { type: string; payload?: unknown }
+type BaseAction = { type: string; payload?: string | number | boolean | object | null }
 
 export const takeEvery = <A extends BaseAction = BaseAction>(
   pattern: string,

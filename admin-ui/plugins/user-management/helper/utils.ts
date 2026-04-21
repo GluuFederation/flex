@@ -107,16 +107,19 @@ export const logUserUpdate = async (_data: CustomUser, payload: CustomUser): Pro
 export const logUserDeletion = async (inum: string, userData?: CustomUser): Promise<void> => {
   try {
     const { client_id, userinfo } = getCurrentAuditContext()
-    const payload = userData || { inum }
-    const extendedPayload = userData as AuditPayload | undefined
-    const message = extendedPayload?.action_message || extendedPayload?.message || 'Deleted user'
+    const auditPayload: AuditPayload = userData ? { ...userData } : { inum }
+    redactSensitiveData(auditPayload)
+    const message =
+      (userData as AuditPayload | undefined)?.action_message ||
+      (userData as AuditPayload | undefined)?.message ||
+      'Deleted user'
     await logAuditUserAction({
       userinfo,
       action: DELETION,
       resource: API_USERS,
       message,
       client_id,
-      payload,
+      payload: auditPayload,
     })
   } catch (error) {
     devLogger.error('Failed to log user deletion:', error instanceof Error ? error : String(error))

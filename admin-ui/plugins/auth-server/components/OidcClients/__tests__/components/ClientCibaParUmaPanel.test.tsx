@@ -14,6 +14,7 @@ import type {
 } from 'Plugins/auth-server/components/OidcClients/types'
 import type { CustomScript } from 'JansConfigApi'
 import type { SetStateAction } from 'react'
+import type { SetCurrentClientPayload } from 'Plugins/auth-server/redux/features/types/oidcSlice'
 
 jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   ...jest.requireActual('Plugins/auth-server/components/OidcClients/hooks'),
@@ -40,7 +41,7 @@ jest.mock('@/redux/hooks', () => ({
 }))
 
 jest.mock('Plugins/auth-server/redux/features/oidcSlice', () => ({
-  setCurrentItem: jest.fn((payload: { item: Record<string, string | boolean | string[]> }) => ({
+  setCurrentItem: jest.fn((payload: SetCurrentClientPayload) => ({
     type: 'oidc/setCurrentItem',
     payload,
   })),

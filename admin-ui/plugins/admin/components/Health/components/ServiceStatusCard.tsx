@@ -11,6 +11,7 @@ import { REGEX_TRAILING_PERIOD } from '@/utils/regex'
 import type { ServiceStatusCardProps, ServiceHealth } from '../types'
 import { formatServiceName } from '../utils'
 import { STATUS_LABEL_KEYS } from '../constants'
+import { UNKNOWN_STATUS } from '@/constants'
 import { useStyles } from './ServiceStatusCard.style'
 
 const getStatusMessage = (service: ServiceHealth, t: TFunction): string => {
@@ -56,7 +57,7 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isD
           text: isDark ? customColors.white : customColors.statusInactive,
         }
       case 'degraded':
-      case 'unknown':
+      case UNKNOWN_STATUS:
       default:
         return {
           bg: isDark ? customColors.statusInactive : customColors.statusInactiveBg,

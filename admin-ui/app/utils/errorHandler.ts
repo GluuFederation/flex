@@ -37,6 +37,9 @@ export const getQueryErrorMessage = (
   error: Error | ApiError | object | string | void | null | undefined,
   fallback: string,
 ): string => {
+  if (typeof error === 'string') {
+    return error.trim() || fallback
+  }
   if (error !== null && error !== undefined && typeof error === 'object') {
     if ('response' in error) {
       const typedError = error as ApiError

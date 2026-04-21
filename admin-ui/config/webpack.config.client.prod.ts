@@ -144,13 +144,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       failOnError: false,
       allowAsyncCycles: false,
       cwd: process.cwd(),
-      onDetected: ({
-        paths,
-      }: {
-        module: unknown
-        paths: string[]
-        compilation: webpack.Compilation
-      }) => {
+      onDetected: ({ paths }: { paths: string[] }) => {
         const warnings: Error[] = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {

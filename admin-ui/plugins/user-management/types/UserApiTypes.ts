@@ -1,10 +1,15 @@
-import { CustomObjectAttribute, CustomUser as ApiCustomUser, JansAttribute } from 'JansConfigApi'
+import {
+  CustomObjectAttribute,
+  CustomUser as ApiCustomUser,
+  JansAttribute,
+  CustomObjectAttributeValuesItem,
+} from 'JansConfigApi'
 
 export type CustomUser = ApiCustomUser
 export type PersonAttribute = JansAttribute
 
 export type CustomAttribute = Omit<CustomObjectAttribute, 'values'> & {
-  values?: (string | boolean | object)[]
+  values?: (string | boolean | CustomObjectAttributeValuesItem)[]
 }
 
 export type FidoRegistrationEntry = {

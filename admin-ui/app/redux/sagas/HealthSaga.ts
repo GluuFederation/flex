@@ -40,6 +40,7 @@ export function* getHealthStatus({
     yield put(getHealthStatusResponse({ data }))
     yield call(postUserAction, audit as UserActionPayload)
   } catch (e) {
+    devLogger.warn('getHealthStatus failed', e instanceof Error ? e : String(e))
     yield put(getHealthStatusResponse(null))
     if (
       isHttpLikeError(e as Error) &&
