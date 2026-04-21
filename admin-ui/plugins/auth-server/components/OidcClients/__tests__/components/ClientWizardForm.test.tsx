@@ -94,7 +94,7 @@ jest.mock('@/redux/hooks', () => ({
 }))
 
 jest.mock('Plugins/auth-server/redux/features/scopeSlice', () => ({
-  setClientSelectedScopes: jest.fn((payload: unknown) => ({
+  setClientSelectedScopes: jest.fn((payload: Record<string, string | boolean | string[]>[]) => ({
     type: 'scope/setClientSelectedScopes',
     payload,
   })),

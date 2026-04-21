@@ -18,7 +18,7 @@ const mockUseRevokeToken = jest.fn()
 const mockInvalidateQueriesByKey = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
-  useSearchToken: (...args: unknown[]) => mockUseSearchToken(...args),
+  useSearchToken: mockUseSearchToken,
   useRevokeToken: () => mockUseRevokeToken(),
   getSearchTokenQueryKey: jest.fn(() => ['searchToken']),
 }))
@@ -28,7 +28,7 @@ jest.mock('@tanstack/react-query', () => ({
 }))
 
 jest.mock('@/utils/queryUtils', () => ({
-  invalidateQueriesByKey: (...args: unknown[]) => mockInvalidateQueriesByKey(...args),
+  invalidateQueriesByKey: mockInvalidateQueriesByKey,
 }))
 
 const DEFAULT_PARAMS: UseClientTokensParams = {

@@ -3,6 +3,7 @@ import { useGetServiceStatus, type JsonNode } from 'JansConfigApi'
 import { useAppSelector } from '@/redux/hooks'
 import type { ServiceHealth, ServiceStatusValue, ServiceStatusResponse } from '../types'
 import { HEALTH_PAGE_EXCLUDED_SERVICES, STATUS_MAP, DEFAULT_STATUS } from '../constants'
+import { UNKNOWN_STATUS } from '@/constants'
 
 const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
@@ -13,7 +14,7 @@ const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   up: 0,
   degraded: 1,
-  unknown: 2,
+  [UNKNOWN_STATUS]: 2,
   down: 3,
 }
 

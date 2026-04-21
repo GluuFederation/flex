@@ -34,7 +34,10 @@ const getSavedLanguage = (): string => {
       if (values.length > 0) return values[values.length - 1]
     }
   } catch (error) {
-    devLogger.warn('Failed to read saved language from localStorage:', error)
+    devLogger.warn(
+      'Failed to read saved language from localStorage:',
+      error instanceof Error ? error : String(error),
+    )
   }
   return 'en'
 }

@@ -28,7 +28,10 @@ export const useSchemaAuditLogger = () => {
           modifiedFields: params.modifiedFields,
         })
       } catch (error) {
-        devLogger.error('[useSchemaAuditLogger] Failed to log audit action:', error)
+        devLogger.error(
+          '[useSchemaAuditLogger] Failed to log audit action:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [authState],

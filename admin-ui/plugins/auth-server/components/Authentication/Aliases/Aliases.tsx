@@ -112,7 +112,10 @@ const Aliases = ({
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        devLogger.error(error)
+        devLogger.error(
+          'Failed to update ACR mappings:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [acrConfig.acrMappings, isEdit, selectedRow, patchJsonMutation],
@@ -199,7 +202,10 @@ const Aliases = ({
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error(error)
+        devLogger.error(
+          'Failed to delete ACR mapping:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [itemToDelete, acrConfig.acrMappings, patchJsonMutation],

@@ -34,6 +34,9 @@ export const logAuditAction = async (
   try {
     await postUserAction(audit as UserActionPayload)
   } catch (error) {
-    devLogger.error(`Audit logging failed for ${actionType}:`, error)
+    devLogger.error(
+      `Audit logging failed for ${actionType}:`,
+      error instanceof Error ? error : String(error),
+    )
   }
 }

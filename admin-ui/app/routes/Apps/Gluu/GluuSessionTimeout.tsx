@@ -54,7 +54,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
           }),
         )
       } catch (err) {
-        devLogger.error(err)
+        devLogger.error(err instanceof Error ? err : String(err))
       }
     },
     [clearTimers, dispatch],

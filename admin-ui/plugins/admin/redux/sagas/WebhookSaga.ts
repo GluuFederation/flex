@@ -22,6 +22,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/backend-api'
 import * as JansConfigApi from 'jans_config_api'
 import { devLogger } from '@/utils/devLogger'
+import { UNKNOWN_STATUS } from '@/constants'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
@@ -147,8 +148,8 @@ export function* triggerWebhook({
     const failedItems = responseItems.filter((item: WebhookTriggerResponseItem) => !item.success)
     if (failedItems.length) {
       const summary = failedItems.map((item: WebhookTriggerResponseItem) => ({
-        name: item.responseObject?.webhookName ?? 'unknown',
-        id: item.responseObject?.inum ?? 'unknown',
+        name: item.responseObject?.webhookName ?? UNKNOWN_STATUS,
+        id: item.responseObject?.inum ?? UNKNOWN_STATUS,
         message: item.responseMessage ?? 'No message',
       }))
       devLogger.warn(`[Webhook] ${failedItems.length} webhook(s) failed:`, summary)

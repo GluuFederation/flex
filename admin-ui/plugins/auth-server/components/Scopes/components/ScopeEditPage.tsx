@@ -87,7 +87,7 @@ const ScopeEditPage: React.FC = () => {
       try {
         await updateScope(data, modifiedFields)
       } catch (error) {
-        devLogger.error('Error updating scope:', error)
+        devLogger.error('Error updating scope:', error instanceof Error ? error : String(error))
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },

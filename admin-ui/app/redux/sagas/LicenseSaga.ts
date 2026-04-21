@@ -55,7 +55,10 @@ export function* getAccessToken() {
       yield put(setApiDefaultToken(defaultToken))
       yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
     } catch (error) {
-      devLogger.error('Failed to fetch API token with default scopes', error)
+      devLogger.error(
+        'Failed to fetch API token with default scopes',
+        error instanceof Error ? error : String(error),
+      )
       yield put(setBackendStatus(getBackendStatusFromError(error as Error | ApiErrorLike)))
       throw error
     }
@@ -91,7 +94,10 @@ function* checkLicensePresentWorker(_action?: { type: string }) {
       yield* checkMauThreshold(parseInt(mauThreshold?.value ?? '', 10))
     }
   } catch (error) {
-    devLogger.log('Error in checking License present.', error)
+    devLogger.log(
+      'Error in checking License present.',
+      error instanceof Error ? error : String(error),
+    )
     yield* retrieveLicenseKey()
   }
 }
@@ -141,7 +147,7 @@ function* retrieveLicenseKey(_action?: { type: string }) {
     }
   } catch (err) {
     yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
-    devLogger.log('Error in generating key.', err)
+    devLogger.log('Error in generating key.', err instanceof Error ? err : String(err))
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
@@ -164,7 +170,7 @@ function* checkMauThreshold(mau_threshold: number) {
       yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     }
   } catch (err) {
-    devLogger.log(err)
+    devLogger.log(err instanceof Error ? err : String(err))
     yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
@@ -204,7 +210,7 @@ function* generateTrailLicenseKey(_action?: { type: string }): SagaIterator {
     }
   } catch (err) {
     yield put(setLicenseError(getLicenseErrorMessage(err as Error | SagaError)))
-    devLogger.log('Error in generating key.', err)
+    devLogger.log('Error in generating key.', err instanceof Error ? err : String(err))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
   }
@@ -220,7 +226,7 @@ function* activateCheckUserLicenseKey(action: { payload: LicenseRequestPayload }
     )) as LicenseApiGenericResponse | null
     yield put(checkUserLicenseKeyResponse(response))
   } catch (err) {
-    devLogger.log(err)
+    devLogger.log(err instanceof Error ? err : String(err))
   }
 }
 
@@ -243,7 +249,7 @@ function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }
     yield put(getOAuth2Config(defaultToken))
   } catch (err) {
     yield put(checkLicenseConfigValidResponse(false))
-    devLogger.log(err)
+    devLogger.log(err instanceof Error ? err : String(err))
     yield put(uploadNewSsaTokenResponse(getLicenseErrorMessage(err as Error | SagaError)))
   }
 }
@@ -257,7 +263,7 @@ function* checkAdminuiLicenseConfig(_action?: { type: string }) {
     )) as LicenseApiGenericResponse | null
     yield put(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
-    devLogger.log(error)
+    devLogger.log(error instanceof Error ? error : String(error))
     yield put(checkLicenseConfigValidResponse(false))
   }
 }

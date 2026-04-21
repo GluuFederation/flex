@@ -38,7 +38,7 @@ const ClientAddPage = (): JSX.Element => {
         await createClient(data)
         navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
-        devLogger.error('Failed to create client:', error)
+        devLogger.error('Failed to create client:', error instanceof Error ? error : String(error))
       }
     },
     [createClient, navigateToRoute],

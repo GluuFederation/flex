@@ -1,7 +1,11 @@
 import { getScopeValidationSchema } from 'Plugins/auth-server/components/Scopes/helper/validations'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 // Helper to validate and collect errors
-const validate = (values: Record<string, unknown>, options: { isExistingScope?: boolean } = {}) => {
+const validate = (
+  values: Record<string, JsonValue | undefined>,
+  options: { isExistingScope?: boolean } = {},
+) => {
   const schema = getScopeValidationSchema(options)
   return schema.validate(values, { abortEarly: false })
 }

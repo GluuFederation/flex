@@ -1,11 +1,12 @@
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { createDate, isSameDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { createDate, isSameDate, isValidDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -32,6 +33,7 @@ const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProp
     a.textColor === b.textColor &&
     a.backgroundColor === b.backgroundColor &&
     (a.dateFormat ?? a.format) === (b.dateFormat ?? b.format) &&
+    a.showTime === b.showTime &&
     a.onStartDateChange === b.onStartDateChange &&
     a.onEndDateChange === b.onEndDateChange &&
     a.onStartDateAccept === b.onStartDateAccept &&
@@ -48,7 +50,10 @@ const GluuDatePicker = memo(
 
     const isRange = isGluuDatePickerRangeProps(props)
     const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
-    const displayFormat = props.dateFormat ?? props.format ?? DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const defaultFormat = props.showTime
+      ? DATE_FORMATS.DATE_PICKER_DATETIME
+      : DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const displayFormat = props.dateFormat ?? props.format ?? defaultFormat
 
     const { classes, slotProps, datePickerSx } = useDatePickerStyles({
       themeColors: globalThemeColors,
@@ -71,9 +76,13 @@ const GluuDatePicker = memo(
       )
     }
 
+    const SinglePicker = props.showTime ? DateTimePicker : DatePicker
+    const effectiveSlotProps = props.showTime
+      ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
+      : slotProps
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
+        <SinglePicker
           format={displayFormat}
           label={props.label ?? ''}
           value={props.value ?? null}
@@ -81,8 +90,9 @@ const GluuDatePicker = memo(
           onAccept={props.onAccept}
           minDate={props.minDate}
           maxDate={props.maxDate}
-          slotProps={slotProps}
+          slotProps={effectiveSlotProps}
           sx={datePickerSx}
+          {...(props.showTime ? { closeOnSelect: false } : {})}
         />
       </LocalizationProvider>
     )
@@ -103,6 +113,7 @@ const GluuDatePicker = memo(
       prev.label === next.label &&
       (prev.labelShrink ?? true) === (next.labelShrink ?? true) &&
       (prev.dateFormat ?? prev.format) === (next.dateFormat ?? next.format) &&
+      prev.showTime === next.showTime &&
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
@@ -111,8 +122,6 @@ const GluuDatePicker = memo(
     )
   },
 )
-
-GluuDatePicker.displayName = 'GluuDatePicker'
 
 const GluuDatePickerRange = memo(
   ({
@@ -124,48 +133,57 @@ const GluuDatePickerRange = memo(
     onEndDateAccept,
     layout = 'grid',
     labelAsTitle = false,
+    showTime = false,
     displayFormat,
     slotProps,
     datePickerSx,
     classes,
   }: GluuDatePickerRangeInternalProps) => {
     const { t } = useTranslation()
-    const today = useMemo(() => createDate(), [])
+
+    const effectiveSlotProps = useMemo(
+      () => (showTime ? { ...slotProps, actionBar: { actions: ['accept' as const] } } : slotProps),
+      [showTime, slotProps],
+    )
 
     const pickerCommon = useMemo(
       () => ({
         format: displayFormat,
-        slotProps,
+        slotProps: effectiveSlotProps,
         sx: datePickerSx,
       }),
-      [displayFormat, slotProps, datePickerSx],
+      [displayFormat, effectiveSlotProps, datePickerSx],
     )
+
+    const RangePicker = showTime ? DateTimePicker : DatePicker
 
     const renderPicker = (type: 'start' | 'end') => {
       const isStart = type === 'start'
       const label = isStart ? t('dashboard.start_date') : t('dashboard.end_date')
+      const minBound = isStart ? undefined : isValidDate(startDate) ? startDate : undefined
+      const maxBound = isStart ? (isValidDate(endDate) ? endDate : createDate()) : createDate()
+      const constraintProps = showTime
+        ? { minDateTime: minBound, maxDateTime: maxBound }
+        : { minDate: minBound, maxDate: maxBound }
       return (
-        <DatePicker
+        <RangePicker
           {...pickerCommon}
+          {...constraintProps}
+          {...(showTime ? { timeSteps: { hours: 1, minutes: 1 }, closeOnSelect: false } : {})}
           label={labelAsTitle ? '' : label}
           value={isStart ? startDate : endDate}
           onChange={isStart ? onStartDateChange : onEndDateChange}
           onAccept={isStart ? onStartDateAccept : onEndDateAccept}
-          minDate={isStart ? undefined : startDate}
-          maxDate={isStart ? endDate : today}
         />
       )
     }
-
-    const startLabel = t('dashboard.start_date')
-    const endLabel = t('dashboard.end_date')
 
     const rowLayout = (
       <Box className={classes.rangeRowContainer}>
         <Box className={classes.pickerWrapper}>
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabel}>
-              {startLabel}:
+              {t('dashboard.start_date')}:
             </Box>
           )}
           {renderPicker('start')}
@@ -173,7 +191,7 @@ const GluuDatePickerRange = memo(
         <Box className={classes.pickerWrapper}>
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabel}>
-              {endLabel}:
+              {t('dashboard.end_date')}:
             </Box>
           )}
           {renderPicker('end')}
@@ -186,7 +204,7 @@ const GluuDatePickerRange = memo(
         <Grid item xs={12} sm={6}>
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabelGrid}>
-              {startLabel}:
+              {t('dashboard.start_date')}:
             </Box>
           )}
           {renderPicker('start')}
@@ -194,7 +212,7 @@ const GluuDatePickerRange = memo(
         <Grid item xs={12} sm={6}>
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabelGrid}>
-              {endLabel}:
+              {t('dashboard.end_date')}:
             </Box>
           )}
           {renderPicker('end')}
@@ -211,6 +229,7 @@ const GluuDatePickerRange = memo(
 )
 
 GluuDatePickerRange.displayName = 'GluuDatePickerRange'
+GluuDatePicker.displayName = 'GluuDatePicker'
 
 export { GluuDatePicker }
 export default GluuDatePicker

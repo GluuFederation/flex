@@ -49,7 +49,10 @@ const useWebhookTrigger = () => {
           } as TriggerWebhookReducerPayload),
         )
       } catch (error) {
-        devLogger.error('Failed to trigger webhook:', error)
+        devLogger.error(
+          'Failed to trigger webhook:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [dispatch],

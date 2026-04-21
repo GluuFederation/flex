@@ -152,7 +152,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         })
         toggle()
       } catch (error) {
-        devLogger.error('Failed to delete identity provider:', error)
+        devLogger.error(
+          'Failed to delete identity provider:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [buildPayload, deleteIdentityProviderMutation, item.inum, toggle],

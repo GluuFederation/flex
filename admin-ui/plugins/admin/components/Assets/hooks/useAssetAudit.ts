@@ -76,7 +76,10 @@ export const useAssetAudit = () => {
       try {
         await postUserAction(audit as UserActionPayload)
       } catch (err) {
-        devLogger.error('[Asset audit] postUserAction failed', err)
+        devLogger.error(
+          '[Asset audit] postUserAction failed',
+          err instanceof Error ? err : String(err),
+        )
       }
     },
     [initAudit],

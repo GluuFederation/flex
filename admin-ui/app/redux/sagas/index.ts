@@ -1,9 +1,5 @@
-/**
- * Root Sagas
- */
 import { all } from 'redux-saga/effects'
 
-// sagas
 import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
 import initSaga from './InitSaga'
@@ -17,7 +13,7 @@ import appInitSaga from './AppInitSaga'
 
 export default function* rootSaga() {
   const pluginSagaArr = process()
-  yield all([
+  const coreSagas = [
     authSagas(),
     initSaga(),
     licenseSaga(),
@@ -27,7 +23,6 @@ export default function* rootSaga() {
     lockSaga(),
     sessionSaga(),
     appInitSaga(),
-
-    ...(pluginSagaArr as unknown[]),
-  ] as unknown[])
+  ]
+  yield all([...coreSagas, ...pluginSagaArr])
 }

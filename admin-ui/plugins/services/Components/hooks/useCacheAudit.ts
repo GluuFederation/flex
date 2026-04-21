@@ -28,7 +28,10 @@ export const useCacheAudit = () => {
           payload: cache as JsonValue,
         })
       } catch (error) {
-        devLogger.error('Failed to log cache update audit:', error)
+        devLogger.error(
+          'Failed to log cache update audit:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [userinfo, client_id],

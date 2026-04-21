@@ -26,7 +26,7 @@ export const RoutedContent = () => {
         const routes = await processRoutes()
         setPluginMenus(routes)
       } catch (error) {
-        devLogger.error('Failed to load plugins:', error)
+        devLogger.error('Failed to load plugins:', error instanceof Error ? error : String(error))
         setPluginMenus(processRoutesSync())
       }
     }

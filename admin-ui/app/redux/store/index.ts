@@ -1,5 +1,4 @@
 import { configureStore, combineReducers, Tuple } from '@reduxjs/toolkit'
-import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -8,8 +7,10 @@ import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
+import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
+import type { ReducerMap, RootState } from '../types'
 
-type ReducerMap = Record<string, Reducer<unknown, UnknownAction>>
+type LooseReducerMap = Record<string, Reducer<RootState[keyof RootState], UnknownAction>>
 
 declare global {
   interface Window {
@@ -28,13 +29,14 @@ const persistConfig = {
 }
 // Preserve initial state for not-yet-loaded reducers
 const combine = (reducersObjects: ReducerMap) => {
-  const reducerNames = Object.keys(reducersObjects)
+  const loose = reducersObjects as LooseReducerMap
+  const reducerNames = Object.keys(loose)
   Object.keys(appReducers).forEach((item) => {
     if (reducerNames.indexOf(item) === -1) {
-      reducersObjects[item] = ((state: unknown = null) => state) as Reducer<unknown, UnknownAction>
+      loose[item] = ((s = {}) => s) as LooseReducerMap[string]
     }
   })
-  return combineReducers(reducersObjects)
+  return combineReducers(loose)
 }
 const reducers = combine(reducerRegistry.getReducers())
 process()
@@ -51,12 +53,18 @@ export const configStore = () => {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
-    store.replaceReducer(combine(reds) as unknown as typeof persistedReducer)
+    store.replaceReducer(
+      combine(reds) as Reducer<object, UnknownAction> as Parameters<typeof store.replaceReducer>[0],
+    )
   })
   if (module.hot) {
     module.hot.accept('../reducers/index', () => {
       const nextRootReducer = combine(reducerRegistry.getReducers())
-      store.replaceReducer(nextRootReducer as unknown as typeof persistedReducer)
+      store.replaceReducer(
+        nextRootReducer as Reducer<object, UnknownAction> as Parameters<
+          typeof store.replaceReducer
+        >[0],
+      )
     })
   }
   return { store, persistor }
