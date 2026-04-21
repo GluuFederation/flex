@@ -77,6 +77,9 @@ const GluuDatePicker = memo(
     }
 
     const SinglePicker = props.showTime ? DateTimePicker : DatePicker
+    const effectiveSlotProps = props.showTime
+      ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
+      : slotProps
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <SinglePicker
@@ -87,8 +90,9 @@ const GluuDatePicker = memo(
           onAccept={props.onAccept}
           minDate={props.minDate}
           maxDate={props.maxDate}
-          slotProps={slotProps}
+          slotProps={effectiveSlotProps}
           sx={datePickerSx}
+          {...(props.showTime ? { closeOnSelect: false } : {})}
         />
       </LocalizationProvider>
     )
@@ -137,13 +141,18 @@ const GluuDatePickerRange = memo(
   }: GluuDatePickerRangeInternalProps) => {
     const { t } = useTranslation()
 
+    const effectiveSlotProps = useMemo(
+      () => (showTime ? { ...slotProps, actionBar: { actions: ['accept' as const] } } : slotProps),
+      [showTime, slotProps],
+    )
+
     const pickerCommon = useMemo(
       () => ({
         format: displayFormat,
-        slotProps,
+        slotProps: effectiveSlotProps,
         sx: datePickerSx,
       }),
-      [displayFormat, slotProps, datePickerSx],
+      [displayFormat, effectiveSlotProps, datePickerSx],
     )
 
     const RangePicker = showTime ? DateTimePicker : DatePicker
@@ -160,7 +169,7 @@ const GluuDatePickerRange = memo(
         <RangePicker
           {...pickerCommon}
           {...constraintProps}
-          {...(showTime ? { timeSteps: { hours: 1, minutes: 1 } } : {})}
+          {...(showTime ? { timeSteps: { hours: 1, minutes: 1 }, closeOnSelect: false } : {})}
           label={labelAsTitle ? '' : label}
           value={isStart ? startDate : endDate}
           onChange={isStart ? onStartDateChange : onEndDateChange}

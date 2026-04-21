@@ -28,7 +28,7 @@ export type DateInputDef = {
 export type PrimaryActionDef = {
   label: string
   icon?: ReactNode
-  onClick: () => void
+  onClick?: () => void
   disabled?: boolean
 }
 

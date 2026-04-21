@@ -116,6 +116,16 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     [onSearch, onSearchSubmit, localSearch],
   )
 
+  const handlePrimaryClick = useCallback(() => {
+    if (primaryAction?.onClick) {
+      primaryAction.onClick()
+    } else {
+      lastNotifiedRef.current = localSearch
+      onSearch?.(localSearch)
+      onSearchSubmit?.(localSearch)
+    }
+  }, [primaryAction, localSearch, onSearch, onSearchSubmit])
+
   const primaryButtonColors = useMemo(
     () => ({
       backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
@@ -271,7 +281,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             type="button"
             className={classes.toolbarButton}
             disabled={primaryDisabled}
-            onClick={primaryAction.onClick}
+            onClick={handlePrimaryClick}
             size="md"
             minHeight={DEFAULT_INPUT_HEIGHT}
             backgroundColor={primaryButtonColors.backgroundColor}

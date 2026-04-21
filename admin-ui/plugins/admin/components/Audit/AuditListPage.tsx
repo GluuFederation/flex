@@ -116,7 +116,7 @@ const AuditListPage: React.FC = () => {
         limit: currentLimit,
         startIndex: currentStartIndex,
       }
-      if (currentPattern.trim()) params.pattern = currentPattern.trim()
+      params.pattern = currentPattern.trim()
       if (currentFilters.hasBothDates) {
         params.start_date = currentFilters.startDateApi
         params.end_date = currentFilters.endDateApi
@@ -139,13 +139,18 @@ const AuditListPage: React.FC = () => {
     [buildQueryParams, onPagingSizeSync],
   )
 
-  const handleSearch = useCallback(() => {
-    if (!filterState.hasBothDates) return
-    setPageNumber(0)
-    const nextParams = buildQueryParams(limit, 0, pattern, filterState)
-    setQueryParams(nextParams)
-    queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(nextParams) })
-  }, [buildQueryParams, limit, pattern, filterState, queryClient])
+  const handleSearch = useCallback(
+    (val: string) => {
+      if (!filterStateRef.current.hasBothDates) return
+      setPattern(val)
+      patternRef.current = val
+      setPageNumber(0)
+      const nextParams = buildQueryParams(limit, 0, val, filterStateRef.current)
+      setQueryParams(nextParams)
+      queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(nextParams) })
+    },
+    [buildQueryParams, limit, queryClient],
+  )
 
   const handleRefresh = useCallback(() => {
     const resetStart = subtractDate(createDate(), 14, 'day').startOf('day')
@@ -321,9 +326,8 @@ const AuditListPage: React.FC = () => {
     () => ({
       label: t(T_KEYS.ACTION_SEARCH),
       icon: <SearchIcon className={classes.searchActionIcon} />,
-      onClick: handleSearch,
     }),
-    [t, handleSearch, classes.searchActionIcon],
+    [t, classes.searchActionIcon],
   )
 
   const dateRangeConfig = useMemo(
@@ -363,7 +367,7 @@ const AuditListPage: React.FC = () => {
                 searchPlaceholder={t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN)}
                 searchValue={pattern}
                 onSearch={setPattern}
-                onSearchSubmit={handleSearch}
+                onSearchSubmit={(val) => handleSearch(val)}
                 dateRange={dateRangeConfig}
                 onRefresh={handleRefresh}
                 refreshLoading={isFetching}
