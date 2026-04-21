@@ -41,9 +41,6 @@ export const getQueryErrorMessage = (
     return error.trim() || fallback
   }
   if (error !== null && error !== undefined && typeof error === 'object') {
-    if ('message' in error && typeof (error as { message?: string }).message === 'string') {
-      return (error as { message: string }).message.trim() || fallback
-    }
     if ('response' in error) {
       const typedError = error as ApiError
       return (
@@ -53,8 +50,8 @@ export const getQueryErrorMessage = (
         fallback
       )
     }
-    if (error instanceof Error) {
-      return error.message || fallback
+    if ('message' in error && typeof (error as { message?: string }).message === 'string') {
+      return (error as { message: string }).message.trim() || fallback
     }
   }
   return fallback

@@ -168,18 +168,10 @@ const AuditListPage: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(resetParams) })
   }, [buildQueryParams, limit, queryClient])
 
-  const handleStartDateChange = useCallback((date: Dayjs | null) => {
+  const handleStartDate = useCallback((date: Dayjs | null) => {
     setStartDate(date)
   }, [])
-  const handleEndDateChange = useCallback((date: Dayjs | null) => {
-    setEndDate(date)
-  }, [])
-
-  const handleStartDateAccept = useCallback((date: Dayjs | null) => {
-    setStartDate(date)
-  }, [])
-
-  const handleEndDateAccept = useCallback((date: Dayjs | null) => {
+  const handleEndDate = useCallback((date: Dayjs | null) => {
     setEndDate(date)
   }, [])
 
@@ -334,21 +326,14 @@ const AuditListPage: React.FC = () => {
     () => ({
       startDate,
       endDate,
-      onStartDateChange: handleStartDateChange,
-      onEndDateChange: handleEndDateChange,
-      onStartDateAccept: handleStartDateAccept,
-      onEndDateAccept: handleEndDateAccept,
+      onStartDateChange: handleStartDate,
+      onEndDateChange: handleEndDate,
+      onStartDateAccept: handleStartDate,
+      onEndDateAccept: handleEndDate,
       showTime: true,
       dateFormat: DATE_FORMATS.DATE_PICKER_DATETIME,
     }),
-    [
-      startDate,
-      endDate,
-      handleStartDateChange,
-      handleEndDateChange,
-      handleStartDateAccept,
-      handleEndDateAccept,
-    ],
+    [startDate, endDate, handleStartDate, handleEndDate],
   )
 
   const emptyMessage = useMemo(
