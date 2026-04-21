@@ -19,7 +19,7 @@ import {
   transformToWebsiteSsoServiceProviderFormValues,
   buildWebsiteSsoServiceProviderPayload,
 } from '../helper'
-import type { WebsiteSsoServiceProviderFormValues } from '../types/formValues'
+import type { WebsiteSsoServiceProviderFormValues } from '../types'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'

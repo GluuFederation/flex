@@ -20,8 +20,7 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components/constants'
-import { useCustomScriptsByType } from 'Plugins/scripts/components/hooks'
+import { DEFAULT_SCRIPT_TYPE, useCustomScriptsByType } from 'Plugins/scripts/components'
 import {
   buildAgamaFlowsArray,
   buildDropdownOptions,

@@ -1,5 +1,5 @@
 import type { JansAttribute } from 'JansConfigApi'
-import type { ModifiedFields } from '../components/types/UserClaimsListPage.types'
+import type { ModifiedFields } from '../components/types'
 
 export type SchemaAuditLogParams = {
   action: string
