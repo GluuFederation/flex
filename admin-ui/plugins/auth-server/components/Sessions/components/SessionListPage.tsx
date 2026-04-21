@@ -93,11 +93,7 @@ const SessionListPage: React.FC = () => {
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
   const [searchParams, setSearchParams] = useState<SearchSessionParams | undefined>(undefined)
-  const {
-    data: searchData,
-    isLoading: searchLoading,
-    isFetching: searchFetching,
-  } = useSearchSession(searchParams, {
+  const { data: searchData, isLoading: searchLoading } = useSearchSession(searchParams, {
     query: { enabled: !!searchParams },
   })
 
@@ -105,7 +101,6 @@ const SessionListPage: React.FC = () => {
   const [filterTextValue, setFilterTextValue] = useState('')
   const [filterDateValue, setFilterDateValue] = useState<Dayjs | null>(null)
   const [showFilter, setShowFilter] = useState(false)
-  const [filterPendingClose, setFilterPendingClose] = useState(false)
 
   const [deleteModal, setDeleteModal] = useState(false)
   const [revokeModal, setRevokeModal] = useState(false)
@@ -122,13 +117,6 @@ const SessionListPage: React.FC = () => {
       authorizeHelper(SESSION_SCOPES)
     }
   }, [authorizeHelper])
-
-  useEffect(() => {
-    if (filterPendingClose && !searchFetching) {
-      setFilterPendingClose(false)
-      setShowFilter(false)
-    }
-  }, [filterPendingClose, searchFetching])
 
   const adaptSessionIdToSession = useCallback(
     (sessionId: SessionId): Session => ({
@@ -281,11 +269,9 @@ const SessionListPage: React.FC = () => {
       setSearchParams(undefined)
     }
     setPageNumber(0)
-    setFilterPendingClose(true)
   }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber])
 
   const handleFilterCancel = useCallback(() => {
-    setFilterPendingClose(false)
     setShowFilter(false)
     setSearchParams(undefined)
     setFilterSearchField('')
