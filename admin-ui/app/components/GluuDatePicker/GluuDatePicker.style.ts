@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { getHoverOpacity, OPACITY, BORDER_RADIUS } from '@/constants'
+import { getHoverOpacity, getDividerOpacity, OPACITY, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { PickerThemeColors, GluuDatePickerStyleParams } from './types'
@@ -25,7 +25,7 @@ const buildPickerThemeColors = (
     labelColor: inputText,
     borderColor,
     popupBg: themeConfig.dashboard.supportCard,
-    popupBorderColor: getLoadingOverlayRgba(themeConfig.fontColor, OPACITY.DIVIDER_LIGHT),
+    popupBorderColor: getLoadingOverlayRgba(themeConfig.fontColor, getDividerOpacity(isDark)),
     selectedBg: themeConfig.fontColor,
     selectedText: themeConfig.background,
     hoverBg,

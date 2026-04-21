@@ -107,7 +107,3 @@ export const subtractDate = (
 ): Dayjs => {
   return dayjs(date).subtract(amount, unit)
 }
-
-export const toStartOfDayIso = (date: Dayjs): string => date.startOf('day').toISOString()
-
-export const toEndOfDayIso = (date: Dayjs): string => date.endOf('day').toISOString()

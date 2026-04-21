@@ -40,7 +40,10 @@ jest.mock('@/redux/hooks', () => ({
 }))
 
 jest.mock('Plugins/auth-server/redux/features/oidcSlice', () => ({
-  setCurrentItem: jest.fn((payload: unknown) => ({ type: 'oidc/setCurrentItem', payload })),
+  setCurrentItem: jest.fn((payload: { item: Record<string, string | boolean | string[]> }) => ({
+    type: 'oidc/setCurrentItem',
+    payload,
+  })),
 }))
 
 const INIT_STATE = {

@@ -31,7 +31,10 @@ export const useAuthServerPropertiesActions = () => {
         })
         return true
       } catch (auditError) {
-        devLogger.error('Error logging audit:', auditError)
+        devLogger.error(
+          'Error logging audit:',
+          auditError instanceof Error ? auditError : String(auditError),
+        )
         return false
       }
     },

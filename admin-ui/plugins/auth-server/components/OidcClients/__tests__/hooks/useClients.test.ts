@@ -4,7 +4,7 @@ import { useClients } from 'Plugins/auth-server/components/OidcClients/hooks/use
 const mockDispatch = jest.fn()
 
 jest.mock('@/redux/hooks', () => ({
-  useAppSelector: jest.fn((selector: (s: unknown) => unknown) =>
+  useAppSelector: jest.fn((selector: (s: { authReducer: { hasSession: boolean } }) => boolean) =>
     selector({ authReducer: { hasSession: true } }),
   ),
   useAppDispatch: () => mockDispatch,
@@ -18,7 +18,7 @@ const mockRefetch = jest.fn()
 const mockUseGetOauthOpenidClients = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
-  useGetOauthOpenidClients: (...args: unknown[]) => mockUseGetOauthOpenidClients(...args),
+  useGetOauthOpenidClients: mockUseGetOauthOpenidClients,
 }))
 
 beforeEach(() => {

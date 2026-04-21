@@ -38,7 +38,10 @@ export const fetchServerConfiguration = async (token?: string): Promise<AppConfi
     const response = await axios.get<AppConfigResponse>(ENDPOINTS.CONFIG, getAuthConfig(token))
     return response.data
   } catch (error) {
-    devLogger.error('Problems getting configuration in order to process authz code flow.', error)
+    devLogger.error(
+      'Problems getting configuration in order to process authz code flow.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -54,7 +57,10 @@ export const putServerConfiguration = async (
     )
     return response.data
   } catch (error) {
-    devLogger.error('Problems updating configuration.', error)
+    devLogger.error(
+      'Problems updating configuration.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -66,7 +72,10 @@ export const getUserIpAndLocation = async (): Promise<UserIpAndLocationResponse 
     )
     return response.data
   } catch (error) {
-    devLogger.error('Error fetching user location and ip address', error)
+    devLogger.error(
+      'Error fetching user location and ip address',
+      error instanceof Error ? error : String(error),
+    )
     return -1
   }
 }
@@ -81,7 +90,10 @@ export const fetchUserInformation = async ({
     const response = await axios.get<string>(userInfoEndpoint, { headers })
     return response.data
   } catch (error) {
-    devLogger.error('Problems fetching user information with the provided code.', error)
+    devLogger.error(
+      'Problems fetching user information with the provided code.',
+      error instanceof Error ? error : String(error),
+    )
     return -1
   }
 }
@@ -102,7 +114,10 @@ export const postUserAction = async (
     )
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error('Problems posting user action audit log.', error)
+    devLogger.error(
+      'Problems posting user action audit log.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -116,7 +131,10 @@ export const fetchApiTokenWithDefaultScopes = async (): Promise<ApiTokenResponse
     )
     return response.data
   } catch (error) {
-    devLogger.error('Problems getting API access token in order to process api calls.', error)
+    devLogger.error(
+      'Problems getting API access token in order to process api calls.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -131,7 +149,10 @@ export const fetchPolicyStore = async (
     )
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error('Problems fetching policy store.', error)
+    devLogger.error(
+      'Problems fetching policy store.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -152,7 +173,10 @@ export const uploadPolicyStore = async (
     })
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error('Problems uploading policy store.', error)
+    devLogger.error(
+      'Problems uploading policy store.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -167,7 +191,10 @@ export const createAdminUiSession = async (ujwt: string, apiProtectionToken: str
     )
     return response.data
   } catch (error) {
-    devLogger.error('Problems creating Admin UI session.', error)
+    devLogger.error(
+      'Problems creating Admin UI session.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }
@@ -177,7 +204,10 @@ export const deleteAdminUiSession = async (token?: string) => {
     const response = await axios.delete(ENDPOINTS.SESSION, getAuthConfig(token))
     return response.data
   } catch (error) {
-    devLogger.error('Problems deleting Admin UI session.', error)
+    devLogger.error(
+      'Problems deleting Admin UI session.',
+      error instanceof Error ? error : String(error),
+    )
     throw error
   }
 }

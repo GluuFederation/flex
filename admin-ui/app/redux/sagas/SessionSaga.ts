@@ -39,13 +39,16 @@ export function* auditLogoutLogsSaga({
         const response = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
         yield call(deleteAdminUiSession, response?.access_token)
       } catch (recoveryError) {
-        devLogger.error('Session cleanup failed:', recoveryError)
+        devLogger.error(
+          'Session cleanup failed:',
+          recoveryError instanceof Error ? recoveryError : String(recoveryError),
+        )
       }
       window.location.href = '/admin/logout'
       return false
     }
     yield put(auditLogoutLogsResponse(false))
-    devLogger.error('Error:', e)
+    devLogger.error('Error:', e instanceof Error ? e : String(e))
     return false
   }
 }

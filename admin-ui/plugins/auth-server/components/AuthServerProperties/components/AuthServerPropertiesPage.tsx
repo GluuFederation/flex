@@ -471,14 +471,17 @@ const AuthServerPropertiesPage: React.FC = () => {
             await putAcrsMutation.mutateAsync({ data: newAcr })
             await logAcrUpdate(newAcr, message, { defaultAcr: newAcr.defaultAcr ?? '' })
           } catch (error) {
-            devLogger.error('Error updating ACR:', error)
+            devLogger.error('Error updating ACR:', error instanceof Error ? error : String(error))
           }
         }
         setPatches([])
         setPut(null)
         setResetKey((prev) => prev + 1)
       } catch (err) {
-        devLogger.error('Error updating auth server properties:', err)
+        devLogger.error(
+          'Error updating auth server properties:',
+          err instanceof Error ? err : String(err),
+        )
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
         setErrorMessage(errorMsg)
       }

@@ -75,7 +75,7 @@ export const logUserCreation = async (_data: CustomUser, payload: CustomUser): P
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user creation:', error)
+    devLogger.error('Failed to log user creation:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -100,7 +100,7 @@ export const logUserUpdate = async (_data: CustomUser, payload: CustomUser): Pro
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user update:', error)
+    devLogger.error('Failed to log user update:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -119,7 +119,7 @@ export const logUserDeletion = async (inum: string, userData?: CustomUser): Prom
       payload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user deletion:', error)
+    devLogger.error('Failed to log user deletion:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -147,7 +147,10 @@ export const logPasswordChange = async (
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log password change:', error)
+    devLogger.error(
+      'Failed to log password change:',
+      error instanceof Error ? error : String(error),
+    )
   }
 }
 

@@ -151,15 +151,11 @@ const GluuDatePickerRange = memo(
     const renderPicker = (type: 'start' | 'end') => {
       const isStart = type === 'start'
       const label = isStart ? t('dashboard.start_date') : t('dashboard.end_date')
+      const minBound = isStart ? undefined : isValidDate(startDate) ? startDate : undefined
+      const maxBound = isStart ? (isValidDate(endDate) ? endDate : createDate()) : createDate()
       const constraintProps = showTime
-        ? {
-            minDateTime: isStart ? undefined : isValidDate(startDate) ? startDate : undefined,
-            maxDateTime: isStart ? (isValidDate(endDate) ? endDate : createDate()) : createDate(),
-          }
-        : {
-            minDate: isStart ? undefined : isValidDate(startDate) ? startDate : undefined,
-            maxDate: isStart ? (isValidDate(endDate) ? endDate : createDate()) : createDate(),
-          }
+        ? { minDateTime: minBound, maxDateTime: maxBound }
+        : { minDate: minBound, maxDate: maxBound }
       return (
         <RangePicker
           {...pickerCommon}

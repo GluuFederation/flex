@@ -4,7 +4,7 @@ export type CustomUser = ApiCustomUser
 export type PersonAttribute = JansAttribute
 
 export type CustomAttribute = Omit<CustomObjectAttribute, 'values'> & {
-  values?: (string | boolean | Record<string, unknown>)[]
+  values?: (string | boolean | object)[]
 }
 
 export type FidoRegistrationEntry = {

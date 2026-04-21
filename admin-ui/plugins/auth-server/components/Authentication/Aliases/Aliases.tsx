@@ -112,7 +112,7 @@ const Aliases = ({
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        devLogger.error(error)
+        devLogger.error(error instanceof Error ? error : String(error))
       }
     },
     [acrConfig.acrMappings, isEdit, selectedRow, patchJsonMutation],
@@ -199,7 +199,7 @@ const Aliases = ({
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error(error)
+        devLogger.error(error instanceof Error ? error : String(error))
       }
     },
     [itemToDelete, acrConfig.acrMappings, patchJsonMutation],

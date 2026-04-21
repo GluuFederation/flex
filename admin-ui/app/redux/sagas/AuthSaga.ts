@@ -90,7 +90,10 @@ function* getOAuth2ConfigWorker({
     }
   } catch (error) {
     const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error('Problems getting OAuth2 configuration.', err?.response?.data ?? error)
+    devLogger.error(
+      'Problems getting OAuth2 configuration.',
+      err?.response?.data ?? (error instanceof Error ? error : String(error)),
+    )
     if (isFourZeroThreeError(err)) {
       yield* redirectToLogout()
       return
@@ -162,7 +165,10 @@ function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): G
     }
   } catch (error) {
     const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error('Problems getting API Access Token.', err?.response?.data ?? error)
+    devLogger.error(
+      'Problems getting API Access Token.',
+      err?.response?.data ?? (error instanceof Error ? error : String(error)),
+    )
     yield put(
       setBackendStatus({
         active: false,
@@ -188,7 +194,10 @@ function* getLocationWorker(_action: { type: string }): Generator {
     }
   } catch (error) {
     const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error('Problem getting user location.', err?.response?.data ?? error)
+    devLogger.error(
+      'Problem getting user location.',
+      err?.response?.data ?? (error instanceof Error ? error : String(error)),
+    )
   }
 }
 
@@ -206,7 +215,10 @@ function* createAdminUiSessionWorker({
     const err = asApiError(error as Error | ApiErrorLike)
     const errorMessage =
       err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-    devLogger.error('Problems creating Admin UI session.', err?.response?.data ?? error)
+    devLogger.error(
+      'Problems creating Admin UI session.',
+      err?.response?.data ?? (error instanceof Error ? error : String(error)),
+    )
     if (isFourZeroThreeError(err)) {
       yield* redirectToLogout()
       return
@@ -220,7 +232,10 @@ function* deleteAdminUiSessionWorker(_action: { type: string }): Generator {
     yield call(deleteAdminUiSessionApi)
   } catch (error) {
     const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error('Problems deleting Admin UI session.', err?.response?.data ?? error)
+    devLogger.error(
+      'Problems deleting Admin UI session.',
+      err?.response?.data ?? (error instanceof Error ? error : String(error)),
+    )
   } finally {
     yield put(deleteAdminUiSessionResponse())
   }

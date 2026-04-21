@@ -55,14 +55,20 @@ export const useDeleteSessionWithAudit = (
           payload: { sessionId, username },
         })
       } catch (auditError) {
-        devLogger.error('Audit logging failed:', auditError)
+        devLogger.error(
+          'Audit logging failed:',
+          auditError instanceof Error ? auditError : String(auditError),
+        )
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        devLogger.error('Query invalidation failed after delete:', invalidateError)
+        devLogger.error(
+          'Query invalidation failed after delete:',
+          invalidateError instanceof Error ? invalidateError : String(invalidateError),
+        )
       }
 
       dispatch(updateToast(true, 'success', t('messages.session_deleted_successfully')))
@@ -111,14 +117,20 @@ export const useRevokeSessionWithAudit = (
           payload: { userDn, username },
         })
       } catch (auditError) {
-        devLogger.error('Audit logging failed:', auditError)
+        devLogger.error(
+          'Audit logging failed:',
+          auditError instanceof Error ? auditError : String(auditError),
+        )
         dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
       }
 
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        devLogger.error('Query invalidation failed after revoke:', invalidateError)
+        devLogger.error(
+          'Query invalidation failed after revoke:',
+          invalidateError instanceof Error ? invalidateError : String(invalidateError),
+        )
       }
 
       dispatch(updateToast(true, 'success', t('messages.session_revoked_successfully')))

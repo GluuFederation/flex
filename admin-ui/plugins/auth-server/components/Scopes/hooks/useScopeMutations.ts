@@ -46,7 +46,7 @@ export const useCreateScope = () => {
       try {
         parsedData = JSON.parse(data) as ScopeWithMessage
       } catch (error) {
-        devLogger.error('Error parsing scope data:', error)
+        devLogger.error('Error parsing scope data:', error instanceof Error ? error : String(error))
         const parseErr = new Error(t('messages.error_in_parsing_data'))
         setParseError(parseErr)
         return Promise.reject(parseErr)
@@ -72,7 +72,10 @@ export const useCreateScope = () => {
       try {
         await logScopeCreation(parsedData as Scope, message, modifiedFields)
       } catch (auditError) {
-        devLogger.error('Audit logging failed:', auditError)
+        devLogger.error(
+          'Audit logging failed:',
+          auditError instanceof Error ? auditError : String(auditError),
+        )
       }
 
       navigateToScopeList()
@@ -105,7 +108,7 @@ export const useUpdateScope = () => {
       try {
         parsedData = JSON.parse(data) as ScopeWithMessage
       } catch (error) {
-        devLogger.error('Error parsing scope data:', error)
+        devLogger.error('Error parsing scope data:', error instanceof Error ? error : String(error))
         const parseErr = new Error(t('messages.error_in_parsing_data'))
         setParseError(parseErr)
         return Promise.reject(parseErr)
@@ -131,7 +134,10 @@ export const useUpdateScope = () => {
       try {
         await logScopeUpdate(parsedData as Scope, message, modifiedFields)
       } catch (auditError) {
-        devLogger.error('Audit logging failed:', auditError)
+        devLogger.error(
+          'Audit logging failed:',
+          auditError instanceof Error ? auditError : String(auditError),
+        )
       }
 
       navigateToScopeList()

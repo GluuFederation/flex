@@ -123,7 +123,7 @@ const WebhookListPage: React.FC = () => {
           refetch()
           setDeleteData(null)
         } catch (error) {
-          devLogger.error('Delete webhook failed:', error)
+          devLogger.error('Delete webhook failed:', error instanceof Error ? error : String(error))
         }
       }
     },

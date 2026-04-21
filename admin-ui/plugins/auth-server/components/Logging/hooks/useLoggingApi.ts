@@ -54,7 +54,10 @@ export const useUpdateLoggingConfig = () => {
           payload: { modifiedFields: changedFields },
         })
       } catch (error) {
-        devLogger.error('Failed to log logging audit action:', error)
+        devLogger.error(
+          'Failed to log logging audit action:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [userinfo, clientId, ipAddress],

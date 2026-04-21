@@ -1,3 +1,4 @@
+export * from './DevLoggerTypes'
 export * from './TokenControllerTypes'
 export * from './AuditLoggerTypes'
 export * from './PermCheckerTypes'

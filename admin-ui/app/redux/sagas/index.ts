@@ -1,9 +1,5 @@
-/**
- * Root Sagas
- */
 import { all } from 'redux-saga/effects'
 
-// sagas
 import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
 import initSaga from './InitSaga'

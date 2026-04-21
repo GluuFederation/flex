@@ -150,7 +150,10 @@ export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch
       objTarget[lastPart] = patch.value as PropertyValue
     }
   } catch (error) {
-    devLogger.error('[applyPatchToValues] Error applying replace patch:', error)
+    devLogger.error(
+      '[applyPatchToValues] Error applying replace patch:',
+      error instanceof Error ? error : String(error),
+    )
   }
 }
 
@@ -183,6 +186,9 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
       target.splice(lastIndex, 1)
     }
   } catch (error) {
-    devLogger.error('[applyRemovePatchToValues] Error applying remove patch:', error)
+    devLogger.error(
+      '[applyRemovePatchToValues] Error applying remove patch:',
+      error instanceof Error ? error : String(error),
+    )
   }
 }

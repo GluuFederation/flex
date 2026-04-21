@@ -33,7 +33,10 @@ export const extractErrorMessage = (error: CaughtError, fallback: string): strin
   return resolveErrorMessage(error, () => fallback)
 }
 
-export const getQueryErrorMessage = (error: unknown, fallback: string): string => {
+export const getQueryErrorMessage = (
+  error: Error | ApiError | object | string | void | null | undefined,
+  fallback: string,
+): string => {
   if (error !== null && error !== undefined && typeof error === 'object') {
     if ('response' in error) {
       const typedError = error as ApiError

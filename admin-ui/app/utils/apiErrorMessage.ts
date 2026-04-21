@@ -37,7 +37,7 @@ const pickFirstString = (...values: Array<string | undefined>): string | undefin
 }
 
 export const resolveApiErrorMessage = (
-  error: unknown,
+  error: ApiErrorSource | Error | string | null | undefined,
   {
     fallback = DEFAULT_FALLBACK,
     trimString = true,

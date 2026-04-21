@@ -58,7 +58,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
 
         localStorage.setItem('userConfig', JSON.stringify(newConfig))
       } catch (e) {
-        devLogger.debug('Failed to parse userConfig:', e)
+        devLogger.debug('Failed to parse userConfig:', e instanceof Error ? e : String(e))
         const newConfig = {
           lang: {},
           theme: { [inum]: themeValue },

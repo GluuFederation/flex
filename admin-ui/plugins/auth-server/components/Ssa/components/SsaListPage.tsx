@@ -156,7 +156,10 @@ const SsaListPage: React.FC = () => {
         const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        devLogger.error('Failed to download SSA JWT:', error)
+        devLogger.error(
+          'Failed to download SSA JWT:',
+          error instanceof Error ? error : String(error),
+        )
         dispatch(updateToast(true, 'error'))
       }
     },
@@ -173,7 +176,7 @@ const SsaListPage: React.FC = () => {
         })
         setDeleteData(null)
       } catch (error) {
-        devLogger.error('Delete SSA failed:', error)
+        devLogger.error('Delete SSA failed:', error instanceof Error ? error : String(error))
       }
     },
     [deleteData, revokeSsa],

@@ -287,11 +287,17 @@ const CachePage: React.FC = () => {
             'Cache configuration updated',
           )
         } catch (logError) {
-          devLogger.error('Failed to log cache update:', logError)
+          devLogger.error(
+            'Failed to log cache update:',
+            logError instanceof Error ? logError : String(logError),
+          )
         }
       } catch (error) {
         dispatch(updateToast(true, 'error'))
-        devLogger.error('Failed to update cache config:', error)
+        devLogger.error(
+          'Failed to update cache config:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
   })
