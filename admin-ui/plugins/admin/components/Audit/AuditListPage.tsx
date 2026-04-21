@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { createDate, subtractDate, isValidDate, isAfterDate } from '@/utils/dayjsUtils'
+import { createDate, subtractDate, isValidDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import SearchIcon from '@mui/icons-material/Search'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
@@ -19,8 +19,9 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import SetTitle from 'Utils/SetTitle'
 import { useStyles } from './AuditListPage.style'
-import { auditListTimestampRegex, dateConverter, hasBothDates } from 'Plugins/admin/helper/utils'
-import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
+import { auditListTimestampRegex, hasBothDates } from 'Plugins/admin/helper/utils'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetAuditData, getGetAuditDataQueryKey, GetAuditDataParams } from 'JansConfigApi'
 import type { AuditRow } from './types'
 import {
   getDefaultPagingSize,
@@ -71,35 +72,35 @@ const AuditListPage: React.FC = () => {
     }
   }, [authorizeHelper])
 
+  const queryClient = useQueryClient()
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
   const [startDate, setStartDate] = useState<Dayjs | null>(() =>
-    subtractDate(createDate(), 14, 'day'),
+    subtractDate(createDate(), 14, 'day').startOf('day'),
   )
   const [endDate, setEndDate] = useState<Dayjs | null>(() => createDate())
   const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
-    const start = subtractDate(createDate(), 14, 'day')
+    const start = subtractDate(createDate(), 14, 'day').startOf('day')
     const end = createDate()
     return {
       limit: getDefaultPagingSize(),
       startIndex: 0,
-      start_date: dateConverter(start),
-      end_date: dateConverter(end),
+      start_date: start.toISOString(),
+      end_date: end.toISOString(),
     }
   })
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs },
   })
-  const loading = useMemo(() => isLoading || isFetching, [isLoading, isFetching])
   const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data?.totalEntriesCount])
   const entries = useMemo(() => data?.entries ?? [], [data?.entries])
 
   const filterState = useMemo(
     () => ({
       hasBothDates: hasBothDates(startDate, endDate),
-      startDateApi: isValidDate(startDate) ? dateConverter(startDate) : '',
-      endDateApi: isValidDate(endDate) ? dateConverter(endDate) : '',
+      startDateApi: isValidDate(startDate) ? startDate!.toISOString() : '',
+      endDateApi: isValidDate(endDate) ? endDate!.toISOString() : '',
     }),
     [startDate, endDate],
   )
@@ -143,14 +144,24 @@ const AuditListPage: React.FC = () => {
     setPageNumber(0)
     const nextParams = buildQueryParams(limit, 0, pattern, filterState)
     setQueryParams(nextParams)
-  }, [buildQueryParams, limit, pattern, filterState])
+    queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(nextParams) })
+  }, [buildQueryParams, limit, pattern, filterState, queryClient])
 
   const handleRefresh = useCallback(() => {
-    if (!filterState.hasBothDates) return
-    setPageNumber(0)
+    const resetStart = subtractDate(createDate(), 14, 'day').startOf('day')
+    const resetEnd = createDate()
+    const resetParams = buildQueryParams(limit, 0, '', {
+      hasBothDates: true,
+      startDateApi: resetStart.toISOString(),
+      endDateApi: resetEnd.toISOString(),
+    })
+    setStartDate(resetStart)
+    setEndDate(resetEnd)
     setPattern('')
-    setQueryParams(buildQueryParams(limit, 0, '', filterState))
-  }, [buildQueryParams, limit, filterState])
+    setPageNumber(0)
+    setQueryParams(resetParams)
+    queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(resetParams) })
+  }, [buildQueryParams, limit, queryClient])
 
   const handleStartDateChange = useCallback((date: Dayjs | null) => {
     setStartDate(date)
@@ -159,51 +170,13 @@ const AuditListPage: React.FC = () => {
     setEndDate(date)
   }, [])
 
-  const refreshWithNewDates = useCallback(
-    (newStartApi: string, newEndApi: string) => {
-      if (!newStartApi || !newEndApi) return
-      setPageNumber(0)
-      setQueryParams(
-        buildQueryParams(limit, 0, pattern, {
-          hasBothDates: true,
-          startDateApi: newStartApi,
-          endDateApi: newEndApi,
-        }),
-      )
-    },
-    [buildQueryParams, limit, pattern],
-  )
+  const handleStartDateAccept = useCallback((date: Dayjs | null) => {
+    setStartDate(date)
+  }, [])
 
-  const handleStartDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      setStartDate(date)
-      if (
-        date &&
-        endDate &&
-        isValidDate(date) &&
-        isValidDate(endDate) &&
-        !isAfterDate(date, endDate)
-      ) {
-        refreshWithNewDates(dateConverter(date), dateConverter(endDate))
-      }
-    },
-    [endDate, refreshWithNewDates],
-  )
-  const handleEndDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      setEndDate(date)
-      if (
-        date &&
-        startDate &&
-        isValidDate(startDate) &&
-        isValidDate(date) &&
-        !isAfterDate(startDate, date)
-      ) {
-        refreshWithNewDates(dateConverter(startDate), dateConverter(date))
-      }
-    },
-    [startDate, refreshWithNewDates],
-  )
+  const handleEndDateAccept = useCallback((date: Dayjs | null) => {
+    setEndDate(date)
+  }, [])
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -361,6 +334,8 @@ const AuditListPage: React.FC = () => {
       onEndDateChange: handleEndDateChange,
       onStartDateAccept: handleStartDateAccept,
       onEndDateAccept: handleEndDateAccept,
+      showTime: true,
+      dateFormat: DATE_FORMATS.DATE_PICKER_DATETIME,
     }),
     [
       startDate,
@@ -378,7 +353,7 @@ const AuditListPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={isLoading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadAuditLogs}>
           <div className={classes.searchCard}>
@@ -391,9 +366,9 @@ const AuditListPage: React.FC = () => {
                 onSearchSubmit={handleSearch}
                 dateRange={dateRangeConfig}
                 onRefresh={handleRefresh}
-                refreshLoading={loading}
+                refreshLoading={isFetching}
                 primaryAction={searchPrimaryAction}
-                disabled={loading}
+                disabled={isFetching}
               />
             </div>
           </div>

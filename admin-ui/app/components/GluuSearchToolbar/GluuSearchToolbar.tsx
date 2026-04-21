@@ -245,6 +245,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             onEndDateChange={dateRange.onEndDateChange}
             onStartDateAccept={dateRange.onStartDateAccept}
             onEndDateAccept={dateRange.onEndDateAccept}
+            showTime={dateRange.showTime}
             textColor={themeColors.fontColor}
             backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card?.background}
           />

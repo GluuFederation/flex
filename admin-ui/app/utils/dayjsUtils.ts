@@ -17,6 +17,7 @@ export const DATE_FORMATS = {
   TOKEN_DATETIME: 'YYYY/DD/MM HH:mm:ss',
   DATE_PICKER_DISPLAY: 'DD-MM-YYYY',
   DATE_PICKER_DISPLAY_US: 'MM/DD/YYYY',
+  DATE_PICKER_DATETIME: 'DD-MM-YYYY HH:mm',
 } as const
 
 export const diffDate = (
@@ -106,3 +107,7 @@ export const subtractDate = (
 ): Dayjs => {
   return dayjs(date).subtract(amount, unit)
 }
+
+export const toStartOfDayIso = (date: Dayjs): string => date.startOf('day').toISOString()
+
+export const toEndOfDayIso = (date: Dayjs): string => date.endOf('day').toISOString()

@@ -43,6 +43,7 @@ type DateRangeConfig = {
   layout?: 'grid' | 'row'
   labelAsTitle?: boolean
   inputHeight?: number
+  showTime?: boolean
 }
 
 type GluuSearchToolbarBaseProps = {

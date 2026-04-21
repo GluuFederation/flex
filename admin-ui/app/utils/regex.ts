@@ -68,6 +68,8 @@ export const REGEX_DOUBLE_QUOTE = /"/g
 export const REGEX_DATE_SEPARATOR_CHARS = /[/:,]/g
 /** Matches a single whitespace character (global); use with replace('_') to convert spaces in filenames. */
 export const REGEX_WHITESPACE_CHAR = /\s/g
+/** Matches KeyOps enum values in the orval-generated JansConfigApi.ts that need the backslash escape fixed. Capture groups: [1] opening quote+prefix, [2] raw value, [3] closing quote. */
+export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 /** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */

@@ -1,5 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { REGEX_ORVAL_KEYOPS_ENUM } from '../app/utils/regex'
 
 const rootDir = process.cwd()
 const filePath = path.join(rootDir, 'jans_config_api_orval', 'src', 'JansConfigApi.ts')
@@ -10,7 +11,7 @@ if (!fs.existsSync(filePath)) {
 const content = fs.readFileSync(filePath, 'utf8')
 
 const enumFix = content.replace(
-  /('KeyOps\{value=\\')([^'\\]+)(')/g,
+  REGEX_ORVAL_KEYOPS_ENUM,
   (_: string, prefix: string, value: string, suffix: string) => `${prefix}${value}\\${suffix}`,
 )
 
