@@ -4,22 +4,28 @@ import { GluuButton } from '@/components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTranslation } from 'react-i18next'
 import { getIn } from 'formik'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
 import { buildKeyCandidates } from '@/utils/stringUtils'
-import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from '../../../common/JsonPropertyBuilder.style'
+import {
+  ERROR_CONTAINER_STYLE,
+  FORM_GROUP_STYLE,
+  ERROR_COL_STYLE,
+  ERROR_TEXT_STYLE,
+} from './styles'
 import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,
 } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from '../types'
 import type { JsonPatch } from 'JansConfigApi'
-import type { AppConfiguration } from '../../AuthServerProperties/types'
 import {
   isNumber,
   isBoolean,
@@ -36,33 +42,14 @@ import {
   generateLabel,
   isObject,
   isObjectArray,
+  LOGGING_LEVEL_FIELD_KEYS,
+  LOGGING_LEVEL_OPTIONS,
 } from '../utils'
+import { AppConfiguration } from '../../AuthServerProperties/types'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
 const AccordionBody = AccordionWithSub.Body
-
-const ERROR_CONTAINER_STYLE: React.CSSProperties = {
-  marginTop: '-1.75rem',
-  marginBottom: 0,
-}
-
-const FORM_GROUP_STYLE: React.CSSProperties = {
-  marginBottom: 0,
-  marginTop: 0,
-}
-
-const ERROR_COL_STYLE: React.CSSProperties = {
-  paddingTop: 0,
-  paddingBottom: 0,
-}
-
-const ERROR_TEXT_STYLE: React.CSSProperties = {
-  marginTop: 0,
-  marginBottom: 0,
-  lineHeight: '1.2',
-  paddingTop: '2px',
-}
 
 const JsonPropertyBuilderConfigApi = ({
   propKey,
@@ -172,6 +159,17 @@ const JsonPropertyBuilderConfigApi = ({
     )
   }, [fieldTouched, fieldError, lSize])
 
+  const selectFormikAdapter = useMemo(
+    () => ({
+      handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        if (!path) return
+        handler({ op: 'replace', path, value: event.target.value })
+      },
+      handleBlur: () => {},
+    }),
+    [handler, path],
+  )
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <>
@@ -196,6 +194,28 @@ const JsonPropertyBuilderConfigApi = ({
   }
 
   if (isString(propValue) || shouldRenderAsString(schema)) {
+    const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
+    const isLoggingLevelField = LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey)
+
+    if (isLoggingLevelField) {
+      return (
+        <GluuSelectRow
+          label={getLocalizedLabelKey(propKey)}
+          name={tooltipPropKey || propKey}
+          value={getStringValue(propValue, schema)}
+          formik={selectFormikAdapter}
+          values={LOGGING_LEVEL_OPTIONS}
+          lsize={lSize}
+          rsize={lSize}
+          doc_category={doc_category}
+          doc_entry={tooltipPropKey || propKey}
+          disabled={disabled}
+          showError={fieldTouched && typeof fieldError === 'string'}
+          errorMessage={typeof fieldError === 'string' ? fieldError : undefined}
+        />
+      )
+    }
+
     const isPasswordField = propKey.toLowerCase().includes('password')
 
     if (isPasswordField) {

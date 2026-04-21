@@ -10,10 +10,12 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import type {
   MultiSelectOption,
   GluuMultiSelectRowFormik,
 } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { GluuSelectRowFormik } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
@@ -42,7 +44,7 @@ import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { buildKeyCandidates } from '@/utils/stringUtils'
-import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
 import { useAcrAudit } from '../../Authentication/Acrs/hooks'
@@ -62,6 +64,7 @@ import {
   DISCOVERY_DENY_KEYS_I18N,
   createAppConfigurationSchema,
 } from '../Properties/utils'
+import { LOGGING_LEVEL_FIELD_KEYS, LOGGING_LEVEL_OPTIONS } from '../../ConfigApiProperties/utils'
 import {
   toPairs,
   generateLabel,
@@ -512,6 +515,22 @@ const AuthServerPropertiesPage: React.FC = () => {
     return optionsMap
   }, [simpleFieldModels])
 
+  const loggingLevelFormikAdapters = useMemo(() => {
+    const adapters: Record<string, GluuSelectRowFormik> = {}
+    for (const propKey of Object.keys(simpleFieldModels)) {
+      const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
+      if (LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey)) {
+        adapters[propKey] = {
+          handleChange: (event) => {
+            patchHandler({ op: 'replace', path: `/${propKey}`, value: event.target.value })
+          },
+          handleBlur: () => {},
+        }
+      }
+    }
+    return adapters
+  }, [simpleFieldModels, patchHandler])
+
   const renderSimpleField = useCallback(
     (propKey: string) => {
       const model = simpleFieldModels[propKey]
@@ -547,6 +566,24 @@ const AuthServerPropertiesPage: React.FC = () => {
         )
       }
 
+      const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
+      if (LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey) && loggingLevelFormikAdapters[propKey]) {
+        return (
+          <GluuSelectRow
+            key={`${model.propKey}-${resetKey}`}
+            label={model.label}
+            name={model.propKey}
+            value={model.value as string}
+            formik={loggingLevelFormikAdapters[propKey]}
+            values={LOGGING_LEVEL_OPTIONS}
+            lsize={12}
+            rsize={12}
+            doc_category="json_properties"
+            doc_entry={model.propKey}
+          />
+        )
+      }
+
       return (
         <GluuInlineInput
           key={`${model.propKey}-${resetKey}`}
@@ -565,7 +602,15 @@ const AuthServerPropertiesPage: React.FC = () => {
         />
       )
     },
-    [patchHandler, simpleFieldModels, arrayFormikAdapters, arrayMultiSelectOptions, resetKey, t],
+    [
+      patchHandler,
+      simpleFieldModels,
+      arrayFormikAdapters,
+      arrayMultiSelectOptions,
+      loggingLevelFormikAdapters,
+      resetKey,
+      t,
+    ],
   )
 
   const simpleFieldsContent = useMemo(
