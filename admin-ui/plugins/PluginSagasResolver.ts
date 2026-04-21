@@ -1,8 +1,6 @@
-import type { Saga } from 'redux-saga'
 import plugins from '../plugins.config.json'
 import { loadPluginMetadata } from './internal'
-
-type CalledSaga = ReturnType<Saga>
+import type { CalledSaga } from './internal/types/PluginMetadataTypes'
 
 const process = (): CalledSaga[] => {
   let pluginSagas: CalledSaga[] = []

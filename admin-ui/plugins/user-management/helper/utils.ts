@@ -107,7 +107,7 @@ export const logUserUpdate = async (_data: CustomUser, payload: CustomUser): Pro
 export const logUserDeletion = async (inum: string, userData?: CustomUser): Promise<void> => {
   try {
     const { client_id, userinfo } = getCurrentAuditContext()
-    const auditPayload: AuditPayload = userData ? { ...userData } : { inum }
+    const auditPayload: AuditPayload = { inum, ...(userData || {}) }
     redactSensitiveData(auditPayload)
     const message =
       (userData as AuditPayload | undefined)?.action_message ||

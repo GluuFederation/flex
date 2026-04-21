@@ -1,8 +1,7 @@
 import type { ComponentType } from 'react'
 import type { Reducer } from '@reduxjs/toolkit'
 import type { Saga } from 'redux-saga'
-
-type CalledSaga = ReturnType<Saga>
+export type CalledSaga = ReturnType<Saga>
 
 export type PluginMenu = {
   title?: string

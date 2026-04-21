@@ -34,10 +34,18 @@ import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import type { ApiErrorLike } from './types'
 import { devLogger } from '@/utils/devLogger'
 
-const asApiError = (error: Error | ApiErrorLike): ApiErrorLike => {
-  if (!(error instanceof Error)) return error
-  const axiosLike = error as Error & { response?: ApiErrorLike['response'] }
-  return { message: error.message, response: axiosLike.response }
+type Throwable = Error | ApiErrorLike | string | number | boolean | object | null | undefined
+
+const asApiError = (error: Throwable): ApiErrorLike => {
+  if (error === null || error === undefined) return { message: String(error), response: undefined }
+  if (typeof error === 'string') return { message: error, response: undefined }
+  if (error instanceof Error) {
+    const axiosLike = error as Error & { response?: ApiErrorLike['response'] }
+    return { message: error.message, response: axiosLike.response }
+  }
+  const obj = error as ApiErrorLike
+  const message = typeof obj.message === 'string' ? obj.message : String(error)
+  return { message, response: obj.response }
 }
 
 function* getApiTokenWithDefaultScopes(): Generator {
@@ -50,7 +58,7 @@ function* getApiTokenWithDefaultScopes(): Generator {
     }
     return null
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
+    const err = asApiError(error as Throwable)
     yield put(
       setBackendStatus({
         active: false,
@@ -92,11 +100,8 @@ function* getOAuth2ConfigWorker({
       return
     }
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error(
-      'Problems getting OAuth2 configuration.',
-      err?.response?.data ?? (error instanceof Error ? error : String(error)),
-    )
+    const err = asApiError(error as Throwable)
+    devLogger.error('Problems getting OAuth2 configuration.', err?.response?.data ?? err.message)
     if (isFourZeroThreeError(err)) {
       yield* redirectToLogout()
       return
@@ -128,7 +133,7 @@ export function* putConfigWorker({
     }
   } catch (error) {
     yield put(updateToast(true, 'error'))
-    if (isFourZeroThreeError(asApiError(error as Error | ApiErrorLike))) {
+    if (isFourZeroThreeError(asApiError(error as Throwable))) {
       yield* redirectToLogout()
       return
     }
@@ -167,11 +172,8 @@ function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): G
       }
     }
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error(
-      'Problems getting API Access Token.',
-      err?.response?.data ?? (error instanceof Error ? error : String(error)),
-    )
+    const err = asApiError(error as Throwable)
+    devLogger.error('Problems getting API Access Token.', err?.response?.data ?? err.message)
     yield put(
       setBackendStatus({
         active: false,
@@ -196,11 +198,8 @@ function* getLocationWorker(_action: { type: string }): Generator {
       return
     }
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error(
-      'Problem getting user location.',
-      err?.response?.data ?? (error instanceof Error ? error : String(error)),
-    )
+    const err = asApiError(error as Throwable)
+    devLogger.error('Problem getting user location.', err?.response?.data ?? err.message)
   }
 }
 
@@ -215,13 +214,10 @@ function* createAdminUiSessionWorker({
     yield call(createAdminUiSessionApi, ujwt, apiProtectionToken)
     yield put(createAdminUiSessionResponse({ success: true }))
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
+    const err = asApiError(error as Throwable)
     const errorMessage =
       err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-    devLogger.error(
-      'Problems creating Admin UI session.',
-      err?.response?.data ?? (error instanceof Error ? error : String(error)),
-    )
+    devLogger.error('Problems creating Admin UI session.', err?.response?.data ?? err.message)
     if (isFourZeroThreeError(err)) {
       yield* redirectToLogout()
       return
@@ -234,11 +230,8 @@ function* deleteAdminUiSessionWorker(_action: { type: string }): Generator {
   try {
     yield call(deleteAdminUiSessionApi)
   } catch (error) {
-    const err = asApiError(error as Error | ApiErrorLike)
-    devLogger.error(
-      'Problems deleting Admin UI session.',
-      err?.response?.data ?? (error instanceof Error ? error : String(error)),
-    )
+    const err = asApiError(error as Throwable)
+    devLogger.error('Problems deleting Admin UI session.', err?.response?.data ?? err.message)
   } finally {
     yield put(deleteAdminUiSessionResponse())
   }

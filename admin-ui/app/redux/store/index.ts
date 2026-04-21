@@ -33,7 +33,7 @@ const combine = (reducersObjects: ReducerMap) => {
   const reducerNames = Object.keys(loose)
   Object.keys(appReducers).forEach((item) => {
     if (reducerNames.indexOf(item) === -1) {
-      loose[item] = ((): RootState[keyof RootState] => undefined) as LooseReducerMap[string]
+      loose[item] = ((s = {}) => s) as LooseReducerMap[string]
     }
   })
   return combineReducers(loose)

@@ -19,8 +19,10 @@ function processLine(line: string): void {
   if (!line.trim()) return
   process.stdout.write(line + '\n')
   if (line.startsWith('[')) return
+  if (!line.includes('(unchanged)') && !line.includes('(changed)') && !line.includes('(cached)'))
+    return
   stats.total++
-  if (!line.includes('(unchanged)')) {
+  if (line.includes('(changed)')) {
     stats.formatted++
   }
 }
@@ -47,10 +49,14 @@ proc.on('close', (code: number | null) => {
   if (stdoutBuffer.trim()) processLine(stdoutBuffer)
   if (stderrBuffer.trim()) process.stderr.write(stderrBuffer + '\n')
 
-  console.log(cyan('▶ Prettier summary'))
-  console.log(`  Total files checked : ${stats.total}`)
-  console.log(`  Files reformatted   : ${stats.formatted}`)
-  console.log(`  Already formatted   : ${stats.total - stats.formatted}`)
+  if (code === 0) {
+    console.log(cyan('▶ Prettier summary'))
+    console.log(`  Total files checked : ${stats.total}`)
+    console.log(`  Files reformatted   : ${stats.formatted}`)
+    console.log(`  Already formatted   : ${stats.total - stats.formatted}`)
+  } else {
+    console.error(cyan('▶ Prettier failed — see errors above'))
+  }
 
-  process.exit(code ?? 0)
+  process.exit(code ?? 1)
 })

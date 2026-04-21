@@ -1,7 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
+set +e
 
-cd admin-ui
+case "$PWD" in
+  */admin-ui) ;;
+  *) cd admin-ui ;;
+esac
 
 # All staged files matching prettier-supported extensions that still exist on disk
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM \
@@ -70,9 +74,9 @@ run_prettier & PID_PRETTIER=$!
 run_eslint   & PID_ESLINT=$!
 run_tsc      & PID_TSC=$!
 
-wait $PID_PRETTIER; EXIT_PRETTIER=$?
-wait $PID_ESLINT;   EXIT_ESLINT=$?
-wait $PID_TSC;      EXIT_TSC=$?
+wait $PID_PRETTIER; EXIT_PRETTIER=$? || true
+wait $PID_ESLINT;   EXIT_ESLINT=$? || true
+wait $PID_TSC;      EXIT_TSC=$? || true
 
 echo ""
 
