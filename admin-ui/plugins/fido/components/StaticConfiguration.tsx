@@ -30,7 +30,7 @@ import {
   isLastStringEntryComplete,
   isLastMetadataServerComplete,
 } from '../helper'
-import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido'
+import type { StaticConfigurationProps, StaticConfigFormValues } from '../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { useStyles } from './styles/FidoConfiguration.style'
 

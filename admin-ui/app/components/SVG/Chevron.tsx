@@ -1,20 +1,19 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
+
+type ChevronDirection = 'up' | 'down' | 'left' | 'right'
+
+type ChevronIconProps = {
+  width?: number | string
+  height?: number | string
+  className?: string
+  direction?: ChevronDirection
+}
 
 const ROTATION: Record<ChevronDirection, string> = {
   down: '0deg',
   up: '180deg',
   left: '90deg',
   right: '-90deg',
-}
-
-export type ChevronDirection = 'up' | 'down' | 'left' | 'right'
-
-interface ChevronIconProps {
-  width?: number | string
-  height?: number | string
-  className?: string
-  /** Default is 'down' (sidebar, dropdowns). Use 'left'/'right' for pagination. */
-  direction?: ChevronDirection
 }
 
 export const ChevronIcon = memo<ChevronIconProps>(

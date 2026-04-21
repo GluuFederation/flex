@@ -15,8 +15,7 @@ import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
 import { devLogger } from '@/utils/devLogger'
 import { isDevelopment } from '@/utils/env'
-import { API_LICENSE } from '@/audit/Resources'
-import { DELETION } from '@/audit/UserActionType'
+import { API_LICENSE, createSuccessAuditInit, selectAuditContext, DELETION } from '@/audit'
 import type { RootState } from '@/redux/types'
 import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
@@ -43,14 +42,9 @@ const transformLicenseResponse = (
 const EMPTY_ITEM: LicenseResponse = {}
 
 const createAuditLog = (state: RootState): UserActionPayload | null => {
-  const { userinfo, config, location } = state.authReducer
+  const { userinfo } = state.authReducer
   if (!userinfo?.inum || !userinfo?.name) return null
-  return {
-    status: 'success',
-    performedBy: { user_inum: userinfo.inum, userId: userinfo.name },
-    client_id: config?.clientId,
-    ip_address: location?.IPv4,
-  }
+  return createSuccessAuditInit(selectAuditContext(state))
 }
 
 export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import logo from 'Images/logos/logo192.png'
 import { Box } from '@mui/material'

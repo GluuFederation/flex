@@ -1,4 +1,3 @@
-import React from 'react'
 import type { FormikProps } from 'formik'
 import GluuTypeAheadWithAdd from '../GluuTypeAheadWithAdd'
 import { render, screen } from '@testing-library/react'

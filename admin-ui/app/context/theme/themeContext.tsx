@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext, ReactNode, useEffect, useRef } from 'react'
+import { createContext, useReducer, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 import { devLogger } from '@/utils/devLogger'
 import type { ThemeState, ThemeAction, ThemeContextType } from './types'
@@ -65,8 +65,8 @@ const getInitialTheme = (): ThemeValue => {
     devLogger.error('Failed to get initial theme, using default:', e)
     try {
       window.localStorage.setItem('initTheme', DEFAULT_THEME)
-    } catch {
-      // Ignore localStorage errors
+    } catch (e) {
+      devLogger.warn('Failed to write default theme to localStorage:', e)
     }
     return DEFAULT_THEME
   }
@@ -97,8 +97,8 @@ const getUserInum = (): string | null => {
       const userInfo = JSON.parse(userInfoStr) as { inum?: string }
       return userInfo?.inum || null
     }
-  } catch {
-    // Ignore parsing errors
+  } catch (e) {
+    devLogger.warn('Failed to parse userInfo from localStorage:', e)
   }
   return null
 }

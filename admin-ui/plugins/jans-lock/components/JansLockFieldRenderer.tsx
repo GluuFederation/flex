@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import { jansLockConstants } from '../helper/constants'
+import { jansLockConstants } from '../helper'
 import type { JansLockFieldRendererProps } from '../types'
 
 const LABEL_SIZE = 12

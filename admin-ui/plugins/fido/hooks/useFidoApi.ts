@@ -11,7 +11,7 @@ import {
 } from 'JansConfigApi'
 import { logAudit } from 'Utils/AuditLogger'
 import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
-import type { ApiErrorResponse } from '../types/fido'
+import type { ApiErrorResponse } from '../types'
 import type { UpdateFidoParams } from '../types'
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from 'Utils/queryUtils'
 import { devLogger } from '@/utils/devLogger'

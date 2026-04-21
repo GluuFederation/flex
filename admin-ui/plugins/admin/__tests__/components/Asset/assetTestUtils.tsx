@@ -76,7 +76,7 @@ const defaultAuthReducerState = {
   userinfo: null as { name: string; inum: string } | null,
 }
 
-export function createAssetTestStore(assetReducerState = defaultAssetReducerState): Store {
+export const createAssetTestStore = (assetReducerState = defaultAssetReducerState): Store => {
   return configureStore({
     reducer: combineReducers({
       authReducer: (state = defaultAuthReducerState) => state,
@@ -87,13 +87,13 @@ export function createAssetTestStore(assetReducerState = defaultAssetReducerStat
   })
 }
 
-export function createAssetTestQueryClient(): QueryClient {
+export const createAssetTestQueryClient = (): QueryClient => {
   return new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
 }
 
-export function createAssetTestWrapper(store: Store, client?: QueryClient) {
+export const createAssetTestWrapper = (store: Store, client?: QueryClient) => {
   const queryClientToUse = client ?? createAssetTestQueryClient()
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (

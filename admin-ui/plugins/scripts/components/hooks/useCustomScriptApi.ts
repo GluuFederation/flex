@@ -72,13 +72,15 @@ export const useCustomScripts = (params?: GetConfigScriptsParams) => {
 export const useCustomScriptsByType = (
   type: string,
   params?: Omit<GetConfigScriptsByTypeParams, 'type'>,
+  options?: { enabled?: boolean },
 ) => {
   const dispatch = useAppDispatch()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
+  const externalEnabled = options?.enabled ?? true
   const result = useGetConfigScriptsByType(type, params, {
     query: {
-      enabled: !!type && hasSession === true,
+      enabled: !!type && hasSession === true && externalEnabled,
       staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
       gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
       retry: false,

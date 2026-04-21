@@ -5,10 +5,6 @@ export {
   websiteSsoIdentityProviderValidationSchema,
   websiteSsoServiceProviderValidationSchema,
 } from './validations'
-export type {
-  WebsiteSsoIdentityProviderFormValues,
-  WebsiteSsoServiceProviderFormValues,
-} from '../types/formValues'
 export {
   transformToFormValues,
   transformToIdentityProviderFormValues,

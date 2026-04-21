@@ -1,10 +1,8 @@
-import type { SamlConfigurationFormValues } from '../types'
 import type {
+  SamlConfigurationFormValues,
   SamlConfiguration,
   IdentityProviderPayload,
   WebsiteSsoServiceProviderPayload,
-} from '../types/payloads'
-import type {
   WebsiteSsoIdentityProviderFormValues,
   WebsiteSsoServiceProviderFormValues,
   FormValue,
@@ -12,7 +10,7 @@ import type {
   ConfigFields,
   RootFields,
   CleanableValue,
-} from '../types/formValues'
+} from '../types'
 import type { IdentityProvider, TrustRelationship, SamlAppConfiguration } from '../components/hooks'
 
 type IdentityProviderWithMetaDataFN = IdentityProvider & {

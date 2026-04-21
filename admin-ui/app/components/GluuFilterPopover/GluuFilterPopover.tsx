@@ -101,18 +101,26 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
       if (!popoverRef.current) return
       const target = event.target as Node
       if (popoverRef.current.contains(target)) return
-      // MUI date pickers render their calendar in a portal outside the popover DOM —
-      // don't close when clicking inside that portal
       const muiPopper = document.querySelector('.MuiPickersPopper-root')
       if (muiPopper?.contains(target)) return
       onCancel()
     }
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && !applyDisabled) {
+        onApply()
+      } else if (event.key === 'Escape') {
+        onCancel()
+      }
+    }
+
     document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick)
+      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [open, onCancel])
+  }, [open, onCancel, onApply, applyDisabled])
 
   if (!open) return null
 

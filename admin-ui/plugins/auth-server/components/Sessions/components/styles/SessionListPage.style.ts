@@ -62,6 +62,11 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       pointerEvents: 'auto',
       isolation: 'isolate',
     },
+    filterPopover: {
+      left: 'auto !important' as 'auto',
+      right: 0,
+      transform: 'none !important' as 'none',
+    },
     toolbarButton: {
       minWidth: TOOLBAR.MIN_WIDTH,
       position: 'relative',
@@ -144,7 +149,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   }
 })
 
-export function useStyles(params: { isDark: boolean; themeColors: ThemeConfig }) {
+export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig }) => {
   const { classes } = useStylesBase(params)
   const { themeColors } = params
   const badgeStyles = useMemo(

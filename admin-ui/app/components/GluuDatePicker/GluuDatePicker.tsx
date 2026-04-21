@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import Box from '@mui/material/Box'

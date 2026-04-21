@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -26,9 +26,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('../Apps/Gluu/GluuCommitDialog', () => ({
   __esModule: true,
-  default: function MockGluuCommitDialog() {
-    return null
-  },
+  default: () => null,
 }))
 
 const mockLicense = {

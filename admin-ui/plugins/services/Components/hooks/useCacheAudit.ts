@@ -1,27 +1,14 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { PATCH } from '@/audit/UserActionType'
-import { useAppSelector } from '@/redux/hooks'
+import { useAuditContext, PATCH } from '@/audit'
 import type { CacheConfiguration } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 
 const API_CACHE = 'api-cache'
 
-const useAuditAuth = () => {
-  const authState = useAppSelector((state) => state.authReducer)
-
-  return useMemo(
-    () => ({
-      client_id: authState?.config?.clientId,
-      userinfo: authState?.userinfo,
-    }),
-    [authState?.config?.clientId, authState?.userinfo],
-  )
-}
-
 export const useCacheAudit = () => {
-  const { client_id, userinfo } = useAuditAuth()
+  const { client_id, userinfo } = useAuditContext()
 
   const logCacheUpdate = useCallback(
     async (

@@ -19,8 +19,8 @@ import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/UserClaimsFormPage.style'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useAttributeValidationSchema } from '../utils/validation'
 import {
+  useAttributeValidationSchema,
   useInitialAttributeValues,
   getInitialValidationState,
   handleAttributeSubmit,
@@ -28,8 +28,8 @@ import {
   getDefaultFormValues,
   isFormValid,
   computeModifiedFields,
-} from '../utils/formHelpers'
-import type { AttributeFormProps, AttributeFormValues } from './types/UserClaimsListPage.types'
+} from '../utils'
+import type { AttributeFormProps, AttributeFormValues } from './types'
 
 const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
   { value: 'admin', label: 'Admin' },

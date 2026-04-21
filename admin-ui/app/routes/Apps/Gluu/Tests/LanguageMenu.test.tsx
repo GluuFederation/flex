@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { LanguageMenu } from '../LanguageMenu'
 import AppTestWrapper from './Components/AppTestWrapper'

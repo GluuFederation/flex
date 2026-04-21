@@ -8,20 +8,7 @@ export type MauEntry = {
   monthly_active_users?: number
 }
 
-export type MauStatItem = {
-  month?: string
-  mau?: number
-  [key: string]: string | number | boolean | null | undefined
-}
-
-export type MauState = {
-  stat: MauStatItem[]
-  loading: boolean
-  startMonth: string
-  endMonth: string
-}
-
-export type WebhookEntryBase = {
+type WebhookEntryBase = {
   inum?: string
   displayName?: string
   url?: string
@@ -42,12 +29,12 @@ export type AuiFeature = {
   [key: string]: JsonValue | undefined
 }
 
-export type StoredTriggerPayload = {
+type StoredTriggerPayload = {
   feature: string | null
   payload: JsonValue
 }
 
-export type WebhookState = {
+type WebhookState = {
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
@@ -60,7 +47,6 @@ export type WebhookState = {
 }
 
 export type AdminPluginState = {
-  mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
 }

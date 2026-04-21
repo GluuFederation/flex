@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, screen } from '@testing-library/dom'
 import GluuToogle from '../GluuToogle'
 import { render } from '@testing-library/react'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import GluuToogleRow from '../GluuToogleRow'
 import i18n from '../../../../i18n'

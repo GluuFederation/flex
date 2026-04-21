@@ -1,4 +1,3 @@
-import React from 'react'
 import GluuSecretDetail from '../GluuSecretDetail'
 import { render, screen, waitFor } from '@testing-library/react'
 import AppTestWrapper from './Components/AppTestWrapper'

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { AccordionProps } from './Accordion.d'
 import Card from './../Card'
 import { Provider } from './context'
