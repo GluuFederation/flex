@@ -25,9 +25,9 @@ import {
   AuthorizationError,
   setFlag,
 } from '@openid/appauth'
+import type { AuthorizationResponse } from '@openid/appauth'
 
 setFlag('IS_LOG', false)
-import type { AuthorizationResponse } from '@openid/appauth'
 import {
   fetchPolicyStore,
   fetchUserInformation,

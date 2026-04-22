@@ -12,10 +12,7 @@ const AppMain = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<GluuLoader blocking />} persistor={persistor}>
-        <Router
-          basename={basePath}
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
+        <Router basename={basePath} future={{ v7_startTransition: true }}>
           <AuthenticatedRouteSelector />
         </Router>
       </PersistGate>

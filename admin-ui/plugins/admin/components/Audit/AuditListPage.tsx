@@ -35,6 +35,11 @@ import {
   usePaginationState,
 } from '@/utils/pagingUtils'
 
+const getDefaultRange = () => ({
+  start: subtractDate(createDate(), 14, 'day').startOf('day'),
+  end: createDate(),
+})
+
 const AUDIT_LOGS_RESOURCE_ID = ADMIN_UI_RESOURCES.AuditLogs
 const AUDIT_LOGS_SCOPES = CEDAR_RESOURCE_SCOPES[AUDIT_LOGS_RESOURCE_ID] ?? []
 
@@ -60,9 +65,8 @@ const splitTimestamp = (timestamp: string): { datePart: string; timePart: string
 const AuditListPage: React.FC = () => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes } = useStyles({ isDark: themeState.theme === THEME_DARK, themeColors })
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   SetTitle(t(T_KEYS.TITLE_AUDIT_LOGS))
@@ -81,13 +85,10 @@ const AuditListPage: React.FC = () => {
   const queryClient = useQueryClient()
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
-  const [startDate, setStartDate] = useState<Dayjs | null>(() =>
-    subtractDate(createDate(), 14, 'day').startOf('day'),
-  )
-  const [endDate, setEndDate] = useState<Dayjs | null>(() => createDate())
+  const [startDate, setStartDate] = useState<Dayjs | null>(() => getDefaultRange().start)
+  const [endDate, setEndDate] = useState<Dayjs | null>(() => getDefaultRange().end)
   const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
-    const start = subtractDate(createDate(), 14, 'day').startOf('day')
-    const end = createDate()
+    const { start, end } = getDefaultRange()
     return {
       limit: getDefaultPagingSize(),
       startIndex: 0,
@@ -159,8 +160,7 @@ const AuditListPage: React.FC = () => {
   )
 
   const handleRefresh = useCallback(() => {
-    const resetStart = subtractDate(createDate(), 14, 'day').startOf('day')
-    const resetEnd = createDate()
+    const { start: resetStart, end: resetEnd } = getDefaultRange()
     const resetParams = buildQueryParams(limit, 0, '', {
       hasBothDates: true,
       startDateApi: toApiDatetime(resetStart),
