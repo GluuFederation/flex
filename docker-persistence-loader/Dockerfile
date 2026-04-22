@@ -1,4 +1,4 @@
-FROM ghcr.io/janssenproject/jans/persistence-loader:6.0.0-1
+FROM ghcr.io/janssenproject/jans/persistence-loader:2.0.0-1
 
 # ===========
 # Assets sync
