@@ -53,10 +53,10 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     !!! Note
         Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
 
-    - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/flex/releases/latest) page:
+    - Download the cosign bundle from the [Releases](https://github.com/gluufederation/flex/releases/latest) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
