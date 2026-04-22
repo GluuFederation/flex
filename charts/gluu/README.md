@@ -33,7 +33,7 @@ Kubernetes: `>=v1.23.0-0`
 |  | fido2 | 2.0.0 |
 |  | gateway-api | 2.0.0 |
 |  | nginx-ingress | 2.0.0 |
-|  | persistence | 2.0.0 |
+|  | persistence | 6.0.0 |
 |  | scim | 2.0.0 |
 
 ## Values
