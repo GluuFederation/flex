@@ -50,7 +50,7 @@ Download the release package from the GitHub FLEX [Releases](https://github.com/
     - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/jans/releases/latest) page:
 
         ```bash title="Command"
-        wget https://github.com/JanssenProject/jans/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/JanssenProject/jans/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
@@ -111,7 +111,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/jans/releases/latest) page:
 
         ```bash title="Command"
-        wget https://github.com/JanssenProject/jans/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
