@@ -1,6 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { createDate, subtractDate, isValidDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import {
+  createDate,
+  subtractDate,
+  isValidDate,
+  DATE_FORMATS,
+  toApiDatetime,
+} from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import SearchIcon from '@mui/icons-material/Search'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
@@ -85,8 +91,8 @@ const AuditListPage: React.FC = () => {
     return {
       limit: getDefaultPagingSize(),
       startIndex: 0,
-      start_date: start.toISOString(),
-      end_date: end.toISOString(),
+      start_date: toApiDatetime(start),
+      end_date: toApiDatetime(end),
     }
   })
 
@@ -99,8 +105,8 @@ const AuditListPage: React.FC = () => {
   const filterState = useMemo(
     () => ({
       hasBothDates: hasBothDates(startDate, endDate),
-      startDateApi: isValidDate(startDate) ? startDate!.toISOString() : '',
-      endDateApi: isValidDate(endDate) ? endDate!.toISOString() : '',
+      startDateApi: isValidDate(startDate) ? toApiDatetime(startDate!) : '',
+      endDateApi: isValidDate(endDate) ? toApiDatetime(endDate!) : '',
     }),
     [startDate, endDate],
   )
@@ -157,8 +163,8 @@ const AuditListPage: React.FC = () => {
     const resetEnd = createDate()
     const resetParams = buildQueryParams(limit, 0, '', {
       hasBothDates: true,
-      startDateApi: resetStart.toISOString(),
-      endDateApi: resetEnd.toISOString(),
+      startDateApi: toApiDatetime(resetStart),
+      endDateApi: toApiDatetime(resetEnd),
     })
     setStartDate(resetStart)
     setEndDate(resetEnd)

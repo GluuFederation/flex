@@ -18,6 +18,9 @@ export const DATE_FORMATS = {
   DATE_PICKER_DISPLAY: 'DD-MM-YYYY',
   DATE_PICKER_DISPLAY_US: 'MM/DD/YYYY',
   DATE_PICKER_DATETIME: 'DD-MM-YYYY HH:mm',
+  // ISO-8601 local time — no Z suffix, so the server receives exactly what the user selected
+  // without UTC conversion (toISOString() shifts dates for non-UTC users)
+  API_DATETIME: 'YYYY-MM-DDTHH:mm:ss',
 } as const
 
 export const diffDate = (
@@ -107,3 +110,6 @@ export const subtractDate = (
 ): Dayjs => {
   return dayjs(date).subtract(amount, unit)
 }
+
+export const toApiDatetime = (date: Dayjs): string =>
+  date.startOf('minute').format(DATE_FORMATS.API_DATETIME)

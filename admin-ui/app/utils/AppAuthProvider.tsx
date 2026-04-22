@@ -23,7 +23,10 @@ import {
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
   AuthorizationError,
+  setFlag,
 } from '@openid/appauth'
+
+setFlag('IS_LOG', false)
 import type { AuthorizationResponse } from '@openid/appauth'
 import {
   fetchPolicyStore,
