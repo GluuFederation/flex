@@ -3,21 +3,21 @@ annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: auth-server
-      image: ghcr.io/janssenproject/jans/auth-server:6.0.0-1
+      image: ghcr.io/janssenproject/jans/auth-server:2.0.0-1
     - name: auth-server-key-rotation
-      image: ghcr.io/janssenproject/jans/cloudtools:6.0.0-1
+      image: ghcr.io/janssenproject/jans/cloudtools:2.0.0-1
     - name: configuration-manager
-      image: ghcr.io/janssenproject/jans/configurator:6.0.0-1
+      image: ghcr.io/janssenproject/jans/configurator:2.0.0-1
     - name:  config-api
-      image: ghcr.io/janssenproject/jans/config-api:6.0.0-1
+      image: ghcr.io/janssenproject/jans/config-api:2.0.0-1
     - name: fido2
-      image: ghcr.io/janssenproject/jans/fido2:6.0.0-1
+      image: ghcr.io/janssenproject/jans/fido2:2.0.0-1
     - name: persistence
-      image: ghcr.io/gluufederation/flex/persistence-loader:6.0.0-1
+      image: ghcr.io/gluufederation/flex/persistence-loader:2.0.0-1
     - name: scim
-      image: ghcr.io/janssenproject/jans/scim:6.0.0-1
+      image: ghcr.io/janssenproject/jans/scim:2.0.0-1
     - name: casa
-      image: ghcr.io/janssenproject/jans/casa:6.0.0-1
+      image: ghcr.io/janssenproject/jans/casa:2.0.0-1
     - name: admin-ui
       image: ghcr.io/gluufederation/flex/admin-ui:6.0.0-1
   artifacthub.io/license: Apache-2.0
@@ -43,11 +43,11 @@ dependencies:
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: admin-ui
       condition: global.admin-ui.enabled
@@ -55,36 +55,36 @@ dependencies:
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: scim
       condition: global.scim.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: casa
-      version: 6.0.0
+      version: 2.0.0
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 6.0.0
+      version: 2.0.0
 
     - name: cleanup
       condition: global.cleanup.enabled
-      version: 6.0.0
+      version: 2.0.0
 
     - name: gateway-api
       condition: global.gateway-api.enabled
-      version: 6.0.0
+      version: 2.0.0

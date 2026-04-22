@@ -23,18 +23,18 @@ Kubernetes: `>=v1.23.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 |  | admin-ui | 6.0.0 |
-|  | auth-server | 6.0.0 |
-|  | auth-server-key-rotation | 6.0.0 |
-|  | casa | 6.0.0 |
-|  | cleanup | 6.0.0 |
-|  | cn-istio-ingress | 6.0.0 |
+|  | auth-server | 2.0.0 |
+|  | auth-server-key-rotation | 2.0.0 |
+|  | casa | 2.0.0 |
+|  | cleanup | 2.0.0 |
+|  | cn-istio-ingress | 2.0.0 |
 |  | config | 6.0.0 |
-|  | config-api | 6.0.0 |
-|  | fido2 | 6.0.0 |
-|  | gateway-api | 6.0.0 |
-|  | nginx-ingress | 6.0.0 |
-|  | persistence | 6.0.0 |
-|  | scim | 6.0.0 |
+|  | config-api | 2.0.0 |
+|  | fido2 | 2.0.0 |
+|  | gateway-api | 2.0.0 |
+|  | nginx-ingress | 2.0.0 |
+|  | persistence | 2.0.0 |
+|  | scim | 2.0.0 |
 
 ## Values
 
