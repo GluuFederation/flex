@@ -1,9 +1,9 @@
-import type { Saga } from 'redux-saga'
 import plugins from '../plugins.config.json'
 import { loadPluginMetadata } from './internal'
+import type { CalledSaga } from './internal/types/PluginMetadataTypes'
 
-const process = (): Saga[] => {
-  let pluginSagas: Saga[] = []
+const process = (): CalledSaga[] => {
+  let pluginSagas: CalledSaga[] = []
   plugins
     .map((item) => item.metadataFile)
     .forEach((path) => {

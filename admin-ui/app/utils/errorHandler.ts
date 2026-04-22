@@ -33,7 +33,13 @@ export const extractErrorMessage = (error: CaughtError, fallback: string): strin
   return resolveErrorMessage(error, () => fallback)
 }
 
-export const getQueryErrorMessage = (error: unknown, fallback: string): string => {
+export const getQueryErrorMessage = (
+  error: Error | ApiError | object | string | void | null | undefined,
+  fallback: string,
+): string => {
+  if (typeof error === 'string') {
+    return error.trim() || fallback
+  }
   if (error !== null && error !== undefined && typeof error === 'object') {
     if ('response' in error) {
       const typedError = error as ApiError
@@ -44,8 +50,8 @@ export const getQueryErrorMessage = (error: unknown, fallback: string): string =
         fallback
       )
     }
-    if (error instanceof Error) {
-      return error.message || fallback
+    if ('message' in error && typeof (error as { message?: string }).message === 'string') {
+      return (error as { message: string }).message.trim() || fallback
     }
   }
   return fallback

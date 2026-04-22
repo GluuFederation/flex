@@ -1,32 +1,63 @@
-import { spawnSync } from 'node:child_process'
+import { spawn, ChildProcess } from 'node:child_process'
 
-type StepResult = {
+type TaskResult = {
   label: string
+  output: string
   exitCode: number
 }
 
-const run = (label: string, command: string, args: string[]): StepResult => {
-  console.log(`\n\u001b[36m▶ ${label}\u001b[0m`)
-  const result = spawnSync(command, args, { stdio: 'inherit', shell: true })
-  if (result.error) {
-    console.error(`Failed to spawn process for ${label}:`, result.error.message)
-    return { label, exitCode: 1 }
-  }
-  if (result.status === null) {
-    console.error(`Process for ${label} terminated by signal: ${result.signal ?? 'unknown'}`)
-    return { label, exitCode: 1 }
-  }
-  return { label, exitCode: result.status }
+function runTask(label: string, command: string, args: string[]): Promise<TaskResult> {
+  return new Promise((resolve) => {
+    const proc: ChildProcess = spawn(command, args, {
+      shell: true,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+
+    let output = ''
+    proc.stdout!.on('data', (chunk: Buffer) => {
+      output += chunk.toString()
+    })
+    proc.stderr!.on('data', (chunk: Buffer) => {
+      output += chunk.toString()
+    })
+
+    proc.on('error', (err: Error) => {
+      resolve({ label, output: err.message, exitCode: 1 })
+    })
+
+    proc.on('close', (code: number | null) => {
+      resolve({ label, output, exitCode: code ?? 1 })
+    })
+  })
 }
 
+const ESC = '\x1b'
+const cyan = (s: string): string => `${ESC}[36m${s}${ESC}[0m`
+const green = (s: string): string => `${ESC}[32m${s}${ESC}[0m`
+const red = (s: string): string => `${ESC}[31m${s}${ESC}[0m`
+
 const formatStatus = (exitCode: number): string =>
-  exitCode === 0 ? '\u001b[32mPASS\u001b[0m' : `\u001b[31mFAIL (${exitCode})\u001b[0m`
+  exitCode === 0 ? green('PASS') : red(`FAIL (${exitCode})`)
 
-const lint = run('Lint check (eslint)', 'npm', ['run', 'lint:check', '--silent'])
-const typeCheck = run('Type check (tsc)', 'npm', ['run', 'type-check', '--silent'])
+void (async () => {
+  console.log(cyan('▶ Running lint and type-check in parallel...') + '\n')
 
-console.log('\n\u001b[36m▶ Summary\u001b[0m')
-console.log(`  Lint:       ${formatStatus(lint.exitCode)}`)
-console.log(`  Type check: ${formatStatus(typeCheck.exitCode)}`)
+  const [lint, typeCheck] = await Promise.all([
+    runTask('Lint check (eslint)', 'npm', ['run', 'lint:check', '--silent']),
+    runTask('Type check (tsc)', 'npm', ['run', 'type-check', '--silent']),
+  ])
 
-process.exit(lint.exitCode || typeCheck.exitCode)
+  for (const result of [lint, typeCheck]) {
+    console.log(cyan(`▶ ${result.label}`))
+    if (result.output.trim()) {
+      console.log(result.output.trimEnd())
+    }
+    console.log()
+  }
+
+  console.log(cyan('▶ Summary'))
+  console.log(`  Lint:       ${formatStatus(lint.exitCode)}`)
+  console.log(`  Type check: ${formatStatus(typeCheck.exitCode)}`)
+
+  process.exit(lint.exitCode || typeCheck.exitCode)
+})()

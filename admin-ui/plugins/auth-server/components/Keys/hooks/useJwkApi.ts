@@ -3,7 +3,7 @@ import { useGetConfigJwks } from 'JansConfigApi'
 import { devLogger } from '@/utils/devLogger'
 import type { UseJwkApiResult } from '../types'
 
-const stringifyError = (value: unknown): string => {
+const stringifyError = (value: Error | object | string | void | null | undefined): string => {
   if (value === null || value === undefined) return 'Unknown error'
   if (value instanceof Error) return value.message
   if (typeof value === 'string') return value
@@ -19,7 +19,7 @@ export const useJwkApi = (): UseJwkApiResult => {
 
   useEffect(() => {
     if (error) {
-      devLogger.error('Failed to fetch JWKs:', error)
+      devLogger.error('Failed to fetch JWKs:', stringifyError(error))
     }
   }, [error])
 

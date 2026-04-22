@@ -58,7 +58,10 @@ export function* createJansAsset({
     try {
       yield call(postUserAction, audit as UserActionPayload)
     } catch (auditError) {
-      devLogger.error('Asset audit postUserAction failed', auditError)
+      devLogger.error(
+        'Asset audit postUserAction failed',
+        auditError instanceof Error ? auditError : String(auditError),
+      )
     }
     return data
   } catch (e) {
@@ -90,7 +93,10 @@ export function* updateJansAsset({
     try {
       yield call(postUserAction, audit as UserActionPayload)
     } catch (auditError) {
-      devLogger.error('Asset audit postUserAction failed', auditError)
+      devLogger.error(
+        'Asset audit postUserAction failed',
+        auditError instanceof Error ? auditError : String(auditError),
+      )
     }
     return data
   } catch (e) {

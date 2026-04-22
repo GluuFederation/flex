@@ -34,8 +34,7 @@ import {
   useSsaJwtQuery,
   SSA_QUERY_KEYS,
 } from '../hooks'
-import { formatExpirationDate } from '../utils'
-import { downloadJwtFile } from '../utils/fileDownload'
+import { formatExpirationDate, downloadJwtFile } from '../utils'
 import type { SsaData } from '../types/SsaApiTypes'
 import type { SsaTableRowData } from '../types/SsaFormTypes'
 
@@ -157,7 +156,10 @@ const SsaListPage: React.FC = () => {
         const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        devLogger.error('Failed to download SSA JWT:', error)
+        devLogger.error(
+          'Failed to download SSA JWT:',
+          error instanceof Error ? error : String(error),
+        )
         dispatch(updateToast(true, 'error'))
       }
     },
@@ -174,7 +176,7 @@ const SsaListPage: React.FC = () => {
         })
         setDeleteData(null)
       } catch (error) {
-        devLogger.error('Delete SSA failed:', error)
+        devLogger.error('Delete SSA failed:', error instanceof Error ? error : String(error))
       }
     },
     [deleteData, revokeSsa],

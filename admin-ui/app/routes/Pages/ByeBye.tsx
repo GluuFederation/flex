@@ -30,7 +30,10 @@ const ByeBye = () => {
         try {
           await deleteSession()
         } catch (error) {
-          devLogger.error('Error deleting admin UI session:', error)
+          devLogger.error(
+            'Error deleting admin UI session:',
+            error instanceof Error ? error : String(error),
+          )
         }
       }
 

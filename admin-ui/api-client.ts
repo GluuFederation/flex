@@ -39,7 +39,7 @@ AXIOS_INSTANCE.interceptors.response.use(
         const response = await fetchApiTokenWithDefaultScopes()
         await deleteAdminUiSession(response?.access_token)
       } catch (e) {
-        devLogger.error('Failed to cleanup session on 403:', e)
+        devLogger.error('Failed to cleanup session on 403:', e instanceof Error ? e : String(e))
       } finally {
         window.location.href = ROUTES.LOGOUT
       }

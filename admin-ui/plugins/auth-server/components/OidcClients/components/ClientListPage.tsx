@@ -242,7 +242,7 @@ const ClientListPage: React.FC = () => {
           client: itemToDelete,
         })
       } catch (error) {
-        devLogger.error('Failed to delete client', error)
+        devLogger.error('Failed to delete client', error instanceof Error ? error : String(error))
       } finally {
         setModal(false)
         setItemToDelete(null)

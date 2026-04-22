@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { getHoverOpacity, OPACITY } from '@/constants'
+import { getHoverOpacity, getDividerOpacity, OPACITY, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { PickerThemeColors, GluuDatePickerStyleParams } from './types'
@@ -25,8 +25,9 @@ const buildPickerThemeColors = (
     labelColor: inputText,
     borderColor,
     popupBg: themeConfig.dashboard.supportCard,
-    selectedBg: themeConfig.background,
-    selectedText: themeConfig.fontColor,
+    popupBorderColor: getLoadingOverlayRgba(themeConfig.fontColor, getDividerOpacity(isDark)),
+    selectedBg: themeConfig.fontColor,
+    selectedText: themeConfig.background,
     hoverBg,
     placeholderColor: themeConfig.textMuted,
     iconColor: themeConfig.fontColor,
@@ -114,6 +115,8 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,
+    'borderRadius': `${BORDER_RADIUS.SMALL}px`,
+    'boxShadow': 'none',
     '& .MuiOutlinedInput-root': {
       '& fieldset': { borderColor: tc.borderColor },
       '&:hover fieldset': { borderColor: tc.borderColor },
@@ -126,6 +129,10 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
     },
     '& .MuiPickersDay-root': {
       'color': tc.inputTextColor,
+      '&.MuiPickersDay-today': {
+        'borderColor': tc.inputTextColor,
+        '&.Mui-selected': { borderColor: 'transparent' },
+      },
       '&.Mui-selected': {
         'backgroundColor': tc.selectedBg,
         'color': tc.selectedText,
@@ -144,6 +151,47 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
       '& .MuiIconButton-root': {
         'color': tc.inputTextColor,
         '&:hover': { backgroundColor: tc.hoverBg },
+      },
+    },
+    '& .MuiPickersLayout-contentWrapper': {
+      alignItems: 'flex-start',
+    },
+    '& .MuiMultiSectionDigitalClock-root': {
+      'borderColor': tc.popupBorderColor,
+      'paddingTop': '16px',
+      '& .MuiDivider-root': { borderColor: tc.popupBorderColor, borderWidth: '1px' },
+    },
+    '& .MuiPickersCalendarHeader-label': { color: tc.inputTextColor },
+    '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+      'color': tc.inputTextColor,
+      '&.Mui-selected': { backgroundColor: tc.selectedBg, color: tc.selectedText },
+      '&:hover': { backgroundColor: tc.hoverBg },
+    },
+    '& .MuiMultiSectionDigitalClockSection-root': {
+      'scrollbarWidth': 'thin',
+      'scrollbarColor': `${tc.hoverBg} transparent`,
+      '&::after': { backgroundColor: tc.popupBg, minHeight: 0, height: 0 },
+    },
+    '& .MuiMultiSectionDigitalClockSection-item': {
+      'color': tc.inputTextColor,
+      'borderRadius': `${BORDER_RADIUS.SMALL_MEDIUM}px`,
+      '&.Mui-selected': {
+        'backgroundColor': tc.selectedBg,
+        'color': tc.selectedText,
+        'borderRadius': `${BORDER_RADIUS.SMALL_MEDIUM}px`,
+        '&:hover': { backgroundColor: tc.selectedBg },
+      },
+      '&:hover': { backgroundColor: tc.hoverBg },
+      '&.Mui-disabled': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
+    },
+    '& .MuiPickersLayout-actionBar': {
+      '& .MuiButton-root': {
+        'fontFamily': fontFamily,
+        'backgroundColor': tc.selectedBg,
+        'color': tc.selectedText,
+        'borderRadius': `${BORDER_RADIUS.SMALL}px`,
+        'padding': '4px 16px',
+        '&:hover': { backgroundColor: tc.selectedBg, opacity: 0.85 },
       },
     },
   },

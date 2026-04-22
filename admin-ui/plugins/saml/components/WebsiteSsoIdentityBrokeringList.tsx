@@ -18,7 +18,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { PaperContainer, getIdentityProviderTableCols } from '../helper/tableUtils'
+import { PaperContainer, getIdentityProviderTableCols } from '../helper'
 import { useIdentityProviders, useDeleteIdentityProvider, type IdentityProvider } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
@@ -152,7 +152,10 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         })
         toggle()
       } catch (error) {
-        devLogger.error('Failed to delete identity provider:', error)
+        devLogger.error(
+          'Failed to delete identity provider:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [buildPayload, deleteIdentityProviderMutation, item.inum, toggle],

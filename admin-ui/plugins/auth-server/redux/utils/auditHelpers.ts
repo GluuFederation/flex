@@ -187,7 +187,10 @@ export const enhanceJsonConfigAuditPayload = (
   // Use derived auditMessage only when userMessage is absent.
   const finalMessage = userMessage || auditMessage || 'Updated JSON configuration'
 
-  const enrichedActionData: Record<string, unknown> = {
+  const enrichedActionData: ActionDataWithDelete & {
+    modifiedFields: Record<string, string>
+    performedOn: string
+  } = {
     ...(actionData || {}),
     modifiedFields,
     performedOn,

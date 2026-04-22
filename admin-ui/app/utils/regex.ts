@@ -48,6 +48,8 @@ export const REGEX_IDENTIFIER = /^[a-zA-Z0-9_]+$/
 export const REGEX_HAS_UPPERCASE = /[A-Z]/
 /** Password strength — at least one lowercase letter. */
 export const REGEX_HAS_LOWERCASE = /[a-z]/
+/** Matches any character that is not a lowercase ASCII letter; use with replace('') after lowercasing to normalize keys for comparisons. */
+export const REGEX_NON_LOWERCASE_ALPHA = /[^a-z]/g
 /** Password strength — at least one digit. */
 export const REGEX_HAS_DIGIT = /[0-9]/
 /** Password strength — at least one special character. */
@@ -68,6 +70,8 @@ export const REGEX_DOUBLE_QUOTE = /"/g
 export const REGEX_DATE_SEPARATOR_CHARS = /[/:,]/g
 /** Matches a single whitespace character (global); use with replace('_') to convert spaces in filenames. */
 export const REGEX_WHITESPACE_CHAR = /\s/g
+/** Matches KeyOps enum values in the orval-generated JansConfigApi.ts that need the backslash escape fixed. Capture groups: [1] opening quote+prefix, [2] raw value, [3] closing quote. */
+export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 /** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */

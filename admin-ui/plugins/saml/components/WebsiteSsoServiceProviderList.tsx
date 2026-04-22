@@ -10,7 +10,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { PaperContainer, getServiceProviderTableCols } from '../helper/tableUtils'
+import { PaperContainer, getServiceProviderTableCols } from '../helper'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
@@ -102,7 +102,10 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           userMessage: userAction.action_message,
         })
       } catch (error) {
-        devLogger.error('Failed to delete service provider:', error)
+        devLogger.error(
+          'Failed to delete service provider:',
+          error instanceof Error ? error : String(error),
+        )
       }
     },
     [deleteTrustRelationshipMutation, item.inum, toggle],

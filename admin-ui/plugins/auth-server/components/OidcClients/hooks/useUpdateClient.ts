@@ -50,7 +50,10 @@ export const useUpdateClient = (auditContext: AuditContext) => {
             client_id: auditContext.clientId,
           })
         } catch (auditError) {
-          devLogger.error('Audit logging failed:', auditError)
+          devLogger.error(
+            'Audit logging failed:',
+            auditError instanceof Error ? auditError : String(auditError),
+          )
         }
 
         return updated

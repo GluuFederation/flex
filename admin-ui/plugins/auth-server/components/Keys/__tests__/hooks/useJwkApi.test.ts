@@ -6,7 +6,7 @@ const mockRefetch = jest.fn()
 const originalConsoleError = console.error
 
 beforeAll(() => {
-  console.error = (...args: unknown[]) => {
+  console.error = (...args: Parameters<typeof console.error>) => {
     const msg = String(args[0] ?? '')
     if (msg.includes('Failed to fetch JWKs')) return
     originalConsoleError(...args)

@@ -26,7 +26,10 @@ export const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number
 
     return defaultSize
   } catch (error) {
-    devLogger.warn('Failed to read paging size from localStorage:', error)
+    devLogger.warn(
+      'Failed to read paging size from localStorage:',
+      error instanceof Error ? error : String(error),
+    )
     return defaultSize
   }
 }
@@ -62,7 +65,10 @@ export const savePagingSize = (size: number): void => {
       window.dispatchEvent(new CustomEvent(PAGING_SIZE_CHANGED_EVENT, { detail: validSize }))
     }
   } catch (error) {
-    devLogger.warn('Failed to save paging size to localStorage:', error)
+    devLogger.warn(
+      'Failed to save paging size to localStorage:',
+      error instanceof Error ? error : String(error),
+    )
   }
 }
 
