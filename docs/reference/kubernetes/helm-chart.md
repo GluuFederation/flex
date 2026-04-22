@@ -23,18 +23,18 @@ Kubernetes: `>=v1.23.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 |  | admin-ui | 6.0.0 |
-|  | auth-server | 6.0.0 |
-|  | auth-server-key-rotation | 6.0.0 |
-|  | casa | 6.0.0 |
-|  | cleanup | 6.0.0 |
-|  | cn-istio-ingress | 6.0.0 |
+|  | auth-server | 2.0.0 |
+|  | auth-server-key-rotation | 2.0.0 |
+|  | casa | 2.0.0 |
+|  | cleanup | 2.0.0 |
+|  | cn-istio-ingress | 2.0.0 |
 |  | config | 6.0.0 |
-|  | config-api | 6.0.0 |
-|  | fido2 | 6.0.0 |
-|  | gateway-api | 6.0.0 |
-|  | nginx-ingress | 6.0.0 |
-|  | persistence | 6.0.0 |
-|  | scim | 6.0.0 |
+|  | config-api | 2.0.0 |
+|  | fido2 | 2.0.0 |
+|  | gateway-api | 2.0.0 |
+|  | nginx-ingress | 2.0.0 |
+|  | persistence | 2.0.0 |
+|  | scim | 2.0.0 |
 
 ## Values
 
@@ -575,7 +575,7 @@ Kubernetes: `>=v1.23.0-0`
 | nginx-ingress.ingress.additionalAnnotations | object | `{}` | Additional annotations that will be added across all ingress definitions in the format of {cert-manager.io/issuer: "letsencrypt-prod"} Enable client certificate authentication nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional" Create the secret containing the trusted ca certificates nginx.ingress.kubernetes.io/auth-tls-secret: "gluu/tls-certificate" Specify the verification depth in the client certificates chain nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1" Specify if certificates are passed to upstream server nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true" |
 | nginx-ingress.ingress.additionalLabels | object | `{}` | Additional labels that will be added across all ingress definitions in the format of {mylabel: "myapp"} |
 | nginx-ingress.ingress.tls | list | `[{"hosts":["demoexample.gluu.org"],"secretName":"tls-certificate"}]` | Secrets holding HTTPS CA cert and key. |
-| persistence | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/persistence-loader","tag":"2.0.0-1"},"lifecycle":{},"nodeSelector":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"tolerations":[],"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Job to generate data and initial config for Gluu Server persistence layer. |
+| persistence | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/persistence-loader","tag":"6.0.0-1"},"lifecycle":{},"nodeSelector":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"tolerations":[],"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Job to generate data and initial config for Gluu Server persistence layer. |
 | persistence.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | persistence.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
 | persistence.customCommand | list | `[]` | Add custom job's command. If passed, it will override the default conditional command. |
@@ -585,7 +585,7 @@ Kubernetes: `>=v1.23.0-0`
 | persistence.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | persistence.image.pullSecrets | list | `[]` | Image Pull Secrets |
 | persistence.image.repository | string | `"ghcr.io/gluufederation/flex/persistence-loader"` | Image  to use for deploying. |
-| persistence.image.tag | string | `"2.0.0-1"` | Image  tag to use for deploying. |
+| persistence.image.tag | string | `"6.0.0-1"` | Image  tag to use for deploying. |
 | persistence.nodeSelector | object | `{}` | Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) |
 | persistence.resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
 | persistence.resources.limits.cpu | string | `"300m"` | CPU limit |
