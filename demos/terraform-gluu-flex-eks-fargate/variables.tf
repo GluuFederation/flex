@@ -430,7 +430,7 @@ variable "fido2_replicas" {
 }
 
 variable "persistence_image" {
-  default     = "ghcr.io/janssenproject/jans/persistence-loader"
+  default     = "ghcr.io/gluufederation/flex/persistence-loader"
   description = "The image to use for the the persistence loader job deployment."
   type        = string
 }

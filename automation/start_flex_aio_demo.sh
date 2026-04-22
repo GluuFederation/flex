@@ -542,7 +542,7 @@ if [[ $GLUU_PERSISTENCE != "MYSQL" ]] && [[ $GLUU_PERSISTENCE != "PGSQL" ]]; the
 fi
 
 if [[ -z $GLUU_VERSION ]]; then
-    GLUU_VERSION="0.0.0-nightly"
+    GLUU_VERSION="6.0.0-1"
 fi
 
 LOG_TARGET="FILE"
