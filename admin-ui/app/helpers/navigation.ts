@@ -1,7 +1,6 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
-// Plugin Base Paths - Single source of truth
 const PLUGIN_BASE_PATHS = {
   SAML: '/saml',
   HOME: '/home',
@@ -39,6 +38,7 @@ const ROUTES = {
   ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.HOME}/mapping`,
   ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.HOME}/cedarlingconfig`,
   ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
+  ADMIN_METRICS: `${PLUGIN_BASE_PATHS.HOME}/metrics`,
 
   // Assets
   ASSETS_LIST: `${PLUGIN_BASE_PATHS.HOME}/assets`,

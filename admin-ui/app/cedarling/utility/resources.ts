@@ -30,6 +30,7 @@ export const ADMIN_UI_RESOURCES = {
   FIDO: 'FIDO',
   SAML: 'SAML',
   Lock: 'Lock',
+  Metrics: 'Metrics',
 } as const satisfies Record<AdminUiFeatureResource, AdminUiFeatureResource>
 
 export const findPermissionByUrl = (apiPermissions: ApiPermissionType[], url: string) => {

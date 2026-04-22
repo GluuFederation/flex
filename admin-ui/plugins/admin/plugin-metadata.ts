@@ -1,4 +1,5 @@
 import HealthPage from './components/Health/HealthPage'
+import MetricsPage from './components/Metrics/MetricsPage'
 import RolePermissionMappingPage from './components/Mapping/RolePermissionMappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
@@ -63,6 +64,12 @@ const pluginMetadata = {
           title: 'menus.maugraph',
           path: ROUTES.ADMIN_MAU_GRAPH,
           permission: ACR_READ,
+          resourceKey: ADMIN_UI_RESOURCES.MAU,
+        },
+        {
+          title: 'menus.metrics',
+          path: ROUTES.ADMIN_METRICS,
+          permission: STAT_READ,
           resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
@@ -133,6 +140,12 @@ const pluginMetadata = {
       component: MauPage,
       path: ROUTES.ADMIN_MAU_GRAPH,
       permission: ACR_READ,
+      resourceKey: ADMIN_UI_RESOURCES.MAU,
+    },
+    {
+      component: MetricsPage,
+      path: ROUTES.ADMIN_METRICS,
+      permission: STAT_READ,
       resourceKey: ADMIN_UI_RESOURCES.MAU,
     },
     {
