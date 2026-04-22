@@ -13,7 +13,7 @@ annotations:
     - name: fido2
       image: ghcr.io/janssenproject/jans/fido2:2.0.0-1
     - name: persistence
-      image: ghcr.io/gluufederation/flex/persistence-loader:2.0.0-1
+      image: ghcr.io/gluufederation/flex/persistence-loader:6.0.0-1
     - name: scim
       image: ghcr.io/janssenproject/jans/scim:2.0.0-1
     - name: casa

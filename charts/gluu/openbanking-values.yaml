@@ -6,7 +6,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: gluufederation/openbanking-auth-server
     # -- Image  tag to use for deploying.
-    tag: 2.0.0-1
+    tag: 6.0.0-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
 # -- Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.
@@ -225,6 +225,6 @@ persistence:
     # -- Image  to use for deploying.
     repository: gluufederation/openbanking-persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 2.0.0-1
+    tag: 6.0.0-1
     # -- Image Pull Secrets
     pullSecrets: [ ]

@@ -1,6 +1,6 @@
 # persistence
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.0](https://img.shields.io/badge/AppVersion-2.0.0-informational?style=flat-square)
+![Version: 6.0.0](https://img.shields.io/badge/Version-6.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 6.0.0](https://img.shields.io/badge/AppVersion-6.0.0-informational?style=flat-square)
 
 Job to generate data and initial config for Gluu Server persistence layer.
 
@@ -34,8 +34,8 @@ Kubernetes: `>=v1.21.0-0`
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"ghcr.io/janssenproject/jans/persistence"` | Image  to use for deploying. |
-| image.tag | string | `"2.0.0-1"` | Image  tag to use for deploying. |
+| image.repository | string | `"ghcr.io/gluufederation/flex/persistence-loader"` | Image  to use for deploying. |
+| image.tag | string | `"6.0.0-1"` | Image  tag to use for deploying. |
 | imagePullSecrets | list | `[]` |  |
 | lifecycle | object | `{}` |  |
 | nameOverride | string | `""` |  |
