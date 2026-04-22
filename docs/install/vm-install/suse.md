@@ -40,7 +40,7 @@ sudo SUSEConnect -p PackageHub/15.4/x86_64
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P ~/tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P /tmp
 ```
 - Go to `/tmp` directory:
 
@@ -53,7 +53,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     !!! Note
         Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
 
-    - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/flex/releases/latest) page:
+    - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases/latest) page:
 
         ```bash title="Command"
         wget https://github.com/GluuFederation/flex/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle -P /tmp
