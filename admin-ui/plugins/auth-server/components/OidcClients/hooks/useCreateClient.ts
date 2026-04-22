@@ -6,6 +6,7 @@ import type { Client } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { devLogger } from '@/utils/devLogger'
@@ -29,7 +30,12 @@ export const useCreateClient = (auditContext: AuditContext) => {
         const created = await mutation.mutateAsync({ data: clientPayload })
         dispatch(updateToast(true, 'success'))
         await invalidateQueriesByKey(queryClient, getGetOauthOpenidClientsQueryKey())
-        dispatch(triggerWebhook({ createdFeatureValue: toClientJsonRecord(created) }))
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: toClientJsonRecord(created),
+            feature: adminUiFeatures.oidc_clients_write,
+          }),
+        )
 
         try {
           await logAuditUserAction({

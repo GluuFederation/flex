@@ -1,29 +1,46 @@
+import { readFileSync } from 'node:fs'
 import { spawn, ChildProcess } from 'node:child_process'
+import { REGEX_PRETTIER_TIMESTAMP, REGEX_PRETTIER_FILE_PATH } from '../app/utils/regex'
 
 type FormatStats = {
   total: number
   formatted: number
+  reformattedFiles: Array<{ path: string; lines: number }>
 }
 
 const ESC = '\x1b'
 const cyan = (s: string): string => `${ESC}[36m${s}${ESC}[0m`
+const yellow = (s: string): string => `${ESC}[33m${s}${ESC}[0m`
 
 const proc: ChildProcess = spawn('npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss}"', [], {
   shell: true,
   stdio: ['inherit', 'pipe', 'pipe'],
 })
 
-const stats: FormatStats = { total: 0, formatted: 0 }
+const stats: FormatStats = { total: 0, formatted: 0, reformattedFiles: [] }
+
+function countLines(filePath: string): number {
+  try {
+    return readFileSync(filePath, 'utf8').split('\n').length
+  } catch {
+    return 0
+  }
+}
 
 function processLine(line: string): void {
   if (!line.trim()) return
   process.stdout.write(line + '\n')
   if (line.startsWith('[')) return
-  if (!line.includes('(unchanged)') && !line.includes('(changed)') && !line.includes('(cached)'))
-    return
+  const hasTimestamp = REGEX_PRETTIER_TIMESTAMP.test(line)
+  if (!hasTimestamp) return
   stats.total++
-  if (line.includes('(changed)')) {
+  if (!line.includes('(unchanged)') && !line.includes('(cached)')) {
     stats.formatted++
+    const match = REGEX_PRETTIER_FILE_PATH.exec(line)
+    if (match) {
+      const filePath = match[1]
+      stats.reformattedFiles.push({ path: filePath, lines: countLines(filePath) })
+    }
   }
 }
 
@@ -54,6 +71,12 @@ proc.on('close', (code: number | null) => {
     console.log(`  Total files checked : ${stats.total}`)
     console.log(`  Files reformatted   : ${stats.formatted}`)
     console.log(`  Already formatted   : ${stats.total - stats.formatted}`)
+    if (stats.reformattedFiles.length > 0) {
+      console.log(cyan('\n▶ Reformatted files'))
+      stats.reformattedFiles.forEach(({ path, lines }) => {
+        console.log(`  ${yellow(path)} (${lines} lines)`)
+      })
+    }
   } else {
     console.error(cyan('▶ Prettier failed — see errors above'))
   }
