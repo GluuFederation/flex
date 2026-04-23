@@ -249,6 +249,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   },
   devServer: {
     client: {
+      logging: 'none',
       overlay: {
         runtimeErrors: false,
       },
