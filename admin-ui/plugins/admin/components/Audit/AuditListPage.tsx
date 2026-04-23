@@ -85,17 +85,15 @@ const AuditListPage: React.FC = () => {
   const queryClient = useQueryClient()
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
-  const [startDate, setStartDate] = useState<Dayjs | null>(() => getDefaultRange().start)
-  const [endDate, setEndDate] = useState<Dayjs | null>(() => getDefaultRange().end)
-  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
-    const { start, end } = getDefaultRange()
-    return {
-      limit: getDefaultPagingSize(),
-      startIndex: 0,
-      start_date: toApiDatetime(start),
-      end_date: toApiDatetime(end),
-    }
-  })
+  const initialRange = useRef(getDefaultRange())
+  const [startDate, setStartDate] = useState<Dayjs | null>(() => initialRange.current.start)
+  const [endDate, setEndDate] = useState<Dayjs | null>(() => initialRange.current.end)
+  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => ({
+    limit: getDefaultPagingSize(),
+    startIndex: 0,
+    start_date: toApiDatetime(initialRange.current.start),
+    end_date: toApiDatetime(initialRange.current.end),
+  }))
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs },
