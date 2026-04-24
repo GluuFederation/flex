@@ -1,11 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
-import type { Dayjs } from '@/utils/dayjsUtils'
+import { type Dayjs, isValidDate as isValidDateUtil, isAfterDate } from '@/utils/dayjsUtils'
 import {
   REGEX_AUDIT_LIST_TIMESTAMP,
   REGEX_BRACED_PLACEHOLDER,
   regexForBracedKey,
 } from '@/utils/regex'
-import { isValidDate as isValidDateUtil, isAfterDate } from '@/utils/dayjsUtils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookOutputItem, WebhookWithBody } from './types'
 
