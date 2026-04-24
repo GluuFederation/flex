@@ -5,11 +5,6 @@ import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 export type { WebhookEntry, WebhookOutputItem }
 
 export type { WebhookTriggerResponseItem } from '../../types/webhook'
-export type {
-  WebhooksByFeatureIdApiResponse,
-  TriggerWebhookApiResponse,
-  TriggerWebhookApiPayload,
-} from '../../api/WebhookApi'
 
 export interface TriggerWebhookSagaPayload {
   createdFeatureValue: Record<string, JsonValue>

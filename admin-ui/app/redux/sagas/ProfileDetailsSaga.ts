@@ -1,7 +1,5 @@
 import type { SagaIterator } from 'redux-saga'
-import { all, call, fork, put, select, takeLatest } from 'redux-saga/effects'
-import * as JansConfigApi from 'jans_config_api'
-import { handleTypedResponse } from 'Utils/ApiUtils'
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { addAdditionalData } from 'Utils/TokenController'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { FETCH } from '../../audit/UserActionType'
@@ -16,18 +14,7 @@ import {
   checkIsLoadingDetails,
   type ProfileDetailsRequestPayload,
 } from '../features/ProfileDetailsSlice'
-import { getClient } from 'Redux/api/base'
-
-type ConfigurationUserManagementApi = InstanceType<
-  typeof JansConfigApi.ConfigurationUserManagementApi
->
-
-const fetchUserByInum = (api: ConfigurationUserManagementApi, inum: string) =>
-  new Promise<Record<string, JsonValue>>((resolve, reject) => {
-    api.getUserByInum(inum, (error: Error | null, data?: Record<string, JsonValue>) => {
-      handleTypedResponse<Record<string, JsonValue>>(error, reject, resolve, data)
-    })
-  })
+import { getUserByInum } from 'JansConfigApi'
 
 function* getProfileDetailsWorker({
   payload,
@@ -42,13 +29,7 @@ function* getProfileDetailsWorker({
   try {
     yield put(checkIsLoadingDetails(true))
     addAdditionalData(audit, FETCH, API_USERS, payload as Record<string, JsonValue>)
-    const issuer: string | null = yield select(
-      (state: { authReducer: { issuer: string } }) => state.authReducer.issuer,
-    )
-    const api = new JansConfigApi.ConfigurationUserManagementApi(
-      getClient(JansConfigApi, null, issuer),
-    )
-    const data = yield call(fetchUserByInum, api, payload.pattern)
+    const data = (yield call(getUserByInum, payload.pattern)) as Record<string, JsonValue>
     yield put(setUserProfileDetails(data))
     yield call(postUserAction, audit as UserActionPayload)
   } catch (e) {

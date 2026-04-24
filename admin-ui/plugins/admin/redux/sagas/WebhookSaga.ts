@@ -1,8 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import i18n from 'i18next'
-import type { SelectEffect } from 'redux-saga/effects'
 import type { SagaIterator } from 'redux-saga'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { getWebhooksByFeatureId } from 'JansConfigApi'
+import { customInstance } from '../../../../orval-mutator'
 import {
   getWebhooksByFeatureId as getWebhooksByFeatureIdAction,
   getWebhooksByFeatureIdResponse,
@@ -16,11 +17,8 @@ import {
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
-import WebhookApi from 'Plugins/admin/redux/api/WebhookApi'
-import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/backend-api'
-import * as JansConfigApi from 'jans_config_api'
 import { devLogger } from '@/utils/devLogger'
 import { UNKNOWN_STATUS } from '@/constants'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
@@ -37,35 +35,22 @@ import type {
   WebhookEntry,
   TriggerWebhookSagaPayload,
   WebhookTriggerResponseItem,
-  WebhooksByFeatureIdApiResponse,
-  TriggerWebhookApiResponse,
 } from './types/webhook'
 
-function* createWebhookApi(): Generator<SelectEffect, WebhookApi, string> {
-  const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, null, issuer))
-  return new WebhookApi(api)
-}
-
-export function* getWebhooksByFeatureId({
+export function* getWebhooksByFeatureIdSaga({
   payload,
-}: PayloadAction<string>): SagaIterator<WebhooksByFeatureIdApiResponse | void> {
+}: PayloadAction<string>): SagaIterator<void> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${payload}`, {})
-    const webhookApi: WebhookApi = yield* createWebhookApi()
-    const data: WebhooksByFeatureIdApiResponse = yield call(
-      webhookApi.getWebhooksByFeatureId,
-      payload,
-    )
-    const webhooks: WebhookEntry[] = data?.body ?? []
+    const data = (yield call(getWebhooksByFeatureId, payload)) as WebhookEntry[]
+    const webhooks: WebhookEntry[] = data ?? []
     const hasEnabledWebhooks = webhooks.some((item) => item.jansEnabled)
     if (webhooks.length && hasEnabledWebhooks) {
       yield put(setWebhookModal(true))
     }
     yield put(getWebhooksByFeatureIdResponse(webhooks))
     yield call(postUserAction, audit as UserActionPayload)
-    return data
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
     yield put(updateToast(true, 'error', errMsg))
@@ -76,13 +61,12 @@ export function* getWebhooksByFeatureId({
   }
 }
 
-export function* triggerWebhook({
+export function* triggerWebhookSaga({
   payload,
-}: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<TriggerWebhookApiResponse | void> {
+}: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<void> {
   const audit = yield* initAudit()
   let featureToTrigger = ''
   try {
-    const webhookApi: WebhookApi = yield* createWebhookApi()
     featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
     let featureWebhooks: WebhookEntry[] = yield select(
       (state: RootState) => state.webhookReducer.featureWebhooks,
@@ -94,11 +78,8 @@ export function* triggerWebhook({
       yield put(setFeatureToTrigger(featureFromPayload))
 
       if (!featureWebhooks?.length) {
-        const data: WebhooksByFeatureIdApiResponse = yield call(
-          webhookApi.getWebhooksByFeatureId,
-          featureFromPayload,
-        )
-        featureWebhooks = data?.body ?? []
+        const data = (yield call(getWebhooksByFeatureId, featureFromPayload)) as WebhookEntry[]
+        featureWebhooks = data ?? []
         yield put(getWebhooksByFeatureIdResponse(featureWebhooks))
       }
     }
@@ -119,13 +100,15 @@ export function* triggerWebhook({
       enabledFeatureWebhooks as Parameters<typeof webhookOutputObject>[0],
       payload.createdFeatureValue,
     )
-    const data: TriggerWebhookApiResponse = yield call(webhookApi.triggerWebhook, {
-      feature: featureToTrigger,
-      outputObject,
-    })
 
-    const responseItems = data?.body ?? []
-    const enrichedResults = responseItems
+    const responseItems = (yield call(customInstance<WebhookTriggerResponseItem[]>, {
+      url: `/admin-ui/webhook/trigger/${featureToTrigger}`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: { shortCodeRequest: outputObject },
+    })) as WebhookTriggerResponseItem[]
+
+    const enrichedResults = (responseItems ?? [])
       .map((body: WebhookTriggerResponseItem) => {
         const matchedOutput = outputObject.find(
           (output) => output.webhookId === body?.responseObject?.inum,
@@ -145,7 +128,9 @@ export function* triggerWebhook({
     yield put(setWebhookTriggerErrors([]))
     yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
 
-    const failedItems = responseItems.filter((item: WebhookTriggerResponseItem) => !item.success)
+    const failedItems = (responseItems ?? []).filter(
+      (item: WebhookTriggerResponseItem) => !item.success,
+    )
     if (failedItems.length) {
       const summary = failedItems.map((item: WebhookTriggerResponseItem) => ({
         name: item.responseObject?.webhookName ?? UNKNOWN_STATUS,
@@ -155,7 +140,6 @@ export function* triggerWebhook({
       devLogger.warn(`[Webhook] ${failedItems.length} webhook(s) failed:`, summary)
     }
     yield call(postUserAction, audit as UserActionPayload)
-    return data
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
     yield put(updateToast(true, 'error', errMsg))
@@ -173,11 +157,11 @@ export function* triggerWebhook({
 }
 
 export function* watchGetWebhooksByFeatureId(): SagaIterator<void> {
-  yield takeLatest(getWebhooksByFeatureIdAction.type, getWebhooksByFeatureId)
+  yield takeLatest(getWebhooksByFeatureIdAction.type, getWebhooksByFeatureIdSaga)
 }
 
 export function* watchGetTriggerWebhook(): SagaIterator<void> {
-  yield takeLatest(triggerWebhookAction.type, triggerWebhook)
+  yield takeLatest(triggerWebhookAction.type, triggerWebhookSaga)
 }
 
 export default function* rootSaga(): SagaIterator<void> {

@@ -12,8 +12,8 @@ import {
 export default class AssetApi {
   private readonly api: IJansAssetsApi
 
-  constructor(api: IJansAssetsApi) {
-    this.api = api
+  constructor(api?: IJansAssetsApi) {
+    this.api = api!
   }
 
   getAssetDirMapping = (): Promise<AssetDirMapping[]> => {

@@ -9,6 +9,14 @@ const baseUrl =
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: baseUrl, timeout: 60000 })
 
+export const setApiToken = (token: string | null): void => {
+  if (token) {
+    AXIOS_INSTANCE.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  } else {
+    delete (AXIOS_INSTANCE.defaults.headers.common as Record<string, string>)['Authorization']
+  }
+}
+
 export const customInstance = <T>(
   config: AxiosRequestConfig,
   options?: { signal?: AbortSignal },

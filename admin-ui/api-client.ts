@@ -5,7 +5,7 @@ import { AXIOS_INSTANCE } from './orval-mutator'
 import { devLogger } from './app/utils/devLogger'
 import { ROUTES } from './app/helpers/navigation'
 
-export { customInstance, AXIOS_INSTANCE } from './orval-mutator'
+export { customInstance, AXIOS_INSTANCE, setApiToken } from './orval-mutator'
 
 AXIOS_INSTANCE.interceptors.request.use((config) => {
   const state = getRootState()

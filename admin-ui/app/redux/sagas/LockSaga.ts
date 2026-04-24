@@ -1,31 +1,20 @@
-import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
-import type { SelectEffect } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest } from 'redux-saga/effects'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 
-import { getClient } from '../api/base'
 import { redirectToLogout } from '../sagas/SagaUtils'
-import LockApi from '../api/LockApi'
 import { getLockStatusResponse } from '../features/lockSlice'
 import type { HttpErrorLike, SagaActionPayload } from './types'
 import type { LockStatEntry } from 'Routes/Dashboards/types/DashboardTypes'
-import * as JansConfigApi from 'jans_config_api'
-
-function* newFunction(): Generator<SelectEffect, LockApi, string> {
-  const issuer = (yield select(
-    (state: { authReducer: { issuer: string } }) => state.authReducer.issuer,
-  )) as string
-  const api = new JansConfigApi.StatisticsApi(getClient(JansConfigApi, null, issuer))
-  return new LockApi(api)
-}
+import { getLockStat } from 'JansConfigApi'
+import type { GetLockStatParams } from 'JansConfigApi'
 
 export function* getLockMau(action: PayloadAction<SagaActionPayload>) {
   const { payload } = action
   try {
-    const lockapi: LockApi = yield* newFunction()
     const data = (yield call(
-      [lockapi, lockapi.getLockMau],
-      (payload.options ?? {}) as Record<string, string>,
+      getLockStat,
+      (payload.options ?? {}) as GetLockStatParams,
     )) as LockStatEntry[]
     yield put(getLockStatusResponse({ data }))
   } catch (e) {

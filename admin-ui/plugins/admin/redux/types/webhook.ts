@@ -1,6 +1,5 @@
 import type { WebhookEntry } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { WebhookOutputItem } from 'Plugins/admin/helper/utils'
 
 export interface WebhookTriggerResponseItem {
   success: boolean
@@ -47,36 +46,4 @@ export interface WebhookSliceState {
   triggerPayload: WebhookSliceTriggerPayload
   featureToTrigger: string
   showErrorModal: boolean
-}
-
-export type WebhooksByFeatureIdApiResponse = {
-  body?: WebhookEntry[]
-}
-
-export type TriggerWebhookApiResponse = {
-  body?: WebhookTriggerResponseItem[]
-}
-
-export type TriggerWebhookApiPayload = {
-  feature: string
-  outputObject: WebhookOutputItem[]
-}
-
-export type SdkCallback<TBody, TResponse> = (
-  error: Error | null,
-  data: TBody | null,
-  response: TResponse,
-) => void
-
-export type AdminUIWebhooksApiInstance = {
-  getWebhooksByFeatureId(
-    featureId: string,
-    callback: SdkCallback<WebhookEntry[], WebhooksByFeatureIdApiResponse>,
-  ): void
-
-  triggerWebhook(
-    feature: string,
-    shortCodeRequest: { shortCodeRequest: WebhookOutputItem[] },
-    callback: SdkCallback<WebhookTriggerResponseItem[], TriggerWebhookApiResponse>,
-  ): void
 }
