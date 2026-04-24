@@ -102,7 +102,7 @@ export function* triggerWebhookSaga({
     )
 
     const responseItems = (yield call(customInstance<WebhookTriggerResponseItem[]>, {
-      url: `/admin-ui/webhook/trigger/${featureToTrigger}`,
+      url: `/admin-ui/webhook/trigger/${encodeURIComponent(featureToTrigger)}`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: { shortCodeRequest: outputObject },

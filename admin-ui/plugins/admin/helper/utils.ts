@@ -5,7 +5,7 @@ import {
   REGEX_BRACED_PLACEHOLDER,
   regexForBracedKey,
 } from '@/utils/regex'
-import { isValidDate as isValidDateUtil, isAfterDate, formatDate } from '@/utils/dayjsUtils'
+import { isValidDate as isValidDateUtil, isAfterDate } from '@/utils/dayjsUtils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookOutputItem, WebhookWithBody } from './types'
 
@@ -30,20 +30,11 @@ export const hasValue = <T>(value: T): value is NonNullable<T> =>
 export const hasBothDates = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate
 
-export const hasOnlyOneDate = (startDate: DateLike, endDate: DateLike): boolean =>
-  (!!startDate && !endDate) || (!startDate && !!endDate)
-
 export const isValidDate = (date: DateLike): boolean => isValidDateUtil(date)
 
 export const isStartAfterEnd = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate && isAfterDate(startDate, endDate)
 
-export const dateConverter = (date: DateLike, datePattern = 'DD-MM-YYYY'): string =>
-  formatDate(date, datePattern)
-
-export const clearControlledInput = (setValue: (v: string) => void): void => {
-  setValue('')
-}
 export const auditListTimestampRegex = REGEX_AUDIT_LIST_TIMESTAMP
 
 export const webhookOutputObject = (

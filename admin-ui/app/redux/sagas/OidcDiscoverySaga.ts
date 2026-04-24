@@ -8,7 +8,12 @@ import type { OidcDiscoveryConfig } from 'Redux/types'
 
 export function* getOidcDiscovery() {
   try {
-    const data = (yield call(getProperties)) as OidcDiscoveryConfig
+    const raw = (yield call(getProperties)) as Record<string, string | number | boolean | null>
+    const data: OidcDiscoveryConfig = Object.fromEntries(
+      Object.entries(raw ?? {}).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string',
+      ),
+    )
     yield put(getOidcDiscoveryResponse({ configuration: data }))
   } catch (e) {
     yield put(getOidcDiscoveryResponse({ configuration: null }))

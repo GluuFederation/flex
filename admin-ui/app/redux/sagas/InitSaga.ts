@@ -19,6 +19,7 @@ import {
   getAttributes as fetchAttributes,
 } from 'JansConfigApi'
 import type {
+  GetConfigScriptsParams,
   GetOauthScopesParams,
   GetOauthOpenidClientsParams,
   GetAttributesParams,
@@ -29,7 +30,8 @@ export function* getScripts(action: PayloadAction<SagaActionPayload>) {
   const audit: AuditLog = yield* initAudit()
   try {
     addAdditionalData(audit, 'FETCH SCRIPTS FOR STAT', 'SCRIPT', payload)
-    const data = (yield call(getConfigScripts)) as PagedResult
+    const params = (payload.action.action_data ?? {}) as GetConfigScriptsParams
+    const data = (yield call(getConfigScripts, params)) as PagedResult
     yield put(getScriptsResponse({ data }))
     yield call(postUserAction, audit as UserActionPayload)
   } catch (e) {

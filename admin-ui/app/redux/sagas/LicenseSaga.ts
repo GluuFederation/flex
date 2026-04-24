@@ -1,4 +1,4 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
 import type { SagaIterator } from 'redux-saga'
 import {
   checkLicenseConfigValidResponse,
@@ -38,7 +38,6 @@ import {
 } from 'JansConfigApi'
 import type { GenericResponse, GetStatParams } from 'JansConfigApi'
 import { setApiToken } from '../../../orval-mutator'
-import { getRootState } from '@/redux/hooks'
 
 let defaultToken: ApiTokenResponse | undefined
 
@@ -72,7 +71,9 @@ export function* getAccessToken() {
 
 function* setupApiToken() {
   const token = (yield call(getAccessToken)) as ApiTokenResponse
-  const { hasSession } = getRootState().authReducer
+  const hasSession = (yield select(
+    (state: { authReducer: { hasSession: boolean } }) => state.authReducer.hasSession,
+  )) as boolean
   if (!hasSession) {
     setApiToken(token.access_token)
   }
