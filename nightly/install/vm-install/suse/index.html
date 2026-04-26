@@ -2932,7 +2932,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <h3 id="download-and-verify-the-release-package">Download and Verify the Release Package<a class="headerlink" href="#download-and-verify-the-release-package" title="Permanent link">#</a></h3>
 <ul>
 <li>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></li>
 <li>
 <p>Go to <code>/tmp</code> directory:</p>
@@ -2948,16 +2948,16 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the cosign bundle from the <a href="https://github.com/GluuFederation/flex/releases/latest">Releases</a> page:</p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-janssen-version/flex_0.0.0-nightly.bundle<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 </li>
 <li>
 <p>Verify the signature:</p>
 <div class="highlight"><span class="filename">Command</span><pre><span></span><code>cosign<span class="w"> </span>verify-blob<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--bundle<span class="w"> </span>flex_0.0.0-nightly.bundle<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bundle<span class="w"> </span>flex_replace-flex-version-stable.bundle<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--certificate-identity-regexp<span class="w"> </span><span class="s2">&quot;https://github.com/GluuFederation/flex&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--certificate-oidc-issuer<span class="w"> </span>https://token.actions.githubusercontent.com<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>flex-0.0.0-nightly.suse16.x86_64.rpm
+<span class="w">  </span>flex-replace-flex-version-stable.suse16.x86_64.rpm
 </code></pre></div>
 <p>Output similar to below confirms the package was signed by the Janssen CI pipeline:</p>
 <div class="highlight"><span class="filename">Output</span><pre><span></span><code>Verified OK
@@ -2967,16 +2967,16 @@ of Gluu Flex on SUSE Linux distributions</p>
 </li>
 <li>
 <p>Optionally, verify integrity using the published checksum file (secondary check):</p>
-<div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="w">   </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-0.0.0-nightly.suse16.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;flex-0.0.0-nightly.suse16.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-0.0.0-nightly.suse16.x86_64.rpm.sha256sum
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="w">   </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-replace-flex-version-stable.suse16.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;flex-replace-flex-version-stable.suse16.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.suse16.x86_64.rpm.sha256sum
 </code></pre></div>
 <p>Output similar to below should confirm the integrity of the downloaded package.</p>
-<div class="highlight"><span class="filename">Output</span><pre><span></span><code>flex-0.0.0-nightly.suse16.x86_64.rpm: OK
+<div class="highlight"><span class="filename">Output</span><pre><span></span><code>flex-replace-flex-version-stable.suse16.x86_64.rpm: OK
 </code></pre></div>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> to install
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-0.0.0-nightly.suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <ul>
