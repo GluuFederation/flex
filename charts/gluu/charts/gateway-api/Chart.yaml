@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gateway-api
-version: 2.0.0
+version: 0.0.0-nightly
 kubeVersion: ">=v1.23.0-0"
 description: Gateway API definitions chart
 type: application
@@ -15,4 +15,4 @@ maintainers:
     email: team@gluu.org
     url: https://github.com/moabu
 icon: https://gluu.org/docs/gluu-server/favicon.ico
-appVersion: "2.0.0"
+appVersion: "0.0.0-nightly"
