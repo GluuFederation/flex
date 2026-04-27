@@ -1,8 +1,7 @@
-export const BASE_URL = 'https://jans.io/oauth'
+const BASE_URL = 'https://jans.io/oauth'
 
 export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
 export const PROPERTIES_WRITE = BASE_URL + '/jans-auth-server/config/properties.write'
-export const PROPERTIES_DELETE = BASE_URL + '/jans-auth-server/config/properties.delete'
 
 export const ATTRIBUTE_READ = BASE_URL + '/config/attributes.readonly'
 export const ATTRIBUTE_WRITE = BASE_URL + '/config/attributes.write'
@@ -13,22 +12,14 @@ export const CLIENT_WRITE = BASE_URL + '/config/openid/clients.write'
 export const CLIENT_DELETE = BASE_URL + '/config/openid/clients.delete'
 
 export const ROLE_READ = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly'
-export const ROLE_WRITE = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write'
-export const ROLE_DELETE = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete'
 
 export const PERMISSION_READ =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly'
-export const PERMISSION_WRITE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write'
-export const PERMISSION_DELETE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete'
 
 export const MAPPING_READ =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly'
 export const MAPPING_WRITE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
-export const MAPPING_DELETE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete'
 
 export const LICENSE_DETAILS_READ = BASE_URL + '/jans-auth-server/config/adminui/license.readonly'
 
@@ -68,15 +59,12 @@ export const SMTP_DELETE = BASE_URL + '/config/smtp.delete'
 
 export const ACR_READ = BASE_URL + '/config/acrs.readonly'
 export const ACR_WRITE = BASE_URL + '/config/acrs.write'
-export const ACR_DELETE = BASE_URL + '/config/acrs.delete'
 
 export const LOGGING_READ = BASE_URL + '/config/logging.readonly'
 export const LOGGING_WRITE = BASE_URL + '/config/logging.write'
-export const LOGGING_DELETE = BASE_URL + '/config/logging.delete'
 
 export const JWKS_READ = BASE_URL + '/config/jwks.readonly'
 export const JWKS_WRITE = BASE_URL + '/config/jwks.write'
-export const JWKS_DELETE = BASE_URL + '/config/jwks.delete'
 
 export const FIDO_READ = BASE_URL + '/config/fido2.readonly'
 export const FIDO_WRITE = BASE_URL + '/config/fido2.write'
@@ -105,14 +93,9 @@ export const AGAMA_DELETE = BASE_URL + '/config/agama.delete'
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
 
-export const SCOPE_TAG = 'scopes'
-export const ATTRIBUTES_TAG = 'attributes'
-
 export const SCIM_CONFIG_READ = 'https://jans.io/scim/config.readonly'
 export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 
-export const MESSAGE_READ = BASE_URL + '/config/message.readonly'
-export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
 export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
 export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
 export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'

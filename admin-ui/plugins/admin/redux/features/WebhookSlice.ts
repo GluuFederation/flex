@@ -58,13 +58,6 @@ const webhookSlice = createSlice({
     setWebhookTriggerErrors: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
       state.webhookTriggerErrors = action.payload
     },
-    setTriggerPayload: (state, action: PayloadAction<TriggerPayloadActionPayload>) => {
-      const p = action.payload
-      Object.assign(state.triggerPayload, {
-        feature: p?.feature ?? null,
-        payload: (p?.payload ?? null) as JsonValue,
-      })
-    },
     setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload
     },
@@ -81,7 +74,6 @@ export const {
   triggerWebhook,
   setTriggerWebhookResponse,
   setWebhookTriggerErrors,
-  setTriggerPayload,
   setFeatureToTrigger,
   setShowErrorModal,
 } = webhookSlice.actions
