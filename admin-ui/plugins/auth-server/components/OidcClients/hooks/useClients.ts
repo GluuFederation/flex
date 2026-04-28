@@ -18,7 +18,7 @@ export const useClients = <T = ClientRow>(params?: UseClientsParams) => {
 
   const query = useGetOauthOpenidClients(queryParams, {
     query: {
-      enabled: hasSession === true && queryParams !== undefined,
+      enabled: hasSession === true,
     },
   })
 

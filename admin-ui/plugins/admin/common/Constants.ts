@@ -1,7 +1,5 @@
 export const LIMIT_ID = 'searchLimit'
 export const PATTERN_ID = 'searchPattern'
-export const AUDIT_PATTERN_ID = 'auditSearchPattern'
-
 export const TYPE_ID = 'typeId'
 export const LIMIT = 'limit'
 export const TYPE = 'type'
@@ -13,5 +11,3 @@ export const SEARCHING_SCOPES = 'Search scopes'
 export const FETCHING_SCOPES = 'Fetch scopes'
 export const SEARCHING_SCRIPTS = 'Search scripts'
 export const FETCHING_SCRIPTS = 'Fetch scripts'
-
-export const FETCHING_LICENSE_DETAILS = 'Fetch license details'

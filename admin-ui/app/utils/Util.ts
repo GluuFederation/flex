@@ -1,4 +1,3 @@
-import customColors from '@/customColors'
 import { REGEX_UUID_PLACEHOLDER_CHARS } from '@/utils/regex'
 
 export const uuidv4 = (): string => {
@@ -12,19 +11,6 @@ export const uuidv4 = (): string => {
     return v.toString(16)
   })
 }
-
-const colorPalette: string[] = [
-  customColors.logo,
-  customColors.white,
-  customColors.black,
-  customColors.darkGray,
-  customColors.accentRed,
-  customColors.logo,
-  customColors.orange,
-  customColors.lightBlue,
-]
-
-export const getNewColor = (index = 0): string => colorPalette[index % colorPalette.length]
 
 export const getClientScopeByInum = (str: string): string => {
   const inum = str.split(',')[0]
@@ -72,16 +58,4 @@ export const trimObjectStrings = <T extends object>(obj: T): T => {
 
 export const filterEmptyObjects = <T extends object>(items?: T[]): T[] => {
   return (items || []).filter((item) => item && Object.keys(item).length !== 0)
-}
-
-export const mapPropertyToKeyValue = (prop: {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  description?: string
-}): { key: string; value: string; description?: string } => {
-  const key = (prop.key ?? prop.value1 ?? '').trim()
-  const value = (prop.value ?? prop.value2 ?? '').trim()
-  return { key, value, description: prop.description }
 }

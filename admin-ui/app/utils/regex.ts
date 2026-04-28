@@ -2,8 +2,6 @@
 export const REGEX_TRAILING_PERIOD = /\.$/
 /** Matches a single trailing forward slash; use to normalize URL/path strings. */
 export const REGEX_TRAILING_SLASH = /\/$/
-/** Matches one or more trailing forward slashes; use to strip all trailing slashes from a URL. */
-export const REGEX_TRAILING_SLASHES = /\/+$/
 /** Matches a leading forward slash; use to strip the leading slash from JSON Patch paths (e.g. "/key" → "key"). */
 export const REGEX_LEADING_SLASH = /^\//
 /** Matches all forward slashes; use with replace to convert paths to dot-notation or other delimiters. */

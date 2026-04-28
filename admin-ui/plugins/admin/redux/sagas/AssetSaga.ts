@@ -1,5 +1,5 @@
-import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import type { PutEffect, SelectEffect } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest } from 'redux-saga/effects'
+import type { PutEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 import {
@@ -12,7 +12,6 @@ import { CREATE, UPDATE } from '../../../../app/audit/UserActionType'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import AssetApi from '../api/AssetApi'
-import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/backend-api'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
@@ -22,7 +21,6 @@ import {
   type AssetAuditPayload,
 } from '../features/types/asset'
 import type { Document, AssetFormData } from '../../components/Assets/types/AssetApiTypes'
-import type { AssetRootState } from './types/asset'
 import {
   getErrorMessage,
   isHttpLikeError,
@@ -31,15 +29,8 @@ import {
   type SagaErrorShape,
 } from './types/common'
 
-import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { devLogger } from '@/utils/devLogger'
-
-function* createAssetApi(): Generator<SelectEffect, AssetApi, string> {
-  const issuer: string = yield select((state: AssetRootState) => state.authReducer.issuer)
-  const api = new JansConfigApi.JansAssetsApi(getClient(JansConfigApi, null, issuer))
-  return new AssetApi(api)
-}
 
 export function* createJansAsset({
   payload,
@@ -49,7 +40,7 @@ export function* createJansAsset({
     addAdditionalData(audit as AuditRecord, CREATE, 'asset', {
       action: { action_data: payload.action.action_data },
     } as AssetAuditPayload)
-    const assetApi: AssetApi = yield* createAssetApi()
+    const assetApi = new AssetApi()
     const data: Document = yield call(
       [assetApi, assetApi.createJansAsset],
       payload.action.action_data as AssetFormData,
@@ -84,7 +75,7 @@ export function* updateJansAsset({
     addAdditionalData(audit as AuditRecord, UPDATE, 'asset', {
       action: { action_data: payload.action.action_data },
     } as AssetAuditPayload)
-    const assetApi: AssetApi = yield* createAssetApi()
+    const assetApi = new AssetApi()
     const data: Document = yield call(
       [assetApi, assetApi.updateJansAsset],
       payload.action.action_data as AssetFormData,

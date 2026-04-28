@@ -12,22 +12,12 @@ export const isFourZeroThreeError = (error?: HttpError | Error): boolean => {
   return axiosStatus === 403 || directStatus === 403
 }
 
-export const saveState = (state?: string | null): void => {
-  if (state) {
-    localStorage.setItem('gluu.flow.state', state)
-  }
-}
-
 export const saveIssuer = (issuer: string): void => {
   localStorage.setItem('issuer', issuer)
 }
 
 export const getIssuer = (): string | null => {
   return localStorage.getItem('issuer')
-}
-
-export const isValidState = (newState?: string | null): boolean => {
-  return localStorage.getItem('gluu.flow.state') === newState
 }
 
 export const addAdditionalData = (

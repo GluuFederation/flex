@@ -39,8 +39,6 @@ export const uriValidator = (uri: string): boolean => {
   }
 }
 
-export const audienceValidator = (aud: string): boolean => aud.trim().length > 0
-
 export const emailValidator = (email: string): boolean => REGEX_EMAIL.test(email)
 
 export const getDynamicListValidationMessage = ({

@@ -26,16 +26,17 @@ sudo ufw allow https
 ## Supported Versions
 - Ubuntu 24.04
 - Ubuntu 22.04
-- Ubuntu 20.04
+
 ## Install the Package
 
 ### Ubuntu 24.04
 
-Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+- Download the release package from the GitHub Flex [Releases](https://github.com/gluufederation/flex/releases)
 
-  ```bash title="Command"
-  wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb -P /tmp
-  ```
+    ```bash title="Command"
+    wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb -P /tmp
+    ```
+
 - Go to `/tmp` directory:
 
     ```bash title="Command"
@@ -47,17 +48,17 @@ Download the release package from the GitHub FLEX [Releases](https://github.com/
     !!! Note
         Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
 
-    - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/jans/releases/latest) page:
+    - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases) page:
 
         ```bash title="Command"
-        wget https://github.com/JanssenProject/jans/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-ubuntu24-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex_replace-flex-version-stable.bundle \
+          --bundle flex-ubuntu24-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
           flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
@@ -93,32 +94,34 @@ apt install -y /tmp/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
 ### Ubuntu 22.04
 
 
-Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+- Download the release package from the GitHub Flex [Releases](https://github.com/GluuFederation/flex/releases)
 
-```bash title="Command"
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
-```
+    ```bash title="Command"
+    wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
+    ```
+
 - Go to `/tmp` directory:
 
     ```bash title="Command"
     cd /tmp
     ```
+
 - Verify the cryptographic signature using cosign (primary verification):
 
     !!! Note
         Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
 
-    - Download the cosign bundle from the [Releases](https://github.com/JanssenProject/jans/releases/latest) page:
+    - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-ubuntu22-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex_replace-flex-version-stable.bundle \
+          --bundle flex-ubuntu22-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
           flex_replace-flex-version-stable.ubuntu22.04_amd64.deb

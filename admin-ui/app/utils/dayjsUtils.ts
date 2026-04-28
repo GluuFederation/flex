@@ -23,14 +23,6 @@ export const DATE_FORMATS = {
   API_DATETIME: 'YYYY-MM-DDTHH:mm:ss',
 } as const
 
-export const diffDate = (
-  dateA: string | number | Date | Dayjs,
-  dateB: string | number | Date | Dayjs,
-  unit?: OpUnitType,
-): number => {
-  return dayjs(dateA).diff(dateB, unit)
-}
-
 export const isSameOrBeforeDate = (
   date: string | number | Date | Dayjs,
   compareDate: string | number | Date | Dayjs,
