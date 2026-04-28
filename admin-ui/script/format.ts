@@ -19,15 +19,12 @@ const proc: ChildProcess = spawn('npx prettier --write "**/*.{js,jsx,ts,tsx,json
 
 const stats: FormatStats = { total: 0, formatted: 0, reformattedFiles: [] }
 
-function countLines(filePath: string): number {
-  try {
-    return readFileSync(filePath, 'utf8').split('\n').length
-  } catch {
-    return 0
-  }
+const countLines = (filePath: string): number => {
+  const content = readFileSync(filePath, 'utf8')
+  return content === '' ? 0 : content.split('\n').length - (content.endsWith('\n') ? 1 : 0)
 }
 
-function processLine(line: string): void {
+const processLine = (line: string): void => {
   if (!line.trim()) return
   process.stdout.write(line + '\n')
   if (line.startsWith('[')) return
