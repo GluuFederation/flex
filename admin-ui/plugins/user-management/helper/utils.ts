@@ -2,7 +2,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { createSuccessAuditInit, getCurrentAuditContext, DELETION, UPDATE, CREATE } from '@/audit'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, type AdminUiFeatureKey } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AuditLog, AuditPayload, CaughtError } from '../types'
 import { API_USERS } from '../../../app/audit/Resources'
@@ -168,7 +168,7 @@ export const getErrorMessage = (error: CaughtError): string => {
 
 export const triggerUserWebhook = (
   data: CustomUser,
-  feature: string = adminUiFeatures.users_write,
+  feature: AdminUiFeatureKey = adminUiFeatures.users_write,
 ): void => {
   triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }
