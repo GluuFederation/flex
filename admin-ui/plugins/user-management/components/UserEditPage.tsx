@@ -41,6 +41,7 @@ import {
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/helper/utils'
 import { AXIOS_INSTANCE } from '../../../api-client'
+import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -116,9 +117,7 @@ const UserEditPage = () => {
         if (anyKeyPresent && userDn) {
           try {
             await revokeSessionMutation.mutateAsync({ userDn })
-            await AXIOS_INSTANCE.delete(
-              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
-            )
+            await AXIOS_INSTANCE.delete(`${SESSION_ENDPOINT}/${encodeURIComponent(userDn)}`)
           } catch {
             // Silently ignore — 404 means the user has no active session
           }
@@ -131,7 +130,7 @@ const UserEditPage = () => {
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
-        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_edit)
+        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_write)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

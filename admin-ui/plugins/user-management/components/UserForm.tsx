@@ -530,7 +530,7 @@ const UserForm = ({
           formik={formik as FormikProps<UserEditFormValues>}
           operations={userDetails ? commitDialogOperations : []}
           autoCloseOnAccept
-          webhookFeature={adminUiFeatures.users_edit}
+          webhookFeature={adminUiFeatures.users_write}
           alertMessage={
             (userDetails ? commitDialogOperations : []).some((op) =>
               revokeSessionWhenFieldsModifiedInUserForm.includes(op.path),

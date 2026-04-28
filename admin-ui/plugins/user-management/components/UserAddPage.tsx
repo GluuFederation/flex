@@ -50,7 +50,7 @@ const UserAddPage = () => {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        triggerUserWebhook(data, adminUiFeatures.users_add)
+        triggerUserWebhook(data, adminUiFeatures.users_write)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

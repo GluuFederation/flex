@@ -168,7 +168,7 @@ export const getErrorMessage = (error: CaughtError): string => {
 
 export const triggerUserWebhook = (
   data: CustomUser,
-  feature: string = adminUiFeatures.users_edit,
+  feature: string = adminUiFeatures.users_write,
 ): void => {
   triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }
