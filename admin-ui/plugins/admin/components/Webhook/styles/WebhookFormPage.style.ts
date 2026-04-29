@@ -144,7 +144,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     },
     headersBox: {
       ...dl.listBox,
-      marginTop: SPACING.SECTION_GAP,
+      'marginTop': SPACING.SECTION_GAP,
       '&& input, && input:focus, && input:active, && input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
