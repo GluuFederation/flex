@@ -113,7 +113,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 0,
+      gap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
     },
     fieldsGrid: {
@@ -144,6 +144,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     },
     headersBox: {
       ...dl.listBox,
+      marginTop: SPACING.SECTION_GAP,
       '&& input, && input:focus, && input:active, && input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
