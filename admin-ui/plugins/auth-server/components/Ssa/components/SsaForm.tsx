@@ -17,7 +17,6 @@ import { SSA } from 'Utils/ApiResources'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import AvailableCustomAttributesPanel from './AvailableCustomAttributesPanel'
@@ -426,7 +425,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
           setPendingPayload(null)
         }}
         modal={modal}
-        feature={adminUiFeatures.ssa_write}
         onAccept={submitForm}
         formik={formik}
       />

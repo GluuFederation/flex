@@ -558,7 +558,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
 
         {!readOnly && (
           <GluuCommitDialog
-            feature={adminUiFeatures.smtp_configuration_write}
+            feature={adminUiFeatures.smtp_configuration_edit}
             handler={toggle}
             modal={modal}
             onAccept={submitForm}

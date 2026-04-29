@@ -98,7 +98,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
         onAccept={submitForm}
         formik={formik}
         operations={commitOperations}
-        webhookFeature={adminUiFeatures.scim_configuration_write}
+        webhookFeature={adminUiFeatures.scim_configuration_edit}
       />
     </Form>
   )

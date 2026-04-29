@@ -138,7 +138,7 @@ const UserEditPage = () => {
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
-        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_write)
+        triggerUserWebhook(data as CustomUser, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)
       },

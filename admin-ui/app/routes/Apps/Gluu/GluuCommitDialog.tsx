@@ -74,6 +74,10 @@ const GluuCommitDialog = ({
   useEffect(() => {
     if (modal) {
       setUserMessage('')
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = ''
+      }
     }
   }, [modal])
 

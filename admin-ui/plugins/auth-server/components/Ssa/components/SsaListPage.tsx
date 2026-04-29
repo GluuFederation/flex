@@ -22,7 +22,6 @@ import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import { BORDER_RADIUS } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuBadge } from '@/components/GluuBadge'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { JsonViewerDialog } from '../../JsonViewer'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
@@ -483,7 +482,6 @@ const SsaListPage: React.FC = () => {
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
-          feature={adminUiFeatures.ssa_delete}
           label={
             modal && deleteData
               ? `${t('messages.action_deletion_for')} ${t('messages.ssa_entity')} (${[deleteData.ssa.software_id, deleteData.ssa.org_id].filter(Boolean).join(' - ')})`

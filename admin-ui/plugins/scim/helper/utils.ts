@@ -173,7 +173,7 @@ export const buildScimChangedFieldOperations = (
 
 export const triggerScimWebhook = (
   data: AppConfiguration3,
-  feature: string = adminUiFeatures.scim_configuration_write,
+  feature: string = adminUiFeatures.scim_configuration_edit,
 ): void => {
   triggerWebhookForFeature(data as Record<string, JsonValue>, feature)
 }

@@ -260,39 +260,41 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             </div>
 
             {enabledFeatureWebhooks?.length ? (
-              <Table
-                className={webhookClasses.tableWrapper}
-                aria-label="webhook table"
-                sx={{
-                  '& .MuiTableCell-root': {
-                    color: themeColors.fontColor,
-                    borderColor: themeColors.borderColor,
-                  },
-                  '& .MuiTableHead-root .MuiTableCell-root': {
-                    fontWeight: 600,
-                    fontSize: 16,
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left" sx={{ width: '50%' }}>
-                      {t('fields.webhook_name')}
-                    </TableCell>
-                    <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {enabledFeatureWebhooks.map((item) => (
-                    <TableRow key={item.inum}>
-                      <TableCell component="th" scope="row">
-                        {item.displayName}
+              <div className={webhookClasses.tableScrollContainer}>
+                <Table
+                  className={webhookClasses.tableWrapper}
+                  aria-label="webhook table"
+                  sx={{
+                    '& .MuiTableCell-root': {
+                      color: themeColors.fontColor,
+                      borderColor: themeColors.borderColor,
+                    },
+                    '& .MuiTableHead-root .MuiTableCell-root': {
+                      fontWeight: 600,
+                      fontSize: 16,
+                    },
+                  }}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left" sx={{ width: '50%' }}>
+                        {t('fields.webhook_name')}
                       </TableCell>
-                      <TableCell align="left">{item.inum}</TableCell>
+                      <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {enabledFeatureWebhooks.map((item) => (
+                      <TableRow key={item.inum}>
+                        <TableCell component="th" scope="row">
+                          {item.displayName}
+                        </TableCell>
+                        <TableCell align="left">{item.inum}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             ) : null}
             <div className={webhookClasses.buttonRow}>
               <GluuButton

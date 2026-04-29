@@ -122,12 +122,6 @@ export function* triggerWebhookSaga({
     })
     yield put(setFeatureToTrigger(''))
 
-    yield put(setShowErrorModal(false))
-    yield put(setWebhookModal(false))
-    yield put(setTriggerWebhookResponse(''))
-    yield put(setWebhookTriggerErrors([]))
-    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
-
     const failedItems = (responseItems ?? []).filter(
       (item: WebhookTriggerResponseItem) => !item.success,
     )
@@ -142,9 +136,7 @@ export function* triggerWebhookSaga({
     yield call(postUserAction, audit as UserActionPayload)
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
-    yield put(updateToast(true, 'error', errMsg))
-    yield put(setWebhookModal(true))
-    yield put(setTriggerWebhookResponse(errMsg))
+    devLogger.warn('[Webhook] trigger request failed:', errMsg)
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger || 'trigger'}`, {
       action: { action_data: { error: errMsg, success: false } },
     })
@@ -153,6 +145,12 @@ export function* triggerWebhookSaga({
       yield* redirectToLogout()
       return
     }
+  } finally {
+    yield put(setShowErrorModal(false))
+    yield put(setWebhookModal(false))
+    yield put(setTriggerWebhookResponse(''))
+    yield put(setWebhookTriggerErrors([]))
+    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
   }
 }
 

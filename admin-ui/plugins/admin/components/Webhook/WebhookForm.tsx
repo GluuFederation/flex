@@ -36,6 +36,7 @@ import {
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 import ShortcodePopover from './ShortcodePopover'
 import { useStyles as useFormPageStyles } from './styles/WebhookFormPage.style'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types'
 import type {
   WebhookFormValues,
   CursorPosition,
@@ -106,6 +107,7 @@ const WebhookForm: React.FC = () => {
     httpRequestBody: 0,
   })
   const [showCommitDialog, setShowCommitDialog] = useState(false)
+  const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
   const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>(initialSelectedFeatures)
   const [baselineSelectedFeatures, setBaselineSelectedFeatures] =
     useState<AuiFeature[]>(initialSelectedFeatures)
@@ -119,6 +121,22 @@ const WebhookForm: React.FC = () => {
     onSubmit: (values, formikHelpers) => {
       const isInvalid = validatePayload(values, formikHelpers.setFieldError)
       if (isInvalid) return
+      if (id) {
+        const ops: GluuCommitDialogOperation[] = (
+          Object.keys(values) as (keyof WebhookFormValues)[]
+        )
+          .filter((key) => !isEqual(initialFormValues[key], values[key]))
+          .map((key) => {
+            const val = values[key]
+            return {
+              path: key,
+              value: Array.isArray(val) ? JSON.stringify(val) : String(val ?? ''),
+            }
+          })
+        setCommitOperations(ops)
+      } else {
+        setCommitOperations([])
+      }
       openCommitDialog()
     },
   })
@@ -637,6 +655,7 @@ const WebhookForm: React.FC = () => {
           handler={closeCommitDialog}
           modal={showCommitDialog}
           onAccept={submitForm}
+          operations={commitOperations}
         />
       </>
     </GluuLoader>

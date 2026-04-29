@@ -17,6 +17,8 @@ import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -86,9 +88,19 @@ const JansLock: React.FC = () => {
 
   const handleUpdate = useCallback(
     (patchOperations: PatchOperation[]) => {
-      patchMutation.mutate({ data: patchOperations })
+      patchMutation.mutate(
+        { data: patchOperations },
+        {
+          onSuccess: () => {
+            triggerWebhookForFeature(
+              (lockConfiguration as Record<string, JsonValue>) ?? {},
+              adminUiFeatures.jans_link_write,
+            )
+          },
+        },
+      )
     },
-    [patchMutation],
+    [patchMutation, lockConfiguration],
   )
 
   return (
