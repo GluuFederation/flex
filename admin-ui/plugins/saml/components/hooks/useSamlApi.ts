@@ -368,7 +368,7 @@ export const useDeleteIdentityProvider = () => {
         await baseMutation.mutateAsync({ inum })
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
-        triggerWebhookForFeature({ inum }, adminUiFeatures.saml_idp_delete)
+        triggerWebhookForFeature({ inum }, adminUiFeatures.saml_delete)
         logAudit(userMessage, inum)
       } catch (error) {
         const errorMessage =
@@ -536,7 +536,7 @@ export const useDeleteTrustRelationshipMutation = () => {
         await baseMutation.mutateAsync({ id })
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
-        triggerWebhookForFeature({ id }, adminUiFeatures.saml_idp_delete)
+        triggerWebhookForFeature({ id }, adminUiFeatures.saml_delete)
         logAudit(userMessage, id)
       } catch (error) {
         const errorMessage =

@@ -133,6 +133,16 @@ const WebhookForm: React.FC = () => {
               value: Array.isArray(val) ? JSON.stringify(val) : String(val ?? ''),
             }
           })
+        if (!isEqual(selectedFeatures, baselineSelectedFeatures)) {
+          ops.push({
+            path: 'auiFeatureIds',
+            value: JSON.stringify(
+              selectedFeatures
+                .map((f) => f.auiFeatureId)
+                .filter((fid): fid is string => Boolean(fid)),
+            ),
+          })
+        }
         setCommitOperations(ops)
       } else {
         setCommitOperations([])

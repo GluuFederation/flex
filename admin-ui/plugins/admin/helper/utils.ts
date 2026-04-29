@@ -98,7 +98,7 @@ export const adminUiFeatures = {
   jans_link_write: 'jans_link_write',
   saml_configuration_write: 'saml_configuration_write',
   saml_idp_write: 'saml_idp_write',
-  saml_idp_delete: 'saml_idp_delete',
+  saml_delete: 'saml_idp_delete',
   jans_keycloak_link_write: 'jans_keycloak_link_write',
   attributes_write: 'attributes_write',
   attributes_delete: 'attributes_delete',

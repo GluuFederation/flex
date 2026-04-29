@@ -221,7 +221,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           modal={modal}
           subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
-          feature={adminUiFeatures.saml_idp_delete}
+          feature={adminUiFeatures.saml_delete}
         />
       )}
     </GluuLoader>
