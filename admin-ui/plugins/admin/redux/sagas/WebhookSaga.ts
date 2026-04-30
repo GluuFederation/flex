@@ -19,8 +19,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroThreeError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/backend-api'
-import { devLogger } from '@/utils/devLogger'
-import { UNKNOWN_STATUS } from '@/constants'
 import { initAudit, redirectToLogout } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 import {
@@ -66,6 +64,7 @@ export function* triggerWebhookSaga({
 }: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<void> {
   const audit = yield* initAudit()
   let featureToTrigger = ''
+  let hadFailures = false
   try {
     featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
     let featureWebhooks: WebhookEntry[] = yield select(
@@ -105,7 +104,10 @@ export function* triggerWebhookSaga({
       url: `/admin-ui/webhook/trigger/${encodeURIComponent(featureToTrigger)}`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      data: { shortCodeRequest: outputObject },
+      data: outputObject.map(({ webhookId, shortcodeValueMap }) => ({
+        webhookId,
+        shortcodeValueMap,
+      })),
     })) as WebhookTriggerResponseItem[]
 
     const enrichedResults = (responseItems ?? [])
@@ -123,18 +125,23 @@ export function* triggerWebhookSaga({
     yield put(setFeatureToTrigger(''))
 
     const failedItems = (responseItems ?? []).filter(
-      (item: WebhookTriggerResponseItem) => !item.success,
+      (item: WebhookTriggerResponseItem) => item.success === false,
     )
-    if (failedItems.length) {
-      const summary = failedItems.map((item: WebhookTriggerResponseItem) => ({
-        name: item.responseObject?.webhookName ?? UNKNOWN_STATUS,
-        id: item.responseObject?.inum ?? UNKNOWN_STATUS,
-        message: item.responseMessage ?? 'No message',
-      }))
-      devLogger.warn(`[Webhook] ${failedItems.length} webhook(s) failed:`, summary)
-    }
     yield call(postUserAction, audit as UserActionPayload)
-    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
+    if (failedItems.length) {
+      hadFailures = true
+      const firstReason = failedItems[0]?.responseMessage ?? ''
+      const failMsg = firstReason
+        ? `${i18n.t('messages.webhooks_triggered_with_failures')} ${firstReason}`
+        : i18n.t('messages.webhook_trigger_failed')
+      yield put(updateToast(true, 'error', failMsg))
+      yield put(setWebhookTriggerErrors(failedItems))
+      yield put(setShowErrorModal(true))
+    } else {
+      yield put(
+        updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')),
+      )
+    }
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger || 'trigger'}`, {
@@ -145,12 +152,13 @@ export function* triggerWebhookSaga({
       yield* redirectToLogout()
       return
     }
-    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
   } finally {
-    yield put(setShowErrorModal(false))
     yield put(setWebhookModal(false))
     yield put(setTriggerWebhookResponse(''))
-    yield put(setWebhookTriggerErrors([]))
+    if (!hadFailures) {
+      yield put(setShowErrorModal(false))
+      yield put(setWebhookTriggerErrors([]))
+    }
   }
 }
 

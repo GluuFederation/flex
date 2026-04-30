@@ -1,19 +1,23 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   setShowErrorModal,
   setWebhookTriggerErrors,
   setTriggerWebhookResponse,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import { Box } from '@mui/material'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import { useCedarling } from '@/cedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
+import { useStyles } from './styles/GluuWebhookErrorDialog.style'
+import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
+import GluuText from './GluuText'
+import { GluuButton } from '@/components'
 import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
 const GluuWebhookErrorDialog = () => {
@@ -22,7 +26,10 @@ const GluuWebhookErrorDialog = () => {
   const webhookState = useAppSelector((state) => state.webhookReducer)
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const { state: themeState } = useTheme()
-  const selectedTheme = themeState.theme
+  const isDark = themeState.theme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
@@ -37,94 +44,120 @@ const GluuWebhookErrorDialog = () => {
     }
   }, [authorizeHelper, webhookScopes])
 
-  const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
-    webhookState ?? {}
+  const { triggerWebhookMessage, webhookTriggerErrors, showErrorModal } = webhookState ?? {}
 
-  if (!webhookState) return null
-
-  const closeModal = () => {
-    dispatch(setShowErrorModal(!showErrorModal))
+  const closeModal = useCallback(() => {
+    dispatch(setShowErrorModal(false))
     dispatch(setWebhookTriggerErrors([]))
-    dispatch(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
-  }
+    dispatch(setTriggerWebhookResponse(''))
+  }, [dispatch])
 
-  return (
-    <Modal
-      isOpen={showErrorModal && canReadWebhooks}
-      size={'lg'}
-      toggle={closeModal}
-      className="modal-outline-primary"
-    >
-      <ModalHeader toggle={closeModal}>
-        <i
+  const handleOverlayKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+    },
+    [closeModal],
+  )
+
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+      e.stopPropagation()
+    },
+    [closeModal],
+  )
+
+  if (!webhookState || !showErrorModal || !canReadWebhooks) return null
+
+  const modalContent = (
+    <>
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={closeModal}
+        onKeyDown={handleOverlayKeyDown}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={commitClasses.modalContainer}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby="webhook-error-dialog-title"
+      >
+        <button
+          type="button"
           onClick={closeModal}
-          onKeyDown={() => {}}
-          style={{ color: customColors.logo }}
-          className="fa fa-2x fa-info fa-fw modal-icon mb-3"
-          role="img"
-          aria-hidden="true"
-        ></i>{' '}
-        {t('messages.webhook_execution_information')}{' '}
-      </ModalHeader>
-      <ModalBody>
-        <Box px={2} flexDirection="column">
+          className={commitClasses.closeButton}
+          aria-label={t('actions.close')}
+          title={t('actions.close')}
+        >
+          <i className="fa fa-times" aria-hidden />
+        </button>
+        <div className={commitClasses.contentArea}>
+          <GluuText variant="h2" className={commitClasses.title} id="webhook-error-dialog-title">
+            <i
+              style={{ color: customColors.logo }}
+              className="fa fa-info fa-fw me-2"
+              aria-hidden="true"
+            />
+            {t('messages.webhook_execution_information')}
+          </GluuText>
           {triggerWebhookMessage ? (
-            <Box component="div" my={2} style={{ color: customColors.accentRed }}>
+            <GluuText variant="p" disableThemeColor className={classes.errorMessage}>
               {triggerWebhookMessage}
-            </Box>
+            </GluuText>
           ) : null}
-          {(webhookTriggerErrors?.length ?? 0) > 0 ? (
-            <ul>
+          {(webhookTriggerErrors?.length ?? 0) > 0 && (
+            <ul className={classes.errorList}>
               {(webhookTriggerErrors ?? []).map((item: WebhookTriggerResponseItem, index) => (
                 <li
                   key={`${item.responseObject?.webhookId ?? ''}-${item.responseObject?.webhookName ?? ''}-${index}`}
-                  style={{
-                    color: customColors.accentRed,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'relative',
-                  }}
+                  className={classes.errorItem}
                 >
-                  <Box
-                    width={'10px'}
-                    height={'10px'}
-                    sx={{
-                      background: customColors.accentRed,
-                      borderRadius: '100%',
-                      position: 'absolute',
-                      left: '-20px',
-                      top: 0,
-                      mt: '6px',
-                    }}
-                  />
                   <span>
-                    {t('fields.webhook_id')}: {item.responseObject?.webhookId}
+                    <span className={classes.errorLabel}>{t('fields.webhook_id')}:</span>{' '}
+                    <span className={classes.errorValue}>{item.responseObject?.webhookId}</span>
                   </span>
                   <span>
-                    {t('fields.webhook_name')}: {item.responseObject?.webhookName}
+                    <span className={classes.errorLabel}>{t('fields.webhook_name')}:</span>{' '}
+                    <span className={classes.errorValue}>{item.responseObject?.webhookName}</span>
                   </span>
                   <span>
-                    {t('messages.error_message')}: {item.responseMessage}
+                    <span className={classes.errorLabel}>{t('messages.error_message')}:</span>{' '}
+                    <span className={classes.errorValue}>{item.responseMessage}</span>
                   </span>
                 </li>
               ))}
             </ul>
-          ) : null}
-        </Box>
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          disabled={triggerWebhookInProgress}
-          color={`primary-${selectedTheme}`}
-          onClick={closeModal}
-          style={applicationStyle.buttonStyle}
-        >
-          <i className="fa fa-check-circle me-2"></i>
-          {t('actions.ok')}
-        </Button>
-      </ModalFooter>
-    </Modal>
+          )}
+          <div className={classes.buttonRow}>
+            <GluuButton
+              onClick={closeModal}
+              backgroundColor={themeColors.formFooter.back.backgroundColor}
+              textColor={themeColors.formFooter.back.textColor}
+              borderColor="transparent"
+              padding="8px 28px"
+              minHeight="40"
+              useOpacityOnHover
+            >
+              <i className="fa fa-check-circle me-2" aria-hidden />
+              {t('actions.ok')}
+            </GluuButton>
+          </div>
+        </div>
+      </div>
+    </>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default GluuWebhookErrorDialog

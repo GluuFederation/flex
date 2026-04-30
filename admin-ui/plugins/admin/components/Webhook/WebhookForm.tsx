@@ -24,7 +24,6 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { devLogger } from '@/utils/devLogger'
 import { WEBHOOK } from 'Utils/ApiResources'
-import { isValid } from './WebhookURLChecker'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
 import { WEBHOOK_FIELDS, type ShortcodeFieldName } from './constants'
 import {
@@ -106,8 +105,6 @@ const WebhookForm: React.FC = () => {
     [selectedWebhook],
   )
 
-  const typedShortCodes = useMemo(() => shortCodes as ShortCodesConfig, [])
-
   const [cursorPosition, setCursorPosition] = useState<CursorPosition>({
     url: 0,
     httpRequestBody: 0,
@@ -117,6 +114,7 @@ const WebhookForm: React.FC = () => {
   const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>(initialSelectedFeatures)
   const [baselineSelectedFeatures, setBaselineSelectedFeatures] =
     useState<AuiFeature[]>(initialSelectedFeatures)
+  const [featureError, setFeatureError] = useState<string>('')
 
   const validationSchema = useMemo(() => getWebhookValidationSchema(t), [t, i18n.language])
 
@@ -125,6 +123,10 @@ const WebhookForm: React.FC = () => {
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, formikHelpers) => {
+      if (!selectedFeatures.length) {
+        setFeatureError(t('messages.aui_feature_ids_error'))
+        return
+      }
       const isInvalid = validatePayload(values, formikHelpers.setFieldError)
       if (isInvalid) return
       if (id) {
@@ -183,9 +185,9 @@ const WebhookForm: React.FC = () => {
   const featureShortcodes = useMemo(
     () =>
       selectedFeatures?.[0]?.auiFeatureId
-        ? (typedShortCodes?.[selectedFeatures[0].auiFeatureId]?.fields ?? [])
+        ? ((shortCodes as ShortCodesConfig)?.[selectedFeatures[0].auiFeatureId]?.fields ?? [])
         : [],
-    [selectedFeatures, typedShortCodes],
+    [selectedFeatures],
   )
 
   const isFeatureSelectionChanged = useMemo(
@@ -217,14 +219,6 @@ const WebhookForm: React.FC = () => {
     () => isLastHeaderComplete(formikValues.httpHeaders || []),
     [formikValues.httpHeaders],
   )
-  const formDescription = useMemo(
-    () =>
-      t('messages.webhook_form_description', {
-        defaultValue: 'Configure webhook to receive notifications when specific events occur.',
-      }),
-    [t],
-  )
-
   const openCommitDialog = useCallback(() => setShowCommitDialog(true), [])
   const closeCommitDialog = useCallback(() => setShowCommitDialog(false), [])
 
@@ -239,10 +233,6 @@ const WebhookForm: React.FC = () => {
           setError(WEBHOOK_FIELDS.HTTP_REQUEST_BODY, t('messages.invalid_json_error'))
         }
       }
-      if (values.url && !isValid(values.url)) {
-        hasError = true
-        setError(WEBHOOK_FIELDS.URL, t('messages.invalid_url_error'))
-      }
       return hasError
     },
     [t],
@@ -255,6 +245,7 @@ const WebhookForm: React.FC = () => {
         (f: AuiFeature) => (f.auiFeatureId ?? '') === featureId,
       )
       setSelectedFeatures(feature ? [feature] : [])
+      if (featureId) setFeatureError('')
     },
     [features],
   )
@@ -323,13 +314,19 @@ const WebhookForm: React.FC = () => {
 
   const handleHttpMethodChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-      formik.handleChange(e)
-      const value = (e.target as HTMLSelectElement).value
-      if (hasHttpBody(value) && (formikValues.httpHeaders ?? []).length === 0) {
-        setFieldValue(WEBHOOK_FIELDS.HTTP_HEADERS, [{ key: '', value: '' }])
-      }
+      const method = (e.target as HTMLSelectElement).value
+      const currentHeaders = formikValues.httpHeaders ?? []
+      formik.setValues({
+        ...formikValues,
+        httpMethod: method,
+        httpHeaders: hasHttpBody(method)
+          ? currentHeaders.length === 0
+            ? [{ key: '', value: '' }]
+            : currentHeaders
+          : [],
+      })
     },
-    [formik.handleChange, formikValues.httpHeaders, setFieldValue],
+    [formik.setValues, formikValues],
   )
 
   const changeHeader = useCallback(
@@ -420,7 +417,10 @@ const WebhookForm: React.FC = () => {
         <div className={classes.alertBox}>
           <InfoOutlinedIcon className={classes.alertIcon} />
           <GluuText variant="p" className={classes.alertText} disableThemeColor>
-            {formDescription}
+            {t('messages.webhook_form_description', {
+              defaultValue:
+                'Configure webhook to receive notifications when specific events occur.',
+            })}
           </GluuText>
         </div>
         <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
@@ -437,7 +437,12 @@ const WebhookForm: React.FC = () => {
                 doc_category={WEBHOOK}
                 doc_entry="webhook_name"
                 errorMessage={formik.errors.displayName}
-                showError={!!(formik.errors.displayName && formik.touched.displayName)}
+                showError={
+                  !!(
+                    formik.errors.displayName &&
+                    (formik.touched.displayName || formik.submitCount > 0)
+                  )
+                }
                 isDark={isDark}
                 placeholder={getFieldPlaceholder(t, 'fields.webhook_name')}
               />
@@ -451,10 +456,13 @@ const WebhookForm: React.FC = () => {
                 values={adminUiFeatureOptions}
                 lsize={12}
                 rsize={12}
+                required
                 doc_category={WEBHOOK}
                 doc_entry="aui_feature_ids"
                 isDark={isDark}
                 disabled={featuresLoading}
+                showError={!!featureError}
+                errorMessage={featureError}
               />
             </div>
             <div className={`${classes.fieldItem} ${classes.urlFieldItem}`}>
@@ -482,7 +490,12 @@ const WebhookForm: React.FC = () => {
                   }, 0)
                 }}
                 errorMessage={formik.errors.url}
-                showError={!!(formik.errors.url && formik.touched.url)}
+                showError={
+                  !!(
+                    formik.errors.url &&
+                    (formik.touched.url || !!formikValues.url || formik.submitCount > 0)
+                  )
+                }
                 shortcode={
                   <ShortcodePopover
                     codes={featureShortcodes}
@@ -509,7 +522,12 @@ const WebhookForm: React.FC = () => {
                 doc_category={WEBHOOK}
                 doc_entry="http_method"
                 errorMessage={formik.errors.httpMethod}
-                showError={!!(formik.errors.httpMethod && formik.touched.httpMethod)}
+                showError={
+                  !!(
+                    formik.errors.httpMethod &&
+                    (formik.touched.httpMethod || formik.submitCount > 0)
+                  )
+                }
                 isDark={isDark}
               />
             </div>
@@ -637,7 +655,12 @@ const WebhookForm: React.FC = () => {
                     formik={formik}
                     value={formikValues?.httpRequestBody}
                     errorMessage={formik.errors.httpRequestBody}
-                    showError={!!(formik.errors.httpRequestBody && formik.touched.httpRequestBody)}
+                    showError={
+                      !!(
+                        formik.errors.httpRequestBody &&
+                        (formik.touched.httpRequestBody || formik.submitCount > 0)
+                      )
+                    }
                     placeholder=""
                     isDark={isDark}
                     shortcode={

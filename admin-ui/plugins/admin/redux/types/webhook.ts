@@ -1,17 +1,20 @@
 import type { WebhookEntry } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export interface WebhookTriggerResponseItem {
+export type WebhookTriggerResponseItem = {
   success: boolean
+  responseCode?: number
   responseMessage?: string
   responseObject?: {
     inum?: string
     webhookId?: string
     webhookName?: string
+    webhookMethod?: string
+    webhookRequestBody?: string
   }
 }
 
-export interface WebhookSliceTriggerPayload {
+export type WebhookSliceTriggerPayload = {
   feature: string | null
   payload: JsonValue
 }
@@ -24,19 +27,19 @@ export type TriggerPayloadValue =
   | Record<string, string | number | boolean | null>
   | Array<string | number | boolean | null>
 
-export interface TriggerPayloadActionPayload {
+export type TriggerPayloadActionPayload = {
   feature?: string | null
   payload?: TriggerPayloadValue
 }
 
-export interface TriggerWebhookActionPayload {
+export type TriggerWebhookActionPayload = {
   createdFeatureValue?: Record<string, JsonValue>
   feature?: string
 }
 
 export type TriggerWebhookReducerPayload = TriggerPayloadActionPayload | TriggerWebhookActionPayload
 
-export interface WebhookSliceState {
+export type WebhookSliceState = {
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
