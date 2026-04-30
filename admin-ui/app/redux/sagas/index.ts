@@ -2,6 +2,7 @@
  * Root Sagas
  */
 import { all } from 'redux-saga/effects'
+import type { SagaIterator } from 'redux-saga'
 
 // sagas
 import healthSaga from './HealthSaga'
@@ -28,6 +29,6 @@ export default function* rootSaga() {
     sessionSaga(),
     appInitSaga(),
 
-    ...(pluginSagaArr as unknown[]),
-  ] as unknown[])
+    ...pluginSagaArr.map((saga) => saga()),
+  ] as SagaIterator[])
 }

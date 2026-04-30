@@ -13,8 +13,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { createDate, subtractDate } from '@/utils/dayjsUtils'
-import type { Dayjs } from 'dayjs'
+import dayjs, { type Dayjs } from 'dayjs'
 import { useMetricsStyles } from './MetricsPage.style'
 import {
   PasskeyAuthChart,
@@ -22,6 +21,8 @@ import {
   OnboardingTimeChart,
   AggregationTab,
 } from './components'
+import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
+import type { MetricsDateRange } from './types'
 
 const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.MAU
 const METRICS_SCOPES = CEDAR_RESOURCE_SCOPES[METRICS_RESOURCE_ID]
@@ -35,8 +36,18 @@ const MetricsPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
-  const [startDate, setStartDate] = useState<Dayjs>(() => subtractDate(createDate(), 4, 'months'))
-  const [endDate, setEndDate] = useState<Dayjs>(() => createDate())
+  const [startDate, setStartDate] = useState<Dayjs | null>(() =>
+    dayjs().startOf('month').startOf('day').millisecond(0),
+  )
+  const [endDate, setEndDate] = useState<Dayjs | null>(() =>
+    dayjs().hour(23).minute(59).second(0).millisecond(0),
+  )
+  const [appliedRange, setAppliedRange] = useState<MetricsDateRange | null>(() => ({
+    startDate: dayjs().startOf('month').startOf('day').millisecond(0),
+    endDate: dayjs().hour(23).minute(59).second(0).millisecond(0),
+  }))
+
+  const isApplyEnabled = !!(startDate && endDate)
 
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const canView = useMemo(
@@ -44,21 +55,41 @@ const MetricsPage: React.FC = () => {
     [hasCedarReadPermission],
   )
 
+  const { isLoading: adoptionLoading, isFetching: adoptionFetching } = useAdoptionMetrics(
+    appliedRange,
+    { enabled: canView },
+  )
+  const { isLoading: errorsLoading, isFetching: errorsFetching } = useErrorsAnalytics(
+    appliedRange,
+    { enabled: canView },
+  )
+  const { isLoading: performanceLoading, isFetching: performanceFetching } =
+    usePerformanceAnalytics(appliedRange, { enabled: canView })
+
+  const isMetricsLoading =
+    adoptionLoading ||
+    errorsLoading ||
+    performanceLoading ||
+    adoptionFetching ||
+    errorsFetching ||
+    performanceFetching
+
   useEffect(() => {
     authorizeHelper(METRICS_SCOPES)
   }, [authorizeHelper])
 
   const handleStartDateChange = useCallback((date: Dayjs | null) => {
-    if (date) setStartDate(date)
+    setStartDate(date ? date.millisecond(0) : null)
   }, [])
 
   const handleEndDateChange = useCallback((date: Dayjs | null) => {
-    if (date) setEndDate(date)
+    setEndDate(date ? date.millisecond(0) : null)
   }, [])
 
   const handleApply = useCallback(() => {
-    // Trigger data fetch with new date range when API is available
-  }, [])
+    if (!startDate || !endDate) return
+    setAppliedRange({ startDate, endDate })
+  }, [startDate, endDate])
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
@@ -79,27 +110,34 @@ const MetricsPage: React.FC = () => {
               mode="range"
               layout="row"
               labelAsTitle
+              showTime
               inputHeight={52}
               startDate={startDate}
               endDate={endDate}
               onStartDateChange={handleStartDateChange}
               onEndDateChange={handleEndDateChange}
+              startDateLabel={t('dashboard.start_date_time')}
+              endDateLabel={t('dashboard.end_date_time')}
               textColor={themeColors.fontColor}
               backgroundColor={cardBg}
             />
           </div>
-          <GluuButton
-            type="button"
-            size="md"
-            minHeight={52}
-            backgroundColor={applyButtonColors.backgroundColor}
-            textColor={applyButtonColors.textColor}
-            borderColor={applyButtonColors.backgroundColor}
-            useOpacityOnHover
-            onClick={handleApply}
-          >
-            {t('actions.apply')}
-          </GluuButton>
+          <div style={{ minWidth: 120 }}>
+            <GluuButton
+              type="button"
+              size="md"
+              minHeight={52}
+              block
+              backgroundColor={applyButtonColors.backgroundColor}
+              textColor={applyButtonColors.textColor}
+              borderColor={applyButtonColors.backgroundColor}
+              useOpacityOnHover
+              disabled={!isApplyEnabled}
+              onClick={handleApply}
+            >
+              {t('actions.apply')}
+            </GluuButton>
+          </div>
         </div>
       </div>
     </div>
@@ -119,15 +157,15 @@ const MetricsPage: React.FC = () => {
               {filterBar}
               <Row className="mb-4">
                 <Col xs={12} lg={6} className="mb-4 mb-lg-0">
-                  <PasskeyAuthChart />
+                  <PasskeyAuthChart dateRange={appliedRange} />
                 </Col>
                 <Col xs={12} lg={6}>
-                  <PasskeyAdoptionChart />
+                  <PasskeyAdoptionChart dateRange={appliedRange} />
                 </Col>
               </Row>
               <Row>
                 <Col xs={12}>
-                  <OnboardingTimeChart />
+                  <OnboardingTimeChart dateRange={appliedRange} />
                 </Col>
               </Row>
             </>
@@ -138,11 +176,11 @@ const MetricsPage: React.FC = () => {
           return null
       }
     },
-    [t, filterBar],
+    [t, filterBar, appliedRange],
   )
 
   return (
-    <GluuLoader blocking={false}>
+    <GluuLoader blocking={isMetricsLoading}>
       <GluuViewWrapper canShow={canView}>
         <GluuPageContent withVerticalPadding={false}>
           <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />

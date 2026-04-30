@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   LabelList,
 } from 'recharts'
@@ -21,8 +20,19 @@ import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { usePerformanceAnalytics } from '../hooks'
+import type { MetricsDateRange } from '../types'
 
-const OnboardingTimeChart: React.FC = () => {
+interface OnboardingTimeChartProps {
+  dateRange: MetricsDateRange | null
+}
+
+const toNumber = (value: number | string | boolean | null | undefined): number => {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  return 0
+}
+
+const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
@@ -30,13 +40,50 @@ const OnboardingTimeChart: React.FC = () => {
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-  const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
-  const axisColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
+  const gridColor = themeColors.chart.gridColor
+  const axisColor = themeColors.chart.axisColor
 
-  const chartData = MOCK_METRICS_DATA.onboardingTime.map((entry) => ({
-    ...entry,
-    category: t(entry.category),
-  }))
+  const { data: performanceData } = usePerformanceAnalytics(dateRange)
+
+  const apiValues = performanceData
+    ? [
+        performanceData.authenticationMinDuration,
+        performanceData.authenticationAvgDuration,
+        performanceData.authenticationMaxDuration,
+        performanceData.registrationMinDuration,
+        performanceData.registrationAvgDuration,
+        performanceData.registrationMaxDuration,
+      ]
+    : []
+  const hasApiData = apiValues.some((v) => typeof v === 'number' && v > 0)
+
+  const chartData = hasApiData
+    ? [
+        {
+          category: t('fields.authentication'),
+          minDuration: toNumber(performanceData?.authenticationMinDuration),
+          avgDuration: toNumber(performanceData?.authenticationAvgDuration),
+          maxDuration: toNumber(performanceData?.authenticationMaxDuration),
+        },
+        {
+          category: t('fields.registration'),
+          minDuration: toNumber(performanceData?.registrationMinDuration),
+          avgDuration: toNumber(performanceData?.registrationAvgDuration),
+          maxDuration: toNumber(performanceData?.registrationMaxDuration),
+        },
+      ]
+    : MOCK_METRICS_DATA.onboardingTime.map((entry) => ({
+        category: t(entry.category),
+        minDuration: entry.minDuration,
+        avgDuration: entry.avgDuration,
+        maxDuration: entry.maxDuration,
+      }))
+
+  const legendItems = [
+    { color: METRICS_CHART_COLORS.minDuration, label: t('fields.min_duration') },
+    { color: METRICS_CHART_COLORS.avgDuration, label: t('fields.avg_duration') },
+    { color: METRICS_CHART_COLORS.maxDuration, label: t('fields.max_duration') },
+  ]
 
   return (
     <Card className={classes.chartCard}>
@@ -51,82 +98,112 @@ const OnboardingTimeChart: React.FC = () => {
         >
           {t('titles.auth_vs_registration_performance')}
         </GluuText>
-        <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={chartData} barSize={40} barGap={4} barCategoryGap="30%">
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-            <XAxis
-              dataKey="category"
-              tick={{ fill: axisColor, fontSize: 13 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              label={{
-                value: t('fields.duration_msec'),
-                angle: -90,
-                position: 'insideLeft',
-                fill: axisColor,
-                fontSize: 12,
-                dy: 60,
-              }}
-              tick={{ fill: axisColor, fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              cursor={false}
-              content={(props: TooltipProps<number, string>) => (
-                <TooltipDesign
-                  payload={props.payload as TooltipPayloadItem[] | undefined}
-                  active={props.active}
-                  backgroundColor={cardBg}
-                  textColor={themeColors.fontColor}
-                  isDark={isDark}
+        <div style={{ position: 'relative', width: '100%', height: 320 }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: 12,
+              left: 80,
+              zIndex: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              padding: '10px 14px',
+              border: `1px solid ${themeColors.borderColor}`,
+              borderRadius: 6,
+              backgroundColor: cardBg,
+            }}
+          >
+            {legendItems.map((item) => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span
+                  style={{
+                    width: 14,
+                    height: 4,
+                    backgroundColor: item.color,
+                    borderRadius: 2,
+                    display: 'inline-block',
+                  }}
                 />
-              )}
-            />
-            <Legend
-              wrapperStyle={{ color: themeColors.fontColor, fontSize: 13 }}
-              formatter={(value) => <span style={{ color: themeColors.fontColor }}>{value}</span>}
-            />
-            <Bar
-              dataKey="minDuration"
-              name={t('fields.min_duration')}
-              fill={METRICS_CHART_COLORS.minDuration}
-              radius={[4, 4, 0, 0]}
-            >
-              <LabelList
+                <span style={{ color: item.color, fontSize: 13, fontWeight: 600 }}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} barSize={40} barGap={4} barCategoryGap="30%">
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+              <XAxis
+                dataKey="category"
+                tick={{ fill: axisColor, fontSize: 13 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                label={{
+                  value: t('fields.duration_msec'),
+                  angle: -90,
+                  position: 'insideLeft',
+                  fill: axisColor,
+                  fontSize: 12,
+                  dy: 60,
+                }}
+                tick={{ fill: axisColor, fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                cursor={false}
+                content={(props: TooltipProps<number, string>) => (
+                  <TooltipDesign
+                    payload={props.payload as TooltipPayloadItem[] | undefined}
+                    active={props.active}
+                    backgroundColor={cardBg}
+                    textColor={themeColors.fontColor}
+                    isDark={isDark}
+                  />
+                )}
+              />
+              <Bar
                 dataKey="minDuration"
-                position="top"
-                style={{ fill: axisColor, fontSize: 11 }}
-              />
-            </Bar>
-            <Bar
-              dataKey="avgDuration"
-              name={t('fields.avg_duration')}
-              fill={METRICS_CHART_COLORS.avgDuration}
-              radius={[4, 4, 0, 0]}
-            >
-              <LabelList
+                name={t('fields.min_duration')}
+                fill={METRICS_CHART_COLORS.minDuration}
+                radius={[4, 4, 0, 0]}
+              >
+                <LabelList
+                  dataKey="minDuration"
+                  position="top"
+                  style={{ fill: axisColor, fontSize: 11 }}
+                />
+              </Bar>
+              <Bar
                 dataKey="avgDuration"
-                position="top"
-                style={{ fill: axisColor, fontSize: 11 }}
-              />
-            </Bar>
-            <Bar
-              dataKey="maxDuration"
-              name={t('fields.max_duration')}
-              fill={METRICS_CHART_COLORS.maxDuration}
-              radius={[4, 4, 0, 0]}
-            >
-              <LabelList
+                name={t('fields.avg_duration')}
+                fill={METRICS_CHART_COLORS.avgDuration}
+                radius={[4, 4, 0, 0]}
+              >
+                <LabelList
+                  dataKey="avgDuration"
+                  position="top"
+                  style={{ fill: axisColor, fontSize: 11 }}
+                />
+              </Bar>
+              <Bar
                 dataKey="maxDuration"
-                position="top"
-                style={{ fill: axisColor, fontSize: 11 }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+                name={t('fields.max_duration')}
+                fill={METRICS_CHART_COLORS.maxDuration}
+                radius={[4, 4, 0, 0]}
+              >
+                <LabelList
+                  dataKey="maxDuration"
+                  position="top"
+                  style={{ fill: axisColor, fontSize: 11 }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardBody>
     </Card>
   )

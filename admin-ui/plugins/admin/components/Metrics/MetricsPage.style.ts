@@ -3,6 +3,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { METRICS_CHART_COLORS } from './constants'
 
 interface MetricsStylesParams {
   isDark: boolean
@@ -75,7 +76,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       fontFamily,
       fontWeight: fontWeights.semiBold,
       fontSize: fontSizes.xl,
-      color: '#8979ff',
+      color: METRICS_CHART_COLORS.adoptionRate,
       textAlign: 'center' as const,
     },
     adoptionChartWrapper: {

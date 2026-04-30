@@ -213,7 +213,7 @@ const pluginMetadata = {
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [webhookSaga(), assetSaga()],
+  sagas: [webhookSaga, assetSaga],
 }
 
 export default pluginMetadata

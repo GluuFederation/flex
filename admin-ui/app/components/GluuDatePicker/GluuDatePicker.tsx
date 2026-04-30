@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -20,14 +21,19 @@ import { useDatePickerStyles } from './GluuDatePicker.style'
 
 const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProps): boolean => {
   const startDateSame =
-    a.startDate && b.startDate ? isSameDate(a.startDate, b.startDate) : a.startDate === b.startDate
+    a.startDate && b.startDate
+      ? isSameDate(a.startDate, b.startDate, 'second')
+      : a.startDate === b.startDate
   const endDateSame =
-    a.endDate && b.endDate ? isSameDate(a.endDate, b.endDate) : a.endDate === b.endDate
+    a.endDate && b.endDate ? isSameDate(a.endDate, b.endDate, 'second') : a.endDate === b.endDate
   return (
     startDateSame &&
     endDateSame &&
     a.layout === b.layout &&
     a.labelAsTitle === b.labelAsTitle &&
+    a.showTime === b.showTime &&
+    a.startDateLabel === b.startDateLabel &&
+    a.endDateLabel === b.endDateLabel &&
     a.inputHeight === b.inputHeight &&
     a.textColor === b.textColor &&
     a.backgroundColor === b.backgroundColor &&
@@ -48,7 +54,11 @@ const GluuDatePicker = memo(
 
     const isRange = isGluuDatePickerRangeProps(props)
     const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
-    const displayFormat = props.dateFormat ?? props.format ?? DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const showTime = isRange ? (props.showTime ?? false) : false
+    const defaultFormat = showTime
+      ? DATE_FORMATS.DATETIME_PICKER_DISPLAY
+      : DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const displayFormat = props.dateFormat ?? props.format ?? defaultFormat
 
     const { classes, slotProps, datePickerSx } = useDatePickerStyles({
       themeColors: globalThemeColors,
@@ -124,13 +134,16 @@ const GluuDatePickerRange = memo(
     onEndDateAccept,
     layout = 'grid',
     labelAsTitle = false,
+    showTime = false,
+    startDateLabel: startDateLabelProp,
+    endDateLabel: endDateLabelProp,
     displayFormat,
     slotProps,
     datePickerSx,
     classes,
   }: GluuDatePickerRangeInternalProps) => {
     const { t } = useTranslation()
-    const today = useMemo(() => createDate(), [])
+    const endOfToday = useMemo(() => createDate().endOf('day').millisecond(0), [])
 
     const pickerCommon = useMemo(
       () => ({
@@ -143,7 +156,23 @@ const GluuDatePickerRange = memo(
 
     const renderPicker = (type: 'start' | 'end') => {
       const isStart = type === 'start'
-      const label = isStart ? t('dashboard.start_date') : t('dashboard.end_date')
+      const defaultLabel = isStart ? t('dashboard.start_date') : t('dashboard.end_date')
+      const label = isStart
+        ? (startDateLabelProp ?? defaultLabel)
+        : (endDateLabelProp ?? defaultLabel)
+      if (showTime) {
+        return (
+          <DateTimePicker
+            {...pickerCommon}
+            label={labelAsTitle ? '' : label}
+            value={isStart ? startDate : endDate}
+            onChange={isStart ? onStartDateChange : onEndDateChange}
+            onAccept={isStart ? onStartDateAccept : onEndDateAccept}
+            minDateTime={isStart ? undefined : (startDate ?? undefined)}
+            maxDateTime={isStart ? undefined : endOfToday}
+          />
+        )
+      }
       return (
         <DatePicker
           {...pickerCommon}
@@ -151,14 +180,14 @@ const GluuDatePickerRange = memo(
           value={isStart ? startDate : endDate}
           onChange={isStart ? onStartDateChange : onEndDateChange}
           onAccept={isStart ? onStartDateAccept : onEndDateAccept}
-          minDate={isStart ? undefined : startDate}
-          maxDate={isStart ? endDate : today}
+          minDate={isStart ? undefined : (startDate ?? undefined)}
+          maxDate={isStart ? (endDate ?? endOfToday) : endOfToday}
         />
       )
     }
 
-    const startLabel = t('dashboard.start_date')
-    const endLabel = t('dashboard.end_date')
+    const startLabel = startDateLabelProp ?? t('dashboard.start_date')
+    const endLabel = endDateLabelProp ?? t('dashboard.end_date')
 
     const rowLayout = (
       <Box className={classes.rangeRowContainer}>

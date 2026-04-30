@@ -10,7 +10,9 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS } from '../constants'
+import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { useErrorsAnalytics } from '../hooks'
+import type { MetricsDateRange } from '../types'
 
 const RADIAN = Math.PI / 180
 
@@ -22,69 +24,103 @@ interface LabelProps {
   outerRadius: number
   percent: number
   index: number
+  value?: number
 }
 
-const PasskeyAuthChart: React.FC = () => {
+interface PasskeyAuthChartProps {
+  dateRange: MetricsDateRange | null
+}
+
+const toPercent = (value: number | undefined): number => {
+  if (typeof value !== 'number' || Number.isNaN(value)) return 0
+  const normalised = value > 1 ? value : value * 100
+  return Math.max(0, Math.min(100, Math.round(normalised)))
+}
+
+const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
-  // Order: Success → Error → Drop Off so that with startAngle=45 (CCW) the slices land:
-  // Success midAngle=180° (left), Error midAngle=342° (lower-right), DropOff midAngle=27° (upper-right)
-  const data = useMemo(
-    () => [
-      { name: t('fields.success_rate'),  value: 75, color: METRICS_CHART_COLORS.successRate },
-      { name: t('fields.error_rate'),    value: 15, color: METRICS_CHART_COLORS.errorRate },
-      { name: t('fields.drop_off_rate'), value: 10, color: METRICS_CHART_COLORS.dropOffRate },
-    ],
-    [t],
-  )
+  const { data: errorsData } = useErrorsAnalytics(dateRange)
+
+  const hasApiData =
+    !!errorsData &&
+    [errorsData.successRate, errorsData.failureRate, errorsData.dropOffRate].some(
+      (v) => typeof v === 'number' && v > 0,
+    )
+
+  const data = useMemo(() => {
+    if (!hasApiData) {
+      return MOCK_METRICS_DATA.passkeyAuth.map((entry) => ({
+        name: t(entry.name),
+        value: entry.value,
+        color: entry.color,
+      }))
+    }
+    return [
+      {
+        name: t('fields.success_rate'),
+        value: toPercent(errorsData?.successRate),
+        color: METRICS_CHART_COLORS.successRate,
+      },
+      {
+        name: t('fields.error_rate'),
+        value: toPercent(errorsData?.failureRate),
+        color: METRICS_CHART_COLORS.errorRate,
+      },
+      {
+        name: t('fields.drop_off_rate'),
+        value: toPercent(errorsData?.dropOffRate),
+        color: METRICS_CHART_COLORS.dropOffRate,
+      },
+    ]
+  }, [t, errorsData, hasApiData])
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
   const renderLabel = (props: LabelProps) => {
-    const { cx, cy, midAngle, outerRadius, percent, index } = props
+    const { cx, cy, midAngle, outerRadius, percent, index, value } = props
     const entry = data[index]
-    if (!entry || percent === 0) return null
+    if (!entry || percent === 0 || !value) return null
 
-    const LABEL_RADIUS = outerRadius + 55
+    const LABEL_RADIUS = outerRadius + 36
     const x = cx + LABEL_RADIUS * Math.cos(-midAngle * RADIAN)
     const y = cy + LABEL_RADIUS * Math.sin(-midAngle * RADIAN)
     const anchor = x > cx ? 'start' : 'end'
     const pct = `${(percent * 100).toFixed(0)}%`
 
     return (
-      <text
-        x={x}
-        y={y}
-        fill={entry.color}
-        textAnchor={anchor}
-        fontSize={13}
-        fontWeight="700"
-      >
-        <tspan x={x} dy="-8">{entry.name}</tspan>
-        <tspan x={x} dy="20">{pct}</tspan>
+      <text x={x} y={y} fill={entry.color} textAnchor={anchor} fontSize={13} fontWeight="700">
+        <tspan x={x} dy="-8">
+          {entry.name}
+        </tspan>
+        <tspan x={x} dy="20">
+          {pct}
+        </tspan>
       </text>
     )
   }
 
   const renderLabelLine = (props: LabelProps) => {
-    const { cx, cy, midAngle, outerRadius, index } = props
+    const { cx, cy, midAngle, outerRadius, index, percent, value } = props
     const entry = data[index]
-    if (!entry) return null
+    if (!entry || percent === 0 || !value) return null
 
-    const x1 = cx + (outerRadius + 4)  * Math.cos(-midAngle * RADIAN)
-    const y1 = cy + (outerRadius + 4)  * Math.sin(-midAngle * RADIAN)
-    const x2 = cx + (outerRadius + 30) * Math.cos(-midAngle * RADIAN)
-    const y2 = cy + (outerRadius + 30) * Math.sin(-midAngle * RADIAN)
+    const x1 = cx + (outerRadius + 4) * Math.cos(-midAngle * RADIAN)
+    const y1 = cy + (outerRadius + 4) * Math.sin(-midAngle * RADIAN)
+    const x2 = cx + (outerRadius + 22) * Math.cos(-midAngle * RADIAN)
+    const y2 = cy + (outerRadius + 22) * Math.sin(-midAngle * RADIAN)
 
     return (
       <line
         key={`ll-${index}`}
-        x1={x1} y1={y1}
-        x2={x2} y2={y2}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         stroke={entry.color}
         strokeWidth={1.5}
       />
@@ -94,19 +130,39 @@ const PasskeyAuthChart: React.FC = () => {
   return (
     <Card className={`${classes.chartCard} h-100`}>
       <CardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {/* Title row: title left, legend right */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, marginBottom: 4 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 16,
+            marginBottom: 4,
+          }}
+        >
           <GluuText variant="div" className={classes.chartTitle} style={{ margin: 0 }}>
             {t('titles.passkey_authentication')}
           </GluuText>
-          {/* Custom legend pinned to top-right */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0, paddingTop: 2 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              flexShrink: 0,
+              paddingTop: 2,
+            }}
+          >
             {data.map((entry) => (
               <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{
-                  width: 10, height: 10, borderRadius: '50%',
-                  backgroundColor: entry.color, flexShrink: 0, display: 'inline-block',
-                }} />
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    backgroundColor: entry.color,
+                    flexShrink: 0,
+                    display: 'inline-block',
+                  }}
+                />
                 <span style={{ fontSize: 12, color: entry.color, whiteSpace: 'nowrap' }}>
                   {entry.name} {entry.value}%
                 </span>
@@ -115,19 +171,19 @@ const PasskeyAuthChart: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ flex: 1, minHeight: 300 }}>
+        <div style={{ flex: 1, minHeight: 320 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 40, right: 100, bottom: 20, left: 100 }}>
+            <PieChart margin={{ top: 30, right: 110, bottom: 30, left: 110 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                outerRadius={120}
+                outerRadius="80%"
                 dataKey="value"
                 startAngle={45}
                 endAngle={405}
                 label={renderLabel}
-                labelLine={renderLabelLine as any}
+                labelLine={renderLabelLine as (props: LabelProps) => React.ReactElement<SVGElement>}
                 isAnimationActive={false}
               >
                 {data.map((entry, index) => (

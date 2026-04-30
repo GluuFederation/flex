@@ -13,19 +13,18 @@ export const METRICS_CHART_COLORS = {
   totalUsers: customColors.lightBlue,
   adoptionRate: customColors.chartPurple,
 
+  minDuration: customColors.chartPurple,
   avgDuration: customColors.chartCoral,
   maxDuration: customColors.chartCyan,
 } as const
 
-// Activity bar chart series colours (Reg Success, Reg Attempts, Auth Attempts, Auth Success)
 export const AGGREGATION_SERIES_COLORS = {
-  regSuccess: customColors.orange, // orange
-  regAttempts: '#90caf9', // light blue
-  authAttempts: customColors.statusActive, // green
-  authSuccess: customColors.chartCoral, // coral/salmon
+  regSuccess: customColors.orange,
+  regAttempts: '#90caf9',
+  authAttempts: customColors.statusActive,
+  authSuccess: customColors.chartCoral,
 } as const
 
-// Heatmap colour stops (low → high, yellow → dark-red)
 export const HEATMAP_COLOR_STOPS = [
   { stop: 0, color: '#fff9c4' },
   { stop: 0.2, color: '#ffcc80' },
@@ -53,18 +52,14 @@ export const MOCK_METRICS_DATA = {
   ],
 } as const
 
-// ─── Aggregation tab mock data ──────────────────────────────────────────────
-
 export const AGGREGATION_TYPES = ['hourly', 'daily', 'weekly', 'monthly'] as const
 export type AggregationType = (typeof AGGREGATION_TYPES)[number]
 
-// Helper to generate a realistic 12×24 heatmap grid (values 1.0 – 3.5)
 const makeHourlyGrid = (seed: number): number[][] => {
   const rows: number[][] = []
   for (let r = 0; r < 12; r++) {
     const row: number[] = []
     for (let c = 0; c < 24; c++) {
-      // higher values in cols 13-16 (peak hours)
       const peak = c >= 12 && c <= 15 ? 1.5 : 0
       const base = 1.0 + ((r * 3 + c * 7 + seed) % 12) * 0.1 + peak
       row.push(Math.round(Math.min(3.5, Math.max(1.0, base)) * 10) / 10)
@@ -172,14 +167,15 @@ export const MOCK_AGGREGATION = {
       { label: 'Feb-23', regSuccess: 150, regAttempts: 210, authAttempts: 225, authSuccess: 100 },
     ],
     durationHeatmap: {
-      rows: ['Registration', 'Authentication'],
-      cols: ['Feb-02', 'Feb-09', 'Feb-16', 'Feb-23'],
+      rows: ['Authentication', 'Registration'],
+      cols: ['Week 1', 'Week 2'],
+      colsSub: ['Feb-02', 'Feb-09'],
       data: [
-        [180, 242, 215, 198],
-        [160, 225, 243, 180],
+        [188, 243],
+        [185, 190],
       ],
-      minVal: 100,
-      maxVal: 300,
+      minVal: 140,
+      maxVal: 250,
     },
   },
   monthly: {
@@ -197,14 +193,14 @@ export const MOCK_AGGREGATION = {
       { label: 'May-2026', regSuccess: 160, regAttempts: 240, authAttempts: 235, authSuccess: 145 },
     ],
     combinedHeatmap: {
-      rows: ['Registration', 'Authentication'],
+      rows: ['Authentication', 'Registration'],
       cols: ['Feb-2026', 'Mar-2026', 'Apr-2026', 'May-2026'],
       data: [
-        [200, 250, 300, 235],
-        [210, 265, 285, 250],
+        [150, 175, 250, 230],
+        [135, 200, 165, 210],
       ],
-      minVal: 100,
-      maxVal: 350,
+      minVal: 130,
+      maxVal: 250,
     },
   },
 } as const

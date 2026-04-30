@@ -119,12 +119,15 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
       '&:hover fieldset': { borderColor: tc.borderColor },
       '&.Mui-focused fieldset': { borderColor: tc.borderColor },
     },
+    // Calendar header
     '& .MuiPickersCalendarHeader-root': {
       'color': tc.inputTextColor,
       '& .MuiPickersCalendarHeader-switchViewButton': { color: tc.inputTextColor },
       '& .MuiPickersCalendarHeader-switchViewIcon': { color: tc.inputTextColor },
     },
+    // Day cells
     '& .MuiPickersDay-root': {
+      'backgroundColor': 'transparent',
       'color': tc.inputTextColor,
       '&.Mui-selected': {
         'backgroundColor': tc.selectedBg,
@@ -145,6 +148,102 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
         'color': tc.inputTextColor,
         '&:hover': { backgroundColor: tc.hoverBg },
       },
+    },
+    // Toolbar (date/time display at top of dialog)
+    '& .MuiPickersToolbar-root': {
+      backgroundColor: tc.popupBg,
+      color: tc.inputTextColor,
+    },
+    '& .MuiDateTimePickerToolbar-root': {
+      backgroundColor: tc.popupBg,
+    },
+    '& .MuiPickersToolbar-content .MuiTypography-root': {
+      color: tc.inputTextColor,
+    },
+    '& .MuiDateTimePickerToolbar-dateContainer .MuiTypography-root': {
+      color: tc.inputTextColor,
+    },
+    '& .MuiDateTimePickerToolbar-timeContainer .MuiTypography-root': {
+      color: tc.inputTextColor,
+    },
+    '& .MuiPickersToolbarButton-root': {
+      color: tc.inputTextColor,
+    },
+    // Tabs (Date / Time switch)
+    '& .MuiDateTimePickerTabs-root': {
+      backgroundColor: tc.popupBg,
+      borderBottom: `1px solid ${tc.borderColor}`,
+    },
+    '& .MuiTab-root': {
+      'color': tc.placeholderColor,
+      '&.Mui-selected': { color: tc.inputTextColor },
+    },
+    '& .MuiTabs-indicator': {
+      backgroundColor: tc.inputTextColor,
+    },
+    // Clock face
+    '& .MuiClock-root': {
+      backgroundColor: tc.popupBg,
+    },
+    '& .MuiClock-clock': {
+      backgroundColor: tc.hoverBg,
+    },
+    '& .MuiClock-pin': {
+      backgroundColor: tc.iconColor,
+    },
+    '& .MuiClockPointer-root': {
+      backgroundColor: tc.iconColor,
+    },
+    '& .MuiClockPointer-thumb': {
+      backgroundColor: tc.iconColor,
+      borderColor: tc.iconColor,
+    },
+    '& .MuiClockNumber-root': {
+      'color': tc.inputTextColor,
+      '&.Mui-selected': {
+        backgroundColor: tc.iconColor,
+        color: tc.popupBg,
+      },
+    },
+    // Digital clock / multi-section time field
+    '& .MuiDigitalClock-root': {
+      backgroundColor: tc.popupBg,
+    },
+    '& .MuiDigitalClock-item': {
+      'color': tc.inputTextColor,
+      '&.Mui-selected': {
+        backgroundColor: tc.selectedBg,
+        color: tc.selectedText,
+      },
+      '&:hover': { backgroundColor: tc.hoverBg },
+    },
+    '& .MuiMultiSectionDigitalClock-root': {
+      backgroundColor: tc.popupBg,
+      borderTop: `1px solid ${tc.borderColor}`,
+    },
+    '& .MuiMultiSectionDigitalClockSection-root': {
+      'borderRight': `1px solid ${tc.borderColor}`,
+      '&:last-child': { borderRight: 'none' },
+    },
+    '& .MuiMultiSectionDigitalClockSection-item': {
+      'color': tc.inputTextColor,
+      '&.Mui-selected': {
+        backgroundColor: tc.selectedBg,
+        color: tc.selectedText,
+      },
+      '&:hover': { backgroundColor: tc.hoverBg },
+    },
+    // Dialog divider
+    '& .MuiDivider-root': {
+      borderColor: tc.borderColor,
+    },
+    // Action buttons (OK / Cancel)
+    '& .MuiDialogActions-root': {
+      backgroundColor: tc.popupBg,
+      borderTop: `1px solid ${tc.borderColor}`,
+    },
+    '& .MuiDialogActions-root .MuiButton-root': {
+      color: tc.inputTextColor,
     },
   },
 })
@@ -188,6 +287,10 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
     const textFieldSx = buildTextFieldSx(pickerTheme, common, inputHeight)
     const popperSx = buildPopperSx(pickerTheme)
     const datePickerSx = buildDatePickerRootSx(pickerTheme, common)
+    const paperSx: SxProps<Theme> = {
+      backgroundColor: pickerTheme.popupBg,
+      color: pickerTheme.inputTextColor,
+    }
     const slotProps = {
       textField: {
         size: TEXT_FIELD_SIZE,
@@ -195,6 +298,8 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
         sx: textFieldSx,
       },
       popper: { sx: popperSx },
+      desktopPaper: { sx: paperSx },
+      paper: { sx: paperSx },
     }
     return {
       textFieldSx,

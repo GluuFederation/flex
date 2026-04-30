@@ -34,9 +34,50 @@ interface ActivityBarChartProps {
   title: string
   data: readonly ActivityDataPoint[]
   height?: number
+  barSize?: number
+  barCategoryGap?: string | number
 }
 
-const ActivityBarChart: React.FC<ActivityBarChartProps> = ({ title, data, height = 360 }) => {
+interface CustomTickProps {
+  x?: number
+  y?: number
+  payload?: { value: string }
+  fill?: string
+}
+
+const MultiLineTick: React.FC<CustomTickProps & { fill: string }> = ({
+  x = 0,
+  y = 0,
+  payload,
+  fill,
+}) => {
+  const lines = (payload?.value ?? '').split('\n')
+  return (
+    <g transform={`translate(${x},${y})`}>
+      {lines.map((line, i) => (
+        <text
+          key={i}
+          x={0}
+          y={0}
+          dy={i === 0 ? 12 : 12 + i * 14}
+          textAnchor="middle"
+          fill={fill}
+          fontSize={12}
+        >
+          {line}
+        </text>
+      ))}
+    </g>
+  )
+}
+
+const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
+  title,
+  data,
+  height = 360,
+  barSize = 28,
+  barCategoryGap = '25%',
+}) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
@@ -44,10 +85,12 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({ title, data, height
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-  const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)'
-  const axisColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
+  const gridColor = themeColors.chart.gridColor
+  const axisColor = themeColors.chart.axisColor
 
   const chartData = data.map((d) => ({ ...d }))
+
+  const hasMultiLineLabel = data.some((d) => d.label.includes('\n'))
 
   return (
     <Card className={classes.chartCard}>
@@ -56,14 +99,21 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({ title, data, height
           {title}
         </GluuText>
         <ResponsiveContainer width="100%" height={height}>
-          <BarChart data={chartData} barSize={28} barCategoryGap="25%" barGap={2}>
+          <BarChart
+            data={chartData}
+            barSize={barSize}
+            barCategoryGap={barCategoryGap}
+            barGap={2}
+            margin={{ top: 20 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fill: axisColor, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               interval={0}
+              height={hasMultiLineLabel ? 50 : 30}
+              tick={(props: CustomTickProps) => <MultiLineTick {...props} fill={axisColor} />}
             />
             <YAxis tick={{ fill: axisColor, fontSize: 12 }} axisLine={false} tickLine={false} />
             <Tooltip

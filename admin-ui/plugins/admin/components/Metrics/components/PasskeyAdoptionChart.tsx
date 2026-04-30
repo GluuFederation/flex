@@ -22,6 +22,8 @@ import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { useAdoptionMetrics } from '../hooks'
+import type { MetricsDateRange } from '../types'
 import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
 
 const ARROW_S = 6
@@ -39,39 +41,84 @@ const Arrowhead: React.FC<{ x: number; y: number; dir: 'up' | 'down'; color: str
   return <polygon points={pts} fill={color} />
 }
 
-// right reserves space for 150px donut overlay; left gives room for stats box + label
 const CHART_MARGIN = { top: 40, right: 220, bottom: 40, left: 220 }
 const Y_TICKS = [12, 10, 8, 6, 4, 2]
 const Y_MAX = 14
 
-const PasskeyAdoptionChart: React.FC = () => {
+interface PasskeyAdoptionChartProps {
+  dateRange: MetricsDateRange | null
+}
+
+interface BarItemData {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+interface BarArrowsProps {
+  formattedGraphicalItems?: Array<{ props: { data?: BarItemData[] } }>
+}
+
+const toNumber = (value: number | string | boolean | null | undefined): number => {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  return 0
+}
+
+const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
-  const { newRegisteredUsers, totalRegisteredUsers, adoptionPasskeyRate } =
-    MOCK_METRICS_DATA.adoption
+  const { data: adoptionData } = useAdoptionMetrics(dateRange)
 
-  const existingUsers = totalRegisteredUsers - newRegisteredUsers
+  const apiNewUsers = toNumber(adoptionData?.newUsers ?? adoptionData?.newRegisteredUsers)
+  const apiTotalUsers = toNumber(
+    adoptionData?.totalUniqueUsers ?? adoptionData?.totalRegisteredUsers,
+  )
+  const rawRate = adoptionData?.adoptionRate ?? adoptionData?.adoptionPasskeyRate
+  const apiRate =
+    typeof rawRate === 'number' ? Math.round(rawRate > 1 ? rawRate : rawRate * 100) : 0
+
+  const hasApiData = apiNewUsers > 0 || apiTotalUsers > 0 || apiRate > 0
+  const mock = MOCK_METRICS_DATA.adoption
+  const newRegisteredUsers = hasApiData ? apiNewUsers : mock.newRegisteredUsers
+  const totalRegisteredUsers = hasApiData ? apiTotalUsers : mock.totalRegisteredUsers
+  const adoptionPasskeyRate = Math.max(
+    0,
+    Math.min(100, hasApiData ? apiRate : mock.adoptionPasskeyRate),
+  )
+
+  const existingUsers = Math.max(0, totalRegisteredUsers - newRegisteredUsers)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-  const borderColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.15)'
-  const axisColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)'
+  const borderColor = themeColors.borderColor
   const textColor = themeColors.fontColor
 
-  const barData = [{ name: 'Users', existingUsers, newRegisteredUsers }]
+  const totalForBar = existingUsers + newRegisteredUsers
+  const existingShare = totalForBar > 0 ? (existingUsers / totalForBar) * Y_MAX : 0
+  const newShare =
+    totalForBar > 0 ? (newRegisteredUsers / totalForBar) * Y_MAX : existingUsers > 0 ? 0 : Y_MAX
+  const barData = [
+    {
+      name: 'Users',
+      existingUsers: existingShare,
+      newRegisteredUsers: newShare,
+      existingUsersCount: existingUsers,
+      newRegisteredUsersCount: newRegisteredUsers,
+    },
+  ]
 
   const donutData = useMemo(
     () => [
       { value: adoptionPasskeyRate, color: METRICS_CHART_COLORS.adoptionRate },
-      { value: 100 - adoptionPasskeyRate, color: isDark ? '#1a3150' : '#e8eaed' },
+      { value: 100 - adoptionPasskeyRate, color: themeColors.chart.donutEmptyColor },
     ],
-    [adoptionPasskeyRate, isDark],
+    [adoptionPasskeyRate, themeColors],
   )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const BarArrows = (props: any) => {
+  const BarArrows = (props: BarArrowsProps) => {
     const { formattedGraphicalItems } = props
     const eBar = formattedGraphicalItems?.[0]?.props?.data?.[0]
     const nBar = formattedGraphicalItems?.[1]?.props?.data?.[0]
@@ -94,7 +141,6 @@ const PasskeyAdoptionChart: React.FC = () => {
 
     return (
       <g>
-        {/* LEFT: red up-arrow above the label */}
         <line
           x1={leftArrowX}
           y1={totalTop + ARROW_S}
@@ -104,8 +150,6 @@ const PasskeyAdoptionChart: React.FC = () => {
           strokeWidth={2}
         />
         <Arrowhead x={leftArrowX} y={totalTop} dir="up" color={totalColor} />
-
-        {/* LEFT: green down-arrow below the label */}
         <line
           x1={leftArrowX}
           y1={labelY + ARROW_GAP}
@@ -115,8 +159,6 @@ const PasskeyAdoptionChart: React.FC = () => {
           strokeWidth={2}
         />
         <Arrowhead x={leftArrowX} y={barBottom} dir="down" color={newColor} />
-
-        {/* "Total Users: 12" label — right-aligned to end before the bar's left edge */}
         <text
           x={barLeft - 10}
           y={labelY}
@@ -131,8 +173,6 @@ const PasskeyAdoptionChart: React.FC = () => {
             {totalRegisteredUsers}
           </tspan>
         </text>
-
-        {/* RIGHT: green bidirectional arrow on the red (new users) section of the bar */}
         <line
           x1={rightArrowX}
           y1={newTop + ARROW_S}
@@ -155,38 +195,61 @@ const PasskeyAdoptionChart: React.FC = () => {
         </GluuText>
 
         <div className={classes.adoptionChartWrapper}>
-          {/* Left column: Y-axis numbers */}
           <div className={classes.adoptionYAxisColumn}>
             <div className={classes.adoptionYAxisTicks}>
               {Y_TICKS.map((n) => (
-                <span key={n} style={{ fontSize: 11, color: axisColor, lineHeight: 1 }}>
+                <span key={n} style={{ fontSize: 11, color: textColor, lineHeight: 1 }}>
                   {n}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Dotted box */}
           <div
             className={classes.adoptionDottedBox}
             style={{ border: `1px dashed ${borderColor}` }}
           >
-            {/* Bar chart */}
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} barSize={68} margin={CHART_MARGIN}>
                 <YAxis width={0} domain={[0, Y_MAX]} hide />
                 <XAxis dataKey="name" hide />
                 <Tooltip
                   cursor={false}
-                  content={(props: TooltipProps<number, string>) => (
-                    <TooltipDesign
-                      payload={props.payload as TooltipPayloadItem[] | undefined}
-                      active={props.active}
-                      backgroundColor={cardBg}
-                      textColor={textColor}
-                      isDark={isDark}
-                    />
-                  )}
+                  content={(props: TooltipProps<number, string>) => {
+                    const payload = props.payload as TooltipPayloadItem[] | undefined
+                    const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
+                      (item) => {
+                        const realKey =
+                          item.dataKey === 'existingUsers'
+                            ? 'existingUsersCount'
+                            : item.dataKey === 'newRegisteredUsers'
+                              ? 'newRegisteredUsersCount'
+                              : null
+                        if (!realKey) return item
+                        const realValueRaw = (
+                          item.payload as Record<string, number | undefined> | undefined
+                        )?.[realKey]
+                        const realValue = typeof realValueRaw === 'number' ? realValueRaw : 0
+                        return {
+                          ...item,
+                          value: realValue,
+                          payload: {
+                            ...(item.payload ?? {}),
+                            [item.dataKey as string]: realValue,
+                          },
+                        }
+                      },
+                    )
+                    return (
+                      <TooltipDesign
+                        payload={remappedPayload}
+                        active={props.active}
+                        backgroundColor={cardBg}
+                        textColor={textColor}
+                        isDark={isDark}
+                      />
+                    )
+                  }}
                 />
                 <Bar
                   dataKey="existingUsers"
@@ -206,7 +269,6 @@ const PasskeyAdoptionChart: React.FC = () => {
               </BarChart>
             </ResponsiveContainer>
 
-            {/* Stats labels — top-LEFT, no border */}
             <div className={classes.adoptionStatsLabels}>
               <div
                 style={{
@@ -240,7 +302,6 @@ const PasskeyAdoptionChart: React.FC = () => {
               </div>
             </div>
 
-            {/* "New Users: 3" — top-RIGHT, one line */}
             <div className={classes.adoptionNewUsersOverlay}>
               <span
                 style={{
@@ -264,7 +325,6 @@ const PasskeyAdoptionChart: React.FC = () => {
               </span>
             </div>
 
-            {/* Donut — right side, with Adoption Rate text INSIDE */}
             <div className={classes.adoptionDonutOverlay}>
               <div className={classes.adoptionDonutWrapper}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -287,7 +347,6 @@ const PasskeyAdoptionChart: React.FC = () => {
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                {/* Centered text inside donut */}
                 <div className={classes.adoptionDonutCenter}>
                   <div
                     style={{

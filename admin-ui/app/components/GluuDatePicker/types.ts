@@ -47,14 +47,17 @@ export type GluuDatePickerSingleProps = GluuDatePickerBase & {
 
 export type GluuDatePickerRangeProps = GluuDatePickerBase & {
   mode: 'range'
-  startDate: Dayjs
-  endDate: Dayjs
+  startDate: Dayjs | null
+  endDate: Dayjs | null
   onStartDateChange: (date: Dayjs | null) => void
   onEndDateChange: (date: Dayjs | null) => void
   onStartDateAccept?: (date: Dayjs | null) => void
   onEndDateAccept?: (date: Dayjs | null) => void
   layout?: 'grid' | 'row'
   labelAsTitle?: boolean
+  showTime?: boolean
+  startDateLabel?: string
+  endDateLabel?: string
 }
 
 export type GluuDatePickerProps = GluuDatePickerSingleProps | GluuDatePickerRangeProps
@@ -68,6 +71,8 @@ export type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
   slotProps: {
     textField: { size: 'small'; InputLabelProps: { shrink: boolean }; sx: SxProps<Theme> }
     popper: { sx: SxProps<Theme> }
+    desktopPaper: { sx: SxProps<Theme> }
+    paper: { sx: SxProps<Theme> }
   }
   datePickerSx: SxProps<Theme>
   classes: ReturnType<typeof useDatePickerStyles>['classes']
