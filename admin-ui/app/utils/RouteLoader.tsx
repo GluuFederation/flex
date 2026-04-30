@@ -30,7 +30,4 @@ export const LazyRoutes = {
   GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),
   GluuToast: createLazyRoute(() => import('../routes/Apps/Gluu/GluuToast')),
-  GluuWebhookErrorDialog: createLazyRoute(
-    () => import('../routes/Apps/Gluu/GluuWebhookErrorDialog'),
-  ),
 }

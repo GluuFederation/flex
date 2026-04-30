@@ -2,7 +2,7 @@ import type { WebhookEntry } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type WebhookTriggerResponseItem = {
-  success: boolean
+  success: boolean | string
   responseCode?: number
   responseMessage?: string
   responseObject?: {
@@ -44,9 +44,6 @@ export type WebhookSliceState = {
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
-  triggerWebhookMessage: string
-  webhookTriggerErrors: WebhookTriggerResponseItem[]
   triggerPayload: WebhookSliceTriggerPayload
   featureToTrigger: string
-  showErrorModal: boolean
 }

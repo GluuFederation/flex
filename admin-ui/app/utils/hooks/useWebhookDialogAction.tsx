@@ -3,9 +3,8 @@ import { createPortal } from 'react-dom'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   getWebhooksByFeatureIdResponse,
+  completeTriggerWebhook,
   setWebhookModal,
-  setWebhookTriggerErrors,
-  setTriggerWebhookResponse,
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useGetWebhooksByFeatureId, type WebhookEntry } from 'JansConfigApi'
@@ -101,8 +100,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
 
   const onCloseModal = useCallback(() => {
     dispatch(setWebhookModal(false))
-    dispatch(setWebhookTriggerErrors([]))
-    dispatch(setTriggerWebhookResponse(''))
+    dispatch(completeTriggerWebhook())
     dispatch(setFeatureToTrigger(''))
   }, [dispatch])
 
