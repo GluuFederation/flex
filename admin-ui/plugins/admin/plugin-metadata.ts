@@ -1,4 +1,5 @@
 import HealthPage from './components/Health/HealthPage'
+import MetricsPage from './components/Metrics/MetricsPage'
 import RolePermissionMappingPage from './components/Mapping/RolePermissionMappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
@@ -63,6 +64,12 @@ const pluginMetadata = {
           title: 'menus.maugraph',
           path: ROUTES.ADMIN_MAU_GRAPH,
           permission: ACR_READ,
+          resourceKey: ADMIN_UI_RESOURCES.MAU,
+        },
+        {
+          title: 'menus.metrics',
+          path: ROUTES.ADMIN_METRICS,
+          permission: STAT_READ,
           resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
@@ -136,6 +143,12 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.MAU,
     },
     {
+      component: MetricsPage,
+      path: ROUTES.ADMIN_METRICS,
+      permission: STAT_READ,
+      resourceKey: ADMIN_UI_RESOURCES.MAU,
+    },
+    {
       component: SettingsPage,
       path: ROUTES.ADMIN_SETTINGS,
       permission: ACR_READ,
@@ -200,7 +213,7 @@ const pluginMetadata = {
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [webhookSaga(), assetSaga()],
+  sagas: [webhookSaga, assetSaga],
 }
 
 export default pluginMetadata

@@ -9,9 +9,13 @@ import { GluuPageContent } from '@/components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuRefreshButton } from '@/components/GluuSearchToolbar'
-import { useHealthStatus } from './hooks'
+import { useHealthStatus, useFido2HealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
 import { useStyles } from './HealthPage.style'
+import type { ServiceHealth } from './types'
+
+const FIDO2_FALLBACK_DOWN: ServiceHealth = { name: 'fido2-metrics', status: 'down' }
+const FIDO2_FALLBACK_UNKNOWN: ServiceHealth = { name: 'fido2-metrics', status: 'unknown' }
 
 const HealthPage: React.FC = () => {
   const { t } = useTranslation()
@@ -24,11 +28,21 @@ const HealthPage: React.FC = () => {
   const { services, healthyCount, totalCount, isLoading, isFetching, isError, refetch } =
     useHealthStatus()
 
+  const fido2Health = useFido2HealthStatus()
+
+  const fido2HealthCard: ServiceHealth = useMemo(() => {
+    if (fido2Health.isError) return FIDO2_FALLBACK_DOWN
+    if (fido2Health.isLoading || fido2Health.isFetching || !fido2Health.data)
+      return FIDO2_FALLBACK_UNKNOWN
+    return fido2Health.data
+  }, [fido2Health.isError, fido2Health.isLoading, fido2Health.isFetching, fido2Health.data])
+
   const handleRefresh = useCallback(() => {
     refetch()
-  }, [refetch])
+    fido2Health.refetch()
+  }, [refetch, fido2Health])
 
-  const loading = isLoading || isFetching
+  const loading = isLoading || isFetching || fido2Health.isLoading
 
   const healthThemeColors = useMemo(
     () => ({
@@ -51,7 +65,10 @@ const HealthPage: React.FC = () => {
           <div className={classes.header}>
             {!isLoading && !isError && totalCount > 0 && (
               <GluuText variant="div" className={classes.headerTitle}>
-                {t('messages.services_healthy_count', { healthyCount, totalCount })}
+                {t('messages.services_healthy_count', {
+                  healthyCount: healthyCount + (fido2HealthCard.status === 'up' ? 1 : 0),
+                  totalCount: totalCount + 1,
+                })}
               </GluuText>
             )}
             <div className={classes.refreshButtonWrapper}>
@@ -80,13 +97,16 @@ const HealthPage: React.FC = () => {
             </div>
           )}
 
-          {!isLoading && !isError && services.length > 0 && (
+          {!isLoading && !isError && (services.length > 0 || !fido2Health.isLoading) && (
             <div className={classes.servicesGrid}>
               {services.map((service) => (
                 <div key={service.name} className={classes.serviceCardWrapper}>
                   <ServiceStatusCard service={service} isDark={isDark} />
                 </div>
               ))}
+              <div className={classes.serviceCardWrapper}>
+                <ServiceStatusCard service={fido2HealthCard} isDark={isDark} />
+              </div>
             </div>
           )}
         </Paper>

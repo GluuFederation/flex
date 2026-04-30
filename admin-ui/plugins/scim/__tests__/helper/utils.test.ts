@@ -211,7 +211,6 @@ describe('createJsonPatchFromDifferences', () => {
     loggingLevel: 'INFO',
     loggingLayout: 'text',
     externalLoggerConfiguration: '',
-    disableExternalLoggerConfiguration: false,
     metricReporterInterval: 300,
     metricReporterKeepDataDays: 15,
     metricReporterEnabled: true,
@@ -219,6 +218,7 @@ describe('createJsonPatchFromDifferences', () => {
     disableLoggerTimer: false,
     useLocalCache: false,
     skipDefinedPasswordValidation: false,
+    ...({ disableExternalLoggerConfiguration: false } as Partial<AppConfiguration3>),
   }
 
   const baseFormValues: ScimFormValues = {

@@ -53,13 +53,13 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
     () =>
       Boolean(
         validateItem &&
-        items.some((item) => {
-          const value = item.value?.trim() ?? ''
-          const key = item.key?.trim() ?? ''
-          const isComplete =
-            mode === 'single' ? value.length > 0 : key.length > 0 && value.length > 0
-          return isComplete && !validateItem(item, mode)
-        }),
+          items.some((item) => {
+            const value = item.value?.trim() ?? ''
+            const key = item.key?.trim() ?? ''
+            const isComplete =
+              mode === 'single' ? value.length > 0 : key.length > 0 && value.length > 0
+            return isComplete && !validateItem(item, mode)
+          }),
       ),
     [items, mode, validateItem],
   )

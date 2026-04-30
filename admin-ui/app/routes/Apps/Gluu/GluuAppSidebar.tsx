@@ -30,7 +30,7 @@ import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
 import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
 import type {
   MenuItem,
   PluginMenu,
@@ -68,6 +68,11 @@ const selectLogoutAuditSucceeded = (state: SidebarRootState): boolean | null =>
 
 const GluuAppSidebar = (): JSX.Element => {
   const { allServices } = useHealthStatus()
+  const { data: fido2HealthData } = useFido2HealthStatus()
+  const combinedServices = useMemo(
+    () => (fido2HealthData ? [...allServices, fido2HealthData] : allServices),
+    [allServices, fido2HealthData],
+  )
   const logoutAuditSucceeded = useAppSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const didAnimateMenusRef = useRef<boolean>(false)
@@ -79,7 +84,10 @@ const GluuAppSidebar = (): JSX.Element => {
   const { authorize } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
 
-  const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
+  const fetchedServersLength = useMemo(
+    (): boolean => combinedServices.length > 0,
+    [combinedServices],
+  )
 
   const sidebarMenuActiveClass = useMemo(
     (): string => `sidebar-menu-active-${selectedTheme}`,
@@ -147,10 +155,10 @@ const GluuAppSidebar = (): JSX.Element => {
         ? VISIBILITY_CONDITIONS[menu.path as keyof VisibilityConditions]
         : undefined
       if (!healthKey) return true
-      const service = allServices.find((s) => s.name === healthKey)
+      const service = combinedServices.find((s) => s.name === healthKey)
       return service?.status === 'up'
     })
-  }, [allServices, fetchedServersLength])
+  }, [combinedServices, fetchedServersLength])
 
   const loadMenus = async () => {
     try {
