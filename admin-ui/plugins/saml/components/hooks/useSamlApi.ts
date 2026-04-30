@@ -430,7 +430,7 @@ export const useCreateTrustRelationship = () => {
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
         triggerWebhookForFeature(
-          data.trustRelationship as Record<string, JsonValue>,
+          result as Record<string, JsonValue>,
           adminUiFeatures.saml_idp_write,
         )
         logAudit(userMessage, data)
@@ -484,7 +484,7 @@ export const useUpdateTrustRelationship = () => {
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
         triggerWebhookForFeature(
-          data.trustRelationship as Record<string, JsonValue>,
+          result as Record<string, JsonValue>,
           adminUiFeatures.saml_idp_write,
         )
         logAudit(userMessage, data)
