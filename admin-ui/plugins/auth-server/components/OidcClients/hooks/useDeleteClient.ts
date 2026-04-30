@@ -5,6 +5,7 @@ import { useDeleteOauthOpenidClientByInum, getGetOauthOpenidClientsQueryKey } fr
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { devLogger } from '@/utils/devLogger'
@@ -29,6 +30,7 @@ export const useDeleteClient = (auditContext: AuditContext) => {
         dispatch(
           triggerWebhook({
             createdFeatureValue: toClientJsonRecord(params.client),
+            feature: adminUiFeatures.oidc_clients_delete,
           }),
         )
 

@@ -692,7 +692,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               />
 
               <GluuCommitDialog
-                handler={toggle}
+                handler={closeModal}
                 modal={modal}
                 feature={adminUiFeatures.scopes_write}
                 onAccept={handleDialogAccept}

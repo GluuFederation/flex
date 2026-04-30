@@ -6,7 +6,7 @@ type TaskResult = {
   exitCode: number
 }
 
-function runTask(label: string, command: string, args: string[]): Promise<TaskResult> {
+const runTask = (label: string, command: string, args: string[]): Promise<TaskResult> => {
   return new Promise((resolve) => {
     const proc: ChildProcess = spawn(command, args, {
       shell: true,

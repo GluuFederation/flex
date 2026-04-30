@@ -10,6 +10,9 @@ import {
   getGetPropertiesFido2QueryKey,
 } from 'JansConfigApi'
 import { logAudit } from 'Utils/AuditLogger'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
 import type { ApiErrorResponse } from '../types'
 import type { UpdateFidoParams } from '../types'
@@ -83,6 +86,10 @@ export const useUpdateFidoConfig = () => {
 
       baseMutation.mutate(apiPayload, {
         onSuccess: () => {
+          triggerWebhookForFeature(
+            data as Record<string, JsonValue>,
+            adminUiFeatures.fido_configuration_write,
+          )
           logAudit({
             userinfo,
             action: 'UPDATE',

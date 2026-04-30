@@ -1,9 +1,6 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
-
-export type { WebhookTriggerResponseItem }
 
 export type CancellablePromise<T> = Promise<T> & { cancel?: () => void }
 
@@ -229,11 +226,8 @@ export interface WebhookState {
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
-  triggerWebhookMessage: string
-  webhookTriggerErrors: WebhookTriggerResponseItem[]
   triggerPayload: StoredTriggerPayload
   featureToTrigger: string
-  showErrorModal: boolean
 }
 
 // Asset State

@@ -8,6 +8,8 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type {
   SamlAppConfiguration,
   IdentityProvider,
@@ -198,6 +200,10 @@ export const useUpdateSamlConfiguration = () => {
       const result = await baseMutation.mutateAsync({ data })
       await queryClient.invalidateQueries({ queryKey: getGetSamlPropertiesQueryKey() })
       dispatch(updateToast(true, 'success'))
+      triggerWebhookForFeature(
+        data as Record<string, JsonValue>,
+        adminUiFeatures.saml_configuration_write,
+      )
       logAudit(userMessage, data)
       return result
     },
@@ -255,6 +261,10 @@ export const useCreateIdentityProvider = () => {
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
+        triggerWebhookForFeature(
+          result as Record<string, JsonValue>,
+          adminUiFeatures.saml_idp_write,
+        )
         logAudit(userMessage, data)
         return result
       } catch (error) {
@@ -305,6 +315,10 @@ export const useUpdateIdentityProvider = () => {
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
+        triggerWebhookForFeature(
+          result as Record<string, JsonValue>,
+          adminUiFeatures.saml_idp_write,
+        )
         logAudit(userMessage, data)
         return result
       } catch (error) {
@@ -354,6 +368,7 @@ export const useDeleteIdentityProvider = () => {
         await baseMutation.mutateAsync({ inum })
         await queryClient.invalidateQueries({ queryKey: getGetSamlIdentityProviderQueryKey() })
         dispatch(updateToast(true, 'success'))
+        triggerWebhookForFeature({ inum }, adminUiFeatures.saml_delete)
         logAudit(userMessage, inum)
       } catch (error) {
         const errorMessage =
@@ -414,6 +429,10 @@ export const useCreateTrustRelationship = () => {
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
+        triggerWebhookForFeature(
+          result as Record<string, JsonValue>,
+          adminUiFeatures.saml_idp_write,
+        )
         logAudit(userMessage, data)
         return result
       } catch (error) {
@@ -464,6 +483,10 @@ export const useUpdateTrustRelationship = () => {
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
+        triggerWebhookForFeature(
+          result as Record<string, JsonValue>,
+          adminUiFeatures.saml_idp_write,
+        )
         logAudit(userMessage, data)
         return result
       } catch (error) {
@@ -513,6 +536,7 @@ export const useDeleteTrustRelationshipMutation = () => {
         await baseMutation.mutateAsync({ id })
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
+        triggerWebhookForFeature({ inum: id }, adminUiFeatures.saml_delete)
         logAudit(userMessage, id)
       } catch (error) {
         const errorMessage =

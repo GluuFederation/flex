@@ -5,7 +5,6 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookSliceState,
   WebhookSliceTriggerPayload,
-  WebhookTriggerResponseItem,
   TriggerPayloadActionPayload,
   TriggerWebhookReducerPayload,
 } from '../types'
@@ -17,14 +16,11 @@ const initialState: WebhookSliceState = {
   featureWebhooks: [],
   webhookModal: false,
   triggerWebhookInProgress: false,
-  triggerWebhookMessage: '',
-  webhookTriggerErrors: [],
   triggerPayload: {
     feature: null,
     payload: null as JsonValue,
   },
   featureToTrigger: '',
-  showErrorModal: false,
 }
 
 const webhookSlice = createSlice({
@@ -51,18 +47,11 @@ const webhookSlice = createSlice({
         })
       }
     },
-    setTriggerWebhookResponse: (state, action: PayloadAction<string>) => {
+    completeTriggerWebhook: (state) => {
       state.triggerWebhookInProgress = false
-      state.triggerWebhookMessage = action.payload
-    },
-    setWebhookTriggerErrors: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
-      state.webhookTriggerErrors = action.payload
     },
     setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload
-    },
-    setShowErrorModal: (state, action: PayloadAction<boolean>) => {
-      state.showErrorModal = action.payload
     },
   },
 })
@@ -72,10 +61,8 @@ export const {
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
-  setTriggerWebhookResponse,
-  setWebhookTriggerErrors,
+  completeTriggerWebhook,
   setFeatureToTrigger,
-  setShowErrorModal,
 } = webhookSlice.actions
 
 export const { actions, reducer } = webhookSlice

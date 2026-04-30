@@ -163,7 +163,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
         return (
           <Form onSubmit={formik.handleSubmit}>
             <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
-              {/* 2-column grid layout matching Figma design */}
               <div className={classes.formGrid}>
                 {item.inum && (
                   <div className={`${classes.fieldItem} ${classes.inumFullWidth}`}>
@@ -178,8 +177,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     />
                   </div>
                 )}
-
-                {/* Row 1: Name | Display Name */}
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.name"
@@ -197,7 +194,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     required
                   />
                 </div>
-
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.displayname"
@@ -217,8 +213,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     required
                   />
                 </div>
-
-                {/* Row 2: Description | Status */}
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.description"
@@ -238,7 +232,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     required
                   />
                 </div>
-
                 <div className={classes.fieldItem}>
                   <GluuSelectRow
                     label="fields.status"
@@ -259,8 +252,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     required
                   />
                 </div>
-
-                {/* Row 3: Data Type | oxAuth claim name */}
                 <div className={classes.fieldItem}>
                   <GluuSelectRow
                     label="fields.data_type"
@@ -286,7 +277,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     required
                   />
                 </div>
-
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.oxauth_claim_name"
@@ -302,7 +292,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                {/* Row 4: Edit Type | View Type */}
                 <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.edit_type"
@@ -322,7 +311,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
                 <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.view_type"
@@ -342,8 +330,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
-                {/* Row 5: Usage Type | (empty) */}
                 <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.usage_type"
@@ -364,11 +350,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
-                {/* empty cell to keep grid alignment */}
                 <div />
-
-                {/* Row 6: Saml1 URI | Saml2 URI */}
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.saml1_uri"
@@ -383,7 +365,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.saml2_uri"
@@ -398,8 +379,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
-                {/* Row 7: Multivalued | Hide On Discovery */}
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="oxMultiValuedAttribute"
@@ -415,7 +394,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="jansHideOnDiscovery"
@@ -431,8 +409,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     }}
                   />
                 </div>
-
-                {/* Row 8: Include In SCIM Extension | Enable Custom Validation */}
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="scimCustomAttr"
@@ -448,7 +424,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     }}
                   />
                 </div>
-
                 <div className={classes.toggleRow}>
                   <GluuToogleRow
                     name="validation"
@@ -461,8 +436,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-
-                {/* Validation fields — each in its own grid cell */}
                 {validation && (
                   <>
                     <div className={classes.fieldItem}>
@@ -511,7 +484,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   </>
                 )}
               </div>
-
               <GluuThemeFormFooter
                 showBack={!hideButtons?.back}
                 onBack={handleBack}

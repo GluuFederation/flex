@@ -19,6 +19,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
@@ -190,6 +191,7 @@ const ScopeListPage: React.FC = () => {
         dispatch(
           triggerWebhook({
             createdFeatureValue: toScopeJsonRecord(itemToDelete),
+            feature: adminUiFeatures.scopes_delete,
           }),
         )
         await logScopeDeletion(itemToDelete, message)
