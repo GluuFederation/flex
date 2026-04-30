@@ -137,7 +137,6 @@ export function* triggerWebhookSaga({
           toast.error(
             i18n.t('messages.webhook_triggered_failed', {
               name,
-              message: item.responseMessage ?? String(item.responseCode ?? ''),
             }),
           )
         }

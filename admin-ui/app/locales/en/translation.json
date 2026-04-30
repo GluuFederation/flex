@@ -863,7 +863,7 @@
     "webhook_deleted_successfully": "Webhook deleted successfully",
     "all_webhooks_triggered_successfully": "All webhooks triggered successfully.",
     "webhook_triggered_successfully": "Webhook '{{name}}' triggered successfully.",
-    "webhook_triggered_failed": "Webhook '{{name}}' failed: {{message}}",
+    "webhook_triggered_failed": "Webhook '{{name}}' got failed.",
     "webhooks_triggered_with_failures": "Webhook(s) triggered but failed:",
     "no_message": "No message",
     "failed_to_trigger_webhook": "Something went wrong while triggering webhook.",

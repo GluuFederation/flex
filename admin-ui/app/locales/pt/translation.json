@@ -864,7 +864,7 @@
     "webhook_deleted_successfully": "Webhook excluído com sucesso",
     "all_webhooks_triggered_successfully": "Todos os webhooks foram acionados com sucesso.",
     "webhook_triggered_successfully": "O webhook '{{name}}' foi acionado com sucesso.",
-    "webhook_triggered_failed": "O webhook '{{name}}' falhou: {{message}}",
+    "webhook_triggered_failed": "O webhook '{{name}}' falhou.",
     "webhooks_triggered_with_failures": "Webhook(s) acionado mas falhou:",
     "no_message": "Sem mensagem",
     "failed_to_trigger_webhook": "Algo deu errado ao acionar o webhook.",
