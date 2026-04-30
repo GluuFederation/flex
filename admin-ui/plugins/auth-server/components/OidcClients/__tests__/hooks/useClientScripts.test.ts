@@ -17,7 +17,7 @@ jest.mock('@/utils/errorHandler', () => ({
 const mockUseGetConfigScripts = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
-  useGetConfigScripts: (...args: unknown[]) => mockUseGetConfigScripts(...args),
+  useGetConfigScripts: mockUseGetConfigScripts,
 }))
 
 beforeEach(() => {

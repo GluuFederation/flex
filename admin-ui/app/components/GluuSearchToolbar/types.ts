@@ -28,7 +28,7 @@ export type DateInputDef = {
 export type PrimaryActionDef = {
   label: string
   icon?: ReactNode
-  onClick: () => void
+  onClick?: () => void
   disabled?: boolean
 }
 
@@ -43,6 +43,7 @@ type DateRangeConfig = {
   layout?: 'grid' | 'row'
   labelAsTitle?: boolean
   inputHeight?: number
+  showTime?: boolean
 }
 
 type GluuSearchToolbarBaseProps = {

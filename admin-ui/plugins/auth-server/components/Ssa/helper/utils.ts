@@ -30,7 +30,7 @@ export const logSsaCreation = async (payload: SsaFormValues, message?: string): 
       payload: serialized,
     })
   } catch (error) {
-    devLogger.error('Failed to log SSA creation:', error)
+    devLogger.error('Failed to log SSA creation:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -51,7 +51,7 @@ export const logSsaDeletion = async (
       payload: toJsonObject({ ...(payload || {}), jti }),
     })
   } catch (error) {
-    devLogger.error('Failed to log SSA deletion:', error)
+    devLogger.error('Failed to log SSA deletion:', error instanceof Error ? error : String(error))
   }
 }
 

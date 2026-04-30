@@ -37,7 +37,10 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    devLogger.error('Failed to extract user theme, using default:', e)
+    devLogger.error(
+      'Failed to extract user theme, using default:',
+      e instanceof Error ? e : String(e),
+    )
     return DEFAULT_THEME
   }
 }
@@ -62,11 +65,17 @@ const getInitialTheme = (): ThemeValue => {
     window.localStorage.setItem('initTheme', DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    devLogger.error('Failed to get initial theme, using default:', e)
+    devLogger.error(
+      'Failed to get initial theme, using default:',
+      e instanceof Error ? e : String(e),
+    )
     try {
       window.localStorage.setItem('initTheme', DEFAULT_THEME)
     } catch (e) {
-      devLogger.warn('Failed to write default theme to localStorage:', e)
+      devLogger.warn(
+        'Failed to write default theme to localStorage:',
+        e instanceof Error ? e : String(e),
+      )
     }
     return DEFAULT_THEME
   }
@@ -98,7 +107,10 @@ const getUserInum = (): string | null => {
       return userInfo?.inum || null
     }
   } catch (e) {
-    devLogger.warn('Failed to parse userInfo from localStorage:', e)
+    devLogger.warn(
+      'Failed to parse userInfo from localStorage:',
+      e instanceof Error ? e : String(e),
+    )
   }
   return null
 }
@@ -131,7 +143,10 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
 
       hasSyncedRef.current = true
     } catch (e) {
-      devLogger.error('Failed to sync theme in useEffect, ensuring default:', e)
+      devLogger.error(
+        'Failed to sync theme in useEffect, ensuring default:',
+        e instanceof Error ? e : String(e),
+      )
       try {
         const currentTheme = window.localStorage.getItem('initTheme')
         if (!currentTheme || !isValidTheme(currentTheme)) {
@@ -142,7 +157,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        devLogger.error(error)
+        devLogger.error(error instanceof Error ? error : String(error))
       }
     }
   }, [])

@@ -46,12 +46,6 @@ export type UserFormProps = {
   isSubmitting?: boolean
 }
 
-export type UserEditPageState = {
-  persistenceTypeReducer: {
-    type: string
-  }
-}
-
 export type FormOperation = {
   path: string
   value: string | string[] | boolean

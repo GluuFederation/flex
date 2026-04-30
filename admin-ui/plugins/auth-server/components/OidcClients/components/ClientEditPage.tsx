@@ -57,7 +57,7 @@ const ClientEditPage = (): JSX.Element => {
         await updateClient(data)
         navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
-        devLogger.error('Failed to update client:', error)
+        devLogger.error('Failed to update client:', error instanceof Error ? error : String(error))
       }
     },
     [updateClient, navigateBack],

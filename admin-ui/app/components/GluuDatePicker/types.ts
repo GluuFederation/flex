@@ -9,6 +9,7 @@ export type PickerThemeColors = {
   inputTextColor: string
   labelColor: string
   borderColor: string
+  popupBorderColor: string
   popupBg: string
   selectedBg: string
   selectedText: string
@@ -32,6 +33,7 @@ type GluuDatePickerBase = {
   textColor?: string
   backgroundColor?: string
   inputHeight?: number
+  showTime?: boolean
 }
 
 export type GluuDatePickerSingleProps = GluuDatePickerBase & {

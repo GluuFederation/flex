@@ -56,7 +56,7 @@ const GluuDatePicker = memo(
     const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
     const showTime = isRange ? (props.showTime ?? false) : false
     const defaultFormat = showTime
-      ? DATE_FORMATS.DATETIME_PICKER_DISPLAY
+      ? DATE_FORMATS.DATE_PICKER_DATETIME
       : DATE_FORMATS.DATE_PICKER_DISPLAY_US
     const displayFormat = props.dateFormat ?? props.format ?? defaultFormat
 
@@ -81,9 +81,13 @@ const GluuDatePicker = memo(
       )
     }
 
+    const SinglePicker = props.showTime ? DateTimePicker : DatePicker
+    const effectiveSlotProps = props.showTime
+      ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
+      : slotProps
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
+        <SinglePicker
           format={displayFormat}
           label={props.label ?? ''}
           value={props.value ?? null}
@@ -91,8 +95,9 @@ const GluuDatePicker = memo(
           onAccept={props.onAccept}
           minDate={props.minDate}
           maxDate={props.maxDate}
-          slotProps={slotProps}
+          slotProps={effectiveSlotProps}
           sx={datePickerSx}
+          {...(props.showTime ? { closeOnSelect: false } : {})}
         />
       </LocalizationProvider>
     )
@@ -113,6 +118,7 @@ const GluuDatePicker = memo(
       prev.label === next.label &&
       (prev.labelShrink ?? true) === (next.labelShrink ?? true) &&
       (prev.dateFormat ?? prev.format) === (next.dateFormat ?? next.format) &&
+      prev.showTime === next.showTime &&
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
@@ -121,8 +127,6 @@ const GluuDatePicker = memo(
     )
   },
 )
-
-GluuDatePicker.displayName = 'GluuDatePicker'
 
 const GluuDatePickerRange = memo(
   ({
@@ -240,6 +244,7 @@ const GluuDatePickerRange = memo(
 )
 
 GluuDatePickerRange.displayName = 'GluuDatePickerRange'
+GluuDatePicker.displayName = 'GluuDatePicker'
 
 export { GluuDatePicker }
 export default GluuDatePicker

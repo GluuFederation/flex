@@ -2,6 +2,7 @@ import type React from 'react'
 import type { LicenseResponse, Client, JansAttribute } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange } from 'Plugins/admin/components/MAU/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { ServiceStatusValue } from '@/constants'
 
 export type { LicenseResponse, MauStatEntry, MauDateRange }
 
@@ -43,7 +44,7 @@ export type DashboardSummaryItem = {
   color?: string
 }
 
-export type ServiceStatusValue = 'up' | 'down' | 'degraded' | 'unknown'
+export type { ServiceStatusValue }
 
 export type ServiceHealth = {
   name: string

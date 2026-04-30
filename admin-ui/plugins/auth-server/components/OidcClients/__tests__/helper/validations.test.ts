@@ -7,7 +7,12 @@ const t = ((key: string) => key) as TFunction
 const schema = getClientValidationSchema(t)
 
 // Helper to cast partial values to whatever Yup expects
-const validate = (values: Record<string, unknown>) => schema.validate(values, { abortEarly: false })
+const validate = (
+  values: Record<
+    string,
+    string | string[] | number | boolean | null | undefined | Record<string, string | null>
+  >,
+) => schema.validate(values, { abortEarly: false })
 
 // ---------------------------------------------------------------------------
 // clientName

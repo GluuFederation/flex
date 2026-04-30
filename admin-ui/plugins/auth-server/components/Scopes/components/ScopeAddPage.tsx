@@ -43,7 +43,7 @@ const ScopeAddPage: React.FC = () => {
       try {
         await createScope(data, modifiedFields)
       } catch (error) {
-        devLogger.error('Error creating scope:', error)
+        devLogger.error('Error creating scope:', error instanceof Error ? error : String(error))
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },

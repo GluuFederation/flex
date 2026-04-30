@@ -28,7 +28,7 @@ const sanitizeValue = (value: SanitizableValue, depth: number): SanitizedValue =
       ? `${value.slice(0, MAX_STRING_LENGTH)}... [truncated]`
       : value
   if (Array.isArray(value)) {
-    return value.map((item) => sanitizeValue(item, depth + 1) ?? null)
+    return value.map((item) => sanitizeValue(item as SanitizableValue, depth + 1) ?? null)
   }
   if (typeof value === 'object') {
     const out: JsonObject = {}
@@ -76,7 +76,10 @@ export const useAssetAudit = () => {
       try {
         await postUserAction(audit as UserActionPayload)
       } catch (err) {
-        devLogger.error('[Asset audit] postUserAction failed', err)
+        devLogger.error(
+          '[Asset audit] postUserAction failed',
+          err instanceof Error ? err : String(err),
+        )
       }
     },
     [initAudit],

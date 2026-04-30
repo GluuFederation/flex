@@ -9,7 +9,7 @@ export const redirectSessionExpired = async (message = 'Session expired'): Promi
     const response = await fetchApiTokenWithDefaultScopes()
     await deleteAdminUiSession(response.access_token)
   } catch (e) {
-    devLogger.error('Error during logout cleanup:', e)
+    devLogger.error('Error during logout cleanup:', e instanceof Error ? e : String(e))
   } finally {
     window.location.href = '/admin/logout'
   }

@@ -196,7 +196,7 @@ const ScopeListPage: React.FC = () => {
         setModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error('Error deleting scope:', error)
+        devLogger.error('Error deleting scope:', error instanceof Error ? error : String(error))
       }
     },
     [itemToDelete, deleteScope, logScopeDeletion, dispatch],

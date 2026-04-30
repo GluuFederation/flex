@@ -1,6 +1,6 @@
 interface RequireContext {
   keys(): string[]
-  (id: string): unknown
+  (id: string): object
   <T>(id: string): T
   resolve(id: string): string
   id: string | number

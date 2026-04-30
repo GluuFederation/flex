@@ -24,7 +24,7 @@ jest.mock('@tanstack/react-query', () => ({
 }))
 
 jest.mock('@/utils/queryUtils', () => ({
-  invalidateQueriesByKey: (...args: unknown[]) => mockInvalidateQueriesByKey(...args),
+  invalidateQueriesByKey: mockInvalidateQueriesByKey,
 }))
 
 jest.mock('Plugins/admin/redux/features/WebhookSlice', () => ({

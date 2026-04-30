@@ -53,7 +53,7 @@ describe('toScopeJsonRecord', () => {
 
   it('should produce an independent copy (mutations do not affect original)', () => {
     const result = toScopeJsonRecord(openidScope)
-    ;(result as Record<string, unknown>).id = 'mutated'
+    result.id = 'mutated'
     expect(openidScope.id).toBe('openid')
   })
 })

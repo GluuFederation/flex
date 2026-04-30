@@ -1,8 +1,10 @@
-interface YamlModuleContent {
+type YamlValue = string | number | boolean | null | { [key: string]: YamlValue } | YamlValue[]
+
+type YamlModuleContent = {
   components?: {
-    schemas?: Record<string, unknown>
+    schemas?: Record<string, YamlValue>
   }
-  [key: string]: unknown
+  [key: string]: YamlValue
 }
 
 declare module '*.yaml' {

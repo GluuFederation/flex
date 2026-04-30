@@ -1,6 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { createDate, subtractDate, isValidDate, isAfterDate } from '@/utils/dayjsUtils'
+import {
+  createDate,
+  subtractDate,
+  isValidDate,
+  DATE_FORMATS,
+  toApiDatetime,
+} from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import SearchIcon from '@mui/icons-material/Search'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
@@ -19,14 +25,20 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import SetTitle from 'Utils/SetTitle'
 import { useStyles } from './AuditListPage.style'
-import { auditListTimestampRegex, dateConverter, hasBothDates } from 'Plugins/admin/helper/utils'
-import { useGetAuditData, GetAuditDataParams } from 'JansConfigApi'
+import { auditListTimestampRegex, hasBothDates } from 'Plugins/admin/helper/utils'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetAuditData, getGetAuditDataQueryKey, GetAuditDataParams } from 'JansConfigApi'
 import type { AuditRow } from './types'
 import {
   getDefaultPagingSize,
   getRowsPerPageOptions,
   usePaginationState,
 } from '@/utils/pagingUtils'
+
+const getDefaultRange = () => ({
+  start: subtractDate(createDate(), 14, 'day').startOf('day'),
+  end: createDate(),
+})
 
 const AUDIT_LOGS_RESOURCE_ID = ADMIN_UI_RESOURCES.AuditLogs
 const AUDIT_LOGS_SCOPES = CEDAR_RESOURCE_SCOPES[AUDIT_LOGS_RESOURCE_ID] ?? []
@@ -53,9 +65,8 @@ const splitTimestamp = (timestamp: string): { datePart: string; timePart: string
 const AuditListPage: React.FC = () => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
-  const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes } = useStyles({ isDark: themeState.theme === THEME_DARK, themeColors })
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   SetTitle(t(T_KEYS.TITLE_AUDIT_LOGS))
@@ -71,35 +82,30 @@ const AuditListPage: React.FC = () => {
     }
   }, [authorizeHelper])
 
+  const queryClient = useQueryClient()
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
-  const [startDate, setStartDate] = useState<Dayjs | null>(() =>
-    subtractDate(createDate(), 14, 'day'),
-  )
-  const [endDate, setEndDate] = useState<Dayjs | null>(() => createDate())
-  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => {
-    const start = subtractDate(createDate(), 14, 'day')
-    const end = createDate()
-    return {
-      limit: getDefaultPagingSize(),
-      startIndex: 0,
-      start_date: dateConverter(start),
-      end_date: dateConverter(end),
-    }
-  })
+  const initialRange = useRef(getDefaultRange())
+  const [startDate, setStartDate] = useState<Dayjs | null>(() => initialRange.current.start)
+  const [endDate, setEndDate] = useState<Dayjs | null>(() => initialRange.current.end)
+  const [queryParams, setQueryParams] = useState<GetAuditDataParams>(() => ({
+    limit: getDefaultPagingSize(),
+    startIndex: 0,
+    start_date: toApiDatetime(initialRange.current.start),
+    end_date: toApiDatetime(initialRange.current.end),
+  }))
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs },
   })
-  const loading = useMemo(() => isLoading || isFetching, [isLoading, isFetching])
   const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data?.totalEntriesCount])
   const entries = useMemo(() => data?.entries ?? [], [data?.entries])
 
   const filterState = useMemo(
     () => ({
       hasBothDates: hasBothDates(startDate, endDate),
-      startDateApi: isValidDate(startDate) ? dateConverter(startDate) : '',
-      endDateApi: isValidDate(endDate) ? dateConverter(endDate) : '',
+      startDateApi: isValidDate(startDate) ? toApiDatetime(startDate!) : '',
+      endDateApi: isValidDate(endDate) ? toApiDatetime(endDate!) : '',
     }),
     [startDate, endDate],
   )
@@ -115,7 +121,7 @@ const AuditListPage: React.FC = () => {
         limit: currentLimit,
         startIndex: currentStartIndex,
       }
-      if (currentPattern.trim()) params.pattern = currentPattern.trim()
+      params.pattern = currentPattern.trim()
       if (currentFilters.hasBothDates) {
         params.start_date = currentFilters.startDateApi
         params.end_date = currentFilters.endDateApi
@@ -138,72 +144,40 @@ const AuditListPage: React.FC = () => {
     [buildQueryParams, onPagingSizeSync],
   )
 
-  const handleSearch = useCallback(() => {
-    if (!filterState.hasBothDates) return
-    setPageNumber(0)
-    const nextParams = buildQueryParams(limit, 0, pattern, filterState)
-    setQueryParams(nextParams)
-  }, [buildQueryParams, limit, pattern, filterState])
+  const handleSearch = useCallback(
+    (val: string) => {
+      if (!filterStateRef.current.hasBothDates) return
+      setPattern(val)
+      patternRef.current = val
+      setPageNumber(0)
+      const nextParams = buildQueryParams(limit, 0, val, filterStateRef.current)
+      setQueryParams(nextParams)
+      queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(nextParams) })
+    },
+    [buildQueryParams, limit, queryClient],
+  )
 
   const handleRefresh = useCallback(() => {
-    if (!filterState.hasBothDates) return
-    setPageNumber(0)
+    const { start: resetStart, end: resetEnd } = getDefaultRange()
+    const resetParams = buildQueryParams(limit, 0, '', {
+      hasBothDates: true,
+      startDateApi: toApiDatetime(resetStart),
+      endDateApi: toApiDatetime(resetEnd),
+    })
+    setStartDate(resetStart)
+    setEndDate(resetEnd)
     setPattern('')
-    setQueryParams(buildQueryParams(limit, 0, '', filterState))
-  }, [buildQueryParams, limit, filterState])
+    setPageNumber(0)
+    setQueryParams(resetParams)
+    queryClient.invalidateQueries({ queryKey: getGetAuditDataQueryKey(resetParams) })
+  }, [buildQueryParams, limit, queryClient])
 
-  const handleStartDateChange = useCallback((date: Dayjs | null) => {
+  const handleStartDate = useCallback((date: Dayjs | null) => {
     setStartDate(date)
   }, [])
-  const handleEndDateChange = useCallback((date: Dayjs | null) => {
+  const handleEndDate = useCallback((date: Dayjs | null) => {
     setEndDate(date)
   }, [])
-
-  const refreshWithNewDates = useCallback(
-    (newStartApi: string, newEndApi: string) => {
-      if (!newStartApi || !newEndApi) return
-      setPageNumber(0)
-      setQueryParams(
-        buildQueryParams(limit, 0, pattern, {
-          hasBothDates: true,
-          startDateApi: newStartApi,
-          endDateApi: newEndApi,
-        }),
-      )
-    },
-    [buildQueryParams, limit, pattern],
-  )
-
-  const handleStartDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      setStartDate(date)
-      if (
-        date &&
-        endDate &&
-        isValidDate(date) &&
-        isValidDate(endDate) &&
-        !isAfterDate(date, endDate)
-      ) {
-        refreshWithNewDates(dateConverter(date), dateConverter(endDate))
-      }
-    },
-    [endDate, refreshWithNewDates],
-  )
-  const handleEndDateAccept = useCallback(
-    (date: Dayjs | null) => {
-      setEndDate(date)
-      if (
-        date &&
-        startDate &&
-        isValidDate(startDate) &&
-        isValidDate(date) &&
-        !isAfterDate(startDate, date)
-      ) {
-        refreshWithNewDates(dateConverter(startDate), dateConverter(date))
-      }
-    },
-    [startDate, refreshWithNewDates],
-  )
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -348,28 +322,22 @@ const AuditListPage: React.FC = () => {
     () => ({
       label: t(T_KEYS.ACTION_SEARCH),
       icon: <SearchIcon className={classes.searchActionIcon} />,
-      onClick: handleSearch,
     }),
-    [t, handleSearch, classes.searchActionIcon],
+    [t, classes.searchActionIcon],
   )
 
   const dateRangeConfig = useMemo(
     () => ({
       startDate,
       endDate,
-      onStartDateChange: handleStartDateChange,
-      onEndDateChange: handleEndDateChange,
-      onStartDateAccept: handleStartDateAccept,
-      onEndDateAccept: handleEndDateAccept,
+      onStartDateChange: handleStartDate,
+      onEndDateChange: handleEndDate,
+      onStartDateAccept: handleStartDate,
+      onEndDateAccept: handleEndDate,
+      showTime: true,
+      dateFormat: DATE_FORMATS.DATE_PICKER_DATETIME,
     }),
-    [
-      startDate,
-      endDate,
-      handleStartDateChange,
-      handleEndDateChange,
-      handleStartDateAccept,
-      handleEndDateAccept,
-    ],
+    [startDate, endDate, handleStartDate, handleEndDate],
   )
 
   const emptyMessage = useMemo(
@@ -378,7 +346,7 @@ const AuditListPage: React.FC = () => {
   )
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={isLoading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadAuditLogs}>
           <div className={classes.searchCard}>
@@ -388,12 +356,12 @@ const AuditListPage: React.FC = () => {
                 searchPlaceholder={t(T_KEYS.PLACEHOLDER_SEARCH_PATTERN)}
                 searchValue={pattern}
                 onSearch={setPattern}
-                onSearchSubmit={handleSearch}
+                onSearchSubmit={(val) => handleSearch(val)}
                 dateRange={dateRangeConfig}
                 onRefresh={handleRefresh}
-                refreshLoading={loading}
+                refreshLoading={isFetching}
                 primaryAction={searchPrimaryAction}
-                disabled={loading}
+                disabled={isFetching}
               />
             </div>
           </div>

@@ -40,32 +40,51 @@ sudo SUSEConnect -p PackageHub/15.4/x86_64
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P /tmp
 ```
+- Go to `/tmp` directory:
 
-- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
-  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
-  import the GPG key.
-```shell
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
-```
-```shell
-unzip automation-flex-public-gpg.zip
-```
-```shell
-sudo rpm -import automation-flex-public-gpg.asc
-```
-
-Verify integrity of the downloaded package by verifying published `sha256sum`.
-
-  * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex-replace-flex-version-stable.suse15.x86_64.rpm` file:
-  * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
-      ```bash title="Command"
-      echo 'paste-release-sha256sum flex-replace-flex-version-stable.suse15.x86_64.rpm' | sed 's/^sha256://' > flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum && sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
-      ```
-  * Output similar to below should confirm the integrity of the downloaded package.
     ```bash title="Command"
-    flex-replace-flex-version-stable.suse15.x86_64.rpm: OK
+    cd /tmp
+    ```
+
+- Verify the cryptographic signature using cosign (primary verification):
+
+    !!! Note
+        Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
+
+    - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases/latest) page:
+
+        ```bash title="Command"
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-janssen-version/flex_replace-flex-version-stable.bundle -P /tmp
+        ```
+
+    - Verify the signature:
+
+        ```bash title="Command"
+        cosign verify-blob \
+          --bundle flex_replace-flex-version-stable.bundle \
+          --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
+          --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+          flex-replace-flex-version-stable.suse16.x86_64.rpm
+        ```
+
+        Output similar to below confirms the package was signed by the Janssen CI pipeline:
+
+        ```text title="Output"
+        Verified OK
+        ```
+
+- Optionally, verify integrity using the published checksum file (secondary check):
+
+    ```bash title="Command"
+       echo 'paste-release-sha256sum flex-replace-flex-version-stable.suse16.x86_64.rpm' | sed 's/^sha256://' >flex-replace-flex-version-stable.suse16.x86_64.rpm.sha256sum && sha256sum -c flex-replace-flex-version-stable.suse16.x86_64.rpm.sha256sum
+    ```
+
+    Output similar to below should confirm the integrity of the downloaded package.
+
+    ```text title="Output"
+    flex-replace-flex-version-stable.suse16.x86_64.rpm: OK
     ```
 
 

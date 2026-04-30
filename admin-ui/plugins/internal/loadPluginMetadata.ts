@@ -8,7 +8,7 @@ try {
 } catch (err) {
   devLogger.error(
     '[loadPluginMetadata] require.context failed; no plugin metadata will be available',
-    err,
+    err instanceof Error ? err : String(err),
   )
   context = null
 }
@@ -40,7 +40,7 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   } catch (err) {
     devLogger.error(
       `[loadPluginMetadata] Loader failed for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
-      err,
+      err instanceof Error ? err : String(err),
     )
     return createFallbackMetadata()
   }

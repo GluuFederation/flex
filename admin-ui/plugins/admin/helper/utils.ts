@@ -1,11 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
-import type { Dayjs } from '@/utils/dayjsUtils'
+import { type Dayjs, isValidDate as isValidDateUtil, isAfterDate } from '@/utils/dayjsUtils'
 import {
   REGEX_AUDIT_LIST_TIMESTAMP,
   REGEX_BRACED_PLACEHOLDER,
   regexForBracedKey,
 } from '@/utils/regex'
-import { isValidDate as isValidDateUtil, isAfterDate, formatDate } from '@/utils/dayjsUtils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { WebhookOutputItem, WebhookWithBody } from './types'
 
@@ -18,9 +17,13 @@ const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue
     if (acc == null || typeof acc !== 'object') return undefined
     if (Array.isArray(acc)) {
       const index = Number(part)
-      return Number.isInteger(index) && index >= 0 && index < acc.length ? acc[index] : undefined
+      return Number.isInteger(index) && index >= 0 && index < acc.length
+        ? (acc[index] as JsonValue | undefined)
+        : undefined
     }
-    return part in acc ? (acc as Record<string, JsonValue>)[part] : undefined
+    return part in acc
+      ? ((acc as Record<string, JsonValue>)[part] as JsonValue | undefined)
+      : undefined
   }, obj as JsonValue)
 }
 
@@ -30,20 +33,11 @@ export const hasValue = <T>(value: T): value is NonNullable<T> =>
 export const hasBothDates = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate
 
-export const hasOnlyOneDate = (startDate: DateLike, endDate: DateLike): boolean =>
-  (!!startDate && !endDate) || (!startDate && !!endDate)
-
 export const isValidDate = (date: DateLike): boolean => isValidDateUtil(date)
 
 export const isStartAfterEnd = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate && isAfterDate(startDate, endDate)
 
-export const dateConverter = (date: DateLike, datePattern = 'DD-MM-YYYY'): string =>
-  formatDate(date, datePattern)
-
-export const clearControlledInput = (setValue: (v: string) => void): void => {
-  setValue('')
-}
 export const auditListTimestampRegex = REGEX_AUDIT_LIST_TIMESTAMP
 
 export const webhookOutputObject = (

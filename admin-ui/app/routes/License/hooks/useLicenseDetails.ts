@@ -80,7 +80,10 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
             await postUserAction(audit)
           } catch (e) {
             if (isDevelopment) {
-              devLogger.error('License reset audit post failed:', e)
+              devLogger.error(
+                'License reset audit post failed:',
+                e instanceof Error ? e : String(e),
+              )
             }
           }
         }

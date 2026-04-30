@@ -88,7 +88,10 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
           }
           await logConfigApiUpdate(message, auditPayload)
         } catch (auditError) {
-          devLogger.error('Error logging audit:', auditError)
+          devLogger.error(
+            'Error logging audit:',
+            auditError instanceof Error ? auditError : String(auditError),
+          )
           auditSuccess = false
         }
 
@@ -98,7 +101,7 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
           toast.warning(t('messages.success_in_saving_audit_failed'))
         }
       } catch (err) {
-        devLogger.error('Error updating config:', err)
+        devLogger.error('Error updating config:', err instanceof Error ? err : String(err))
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
         setErrorMessage(errorMsg)
         toast.error(errorMsg)

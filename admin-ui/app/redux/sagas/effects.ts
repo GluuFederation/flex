@@ -1,7 +1,8 @@
 import { takeEvery as sagaTakeEvery, takeLatest as sagaTakeLatest } from 'redux-saga/effects'
 import type { ActionPattern, ForkEffect } from 'redux-saga/effects'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-type BaseAction = { type: string; payload?: unknown }
+type BaseAction = { type: string; payload?: JsonValue | Record<string, JsonValue | undefined> }
 
 export const takeEvery = <A extends BaseAction = BaseAction>(
   pattern: string,

@@ -1,9 +1,6 @@
-import { useMemo, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useMemo } from 'react'
+import { useAppSelector } from '@/redux/hooks'
 import { useGetLockStat, type JsonNode } from 'JansConfigApi'
-import { updateToast } from 'Redux/features/toastSlice'
-import { getQueryErrorMessage } from '@/utils/errorHandler'
 import type { LockStatEntry } from '../types'
 
 const transformLockStats = (data: JsonNode[] | undefined): LockStatEntry[] => {
@@ -23,8 +20,6 @@ interface UseDashboardLockStatsOptions {
 }
 
 export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
-  const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { enabled = true } = options
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
@@ -35,12 +30,6 @@ export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}
       retry: false,
     },
   })
-
-  useEffect(() => {
-    if (!query.isError) return
-    const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
-    dispatch(updateToast(true, 'error', errorMsg))
-  }, [query.isError, query.error, dispatch, t])
 
   const latestStats = useMemo(() => {
     const data = query.data

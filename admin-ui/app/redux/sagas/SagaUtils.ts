@@ -34,7 +34,7 @@ export function* redirectToLogout(message = 'Session expired') {
     const response = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
     yield call(deleteAdminUiSession, response.access_token)
   } catch (e) {
-    devLogger.error('Error during logout cleanup:', e)
+    devLogger.error('Error during logout cleanup:', e instanceof Error ? e : String(e))
   } finally {
     window.location.href = '/admin/logout'
   }

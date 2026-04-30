@@ -75,7 +75,7 @@ export const logUserCreation = async (_data: CustomUser, payload: CustomUser): P
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user creation:', error)
+    devLogger.error('Failed to log user creation:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -100,26 +100,29 @@ export const logUserUpdate = async (_data: CustomUser, payload: CustomUser): Pro
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user update:', error)
+    devLogger.error('Failed to log user update:', error instanceof Error ? error : String(error))
   }
 }
 
 export const logUserDeletion = async (inum: string, userData?: CustomUser): Promise<void> => {
   try {
     const { client_id, userinfo } = getCurrentAuditContext()
-    const payload = userData || { inum }
-    const extendedPayload = userData as AuditPayload | undefined
-    const message = extendedPayload?.action_message || extendedPayload?.message || 'Deleted user'
+    const auditPayload: AuditPayload = { inum, ...(userData || {}) }
+    redactSensitiveData(auditPayload)
+    const message =
+      (userData as AuditPayload | undefined)?.action_message ||
+      (userData as AuditPayload | undefined)?.message ||
+      'Deleted user'
     await logAuditUserAction({
       userinfo,
       action: DELETION,
       resource: API_USERS,
       message,
       client_id,
-      payload,
+      payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log user deletion:', error)
+    devLogger.error('Failed to log user deletion:', error instanceof Error ? error : String(error))
   }
 }
 
@@ -147,7 +150,10 @@ export const logPasswordChange = async (
       payload: auditPayload,
     })
   } catch (error) {
-    devLogger.error('Failed to log password change:', error)
+    devLogger.error(
+      'Failed to log password change:',
+      error instanceof Error ? error : String(error),
+    )
   }
 }
 

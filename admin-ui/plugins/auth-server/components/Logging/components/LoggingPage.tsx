@@ -165,7 +165,10 @@ const LoggingPage = (): React.ReactElement => {
         closeCommitDialog()
         setPendingValues(null)
       } catch (error) {
-        devLogger.error('Failed to update logging config:', error)
+        devLogger.error(
+          'Failed to update logging config:',
+          error instanceof Error ? error : String(error),
+        )
         dispatch(updateToast(true, 'error', t('messages.error_processing_request')))
       }
     },

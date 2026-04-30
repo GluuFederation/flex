@@ -177,7 +177,10 @@ const JansAssetListPage: React.FC = () => {
           refetch()
           setDeleteData(null)
         } catch (err) {
-          devLogger.error('[Asset delete] submitForm failed', err)
+          devLogger.error(
+            '[Asset delete] submitForm failed',
+            err instanceof Error ? err : String(err),
+          )
         }
       }
     },

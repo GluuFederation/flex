@@ -5,17 +5,11 @@ import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } 
 
 export type { AdditionalPayload }
 
-export const isFourZeroThreeError = (error?: HttpError | unknown): boolean => {
+export const isFourZeroThreeError = (error?: HttpError | Error): boolean => {
   if (!error || typeof error !== 'object') return false
   const axiosStatus = (error as AxiosErrorLike)?.response?.status
   const directStatus = (error as DirectStatusError)?.status
   return axiosStatus === 403 || directStatus === 403
-}
-
-export const saveState = (state?: string | null): void => {
-  if (state) {
-    localStorage.setItem('gluu.flow.state', state)
-  }
 }
 
 export const saveIssuer = (issuer: string): void => {
@@ -24,10 +18,6 @@ export const saveIssuer = (issuer: string): void => {
 
 export const getIssuer = (): string | null => {
   return localStorage.getItem('issuer')
-}
-
-export const isValidState = (newState?: string | null): boolean => {
-  return localStorage.getItem('gluu.flow.state') === newState
 }
 
 export const addAdditionalData = (

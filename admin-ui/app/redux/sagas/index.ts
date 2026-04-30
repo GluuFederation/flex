@@ -18,7 +18,7 @@ import appInitSaga from './AppInitSaga'
 
 export default function* rootSaga() {
   const pluginSagaArr = process()
-  yield all([
+  const coreSagas = [
     authSagas(),
     initSaga(),
     licenseSaga(),
@@ -28,7 +28,6 @@ export default function* rootSaga() {
     lockSaga(),
     sessionSaga(),
     appInitSaga(),
-
-    ...pluginSagaArr.map((saga) => saga()),
-  ] as SagaIterator[])
+  ]
+  yield all([...coreSagas, ...pluginSagaArr] as SagaIterator[])
 }

@@ -1,27 +1,19 @@
-import { all, call, fork, put, takeLatest, select } from 'redux-saga/effects'
-import type { SelectEffect } from 'redux-saga/effects'
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getOidcDiscoveryResponse } from '../actions'
 import { isFourZeroThreeError } from 'Utils/TokenController'
-import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
-import { getClient } from '../api/base'
 import { redirectToLogout } from '../sagas/SagaUtils'
 import type { HttpErrorLike } from './types'
-import * as JansConfigApi from 'jans_config_api'
-
-function* newFunction(): Generator<SelectEffect, OidcDiscoveryApi, string> {
-  const issuer = (yield select(
-    (state: { authReducer: { issuer: string } }) => state.authReducer.issuer,
-  )) as string
-  const api = new JansConfigApi.ConfigurationPropertiesApi(getClient(JansConfigApi, null, issuer))
-  return new OidcDiscoveryApi(api)
-}
+import { getProperties } from 'JansConfigApi'
+import type { OidcDiscoveryConfig } from 'Redux/types'
 
 export function* getOidcDiscovery() {
   try {
-    const api: OidcDiscoveryApi = yield* newFunction()
-    const data = (yield call([api, api.getOidcDiscovery])) as Awaited<
-      ReturnType<OidcDiscoveryApi['getOidcDiscovery']>
-    >
+    const raw = (yield call(getProperties)) as Record<string, string | number | boolean | null>
+    const data: OidcDiscoveryConfig = Object.fromEntries(
+      Object.entries(raw ?? {}).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string',
+      ),
+    )
     yield put(getOidcDiscoveryResponse({ configuration: data }))
   } catch (e) {
     yield put(getOidcDiscoveryResponse({ configuration: null }))
