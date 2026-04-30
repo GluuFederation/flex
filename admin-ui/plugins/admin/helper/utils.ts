@@ -99,7 +99,6 @@ export const adminUiFeatures = {
   saml_configuration_write: 'saml_configuration_write',
   saml_idp_write: 'saml_idp_write',
   saml_delete: 'saml_idp_delete',
-  jans_keycloak_link_write: 'jans_keycloak_link_write',
   attributes_write: 'attributes_write',
   attributes_delete: 'attributes_delete',
   scim_configuration_edit: 'scim_configuration_edit',

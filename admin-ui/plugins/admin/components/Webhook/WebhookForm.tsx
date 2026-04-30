@@ -46,6 +46,12 @@ import type {
   WebhookEntry,
 } from './types'
 
+const toFeatureIds = (features: AuiFeature[]): string[] =>
+  features.map((f) => f.auiFeatureId).filter((id): id is string => Boolean(id))
+
+const haveFeaturesChanged = (a: AuiFeature[], b: AuiFeature[]): boolean =>
+  !isEqual(toFeatureIds(a), toFeatureIds(b))
+
 const WebhookForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>()
   const { t, i18n } = useTranslation()
@@ -133,7 +139,7 @@ const WebhookForm: React.FC = () => {
               value: Array.isArray(val) ? JSON.stringify(val) : String(val ?? ''),
             }
           })
-        if (!isEqual(selectedFeatures, baselineSelectedFeatures)) {
+        if (haveFeaturesChanged(selectedFeatures, baselineSelectedFeatures)) {
           ops.push({
             path: 'auiFeatureIds',
             value: JSON.stringify(
@@ -183,7 +189,7 @@ const WebhookForm: React.FC = () => {
   )
 
   const isFeatureSelectionChanged = useMemo(
-    () => !isEqual(selectedFeatures, baselineSelectedFeatures),
+    () => haveFeaturesChanged(selectedFeatures, baselineSelectedFeatures),
     [selectedFeatures, baselineSelectedFeatures],
   )
   const isFormChanged = formikDirty || isFeatureSelectionChanged

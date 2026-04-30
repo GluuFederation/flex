@@ -262,7 +262,7 @@ export const useCreateIdentityProvider = () => {
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
         triggerWebhookForFeature(
-          data.identityProvider as Record<string, JsonValue>,
+          result as Record<string, JsonValue>,
           adminUiFeatures.saml_idp_write,
         )
         logAudit(userMessage, data)
@@ -316,7 +316,7 @@ export const useUpdateIdentityProvider = () => {
         dispatch(updateToast(true, 'success'))
         setSavedForm(true)
         triggerWebhookForFeature(
-          data.identityProvider as Record<string, JsonValue>,
+          result as Record<string, JsonValue>,
           adminUiFeatures.saml_idp_write,
         )
         logAudit(userMessage, data)
@@ -536,7 +536,7 @@ export const useDeleteTrustRelationshipMutation = () => {
         await baseMutation.mutateAsync({ id })
         await queryClient.invalidateQueries({ queryKey: getGetTrustRelationshipsQueryKey() })
         dispatch(updateToast(true, 'success'))
-        triggerWebhookForFeature({ id }, adminUiFeatures.saml_delete)
+        triggerWebhookForFeature({ inum: id }, adminUiFeatures.saml_delete)
         logAudit(userMessage, id)
       } catch (error) {
         const errorMessage =
