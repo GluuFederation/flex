@@ -1,4 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import { toast } from 'react-toastify'
 import i18n from 'i18next'
 import type { SagaIterator } from 'redux-saga'
 import type { PayloadAction } from '@reduxjs/toolkit'
@@ -108,7 +109,9 @@ export function* triggerWebhookSaga({
     const enrichedResults = (responseItems ?? [])
       .map((body: WebhookTriggerResponseItem) => {
         const matchedOutput = outputObject.find(
-          (output) => output.webhookId === body?.responseObject?.inum,
+          (output) =>
+            output.webhookId === body?.responseObject?.webhookId ||
+            output.webhookId === body?.responseObject?.inum,
         )
         return matchedOutput ? { ...body, url: matchedOutput.url } : null
       })
@@ -120,7 +123,28 @@ export function* triggerWebhookSaga({
     yield put(setFeatureToTrigger(''))
 
     yield call(postUserAction, audit as UserActionPayload)
-    yield put(updateToast(true, 'success', i18n.t('messages.all_webhooks_triggered_successfully')))
+
+    if (enrichedResults.length > 0) {
+      enrichedResults.forEach((item) => {
+        const name =
+          item.responseObject?.webhookName ??
+          item.responseObject?.webhookId ??
+          i18n.t('messages.webhook_entity')
+        const isSuccess = item.success === true || String(item.success).toLowerCase() === 'true'
+        if (isSuccess) {
+          toast.success(i18n.t('messages.webhook_triggered_successfully', { name }))
+        } else {
+          toast.error(
+            i18n.t('messages.webhook_triggered_failed', {
+              name,
+              message: item.responseMessage ?? String(item.responseCode ?? ''),
+            }),
+          )
+        }
+      })
+    } else {
+      yield put(updateToast(true, 'error', i18n.t('messages.failed_to_trigger_webhook')))
+    }
   } catch (e) {
     const errMsg = getErrorMessage(e as Error | SagaErrorShape)
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${featureToTrigger || 'trigger'}`, {
