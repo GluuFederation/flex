@@ -29,12 +29,12 @@ export type ReportPiChartItemProps = {
 }
 
 export type PieChartLabelProps = {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
+  cx?: number
+  cy?: number
+  midAngle?: number
+  innerRadius?: number
+  outerRadius?: number
+  percent?: number
 }
 
 export type DashboardSummaryItem = {
@@ -64,15 +64,18 @@ export type DashboardChartProps = {
 }
 
 export type TooltipPayloadItem = {
-  dataKey?: string | number
-  value?: number
+  dataKey?:
+    | string
+    | number
+    | ((obj: Record<string, string | number | boolean | null>) => string | number | boolean | null)
+  value?: number | string | readonly (string | number)[]
   payload?: Record<string, string | number | boolean | null>
   color?: string
-  name?: string
+  name?: string | number
 }
 
 export type TooltipDesignProps = {
-  payload?: TooltipPayloadItem[]
+  payload?: ReadonlyArray<TooltipPayloadItem>
   active?: boolean
   backgroundColor?: string
   textColor?: string

@@ -16,12 +16,10 @@ import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
-import {
-  CedarlingLogType,
-  useCedarling,
-  ADMIN_UI_RESOURCES,
-  CEDAR_RESOURCE_SCOPES,
-} from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import {
   getDefaultPagingSize,
   savePagingSize as savePagingSizeToStorage,

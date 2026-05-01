@@ -7,7 +7,6 @@ module.exports = {
         runtime: 'automatic',
       },
     ],
-    '@babel/preset-flow',
     '@babel/preset-typescript',
   ],
   plugins: [

@@ -232,7 +232,7 @@ const JsonPropertyBuilder = ({
     if (!fieldTouched) return null
     if (!fieldError) return null
 
-    let errorMessage: string | null = null
+    let errorMessage: string | null
 
     if (Array.isArray(fieldError)) {
       const firstScalar = fieldError.find((item) => typeof item === 'string' && item.trim() !== '')

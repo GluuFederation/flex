@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppSelector } from '@/redux/hooks'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'

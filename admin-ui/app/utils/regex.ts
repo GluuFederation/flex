@@ -22,6 +22,8 @@ export const REGEX_AUDIT_LIST_TIMESTAMP = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}
 export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
 /** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
 export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
+/** Matches Python/Jinja-style %(key)s placeholders; used to detect un-substituted server-side templates (e.g. in index.html). */
+export const REGEX_PYTHON_PLACEHOLDER = /%\([^)]+\)s/
 /** Boundary between lower/number and upper case characters; used for camelCase to snake_case transforms. */
 export const REGEX_CAMEL_TO_SNAKE_BOUNDARY = /([a-z0-9])([A-Z])/g
 /** Boundary between a lowercase letter and an uppercase letter; used for camelCase to kebab-case transforms. */
@@ -72,6 +74,8 @@ export const REGEX_WHITESPACE_CHAR = /\s/g
 export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 /** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
+/** Matches a leading tilde in Sass/CSS imports so bundlers can normalize legacy webpack-style `~package/path` imports. */
+export const REGEX_STYLE_IMPORT_TILDE_PREFIX = /^~(?=.)/
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
 export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */

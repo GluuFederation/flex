@@ -31,6 +31,7 @@ export const downloadJSONFile = (data: object, filename: string = 'ssa.json'): v
   } catch (error) {
     throw new Error(
       `Failed to serialize data to JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      { cause: error },
     )
   }
 

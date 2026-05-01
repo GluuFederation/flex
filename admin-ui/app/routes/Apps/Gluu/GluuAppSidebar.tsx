@@ -26,7 +26,8 @@ import {
   ScriptsIcon,
   LockIcon,
 } from '../../../components/SVG'
-import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import type { AdminUiFeatureResource } from '@/cedarling/types'
 import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'

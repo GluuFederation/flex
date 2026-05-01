@@ -1,7 +1,9 @@
 import { FIDO_READ, FIDO_WRITE } from 'Utils/PermChecker'
-import Fido from './components/Fido'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const Fido = createLazyRoute(() => import('./components/Fido'))
 
 const pluginMetadata = {
   menus: [

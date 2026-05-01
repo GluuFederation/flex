@@ -18,7 +18,7 @@ import {
 import type { LoggingFormValues } from '../utils'
 import { Formik } from 'formik'
 import { useLoggingConfig, useUpdateLoggingConfig } from '../hooks'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'

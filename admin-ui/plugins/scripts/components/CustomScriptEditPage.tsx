@@ -14,7 +14,7 @@ import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './ho
 import CustomScriptForm from './CustomScriptForm'
 import { useStyles } from './styles/CustomScriptFormPage.style'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import { ROUTES } from '@/helpers/navigation'

@@ -31,15 +31,8 @@ export const useScopeAttributes = (params?: GetAttributesParams) => {
       const aggregated: AttributeEntry[] = []
       let startIndex = 0
 
-      // Iterate pages until the API returns fewer than pageSize entries
-      // (or until totalEntriesCount is reached) so no claims are truncated.
-      // eslint-disable-next-line no-constant-condition
       while (true) {
-        const page = await getAttributes(
-          { ...baseParams, limit: pageSize, startIndex },
-          undefined,
-          signal,
-        )
+        const page = await getAttributes({ ...baseParams, limit: pageSize, startIndex }, signal)
         const entries = (page?.entries ?? []) as AttributeEntry[]
         aggregated.push(...entries)
 

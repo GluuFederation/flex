@@ -13,9 +13,11 @@ const config: Config = {
     url: 'https://admin-ui-test.gluu.org/',
   },
   moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$': '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$': '<rootDir>/__mocks__/fileMock.ts',
+    '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.ts',
     '^@janssenproject/cedarling_wasm$': '<rootDir>/__mocks__/@janssenproject/cedarling_wasm.ts',
+    '^@/utils/hmr$': '<rootDir>/__mocks__/hmr.ts',
+    '^@/utilities$': '<rootDir>/__mocks__/utilities.ts',
     '^@/(.*)$': '<rootDir>/app/$1',
     '^Components(.*)$': '<rootDir>/app/components$1',
     '^Context(.*)$': '<rootDir>/app/context$1',

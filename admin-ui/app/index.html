@@ -52,7 +52,10 @@
     </script>
   </head>
   <body>
-    <script src="/admin/env-config.js" defer></script>
+    <script>
+      window.configApiBaseUrl = 'https://%(hostname)s/jans-config-api'
+      window.apiBaseUrl = 'https://%(hostname)s/jans-config-api/admin-ui'
+    </script>
 
     <div id="root"><%= config.innerHtml || '' %></div>
 

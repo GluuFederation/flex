@@ -5,7 +5,9 @@ type LazyRouteWrapper = FunctionComponent & {
   preload: () => Promise<{ default: ComponentType }>
 }
 
-const createLazyRoute = (importFn: () => Promise<{ default: ComponentType }>): LazyRouteWrapper => {
+export const createLazyRoute = (
+  importFn: () => Promise<{ default: ComponentType }>,
+): LazyRouteWrapper => {
   const LazyComponent = lazy(importFn)
 
   const Wrapper = () => (

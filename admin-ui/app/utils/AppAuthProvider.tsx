@@ -75,7 +75,16 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const hasDispatchedConfigCheck = useRef(false)
   useEffect(() => {
     const params = queryString.parse(location.search)
-    if (!(params.code && params.scope && params.state) && !hasDispatchedConfigCheck.current) {
+    const hasCallbackParams = !!(params.code && params.scope && params.state)
+
+    if (hasCallbackParams && !getIssuer()) {
+      window.history.replaceState({}, '', window.location.pathname)
+      hasDispatchedConfigCheck.current = true
+      dispatch(checkLicenseConfigValid(undefined))
+      return
+    }
+
+    if (!hasCallbackParams && !hasDispatchedConfigCheck.current) {
       hasDispatchedConfigCheck.current = true
       dispatch(checkLicenseConfigValid(undefined))
     }
