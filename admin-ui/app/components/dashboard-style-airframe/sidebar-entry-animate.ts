@@ -85,9 +85,15 @@ export default class SidebarEntryAnimate {
         },
       })
 
-      timeline
-        .add(sidebarSectionsPreMenu, { delay: stagger(staggerDelay), opacity: [0, 1] })
-        .add(sideMenuEntries, {
+      if (sidebarSectionsPreMenu.length > 0) {
+        timeline.add(sidebarSectionsPreMenu, {
+          delay: stagger(staggerDelay),
+          opacity: [0, 1],
+        })
+      }
+
+      if (sideMenuEntries.length > 0) {
+        timeline.add(sideMenuEntries, {
           delay: stagger(staggerDelay),
           onBegin: () => {
             if (capturedMenuSection) {
@@ -96,7 +102,14 @@ export default class SidebarEntryAnimate {
           },
           opacity: [0, 1],
         })
-        .add(sidebarSectionsPostMenu, { delay: stagger(staggerDelay), opacity: [0, 1] })
+      }
+
+      if (sidebarSectionsPostMenu.length > 0) {
+        timeline.add(sidebarSectionsPostMenu, {
+          delay: stagger(staggerDelay),
+          opacity: [0, 1],
+        })
+      }
 
       this.wasAnimated = true
 

@@ -72,7 +72,7 @@ const ScimPage: React.FC = () => {
         const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey()) as
           | AppConfiguration3
           | undefined
-        if (previousConfig && scimConfiguration) {
+        if (previousConfig) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
             return (variables.data ?? []).reduce(
               (updated, patch: JsonPatch) => {
@@ -92,7 +92,7 @@ const ScimPage: React.FC = () => {
                     return updated
                 }
               },
-              { ...scimConfiguration },
+              { ...previousConfig },
             )
           })
         }

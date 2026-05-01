@@ -61,9 +61,7 @@ module.exports = [
       '@typescript-eslint/no-restricted-types': [
         'error',
         {
-          types: {
-            unknown: 'Avoid the top-type here; use a specific type or a documented union instead',
-          },
+          types: {},
         },
       ],
     },

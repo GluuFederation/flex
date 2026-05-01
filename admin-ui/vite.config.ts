@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -32,8 +32,23 @@ const normalizeBasePath = (value?: string): string => {
 
 const getPolicyStoreConfig = (mode: string): string => {
   const configFile = mode === 'production' ? 'policy-store-prod.json' : 'policy-store-dev.json'
+  const configPath = path.resolve(process.cwd(), 'app/cedarling/config', configFile)
 
-  return readFileSync(path.resolve(process.cwd(), 'app/cedarling/config', configFile), 'utf-8')
+  if (!existsSync(configPath)) {
+    throw new Error(
+      `Missing Cedarling policy store config for mode "${mode}": ${configPath}. Expected file "${configFile}" under app/cedarling/config.`,
+    )
+  }
+
+  try {
+    return readFileSync(configPath, 'utf-8')
+  } catch (error) {
+    throw new Error(
+      `Failed to read Cedarling policy store config for mode "${mode}" at ${configPath}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
 }
 
 const getManualChunkName = (id: string): string | undefined => {

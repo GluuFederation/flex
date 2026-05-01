@@ -1,4 +1,4 @@
-import { animate, remove } from 'animejs'
+import { animate } from 'animejs'
 import type { JSAnimation } from 'animejs'
 
 interface SideMenuAnimateConfig {
@@ -45,7 +45,12 @@ export default class SideMenuAnimate {
 
           if (menu) {
             if (this.activeAnimation && !this.activeAnimation.completed) {
-              remove(menu)
+              this.activeAnimation.cancel()
+              const previousTarget = this.activeAnimation.targets[0]
+              if (previousTarget instanceof HTMLElement) {
+                previousTarget.style.height = ''
+              }
+              this.activeAnimation = null
             }
 
             this.activeAnimation = animate(menu, {

@@ -134,7 +134,9 @@ const UserEditPage = () => {
         dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         try {
-          await logUserUpdate(data, variables.data ?? {})
+          if (variables.data) {
+            await logUserUpdate(data, variables.data)
+          }
         } catch {
           dispatch(updateToast(true, 'error', t('messages.audit_logging_failed')))
         }
