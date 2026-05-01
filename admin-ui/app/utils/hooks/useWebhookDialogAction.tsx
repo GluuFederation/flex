@@ -5,6 +5,7 @@ import {
   getWebhooksByFeatureIdResponse,
   completeTriggerWebhook,
   setWebhookModal,
+  setWebhookTriggerResults,
   setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useGetWebhooksByFeatureId, type WebhookEntry } from 'JansConfigApi'
@@ -101,6 +102,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   const onCloseModal = useCallback(() => {
     dispatch(setWebhookModal(false))
     dispatch(completeTriggerWebhook())
+    dispatch(setWebhookTriggerResults([]))
     dispatch(setFeatureToTrigger(''))
   }, [dispatch])
 

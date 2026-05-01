@@ -5,6 +5,7 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookSliceState,
   WebhookSliceTriggerPayload,
+  WebhookTriggerResponseItem,
   TriggerPayloadActionPayload,
   TriggerWebhookReducerPayload,
 } from '../types'
@@ -16,11 +17,13 @@ const initialState: WebhookSliceState = {
   featureWebhooks: [],
   webhookModal: false,
   triggerWebhookInProgress: false,
+  webhookTriggerResults: [],
   triggerPayload: {
     feature: null,
     payload: null as JsonValue,
   },
   featureToTrigger: '',
+  showWebhookExecutionDialog: false,
 }
 
 const webhookSlice = createSlice({
@@ -50,8 +53,14 @@ const webhookSlice = createSlice({
     completeTriggerWebhook: (state) => {
       state.triggerWebhookInProgress = false
     },
+    setWebhookTriggerResults: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
+      state.webhookTriggerResults = action.payload
+    },
     setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload
+    },
+    setShowWebhookExecutionDialog: (state, action: PayloadAction<boolean>) => {
+      state.showWebhookExecutionDialog = action.payload
     },
   },
 })
@@ -62,7 +71,9 @@ export const {
   setWebhookModal,
   triggerWebhook,
   completeTriggerWebhook,
+  setWebhookTriggerResults,
   setFeatureToTrigger,
+  setShowWebhookExecutionDialog,
 } = webhookSlice.actions
 
 export const { actions, reducer } = webhookSlice

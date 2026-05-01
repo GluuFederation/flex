@@ -1,5 +1,6 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AssetState } from 'Plugins/admin/redux/features/types/asset'
+import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
 export type MauEntry = {
   monthly_active_users?: number
@@ -36,8 +37,10 @@ type WebhookState = {
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
+  webhookTriggerResults: WebhookTriggerResponseItem[]
   triggerPayload: StoredTriggerPayload
   featureToTrigger: string
+  showWebhookExecutionDialog: boolean
 }
 
 export type AdminPluginState = {

@@ -44,6 +44,8 @@ export type WebhookSliceState = {
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
+  webhookTriggerResults: WebhookTriggerResponseItem[]
   triggerPayload: WebhookSliceTriggerPayload
   featureToTrigger: string
+  showWebhookExecutionDialog: boolean
 }

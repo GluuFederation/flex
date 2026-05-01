@@ -1,5 +1,4 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { toast } from 'react-toastify'
 import i18n from 'i18next'
 import type { SagaIterator } from 'redux-saga'
 import type { PayloadAction } from '@reduxjs/toolkit'
@@ -10,7 +9,9 @@ import {
   getWebhooksByFeatureIdResponse,
   completeTriggerWebhook,
   setWebhookModal,
+  setWebhookTriggerResults,
   setFeatureToTrigger,
+  setShowWebhookExecutionDialog,
   triggerWebhook as triggerWebhookAction,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { FETCH } from '../../../../app/audit/UserActionType'
@@ -63,6 +64,7 @@ export function* triggerWebhookSaga({
 }: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<void> {
   const audit = yield* initAudit()
   let featureToTrigger = ''
+  let hadFailures = false
   try {
     featureToTrigger = yield select((state: RootState) => state.webhookReducer.featureToTrigger)
     let featureWebhooks: WebhookEntry[] = yield select(
@@ -88,6 +90,8 @@ export function* triggerWebhookSaga({
     if (!enabledFeatureWebhooks.length || !featureToTrigger) {
       yield put(setFeatureToTrigger(''))
       yield put(completeTriggerWebhook())
+      yield put(setWebhookTriggerResults([]))
+      yield put(setShowWebhookExecutionDialog(false))
       return
     }
 
@@ -124,23 +128,19 @@ export function* triggerWebhookSaga({
 
     yield call(postUserAction, audit as UserActionPayload)
 
+    const failedItems = enrichedResults.filter(
+      (item) => !(item.success === true || String(item.success).toLowerCase() === 'true'),
+    )
+
     if (enrichedResults.length > 0) {
-      enrichedResults.forEach((item) => {
-        const name =
-          item.responseObject?.webhookName ??
-          item.responseObject?.webhookId ??
-          i18n.t('messages.webhook_entity')
-        const isSuccess = item.success === true || String(item.success).toLowerCase() === 'true'
-        if (isSuccess) {
-          toast.success(i18n.t('messages.webhook_triggered_successfully', { name }))
-        } else {
-          toast.error(
-            i18n.t('messages.webhook_triggered_failed', {
-              name,
-            }),
-          )
-        }
-      })
+      if (failedItems.length > 0) {
+        hadFailures = true
+        yield put(setWebhookTriggerResults(enrichedResults))
+        yield put(setShowWebhookExecutionDialog(true))
+      } else {
+        yield put(setWebhookTriggerResults([]))
+        yield put(setShowWebhookExecutionDialog(false))
+      }
     } else {
       yield put(updateToast(true, 'error', i18n.t('messages.failed_to_trigger_webhook')))
     }
@@ -158,6 +158,10 @@ export function* triggerWebhookSaga({
   } finally {
     yield put(setWebhookModal(false))
     yield put(completeTriggerWebhook())
+    if (!hadFailures) {
+      yield put(setWebhookTriggerResults([]))
+      yield put(setShowWebhookExecutionDialog(false))
+    }
   }
 }
 
