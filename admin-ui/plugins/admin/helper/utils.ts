@@ -98,21 +98,17 @@ export const adminUiFeatures = {
   oidc_clients_write: 'oidc_clients_write',
   scopes_write: 'scopes_write',
   scopes_delete: 'scopes_delete',
-  ssa_write: 'ssa_write',
-  ssa_delete: 'ssa_delete',
   fido_configuration_write: 'fido_configuration_write',
-  jans_keycloak_link_write: 'jans_keycloak_link_write',
   jans_link_write: 'jans_link_write',
   saml_configuration_write: 'saml_configuration_write',
   saml_idp_write: 'saml_idp_write',
+  saml_delete: 'saml_idp_delete',
   attributes_write: 'attributes_write',
   attributes_delete: 'attributes_delete',
   scim_configuration_edit: 'scim_configuration_edit',
   smtp_configuration_edit: 'smtp_configuration_edit',
-  users_add: 'users_add',
   users_edit: 'users_edit',
   users_delete: 'users_delete',
-  sessions: 'sessions',
 } as const
 
 export type AdminUiFeatureKey = keyof typeof adminUiFeatures

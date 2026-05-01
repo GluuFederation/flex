@@ -10,6 +10,7 @@ import type { Client } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { devLogger } from '@/utils/devLogger'
@@ -37,7 +38,12 @@ export const useUpdateClient = (auditContext: AuditContext) => {
         if (clientInum) {
           queryClient.setQueryData(getGetOauthOpenidClientsByInumQueryKey(clientInum), updated)
         }
-        dispatch(triggerWebhook({ createdFeatureValue: toClientJsonRecord(updated) }))
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: toClientJsonRecord(updated),
+            feature: adminUiFeatures.oidc_clients_write,
+          }),
+        )
 
         try {
           await logAuditUserAction({

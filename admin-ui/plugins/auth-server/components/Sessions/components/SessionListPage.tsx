@@ -22,7 +22,6 @@ import { useCedarling } from '@/cedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import {
@@ -632,7 +631,6 @@ const SessionListPage: React.FC = () => {
             modal={deleteModal}
             onAccept={handleDeleteAccept}
             label={deleteDialogLabel}
-            feature={adminUiFeatures.sessions}
             autoCloseOnAccept
           />
         )}
@@ -643,7 +641,6 @@ const SessionListPage: React.FC = () => {
             modal={revokeModal}
             onAccept={handleRevokeAccept}
             label={revokeDialogLabel}
-            feature={adminUiFeatures.sessions}
             autoCloseOnAccept
           />
         )}

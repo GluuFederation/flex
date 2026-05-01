@@ -10,6 +10,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { PaperContainer, getServiceProviderTableCols } from '../helper'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -220,7 +221,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           modal={modal}
           subject="saml website sso service provider"
           onAccept={onDeletionConfirmed}
-          feature="saml"
+          feature={adminUiFeatures.saml_delete}
         />
       )}
     </GluuLoader>

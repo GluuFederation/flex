@@ -367,7 +367,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
           modal={modal}
           subject="saml idp"
           onAccept={onDeletionConfirmed}
-          feature={adminUiFeatures.saml_idp_write}
+          feature={adminUiFeatures.saml_delete}
         />
       )}
     </GluuLoader>

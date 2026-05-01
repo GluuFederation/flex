@@ -26,6 +26,10 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
         opacity: OPACITY.PLACEHOLDER,
         cursor: 'not-allowed',
       },
+      '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
+        {
+          WebkitTextFillColor: fontColor ?? 'inherit',
+        },
     },
     inputWithShortcode: {
       paddingRight: 44,

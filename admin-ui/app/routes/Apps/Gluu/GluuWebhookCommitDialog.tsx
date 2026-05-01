@@ -31,7 +31,11 @@ const GluuWebhookCommitDialog: React.FC<GluuWebhookCommitDialogProps> = ({
     onCloseModal()
   }, [handler, onCloseModal])
 
-  if (modal && !webhookCheckComplete) {
+  if (!modal) {
+    return null
+  }
+
+  if (!webhookCheckComplete) {
     return <GluuLoader blocking />
   }
 

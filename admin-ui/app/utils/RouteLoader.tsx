@@ -1,25 +1,20 @@
-import { Suspense, lazy, type ComponentType } from 'react'
+import { Suspense, lazy, type ComponentType, type FunctionComponent } from 'react'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 
-type LazyRouteWrapper<P extends object = object> = ComponentType<P> & {
-  preload: () => Promise<{ default: ComponentType<P> }>
+type LazyRouteWrapper = FunctionComponent & {
+  preload: () => Promise<{ default: ComponentType }>
 }
 
-const createLazyRoute = <P extends object = object>(
-  importFn: () => Promise<{ default: ComponentType<P> }>,
-): LazyRouteWrapper<P> => {
+const createLazyRoute = (importFn: () => Promise<{ default: ComponentType }>): LazyRouteWrapper => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper = (props: P) => (
+  const Wrapper = () => (
     <Suspense fallback={<GluuLoader blocking />}>
-      {/* @ts-expect-error lazy() does not preserve generic type params */}
-      <LazyComponent {...props} />
+      <LazyComponent />
     </Suspense>
   )
 
-  const typedWrapper = Wrapper as LazyRouteWrapper<P>
-  typedWrapper.preload = importFn
-  return typedWrapper
+  return Object.assign(Wrapper, { preload: importFn })
 }
 
 export const LazyRoutes = {
@@ -30,7 +25,7 @@ export const LazyRoutes = {
   GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),
   GluuToast: createLazyRoute(() => import('../routes/Apps/Gluu/GluuToast')),
-  GluuWebhookErrorDialog: createLazyRoute(
-    () => import('../routes/Apps/Gluu/GluuWebhookErrorDialog'),
+  GluuWebhookExecutionDialog: createLazyRoute(
+    () => import('../routes/Apps/Gluu/GluuWebhookExecutionDialog'),
   ),
 }

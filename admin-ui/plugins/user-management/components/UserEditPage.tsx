@@ -41,6 +41,8 @@ import {
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/helper/utils'
 import { AXIOS_INSTANCE } from '../../../api-client'
+import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
+import { devLogger } from '@/utils/devLogger'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -116,11 +118,16 @@ const UserEditPage = () => {
         if (anyKeyPresent && userDn) {
           try {
             await revokeSessionMutation.mutateAsync({ userDn })
-            await AXIOS_INSTANCE.delete(
-              `/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`,
+            await AXIOS_INSTANCE.delete(`${SESSION_ENDPOINT}/${encodeURIComponent(userDn)}`)
+          } catch (err) {
+            const status = (err as { response?: { status?: number } }).response?.status
+            devLogger.error(
+              'Failed to revoke user session:',
+              err instanceof Error ? err : String(err),
             )
-          } catch {
-            // Silently ignore — 404 means the user has no active session
+            if (status !== 404) {
+              dispatch(updateToast(true, 'error', t('messages.session_revoke_failed')))
+            }
           }
         }
 

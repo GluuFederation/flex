@@ -10,7 +10,7 @@ interface AppTestWrapperProps {
 
 const AppTestWrapper: FC<AppTestWrapperProps> = ({ children }) => {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>{children}</ThemeProvider>
       </I18nextProvider>

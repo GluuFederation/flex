@@ -25,7 +25,6 @@ const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO_IMPORTANT = '0 !important'
 const OUTLINE_NONE = 'none'
 const GAP_SM = 12
-const FIELD_VERTICAL_PADDING = 4
 const CONTENT_PADDING_H = 52
 const ALERT_ICON_SIZE = 20
 const EDITOR_FALLBACK_MIN_HEIGHT = 120
@@ -114,7 +113,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 0,
+      gap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
     },
     fieldsGrid: {
@@ -145,6 +144,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     },
     headersBox: {
       ...dl.listBox,
+      'marginTop': SPACING.SECTION_GAP,
       '&& input, && input:focus, && input:active, && input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
@@ -207,9 +207,6 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       },
     },
     urlFieldItem: {
-      '& [class*="col"]': {
-        overflow: 'hidden',
-      },
       /* Override form input padding/overflow so URL text doesn't merge with shortcode icon (higher specificity than formWithInputs) */
       '&& input': {
         paddingRight: 52,
@@ -221,8 +218,6 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',
-      'paddingTop': FIELD_VERTICAL_PADDING,
-      'paddingBottom': FIELD_VERTICAL_PADDING,
       'boxSizing': BOX_SIZING_BORDER,
       '& .form-group': {
         marginBottom: 0,

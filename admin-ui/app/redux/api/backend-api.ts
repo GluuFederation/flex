@@ -30,6 +30,8 @@ const ENDPOINTS = {
   GEOLOCATION_DB_JSON: 'https://geolocation-db.com/json/',
 } as const
 
+export const SESSION_ENDPOINT = ENDPOINTS.SESSION
+
 const getAuthConfig = (token?: string) =>
   token ? { headers: { Authorization: `Bearer ${token}` } } : { withCredentials: true }
 

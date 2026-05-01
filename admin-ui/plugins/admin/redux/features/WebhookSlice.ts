@@ -17,14 +17,13 @@ const initialState: WebhookSliceState = {
   featureWebhooks: [],
   webhookModal: false,
   triggerWebhookInProgress: false,
-  triggerWebhookMessage: '',
-  webhookTriggerErrors: [],
+  webhookTriggerResults: [],
   triggerPayload: {
     feature: null,
     payload: null as JsonValue,
   },
   featureToTrigger: '',
-  showErrorModal: false,
+  showWebhookExecutionDialog: false,
 }
 
 const webhookSlice = createSlice({
@@ -51,18 +50,17 @@ const webhookSlice = createSlice({
         })
       }
     },
-    setTriggerWebhookResponse: (state, action: PayloadAction<string>) => {
+    completeTriggerWebhook: (state) => {
       state.triggerWebhookInProgress = false
-      state.triggerWebhookMessage = action.payload
     },
-    setWebhookTriggerErrors: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
-      state.webhookTriggerErrors = action.payload
+    setWebhookTriggerResults: (state, action: PayloadAction<WebhookTriggerResponseItem[]>) => {
+      state.webhookTriggerResults = action.payload
     },
     setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload
     },
-    setShowErrorModal: (state, action: PayloadAction<boolean>) => {
-      state.showErrorModal = action.payload
+    setShowWebhookExecutionDialog: (state, action: PayloadAction<boolean>) => {
+      state.showWebhookExecutionDialog = action.payload
     },
   },
 })
@@ -72,10 +70,10 @@ export const {
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
-  setTriggerWebhookResponse,
-  setWebhookTriggerErrors,
+  completeTriggerWebhook,
+  setWebhookTriggerResults,
   setFeatureToTrigger,
-  setShowErrorModal,
+  setShowWebhookExecutionDialog,
 } = webhookSlice.actions
 
 export const { actions, reducer } = webhookSlice

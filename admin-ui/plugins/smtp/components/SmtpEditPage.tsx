@@ -25,6 +25,8 @@ import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import { devLogger } from '@/utils/devLogger'
+import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { SmtpFormValues, ApiError, PatchOp } from 'Plugins/smtp/types'
 import { useCedarling } from '@/cedarling'
@@ -33,7 +35,6 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useStyles } from './styles/SmtpFormPage.style'
 
 const API_SMTP = 'api-smtp-configuration'
-
 const smtpResourceId = ADMIN_UI_RESOURCES.SMTP
 const smtpScopes = CEDAR_RESOURCE_SCOPES[smtpResourceId]
 
@@ -62,6 +63,8 @@ const buildPatches = (
 
 const SmtpEditPage = () => {
   const { t } = useTranslation()
+  SetTitle(t('menus.stmp_management'))
+
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
@@ -146,8 +149,6 @@ const SmtpEditPage = () => {
     (state) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
   )
 
-  SetTitle(t('menus.stmp_management'))
-
   const handleSubmit = useCallback(
     async (data: SmtpConfiguration, userMessage: string) => {
       if (!canWriteSmtp) return
@@ -156,6 +157,10 @@ const SmtpEditPage = () => {
         { data },
         {
           onSuccess: () => {
+            triggerWebhookForFeature(
+              data as Record<string, JsonValue>,
+              adminUiFeatures.smtp_configuration_edit,
+            )
             const userinfo = state.authReducer?.userinfo
             const clientId = state.authReducer?.config?.clientId
             const ipAddress = state.authReducer?.location?.IPv4

@@ -6,6 +6,7 @@ import { useFormik, setNestedObjectValues } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -618,6 +619,7 @@ const WebsiteSsoServiceProviderForm = ({
               modal={modal}
               onAccept={submitForm}
               formik={formik}
+              feature={adminUiFeatures.saml_idp_write}
             />
           </Form>
         </CardBody>

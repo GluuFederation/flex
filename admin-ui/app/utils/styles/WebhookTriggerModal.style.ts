@@ -57,12 +57,18 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     },
     contentArea: {
       gap: 0,
+      overflowY: 'auto',
+      maxHeight: 'calc(90vh - 80px)',
+    },
+    tableScrollContainer: {
+      marginTop: CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
+      maxHeight: 300,
+      overflowY: 'auto',
+      overflowX: 'auto',
+      width: '100%',
     },
     tableWrapper: {
-      'marginTop': CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
       'minWidth': WEBHOOK_TABLE_MIN_WIDTH,
-      'maxHeight': 300,
-      'overflowY': 'auto',
       '& .MuiTableCell-root': {
         borderBottom: `1px solid ${borderColor}`,
       },
