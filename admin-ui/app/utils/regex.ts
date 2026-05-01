@@ -74,6 +74,10 @@ export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
 export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
+/** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */
+export const REGEX_PRETTIER_TIMESTAMP = /\d+ms/
+/** Extracts the file path from a Prettier --write output line (e.g. "src/foo.ts 5ms (unchanged)" → capture group [1] = "src/foo.ts"). */
+export const REGEX_PRETTIER_FILE_PATH = /^(.+?)\s+\d+ms/
 /** Matches a hostname starting with 100.x. for carrier-grade NAT range detection (100.64.0.0/10, RFC 6598). Capture group [1] is the second octet. */
 export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
 /** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */

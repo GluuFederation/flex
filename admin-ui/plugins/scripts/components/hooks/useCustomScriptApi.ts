@@ -22,6 +22,7 @@ import { devLogger } from '@/utils/devLogger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { AdditionalPayload } from 'Utils/TokenController'
 import { logAuditAction } from '../helper'
 import { getApiErrorDetail } from '../helper/utils'
@@ -35,6 +36,7 @@ import type { ScriptType } from '../types/customScript'
 
 interface WebhookPayload {
   createdFeatureValue: CustomScript | { inum: string }
+  feature?: string
 }
 
 const useWebhookTrigger = () => {
@@ -46,6 +48,7 @@ const useWebhookTrigger = () => {
         dispatch(
           triggerWebhook({
             createdFeatureValue: payload.createdFeatureValue as Record<string, JsonValue>,
+            feature: payload.feature,
           } as TriggerWebhookReducerPayload),
         )
       } catch (error) {
@@ -131,7 +134,7 @@ export const useCreateCustomScript = () => {
         }),
       ])
 
-      webhookTrigger({ createdFeatureValue: result })
+      webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
       await logAuditAction(CREATE, SCRIPT, {
         action: {
           action_data: structuredClone(variables.data),
@@ -171,7 +174,7 @@ export const useUpdateCustomScript = () => {
           : Promise.resolve(),
       ])
 
-      webhookTrigger({ createdFeatureValue: result })
+      webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
       await logAuditAction(UPDATE, SCRIPT, {
         action: {
           action_data: structuredClone(variables.data),
@@ -212,7 +215,10 @@ export const useDeleteCustomScript = () => {
         }),
       ])
 
-      webhookTrigger({ createdFeatureValue: { inum: variables.inum } })
+      webhookTrigger({
+        createdFeatureValue: { inum: variables.inum },
+        feature: adminUiFeatures.custom_script_delete,
+      })
       await logAuditAction(DELETION, SCRIPT, {
         action: { action_data: { inum: variables.inum } },
         message: actionMessage,

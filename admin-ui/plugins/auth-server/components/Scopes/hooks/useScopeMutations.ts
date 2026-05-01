@@ -10,6 +10,7 @@ import {
 import type { Scope } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { useTranslation } from 'react-i18next'
 import { useScopeActions } from './useScopeActions'
 import type { ModifiedFields } from '../types'
@@ -67,7 +68,12 @@ export const useCreateScope = () => {
           : t('messages.scope_created_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
-      dispatch(triggerWebhook({ createdFeatureValue: toScopeJsonRecord(response) }))
+      dispatch(
+        triggerWebhook({
+          createdFeatureValue: toScopeJsonRecord(response),
+          feature: adminUiFeatures.scopes_write,
+        }),
+      )
 
       try {
         await logScopeCreation(parsedData as Scope, message, modifiedFields)
@@ -129,7 +135,12 @@ export const useUpdateScope = () => {
           : t('messages.scope_updated_successfully')
 
       dispatch(updateToast(true, 'success', successMessage))
-      dispatch(triggerWebhook({ createdFeatureValue: toScopeJsonRecord(response) }))
+      dispatch(
+        triggerWebhook({
+          createdFeatureValue: toScopeJsonRecord(response),
+          feature: adminUiFeatures.scopes_write,
+        }),
+      )
 
       try {
         await logScopeUpdate(parsedData as Scope, message, modifiedFields)

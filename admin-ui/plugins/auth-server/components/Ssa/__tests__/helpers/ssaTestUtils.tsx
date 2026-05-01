@@ -96,14 +96,11 @@ const defaultWebhookReducerState = {
   featureWebhooks: [] as WebhookRecord[],
   webhookModal: false,
   triggerWebhookInProgress: false,
-  triggerWebhookMessage: '',
-  webhookTriggerErrors: [] as WebhookRecord[],
   triggerPayload: {
     feature: '',
     payload: {} as WebhookRecord,
   },
   featureToTrigger: '',
-  showErrorModal: false,
 }
 
 const defaultAuthReducerState: AuthState = {

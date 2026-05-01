@@ -20,7 +20,7 @@ const AuthenticatedRouteSelector = () => {
       <AppAuthProvider>
         <AppLayout>
           <RoutedContent />
-          <LazyRoutes.GluuWebhookErrorDialog />
+          <LazyRoutes.GluuWebhookExecutionDialog />
           <PermissionsPolicyInitializer />
         </AppLayout>
       </AppAuthProvider>

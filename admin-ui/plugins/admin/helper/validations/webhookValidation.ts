@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import type { TFunction } from 'i18next'
 import { REGEX_NO_WHITESPACE } from '@/utils/regex'
 import { hasHttpBody as hasHttpBodyStrict } from 'Plugins/admin/helper/webhook'
+import { isValid as isValidUrl } from 'Plugins/admin/components/Webhook/WebhookURLChecker'
 
 const hasHttpBody = (method?: string): boolean => hasHttpBodyStrict(method ?? '')
 
@@ -11,7 +12,9 @@ export const getWebhookValidationSchema = (t: TFunction) =>
     displayName: Yup.string()
       .required(t('messages.display_name_error'))
       .matches(REGEX_NO_WHITESPACE, `${t('fields.webhook_name')} ${t('messages.no_spaces')}`),
-    url: Yup.string().required(t('messages.url_error')),
+    url: Yup.string()
+      .required(t('messages.url_error'))
+      .test('valid-url', t('messages.invalid_url_error'), (url) => !url || isValidUrl(url)),
     httpRequestBody: Yup.string().when('httpMethod', {
       is: hasHttpBody,
       then: () => Yup.string().required(t('messages.request_body_error')),
