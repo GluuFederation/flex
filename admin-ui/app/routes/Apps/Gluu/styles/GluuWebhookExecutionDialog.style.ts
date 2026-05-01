@@ -37,7 +37,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
-      gap: SPACING.CARD_BUTTON_GAP,
+      gap: SPACING.CONTENT_PADDING,
       maxHeight: WEBHOOK_RESULT_MODAL_MAX_HEIGHT,
       padding: SPACING.CONTENT_PADDING,
       overflow: 'hidden',

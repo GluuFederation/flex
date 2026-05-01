@@ -18,6 +18,7 @@ import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.st
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
 import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
+import GluuLoader from './GluuLoader'
 
 const isWebhookSuccess = (item: WebhookTriggerResponseItem): boolean =>
   item.success === true || String(item.success).toLowerCase() === 'true'
@@ -52,7 +53,17 @@ const GluuWebhookExecutionDialog = () => {
     }
   }, [authorizeHelper, webhookScopes])
 
-  const { webhookTriggerResults, showWebhookExecutionDialog } = webhookState ?? {}
+  const {
+    loadingWebhooks = false,
+    triggerWebhookInProgress = false,
+    webhookTriggerResults,
+    showWebhookExecutionDialog,
+  } = webhookState ?? {}
+  const hasWebhookResults = (webhookTriggerResults?.length ?? 0) > 0
+  const showWebhookLoader =
+    loadingWebhooks ||
+    triggerWebhookInProgress ||
+    (showWebhookExecutionDialog && !hasWebhookResults)
 
   const closeModal = useCallback(() => {
     dispatch(setShowWebhookExecutionDialog(false))
@@ -80,7 +91,11 @@ const GluuWebhookExecutionDialog = () => {
     [closeModal],
   )
 
-  if (!webhookState || !showWebhookExecutionDialog || !canReadWebhooks) return null
+  if (!webhookState || !canReadWebhooks) return null
+
+  if (!showWebhookExecutionDialog || !hasWebhookResults) {
+    return showWebhookLoader ? createPortal(<GluuLoader blocking />, document.body) : null
+  }
 
   const modalContent = (
     <>
