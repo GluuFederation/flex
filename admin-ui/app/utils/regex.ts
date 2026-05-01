@@ -6,6 +6,8 @@ export const REGEX_TRAILING_SLASH = /\/$/
 export const REGEX_LEADING_SLASH = /^\//
 /** Matches all forward slashes; use with replace to convert paths to dot-notation or other delimiters. */
 export const REGEX_FORWARD_SLASH = /\//g
+/** Matches all backslashes; use to normalize Windows-style paths to forward slashes. */
+export const REGEX_BACKSLASH = /\\/g
 /** Matches any character that is not alphanumeric, underscore, or hyphen — i.e. not valid in a slug or HTML id. */
 export const REGEX_NON_SLUG_CHARS = /[^a-zA-Z0-9_-]/g
 /** Matches one or more consecutive hyphens; use with replace('-') to collapse runs into a single hyphen. */
@@ -76,6 +78,8 @@ export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 /** Matches a leading tilde in Sass/CSS imports so bundlers can normalize legacy webpack-style `~package/path` imports. */
 export const REGEX_STYLE_IMPORT_TILDE_PREFIX = /^~(?=.)/
+/** Matches the `/node_modules/` path segment so package subpaths can be extracted from resolved file ids. */
+export const REGEX_NODE_MODULES_SEGMENT = /\/node_modules\//
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
 export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */

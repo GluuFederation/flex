@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
+import type { UseMutationResult } from '@tanstack/react-query'
 import {
   useGetConfigScripts,
   useGetConfigScriptsByInum,
@@ -116,7 +117,12 @@ export const useCustomScript = (inum: string) => {
   })
 }
 
-export const useCreateCustomScript = () => {
+export const useCreateCustomScript = (): UseMutationResult<
+  CustomScript,
+  void,
+  { data: CustomScript; actionMessage?: string },
+  void
+> => {
   const queryClient = useQueryClient()
   const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePostConfigScripts()
@@ -144,10 +150,15 @@ export const useCreateCustomScript = () => {
 
       return result
     },
-  }
+  } as UseMutationResult<CustomScript, void, { data: CustomScript; actionMessage?: string }, void>
 }
 
-export const useUpdateCustomScript = () => {
+export const useUpdateCustomScript = (): UseMutationResult<
+  CustomScript,
+  void,
+  { data: CustomScript; actionMessage?: string },
+  void
+> => {
   const queryClient = useQueryClient()
   const webhookTrigger = useWebhookTrigger()
   const baseMutation = usePutConfigScripts()
@@ -184,7 +195,7 @@ export const useUpdateCustomScript = () => {
 
       return result
     },
-  }
+  } as UseMutationResult<CustomScript, void, { data: CustomScript; actionMessage?: string }, void>
 }
 
 export const useDeleteCustomScript = () => {

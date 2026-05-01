@@ -1,4 +1,5 @@
-import anime from 'animejs'
+import { animate, remove } from 'animejs'
+import type { JSAnimation } from 'animejs'
 
 interface SideMenuAnimateConfig {
   easing?: string
@@ -13,7 +14,7 @@ interface ChangedNode {
 export default class SideMenuAnimate {
   private _nodesObserver: MutationObserver
   private config: Required<SideMenuAnimateConfig>
-  private activeAnimation: anime.AnimeInstance | null = null
+  private activeAnimation: JSAnimation | null = null
 
   constructor(config?: SideMenuAnimateConfig) {
     this.config = {
@@ -44,18 +45,16 @@ export default class SideMenuAnimate {
 
           if (menu) {
             if (this.activeAnimation && !this.activeAnimation.completed) {
-              anime.remove(menu)
+              remove(menu)
             }
 
-            this.activeAnimation = anime({
-              targets: menu,
+            this.activeAnimation = animate(menu, {
               height: isOpen ? [0, menu.scrollHeight] : [menu.scrollHeight, 0],
               duration: this.config.duration,
-              easing: this.config.easing,
-            })
-
-            this.activeAnimation.finished.then(() => {
-              menu.style.height = ''
+              ease: this.config.easing,
+              onComplete: () => {
+                menu.style.height = ''
+              },
             })
           }
         }

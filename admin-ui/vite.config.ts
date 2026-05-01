@@ -3,7 +3,12 @@ import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import wasm from 'vite-plugin-wasm'
-import { REGEX_STYLE_IMPORT_TILDE_PREFIX } from './app/utils/regex'
+import {
+  REGEX_BACKSLASH,
+  REGEX_FORWARD_SLASH,
+  REGEX_NODE_MODULES_SEGMENT,
+  REGEX_STYLE_IMPORT_TILDE_PREFIX,
+} from './app/utils/regex'
 import type { HmrContext } from 'vite'
 
 const timingPlugin = () => {
@@ -29,6 +34,28 @@ const getPolicyStoreConfig = (mode: string): string => {
   const configFile = mode === 'production' ? 'policy-store-prod.json' : 'policy-store-dev.json'
 
   return readFileSync(path.resolve(process.cwd(), 'app/cedarling/config', configFile), 'utf-8')
+}
+
+const getManualChunkName = (id: string): string | undefined => {
+  if (!id.includes('node_modules') || id.includes('.css')) {
+    return undefined
+  }
+
+  const normalizedId = id.replace(REGEX_BACKSLASH, '/')
+  const nodeModulesSegment = normalizedId.split(REGEX_NODE_MODULES_SEGMENT).pop()
+  if (!nodeModulesSegment) {
+    return undefined
+  }
+
+  const [firstPart, secondPart] = nodeModulesSegment.split('/')
+  const packageName =
+    firstPart?.startsWith('@') && secondPart ? `${firstPart}/${secondPart}` : firstPart
+
+  if (!packageName) {
+    return undefined
+  }
+
+  return `vendor-${packageName.replace('@', '').replace(REGEX_FORWARD_SLASH, '-')}`
 }
 
 export default defineConfig(({ mode }) => {
@@ -108,6 +135,12 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       sourcemap: mode !== 'production',
       emptyOutDir: true,
+      chunkSizeWarningLimit: 900,
+      rollupOptions: {
+        output: {
+          manualChunks: getManualChunkName,
+        },
+      },
     },
   }
 })

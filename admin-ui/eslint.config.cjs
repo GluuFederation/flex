@@ -37,7 +37,7 @@ module.exports = [
     },
 
     plugins: {
-      react: reactPlugin,
+      'react': reactPlugin,
       '@typescript-eslint': tsPlugin,
     },
 
@@ -57,12 +57,12 @@ module.exports = [
       'react/display-name': [0, { ignoreTranspilerName: false }],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-restricted-types': [
-        'warn',
+        'error',
         {
           types: {
-            unknown: 'Avoid explicit unknown; use a specific type or a documented union instead',
+            unknown: 'Avoid the top-type here; use a specific type or a documented union instead',
           },
         },
       ],
@@ -104,6 +104,14 @@ module.exports = [
         ...globals.node,
         ...globals.jest,
       },
+    },
+  },
+
+  // CommonJS config files
+  {
+    files: ['**/*.cjs'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 

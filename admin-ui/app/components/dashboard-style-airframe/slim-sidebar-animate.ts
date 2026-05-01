@@ -1,4 +1,5 @@
-import anime from 'animejs'
+import { createTimeline, stagger } from 'animejs'
+import type { Timeline } from 'animejs'
 import type { SlimSidebarAnimateInstance, SlimSidebarAnimateOptions } from './types'
 
 const DEFAULT_CONFIG: Required<SlimSidebarAnimateOptions> = {
@@ -20,16 +21,16 @@ const createSlimSidebarAnimate = (
 ): SlimSidebarAnimateInstance => {
   const config: Required<SlimSidebarAnimateOptions> = { ...DEFAULT_CONFIG, ...options }
 
-  let timelineStage1: anime.AnimeTimelineInstance | null = null
-  let timelineStage2: anime.AnimeTimelineInstance | null = null
+  let timelineStage1: Timeline | null = null
+  let timelineStage2: Timeline | null = null
   let isAnimating = false
 
-  const buildTimeline = (beginCallback?: () => void): anime.AnimeTimelineInstance =>
-    anime.timeline({
-      easing: config.animationEasing,
+  const buildTimeline = (beginCallback?: () => void): Timeline =>
+    createTimeline({
+      defaults: { ease: config.animationEasing },
       duration: config.animationDuration / 2,
       autoplay: false,
-      begin: beginCallback ?? noop,
+      onBegin: beginCallback ?? noop,
     })
 
   const handleMutation = (mutations: MutationRecord[]): void => {
@@ -128,28 +129,22 @@ const createSlimSidebarAnimate = (
       sidebarElement.querySelectorAll<HTMLElement>('.sidebar__section').forEach(removeStyle)
     }
 
-    timelineStage1 = buildTimeline()
-      .add({
-        targets: sidebarElement,
-        translateX: -(config.sidebarWidth - config.sidebarSlimWidth),
-        begin: onBeginStage1,
-      })
-      .add({ targets: sidebarLabels, opacity: 0, complete: onCompleteLabels }, 0)
-      .add({ targets: sidebarHideSlim, opacity: 0 }, 0)
+    timelineStage1 = buildTimeline(onBeginStage1)
+      .add(sidebarElement, { translateX: -(config.sidebarWidth - config.sidebarSlimWidth) })
+      .add(Array.from(sidebarLabels), { opacity: 0, onComplete: onCompleteLabels }, 0)
+      .add(Array.from(sidebarHideSlim), { opacity: 0 }, 0)
 
-    timelineStage2 = buildTimeline()
-      .add({
-        targets: sidebarIcons,
+    timelineStage2 = buildTimeline(onBeginStage2)
+      .add(Array.from(sidebarIcons), {
         opacity: [0, 1],
         translateX: [-config.sidebarSlimWidth, 0],
-        delay: anime.stagger(config.animationStaggerDelay),
-        begin: onBeginStage2,
-        complete: onCompleteIcons,
+        delay: stagger(config.animationStaggerDelay),
+        onComplete: onCompleteIcons,
       })
-      .add({ targets: sidebarShowSlim, opacity: [0, 1], complete: onCompleteShowSlim }, 0)
+      .add(Array.from(sidebarShowSlim), { opacity: [0, 1], onComplete: onCompleteShowSlim }, 0)
 
-    timelineStage1.finished.then(onStage1Finished)
-    timelineStage2.finished.then(onStage2Finished)
+    timelineStage1.then(onStage1Finished)
+    timelineStage2.then(onStage2Finished)
     timelineStage1.play()
   }
 
@@ -204,49 +199,46 @@ const createSlimSidebarAnimate = (
     }
 
     timelineStage1 = buildTimeline()
-      .add({
-        targets: sidebarIcons,
+      .add(Array.from(sidebarIcons), {
         translateX: -config.sidebarSlimWidth,
         duration: animationHalfTime,
-        delay: anime.stagger(config.animationStaggerDelay),
+        delay: stagger(config.animationStaggerDelay),
         opacity: 0,
       })
-      .add({ targets: sidebarShowSlim, duration: animationHalfTime, opacity: [1, 0] }, 0)
+      .add(Array.from(sidebarShowSlim), { duration: animationHalfTime, opacity: [1, 0] }, 0)
 
     timelineStage2 = buildTimeline()
-      .add({
-        targets: sidebarElement,
+      .add(sidebarElement, {
         duration: 1,
         translateX: [0, 0],
-        complete: onCompleteTransitionIn,
+        onComplete: onCompleteTransitionIn,
       })
-      .add({
-        targets: sidebarElement,
+      .add(sidebarElement, {
         duration: animationHalfTime,
         translateX: [-(config.sidebarWidth - config.sidebarSlimWidth), 0],
-        complete: onCompleteSidebarExpand,
+        onComplete: onCompleteSidebarExpand,
       })
       .add(
+        Array.from(sidebarLabels),
         {
-          targets: sidebarLabels,
           duration: animationHalfTime,
           opacity: [0, 1],
-          complete: onCompleteLabels,
+          onComplete: onCompleteLabels,
         },
         0,
       )
       .add(
+        Array.from(sidebarHideSlim),
         {
-          targets: sidebarHideSlim,
           duration: animationHalfTime,
           opacity: [0, 1],
-          complete: onCompleteHideSlim,
+          onComplete: onCompleteHideSlim,
         },
         0,
       )
 
-    timelineStage1.finished.then(onStage1Finished)
-    timelineStage2.finished.then(onStage2Finished)
+    timelineStage1.then(onStage1Finished)
+    timelineStage2.then(onStage2Finished)
     timelineStage1.play()
   }
 

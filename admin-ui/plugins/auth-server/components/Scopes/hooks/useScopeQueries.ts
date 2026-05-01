@@ -34,6 +34,7 @@ export const useScopeAttributes = (params?: GetAttributesParams) => {
       while (true) {
         const page = await getAttributes(
           { ...baseParams, limit: pageSizeClamped, startIndex },
+          undefined,
           signal,
         )
         const entries = (page?.entries ?? []) as AttributeEntry[]

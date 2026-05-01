@@ -24,6 +24,10 @@ const SAML_FORMDATA_FIXES: readonly [string, string][] = [
     'formData.append(`identityProvider`, JSON.stringify(brokerIdentityProviderForm.identityProvider))',
     "formData.append(`identityProvider`, new Blob([JSON.stringify(brokerIdentityProviderForm.identityProvider)], { type: 'application/json' }))",
   ],
+  [
+    "formData.append('data', loadServiceAssetBody)",
+    "formData.append('data', loadServiceAssetBody ?? '')",
+  ],
 ]
 
 let result = enumFix

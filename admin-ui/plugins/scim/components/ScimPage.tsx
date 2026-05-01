@@ -67,14 +67,14 @@ const ScimPage: React.FC = () => {
 
   const patchScimMutation = usePatchScimConfig({
     mutation: {
-      onMutate: async (variables: { data: JsonPatch[] }) => {
+      onMutate: async (variables: { data?: JsonPatch[] }) => {
         await queryClient.cancelQueries({ queryKey: getGetScimConfigQueryKey() })
         const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey()) as
           | AppConfiguration3
           | undefined
         if (previousConfig && scimConfiguration) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
-            return variables.data.reduce(
+            return (variables.data ?? []).reduce(
               (updated, patch: JsonPatch) => {
                 if (typeof patch.path !== 'string' || !patch.path.startsWith('/')) {
                   return updated
@@ -98,7 +98,7 @@ const ScimPage: React.FC = () => {
         }
         return { previousConfig }
       },
-      onSuccess: async (data: AppConfiguration3, variables: { data: JsonPatch[] }) => {
+      onSuccess: async (data: AppConfiguration3, variables: { data?: JsonPatch[] }) => {
         dispatch(setWebhookModal(false))
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
         triggerScimWebhook(data)
@@ -109,12 +109,12 @@ const ScimPage: React.FC = () => {
           resource: AUDIT_RESOURCE,
           message: userMessage,
           client_id: client_id,
-          payload: variables?.data as JsonValue[],
+          payload: (variables?.data ?? []) as JsonValue[],
         })
       },
       onError: (
         error: Error | ApiErrorResponse,
-        _variables: { data: JsonPatch[] },
+        _variables: { data?: JsonPatch[] },
         context: MutationContext | undefined,
       ) => {
         const errorMessage = resolveApiErrorMessage(error, {

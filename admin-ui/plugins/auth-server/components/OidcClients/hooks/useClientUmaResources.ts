@@ -29,7 +29,7 @@ export const useClientUmaResources = (clientId: string | undefined) => {
         await deleteMutation.mutateAsync({ id })
         await invalidateQueriesByKey(
           queryClient,
-          getGetOauthUmaResourcesByClientidQueryKey(clientId),
+          getGetOauthUmaResourcesByClientidQueryKey(clientId ?? ''),
         )
       } catch (error) {
         devLogger.error(
