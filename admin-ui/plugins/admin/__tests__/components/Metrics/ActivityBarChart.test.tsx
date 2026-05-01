@@ -4,6 +4,16 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import ActivityBarChart from 'Plugins/admin/components/Metrics/components/ActivityBarChart'
 import type { ActivityDataPoint } from 'Plugins/admin/components/Metrics/components/ActivityBarChart'
 
+jest.mock('recharts', () => {
+  const actual = jest.requireActual('recharts')
+  const reactLib = jest.requireActual('react') as typeof import('react')
+  return {
+    ...actual,
+    ResponsiveContainer: ({ children }: { children: React.ReactElement }) =>
+      reactLib.cloneElement(children, { width: 800, height: 400 }),
+  }
+})
+
 const mockData: ActivityDataPoint[] = [
   { label: 'Feb 01', regSuccess: 80, regAttempts: 120, authAttempts: 150, authSuccess: 100 },
   { label: 'Feb 08', regSuccess: 90, regAttempts: 130, authAttempts: 160, authSuccess: 110 },
@@ -31,7 +41,7 @@ describe('ActivityBarChart', () => {
     expect(screen.getByText('Monthly Activity Overview')).toBeInTheDocument()
   })
 
-  it('renders with multi-line labels without crashing', () => {
+  it('renders multi-line tick labels split on "\\n"', () => {
     const multiLineData: ActivityDataPoint[] = [
       {
         label: 'Feb 01\nH12',
@@ -43,6 +53,8 @@ describe('ActivityBarChart', () => {
     ]
     render(<ActivityBarChart title="Hourly Activity" data={multiLineData} />, { wrapper: Wrapper })
     expect(screen.getByText('Hourly Activity')).toBeInTheDocument()
+    expect(screen.getByText('Feb 01')).toBeInTheDocument()
+    expect(screen.getByText('H12')).toBeInTheDocument()
   })
 
   it('accepts optional barSize and barCategoryGap props', () => {

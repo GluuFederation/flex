@@ -19,7 +19,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { METRICS_CHART_COLORS } from '../constants'
 import { usePerformanceAnalytics } from '../hooks'
 import type { MetricsDateRange } from '../types'
 
@@ -45,39 +45,20 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
 
   const { data: performanceData } = usePerformanceAnalytics(dateRange)
 
-  const apiValues = performanceData
-    ? [
-        performanceData.authenticationMinDuration,
-        performanceData.authenticationAvgDuration,
-        performanceData.authenticationMaxDuration,
-        performanceData.registrationMinDuration,
-        performanceData.registrationAvgDuration,
-        performanceData.registrationMaxDuration,
-      ]
-    : []
-  const hasApiData = apiValues.some((v) => typeof v === 'number' && v > 0)
-
-  const chartData = hasApiData
-    ? [
-        {
-          category: t('fields.authentication'),
-          minDuration: toNumber(performanceData?.authenticationMinDuration),
-          avgDuration: toNumber(performanceData?.authenticationAvgDuration),
-          maxDuration: toNumber(performanceData?.authenticationMaxDuration),
-        },
-        {
-          category: t('fields.registration'),
-          minDuration: toNumber(performanceData?.registrationMinDuration),
-          avgDuration: toNumber(performanceData?.registrationAvgDuration),
-          maxDuration: toNumber(performanceData?.registrationMaxDuration),
-        },
-      ]
-    : MOCK_METRICS_DATA.onboardingTime.map((entry) => ({
-        category: t(entry.category),
-        minDuration: entry.minDuration,
-        avgDuration: entry.avgDuration,
-        maxDuration: entry.maxDuration,
-      }))
+  const chartData = [
+    {
+      category: t('fields.authentication'),
+      minDuration: toNumber(performanceData?.authenticationMinDuration),
+      avgDuration: toNumber(performanceData?.authenticationAvgDuration),
+      maxDuration: toNumber(performanceData?.authenticationMaxDuration),
+    },
+    {
+      category: t('fields.registration'),
+      minDuration: toNumber(performanceData?.registrationMinDuration),
+      avgDuration: toNumber(performanceData?.registrationAvgDuration),
+      maxDuration: toNumber(performanceData?.registrationMaxDuration),
+    },
+  ]
 
   const legendItems = [
     { color: METRICS_CHART_COLORS.minDuration, label: t('fields.min_duration') },

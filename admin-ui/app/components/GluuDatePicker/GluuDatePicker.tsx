@@ -173,7 +173,7 @@ const GluuDatePickerRange = memo(
             onChange={isStart ? onStartDateChange : onEndDateChange}
             onAccept={isStart ? onStartDateAccept : onEndDateAccept}
             minDateTime={isStart ? undefined : (startDate ?? undefined)}
-            maxDateTime={isStart ? undefined : endOfToday}
+            maxDateTime={isStart ? (endDate ?? endOfToday) : endOfToday}
           />
         )
       }

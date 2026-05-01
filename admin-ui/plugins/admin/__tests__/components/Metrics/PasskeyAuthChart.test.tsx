@@ -42,13 +42,14 @@ describe('PasskeyAuthChart', () => {
 
   it('renders API-driven legend items when data is available', () => {
     const { useErrorsAnalytics } = jest.requireMock('Plugins/admin/components/Metrics/hooks')
-    useErrorsAnalytics.mockReturnValueOnce({
+    useErrorsAnalytics.mockReturnValue({
       data: { successRate: 0.8, failureRate: 0.1, dropOffRate: 0.1 },
       isLoading: false,
     })
     render(<PasskeyAuthChart dateRange={mockDateRange} />, { wrapper: Wrapper })
-    expect(screen.getByText(/Success Rate/i)).toBeInTheDocument()
-    expect(screen.getByText(/Error Rate/i)).toBeInTheDocument()
-    expect(screen.getByText(/Drop Off Rate/i)).toBeInTheDocument()
+    expect(useErrorsAnalytics).toHaveBeenCalledWith(mockDateRange)
+    expect(screen.getByText(/Success Rate\s*80%/i)).toBeInTheDocument()
+    expect(screen.getByText(/Error Rate\s*10%/i)).toBeInTheDocument()
+    expect(screen.getByText(/Drop Off Rate\s*10%/i)).toBeInTheDocument()
   })
 })

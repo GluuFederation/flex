@@ -5,13 +5,15 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { AXIOS_INSTANCE } from '../../../../../api-client'
-import { HEALTH_CACHE_CONFIG } from '../constants'
-import type { ServiceHealth } from '../types'
+import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
+import type { ServiceHealth, ServiceStatusValue } from '../types'
 
 const FIDO2_HEALTH_QUERY_KEY = ['fido2', 'metrics', 'health'] as const
 
 interface Fido2HealthResponse {
   status?: string
+  message?: string
+  error?: string
   [key: string]: string | number | boolean | null | undefined
 }
 
@@ -22,11 +24,22 @@ const fetchFido2Health = async (signal?: AbortSignal): Promise<Fido2HealthRespon
   return data ?? {}
 }
 
-const transformFido2Health = (_data: Fido2HealthResponse): ServiceHealth => ({
-  name: 'fido2-metrics',
-  status: 'up',
-  lastChecked: new Date(),
-})
+const normalizeFido2Status = (raw: string | undefined): ServiceStatusValue => {
+  if (!raw) return DEFAULT_STATUS
+  const statusMap = STATUS_MAP as Record<string, ServiceStatusValue>
+  return statusMap[raw.trim().toLowerCase()] ?? DEFAULT_STATUS
+}
+
+const transformFido2Health = (data: Fido2HealthResponse): ServiceHealth => {
+  const status = normalizeFido2Status(data.status)
+  const errorMessage = data.error ?? data.message
+  return {
+    name: 'fido2-metrics',
+    status,
+    lastChecked: new Date(),
+    ...(errorMessage ? { error: errorMessage } : {}),
+  }
+}
 
 export const useFido2HealthStatus = (options?: { enabled?: boolean }) => {
   const { t } = useTranslation()

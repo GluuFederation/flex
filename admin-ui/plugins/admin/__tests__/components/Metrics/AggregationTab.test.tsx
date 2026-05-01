@@ -32,10 +32,10 @@ describe('AggregationTab', () => {
     expect(select).toBeInTheDocument()
   })
 
-  it('has no aggregation type selected by default (optional field)', () => {
+  it('has Hourly selected by default', () => {
     render(<AggregationTab />, { wrapper: Wrapper })
     const select = screen.getByRole('combobox') as HTMLSelectElement
-    expect(select.value).toBe('')
+    expect(select.value).toBe('hourly')
   })
 
   it('renders all aggregation type options including the empty placeholder', () => {
@@ -64,24 +64,30 @@ describe('AggregationTab', () => {
     render(<AggregationTab />, { wrapper: Wrapper })
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'daily' } })
     fireEvent.click(screen.getByText('Apply'))
-    expect(screen.getAllByTestId('activity-bar-chart').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('duration-heatmap').length).toBeGreaterThan(0)
+    const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
+    const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
+    expect(activityChart.textContent).toMatch(/daily/i)
+    expect(heatmap.textContent).toMatch(/daily/i)
   })
 
   it('switches to weekly view after selecting weekly and clicking Apply', () => {
     render(<AggregationTab />, { wrapper: Wrapper })
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'weekly' } })
     fireEvent.click(screen.getByText('Apply'))
-    expect(screen.getAllByTestId('activity-bar-chart').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('duration-heatmap').length).toBeGreaterThan(0)
+    const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
+    const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
+    expect(activityChart.textContent).toMatch(/weekly/i)
+    expect(heatmap.textContent).toMatch(/weekly/i)
   })
 
   it('switches to monthly view after selecting monthly and clicking Apply', () => {
     render(<AggregationTab />, { wrapper: Wrapper })
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'monthly' } })
     fireEvent.click(screen.getByText('Apply'))
-    expect(screen.getAllByTestId('activity-bar-chart').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('duration-heatmap').length).toBeGreaterThan(0)
+    const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
+    const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
+    expect(activityChart.textContent).toMatch(/monthly/i)
+    expect(heatmap.textContent).toMatch(/monthly/i)
   })
 
   it('renders chart data from API entries when available', () => {

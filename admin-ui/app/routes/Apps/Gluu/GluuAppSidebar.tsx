@@ -84,10 +84,7 @@ const GluuAppSidebar = (): JSX.Element => {
   const { authorize } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
 
-  const fetchedServersLength = useMemo(
-    (): boolean => combinedServices.length > 0,
-    [combinedServices],
-  )
+  const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
 
   const sidebarMenuActiveClass = useMemo(
     (): string => `sidebar-menu-active-${selectedTheme}`,

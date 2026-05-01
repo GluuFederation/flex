@@ -83,7 +83,7 @@ const HOURLY_ROWS = [
   'Feb-2',
   'Feb-1',
 ]
-const HOURLY_COLS = Array.from({ length: 24 }, (_, i) => String(i + 1))
+const HOURLY_COLS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
 
 export const MOCK_AGGREGATION = {
   hourly: {

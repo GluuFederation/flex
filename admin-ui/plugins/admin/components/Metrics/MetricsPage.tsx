@@ -24,7 +24,7 @@ import {
 import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
 import type { MetricsDateRange } from './types'
 
-const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.MAU
+const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.Metrics
 const METRICS_SCOPES = CEDAR_RESOURCE_SCOPES[METRICS_RESOURCE_ID]
 
 const MetricsPage: React.FC = () => {
@@ -156,10 +156,10 @@ const MetricsPage: React.FC = () => {
             <>
               {filterBar}
               <Row className="mb-4">
-                <Col xs={12} lg={6} className="mb-4 mb-lg-0">
+                <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                   <PasskeyAuthChart dateRange={appliedRange} />
                 </Col>
-                <Col xs={12} lg={6}>
+                <Col xs={12} xxl={6}>
                   <PasskeyAdoptionChart dateRange={appliedRange} />
                 </Col>
               </Row>

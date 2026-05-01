@@ -46,37 +46,37 @@ export interface AggregationParams {
 }
 
 export interface AggregationEntry {
-  dn?: string
-  id?: string
-  aggregationType?: string
-  startTime?: string
-  endTime?: string
-  uniqueUsers?: number
-  lastUpdated?: string
-  registrationAvgDuration?: number
-  authenticationFailures?: number
-  registrationSuccesses?: number
-  registrationAttempts?: number
-  authenticationAttempts?: number
-  registrationSuccessRate?: number
-  authenticationSuccesses?: number
-  registrationFailures?: number
-  fallbackEvents?: number
-  period?: string
-  authenticationSuccessRate?: number
-  authenticationAvgDuration?: number
-  baseDn?: string
-  performanceMetrics?: Record<string, number | string | boolean | null>
-  metricsData?: Record<string, number | string | boolean | null>
-  deviceTypes?: Record<string, number>
-  errorCounts?: Record<string, number>
+  dn?: string | null
+  id?: string | null
+  aggregationType?: string | null
+  startTime?: string | null
+  endTime?: string | null
+  uniqueUsers?: number | null
+  lastUpdated?: string | null
+  registrationAvgDuration?: number | null
+  authenticationFailures?: number | null
+  registrationSuccesses?: number | null
+  registrationAttempts?: number | null
+  authenticationAttempts?: number | null
+  registrationSuccessRate?: number | null
+  authenticationSuccesses?: number | null
+  registrationFailures?: number | null
+  fallbackEvents?: number | null
+  period?: string | null
+  authenticationSuccessRate?: number | null
+  authenticationAvgDuration?: number | null
+  baseDn?: string | null
+  performanceMetrics?: Record<string, number | string | boolean | null> | null
+  metricsData?: Record<string, number | string | boolean | null> | null
+  deviceTypes?: Record<string, number | null> | null
+  errorCounts?: Record<string, number | null> | null
 }
 
 export interface AggregationResponse {
-  start?: number
-  totalEntriesCount?: number
-  entriesCount?: number
-  entries?: AggregationEntry[]
+  start?: number | null
+  totalEntriesCount?: number | null
+  entriesCount?: number | null
+  entries?: AggregationEntry[] | null
 }
 
 export interface MetricsDateRangeParams {
@@ -89,28 +89,28 @@ export type ErrorsAnalyticsParams = MetricsDateRangeParams
 export type PerformanceAnalyticsParams = MetricsDateRangeParams
 
 export interface AdoptionMetricsResponse {
-  newUsers?: number
-  totalUniqueUsers?: number
-  adoptionRate?: number
-  newRegisteredUsers?: number
-  totalRegisteredUsers?: number
-  adoptionPasskeyRate?: number
+  newUsers?: number | null
+  totalUniqueUsers?: number | null
+  adoptionRate?: number | null
+  newRegisteredUsers?: number | null
+  totalRegisteredUsers?: number | null
+  adoptionPasskeyRate?: number | null
   [key: string]: number | string | boolean | null | undefined
 }
 
 export interface ErrorsAnalyticsResponse {
-  successRate?: number
-  failureRate?: number
-  dropOffRate?: number
+  successRate?: number | null
+  failureRate?: number | null
+  dropOffRate?: number | null
   [key: string]: number | string | boolean | null | undefined
 }
 
 export interface PerformanceAnalyticsResponse {
-  registrationAvgDuration?: number
-  registrationMaxDuration?: number
-  registrationMinDuration?: number
-  authenticationAvgDuration?: number
-  authenticationMaxDuration?: number
-  authenticationMinDuration?: number
+  registrationAvgDuration?: number | null
+  registrationMaxDuration?: number | null
+  registrationMinDuration?: number | null
+  authenticationAvgDuration?: number | null
+  authenticationMaxDuration?: number | null
+  authenticationMinDuration?: number | null
   [key: string]: number | string | boolean | null | undefined
 }

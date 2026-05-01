@@ -21,7 +21,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { METRICS_CHART_COLORS } from '../constants'
 import { useAdoptionMetrics } from '../hooks'
 import type { MetricsDateRange } from '../types'
 import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
@@ -74,22 +74,17 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   const { data: adoptionData } = useAdoptionMetrics(dateRange)
 
-  const apiNewUsers = toNumber(adoptionData?.newUsers ?? adoptionData?.newRegisteredUsers)
-  const apiTotalUsers = toNumber(
-    adoptionData?.totalUniqueUsers ?? adoptionData?.totalRegisteredUsers,
-  )
+  const rawNewUsers = adoptionData?.newUsers ?? adoptionData?.newRegisteredUsers
+  const rawTotalUsers = adoptionData?.totalUniqueUsers ?? adoptionData?.totalRegisteredUsers
   const rawRate = adoptionData?.adoptionRate ?? adoptionData?.adoptionPasskeyRate
+  const apiNewUsers = toNumber(rawNewUsers)
+  const apiTotalUsers = toNumber(rawTotalUsers)
   const apiRate =
     typeof rawRate === 'number' ? Math.round(rawRate > 1 ? rawRate : rawRate * 100) : 0
 
-  const hasApiData = apiNewUsers > 0 || apiTotalUsers > 0 || apiRate > 0
-  const mock = MOCK_METRICS_DATA.adoption
-  const newRegisteredUsers = hasApiData ? apiNewUsers : mock.newRegisteredUsers
-  const totalRegisteredUsers = hasApiData ? apiTotalUsers : mock.totalRegisteredUsers
-  const adoptionPasskeyRate = Math.max(
-    0,
-    Math.min(100, hasApiData ? apiRate : mock.adoptionPasskeyRate),
-  )
+  const newRegisteredUsers = apiNewUsers
+  const totalRegisteredUsers = apiTotalUsers
+  const adoptionPasskeyRate = Math.max(0, Math.min(100, apiRate))
 
   const existingUsers = Math.max(0, totalRegisteredUsers - newRegisteredUsers)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background

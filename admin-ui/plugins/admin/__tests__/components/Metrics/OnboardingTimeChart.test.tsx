@@ -9,6 +9,16 @@ jest.mock('Plugins/admin/components/Metrics/hooks', () => ({
   usePerformanceAnalytics: jest.fn(() => ({ data: undefined, isLoading: false })),
 }))
 
+jest.mock('recharts', () => {
+  const actual = jest.requireActual('recharts')
+  const reactLib = jest.requireActual('react') as typeof import('react')
+  return {
+    ...actual,
+    ResponsiveContainer: ({ children }: { children: React.ReactElement }) =>
+      reactLib.cloneElement(children, { width: 800, height: 320 }),
+  }
+})
+
 const mockDateRange: MetricsDateRange = {
   startDate: dayjs('2024-01-01'),
   endDate: dayjs('2024-01-31'),
@@ -55,5 +65,6 @@ describe('OnboardingTimeChart', () => {
     })
     render(<OnboardingTimeChart dateRange={mockDateRange} />, { wrapper: Wrapper })
     expect(screen.getByText('Onboarding Time Graph')).toBeInTheDocument()
+    expect(screen.getAllByText('150').length).toBeGreaterThan(0)
   })
 })

@@ -42,7 +42,7 @@ const HealthPage: React.FC = () => {
     fido2Health.refetch()
   }, [refetch, fido2Health])
 
-  const loading = isLoading || isFetching || fido2Health.isLoading
+  const loading = isLoading || isFetching || fido2Health.isLoading || fido2Health.isFetching
 
   const healthThemeColors = useMemo(
     () => ({

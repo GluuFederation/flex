@@ -1192,7 +1192,7 @@
     "no_scope_in_spontaneous_client": "Nenhum dado de escopo espontâneo para este cliente",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added",
+    "all_attributes_added": "Todos os atributos foram adicionados",
     "aggregation_coming_soon": "Visualização de agregação em breve.",
     "fido2_metrics_health_down": "O serviço de métricas está indisponível no momento.",
     "fido2_metrics_health_status": "Métricas Fido2",

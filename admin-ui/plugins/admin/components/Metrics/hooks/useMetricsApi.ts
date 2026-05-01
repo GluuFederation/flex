@@ -1,10 +1,15 @@
 import { useEffect } from 'react'
-import { useQuery, keepPreviousData, type UseQueryResult } from '@tanstack/react-query'
-import type { Dayjs } from 'dayjs'
+import {
+  useQuery,
+  keepPreviousData,
+  type UseQueryResult,
+  type QueryKey,
+} from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
+import { toApiDatetime } from '@/utils/dayjsUtils'
 import { AXIOS_INSTANCE } from '../../../../../api-client'
 import { METRICS_CACHE_CONFIG } from '../constants'
 import type {
@@ -20,9 +25,7 @@ import type {
   PerformanceAnalyticsResponse,
 } from '../types'
 
-const formatDateForApi = (date: Dayjs): string => {
-  return date.second(0).millisecond(0).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
-}
+const formatDateForApi = toApiDatetime
 
 const getGetAdoptionMetricsQueryKey = (params: AdoptionMetricsParams) =>
   ['fido2', 'metrics', 'analytics', 'adoption', params] as const
@@ -65,14 +68,22 @@ const metricsApi = {
   },
 }
 
-const useErrorToast = <T>(query: UseQueryResult<T>) => {
+const shownErrorHashes = new Set<string>()
+
+const useErrorToast = <T>(query: UseQueryResult<T>, queryKey: QueryKey) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const failureId = JSON.stringify(queryKey)
   useEffect(() => {
-    if (!query.isError) return
-    const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
-    dispatch(updateToast(true, 'error', errorMsg))
-  }, [query.isError, query.error, dispatch, t])
+    if (query.isError) {
+      if (shownErrorHashes.has(failureId)) return
+      shownErrorHashes.add(failureId)
+      const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
+      dispatch(updateToast(true, 'error', errorMsg))
+    } else if (query.isSuccess) {
+      shownErrorHashes.delete(failureId)
+    }
+  }, [failureId, query.isError, query.isSuccess, query.error, dispatch, t])
 }
 
 const EMPTY_PARAMS = { start_date: '', end_date: '' } as const
@@ -96,8 +107,9 @@ export const useAdoptionMetrics = (
   const params = buildDateParams(dateRange)
   const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
 
+  const queryKey = getGetAdoptionMetricsQueryKey(params)
   const query = useQuery({
-    queryKey: getGetAdoptionMetricsQueryKey(params),
+    queryKey,
     queryFn: () => metricsApi.getAdoption(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
@@ -106,7 +118,7 @@ export const useAdoptionMetrics = (
     retry: false,
   })
 
-  useErrorToast(query)
+  useErrorToast(query, queryKey)
   return query
 }
 
@@ -118,8 +130,9 @@ export const useErrorsAnalytics = (
   const params = buildDateParams(dateRange)
   const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
 
+  const queryKey = getGetErrorsAnalyticsQueryKey(params)
   const query = useQuery({
-    queryKey: getGetErrorsAnalyticsQueryKey(params),
+    queryKey,
     queryFn: () => metricsApi.getErrors(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
@@ -128,7 +141,7 @@ export const useErrorsAnalytics = (
     retry: false,
   })
 
-  useErrorToast(query)
+  useErrorToast(query, queryKey)
   return query
 }
 
@@ -140,8 +153,9 @@ export const usePerformanceAnalytics = (
   const params = buildDateParams(dateRange)
   const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
 
+  const queryKey = getGetPerformanceAnalyticsQueryKey(params)
   const query = useQuery({
-    queryKey: getGetPerformanceAnalyticsQueryKey(params),
+    queryKey,
     queryFn: () => metricsApi.getPerformance(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
@@ -150,7 +164,7 @@ export const usePerformanceAnalytics = (
     retry: false,
   })
 
-  useErrorToast(query)
+  useErrorToast(query, queryKey)
   return query
 }
 
@@ -170,15 +184,16 @@ export const useAggregationMetrics = (
     startIndex: 0,
   }
 
+  const queryKey = [
+    'fido2',
+    'metrics',
+    'aggregations',
+    aggregationType,
+    params.start_date,
+    params.end_date,
+  ] as const
   const query = useQuery({
-    queryKey: [
-      'fido2',
-      'metrics',
-      'aggregations',
-      aggregationType,
-      params.start_date,
-      params.end_date,
-    ] as const,
+    queryKey,
     queryFn: async (): Promise<AggregationResponse> => {
       const { data } = await AXIOS_INSTANCE.get<AggregationResponse>(
         `/fido2/metrics/aggregations/${aggregationType}`,
@@ -200,6 +215,6 @@ export const useAggregationMetrics = (
     retry: false,
   })
 
-  useErrorToast(query)
+  useErrorToast(query, queryKey)
   return query
 }

@@ -10,7 +10,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS, MOCK_METRICS_DATA } from '../constants'
+import { METRICS_CHART_COLORS } from '../constants'
 import { useErrorsAnalytics } from '../hooks'
 import type { MetricsDateRange } from '../types'
 
@@ -31,7 +31,7 @@ interface PasskeyAuthChartProps {
   dateRange: MetricsDateRange | null
 }
 
-const toPercent = (value: number | undefined): number => {
+const toPercent = (value: number | null | undefined): number => {
   if (typeof value !== 'number' || Number.isNaN(value)) return 0
   const normalised = value > 1 ? value : value * 100
   return Math.max(0, Math.min(100, Math.round(normalised)))
@@ -46,21 +46,8 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
 
   const { data: errorsData } = useErrorsAnalytics(dateRange)
 
-  const hasApiData =
-    !!errorsData &&
-    [errorsData.successRate, errorsData.failureRate, errorsData.dropOffRate].some(
-      (v) => typeof v === 'number' && v > 0,
-    )
-
-  const data = useMemo(() => {
-    if (!hasApiData) {
-      return MOCK_METRICS_DATA.passkeyAuth.map((entry) => ({
-        name: t(entry.name),
-        value: entry.value,
-        color: entry.color,
-      }))
-    }
-    return [
+  const data = useMemo(
+    () => [
       {
         name: t('fields.success_rate'),
         value: toPercent(errorsData?.successRate),
@@ -76,8 +63,9 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
         value: toPercent(errorsData?.dropOffRate),
         color: METRICS_CHART_COLORS.dropOffRate,
       },
-    ]
-  }, [t, errorsData, hasApiData])
+    ],
+    [t, errorsData],
+  )
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 

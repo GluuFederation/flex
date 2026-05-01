@@ -6,3 +6,5 @@ export type JsonValue =
   | (JsonPrimitive | object)[]
 
 export type JsonObject = { [key: string]: JsonValue }
+
+export type JsonArray = JsonValue[]

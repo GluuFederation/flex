@@ -60,7 +60,7 @@ const entriesToHeatmapData = (entries: AggregationEntry[]): HeatmapData => {
   }
 }
 
-const HOURS_OF_DAY = Array.from({ length: 24 }, (_, i) => String(i + 1))
+const HOURS_OF_DAY = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
 
 const SHORT_MONTHS = [
   'Jan',
@@ -119,7 +119,7 @@ const entriesToHourlyHeatmap = (
     matrix[date]![hour] = value
   })
   const sortedDates = Array.from(dateSet).sort()
-  const data = sortedDates.map((date) => HOURS_OF_DAY.map((_, ci) => matrix[date]?.[ci + 1] ?? 0))
+  const data = sortedDates.map((date) => HOURS_OF_DAY.map((_, ci) => matrix[date]?.[ci] ?? 0))
   const allVals = data.flat()
   const minVal = allVals.length ? Math.min(...allVals) : 0
   const maxVal = allVals.length ? Math.max(...allVals) : 1
@@ -145,7 +145,7 @@ const AggregationTab: React.FC = () => {
   const [endDate, setEndDate] = useState<Dayjs>(() =>
     createDate().hour(23).minute(59).second(0).millisecond(0),
   )
-  const [aggType, setAggType] = useState<AggregationType | ''>('')
+  const [aggType, setAggType] = useState<AggregationType | ''>('hourly')
   const [appliedAggType, setAppliedAggType] = useState<AggregationType>('hourly')
   const [appliedRange, setAppliedRange] = useState<MetricsDateRange>(() => ({
     startDate: createDate().startOf('month').startOf('day').millisecond(0),
@@ -172,7 +172,7 @@ const AggregationTab: React.FC = () => {
   } = useAggregationMetrics(AGG_TYPE_MAP[appliedAggType], appliedRange)
 
   const isAggLoading = aggLoading || aggFetching
-  const useMockFallback = !isAggLoading && (!aggApiData?.entries || aggApiData.entries.length === 0)
+  const useMockFallback = !isAggLoading && aggApiData == null
 
   const activityData: ActivityDataPoint[] = useMemo(() => {
     const entries = aggApiData?.entries
@@ -200,7 +200,14 @@ const AggregationTab: React.FC = () => {
             return MOCK_AGGREGATION.monthly.combinedHeatmap as HeatmapData
         }
       }
-      return { rows: [], cols: [], data: [], minVal: 0, maxVal: 1 }
+      const isHourly = appliedAggType === 'hourly'
+      return {
+        rows: [],
+        cols: [],
+        data: [],
+        minVal: isHourly ? 1 : 140,
+        maxVal: isHourly ? 3.5 : 250,
+      }
     }
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'registration')
@@ -214,7 +221,7 @@ const AggregationTab: React.FC = () => {
       if (useMockFallback) {
         return MOCK_AGGREGATION.hourly.authHeatmap as HeatmapData
       }
-      return { rows: [], cols: [], data: [], minVal: 0, maxVal: 1 }
+      return { rows: [], cols: [], data: [], minVal: 1, maxVal: 3.5 }
     }
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'authentication')
@@ -305,10 +312,10 @@ const AggregationTab: React.FC = () => {
         return (
           <>
             <Row className="mb-4">
-              <Col xs={12} lg={7} className="mb-4 mb-lg-0">
+              <Col xs={12} xxl={7} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_weekly_activity')} data={activityData} />
               </Col>
-              <Col xs={12} lg={5}>
+              <Col xs={12} xxl={5}>
                 <DurationHeatmap
                   title={t('titles.agg_weekly_heatmap')}
                   heatmapData={heatmapData}
@@ -327,7 +334,7 @@ const AggregationTab: React.FC = () => {
         return (
           <>
             <Row className="mb-4">
-              <Col xs={12} lg={6} className="mb-4 mb-lg-0">
+              <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart
                   title={t('titles.agg_monthly_activity')}
                   data={activityData}
@@ -335,7 +342,7 @@ const AggregationTab: React.FC = () => {
                   barCategoryGap="35%"
                 />
               </Col>
-              <Col xs={12} lg={6}>
+              <Col xs={12} xxl={6}>
                 <DurationHeatmap
                   title={t('titles.agg_monthly_heatmap')}
                   heatmapData={heatmapData}

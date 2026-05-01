@@ -24,6 +24,7 @@ import {
   LOGGING_READ,
   PROPERTIES_READ,
   STAT_READ,
+  FIDO_READ,
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
@@ -61,15 +62,15 @@ const pluginMetadata = {
           resourceKey: ADMIN_UI_RESOURCES.License,
         },
         {
-          title: 'menus.maugraph',
-          path: ROUTES.ADMIN_MAU_GRAPH,
-          permission: ACR_READ,
-          resourceKey: ADMIN_UI_RESOURCES.MAU,
-        },
-        {
           title: 'menus.metrics',
           path: ROUTES.ADMIN_METRICS,
           permission: STAT_READ,
+          resourceKey: ADMIN_UI_RESOURCES.Metrics,
+        },
+        {
+          title: 'menus.maugraph',
+          path: ROUTES.ADMIN_MAU_GRAPH,
+          permission: FIDO_READ,
           resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
@@ -146,7 +147,7 @@ const pluginMetadata = {
       component: MetricsPage,
       path: ROUTES.ADMIN_METRICS,
       permission: STAT_READ,
-      resourceKey: ADMIN_UI_RESOURCES.MAU,
+      resourceKey: ADMIN_UI_RESOURCES.Metrics,
     },
     {
       component: SettingsPage,
@@ -213,7 +214,7 @@ const pluginMetadata = {
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [webhookSaga, assetSaga],
+  sagas: [webhookSaga(), assetSaga()],
 }
 
 export default pluginMetadata
