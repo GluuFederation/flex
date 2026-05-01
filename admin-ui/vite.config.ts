@@ -39,7 +39,10 @@ export default defineConfig(({ mode }) => {
     NODE_ENV: nodeEnv,
     BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
     API_BASE_URL: env.API_BASE_URL,
-    CONFIG_API_BASE_URL: env.CONFIG_API_BASE_URL || 'https://sample.com',
+    CONFIG_API_BASE_URL:
+      env.CONFIG_API_BASE_URL && !env.CONFIG_API_BASE_URL.includes('%(')
+        ? env.CONFIG_API_BASE_URL
+        : undefined,
     POLICY_STORE_CONFIG: getPolicyStoreConfig(mode),
   }
 
@@ -56,7 +59,6 @@ export default defineConfig(({ mode }) => {
           plugins: [
             '@babel/plugin-proposal-class-properties',
             '@babel/plugin-syntax-dynamic-import',
-            'babel-plugin-styled-components',
           ],
         },
       }),
@@ -100,6 +102,7 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       exclude: ['@janssenproject/cedarling_wasm'],
+      include: ['animejs'],
     },
     build: {
       outDir: 'dist',

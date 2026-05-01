@@ -35,12 +35,12 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
       {
         name: t('fields.cc_tokens'),
         value: summary.clientCredentialsTokens,
-        color: chartColors.pieClientCredentials,
+        fill: chartColors.pieClientCredentials,
       },
       {
         name: t('fields.authz_code_tokens'),
         value: summary.authCodeTokens,
-        color: chartColors.pieAuthCodeAccess,
+        fill: chartColors.pieAuthCodeAccess,
       },
     ],
     [summary, t, chartColors],
@@ -65,7 +65,6 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                 outerRadius={90}
                 paddingAngle={2}
                 dataKey="value"
-                fill="color"
                 label={({
                   cx = 0,
                   cy = 0,

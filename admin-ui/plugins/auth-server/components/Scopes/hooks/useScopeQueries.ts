@@ -27,20 +27,24 @@ export const useScopeAttributes = (params?: GetAttributesParams) => {
   const { data, isLoading, error } = useQuery<AttributeEntry[], Error>({
     queryKey: ['scope-all-attributes', baseParams],
     queryFn: async ({ signal }) => {
-      const pageSize = baseParams.limit ?? DEFAULT_ATTRIBUTES_LIMIT
+      const pageSizeClamped = Math.max(1, baseParams.limit ?? DEFAULT_ATTRIBUTES_LIMIT)
       const aggregated: AttributeEntry[] = []
       let startIndex = 0
 
       while (true) {
-        const page = await getAttributes({ ...baseParams, limit: pageSize, startIndex }, signal)
+        const page = await getAttributes(
+          { ...baseParams, limit: pageSizeClamped, startIndex },
+          signal,
+        )
         const entries = (page?.entries ?? []) as AttributeEntry[]
         aggregated.push(...entries)
 
+        if (entries.length === 0) break
         const total = page?.totalEntriesCount
-        if (entries.length < pageSize) break
+        if (entries.length < pageSizeClamped) break
         if (typeof total === 'number' && aggregated.length >= total) break
 
-        startIndex += pageSize
+        startIndex += pageSizeClamped
       }
 
       return aggregated
