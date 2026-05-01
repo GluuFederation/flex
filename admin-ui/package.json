@@ -47,7 +47,7 @@
     "plugin:clean": "ts-node --files --project script/tsconfig.json ./build/plugin-cli.ts --cleanExceptDefault admin,auth-server --resetPluginConfig",
     "analyze": "ANALYZE=true npm run build:prod",
     "analyze:dev": "ANALYZE=true npm run build:dev",
-    "prepare": "cd .. && npx husky install && git config core.hooksPath admin-ui/.husky"
+    "prepare": "cd .. && node admin-ui/node_modules/husky/bin.js admin-ui/.husky"
   },
   "author": "gluu inc.",
   "license": "Apache",
