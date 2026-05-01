@@ -2338,7 +2338,7 @@
       "editType": "Type(s) d'édition de l'attribut",
       "inum": "Identifiant unique de l'attribut.",
       "jansHideOnDiscovery": "Valeur booléenne indiquant si l'attribut doit être affiché sur la page de découverte.",
-      "location_type": "",
+      "location_type": "Le type d'emplacement de l'attribut.",
       "maxcLength": "Longueur maximale",
       "minLength": "Longueur minimale",
       "name": "Nom de l'attribut.",

@@ -64,13 +64,13 @@ const pluginMetadata = {
         {
           title: 'menus.metrics',
           path: ROUTES.ADMIN_METRICS,
-          permission: STAT_READ,
-          resourceKey: ADMIN_UI_RESOURCES.Metrics,
+          permission: FIDO_READ,
+          resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
           title: 'menus.maugraph',
           path: ROUTES.ADMIN_MAU_GRAPH,
-          permission: FIDO_READ,
+          permission: ACR_READ,
           resourceKey: ADMIN_UI_RESOURCES.MAU,
         },
         {
@@ -146,8 +146,8 @@ const pluginMetadata = {
     {
       component: MetricsPage,
       path: ROUTES.ADMIN_METRICS,
-      permission: STAT_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Metrics,
+      permission: FIDO_READ,
+      resourceKey: ADMIN_UI_RESOURCES.MAU,
     },
     {
       component: SettingsPage,

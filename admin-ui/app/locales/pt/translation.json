@@ -1565,7 +1565,7 @@
     "agg_monthly_activity": "Atividade Mensal de Registro e Autenticação",
     "agg_monthly_heatmap": "Mapa de Calor de Duração de Autenticação e Registro Mensal",
     "agg_weekly_activity": "Atividade Semanal de Registro e Autenticação",
-    "agg_weekly_heatmap": "Atividade Semanal de Registro e Autenticação",
+    "agg_weekly_heatmap": "Mapa de Calor de Duração de Autenticação e Registro Semanal",
     "auth_vs_registration_performance": "Autenticação vs Registro: Desempenho Temporal",
     "onboarding_time_graph": "Gráfico de Tempo de Integração",
     "passkey_adoption_rate": "Taxa de Adoção de Passkey",

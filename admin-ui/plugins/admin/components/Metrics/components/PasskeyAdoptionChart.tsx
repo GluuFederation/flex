@@ -93,8 +93,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   const totalForBar = existingUsers + newRegisteredUsers
   const existingShare = totalForBar > 0 ? (existingUsers / totalForBar) * Y_MAX : 0
-  const newShare =
-    totalForBar > 0 ? (newRegisteredUsers / totalForBar) * Y_MAX : existingUsers > 0 ? 0 : Y_MAX
+  const newShare = totalForBar > 0 ? (newRegisteredUsers / totalForBar) * Y_MAX : 0
   const barData = [
     {
       name: 'Users',
@@ -256,7 +255,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 <Bar
                   dataKey="newRegisteredUsers"
                   name={t('fields.new_registered_users')}
-                  fill={METRICS_CHART_COLORS.errorRate}
+                  fill={METRICS_CHART_COLORS.newUsers}
                   stackId="a"
                   radius={[4, 4, 0, 0]}
                 />

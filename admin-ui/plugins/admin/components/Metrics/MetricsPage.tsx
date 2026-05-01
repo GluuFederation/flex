@@ -24,7 +24,7 @@ import {
 import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
 import type { MetricsDateRange } from './types'
 
-const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.Metrics
+const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.MAU
 const METRICS_SCOPES = CEDAR_RESOURCE_SCOPES[METRICS_RESOURCE_ID]
 
 const MetricsPage: React.FC = () => {
@@ -55,16 +55,11 @@ const MetricsPage: React.FC = () => {
     [hasCedarReadPermission],
   )
 
-  const { isLoading: adoptionLoading, isFetching: adoptionFetching } = useAdoptionMetrics(
-    appliedRange,
-    { enabled: canView },
-  )
-  const { isLoading: errorsLoading, isFetching: errorsFetching } = useErrorsAnalytics(
-    appliedRange,
-    { enabled: canView },
-  )
+  const { isLoading: adoptionLoading, isFetching: adoptionFetching } =
+    useAdoptionMetrics(appliedRange)
+  const { isLoading: errorsLoading, isFetching: errorsFetching } = useErrorsAnalytics(appliedRange)
   const { isLoading: performanceLoading, isFetching: performanceFetching } =
-    usePerformanceAnalytics(appliedRange, { enabled: canView })
+    usePerformanceAnalytics(appliedRange)
 
   const isMetricsLoading =
     adoptionLoading ||

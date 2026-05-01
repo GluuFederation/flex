@@ -1494,7 +1494,7 @@
     "agg_daily_activity": "Daily Registration and Authentication Activity",
     "agg_daily_heatmap": "Daily Authentication and Registration Duration Heatmap",
     "agg_weekly_activity": "Weekly Registration and Authentication Activity",
-    "agg_weekly_heatmap": "Weekly Registration and Authentication Activity",
+    "agg_weekly_heatmap": "Weekly Authentication and Registration Duration Heatmap",
     "agg_monthly_activity": "Monthly Registration and Authentication Activity",
     "agg_monthly_heatmap": "Monthly Authentication and Registration Duration Heatmap",
     "usage_token_analytics": "Usage & Token Analytics",
