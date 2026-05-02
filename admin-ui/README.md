@@ -13,11 +13,11 @@ Before setting up the project, ensure you have the following installed :
 - NodeJS : v18.xx.x or above
 - NPM : 8.xx or above
 - Java : openjdk 17.x.x or above
-- Gluu Flex : follow the instruction [here](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith)
+- Gluu Flex : follow the instruction [here](https://docs.gluu.org/stable/install/docker-install/quick-start)
 
 ### Installation
 
-Follow these steps to setup the project :
+Follow these steps to setup the project:
 
 1. Clone the project
 

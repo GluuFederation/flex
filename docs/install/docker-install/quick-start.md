@@ -4,89 +4,130 @@ tags:
 - installation
 - quick-start
 - docker
+- aio
+- all-in-one
 ---
 
+# Docker Deployments Quick Start
+
 !!! Warning
-    **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**
+    **This image is for testing and development purposes only. Use Flex [helm deployments](https://docs.gluu.org/stable/install/helm-install/) for production setups.**
 
-## Overview
-
-The quickest way to get Gluu flex up and running is to have a Docker container-based deployment.
+    
+The quickest way to get Flex up and running is to install a Docker container-based fully featured Flex using the All-In-One (AIO) script.
 
 ## System Requirements
 
-System should meet [minimum VM system requirements](../vm-install/vm-requirements.md)
+System should meet the following requirements:
+
+```text
+- 8 GB RAM
+- 4 CPU
+- 20 GB Disk
+```
 
 ## Install
 
-Installation depends on a [set of environment variables](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith#environment-variables).
-These environment variables can be set to customize installation as per the need. If not set, the installer uses default values.
-
-Run this command to start the installation:
+To deploy Flex AIO, first download the installation script and make it executable:
 
 ```bash
-wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
-```
-
-Console messages like below confirms the successful installation:
+wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/start_flex_aio_demo.sh
+chmod u+x start_flex_aio_demo.sh
 
 ```
-[+] Running 3/3
- ⠿ Network docker-flex-monolith_cloud_bridge  Created                      0.0s    
- ⠿ Container docker-flex-monolith-mysql-1     Started                      0.6s
- ⠿ Container docker-flex-monolith-flex-1      Started                      0.9s
- 
-Waiting for auth-server to come up. Depending on the resources it may take 3-5 mins for the services to be up.
-Testing openid-configuration endpoint.. 
-```
 
-As can be seen, the install script also accesses the well-known endpoints to verify that Gluu Flex is responsive.
+Next, execute the script. You will need to provide your fully qualified domain name (FQDN), the persistence type (`MYSQL` or `PGSQL`), the Flex version (leave empty `""` for the default), and your Virtual Machine's IP address in place of `<VM_IP>`.
+
+
+=== "MySQL"
+
+    ```bash
+    sudo bash start_flex_aio_demo.sh demoexample.gluu.org MYSQL "" <VM_IP>
+    ```
+
+=== "PostgreSQL"
+
+    ```bash 
+    sudo bash start_flex_aio_demo.sh demoexample.gluu.org PGSQL "" <VM_IP>
+    ```
+
+Console messages like below will confirm the successful startup and readiness of the services:
+
+```text
+[I] Flex is starting up!
+[I] To check the progress, run 'docker compose logs -f' in a separate terminal
+[I] Checking if Flex is ready to accept requests (expected time ~3–5 minutes) ...
+[I] Waiting 120 seconds for services to initialize before starting health checks. Hang on...
+[W] Flex is not ready yet; retrying in 10 seconds ...
+[I] Flex is ready to accept requests
+```
 
 ## Verify Installation By Accessing Standard Endpoints
 
-
-To access Gluu flex standard endpoints from outside of the Docker container, systems `/etc/hosts` file needs to be updated. Open the file and add the IP domain record which should be the IP of the instance docker is installed. And the domain used in the env above `CN_HOSTNAME`.
+To access Flex standard endpoints from outside of the Docker container, your system's `/etc/hosts` file needs to be updated. Open the file and add the IP domain record, which should be the IP of the instance where Docker is installed (your `<VM_IP>`), followed by the hostname used during installation (`demoexample.gluu.org`).
 
 ```bash
-# For-example
+# For example
 172.22.0.3      demoexample.gluu.org
 ```
 
-After adding the record, hit the standard endpoints such as
+After adding the record, test the standard endpoints such as:
 
-```
+```text
 https://demoexample.gluu.org/.well-known/openid-configuration
 ```
 
-## Configure Gluu flex
+## Configure Flex
 
-1. Access the Docker container shell using:
+Flex can be configured using the Text-based User Interface (TUI). 
+
+1. Download the `jans-cli-tui` from the [release](https://github.com/JanssenProject/jans/releases/latest) assets depending on your OS. For example:
 
     ```bash
-    docker exec -ti docker-flex-monolith-flex-1 bash
+    wget https://github.com/JanssenProject/jans/releases/download/nightly/jans-cli-tui-linux-ubuntu-X86-64.pyz
     ```
 
-2. Grab a pair of client_id and client_pw(secret) from `setup.properties` or `/opt/jans/jans-setup/setup.properties.last`
+2. To connect to the TUI, you need your FQDN, Client ID, and Client Secret. Since the AIO deployment stores configurations in Consul and Vault, you can extract these credentials directly from the running Docker containers. 
 
-3. Use the CLI tools located under `/opt/jans/jans-cli/` to configure Gluu flex as needed. For example you can run the [TUI](https://docs.jans.io/head/admin/config-guide/config-tools/jans-tui/):
+    Run the following commands on your host machine to store the credentials in environment variables:
+
     ```bash
-    python3 /opt/jans/jans-cli/config-cli-tui.py
+    FQDN="demoexample.gluu.org" # Replace with your actual FQDN
+
+    # Extract Client ID from Consul
+    TUI_CLIENT_ID=$(docker exec consul consul kv get flex/config/tui_client_id)
+
+    # Extract Root Token and Client Secret from Vault
+    VAULT_TOKEN=$(docker exec vault grep 'Initial Root Token' /vault/config/vault_key_token.txt | awk -F ': ' '{print $2}')
+    TUI_CLIENT_SECRET=$(docker exec -e VAULT_TOKEN=$VAULT_TOKEN vault vault read -field=value secret/flex/tui_client_pw)
     ```
 
+3. Connect to the TUI using the downloaded `.pyz` file and the extracted credentials. *(Note: add `-noverify` if you are using the self-signed certificates generated by the demo script).*
 
-## Uninstall/Remove Gluu flex
+    ```bash
+    python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host $FQDN --client-id $TUI_CLIENT_ID --client-secret $TUI_CLIENT_SECRET -noverify
+    ```
 
-This docker based installation uses `docker compose` under the hood to create containers. Hence uninstalling Gluu flex involves invoking `docker compose` with appropriate yml file. Run command below to stop and remove containers.
+4. Note that the default `admin` password is `Test1234#`
 
+## Uninstall / Remove Flex
+
+This Docker-based installation uses `docker compose` under the hood to create the network and containers, and it stores volume data and templates in a local `flex-aio-demo` directory.
+
+Run the command below in the same directory where you executed the installation script to stop the containers, remove them, and clean up the generated files and volumes:
+
+```bash
+sudo docker compose -f compose.yaml down -v && sudo rm -rf flex-aio-demo compose.yaml
 ```
-docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml down && rm -rf flex-*
-```
 
-Console messages like below confirms the successful removal:
+Console messages like below confirm the successful removal:
 
-```
-[+] Running 3/3
- ⠿ Container docker-flex-monolith-flex-1      Removed                   10.5s
- ⠿ Container docker-flex-monolith-mysql-1     Removed                    0.9s
- ⠿ Network docker-flex-monolith_cloud_bridge  Removed                    0.1s
+```text
+[+] down 6/6
+✔ Container flex        Removed                                                                                                            3.8s
+✔ Container traefik     Removed                                                                                                            0.9s
+✔ Container mysql       Removed                                                                                                            3.8s
+✔ Container vault       Removed                                                                                                           10.4s
+✔ Container consul      Removed                                                                                                            0.2s
+✔ Network flex-aio-demo Removed                                                                                                            0.1s
 ```
