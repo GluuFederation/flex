@@ -501,7 +501,7 @@ check_flex_readiness() {
             echo "[I] Flex is ready to accept requests"
             break
         else
-            echo "[W] Flex is not ready, retrying in 10 seconds ..."
+            echo "[W] Flex is not ready yet; retrying in 10 seconds ..."
             retries=$((retries+1))
             sleep 10
         fi
