@@ -40,7 +40,7 @@ Next, execute the script. You will need to provide the following details:
 - Fully qualified domain name (FQDN)
 - Persistence type (`MYSQL` or `PGSQL`)
 - Flex version (leave empty `""` for the default)
-- Virtual Machine's IP address in place of `<VM_IP>`
+- Virtual Machine's Public IP address in place of `<VM_IP>`
 
 
 === "MySQL"
@@ -74,7 +74,7 @@ To access Flex standard endpoints from outside of the Docker container, your sys
 
 ```bash
 # For example
-172.22.0.3      demoexample.gluu.org
+VM_IP      demoexample.gluu.org
 ```
 
 ### Test the well-known endpoint
