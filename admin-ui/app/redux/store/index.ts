@@ -58,7 +58,7 @@ export const configStore = () => {
     )
   })
   hmrAccept('../reducers/index', () => {
-    const nextRootReducer = combine(reducerRegistry.getReducers())
+    const nextRootReducer = persistReducer(persistConfig, combine(reducerRegistry.getReducers()))
     store.replaceReducer(
       nextRootReducer as Reducer<object, UnknownAction> as Parameters<
         typeof store.replaceReducer
