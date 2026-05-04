@@ -43,7 +43,7 @@ npm install
 1. Generate the merged OpenAPI client:
 
 ```bash
-npm run api
+npm run api:orval
 ```
 
 1. Start the Vite development server:
