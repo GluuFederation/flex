@@ -13,6 +13,8 @@ jest.mock('Redux/features/toastSlice', () => ({
 
 const mockMutateAsync = jest.fn()
 const mockInvalidateQueriesByKey = jest.fn()
+const proxyInvalidateQueriesByKey = (...args: Parameters<typeof mockInvalidateQueriesByKey>) =>
+  mockInvalidateQueriesByKey(...args)
 
 jest.mock('JansConfigApi', () => ({
   useDeleteOauthOpenidClientByInum: () => ({ mutateAsync: mockMutateAsync, isPending: false }),
@@ -24,7 +26,7 @@ jest.mock('@tanstack/react-query', () => ({
 }))
 
 jest.mock('@/utils/queryUtils', () => ({
-  invalidateQueriesByKey: mockInvalidateQueriesByKey,
+  invalidateQueriesByKey: proxyInvalidateQueriesByKey,
 }))
 
 jest.mock('Plugins/admin/redux/features/WebhookSlice', () => ({

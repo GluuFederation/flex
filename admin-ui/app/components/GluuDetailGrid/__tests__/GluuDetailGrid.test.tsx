@@ -34,5 +34,5 @@ it('renders with labelStyle', () => {
   render(<GluuDetailGrid fields={mockFields} labelStyle={{ color: 'red' }} />, { wrapper: Wrapper })
   const label = screen.getByText(/Inum/i)
   expect(label).toBeInTheDocument()
-  expect(label).toHaveStyle({ color: 'red' })
+  expect(label).toHaveStyle({ color: 'rgb(255, 0, 0)' })
 })

@@ -8,8 +8,9 @@ type TaskResult = {
 
 const runTask = (label: string, command: string, args: string[]): Promise<TaskResult> => {
   return new Promise((resolve) => {
-    const proc: ChildProcess = spawn(command, args, {
-      shell: true,
+    const resolvedCommand = process.platform === 'win32' && command === 'npm' ? 'npm.cmd' : command
+    const proc: ChildProcess = spawn(resolvedCommand, args, {
+      shell: false,
       stdio: ['ignore', 'pipe', 'pipe'],
     })
 

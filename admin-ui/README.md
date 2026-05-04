@@ -1,112 +1,77 @@
 # Gluu Admin UI
 
-The Gluu Flex Admin UI is a reactive web interface to simplify the management and configuration of your Auth Server. The Admin UI enables you to easily view and edit configuration properties, interception scripts, clients, and metrics in one place.
+The Gluu Flex Admin UI is a reactive web interface for managing Auth Server configuration, scripts, clients, and metrics.
 
-## Introduction
-
-This document outlines the steps to setup the project for development, including installation, configuration, and running the application.
+## Development Setup
 
 ### Prerequisites
 
-Before setting up the project, ensure you have the following installed :
-
-- NodeJS : v18.xx.x or above
-- NPM : 8.xx or above
-- Java : openjdk 17.x.x or above
-- Gluu Flex : follow the instruction [here](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith)
+- Node.js `24.x` LTS
+- npm `10+`
+- Java `17+`
+- Gluu Flex: follow the instructions [here](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith)
 
 ### Installation
 
-Follow these steps to setup the project :
+1. Clone the project:
 
-1. Clone the project
-
-```
+```bash
 git clone https://github.com/GluuFederation/flex
 cd flex/admin-ui
 ```
 
-2. Environment configuration
+2. Create `.env.development`:
 
-Set the env `NODE_ENV` to `development`.
-
-```
-export NODE_ENV=development
-```
-
-Create a file name `.env.development` with following contents.
-
-```
+```dotenv
 BASE_PATH=/admin/
 CONFIG_API_BASE_URL=https://[jans-server-host]/jans-config-api
 API_BASE_URL=https://[jans-server-host]/jans-config-api/admin-ui
 NPM_TOKEN=
 ```
 
-**Note:**
+Notes:
 
-- replace `[jans-server-host]` with your actual jans server.
-- the `NPM_TOKEN` is not being used anymore, we can leave this empty.
+- Replace `[jans-server-host]` with your actual Jans server host.
+- `NPM_TOKEN` is no longer required and can stay empty.
 
-3. Install openapi-generator-cli globally in your system.
+3. Install project packages:
 
-```
-npm install @openapitools/openapi-generator-cli -g
-```
-
-4. Install project packages.
-
-```
+```bash
 npm install
 ```
 
-5. Run api specs generator.
+4. Generate the merged OpenAPI client:
 
-```
+```bash
 npm run api
 ```
 
-6. Run the project.
+5. Start the Vite development server:
 
+```bash
+npm run start:dev
 ```
-npm run install
-```
 
-Once the project is compiled and started, UI can be accessed at URL: http://localhost:4100
+The app is then available at the URL shown by Vite in the terminal.
 
-## Code Formatting
+## Common Commands
 
-This project uses Prettier and ESLint to maintain consistent code formatting. A pre-commit hook automatically checks code formatting before commits.
-
-### Available Commands
-
-Format all files in the project:
-
-```
+```bash
+npm run start:dev
+npm run build:prod
+npm run preview
+npm run lint:check
+npm run type-check
 npm run format
-```
-
-Check if files need formatting:
-
-```
 npm run format:check
 ```
 
-### Pre-commit Hook
+## Pre-commit Hook
 
-The project is configured with Husky to run formatting checks before commits. If your staged files are not properly formatted, the commit will fail with an error message. To fix this:
+Husky runs checks on commit for staged files and the project TypeScript build. If a commit is blocked:
 
-1. Run the format command to fix formatting issues:
-
-```
+```bash
 npm run format
+npm run lint
+npm run type-check
 ```
-
-2. Add the formatted files and commit again:
-
-```
-git add .
-git commit -m "your commit message"
-```
-
-**Note:** The pre-commit hook only checks staged files, ensuring fast commits while maintaining code quality.

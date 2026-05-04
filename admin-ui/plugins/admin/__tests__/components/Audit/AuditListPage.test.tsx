@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import AuditListPage from 'Plugins/admin/components/Audit/AuditListPage'
 
@@ -28,9 +29,17 @@ jest.mock('JansConfigApi', () => ({
   GetAuditDataParams: {},
 }))
 
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <AppTestWrapper>{children}</AppTestWrapper>
-)
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppTestWrapper>{children}</AppTestWrapper>
+    </QueryClientProvider>
+  )
+}
 
 describe('AuditListPage', () => {
   it('renders the audit log page with search toolbar', () => {

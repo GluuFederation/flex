@@ -12,10 +12,16 @@ const ESC = '\x1b'
 const cyan = (s: string): string => `${ESC}[36m${s}${ESC}[0m`
 const yellow = (s: string): string => `${ESC}[33m${s}${ESC}[0m`
 
-const proc: ChildProcess = spawn('npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss}"', [], {
-  shell: true,
-  stdio: ['inherit', 'pipe', 'pipe'],
-})
+const prettierCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx'
+
+const proc: ChildProcess = spawn(
+  prettierCommand,
+  ['prettier', '--write', '**/*.{js,jsx,ts,tsx,json,css,scss}'],
+  {
+    shell: false,
+    stdio: ['inherit', 'pipe', 'pipe'],
+  },
+)
 
 const stats: FormatStats = { total: 0, formatted: 0, reformattedFiles: [] }
 

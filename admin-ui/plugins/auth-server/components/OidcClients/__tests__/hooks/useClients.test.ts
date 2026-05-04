@@ -16,9 +16,11 @@ jest.mock('Redux/features/toastSlice', () => ({
 
 const mockRefetch = jest.fn()
 const mockUseGetOauthOpenidClients = jest.fn()
+const proxyUseGetOauthOpenidClients = (...args: Parameters<typeof mockUseGetOauthOpenidClients>) =>
+  mockUseGetOauthOpenidClients(...args)
 
 jest.mock('JansConfigApi', () => ({
-  useGetOauthOpenidClients: mockUseGetOauthOpenidClients,
+  useGetOauthOpenidClients: proxyUseGetOauthOpenidClients,
 }))
 
 beforeEach(() => {

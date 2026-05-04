@@ -97,12 +97,6 @@ export default defineConfig(({ mode }) => {
       wasm(),
       react({
         exclude: [/node_modules/, /jans_config_api_orval/],
-        babel: {
-          plugins: [
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-syntax-dynamic-import',
-          ],
-        },
       }),
     ],
     resolve: {

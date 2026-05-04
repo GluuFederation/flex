@@ -1,1 +1,2 @@
-export { CEDAR_RESOURCE_SCOPES, CEDARLING_CONSTANTS } from './resourceScopes'
+export { CEDAR_RESOURCE_SCOPES } from './resourceScopes'
+export { CEDARLING_CONSTANTS } from './cedarlingConstants'

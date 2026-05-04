@@ -15,9 +15,11 @@ jest.mock('@/utils/errorHandler', () => ({
 }))
 
 const mockUseGetConfigScripts = jest.fn()
+const proxyUseGetConfigScripts = (...args: Parameters<typeof mockUseGetConfigScripts>) =>
+  mockUseGetConfigScripts(...args)
 
 jest.mock('JansConfigApi', () => ({
-  useGetConfigScripts: mockUseGetConfigScripts,
+  useGetConfigScripts: proxyUseGetConfigScripts,
 }))
 
 beforeEach(() => {
