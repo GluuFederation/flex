@@ -34,6 +34,8 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 PRETTIER_OUT="$TMP_DIR/prettier.txt"
 ESLINT_OUT="$TMP_DIR/eslint.txt"
 TSC_OUT="$TMP_DIR/tsc.txt"
+PRETTIER_STATUS="$TMP_DIR/prettier-status.txt"
+ESLINT_STATUS="$TMP_DIR/eslint-status.txt"
 
 # --- Prettier: fan staged files across $CPUS parallel processes ---
 run_prettier() {
@@ -43,7 +45,31 @@ run_prettier() {
   mkdir -p "$PRETTIER_TMP_DIR"
   printf '%s\n' "$STAGED_FILES" | tr '\n' '\0' | \
     xargs -0 -P "$CPUS" -n "$BATCH" sh -c \
-      'npx prettier --check "$@" > "'"$PRETTIER_TMP_DIR"'/$$.txt" 2>&1' _
+      '
+      EXIT_CODE=0
+      OUT_FILE="'"$PRETTIER_TMP_DIR"'/$$.txt"
+      : > "$OUT_FILE"
+      for file in "$@"; do
+        TMP_FORMATTED=$(mktemp)
+        if ! npx prettier "$file" > "$TMP_FORMATTED" 2>/dev/null; then
+          echo "FILE: $file" >> "$OUT_FILE"
+          echo "  Prettier failed to parse or format this file." >> "$OUT_FILE"
+          EXIT_CODE=1
+          rm -f "$TMP_FORMATTED"
+          continue
+        fi
+
+        if ! cmp -s "$file" "$TMP_FORMATTED"; then
+          echo "FILE: $file" >> "$OUT_FILE"
+          diff -u "$file" "$TMP_FORMATTED" >> "$OUT_FILE" 2>/dev/null || true
+          echo "" >> "$OUT_FILE"
+          EXIT_CODE=1
+        fi
+
+        rm -f "$TMP_FORMATTED"
+      done
+      exit $EXIT_CODE
+      ' _
   PRETTIER_EXIT=$?
   cat "$PRETTIER_TMP_DIR"/*.txt > "$PRETTIER_OUT" 2>/dev/null || true
   return $PRETTIER_EXIT
@@ -87,9 +113,9 @@ else
 fi
 
 if [ $EXIT_ESLINT -eq 0 ]; then
-  echo "✅ ESLint     : no lint errors"
+  echo "✅ ESLint     : no lint errors or warnings"
 else
-  echo "❌ ESLint     : lint errors found"
+  echo "❌ ESLint     : lint warnings/errors found"
   cat "$ESLINT_OUT"
 fi
 
@@ -104,7 +130,7 @@ if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ]; th
   echo ""
   echo "💥 Commit blocked. Fix the errors above, then:"
   echo "   Formatting : npm run format"
-  echo "   Lint       : npm run lint"
+  echo "   Lint       : npm run lint:check"
   echo "   Types      : npm run type-check"
   exit 1
 fi

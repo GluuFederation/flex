@@ -31,8 +31,6 @@ module.exports = [
       },
       globals: {
         ...globals.browser,
-        ...globals.node,
-        ...globals.commonjs,
       },
     },
 
@@ -57,9 +55,9 @@ module.exports = [
       'react/display-name': [0, { ignoreTranspilerName: false }],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-restricted-types': [
-        'error',
+        'warn',
         {
           types: {
             unknown:
@@ -108,11 +106,28 @@ module.exports = [
     },
   },
 
-  // CommonJS config files
+  // CommonJS config files — also add Node/CommonJS globals here
   {
-    files: ['**/*.cjs'],
+    files: ['**/*.cjs', 'config/**/*', '**/*.config.*'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+      },
+    },
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
+  // Node globals for test files
+  {
+    files: ['**/__tests__/**/*', '**/*.test.*', '**/*.spec.*'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+      },
     },
   },
 

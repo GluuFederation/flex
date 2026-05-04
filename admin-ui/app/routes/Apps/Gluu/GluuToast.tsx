@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
+import { buildSafeNavigationUrl } from '@/utils/urlSecurity'
 
 const GluuToast = () => {
   const dispatch = useAppDispatch()
@@ -30,8 +31,9 @@ const GluuToast = () => {
   }
 
   const handleToastClose = () => {
-    if (redirectUrlRef.current) {
-      window.location.href = redirectUrlRef.current
+    const safeRedirectUrl = buildSafeNavigationUrl(redirectUrlRef.current)
+    if (safeRedirectUrl) {
+      window.location.href = safeRedirectUrl
     }
   }
 

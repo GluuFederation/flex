@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuText from './GluuText'
 import { useStyles } from './GluuViewWrapper.style'
+import GluuLoader from './GluuLoader'
 
 interface GluuViewWrapperProps {
   canShow?: boolean | null
@@ -14,6 +15,10 @@ const GluuViewWrapper = ({ canShow, children }: GluuViewWrapperProps) => {
 
   if (canShow === true) {
     return <div data-testid="WRAPPER">{children}</div>
+  }
+
+  if (canShow == null) {
+    return <GluuLoader blocking>{null}</GluuLoader>
   }
 
   return (

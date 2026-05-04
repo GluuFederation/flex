@@ -28,16 +28,12 @@ jest.mock('Plugins/auth-server/services/jsonPropertiesService', () => {
   }
 })
 
-jest.mock('@/cedarling', () => ({
+jest.mock('@/cedarling/hooks/useCedarling', () => ({
   useCedarling: jest.fn(() => ({
     hasCedarReadPermission: jest.fn(() => true),
     hasCedarWritePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
   })),
-  ADMIN_UI_RESOURCES: {
-    AuthenticationServerConfiguration: 'AuthenticationServerConfiguration',
-  },
-  CEDAR_RESOURCE_SCOPES: { AuthenticationServerConfiguration: [] },
 }))
 
 jest.mock('@/cedarling/utility', () => ({

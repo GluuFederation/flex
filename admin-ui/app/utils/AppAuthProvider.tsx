@@ -37,6 +37,7 @@ import { useTranslation } from 'react-i18next'
 import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
+import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -241,21 +242,17 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 setShowAdminUI(false)
                 setRoleNotFound(true)
                 const state = uuidv4()
-                const endSessionUrl = new URL(
-                  authConfigs?.endSessionEndpoint || window.location.origin,
+                const sessionEndpoint = buildSafeLogoutUrl(
+                  authConfigs?.endSessionEndpoint || null,
+                  localStorage.getItem('postLogoutRedirectUri'),
+                  state,
                 )
-                endSessionUrl.searchParams.set('state', state)
-                endSessionUrl.searchParams.set(
-                  'post_logout_redirect_uri',
-                  localStorage.getItem('postLogoutRedirectUri') ?? '',
-                )
-                const sessionEndpoint = endSessionUrl.toString()
                 dispatch(
                   updateToast(
                     true,
                     'error',
                     t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }),
-                    sessionEndpoint,
+                    sessionEndpoint || '',
                   ),
                 )
                 return

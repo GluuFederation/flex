@@ -9,7 +9,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryDefaults } from '@/utils/queryUtils'
 import { configStore } from 'Redux/store'
-import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import './styles/index.css'
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -29,7 +28,7 @@ const root = createRoot(container)
 
 root.render(
   <Provider store={store}>
-    <PersistGate loading={<GluuLoader blocking />} persistor={persistor}>
+    <PersistGate loading={null} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18n}>
           <ThemeProvider>
