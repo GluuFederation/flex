@@ -27,7 +27,13 @@ This guide covers the prerequisites and cluster creation specific to Amazon Elas
 ## Create the EKS Cluster
 
 ```bash
-eksctl create cluster --name janssen-cluster --nodegroup-name jans-nodes --node-type NODE_TYPE --nodes 2 --managed --region REGION_CODE
+eksctl create cluster \
+  --name janssen-cluster \
+  --nodegroup-name jans-nodes \
+  --node-type NODE_TYPE \
+  --nodes 2 \
+  --managed \
+  --region REGION_CODE
 ```
 
 Replace `NODE_TYPE` with an instance type (for example: `t3.xlarge`, `m5.large`) and `REGION_CODE` with your AWS region (for example: `us-east-1`, `eu-west-1`). Adjust `nodes` as per your desired cluster size.
