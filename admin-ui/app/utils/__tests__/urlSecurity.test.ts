@@ -10,6 +10,10 @@ describe('urlSecurity', () => {
     expect(buildSafeNavigationUrl('data:text/html,<script>alert(1)</script>')).toBeNull()
   })
 
+  it('rejects relative navigation urls when the provided base url is unsafe', () => {
+    expect(buildSafeNavigationUrl('/admin', { baseUrl: 'javascript:alert(1)' })).toBeNull()
+  })
+
   it('builds a logout url with safe endpoints only', () => {
     const logoutUrl = buildSafeLogoutUrl(
       'https://auth.example.com/logout',
@@ -30,5 +34,15 @@ describe('urlSecurity', () => {
     )
 
     expect(logoutUrl).toBe('https://auth.example.com/logout?state=state-123')
+  })
+
+  it('rejects unsafe end session endpoints', () => {
+    expect(
+      buildSafeLogoutUrl(
+        'javascript:alert(1)',
+        'https://admin.example.com/post-logout',
+        'state-123',
+      ),
+    ).toBeNull()
   })
 })

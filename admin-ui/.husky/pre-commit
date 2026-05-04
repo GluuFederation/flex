@@ -51,11 +51,13 @@ run_prettier() {
       : > "$OUT_FILE"
       for file in "$@"; do
         TMP_FORMATTED=$(mktemp)
-        if ! npx prettier "$file" > "$TMP_FORMATTED" 2>/dev/null; then
+        TMP_PRETTIER_ERR=$(mktemp)
+        if ! npx prettier "$file" > "$TMP_FORMATTED" 2> "$TMP_PRETTIER_ERR"; then
           echo "FILE: $file" >> "$OUT_FILE"
           echo "  Prettier failed to parse or format this file." >> "$OUT_FILE"
+          cat "$TMP_PRETTIER_ERR" >> "$OUT_FILE"
           EXIT_CODE=1
-          rm -f "$TMP_FORMATTED"
+          rm -f "$TMP_FORMATTED" "$TMP_PRETTIER_ERR"
           continue
         fi
 
@@ -66,7 +68,7 @@ run_prettier() {
           EXIT_CODE=1
         fi
 
-        rm -f "$TMP_FORMATTED"
+        rm -f "$TMP_FORMATTED" "$TMP_PRETTIER_ERR"
       done
       exit $EXIT_CODE
       ' _
@@ -130,7 +132,7 @@ if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ]; th
   echo ""
   echo "💥 Commit blocked. Fix the errors above, then:"
   echo "   Formatting : npm run format"
-  echo "   Lint       : npm run lint:check"
+  echo "   Lint       : npm run lint"
   echo "   Types      : npm run type-check"
   exit 1
 fi

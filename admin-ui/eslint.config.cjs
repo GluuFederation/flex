@@ -86,7 +86,7 @@ module.exports = [
 
   // Jest for test files
   {
-    files: ['**/__tests__/**/*.{ts,tsx,js}', '**/*.test.{ts,tsx,js}'],
+    files: ['**/__tests__/**/*.{ts,tsx,js,jsx}', '**/*.{test,spec}.{ts,tsx,js,jsx}'],
     ...jestPlugin.configs['flat/recommended'],
     rules: {
       ...jestPlugin.configs['flat/recommended'].rules,
