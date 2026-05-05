@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, memo } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { ArrowIcon } from 'Components'
+import ArrowIcon from '../SVG/Arrow'
 import customColors from '@/customColors'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './ThemeDropdown.style'

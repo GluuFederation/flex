@@ -100,6 +100,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     resolve: {
+      dedupe: ['react', 'react-dom'],
       alias: [
         { find: REGEX_STYLE_IMPORT_TILDE_PREFIX, replacement: '' },
         { find: '@', replacement: path.resolve(process.cwd(), 'app') },

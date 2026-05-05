@@ -5,7 +5,7 @@ import { MenuContext } from './MenuContext'
 import customColors from '@/customColors'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
-import { ChevronIcon } from '../SVG'
+import { ChevronIcon } from '../SVG/Chevron'
 import type {
   SidebarMenuContext,
   SidebarMenuEntry,
