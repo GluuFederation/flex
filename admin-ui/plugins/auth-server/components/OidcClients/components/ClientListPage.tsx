@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react'
-import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'

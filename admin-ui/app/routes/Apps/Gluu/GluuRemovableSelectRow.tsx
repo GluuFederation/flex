@@ -2,6 +2,7 @@ import GluuLabel from './GluuLabel'
 import { CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import React, { useMemo } from 'react'
+import { Close } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import type { GluuRemovableSelectRowProps } from './types'
@@ -79,10 +80,7 @@ const GluuRemovableSelectRow = ({
             }}
             onClick={() => handler()}
           >
-            <i
-              className={'fa fa-fw fa-close'}
-              style={{ color: themeColors.fontColor, fontSize: 16 }}
-            />
+            <Close sx={{ color: themeColors.fontColor, fontSize: 16 }} />
           </button>
         )}
       </div>

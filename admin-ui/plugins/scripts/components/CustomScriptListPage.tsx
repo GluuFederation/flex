@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
-import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'

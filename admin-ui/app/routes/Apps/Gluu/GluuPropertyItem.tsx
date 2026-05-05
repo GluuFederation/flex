@@ -1,6 +1,7 @@
 import { FormGroup, Col, Input, Button } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
+import { DeleteOutline } from '@/components/icons'
 import customColors from '@/customColors'
 import type { GluuPropertyItemProps } from './types/GluuPropertyItem.types'
 
@@ -95,7 +96,7 @@ const GluuPropertyItem = ({
             disabled={disabled}
             onClick={() => onPropertyRemove(position)}
           >
-            <i className="fa fa-fw fa-trash me-2"></i>
+            <DeleteOutline fontSize="small" className="me-2" />
             {t('actions.remove')}
           </Button>
         </Col>

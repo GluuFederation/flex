@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
-import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
+import { Add, DeleteOutlined, Edit } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'

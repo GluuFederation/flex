@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
+import { SearchIcon } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'

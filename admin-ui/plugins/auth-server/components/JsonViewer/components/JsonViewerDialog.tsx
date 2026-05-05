@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useAppDispatch } from '@/redux/hooks'
 import { useTheme } from '@/context/theme/themeContext'
@@ -156,7 +157,7 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden="true" />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="json-viewer-title">

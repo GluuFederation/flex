@@ -7,6 +7,7 @@ import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
 import styles from './ProfilePage.style'
 import { Box, Divider } from '@mui/material'
+import { EditOutlined } from '@/components/icons'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -293,7 +294,7 @@ const ProfileDetails: React.FC = () => {
                   backgroundColor={themeColors.formFooter?.back?.backgroundColor}
                   textColor={themeColors.formFooter?.back?.textColor}
                 >
-                  <i className={`fa fa-pencil ${classes.editButtonIcon}`} />
+                  <EditOutlined fontSize="small" className={classes.editButtonIcon} />
                   {t('actions.edit')}
                 </GluuButton>
               )}

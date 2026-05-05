@@ -1,4 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
+import { Check, Close } from '@/components/icons'
 import GluuLabel from './GluuLabel'
 import GluuToogle from './GluuToogle'
 import { Typeahead } from 'react-bootstrap-typeahead'
@@ -199,7 +200,7 @@ const GluuInlineInput = ({
               size="sm"
               onClick={onAccept}
             >
-              <i className="fa fa-check me-2" />
+              <Check fontSize="small" className="me-2" />
             </Button>
             <Button
               style={{
@@ -210,7 +211,7 @@ const GluuInlineInput = ({
               size="sm"
               onClick={onCancel}
             >
-              <i className="fa fa-times me-2"></i>
+              <Close fontSize="small" className="me-2" />
             </Button>
           </>
         )}

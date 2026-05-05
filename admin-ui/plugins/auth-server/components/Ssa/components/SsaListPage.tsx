@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import { DeleteOutlined, DownloadOutlined, VisibilityOutlined, Add } from '@mui/icons-material'
+import { Add, DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'

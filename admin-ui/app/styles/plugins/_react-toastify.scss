@@ -38,48 +38,25 @@
     opacity: 1;
 }
 
-// Toastify: "SUCCESS" Alert
-.Toastify__toast--success .fa-check {
-    color: $success;
-}
-.Toastify__toast--success .fa-check-circle {
-    color: $success !important;
-}
 .Toastify__toast--success {
     border-left: 3px solid $success;
 }
 
-// Toastify: "INFO" Alert
-.Toastify__toast--info .fa-info {
-    color: $primary;
-}
 .Toastify__toast--info {
     background-color: $white;
     border-left: 3px solid $primary;
 }
 
-// Toastify: "WARNING" Alert
-.Toastify__toast--warning .fa-exclamation {
-    color: $warning;
-}
 .Toastify__toast--warning {
     background-color: $white;
     border-left: 3px solid $warning;
 }
 
-// Toastify: "ERROR" Alert
-.Toastify__toast--error .fa-close {
-    color: $danger;
-}
 .Toastify__toast--error {
     background-color: $white;
     border-left: 3px solid $danger;
 }
 
-// Toastify: "DEFAULT" Alert
-.Toastify__toast--default .fa-exclamation {
-    color: $dark;
-}
 .Toastify__toast--default {
     background-color: $white;
     border-left: 3px solid $secondary;

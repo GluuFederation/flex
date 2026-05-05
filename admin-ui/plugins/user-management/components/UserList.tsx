@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import { DeleteOutlined, Edit, Add } from '@mui/icons-material'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
+import { Add, DeleteOutlined, Edit, LockOpenIcon } from '@/components/icons'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'
 import { useTranslation } from 'react-i18next'

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Close } from '@/components/icons'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   getWebhooksByFeatureIdResponse,
@@ -247,7 +248,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             aria-label={t('actions.close')}
             title={t('actions.close')}
           >
-            <i className="fa fa-times" aria-hidden />
+            <Close fontSize="small" aria-hidden />
           </button>
           <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
             <div className={webhookClasses.titleWithDescription}>

@@ -13,8 +13,9 @@
                 right: 0.75rem;
                 top: 50%;
                 transform: translateY(-50%);
-                content: "\f105";
-                font: normal normal normal 14px/1 FontAwesome;
+                content: "›";
+                font-size: 14px;
+                line-height: 1;
             }
         }
 
@@ -50,7 +51,7 @@
                 }
 
                 .nested-dropdown__submenu-item__link::after {
-                    content: "\f107";
+                    content: "▾";
                     position: static;
                     right: auto;
                     top: auto;

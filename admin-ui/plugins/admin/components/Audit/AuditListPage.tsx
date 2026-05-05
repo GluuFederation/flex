@@ -8,8 +8,7 @@ import {
   toApiDatetime,
 } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
-import SearchIcon from '@mui/icons-material/Search'
-import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import { AccessTimeIcon, SearchIcon } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'

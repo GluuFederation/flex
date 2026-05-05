@@ -20,7 +20,7 @@ git clone https://github.com/GluuFederation/flex
 cd flex/admin-ui
 ```
 
-1. Create `.env.development`:
+2. Create `.env.development`:
 
 ```dotenv
 BASE_PATH=/admin/
@@ -34,22 +34,23 @@ Notes:
 - Replace `[jans-server-host]` with your actual Jans server host.
 - `NPM_TOKEN` is no longer required and can stay empty.
 
-1. Install project packages:
+3. Install project packages:
 
 ```bash
 npm install
 ```
 
-1. Generate the merged OpenAPI client:
+4. Generate the merged OpenAPI client:
 
 ```bash
 npm run api:orval
 ```
 
-1. Start the Vite development server:
+5. Start the Vite development server:
 
 ```bash
-npm run start:dev
+npm start
+# alias for: npm run start:dev
 ```
 
 The app is then available at the URL shown by Vite in the terminal.
@@ -57,7 +58,7 @@ The app is then available at the URL shown by Vite in the terminal.
 ## Common Commands
 
 ```bash
-npm run start:dev
+npm start
 npm run build:prod
 npm run preview
 npm run lint:check

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import { DeleteOutline } from '@/components/icons'
 import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -513,7 +514,7 @@ const JsonPropertyBuilder = ({
                     padding={`${CEDARLING_CONFIG_SPACING.RADIO_LABEL_MB}px ${SPACING.SECTION_GAP / 2}px`}
                     useOpacityOnHover
                   >
-                    <i className={`fa fa-remove ${classes.removeButtonIcon}`} aria-hidden />
+                    <DeleteOutline className={classes.removeButtonIcon} aria-hidden />
                     {t('actions.remove')}
                   </GluuButton>
                 )}

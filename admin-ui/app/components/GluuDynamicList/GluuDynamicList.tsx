@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { Input } from 'reactstrap'
-import DeleteIcon from '@mui/icons-material/Delete'
-import AddIcon from '@mui/icons-material/Add'
+import { Add as AddIcon, Delete as DeleteIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'

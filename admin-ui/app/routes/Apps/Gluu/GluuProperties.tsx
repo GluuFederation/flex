@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
-import { HelpOutline } from '@mui/icons-material'
+import { Add, HelpOutline } from '@/components/icons'
 import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
@@ -181,7 +181,7 @@ const GluuProperties = ({
             onClick={addProperty}
             disabled={disabled}
           >
-            <i className="fa fa-fw fa-plus me-2"></i>
+            <Add fontSize="small" className="me-2" />
             {buttonText ? t(buttonText) : t('actions.add_property')}
           </Button>
         )}

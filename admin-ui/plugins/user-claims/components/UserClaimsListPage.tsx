@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
-import { DeleteOutlined, Edit, Add, VisibilityOutlined } from '@mui/icons-material'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'

@@ -11,6 +11,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
+import { WarningAmberOutlined } from '@/components/icons'
 
 import type { GluuDialogProps } from './types'
 
@@ -84,10 +85,10 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
       ) : (
         <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
           <ModalHeader toggle={closeModal}>
-            <i
+            <WarningAmberOutlined
               style={{ color: customColors.accentRed }}
-              className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
-            ></i>
+              className="modal-icon mb-3"
+            />
             {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${row.inum || row.id ? `-${row.inum || row.id}` : ''})`}
           </ModalHeader>
           <ModalBody>{t('messages.action_deletion_question')}</ModalBody>

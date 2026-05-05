@@ -5,7 +5,7 @@ import { LogoThemed } from './../LogoThemed/LogoThemed'
 import { ROUTES } from '@/helpers/navigation'
 
 interface HeaderAuthProps {
-  icon?: string
+  icon?: React.ReactNode
   iconClassName?: string
   title?: React.ReactNode
   text?: React.ReactNode
@@ -20,11 +20,7 @@ const HeaderAuth: React.FC<HeaderAuthProps> = ({
   <div className="mb-4">
     <div className="mb-4 text-center">
       <Link to={ROUTES.ROOT} className="d-inline-block">
-        {icon ? (
-          <i className={`fa fa-${icon} fa-3x ${iconClassName}`}></i>
-        ) : (
-          <LogoThemed height="30" />
-        )}
+        {icon ? <span className={iconClassName}>{icon}</span> : <LogoThemed height="30" />}
       </Link>
     </div>
     <h5 className="text-center mb-4">{title}</h5>

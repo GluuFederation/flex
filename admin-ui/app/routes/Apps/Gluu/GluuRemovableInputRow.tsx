@@ -9,7 +9,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './styles/GluuRemovableInputRow.style'
 import type { GluuRemovableInputRowProps } from './types'
-import CloseIcon from '@mui/icons-material/Close'
+import { Close as CloseIcon } from '@/components/icons'
 
 const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   label,

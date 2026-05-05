@@ -78,9 +78,6 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     },
     actionBtn: {
       ...dl.listActionBtn,
-      '&& i.fa-trash': {
-        color: `${themeColors.settings.removeButton.text} !important`,
-      },
     },
     actionBtnIcon: {
       fontSize: ICON_SIZE.SM,

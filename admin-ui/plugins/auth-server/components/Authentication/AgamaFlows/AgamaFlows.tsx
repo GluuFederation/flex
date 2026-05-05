@@ -20,9 +20,7 @@ import {
 } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuButton } from '@/components/GluuButton'
-import { Add, DeleteOutlined } from '@mui/icons-material'
-import InfoIcon from '@mui/icons-material/Info'
-import SettingsIcon from '@mui/icons-material/Settings'
+import { Add, Close, DeleteOutlined, Info as InfoIcon, SettingsIcon } from '@/components/icons'
 import { Divider } from '@mui/material'
 import Radio from '@mui/material/Radio'
 import FormGroup from '@mui/material/FormGroup'
@@ -913,7 +911,7 @@ const AgamaFlows: React.FC = () => {
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText

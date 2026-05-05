@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
 import { Row, Col, Alert, GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -141,14 +142,14 @@ const MauPage: React.FC = () => {
 
           {isError && (
             <Alert color="danger" className="mb-4" fade={false}>
-              <i className="fa fa-exclamation-triangle me-2"></i>
+              <WarningAmberOutlined fontSize="small" className="me-2" />
               {t('messages.error_loading_data')}
             </Alert>
           )}
 
           {!isLoading && !isError && !hasData && (
             <Alert color="info" className="mb-4" fade={false}>
-              <i className="fa fa-info-circle me-2"></i>
+              <InfoOutlined fontSize="small" className="me-2" />
               {t('messages.no_mau_data')}
             </Alert>
           )}

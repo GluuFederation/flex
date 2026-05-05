@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Box } from '@mui/material'
-import { InfoOutlined } from '@mui/icons-material'
+import { InfoOutlined } from '@/components/icons'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@/context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'

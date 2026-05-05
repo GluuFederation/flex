@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import RefreshIcon from '@mui/icons-material/Refresh'
+import { RefreshIcon } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'

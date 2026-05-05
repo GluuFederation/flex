@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import { Badge } from 'Components'
 import { useGetScopeByCreator } from 'JansConfigApi'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -120,7 +121,7 @@ const ClientShowSpontaneousScopes = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden="true" />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="spontaneous-scopes-title">

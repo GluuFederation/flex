@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
+import { Add, DeleteOutline } from '@/components/icons'
 import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -465,7 +466,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               onClick={addConfigProperty}
               disabled={!canAddProperty}
             >
-              <i className="fa fa-fw fa-plus" />
+              <Add fontSize="small" />
               {t('actions.add_property')}
             </GluuButton>
           </div>
@@ -496,7 +497,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   className={classes.propsActionBtn}
                   onClick={() => removeConfigProperty(prop.id)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteOutline fontSize="small" />
                   {t('actions.remove')}
                 </GluuButton>
               </div>

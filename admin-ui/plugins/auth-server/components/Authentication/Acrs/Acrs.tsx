@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useMemo, useState, type ReactElement } from 'react'
-import { Edit, Check, Close } from '@mui/icons-material'
+import { Check, Close, Edit } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'

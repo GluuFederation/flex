@@ -108,7 +108,6 @@
   "dependencies": {
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
-    "@fortawesome/fontawesome-free": "^7.0.0",
     "@janssenproject/cedarling_wasm": "0.0.338",
     "@material-table/core": "6.4.4",
     "@mui/icons-material": "^5.0.0",

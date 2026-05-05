@@ -16,7 +16,7 @@ import { logAudit } from '@/utils/AuditLogger'
 import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
-import { InfoOutlined } from '@mui/icons-material'
+import { Close, InfoOutlined } from '@/components/icons'
 import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
@@ -272,7 +272,7 @@ const CedarlingConfigPage: React.FC = () => {
               aria-label={t('actions.close')}
               title={t('actions.close')}
             >
-              <i className="fa fa-times" aria-hidden="true" />
+              <Close fontSize="small" aria-hidden />
             </button>
             <div className={commitClasses.contentArea}>
               <GluuText variant="h2" className={commitClasses.title} id="confirm-upload-title">

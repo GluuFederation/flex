@@ -29,9 +29,7 @@ import { useAppDispatch } from '@/redux/hooks'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { GluuButton } from '@/components'
 import { GluuFilterPopover } from '@/components/GluuFilterPopover'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import DownloadIcon from '@mui/icons-material/Download'
-import VisibilityIcon from '@mui/icons-material/Visibility'
+import { DownloadIcon, FilterListIcon, Visibility as VisibilityIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import {
   CLIENT_WIZARD_STEPS,

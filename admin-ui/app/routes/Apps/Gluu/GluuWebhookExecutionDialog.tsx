@@ -6,6 +6,7 @@ import {
   setShowWebhookExecutionDialog,
   setWebhookTriggerResults,
 } from 'Plugins/admin/redux/features/WebhookSlice'
+import { Check, Close, InfoOutlined } from '@/components/icons'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -121,15 +122,11 @@ const GluuWebhookExecutionDialog = () => {
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={`${commitClasses.contentArea} ${classes.contentArea}`}>
           <GluuText variant="h2" className={classes.title} id="webhook-execution-dialog-title">
-            <i
-              style={{ color: customColors.logo }}
-              className="fa fa-info fa-fw me-2"
-              aria-hidden="true"
-            />
+            <InfoOutlined style={{ color: customColors.logo }} className="me-2" aria-hidden />
             {t('messages.webhook_execution_information')}
           </GluuText>
           {(webhookTriggerResults?.length ?? 0) > 0 && (
@@ -187,7 +184,7 @@ const GluuWebhookExecutionDialog = () => {
               useOpacityOnHover
               className={commitClasses.yesButton}
             >
-              <i className="fa fa-check me-2" aria-hidden />
+              <Check fontSize="small" className="me-2" aria-hidden />
               {t('actions.ok')}
             </GluuButton>
           </div>
