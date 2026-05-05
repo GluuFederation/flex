@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -224,7 +224,7 @@ const ClientLogoutPanel = ({
           />
         </div>
         <div className={classes.fieldItem}>
-          <GluuToogleRow
+          <GluuToggleRow
             label="fields.frontChannelLogoutSessionRequired"
             name="frontChannelLogoutSessionRequired"
             formik={formik}
@@ -243,7 +243,7 @@ const ClientLogoutPanel = ({
           />
         </div>
         <div className={classes.fieldItem}>
-          <GluuToogleRow
+          <GluuToggleRow
             name="attributes.backchannelLogoutSessionRequired"
             label="fields.backchannelLogoutSessionRequired"
             formik={formik}

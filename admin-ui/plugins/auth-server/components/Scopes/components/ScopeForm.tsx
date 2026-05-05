@@ -16,7 +16,7 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
@@ -385,7 +385,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
                 {!showSpontaneousPanel && (
                   <div className={classes.toggleRow}>
-                    <GluuToogleRow
+                    <GluuToggleRow
                       label="fields.show_in_configuration_endpoint"
                       name="attributes.showInConfigurationEndpoint"
                       formik={formikProps}
@@ -405,7 +405,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
                 {!showSpontaneousPanel && (
                   <div className={classes.toggleRow}>
-                    <GluuToogleRow
+                    <GluuToggleRow
                       label="fields.default_scope"
                       name="defaultScope"
                       formik={formikProps}

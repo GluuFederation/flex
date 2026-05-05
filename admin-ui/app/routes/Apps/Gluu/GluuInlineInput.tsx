@@ -1,7 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { Check, Close } from '@/components/icons'
 import GluuLabel from './GluuLabel'
-import GluuToogle from './GluuToogle'
+import GluuToggle from './GluuToggle'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { Col, FormGroup, Input, Button } from 'Components'
@@ -165,7 +165,7 @@ const GluuInlineInput = ({
               />
             )}
             {isBoolean && (
-              <GluuToogle
+              <GluuToggle
                 id={resolvedId}
                 data-testid={resolvedId}
                 name={name}

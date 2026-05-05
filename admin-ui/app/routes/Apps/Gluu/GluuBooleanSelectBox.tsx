@@ -1,5 +1,5 @@
 import GluuLabel from './GluuLabel'
-import GluuToogle from './GluuToogle'
+import GluuToggle from './GluuToggle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
@@ -43,7 +43,7 @@ const GluuBooleanSelectBox = <T extends object = Record<string, JsonValue>>({
           </InputGroup>
         )}
         {toToggle && (
-          <GluuToogle
+          <GluuToggle
             id={name}
             data-testid={name}
             name={name}

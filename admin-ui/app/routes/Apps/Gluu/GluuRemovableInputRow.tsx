@@ -1,6 +1,6 @@
 import { Input } from 'Components'
 import GluuLabel from './GluuLabel'
-import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import PropTypes from 'prop-types'
 import type { FormikValues } from 'formik'
 import React, { useMemo } from 'react'
@@ -56,7 +56,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           doc_entry={name}
           isDirect={isDirect}
         />
-        <GluuToogle
+        <GluuToggle
           name={name}
           id={name}
           formik={formik}

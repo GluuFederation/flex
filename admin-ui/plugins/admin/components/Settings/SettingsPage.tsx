@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import { useAppSelector, useAppDispatch } from '../../../../app/redux/hooks'
 import { FormGroup, Form, Alert, GluuPageContent, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -437,7 +437,7 @@ const SettingsPage: React.FC = () => {
                         label="fields.showCedarLogs?"
                         isDark={isDark}
                       />
-                      <GluuToogleRow
+                      <GluuToggleRow
                         isLabelVisible={false}
                         label="fields.showCedarLogs?"
                         name="cedarlingLogType"

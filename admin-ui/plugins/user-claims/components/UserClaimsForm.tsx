@@ -8,7 +8,7 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
@@ -380,7 +380,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={classes.toggleRow}>
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="oxMultiValuedAttribute"
                     formik={formik}
                     lsize={12}
@@ -395,7 +395,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={classes.toggleRow}>
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="jansHideOnDiscovery"
                     formik={formik}
                     lsize={12}
@@ -410,7 +410,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={classes.toggleRow}>
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="scimCustomAttr"
                     formik={formik}
                     lsize={12}
@@ -425,7 +425,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={classes.toggleRow}>
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="validation"
                     lsize={12}
                     rsize={12}
