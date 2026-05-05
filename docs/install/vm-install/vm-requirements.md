@@ -12,7 +12,7 @@ Gluu Flex currently provides packages for these Linux distros:
 - RedHat Enterprise Linux (version: 8)
 
 !!! Note
-    This document is intended exclusively for dev and staging environments. Use Flex [helm deployments](https://docs.gluu.org/stable/install/helm-install/) for production setups. You can consider referring to this [documentation](https://docs.gluu.org/vreplace-flex-version/install/helm-install/rancher) which utilizes Rancher and Helm deployments.
+    This document is intended exclusively for dev and staging environments. Use Flex [helm deployments](../helm-install/README.md) for production setups. You can consider referring to this [documentation](../helm-install/prerequisites/rancher.md) which utilizes Rancher and Helm deployments.
 
 ## Hardware Requirements
 

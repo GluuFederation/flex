@@ -31,7 +31,10 @@ This guide covers the prerequisites and cluster creation specific to Google Kube
 ## Create the GKE Cluster
 
 ```bash
-gcloud container clusters create janssen-cluster --num-nodes 2 --machine-type e2-standard-4 --zone us-west1-a
+gcloud container clusters create janssen-cluster \
+--num-nodes 2 \
+--machine-type e2-standard-4 \
+--zone us-west1-a
 ```
 
 Adjust `num-nodes` and `machine-type` as per your desired cluster size.

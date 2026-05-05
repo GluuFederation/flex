@@ -27,7 +27,14 @@ az group create --name janssen-resource-group --location eastus
 ## Create the AKS Cluster
 
 ```bash
-az aks create -g janssen-resource-group -n janssen-cluster --enable-managed-identity --node-vm-size NODE_TYPE --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring --generate-ssh-keys
+az aks create -g janssen-resource-group \
+-n janssen-cluster \
+--enable-managed-identity \
+--node-vm-size NODE_TYPE \
+--node-count 2 \
+--enable-addons monitoring \
+--enable-msi-auth-for-monitoring \
+--generate-ssh-keys
 ```
 
 Adjust `node-count` and `node-vm-size` as per your desired cluster size.
@@ -36,7 +43,11 @@ Adjust `node-count` and `node-vm-size` as per your desired cluster size.
 
 ```bash
 az aks install-cli
-az aks get-credentials --resource-group janssen-resource-group --name janssen-cluster
+```
+```bash
+az aks get-credentials \
+--resource-group janssen-resource-group \
+--name janssen-cluster
 ```
 
 ## Create the Gluu Namespace
