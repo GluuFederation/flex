@@ -13,9 +13,9 @@ in enough different ways to make at least the bulk of the community happy.
 
 Currently, that means the following installation options:
 
-1. [Helm deployments](https://docs.gluu.org/stable/install/helm-install/) for Amazon, Google, Microsoft and Rancher
-2. [Docker deployment](https://docs.gluu.org/stable/install/docker-install/quick-start/) for development/testing (not production)
-3. [VM packages](https://docs.gluu.org/stable/install/vm-install/vm-requirements/) for Ubuntu, SUSE and Red Hat
+1. [Helm deployments](helm-install/README.md) for Amazon, Google, Microsoft and Rancher
+2. [Docker deployment](docker-install/quick-start.md) for development/testing (not production)
+3. [VM packages](vm-install/vm-requirements.md) for Ubuntu, SUSE and Red Hat
 
 ## Minimal Configuration
 

@@ -46,7 +46,8 @@ The Kubernetes Gateway API provides a more expressive and extensible way to mana
 If your cluster does not have the Gateway API Custom Resource Definitions:
 
 ```bash
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
+kubectl apply --server-side \
+-f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
 ```
 
 ### Install a Gateway Controller
@@ -56,7 +57,8 @@ You must have a [conformant Gateway Controller](https://gateway-api.sigs.k8s.io/
 Example using Nginx Gateway Fabric:
 
 ```bash
-helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric \
+--create-namespace -n nginx-gateway
 ```
 
 ### Configure Gateway IP

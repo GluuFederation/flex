@@ -13,21 +13,29 @@ This guide covers installing Flex through the Rancher Marketplace.
 
 For a stable, production-ready environment that natively supports Persistent Volumes (PVs), install Rancher on a dedicated Kubernetes cluster using Helm. Follow the official [Rancher Helm Installation Guide](https://ranchermanager.docs.rancher.com/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster).
 
-> 💡 **Testing/Dev Alternative:** If you are only testing and do not need PVs, you can use a single-node Docker installation. The Linux single-node are **4 CPU cores**, **16 GB RAM**, **50 GB SSD**, and ports **80** and **443** open
+!!! tip "Testing/Dev Alternative"
 
-> ```bash
-> docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher:v2.14.1
-> ```
+    If you are only testing and do not need PVs, you can use a single-node Docker installation. The Linux single-node are **4 CPU cores**, **16 GB RAM**, **50 GB SSD**, and ports **80** and **443** open
 
-> *Retrieve the bootstrap password with:* `docker logs <container-id> 2>&1 | grep "Bootstrap Password:"`
+    ```bash
+    docker run -d \
+    --restart=unless-stopped \
+    -p 80:80 \
+    -p 443:443 \
+    --privileged rancher/rancher:v2.14.1
+    ```
 
-> Open: `https://<RANCHER-SERVER-IP>`
+    Retrieve the bootstrap password with
+    
+    ```bash
+    docker logs <container-id> 2>&1 | grep "Bootstrap Password:"
+    ```
 
-> Log in with the default `admin` credentials or your bootstrap password.
+    Open: `https://<RANCHER-SERVER-IP>`
 
-> Set a new password when prompted.
+    Log in with the default `admin` credentials or your bootstrap password.
 
----
+    Set a new password when prompted.
 
 
 ## Install Flex
@@ -74,7 +82,8 @@ helm install nginx ingress-nginx/ingress-nginx
 
 To get the Loadbalancer IP: 
 ```bash
-kubectl get svc nginx-ingress-nginx-controller --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
+kubectl get svc nginx-ingress-nginx-controller \
+--output jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
 
 ### 3. Install Gluu Flex
