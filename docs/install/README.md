@@ -13,9 +13,9 @@ in enough different ways to make at least the bulk of the community happy.
 
 Currently, that means the following installation options:
 
-1. VM packages for Ubuntu, SUSE and Red Hat
-2. Helm deployments for Amazon, Google, Microsoft and Rancher
-3. Docker monolith deployment for development / testing (not production)
+1. [Helm deployments](helm-install/README.md) for Amazon, Google, Microsoft and Rancher
+2. [Docker deployment](docker-install/quick-start.md) for development/testing (not production)
+3. [VM packages](vm-install/vm-requirements.md) for Ubuntu, SUSE and Red Hat
 
 ## Minimal Configuration
 
@@ -31,9 +31,8 @@ configuration tool to perform any other last mile configuration.
 
 ## Databases
 
-Gluu Flex gives you a few options to store data: MySQL, Postgres,
-Couchbase, Amazon Aurora, and Spanner. You can also configure an in-memory cache
-server like Redis. Sometimes installation and configuration of this database
+Gluu Flex gives you a few options to store data: MySQL/Postgres. 
+You can also configure an in-memory cache server like Redis. Sometimes installation and configuration of this database
 is included in the setup process. Sometimes, you need to setup the database
 ahead of time. Please refer to the database instructions specific for your
 choice. And of course, you may need to refer to the database documentation
