@@ -92,10 +92,10 @@ kubectl get svc nginx-ingress-nginx-controller \
 - Click on `Install` on the right side of the window.
 - Change the namespace from `default` to `gluu`, then click on `Next`.
 - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
-- Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
+- Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/flex/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will be issued a JWT.
 - Click on the `Persistence` section. Set `SQL database host uri`, `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
 - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes.
-- Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`.
+- Click on the section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`.
 - To pass your `FQDN` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:
     1.  Add your `FQDN` and check the box `Is the FQDN globally resolvable` if it's DNS registered. 
     2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`.

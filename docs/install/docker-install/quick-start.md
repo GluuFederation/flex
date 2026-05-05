@@ -70,7 +70,7 @@ Console messages like below will confirm the successful startup and readiness of
 
 ### Update the IP domain record
 
-To access Flex standard endpoints from outside of the Docker container, your system's `/etc/hosts` file needs to be updated. Open the file and add the IP domain record, which should be the IP of the instance where Docker is installed (your `<VM_IP>`), followed by the hostname used during installation (`demoexample.gluu.org`).
+To access Flex standard endpoints from outside the Docker container, your system's `/etc/hosts` file needs to be updated. Open the file and add the IP domain record, which should be the IP of the instance where Docker is installed (your `<VM_IP>`), followed by the hostname used during installation (`demoexample.gluu.org`).
 
 ```bash
 # For example
