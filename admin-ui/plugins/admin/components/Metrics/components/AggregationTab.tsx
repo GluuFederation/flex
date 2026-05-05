@@ -132,6 +132,9 @@ const entriesToHourlyHeatmap = (
   }
 }
 
+const HOURLY_MIN_VAL = 1
+const HOURLY_MAX_VAL = 3.5
+
 const AggregationTab: React.FC = () => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -185,7 +188,7 @@ const AggregationTab: React.FC = () => {
     return entriesToActivityData(entries)
   }, [aggApiData, appliedAggType, useMockFallback])
 
-  const heatmapData: HeatmapData = useMemo(() => {
+  const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
       if (useMockFallback) {
@@ -215,7 +218,7 @@ const AggregationTab: React.FC = () => {
     return entriesToHeatmapData(entries)
   }, [aggApiData, appliedAggType, useMockFallback])
 
-  const authHeatmapData: HeatmapData = useMemo(() => {
+  const rawAuthHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
       if (useMockFallback) {
@@ -228,6 +231,16 @@ const AggregationTab: React.FC = () => {
     }
     return entriesToHeatmapData(entries)
   }, [aggApiData, appliedAggType, useMockFallback])
+
+  const heatmapData: HeatmapData = useMemo(() => {
+    if (appliedAggType !== 'hourly') return rawHeatmapData
+    return { ...rawHeatmapData, minVal: HOURLY_MIN_VAL, maxVal: HOURLY_MAX_VAL }
+  }, [appliedAggType, rawHeatmapData])
+
+  const authHeatmapData: HeatmapData = useMemo(() => {
+    if (appliedAggType !== 'hourly') return rawAuthHeatmapData
+    return { ...rawAuthHeatmapData, minVal: HOURLY_MIN_VAL, maxVal: HOURLY_MAX_VAL }
+  }, [appliedAggType, rawAuthHeatmapData])
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
   const inputBg = themeColors.inputBackground
@@ -267,6 +280,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_duration_seconds')}
                   compact
                   maxCellHeight={140}
+                  minColorBarHeight={320}
                 />
               </Col>
               <Col xs={12} lg={6}>
@@ -278,6 +292,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_duration_seconds')}
                   compact
                   maxCellHeight={140}
+                  minColorBarHeight={320}
                 />
               </Col>
             </Row>

@@ -92,7 +92,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   const textColor = themeColors.fontColor
 
   const totalForBar = existingUsers + newRegisteredUsers
-  const existingShare = totalForBar > 0 ? (existingUsers / totalForBar) * Y_MAX : 0
+  const existingShare = totalForBar > 0 ? (existingUsers / totalForBar) * Y_MAX : Y_MAX
   const newShare = totalForBar > 0 ? (newRegisteredUsers / totalForBar) * Y_MAX : 0
   const barData = [
     {
@@ -116,14 +116,15 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
     const { formattedGraphicalItems } = props
     const eBar = formattedGraphicalItems?.[0]?.props?.data?.[0]
     const nBar = formattedGraphicalItems?.[1]?.props?.data?.[0]
-    if (!eBar || !nBar) return null
+    if (!eBar) return null
 
     const barLeft = eBar.x as number
     const barRight = (eBar.x as number) + (eBar.width as number)
     const barBottom = (eBar.y as number) + (eBar.height as number)
-    const totalTop = nBar.y as number
-    const newTop = nBar.y as number
-    const newBottom = (nBar.y as number) + (nBar.height as number)
+    const totalTop = nBar ? (nBar.y as number) : (eBar.y as number)
+    const newTop = nBar ? (nBar.y as number) : barBottom
+    const newBottom = nBar ? (nBar.y as number) + (nBar.height as number) : barBottom
+    const hasNewUsers = nBar && (nBar.height as number) > 0
     const midBar = (totalTop + barBottom) / 2
     const leftArrowX = barLeft - 28
     const rightArrowX = barRight + 28
@@ -167,16 +168,20 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
             {totalRegisteredUsers}
           </tspan>
         </text>
-        <line
-          x1={rightArrowX}
-          y1={newTop + ARROW_S}
-          x2={rightArrowX}
-          y2={newBottom - ARROW_S}
-          stroke={newColor}
-          strokeWidth={2}
-        />
-        <Arrowhead x={rightArrowX} y={newTop} dir="up" color={newColor} />
-        <Arrowhead x={rightArrowX} y={newBottom} dir="down" color={newColor} />
+        {hasNewUsers && (
+          <>
+            <line
+              x1={rightArrowX}
+              y1={newTop + ARROW_S}
+              x2={rightArrowX}
+              y2={newBottom - ARROW_S}
+              stroke={newColor}
+              strokeWidth={2}
+            />
+            <Arrowhead x={rightArrowX} y={newTop} dir="up" color={newColor} />
+            <Arrowhead x={rightArrowX} y={newBottom} dir="down" color={newColor} />
+          </>
+        )}
       </g>
     )
   }

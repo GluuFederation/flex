@@ -24,7 +24,7 @@ import {
   LOGGING_READ,
   PROPERTIES_READ,
   STAT_READ,
-  FIDO_READ,
+  FIDO_ADMIN,
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
@@ -64,8 +64,8 @@ const pluginMetadata = {
         {
           title: 'menus.metrics',
           path: ROUTES.ADMIN_METRICS,
-          permission: FIDO_READ,
-          resourceKey: ADMIN_UI_RESOURCES.MAU,
+          permission: FIDO_ADMIN,
+          resourceKey: ADMIN_UI_RESOURCES.Metrics,
         },
         {
           title: 'menus.maugraph',
@@ -146,8 +146,8 @@ const pluginMetadata = {
     {
       component: MetricsPage,
       path: ROUTES.ADMIN_METRICS,
-      permission: FIDO_READ,
-      resourceKey: ADMIN_UI_RESOURCES.MAU,
+      permission: FIDO_ADMIN,
+      resourceKey: ADMIN_UI_RESOURCES.Metrics,
     },
     {
       component: SettingsPage,

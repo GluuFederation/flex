@@ -10,7 +10,7 @@ export const METRICS_CHART_COLORS = {
   errorRate: customColors.statusInactive,
   dropOffRate: customColors.orange,
   newUsers: customColors.statusActive,
-  totalUsers: customColors.lightBlue,
+  totalUsers: customColors.chartBlue,
   adoptionRate: customColors.chartPurple,
 
   minDuration: customColors.chartPurple,

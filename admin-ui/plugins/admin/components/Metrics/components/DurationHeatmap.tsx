@@ -27,6 +27,7 @@ interface DurationHeatmapProps {
   compact?: boolean
   minHeight?: number
   maxCellHeight?: number
+  minColorBarHeight?: number
   verticalRowLabels?: boolean
   colLabelsBottom?: boolean
   emptyStateCols?: number
@@ -145,6 +146,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   compact = false,
   minHeight,
   maxCellHeight,
+  minColorBarHeight,
   verticalRowLabels = false,
   colLabelsBottom = false,
   emptyStateCols,
@@ -208,7 +210,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
         : fallbackRows * baseCellH
     : rowsCount * cellH
   const gridHeight = layoutGridHeight
-  const colorBarHeight = layoutGridHeight
+  const colorBarHeight = minColorBarHeight
+    ? Math.max(layoutGridHeight, minColorBarHeight)
+    : layoutGridHeight
   const gridRightX = rowLabelW + layoutColsLen * cellW
 
   const svgWidth = gridRightX + colorBarW + 8 + colorBarLabelW

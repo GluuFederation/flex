@@ -69,6 +69,7 @@ export const customColors = {
   mauTrendClientCredentials: '#5daafa',
   mauTrendAuthCodeAccess: '#f9aa35',
   mauTrendAuthCodeId: '#da51f0',
+  chartBlue: '#4271DA',
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
