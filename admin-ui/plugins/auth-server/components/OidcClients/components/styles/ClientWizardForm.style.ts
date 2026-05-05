@@ -115,6 +115,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     contentSection: {
       'color': themeColors.fontColor,
       'padding': `0 ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
+      'paddingTop': '0 !important',
       '& label, & label h5, & label span, & h5, & h4, & .MuiSvgIcon-root, & .fa': {
         color: `${themeColors.fontColor} !important`,
       },

@@ -9,6 +9,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './styles/GluuRemovableInputRow.style'
 import type { GluuRemovableInputRowProps } from './types'
+import CloseIcon from '@mui/icons-material/Close'
 
 const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   label,
@@ -40,7 +41,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
       className={classes.removeButton}
       onClick={handler}
     >
-      <i className={`fa fa-fw fa-close ${classes.removeIcon}`} />
+      <CloseIcon className={classes.removeIcon} />
     </button>
   )
 

@@ -312,7 +312,7 @@ const SettingsPage: React.FC = () => {
     }
 
     return (
-      <Alert color="danger" className="mb-3">
+      <Alert color="danger" className="mb-3" transition={{ timeout: 150, unmountOnExit: true }}>
         <div className="d-flex justify-content-between align-items-center">
           <div>
             {errorMessages.map((msg, idx) => (

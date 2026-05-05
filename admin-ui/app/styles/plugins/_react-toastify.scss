@@ -1,6 +1,10 @@
 @import "react-toastify/dist/ReactToastify.css";
 @import "../variables.scss";
 
+:root {
+    --toastify-color-progress-light: #{$success};
+}
+
 .Toastify__toast {
     background-color: $white;
     padding: 20px;
@@ -18,7 +22,23 @@
     font-weight: 500;
 }
 
-// Toastiy: "SUCCESS" Alert
+// Hide v11 auto-generated icon — left border color communicates type
+.Toastify__toast-icon {
+    display: none;
+}
+
+// Remove v11 faded progress bar trail
+.Toastify__progress-bar--bg {
+    display: none;
+}
+
+// v11: single close button class replaces per-type classes
+.Toastify__close-button--light {
+    color: $gray-500;
+    opacity: 1;
+}
+
+// Toastify: "SUCCESS" Alert
 .Toastify__toast--success .fa-check {
     color: $success;
 }
@@ -28,12 +48,8 @@
 .Toastify__toast--success {
     border-left: 3px solid $success;
 }
-.Toastify__close-button--success {
-    color: $gray-500;
-}
 
-// Toastiy: "INFO" Alert
-
+// Toastify: "INFO" Alert
 .Toastify__toast--info .fa-info {
     color: $primary;
 }
@@ -41,11 +57,8 @@
     background-color: $white;
     border-left: 3px solid $primary;
 }
-.Toastify__close-button--info {
-    color: $gray-500;
-}
 
-// Toastiy: "WARNING" Alert
+// Toastify: "WARNING" Alert
 .Toastify__toast--warning .fa-exclamation {
     color: $warning;
 }
@@ -53,11 +66,8 @@
     background-color: $white;
     border-left: 3px solid $warning;
 }
-.Toastify__close-button--warning {
-    color: $gray-500;
-}
 
-// Toastiy: "ERROR" Alert
+// Toastify: "ERROR" Alert
 .Toastify__toast--error .fa-close {
     color: $danger;
 }
@@ -65,18 +75,12 @@
     background-color: $white;
     border-left: 3px solid $danger;
 }
-.Toastify__close-button--error {
-    color: $gray-500;
-}
 
-// Toastiy: "DEFAULT" Alert
+// Toastify: "DEFAULT" Alert
 .Toastify__toast--default .fa-exclamation {
     color: $dark;
 }
 .Toastify__toast--default {
     background-color: $white;
     border-left: 3px solid $secondary;
-}
-.Toastify__close-button--default {
-    color: $gray-500;
 }

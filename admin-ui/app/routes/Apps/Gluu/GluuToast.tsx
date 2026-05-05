@@ -54,7 +54,16 @@ const GluuToast = () => {
     }
   }, [showToast])
 
-  return <ToastContainer autoClose={10000} closeOnClick newestOnTop draggable={false} />
+  return (
+    <ToastContainer
+      autoClose={10000}
+      closeOnClick
+      newestOnTop
+      draggable={false}
+      theme="light"
+      stacked={false}
+    />
+  )
 }
 
 export default GluuToast
