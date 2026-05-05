@@ -28,7 +28,7 @@ az group create --name janssen-resource-group --location eastus
 
 ```bash
 az aks create -g janssen-resource-group \
--n janssen-cluster 
+-n janssen-cluster \
 --enable-managed-identity \
 --node-vm-size NODE_TYPE \
 --node-count 2 \
