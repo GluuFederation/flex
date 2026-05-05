@@ -31,6 +31,7 @@
     "start": "npm run start:dev",
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
+    "preview:prod": "npm run build:prod && ts-node --files --project script/tsconfig.json script/patch-dist-runtime-config.ts production && vite preview --host 0.0.0.0",
     "build:adminuitest": "vite build --mode adminuitest",
     "build:goldencrane": "vite build --mode goldencrane",
     "start:dev": "vite --mode development",
