@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import { SPACING, BORDER_RADIUS, OPACITY, ICON_SIZE } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -217,6 +217,11 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
     propsInput: dl.listInput,
     propsError: dl.listError,
     propsActionBtn: dl.listActionBtn,
+    propsActionIcon: {
+      fontSize: ICON_SIZE.SM,
+      marginRight: theme.spacing(0.5),
+      flexShrink: 0,
+    },
     hintsSection: {
       marginTop: PROPS_HEADER_MB,
     },

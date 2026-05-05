@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  ICON_SIZE,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -88,7 +94,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     alertIcon: {
       flexShrink: 0,
       color: infoText,
-      fontSize: 20,
+      fontSize: ICON_SIZE.MD,
     },
     alertText: {
       fontFamily: fontFamily,

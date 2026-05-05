@@ -2,12 +2,9 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
-
-const ICON_SIZE_SM = 18
-const ICON_SIZE_MD = 20
 const CARD_INNER_PADDING = 20
 const STATUS_BADGE_MIN_WIDTH = 64
 const EXPANDED_ROW_MIN_CELL = 160
@@ -29,10 +26,10 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       fontFamily,
     },
     statusBadge: { minWidth: STATUS_BADGE_MIN_WIDTH },
-    editIcon: { fontSize: ICON_SIZE_SM },
-    deleteIcon: { fontSize: ICON_SIZE_SM },
-    viewIcon: { fontSize: ICON_SIZE_SM },
-    addIcon: { fontSize: ICON_SIZE_MD },
+    editIcon: { fontSize: ICON_SIZE.SM },
+    deleteIcon: { fontSize: ICON_SIZE.SM },
+    viewIcon: { fontSize: ICON_SIZE.SM },
+    addIcon: { fontSize: ICON_SIZE.MD },
     searchCard: {
       width: '100%',
       backgroundColor: cardBg,

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -419,7 +420,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   className={classes.propsActionBtn}
                   onClick={() => removeRequestedParty(index)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteIcon className={classes.propsActionIcon} />
                   {t('actions.remove')}
                 </GluuButton>
               </div>
@@ -473,7 +474,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   className={classes.propsActionBtn}
                   onClick={() => removeAlgorithm(index)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteIcon className={classes.propsActionIcon} />
                   {t('actions.remove')}
                 </GluuButton>
               </div>
@@ -533,7 +534,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   className={classes.propsActionBtn}
                   onClick={() => removeMetadataServer(index)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteIcon className={classes.propsActionIcon} />
                   {t('actions.remove')}
                 </GluuButton>
               </div>

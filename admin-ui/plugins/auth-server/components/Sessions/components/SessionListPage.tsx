@@ -29,7 +29,7 @@ import {
   REGEX_CSV_SPECIAL_CHARS,
   REGEX_DOUBLE_QUOTE,
 } from '@/utils/regex'
-import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
+import { BORDER_RADIUS } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
@@ -577,7 +577,7 @@ const SessionListPage: React.FC = () => {
                     minHeight={52}
                     useOpacityOnHover
                   >
-                    <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    <FilterListIcon className={classes.toolbarButtonIcon} />
                     {t('titles.filters')}
                   </GluuButton>
 
@@ -592,7 +592,7 @@ const SessionListPage: React.FC = () => {
                     minHeight={52}
                     useOpacityOnHover
                   >
-                    <GetAppIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    <GetAppIcon className={classes.toolbarButtonIcon} />
                     {t('titles.export_csv')}
                   </GluuButton>
 

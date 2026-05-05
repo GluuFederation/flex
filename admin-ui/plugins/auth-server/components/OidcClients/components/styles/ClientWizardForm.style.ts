@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, SPACING, ICON_SIZE } from '@/constants'
 import { fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ClientWizardFormStyleParams } from 'Plugins/auth-server/components/OidcClients/types'
@@ -39,6 +39,11 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       display: 'inline-flex',
       alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
+    },
+    downloadButtonIcon: {
+      fontSize: ICON_SIZE.SM,
+      marginRight: 4,
+      flexShrink: 0,
     },
     filterButtonWrapper: {
       position: 'relative' as const,

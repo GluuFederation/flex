@@ -5,7 +5,6 @@ import AddIcon from '@mui/icons-material/Add'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { ICON_SIZE } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import { GluuButton } from '../GluuButton'
 import { useStyles } from './GluuDynamicList.style'
@@ -112,7 +111,7 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
             </GluuText>
           )}
           <button type="button" disabled={isAddDisabled} className={classes.addBtn} onClick={onAdd}>
-            <AddIcon sx={{ fontSize: ICON_SIZE.SM }} className={classes.addBtnIcon} />
+            <AddIcon className={classes.addBtnIcon} />
             {addButtonLabel}
           </button>
         </div>
@@ -175,7 +174,7 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
                 className={classes.actionBtn}
                 onClick={handleRemove(index)}
               >
-                <DeleteIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                <DeleteIcon className={classes.actionBtnIcon} />
                 {removeButtonLabel}
               </GluuButton>
             </div>

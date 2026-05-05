@@ -212,6 +212,11 @@ describe('DynamicConfiguration', () => {
       expect(screen.getByText(/Person Custom Object Classes/i)).toBeInTheDocument()
     })
 
+    it('renders MUI delete icons for remove actions', async () => {
+      await renderAndWait()
+      expect(screen.getAllByTestId('DeleteIcon').length).toBeGreaterThan(0)
+    })
+
     it('renders footer with Back, Cancel, and Apply', async () => {
       await renderAndWait()
       expect(screen.getByText(/Back/i)).toBeInTheDocument()

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -26,9 +26,9 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     },
     statusBadge: { minWidth: 80 },
     httpMethodBadge: { width: 72, minWidth: 72, maxWidth: 72, boxSizing: 'border-box' },
-    editIcon: { fontSize: 18 },
-    deleteIcon: { fontSize: 18 },
-    addIcon: { fontSize: 20 },
+    editIcon: { fontSize: ICON_SIZE.SM },
+    deleteIcon: { fontSize: ICON_SIZE.SM },
+    addIcon: { fontSize: ICON_SIZE.MD },
     searchCard: {
       width: '100%',
       backgroundColor: cardBg,

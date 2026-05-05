@@ -1,4 +1,4 @@
-import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import type { SagaIterator } from 'redux-saga'
 import {
   checkLicenseConfigValidResponse,
@@ -71,12 +71,7 @@ export function* getAccessToken() {
 
 function* setupApiToken() {
   const token = (yield call(getAccessToken)) as ApiTokenResponse
-  const hasSession = (yield select(
-    (state: { authReducer: { hasSession: boolean } }) => state.authReducer.hasSession,
-  )) as boolean
-  if (!hasSession) {
-    setApiToken(token.access_token)
-  }
+  setApiToken(token.access_token)
 }
 
 function* checkLicensePresentWorker(_action?: { type: string }) {

@@ -248,12 +248,12 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const actions: ActionDef<DeviceData>[] = useMemo(
     () => [
       {
-        icon: <DeleteOutlined sx={{ fontSize: 18 }} />,
+        icon: <DeleteOutlined className={classes.actionIcon} />,
         tooltip: t('actions.delete'),
         onClick: handleRemove2Fa,
       },
     ],
-    [t, handleRemove2Fa],
+    [classes.actionIcon, t, handleRemove2Fa],
   )
 
   const handleRowsPerPageChange = useCallback((newSize: number) => {

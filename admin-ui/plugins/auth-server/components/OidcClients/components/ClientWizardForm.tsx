@@ -33,7 +33,6 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import DownloadIcon from '@mui/icons-material/Download'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { ICON_SIZE } from '@/constants'
 import {
   CLIENT_WIZARD_STEPS,
   CLIENT_WIZARD_SEQUENCE,
@@ -464,7 +463,7 @@ const ClientWizardForm = ({
                         useOpacityOnHover
                         className={classes.downloadButton}
                       >
-                        <VisibilityIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                        <VisibilityIcon className={classes.downloadButtonIcon} />
                         {t('fields.view_spontaneous_scopes')}
                       </GluuButton>
                     )}
@@ -482,7 +481,7 @@ const ClientWizardForm = ({
                           useOpacityOnHover
                           className={classes.downloadButton}
                         >
-                          <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                          <FilterListIcon className={classes.downloadButtonIcon} />
                           {t('titles.filters')}
                         </GluuButton>
                         <GluuFilterPopover
@@ -504,7 +503,7 @@ const ClientWizardForm = ({
                         disabled={!tokenHasData || isExporting}
                         className={classes.downloadButton}
                       >
-                        <DownloadIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                        <DownloadIcon className={classes.downloadButtonIcon} />
                         {t('titles.export_csv')}
                       </GluuButton>
                     </>
@@ -519,7 +518,7 @@ const ClientWizardForm = ({
                     useOpacityOnHover
                     className={classes.downloadButton}
                   >
-                    <DownloadIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    <DownloadIcon className={classes.downloadButtonIcon} />
                     {t('fields.download_summary')}
                   </GluuButton>
                 </div>
