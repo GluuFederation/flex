@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 
@@ -39,10 +39,10 @@ export const useStyles = makeStyles<AssetListPageStylesParams>()((_, { isDark, t
       minWidth: 80,
     },
     editIcon: {
-      fontSize: 18,
+      fontSize: ICON_SIZE.SM,
     },
     addIcon: {
-      fontSize: 20,
+      fontSize: ICON_SIZE.MD,
     },
     searchCard: {
       width: '100%',

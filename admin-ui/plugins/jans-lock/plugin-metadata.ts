@@ -1,7 +1,9 @@
 import { JANS_LOCK_READ } from 'Utils/PermChecker'
-import JansLock from './components/JansLock'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const JansLock = createLazyRoute(() => import('./components/JansLock'))
 
 const pluginMetadata = {
   menus: [

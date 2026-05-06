@@ -1,2 +1,2 @@
-export { loadPluginMetadata } from './loadPluginMetadata'
+export { loadPluginMetadata, loadPluginMetadataAsync } from './loadPluginMetadata'
 export * from './types'

@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
+import { Close as CloseIcon } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -245,7 +246,7 @@ const GluuAutocomplete = ({
                           }}
                           aria-label={t('actions.clear')}
                         >
-                          <i className="fa fa-fw fa-close" style={{ fontSize: 16 }} />
+                          <CloseIcon sx={{ fontSize: 16 }} />
                         </button>
                       )}
                       {params.InputProps.endAdornment}
@@ -293,7 +294,7 @@ const GluuAutocomplete = ({
                 }}
                 aria-label={t('actions.remove')}
               >
-                <i className="fa fa-fw fa-close" />
+                <CloseIcon sx={{ fontSize: 14 }} />
               </button>
             </span>
           ))}
@@ -321,7 +322,7 @@ const GluuAutocomplete = ({
           onClick={onRemoveField}
           aria-label={t('actions.remove')}
         >
-          <i className="fa fa-fw fa-close" style={{ color: themeColors.fontColor }} />
+          <CloseIcon sx={{ fontSize: 16, color: themeColors.fontColor }} />
         </button>
       </div>
     )

@@ -1,5 +1,6 @@
 import { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ExtensionOutlined } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
@@ -87,7 +88,7 @@ const ClientScriptPanel = ({
       })}
       {Object.values(scriptOptionsByType).every((opts) => opts.length === 0) && (
         <div className={classes.emptyState}>
-          <i className={`fa fa-puzzle-piece ${classes.emptyStateIcon}`} aria-hidden="true" />
+          <ExtensionOutlined className={classes.emptyStateIcon} aria-hidden />
           <GluuText variant="p" className={classes.emptyStateTitle} disableThemeColor>
             {t('messages.no_scripts_found')}
           </GluuText>

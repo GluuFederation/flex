@@ -1,5 +1,4 @@
 @import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/mixins/breakpoints";
 @import "variables";
 
 .dropdown-menu {
@@ -63,7 +62,7 @@
 }
 
 // Navbar dropdown on XS
-@media (max-width: breakpoint-max("xs", $grid-breakpoints)) {
+@media (max-width: 575.98px) {
     .navbar .nav .dropdown-menu.extended-dropdown,
     .navbar .navbar-nav .dropdown-menu.extended-dropdown {
         position: fixed;

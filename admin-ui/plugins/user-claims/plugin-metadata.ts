@@ -1,10 +1,12 @@
-import UserClaimsListPage from 'Plugins/user-claims/components/UserClaimsListPage'
-import UserClaimsAddPage from 'Plugins/user-claims/components/UserClaimsAddPage'
-import UserClaimsEditPage from 'Plugins/user-claims/components/UserClaimsEditPage'
-import UserClaimsViewPage from 'Plugins/user-claims/components/UserClaimsViewPage'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const UserClaimsListPage = createLazyRoute(() => import('./components/UserClaimsListPage'))
+const UserClaimsAddPage = createLazyRoute(() => import('./components/UserClaimsAddPage'))
+const UserClaimsEditPage = createLazyRoute(() => import('./components/UserClaimsEditPage'))
+const UserClaimsViewPage = createLazyRoute(() => import('./components/UserClaimsViewPage'))
 
 const pluginMetadata = {
   menus: [

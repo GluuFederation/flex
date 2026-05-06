@@ -9,6 +9,7 @@ import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ReducerMap, RootState } from '../types'
+import { hmrAccept } from '@/utils/hmr'
 
 type LooseReducerMap = Record<string, Reducer<RootState[keyof RootState], UnknownAction>>
 
@@ -17,7 +18,6 @@ declare global {
     dsfaStore?: ReturnType<typeof configureStore>
   }
 }
-declare const module: { hot?: { accept(dep: string, cb: () => void): void } }
 
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
@@ -57,16 +57,14 @@ export const configStore = () => {
       combine(reds) as Reducer<object, UnknownAction> as Parameters<typeof store.replaceReducer>[0],
     )
   })
-  if (module.hot) {
-    module.hot.accept('../reducers/index', () => {
-      const nextRootReducer = combine(reducerRegistry.getReducers())
-      store.replaceReducer(
-        nextRootReducer as Reducer<object, UnknownAction> as Parameters<
-          typeof store.replaceReducer
-        >[0],
-      )
-    })
-  }
+  hmrAccept('../reducers/index', () => {
+    const nextRootReducer = persistReducer(persistConfig, combine(reducerRegistry.getReducers()))
+    store.replaceReducer(
+      nextRootReducer as Reducer<object, UnknownAction> as Parameters<
+        typeof store.replaceReducer
+      >[0],
+    )
+  })
   return { store, persistor }
 }
 

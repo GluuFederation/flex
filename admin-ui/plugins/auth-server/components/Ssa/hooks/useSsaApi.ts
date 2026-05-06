@@ -39,6 +39,7 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   } catch (parseError) {
     throw new Error(
       `Failed to parse successful response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+      { cause: parseError },
     )
   }
 }
@@ -61,7 +62,9 @@ const fetchAllSsas = async (
     return await handleResponse<SsaData[]>(response)
   } catch (error) {
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Network error: Unable to reach the server. Please check your connection.')
+      throw new Error('Network error: Unable to reach the server. Please check your connection.', {
+        cause: error,
+      })
     }
     throw error
   }
@@ -87,7 +90,9 @@ const createSsa = async (
     return await handleResponse<SsaData>(response)
   } catch (error) {
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Network error: Unable to reach the server. Please check your connection.')
+      throw new Error('Network error: Unable to reach the server. Please check your connection.', {
+        cause: error,
+      })
     }
     throw error
   }
@@ -113,7 +118,9 @@ const getSsaJwt = async (
     return await handleResponse<SsaJwtResponse>(response)
   } catch (error) {
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Network error: Unable to reach the server. Please check your connection.')
+      throw new Error('Network error: Unable to reach the server. Please check your connection.', {
+        cause: error,
+      })
     }
     throw error
   }

@@ -6,7 +6,7 @@ import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -20,9 +20,7 @@ import {
 } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuButton } from '@/components/GluuButton'
-import { Add, DeleteOutlined } from '@mui/icons-material'
-import InfoIcon from '@mui/icons-material/Info'
-import SettingsIcon from '@mui/icons-material/Settings'
+import { Add, Close, DeleteOutlined, Info as InfoIcon, SettingsIcon } from '@/components/icons'
 import { Divider } from '@mui/material'
 import Radio from '@mui/material/Radio'
 import FormGroup from '@mui/material/FormGroup'
@@ -913,7 +911,7 @@ const AgamaFlows: React.FC = () => {
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText

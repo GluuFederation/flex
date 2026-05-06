@@ -7,6 +7,7 @@ import translationPt from './locales/pt/translation.json'
 import translationEs from './locales/es/translation.json'
 import { isDevelopment } from './utils/env'
 import { devLogger } from './utils/devLogger'
+import { hmrAccept } from '@/utils/hmr'
 import { toast } from 'react-toastify'
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
@@ -73,5 +74,18 @@ const i18nConfig: InitOptions = {
 }
 
 i18n.use(initReactI18next).init(i18nConfig)
+
+hmrAccept<{ default: typeof translationEn }>('./locales/en/translation.json', (m) => {
+  if (m) i18n.addResourceBundle('en', 'translation', m.default, true, true)
+})
+hmrAccept<{ default: typeof translationFr }>('./locales/fr/translation.json', (m) => {
+  if (m) i18n.addResourceBundle('fr', 'translation', m.default, true, true)
+})
+hmrAccept<{ default: typeof translationPt }>('./locales/pt/translation.json', (m) => {
+  if (m) i18n.addResourceBundle('pt', 'translation', m.default, true, true)
+})
+hmrAccept<{ default: typeof translationEs }>('./locales/es/translation.json', (m) => {
+  if (m) i18n.addResourceBundle('es', 'translation', m.default, true, true)
+})
 
 export default i18n

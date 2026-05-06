@@ -116,7 +116,8 @@ const DashboardChart = memo(
     return (
       <>
         <GlobalStyles styles={chartGlobalStyles} />
-        <ResponsiveContainer debounce={1} width="100%" height="100%">
+        {/* height must be a number — recharts ResponsiveContainer renders at 0px with "100%" when parent has no explicit height */}
+        <ResponsiveContainer debounce={1} width="100%" height={340} minHeight={200}>
           <AreaChart data={augmentedData} margin={CHART_CONSTANTS.MARGIN}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor || customColors.textMutedDark} />
             <XAxis

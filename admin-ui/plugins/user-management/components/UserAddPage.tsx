@@ -49,7 +49,9 @@ const UserAddPage = () => {
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
-        await logUserCreation(data, variables.data)
+        if (variables.data) {
+          await logUserCreation(data, variables.data)
+        }
         triggerUserWebhook(data, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigateBack(ROUTES.USER_MANAGEMENT)

@@ -1,9 +1,11 @@
-import UserList from './components/UserList'
-import UserAddPage from './components/UserAddPage'
-import UserEditPage from './components/UserEditPage'
 import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const UserList = createLazyRoute(() => import('./components/UserList'))
+const UserAddPage = createLazyRoute(() => import('./components/UserAddPage'))
+const UserEditPage = createLazyRoute(() => import('./components/UserEditPage'))
 
 const pluginMetadata = {
   menus: [

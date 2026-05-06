@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Paper from '@mui/material/Paper'
+import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -83,14 +84,14 @@ const HealthPage: React.FC = () => {
 
           {isError && (
             <div className={`${classes.messageBlock} ${classes.errorMessage}`}>
-              <i className={`fa fa-exclamation-triangle ${classes.errorIcon}`} />
+              <WarningAmberOutlined className={classes.errorIcon} />
               <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
             </div>
           )}
 
           {!isLoading && !isError && services.length === 0 && (
             <div className={`${classes.messageBlock} ${classes.infoMessage}`}>
-              <i className={`fa fa-info-circle ${classes.infoIcon}`} />
+              <InfoOutlined className={classes.infoIcon} />
               <GluuText variant="span" secondary>
                 {t('messages.no_services_found')}
               </GluuText>

@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import { useAppSelector, useAppDispatch } from '../../../../app/redux/hooks'
 import { FormGroup, Form, Alert, GluuPageContent, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -16,12 +16,10 @@ import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
-import {
-  CedarlingLogType,
-  useCedarling,
-  ADMIN_UI_RESOURCES,
-  CEDAR_RESOURCE_SCOPES,
-} from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import {
   getDefaultPagingSize,
   savePagingSize as savePagingSizeToStorage,
@@ -314,7 +312,7 @@ const SettingsPage: React.FC = () => {
     }
 
     return (
-      <Alert color="danger" className="mb-3">
+      <Alert color="danger" className="mb-3" transition={{ timeout: 150, unmountOnExit: true }}>
         <div className="d-flex justify-content-between align-items-center">
           <div>
             {errorMessages.map((msg, idx) => (
@@ -439,7 +437,7 @@ const SettingsPage: React.FC = () => {
                         label="fields.showCedarLogs?"
                         isDark={isDark}
                       />
-                      <GluuToogleRow
+                      <GluuToggleRow
                         isLabelVisible={false}
                         label="fields.showCedarLogs?"
                         name="cedarlingLogType"

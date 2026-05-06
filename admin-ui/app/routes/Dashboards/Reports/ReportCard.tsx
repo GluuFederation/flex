@@ -1,4 +1,5 @@
 import { Card, CardBody, CardTitle, Badge } from 'Components'
+import { ArrowDropDown } from '@/components/icons'
 import ReportPiChartItem from './ReportPiChartItem'
 import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -17,7 +18,7 @@ const ReportCard = ({ title, data, upValue, downValue }: ReportCardProps) => {
             <GluuText variant="h2">{upValue}</GluuText>
           </div>
           <div>
-            <i className="fa fa-caret-down fa-fw text-success"></i>
+            <ArrowDropDown className="text-success" />
             <Badge pill color="primary">
               {downValue}
             </Badge>

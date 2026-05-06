@@ -73,6 +73,11 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       zIndex: 20,
       pointerEvents: 'auto' as const,
     },
+    toolbarButtonIcon: {
+      fontSize: ICON_SIZE.SM,
+      marginRight: 4,
+      flexShrink: 0,
+    },
 
     tableCard: {
       'width': '100%',

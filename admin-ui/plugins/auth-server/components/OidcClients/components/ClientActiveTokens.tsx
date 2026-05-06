@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DeleteOutline } from '@/components/icons'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuTable } from '@/components/GluuTable'
@@ -89,7 +90,7 @@ const ClientActiveTokens = ({
   const actions = useMemo<ActionDef<ClientTokenRow>[]>(
     () => [
       {
-        icon: 'fa fa-trash',
+        icon: <DeleteOutline fontSize="small" />,
         tooltip: t('actions.revoke'),
         show: (row) => row.deletable !== false,
         onClick: (row) => {

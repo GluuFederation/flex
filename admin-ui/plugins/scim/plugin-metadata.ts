@@ -1,7 +1,9 @@
 import { SCIM_CONFIG_READ, SCIM_CONFIG_WRITE } from 'Utils/PermChecker'
-import ScimPage from './components/ScimPage'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const ScimPage = createLazyRoute(() => import('./components/ScimPage'))
 
 const pluginMetadata = {
   menus: [

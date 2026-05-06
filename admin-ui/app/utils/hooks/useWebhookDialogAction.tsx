@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Close } from '@/components/icons'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   getWebhooksByFeatureIdResponse,
@@ -18,7 +19,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -247,7 +248,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
             aria-label={t('actions.close')}
             title={t('actions.close')}
           >
-            <i className="fa fa-times" aria-hidden />
+            <Close fontSize="small" aria-hidden />
           </button>
           <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
             <div className={webhookClasses.titleWithDescription}>

@@ -11,7 +11,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik, type FormikProps } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTheme } from '@/context/theme/themeContext'
@@ -29,9 +29,8 @@ import { useAppDispatch } from '@/redux/hooks'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { GluuButton } from '@/components'
 import { GluuFilterPopover } from '@/components/GluuFilterPopover'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { DownloadIcon, FilterListIcon, Visibility as VisibilityIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { ICON_SIZE } from '@/constants'
 import {
   CLIENT_WIZARD_STEPS,
   CLIENT_WIZARD_SEQUENCE,
@@ -462,7 +461,7 @@ const ClientWizardForm = ({
                         useOpacityOnHover
                         className={classes.downloadButton}
                       >
-                        <i className="fa fa-eye" aria-hidden />
+                        <VisibilityIcon className={classes.downloadButtonIcon} />
                         {t('fields.view_spontaneous_scopes')}
                       </GluuButton>
                     )}
@@ -480,7 +479,7 @@ const ClientWizardForm = ({
                           useOpacityOnHover
                           className={classes.downloadButton}
                         >
-                          <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                          <FilterListIcon className={classes.downloadButtonIcon} />
                           {t('titles.filters')}
                         </GluuButton>
                         <GluuFilterPopover
@@ -502,10 +501,7 @@ const ClientWizardForm = ({
                         disabled={!tokenHasData || isExporting}
                         className={classes.downloadButton}
                       >
-                        <i
-                          className={isExporting ? 'fa fa-spinner fa-spin' : 'fa fa-download'}
-                          aria-hidden
-                        />
+                        <DownloadIcon className={classes.downloadButtonIcon} />
                         {t('titles.export_csv')}
                       </GluuButton>
                     </>
@@ -520,7 +516,7 @@ const ClientWizardForm = ({
                     useOpacityOnHover
                     className={classes.downloadButton}
                   >
-                    <i className="fa fa-download" aria-hidden />
+                    <DownloadIcon className={classes.downloadButtonIcon} />
                     {t('fields.download_summary')}
                   </GluuButton>
                 </div>

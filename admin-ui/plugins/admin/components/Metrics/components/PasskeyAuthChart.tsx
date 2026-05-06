@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
-import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -16,16 +15,7 @@ import type { MetricsDateRange } from '../types'
 
 const RADIAN = Math.PI / 180
 
-interface LabelProps {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
-  index: number
-  value?: number
-}
+import type { PieLabelRenderProps } from 'recharts'
 
 interface PasskeyAuthChartProps {
   dateRange: MetricsDateRange | null
@@ -69,14 +59,15 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
-  const renderLabel = (props: LabelProps) => {
+  const renderLabel = (props: PieLabelRenderProps) => {
     const { cx, cy, midAngle, outerRadius, percent, index, value } = props
-    const entry = data[index]
-    if (!entry || percent === 0 || !value) return null
+    const entry = data[index as number]
+    if (!entry || !percent || !value) return null
 
-    const LABEL_RADIUS = outerRadius + 36
-    const x = cx + LABEL_RADIUS * Math.cos(-midAngle * RADIAN)
-    const y = cy + LABEL_RADIUS * Math.sin(-midAngle * RADIAN)
+    const angle = midAngle ?? 0
+    const LABEL_RADIUS = (outerRadius as number) + 36
+    const x = (cx as number) + LABEL_RADIUS * Math.cos(-angle * RADIAN)
+    const y = (cy as number) + LABEL_RADIUS * Math.sin(-angle * RADIAN)
     const anchor = x > cx ? 'start' : 'end'
     const pct = `${(percent * 100).toFixed(0)}%`
 
@@ -92,15 +83,19 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
     )
   }
 
-  const renderLabelLine = (props: LabelProps) => {
+  const renderLabelLine = (props: PieLabelRenderProps) => {
     const { cx, cy, midAngle, outerRadius, index, percent, value } = props
-    const entry = data[index]
-    if (!entry || percent === 0 || !value) return null
+    const entry = data[index as number]
+    if (!entry || !percent || !value) return <g />
 
-    const x1 = cx + (outerRadius + 4) * Math.cos(-midAngle * RADIAN)
-    const y1 = cy + (outerRadius + 4) * Math.sin(-midAngle * RADIAN)
-    const x2 = cx + (outerRadius + 22) * Math.cos(-midAngle * RADIAN)
-    const y2 = cy + (outerRadius + 22) * Math.sin(-midAngle * RADIAN)
+    const angle = midAngle ?? 0
+    const r = outerRadius as number
+    const cxN = cx as number
+    const cyN = cy as number
+    const x1 = cxN + (r + 4) * Math.cos(-angle * RADIAN)
+    const y1 = cyN + (r + 4) * Math.sin(-angle * RADIAN)
+    const x2 = cxN + (r + 22) * Math.cos(-angle * RADIAN)
+    const y2 = cyN + (r + 22) * Math.sin(-angle * RADIAN)
 
     return (
       <line
@@ -171,7 +166,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
                 startAngle={45}
                 endAngle={405}
                 label={renderLabel}
-                labelLine={renderLabelLine as (props: LabelProps) => React.ReactElement<SVGElement>}
+                labelLine={renderLabelLine}
                 isAnimationActive={false}
               >
                 {data.map((entry, index) => (
@@ -179,10 +174,10 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
                 ))}
               </Pie>
               <Tooltip
-                content={(props: TooltipProps<number, string>) => (
+                content={({ payload, active }) => (
                   <TooltipDesign
-                    payload={props.payload as TooltipPayloadItem[] | undefined}
-                    active={props.active}
+                    payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
+                    active={active}
                     backgroundColor={cardBg}
                     textColor={themeColors.fontColor}
                     isDark={isDark}

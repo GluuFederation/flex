@@ -12,7 +12,6 @@ import {
   Cell,
   Customized,
 } from 'recharts'
-import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -214,8 +213,8 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 <XAxis dataKey="name" hide />
                 <Tooltip
                   cursor={false}
-                  content={(props: TooltipProps<number, string>) => {
-                    const payload = props.payload as TooltipPayloadItem[] | undefined
+                  content={({ payload: rawPayload, active }) => {
+                    const payload = rawPayload as ReadonlyArray<TooltipPayloadItem> | undefined
                     const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
                       (item) => {
                         const realKey =
@@ -242,7 +241,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                     return (
                       <TooltipDesign
                         payload={remappedPayload}
-                        active={props.active}
+                        active={active}
                         backgroundColor={cardBg}
                         textColor={textColor}
                         isDark={isDark}

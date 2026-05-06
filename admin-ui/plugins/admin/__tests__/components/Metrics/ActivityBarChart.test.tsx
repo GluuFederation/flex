@@ -100,9 +100,8 @@ describe('ActivityBarChart', () => {
       .sort((a, b) => a - b)
 
     const uniqueXs = Array.from(new Set(xs))
-    if (uniqueXs.length >= 2) {
-      const adjacentGap = uniqueXs[1]! - uniqueXs[0]!
-      expect(adjacentGap).toBeGreaterThan(0)
-    }
+    expect(uniqueXs.length).toBeGreaterThanOrEqual(2)
+    const adjacentGap = uniqueXs[1]! - uniqueXs[0]!
+    expect(adjacentGap).toBeGreaterThan(0)
   })
 })

@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
 import { Row, Col, Alert, GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
@@ -141,14 +142,14 @@ const MauPage: React.FC = () => {
 
           {isError && (
             <Alert color="danger" className="mb-4" fade={false}>
-              <i className="fa fa-exclamation-triangle me-2"></i>
+              <WarningAmberOutlined fontSize="small" className="me-2" />
               {t('messages.error_loading_data')}
             </Alert>
           )}
 
           {!isLoading && !isError && !hasData && (
             <Alert color="info" className="mb-4" fade={false}>
-              <i className="fa fa-info-circle me-2"></i>
+              <InfoOutlined fontSize="small" className="me-2" />
               {t('messages.no_mau_data')}
             </Alert>
           )}

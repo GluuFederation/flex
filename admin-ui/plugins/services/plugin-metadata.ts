@@ -1,9 +1,10 @@
-import CachePage from './Components/CachePage'
-import PersistenceDetail from './Components/PersistenceDetail'
-
 import { CACHE_READ, PERSISTENCE_DETAIL } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const CachePage = createLazyRoute(() => import('./Components/CachePage'))
+const PersistenceDetail = createLazyRoute(() => import('./Components/PersistenceDetail'))
 
 const pluginMetadata = {
   menus: [

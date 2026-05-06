@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import { DeleteOutline } from '@/components/icons'
 import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
@@ -423,7 +424,7 @@ const JsonPropertyBuilderConfigApi = ({
                     useOpacityOnHover
                     disabled={disabled}
                   >
-                    <i className={`fa fa-remove ${classes.removeButtonIcon}`} aria-hidden />
+                    <DeleteOutline className={classes.removeButtonIcon} aria-hidden />
                     {t('actions.remove')}
                   </GluuButton>
                 )}

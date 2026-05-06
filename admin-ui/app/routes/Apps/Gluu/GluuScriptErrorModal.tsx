@@ -1,6 +1,7 @@
 import { memo, useContext, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
 import GluuText from './GluuText'
 import { useStyles } from './styles/GluuScriptErrorModal.style'
@@ -93,7 +94,7 @@ const GluuScriptErrorModal = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="script-error-title">

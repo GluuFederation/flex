@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -96,7 +97,7 @@ const ClientShowScopes = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="client-scopes-title">

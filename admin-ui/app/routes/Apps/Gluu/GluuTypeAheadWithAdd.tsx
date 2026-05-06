@@ -4,6 +4,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import applicationStyle from './styles/applicationStyle'
 import { useTranslation } from 'react-i18next'
+import { AddCircleOutline } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import customColors from '@/customColors'
 import type { GluuTypeAheadWithAddProps } from './types'
@@ -91,7 +92,7 @@ const GluuTypeAheadWithAdd = ({
               onClick={addItem}
               data-testid={t('actions.add')}
             >
-              <i className="fa fa-plus-circle me-2"></i>
+              <AddCircleOutline fontSize="small" className="me-2" />
               {t('actions.add')}
             </Button>
           </Col>

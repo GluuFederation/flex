@@ -16,9 +16,13 @@ const mockRefetch = jest.fn()
 const mockUseSearchToken = jest.fn()
 const mockUseRevokeToken = jest.fn()
 const mockInvalidateQueriesByKey = jest.fn()
+const proxyUseSearchToken = (...args: Parameters<typeof mockUseSearchToken>) =>
+  mockUseSearchToken(...args)
+const proxyInvalidateQueriesByKey = (...args: Parameters<typeof mockInvalidateQueriesByKey>) =>
+  mockInvalidateQueriesByKey(...args)
 
 jest.mock('JansConfigApi', () => ({
-  useSearchToken: mockUseSearchToken,
+  useSearchToken: proxyUseSearchToken,
   useRevokeToken: () => mockUseRevokeToken(),
   getSearchTokenQueryKey: jest.fn(() => ['searchToken']),
 }))
@@ -28,7 +32,7 @@ jest.mock('@tanstack/react-query', () => ({
 }))
 
 jest.mock('@/utils/queryUtils', () => ({
-  invalidateQueriesByKey: mockInvalidateQueriesByKey,
+  invalidateQueriesByKey: proxyInvalidateQueriesByKey,
 }))
 
 const DEFAULT_PARAMS: UseClientTokensParams = {

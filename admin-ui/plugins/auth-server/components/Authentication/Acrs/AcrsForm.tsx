@@ -1,9 +1,10 @@
 import { useState, useCallback, useMemo, useRef, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
+import { Add, DeleteOutline } from '@/components/icons'
 import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
@@ -421,7 +422,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               </div>
 
               <div className={classes.toggleRow}>
-                <GluuToogleRow
+                <GluuToggleRow
                   name="useSSL"
                   label="fields.use_ssl"
                   formik={formik}
@@ -432,7 +433,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               </div>
 
               <div className={classes.toggleRow}>
-                <GluuToogleRow
+                <GluuToggleRow
                   name="enabled"
                   label="fields.enabled"
                   formik={formik}
@@ -465,7 +466,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               onClick={addConfigProperty}
               disabled={!canAddProperty}
             >
-              <i className="fa fa-fw fa-plus" />
+              <Add fontSize="small" />
               {t('actions.add_property')}
             </GluuButton>
           </div>
@@ -496,7 +497,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   className={classes.propsActionBtn}
                   onClick={() => removeConfigProperty(prop.id)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteOutline fontSize="small" />
                   {t('actions.remove')}
                 </GluuButton>
               </div>

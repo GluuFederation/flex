@@ -1,6 +1,10 @@
 import plugins from '../plugins.config.json'
-import { loadPluginMetadata, type PluginMenu, type PluginRoute } from './internal'
-import { REGEX_PLUGIN_NAME_FROM_PATH } from '@/utils/regex'
+import {
+  loadPluginMetadata,
+  loadPluginMetadataAsync,
+  type PluginMenu,
+  type PluginRoute,
+} from './internal'
 import { devLogger } from '@/utils/devLogger'
 
 export const processMenus = async (): Promise<PluginMenu[]> => {
@@ -8,12 +12,7 @@ export const processMenus = async (): Promise<PluginMenu[]> => {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
-      if (pluginName) {
-        const metadata = await import(`./${pluginName}/plugin-metadata`)
-        return (metadata.default?.menus || []) as PluginMenu[]
-      }
-      const metadata = await import(`${item.metadataFile}`)
+      const metadata = await loadPluginMetadataAsync(item.metadataFile)
       return (metadata.default?.menus || []) as PluginMenu[]
     } catch (error) {
       devLogger.warn(
@@ -40,12 +39,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const pluginName = item.metadataFile?.match(REGEX_PLUGIN_NAME_FROM_PATH)?.[1]
-      if (pluginName) {
-        const metadata = await import(`./${pluginName}/plugin-metadata`)
-        return (metadata.default?.routes || []) as PluginRoute[]
-      }
-      const metadata = await import(`${item.metadataFile}`)
+      const metadata = await loadPluginMetadataAsync(item.metadataFile)
       return (metadata.default?.routes || []) as PluginRoute[]
     } catch (error) {
       devLogger.warn(

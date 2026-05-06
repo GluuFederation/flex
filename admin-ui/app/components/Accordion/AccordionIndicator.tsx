@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import classNames from 'classnames'
+import { Add, Remove } from '@/components/icons'
 
 import { Consumer } from './context'
 
@@ -10,8 +11,8 @@ interface AccordionIndicatorProps {
 }
 
 export const AccordionIndicator: React.FC<AccordionIndicatorProps> = ({
-  open = <i className="fa fa-fw fa-minus"></i>,
-  closed = <i className="fa fa-fw fa-plus"></i>,
+  open = <Remove fontSize="small" />,
+  closed = <Add fontSize="small" />,
   className,
 }) => (
   <Consumer>

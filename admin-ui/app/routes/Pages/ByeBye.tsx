@@ -11,6 +11,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { devLogger } from '@/utils/devLogger'
+import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
 
 const ByeBye = () => {
   const config = useAppSelector((state) => state.authReducer.config) as AuthConfig
@@ -41,12 +42,24 @@ const ByeBye = () => {
 
       if (config && Object.keys(config).length > 0 && config.endSessionEndpoint) {
         const state = uuidv4()
-        const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
-        window.location.href = sessionEndpoint
+        const sessionEndpoint = buildSafeLogoutUrl(
+          config.endSessionEndpoint,
+          config.postLogoutRedirectUri,
+          state,
+        )
+
+        if (sessionEndpoint) {
+          window.location.href = sessionEndpoint
+          return
+        }
       } else {
-        const fallbackUri = localStorage.getItem('postLogoutRedirectUri') || '/'
+        const fallbackUri =
+          buildSafeNavigationUrl(localStorage.getItem('postLogoutRedirectUri')) || '/'
         window.location.href = fallbackUri
+        return
       }
+
+      window.location.href = '/'
     }
 
     performLogout()

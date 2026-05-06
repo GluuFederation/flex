@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, u
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
-import { ArrowIcon } from 'Components'
+import ArrowIcon from '../SVG/Arrow'
 import customColors from '@/customColors'
 import { NO_TEXT_SELECT } from './sharedDropdownStyles'
 import { useStyles } from './GluuDropdown.style'

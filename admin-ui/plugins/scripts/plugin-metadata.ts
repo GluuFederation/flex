@@ -1,9 +1,11 @@
 import { SCRIPT_READ, SCRIPT_WRITE } from '../../app/utils/PermChecker'
-import CustomScriptListPage from './components/CustomScriptListPage'
-import CustomScriptAddPage from './components/CustomScriptAddPage'
-import CustomScriptEditPage from './components/CustomScriptEditPage'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const CustomScriptListPage = createLazyRoute(() => import('./components/CustomScriptListPage'))
+const CustomScriptAddPage = createLazyRoute(() => import('./components/CustomScriptAddPage'))
+const CustomScriptEditPage = createLazyRoute(() => import('./components/CustomScriptEditPage'))
 
 const pluginMetadata = {
   menus: [

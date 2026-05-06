@@ -60,6 +60,7 @@ jest.mock('@/cedarling/hooks/useCedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     checkPermission: jest.fn(() => true),
+    authorizeHelper: jest.fn(),
     loading: false,
     error: null,
     initialized: true,

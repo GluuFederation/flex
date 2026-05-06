@@ -1,7 +1,7 @@
-import { CircularProgress } from '@mui/material'
+import { GluuSpinner } from '@/components/GluuSpinner'
 
 const GluuSuspenseLoader = () => {
-  return <CircularProgress />
+  return <GluuSpinner />
 }
 
 export default GluuSuspenseLoader

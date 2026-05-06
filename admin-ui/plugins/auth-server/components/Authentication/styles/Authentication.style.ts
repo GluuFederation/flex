@@ -1,10 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
-
-const ICON_SIZE_MD = 20
 
 type AuthenticationStylesParams = {
   isDark: boolean
@@ -28,7 +26,7 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
-    addIcon: { fontSize: ICON_SIZE_MD },
+    addIcon: { fontSize: ICON_SIZE.MD },
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,

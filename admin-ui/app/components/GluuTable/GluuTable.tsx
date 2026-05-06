@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ExpandMore as ExpandMoreIcon } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { ICON_SIZE } from '@/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
@@ -524,7 +525,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                               >
                                 <ExpandMoreIcon
                                   className={`${classes.expandIcon} ${isExpanded ? classes.expandIconOpen : ''}`}
-                                  sx={{ fontSize: 20, color: 'inherit' }}
+                                  sx={{ fontSize: ICON_SIZE.MD, color: 'inherit' }}
                                 />
                               </button>
                             </div>

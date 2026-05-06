@@ -1,5 +1,5 @@
 import { type ReactElement, useMemo, useState, useCallback, useRef, useEffect } from 'react'
-import { Add } from '@mui/icons-material'
+import { Add } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { GluuPageContent } from '@/components'

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
+import { CheckCircleOutline, HighlightOffOutlined } from '@/components/icons'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -34,14 +35,17 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
       </ModalHeader>
       <ModalBody className={classes.modalBody}>
         <div className={classes.statusRow}>
-          <i
-            className={`fa fa-2x ${item.testStatus ? 'fa-check-circle' : 'fa-times-circle'}`}
-            style={{
-              color: item.testStatus
-                ? themeColors.badges.statusActive
-                : themeColors.settings.removeButton.bg,
-            }}
-          />
+          {item.testStatus ? (
+            <CheckCircleOutline
+              fontSize="large"
+              style={{ color: themeColors.badges.statusActive }}
+            />
+          ) : (
+            <HighlightOffOutlined
+              fontSize="large"
+              style={{ color: themeColors.settings.removeButton.bg }}
+            />
+          )}
           <GluuText variant="p" className={classes.statusMessage}>
             {item.testStatus ? t('actions.server_success_smtp') : t('actions.server_fails_smtp')}
           </GluuText>

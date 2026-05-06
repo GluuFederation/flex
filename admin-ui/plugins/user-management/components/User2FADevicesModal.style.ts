@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -114,6 +114,9 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       '& [class*="paginationSelectIcon"]': {
         color: `${paginationAccentColor} !important`,
       },
+    },
+    actionIcon: {
+      fontSize: ICON_SIZE.SM,
     },
   }
 })

@@ -50,7 +50,12 @@ const TooltipDesignComponent: React.FC<TooltipDesignProps> = ({
         const dataKey = String(item.dataKey ?? '')
         const label = labelMap[dataKey] || (item.payload?.name ?? item.name) || dataKey
         const rawValue = item.payload?.[dataKey] ?? item.value ?? null
-        const displayValue = formatter ? formatter(rawValue) : formatTooltipValue(rawValue)
+        const normalizedValue: string | number | boolean | null = Array.isArray(rawValue)
+          ? String(rawValue)
+          : (rawValue as string | number | boolean | null)
+        const displayValue = formatter
+          ? formatter(normalizedValue)
+          : formatTooltipValue(normalizedValue)
         return (
           <div
             key={`${dataKey}-${idx}`}

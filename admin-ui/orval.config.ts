@@ -4,6 +4,7 @@ export default defineConfig({
   jans: {
     input: {
       target: './configApiSpecs.yaml',
+      unsafeDisableValidation: true,
     },
     output: {
       mode: 'single',

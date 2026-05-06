@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import { type Dayjs, createDate } from '@/utils/dayjsUtils'
@@ -217,7 +217,7 @@ const ClientAdvancedPanel = ({
   const fieldMap = {
     persistClientAuthorizations: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           name="persistClientAuthorizations"
           formik={formik}
           lsize={12}
@@ -237,7 +237,7 @@ const ClientAdvancedPanel = ({
     ),
     defaultPromptLogin: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           name="attributes.jansDefaultPromptLogin"
           formik={formik}
           lsize={12}
@@ -257,7 +257,7 @@ const ClientAdvancedPanel = ({
     ),
     allowSpontaneousScopes: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           name="attributes.allowSpontaneousScopes"
           label="fields.allow_spontaneous_scopes"
           value={Boolean(formik.values?.attributes?.allowSpontaneousScopes)}
@@ -431,7 +431,7 @@ const ClientAdvancedPanel = ({
     ),
     expirable: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           name="expirable"
           formik={formik}
           label="fields.is_expirable_client"

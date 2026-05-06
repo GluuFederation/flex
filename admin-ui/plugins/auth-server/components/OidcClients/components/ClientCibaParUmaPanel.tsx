@@ -18,7 +18,7 @@ import {
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -296,7 +296,7 @@ const ClientCibaParUmaPanel = ({
                 />
               </div>
               <div className={classes.fieldItem}>
-                <GluuToogleRow
+                <GluuToggleRow
                   name="backchannelUserCodeParameter"
                   label="fields.backchannelUserCodeParameter"
                   formik={formik}
@@ -353,7 +353,7 @@ const ClientCibaParUmaPanel = ({
                 />
               </div>
               <div className={classes.fieldItem}>
-                <GluuToogleRow
+                <GluuToggleRow
                   name="attributes.requirePar"
                   label="fields.requirePar"
                   formik={formik}

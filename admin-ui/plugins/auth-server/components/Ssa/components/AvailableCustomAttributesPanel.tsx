@@ -1,5 +1,6 @@
 import React, { useDeferredValue, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -75,7 +76,7 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
               onClick={() => onSearchChange('')}
               aria-label={t('actions.clear_search')}
             >
-              <i className="fa fa-fw fa-close" />
+              <Close fontSize="small" />
             </button>
           )}
         </div>

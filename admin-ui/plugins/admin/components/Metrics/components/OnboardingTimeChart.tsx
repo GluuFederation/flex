@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts'
-import type { TooltipProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -136,10 +135,10 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
               />
               <Tooltip
                 cursor={false}
-                content={(props: TooltipProps<number, string>) => (
+                content={({ payload, active }) => (
                   <TooltipDesign
-                    payload={props.payload as TooltipPayloadItem[] | undefined}
-                    active={props.active}
+                    payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
+                    active={active}
                     backgroundColor={cardBg}
                     textColor={themeColors.fontColor}
                     isDark={isDark}

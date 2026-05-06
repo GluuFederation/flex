@@ -4,9 +4,9 @@ import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -122,7 +122,7 @@ const SamlConfigurationForm: React.FC = () => {
       <Form onSubmit={handleFormSubmit} className="mt-4">
         <FormGroup row>
           <Col sm={10}>
-            <GluuToogleRow
+            <GluuToggleRow
               name="enabled"
               lsize={4}
               rsize={8}
@@ -158,7 +158,7 @@ const SamlConfigurationForm: React.FC = () => {
             </FormGroup>
           </Col>
           <Col sm={10}>
-            <GluuToogleRow
+            <GluuToggleRow
               name="ignoreValidation"
               lsize={4}
               rsize={8}

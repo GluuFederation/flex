@@ -1,5 +1,5 @@
 import { fireEvent, screen } from '@testing-library/dom'
-import GluuToogle from '../GluuToogle'
+import GluuToggle from '../GluuToggle'
 import { render } from '@testing-library/react'
 
 describe('Toggle switch', () => {
@@ -8,7 +8,7 @@ describe('Toggle switch', () => {
     const name = 'switch'
     const handlerMock = jest.fn()
 
-    render(<GluuToogle name={name} value={initialChecked} handler={handlerMock} />)
+    render(<GluuToggle name={name} value={initialChecked} handler={handlerMock} />)
 
     const toggleElement = screen.getByTestId(name) as HTMLInputElement
     expect(toggleElement.checked).toBe(initialChecked)

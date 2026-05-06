@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Card as BsCard } from 'reactstrap'
 
-import classes from './Card.scss'
+import classes from './Card.module.scss'
 
 interface CardProps extends Omit<React.ComponentProps<typeof BsCard>, 'color'> {
   children: React.ReactNode

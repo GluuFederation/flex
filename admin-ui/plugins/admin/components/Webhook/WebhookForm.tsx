@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import isEqual from 'lodash/isEqual'
 import Toggle from 'react-toggle'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { Add, DeleteOutline, InfoOutlined as InfoOutlinedIcon } from '@/components/icons'
 import { Form, FormGroup, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -588,7 +588,7 @@ const WebhookForm: React.FC = () => {
                     onClick={addHeader}
                     disabled={!canAddHeader}
                   >
-                    <i className="fa fa-fw fa-plus" />
+                    <Add fontSize="small" />
                     {t('actions.add_header')}
                   </GluuButton>
                 </div>
@@ -621,7 +621,7 @@ const WebhookForm: React.FC = () => {
                         className={classes.headersActionBtn}
                         onClick={() => removeHeader(index)}
                       >
-                        <i className="fa fa-fw fa-trash" />
+                        <DeleteOutline fontSize="small" />
                         {t('actions.remove')}
                       </GluuButton>
                     </div>

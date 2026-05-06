@@ -17,10 +17,10 @@ import { useMetricsStyles } from '../MetricsPage.style'
 import { MOCK_AGGREGATION, AGGREGATION_TYPES, type AggregationType } from '../constants'
 import { useAggregationMetrics } from '../hooks'
 import type { AggregationEntry, AggregationTypeParam, MetricsDateRange } from '../types'
-import type { ActivityDataPoint } from './ActivityBarChart'
-import type { HeatmapData } from './DurationHeatmap'
 import ActivityBarChart from './ActivityBarChart'
+import type { ActivityDataPoint } from './ActivityBarChart'
 import DurationHeatmap from './DurationHeatmap'
+import type { HeatmapData } from './DurationHeatmap'
 
 const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
   hourly: 'Hourly',

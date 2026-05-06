@@ -118,7 +118,9 @@ const ColorBar: React.FC<{
       {steps.map((v) => {
         const range = maxVal - minVal
         const y =
-          range === 0 ? verticalPadding + barHeight / 2 : verticalPadding + ((maxVal - v) / range) * barHeight
+          range === 0
+            ? verticalPadding + barHeight / 2
+            : verticalPadding + ((maxVal - v) / range) * barHeight
         return (
           <text
             key={v}

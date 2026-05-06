@@ -7,8 +7,9 @@ import { THEME_DARK } from '@/context/theme/constants'
 import PropTypes from 'prop-types'
 import { useAppSelector } from '@/redux/hooks'
 import Alert from '@mui/material/Alert'
+import { Close } from '@/components/icons'
 import { useWebhookDialogAction } from 'Utils/hooks'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import type { GluuCommitDialogProps } from './types/index'
@@ -186,7 +187,7 @@ const GluuCommitDialog = ({
             aria-label={t('actions.close')}
             title={t('actions.close')}
           >
-            <i className="fa fa-times" aria-hidden />
+            <Close fontSize="small" aria-hidden />
           </button>
           <div className={classes.contentArea}>
             {alertMessage && (

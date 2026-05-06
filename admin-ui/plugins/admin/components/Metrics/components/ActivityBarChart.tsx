@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts'
-import type { TooltipProps } from 'recharts'
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -22,7 +22,7 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { AGGREGATION_SERIES_COLORS } from '../constants'
 
-export interface ActivityDataPoint {
+export type ActivityDataPoint = {
   label: string
   regSuccess: number
   regAttempts: number
@@ -38,19 +38,18 @@ interface ActivityBarChartProps {
   barCategoryGap?: string | number
 }
 
-interface CustomTickProps {
-  x?: number
-  y?: number
+interface TickProps {
+  x?: number | string
+  y?: number | string
   payload?: { value: string }
-  fill?: string
 }
 
-const MultiLineTick: React.FC<CustomTickProps & { fill: string }> = ({
+const MultiLineTick = ({
   x = 0,
   y = 0,
   payload,
   fill,
-}) => {
+}: TickProps & { fill: string }): ReactNode => {
   const lines = (payload?.value ?? '').split('\n')
   return (
     <g transform={`translate(${x},${y})`}>
@@ -113,15 +112,15 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               tickLine={false}
               interval={0}
               height={hasMultiLineLabel ? 50 : 30}
-              tick={(props: CustomTickProps) => <MultiLineTick {...props} fill={axisColor} />}
+              tick={(props: TickProps) => <MultiLineTick {...props} fill={axisColor} />}
             />
             <YAxis tick={{ fill: axisColor, fontSize: 12 }} axisLine={false} tickLine={false} />
             <Tooltip
               cursor={false}
-              content={(props: TooltipProps<number, string>) => (
+              content={({ payload, active }) => (
                 <TooltipDesign
-                  payload={props.payload as TooltipPayloadItem[] | undefined}
-                  active={props.active}
+                  payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
+                  active={active}
                   backgroundColor={cardBg}
                   textColor={themeColors.fontColor}
                   isDark={isDark}
@@ -144,7 +143,9 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="regSuccess"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: number) => (v > 0 ? v : '')}
+                formatter={(v: string | number | boolean | null | undefined) =>
+                  Number(v) > 0 ? String(v) : ''
+                }
               />
             </Bar>
             <Bar
@@ -157,7 +158,9 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="regAttempts"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: number) => (v > 0 ? v : '')}
+                formatter={(v: string | number | boolean | null | undefined) =>
+                  Number(v) > 0 ? String(v) : ''
+                }
               />
             </Bar>
             <Bar
@@ -170,7 +173,9 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="authAttempts"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: number) => (v > 0 ? v : '')}
+                formatter={(v: string | number | boolean | null | undefined) =>
+                  Number(v) > 0 ? String(v) : ''
+                }
               />
             </Bar>
             <Bar
@@ -183,7 +188,9 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="authSuccess"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: number) => (v > 0 ? v : '')}
+                formatter={(v: string | number | boolean | null | undefined) =>
+                  Number(v) > 0 ? String(v) : ''
+                }
               />
             </Bar>
           </BarChart>

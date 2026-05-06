@@ -8,9 +8,16 @@ const mockDevLoggerError = jest.fn()
 
 const mockUseGetOauthUmaResourcesByClientid = jest.fn()
 const mockUseDeleteOauthUmaResourcesById = jest.fn()
+const proxyUseGetOauthUmaResourcesByClientid = (
+  ...args: Parameters<typeof mockUseGetOauthUmaResourcesByClientid>
+) => mockUseGetOauthUmaResourcesByClientid(...args)
+const proxyInvalidateQueriesByKey = (...args: Parameters<typeof mockInvalidateQueriesByKey>) =>
+  mockInvalidateQueriesByKey(...args)
+const proxyDevLoggerError = (...args: Parameters<typeof mockDevLoggerError>) =>
+  mockDevLoggerError(...args)
 
 jest.mock('JansConfigApi', () => ({
-  useGetOauthUmaResourcesByClientid: mockUseGetOauthUmaResourcesByClientid,
+  useGetOauthUmaResourcesByClientid: proxyUseGetOauthUmaResourcesByClientid,
   useDeleteOauthUmaResourcesById: () => mockUseDeleteOauthUmaResourcesById(),
   getGetOauthUmaResourcesByClientidQueryKey: jest.fn((id) => ['umaResources', id]),
 }))
@@ -20,11 +27,11 @@ jest.mock('@tanstack/react-query', () => ({
 }))
 
 jest.mock('@/utils/queryUtils', () => ({
-  invalidateQueriesByKey: mockInvalidateQueriesByKey,
+  invalidateQueriesByKey: proxyInvalidateQueriesByKey,
 }))
 
 jest.mock('@/utils/devLogger', () => ({
-  devLogger: { error: mockDevLoggerError },
+  devLogger: { error: proxyDevLoggerError },
 }))
 
 beforeEach(() => {

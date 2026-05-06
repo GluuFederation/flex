@@ -1,12 +1,3 @@
-import HealthPage from './components/Health/HealthPage'
-import MetricsPage from './components/Metrics/MetricsPage'
-import RolePermissionMappingPage from './components/Mapping/RolePermissionMappingPage'
-
-import SettingsPage from './components/Settings/SettingsPage'
-import MauPage from './components/MAU/MauPage'
-import WebhookListPage from './components/Webhook/WebhookListPage'
-import AuditListPage from '../admin/components/Audit/AuditListPage'
-
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
 
@@ -27,15 +18,29 @@ import {
   FIDO_ADMIN,
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
-import WebhookAddPage from './components/Webhook/WebhookAddPage'
-import WebhookEditPage from './components/Webhook/WebhookEditPage'
-import JansAssetListPage from './components/Assets/JansAssetListPage'
-import JansAssetEditPage from './components/Assets/JansAssetEditPage'
-import JansAssetAddPage from './components/Assets/JansAssetAddPage'
-import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
-import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
-import CedarlingConfigPage from './components/Cedarling/CedarlingConfigPage'
 import { ROUTES } from '@/helpers/navigation'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const HealthPage = createLazyRoute(() => import('./components/Health/HealthPage'))
+const LicenseDetailsPage = createLazyRoute(
+  () => import('../../app/routes/License/LicenseDetailsPage'),
+)
+const MauPage = createLazyRoute(() => import('./components/MAU/MauPage'))
+const SettingsPage = createLazyRoute(() => import('./components/Settings/SettingsPage'))
+const RolePermissionMappingPage = createLazyRoute(
+  () => import('./components/Mapping/RolePermissionMappingPage'),
+)
+const CedarlingConfigPage = createLazyRoute(
+  () => import('./components/Cedarling/CedarlingConfigPage'),
+)
+const WebhookListPage = createLazyRoute(() => import('./components/Webhook/WebhookListPage'))
+const WebhookAddPage = createLazyRoute(() => import('./components/Webhook/WebhookAddPage'))
+const WebhookEditPage = createLazyRoute(() => import('./components/Webhook/WebhookEditPage'))
+const AuditListPage = createLazyRoute(() => import('../admin/components/Audit/AuditListPage'))
+const JansAssetListPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetListPage'))
+const JansAssetAddPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetAddPage'))
+const JansAssetEditPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetEditPage'))
+const MetricsPage = createLazyRoute(() => import('./components/Metrics/MetricsPage'))
 
 const pluginMetadata = {
   menus: [
@@ -120,12 +125,6 @@ const pluginMetadata = {
   ],
   routes: [
     {
-      component: DashboardPage,
-      path: ROUTES.ADMIN_DASHBOARD,
-      permission: STAT_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Dashboard,
-    },
-    {
       component: HealthPage,
       path: ROUTES.ADMIN_HEALTH,
       permission: PROPERTIES_READ,
@@ -186,19 +185,19 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
-      component: JansAssetListPage,
+      component: JansAssetListPageLazy,
       path: ROUTES.ASSETS_LIST,
       permission: ASSETS_READ,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
-      component: JansAssetAddPage,
+      component: JansAssetAddPageLazy,
       path: ROUTES.ASSET_ADD,
       permission: ASSETS_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
-      component: JansAssetEditPage,
+      component: JansAssetEditPageLazy,
       path: ROUTES.ASSET_EDIT_TEMPLATE,
       permission: ASSETS_WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,

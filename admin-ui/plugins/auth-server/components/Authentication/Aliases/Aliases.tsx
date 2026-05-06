@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close, DeleteOutlined, Edit } from '@/components/icons'
 import { useFormik } from 'formik'
-import { Edit, DeleteOutlined } from '@mui/icons-material'
 import { Divider } from '@mui/material'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -15,7 +15,7 @@ import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -312,7 +312,7 @@ const Aliases = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="add-mapping-modal-title">

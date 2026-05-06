@@ -1,8 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { fontFamily, fontSizes, lineHeights } from '@/styles/fonts'
+import { fontFamily, lineHeights } from '@/styles/fonts'
 
 type SsaListPageStylesParams = {
   isDark: boolean
@@ -65,10 +65,10 @@ export const useStyles = makeStyles<SsaListPageStylesParams>()((_, { isDark, the
       },
     },
     actionIcon: {
-      fontSize: fontSizes.content,
+      fontSize: ICON_SIZE.SM,
     },
     addIcon: {
-      fontSize: fontSizes.lg,
+      fontSize: ICON_SIZE.MD,
     },
     statusBadge: {
       minWidth: 80,

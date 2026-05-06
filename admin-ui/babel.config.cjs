@@ -7,13 +7,11 @@ module.exports = {
         runtime: 'automatic',
       },
     ],
-    '@babel/preset-flow',
     '@babel/preset-typescript',
   ],
   plugins: [
-    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-transform-class-properties',
     '@babel/plugin-syntax-dynamic-import',
-    'babel-plugin-styled-components',
   ],
   env: {
     test: {

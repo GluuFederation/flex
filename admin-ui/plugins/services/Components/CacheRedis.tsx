@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheRedisProps } from './types'
@@ -194,7 +194,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
             doc_category={CACHE}
             doc_entry="useSSL"
           />
-          <GluuToogleRow
+          <GluuToggleRow
             isLabelVisible={false}
             label="fields.use_ssl"
             name="useSSL"

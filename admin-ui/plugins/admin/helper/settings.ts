@@ -1,4 +1,4 @@
-import { CedarlingLogType } from '@/cedarling'
+import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import type { AppConfigResponse, KeyValuePair } from 'JansConfigApi'
 import type { SettingsFormValues } from './types'
 
