@@ -11,7 +11,7 @@ This Operation guide helps you learn about the common operations for Gluu Flex o
 
 
 !!! Note
-    Since Flex = Janssen + Admin-UI. The Kubernetes Operations in Gluu Flex are identitical to [Janssen](https://docs.jans.io/head/admin/kubernetes-ops/). You will mostly only need to change the helm chart reference from `janssen/janssen` to `gluu-flex/gluu`, along with the helm release name and namespace.
+    Since Flex = Janssen + Admin-UI. The Kubernetes Operations in Gluu Flex are identical to [Janssen](https://docs.jans.io/stable/janssen-server/kubernetes-ops). You will mostly only need to change the helm chart reference from `janssen/janssen` to `gluu-flex/gluu`, along with the helm release name and namespace.
     Here's an example how would the [upgrade](upgrade.md) of Flex looks like.
 
 ## Common Operations
@@ -28,5 +28,5 @@ This Operation guide helps you learn about the common operations for Gluu Flex o
 - [Health Check](https://docs.jans.io/head/janssen-server/kubernetes-ops/health-check/)
 - [TUI K8s](https://docs.jans.io/head/janssen-server/kubernetes-ops/tui-k8s/)
 - [Custom Attributes](https://docs.jans.io/head/janssen-server/kubernetes-ops/custom-attributes/)
-- [Jans SAML/Keycloak](https://docs.jans.io/head/janssen-server/kubernetes-ops/jans-saml/)
+- [Shibboleth IDP](https://docs.jans.io/head/janssen-server/shibboleth-idp/helm-deployment/)
 - [Memory Dump](https://docs.jans.io/head/janssen-server/kubernetes-ops/memory-dump/)
