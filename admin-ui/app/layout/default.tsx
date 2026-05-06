@@ -5,8 +5,8 @@ import { devLogger } from '@/utils/devLogger'
 
 import 'Styles/bootstrap.scss'
 import 'Styles/main.scss'
-import 'Styles/plugins/plugins.scss'
 import 'Styles/plugins/plugins.css'
+import 'Styles/plugins/plugins.scss'
 
 import { RoutedNavbars, RoutedSidebars } from '../routes'
 

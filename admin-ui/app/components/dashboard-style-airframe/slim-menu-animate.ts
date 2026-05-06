@@ -1,4 +1,4 @@
-import anime from 'animejs'
+import { createTimeline } from 'animejs'
 
 const ANIMATION_DURATION = 150
 const ANIMATION_STEP_OFFSET = 0.1
@@ -15,29 +15,28 @@ export default class SlimMenuAnimate {
       ) as HTMLElement | null
 
       if (subMenuElement) {
-        const timeline = anime
-          .timeline({
-            targets: subMenuElement,
-            duration: ANIMATION_DURATION,
-            begin: () => {
-              subMenuElement.style.transformOrigin = 'top left'
-            },
-          })
-          .add({
+        const timeline = createTimeline({
+          duration: ANIMATION_DURATION,
+          onBegin: () => {
+            subMenuElement.style.transformOrigin = 'top left'
+          },
+        })
+          .add(subMenuElement, {
             opacity: [0, 1],
-            easing: 'easeOutCubic',
+            ease: 'easeOutCubic',
           })
           .add(
+            subMenuElement,
             {
               scale: [0.8, 1],
               translateY: [-30, 0],
               translateX: [-30, 0],
-              easing: 'easeOutElastic(1.5, 0.8)',
+              ease: 'easeOutElastic(1.5, 0.8)',
             },
             ANIMATION_DURATION * ANIMATION_STEP_OFFSET,
           )
 
-        timeline.finished.then(() => {
+        timeline.then(() => {
           subMenuElement.style.opacity = ''
           subMenuElement.style.transform = ''
           subMenuElement.style.transformOrigin = ''

@@ -1,18 +1,6 @@
 import React, { Suspense, lazy } from 'react'
-import { ScopeListPage, ScopeAddPage, ScopeEditPage } from './components/Scopes'
-import { ClientListPage, ClientAddPage, ClientEditPage } from './components/OidcClients'
-import { SessionListPage } from './components/Sessions'
-
-import PropertiesPage from './components/AuthServerProperties'
-import KeysPage from './components/Keys'
-import LoggingPage from './components/Logging'
-
-import ConfigApiPage from './components/ConfigApiProperties'
-
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
-
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
-
 import {
   ACR_READ,
   CLIENT_READ,
@@ -27,13 +15,40 @@ import {
   SSA_PORTAL,
   API_CONFIG_READ,
 } from 'Utils/PermChecker'
-import AcrsEditPage from './components/Authentication/Acrs/AcrsEditPage'
-import SsaListPage from './components/Ssa/components/SsaListPage'
-import SsaAddPage from './components/Ssa/components/SsaAddPage'
-import AuthNPage from './components/Authentication'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { createLazyRoute } from '@/utils/RouteLoader'
+
+const SessionListPage = createLazyRoute(() =>
+  import('./components/Sessions').then((m) => ({ default: m.SessionListPage })),
+)
+const ClientListPage = createLazyRoute(() =>
+  import('./components/OidcClients').then((m) => ({ default: m.ClientListPage })),
+)
+const ClientAddPage = createLazyRoute(() =>
+  import('./components/OidcClients').then((m) => ({ default: m.ClientAddPage })),
+)
+const ClientEditPage = createLazyRoute(() =>
+  import('./components/OidcClients').then((m) => ({ default: m.ClientEditPage })),
+)
+const ScopeListPage = createLazyRoute(() =>
+  import('./components/Scopes').then((m) => ({ default: m.ScopeListPage })),
+)
+const ScopeAddPage = createLazyRoute(() =>
+  import('./components/Scopes').then((m) => ({ default: m.ScopeAddPage })),
+)
+const ScopeEditPage = createLazyRoute(() =>
+  import('./components/Scopes').then((m) => ({ default: m.ScopeEditPage })),
+)
+const AcrsEditPage = createLazyRoute(() => import('./components/Authentication/Acrs/AcrsEditPage'))
+const AuthNPage = createLazyRoute(() => import('./components/Authentication'))
+const PropertiesPage = createLazyRoute(() => import('./components/AuthServerProperties'))
+const KeysPage = createLazyRoute(() => import('./components/Keys'))
+const LoggingPage = createLazyRoute(() => import('./components/Logging'))
+const SsaListPage = createLazyRoute(() => import('./components/Ssa/components/SsaListPage'))
+const SsaAddPage = createLazyRoute(() => import('./components/Ssa/components/SsaAddPage'))
+const ConfigApiPage = createLazyRoute(() => import('./components/ConfigApiProperties'))
 
 const AgamaFlows = lazy(() => import('./components/Authentication/AgamaFlows/AgamaFlows'))
 const AgamaListPageWrapper = () => {

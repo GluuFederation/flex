@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
+import { ICON_SIZE } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import { fontSizes, fontWeights, lineHeights, letterSpacing, fontFamily } from '@/styles/fonts'
@@ -77,9 +78,11 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     },
     actionBtn: {
       ...dl.listActionBtn,
-      '&& i.fa-trash': {
-        color: `${themeColors.settings.removeButton.text} !important`,
-      },
+    },
+    actionBtnIcon: {
+      fontSize: ICON_SIZE.SM,
+      marginRight: 4,
+      flexShrink: 0,
     },
     addBtn: {
       'position': 'relative' as const,
@@ -118,6 +121,7 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
       left: 14,
       top: '50%',
       transform: 'translateY(-50%)',
+      fontSize: ICON_SIZE.SM,
       pointerEvents: 'none' as const,
     },
     error: dl.listError,

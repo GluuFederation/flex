@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { Input } from 'reactstrap'
+import { Add as AddIcon, Delete as DeleteIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -109,7 +110,7 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
             </GluuText>
           )}
           <button type="button" disabled={isAddDisabled} className={classes.addBtn} onClick={onAdd}>
-            <i className={joinClasses('fa fa-fw fa-plus', classes.addBtnIcon)} />
+            <AddIcon className={classes.addBtnIcon} />
             {addButtonLabel}
           </button>
         </div>
@@ -172,7 +173,7 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
                 className={classes.actionBtn}
                 onClick={handleRemove(index)}
               >
-                <i className="fa fa-fw fa-trash" />
+                <DeleteIcon className={classes.actionBtnIcon} />
                 {removeButtonLabel}
               </GluuButton>
             </div>

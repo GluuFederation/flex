@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING, CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  SPACING,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  ICON_SIZE,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily } from '@/styles/fonts'
 
@@ -106,7 +112,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
       verticalAlign: 'middle',
     },
     searchActionIcon: {
-      fontSize: 20,
+      fontSize: ICON_SIZE.MD,
     },
     accessTimeIcon: {
       fontSize: 16,

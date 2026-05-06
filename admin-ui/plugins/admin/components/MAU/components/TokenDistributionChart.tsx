@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import type { TooltipProps } from 'recharts'
+import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import type { TooltipContentProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -10,7 +10,6 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMauStyles } from '../MauPage.style'
 import type { MauSummary } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getChartColors } from '../constants'
 
 interface TokenDistributionChartProps {
@@ -36,12 +35,12 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
       {
         name: t('fields.cc_tokens'),
         value: summary.clientCredentialsTokens,
-        color: chartColors.pieClientCredentials,
+        fill: chartColors.pieClientCredentials,
       },
       {
         name: t('fields.authz_code_tokens'),
         value: summary.authCodeTokens,
-        color: chartColors.pieAuthCodeAccess,
+        fill: chartColors.pieAuthCodeAccess,
       },
     ],
     [summary, t, chartColors],
@@ -56,7 +55,7 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
           {t('titles.token_distribution')}
         </GluuText>
         {hasData ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={250} minHeight={250}>
             <PieChart>
               <Pie
                 data={data}
@@ -66,7 +65,14 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                 outerRadius={90}
                 paddingAngle={2}
                 dataKey="value"
-                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                label={({
+                  cx = 0,
+                  cy = 0,
+                  midAngle = 0,
+                  innerRadius = 0,
+                  outerRadius = 0,
+                  percent = 0,
+                }) => {
                   const RADIAN = Math.PI / 180
                   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
                   const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -83,15 +89,11 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                     </text>
                   )
                 }}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
+              ></Pie>
               <Tooltip
-                content={(props: TooltipProps<number, string>) => (
+                content={(props: TooltipContentProps) => (
                   <TooltipDesign
-                    payload={props.payload as TooltipPayloadItem[] | undefined}
+                    payload={props.payload}
                     active={props.active}
                     backgroundColor={
                       themeColors.dashboard.supportCard ?? themeColors.menu.background

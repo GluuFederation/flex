@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useEffect, useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import { Close, VisibilityOffOutlined, VisibilityOutlined } from '@/components/icons'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -271,7 +272,7 @@ const PasswordChangeModal = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="password-modal-title">
@@ -303,7 +304,11 @@ const PasswordChangeModal = ({
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? t('password.hide') : t('password.show')}
                   >
-                    <i className={showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'} />
+                    {showPassword ? (
+                      <VisibilityOffOutlined fontSize="small" />
+                    ) : (
+                      <VisibilityOutlined fontSize="small" />
+                    )}
                   </button>
                 </div>
                 <div className={formClasses.errorText}>
@@ -337,9 +342,11 @@ const PasswordChangeModal = ({
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     aria-label={showConfirmPassword ? t('password.hide') : t('password.show')}
                   >
-                    <i
-                      className={showConfirmPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'}
-                    />
+                    {showConfirmPassword ? (
+                      <VisibilityOffOutlined fontSize="small" />
+                    ) : (
+                      <VisibilityOutlined fontSize="small" />
+                    )}
                   </button>
                 </div>
                 <div className={formClasses.errorText}>

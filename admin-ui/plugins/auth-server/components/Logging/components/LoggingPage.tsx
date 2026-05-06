@@ -4,7 +4,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { JSON_CONFIG } from 'Utils/ApiResources'
@@ -18,7 +18,7 @@ import {
 import type { LoggingFormValues } from '../utils'
 import { Formik } from 'formik'
 import { useLoggingConfig, useUpdateLoggingConfig } from '../hooks'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
@@ -233,7 +233,7 @@ const LoggingPage = (): React.ReactElement => {
                         />
                       </div>
                       <div className={classes.fieldItem}>
-                        <GluuToogleRow
+                        <GluuToggleRow
                           label="fields.http_logging_enabled"
                           name="httpLoggingEnabled"
                           handler={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -248,7 +248,7 @@ const LoggingPage = (): React.ReactElement => {
                         />
                       </div>
                       <div className={classes.fieldItem}>
-                        <GluuToogleRow
+                        <GluuToggleRow
                           label="fields.disable_jdk_logger"
                           name="disableJdkLogger"
                           handler={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -263,7 +263,7 @@ const LoggingPage = (): React.ReactElement => {
                         />
                       </div>
                       <div className={classes.fieldItem}>
-                        <GluuToogleRow
+                        <GluuToggleRow
                           label="fields.enabled_oAuth_audit_logging"
                           name="enabledOAuthAuditLogging"
                           handler={(e: React.ChangeEvent<HTMLInputElement>) =>

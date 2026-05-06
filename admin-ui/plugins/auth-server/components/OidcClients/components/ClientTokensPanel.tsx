@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GluuDynamicList } from 'Components'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
@@ -250,7 +250,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
     ),
     includeClaimsInIdToken: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           name="includeClaimsInIdToken"
           lsize={12}
           rsize={12}

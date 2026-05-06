@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
-import type { TooltipProps } from 'recharts'
+import type { TooltipContentProps } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -19,7 +19,6 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getChartColors } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
@@ -50,7 +49,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
         <GluuText variant="div" className={classes.trendTitle}>
           {t('titles.token_trends')}
         </GluuText>
-        <ResponsiveContainer width="100%" height={250}>
+        <ResponsiveContainer width="100%" height={250} minHeight={250}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
             <XAxis dataKey="monthLabel" tick={{ fill: themeColors.fontColor, fontSize: 12 }} />
@@ -59,9 +58,9 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               tickFormatter={formatNumber}
             />
             <Tooltip
-              content={(props: TooltipProps<number, string>) => (
+              content={(props: TooltipContentProps) => (
                 <TooltipDesign
-                  payload={props.payload as TooltipPayloadItem[] | undefined}
+                  payload={props.payload}
                   active={props.active}
                   backgroundColor={themeColors.dashboard.supportCard ?? themeColors.menu.background}
                   textColor={themeColors.fontColor}

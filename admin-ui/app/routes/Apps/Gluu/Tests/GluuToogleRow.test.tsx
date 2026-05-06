@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import GluuToogleRow from '../GluuToogleRow'
+import GluuToggleRow from '../GluuToggleRow'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from '../../../../context/theme/themeContext'
@@ -13,7 +13,7 @@ it('Test gluutooltip', async () => {
   const { container } = render(
     <I18nextProvider i18n={i18n}>
       <ThemeProvider>
-        <GluuToogleRow label={LABEL} name={NAME} value={VALUE} doc_category="openid_client" />
+        <GluuToggleRow label={LABEL} name={NAME} value={VALUE} doc_category="openid_client" />
       </ThemeProvider>
     </I18nextProvider>,
   )
@@ -26,7 +26,8 @@ it('Test gluutooltip', async () => {
   if (iconElement) await userEvent.hover(iconElement)
 
   await waitFor(() => {
-    expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)
-    expect(screen.getByText(/Kind of the application/i)).toHaveAttribute('role', 'tooltip')
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toHaveTextContent(/Kind of the application/i)
+    expect(tooltip).toHaveAttribute('role', 'tooltip')
   })
 })

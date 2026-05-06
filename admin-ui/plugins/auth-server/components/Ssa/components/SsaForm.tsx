@@ -7,7 +7,7 @@ import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
@@ -320,7 +320,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     />
                   </div>
 
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="one_time_use"
                     formik={formik}
                     label="fields.one_time_use"
@@ -331,7 +331,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     doc_category={SSA}
                   />
 
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="rotate_ssa"
                     formik={formik}
                     label="fields.rotate_ssa"
@@ -342,7 +342,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     doc_category={SSA}
                   />
 
-                  <GluuToogleRow
+                  <GluuToggleRow
                     name="is_expirable"
                     formik={formik}
                     label="fields.is_expirable"

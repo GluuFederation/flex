@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import { Box, Divider } from '@mui/material'
 import MaterialTable from '@material-table/core'
 import type { Column } from '@material-table/core'
@@ -292,7 +293,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText

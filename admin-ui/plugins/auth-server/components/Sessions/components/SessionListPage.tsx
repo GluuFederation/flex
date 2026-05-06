@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import isEmpty from 'lodash/isEmpty'
-import { DeleteOutlined } from '@mui/icons-material'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import GetAppIcon from '@mui/icons-material/GetApp'
+import { DeleteOutlined, FilterListIcon, GetAppIcon } from '@/components/icons'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuButton } from '@/components/GluuButton'
@@ -18,7 +16,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
@@ -29,7 +27,7 @@ import {
   REGEX_CSV_SPECIAL_CHARS,
   REGEX_DOUBLE_QUOTE,
 } from '@/utils/regex'
-import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
+import { BORDER_RADIUS } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
@@ -577,7 +575,7 @@ const SessionListPage: React.FC = () => {
                     minHeight={52}
                     useOpacityOnHover
                   >
-                    <FilterListIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    <FilterListIcon className={classes.toolbarButtonIcon} />
                     {t('titles.filters')}
                   </GluuButton>
 
@@ -592,7 +590,7 @@ const SessionListPage: React.FC = () => {
                     minHeight={52}
                     useOpacityOnHover
                   >
-                    <GetAppIcon sx={{ fontSize: ICON_SIZE.SM, mr: 0.5 }} />
+                    <GetAppIcon className={classes.toolbarButtonIcon} />
                     {t('titles.export_csv')}
                   </GluuButton>
 

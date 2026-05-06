@@ -2,7 +2,7 @@ import { FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheSubComponentBaseProps } from './types'
@@ -52,7 +52,7 @@ const CacheNative = ({ formik, classes, isDark, disabled }: CacheSubComponentBas
             doc_category={CACHE}
             doc_entry="deleteExpiredOnGetRequest"
           />
-          <GluuToogleRow
+          <GluuToggleRow
             isLabelVisible={false}
             label="fields.delete_expired_on_get_request"
             name="deleteExpiredOnGetRequest"

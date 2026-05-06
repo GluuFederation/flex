@@ -1,19 +1,25 @@
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
+import { PieChart, Pie, Legend, Tooltip } from 'recharts'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import customColors from '@/customColors'
 import type { ReportPiChartItemProps, PieChartLabelProps } from '../types'
 
+const COLORS = [customColors.lightGreen, customColors.black]
+
 const ReportPiChartItem = ({ data }: ReportPiChartItemProps) => {
-  const COLORS = [customColors.lightGreen, customColors.black]
   const RADIAN = Math.PI / 180
 
+  const coloredData = data.map((entry, index) => ({
+    ...entry,
+    fill: COLORS[index % COLORS.length],
+  }))
+
   const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
+    cx = 0,
+    cy = 0,
+    midAngle = 0,
+    innerRadius = 0,
+    outerRadius = 0,
+    percent = 0,
   }: PieChartLabelProps) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -35,19 +41,15 @@ const ReportPiChartItem = ({ data }: ReportPiChartItemProps) => {
   return (
     <PieChart width={200} height={200}>
       <Pie
-        data={data}
+        data={coloredData}
         cx={80}
         cy={80}
         labelLine={false}
         label={renderCustomizedLabel}
         outerRadius={80}
-        fill={customColors.lightBlue}
         dataKey="value"
-      >
-        {data.map((_, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
+        fill="fill"
+      ></Pie>
       <Legend iconType="star" />
       <Tooltip contentStyle={applicationStyle.homeStatTooltip} />
     </PieChart>

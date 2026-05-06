@@ -2,14 +2,6 @@
 @import "~bootstrap/scss/mixins/breakpoints";
 @import "./variables";
 
-@mixin caret {
-    margin-left: 0.5rem;
-    width: 1.28571em;
-    text-align: center;
-    font-family: FontAwesome;
-    content: "\f104";
-}
-
 @mixin apply-padding-map($padding-map, $leftOffset) {
     padding-top: map-get($padding-map, top);
     padding-right: map-get($padding-map, right);

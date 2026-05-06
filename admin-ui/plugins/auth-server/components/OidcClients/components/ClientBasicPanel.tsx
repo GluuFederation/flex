@@ -5,7 +5,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { useTranslation } from 'react-i18next'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -430,7 +430,7 @@ const ClientBasicPanel = ({
     ),
     isActive: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           label="fields.is_active"
           name="disabled"
           formik={null}
@@ -452,7 +452,7 @@ const ClientBasicPanel = ({
     ),
     trustedClient: (
       <div className={classes.fieldItem}>
-        <GluuToogleRow
+        <GluuToggleRow
           label="fields.is_trusted_client"
           name="trustedClient"
           formik={formik}

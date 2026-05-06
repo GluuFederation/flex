@@ -32,7 +32,7 @@ import {
   usePatchAuthServerJsonPropertiesMutation,
 } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { getScripts } from 'Redux/features/initSlice'
-import { useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'

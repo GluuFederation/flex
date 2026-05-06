@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import { Add, Delete as DeleteIcon } from '@/components/icons'
 import { Form, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -383,7 +384,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               onClick={addObjectClass}
               disabled={!canAddObjectClass}
             >
-              <i className="fa fa-fw fa-plus" />
+              <Add fontSize="small" />
               {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
             </GluuButton>
           </div>
@@ -406,7 +407,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                   className={classes.propsActionBtn}
                   onClick={() => removeObjectClass(index)}
                 >
-                  <i className="fa fa-fw fa-trash" />
+                  <DeleteIcon className={classes.propsActionIcon} />
                   {t('actions.remove')}
                 </GluuButton>
               </div>

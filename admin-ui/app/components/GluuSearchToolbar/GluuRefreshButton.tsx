@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react'
+import { RefreshIcon } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { GluuButton } from '@/components/GluuButton'
-import { fontSizes } from '@/styles/fonts'
+import { useStyles } from './GluuRefreshButton.style'
 import type { GluuRefreshButtonProps } from './types'
 
 export type { GluuRefreshButtonProps }
@@ -23,6 +24,7 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
   useOpacityOnHover = true,
 }) => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
 
@@ -52,10 +54,7 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
       useOpacityOnHover={useOpacityOnHover}
       minHeight={minHeight}
     >
-      <i
-        className={`fa fa-refresh ${loading ? 'fa-spin' : ''}`}
-        style={{ fontSize: fontSizes.md }}
-      />
+      <RefreshIcon fontSize="small" className={loading ? classes.iconSpin : classes.icon} />
       {displayLabel}
     </GluuButton>
   )

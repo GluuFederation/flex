@@ -5,7 +5,8 @@ import {
   setCedarlingInitialized,
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
-import { cedarlingClient, CedarlingLogType } from '@/cedarling'
+import { cedarlingClient } from '@/cedarling/client'
+import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 
 const base64ToUint8Array = (base64: string): Uint8Array => {

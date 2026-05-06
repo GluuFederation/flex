@@ -1,28 +1,58 @@
-import { FormGroup, Col } from 'Components'
+import React from 'react'
+import { Col, FormGroup } from 'Components'
+import type { CSSProperties } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import Toggle from 'react-toggle'
+import GluuToggle from './GluuToggle'
 import type { JsonValue } from './types/common'
 import type { GluuToggleRowProps } from './types/GluuToggleRow.types'
 
 const GluuToggleRow = <T extends object = Record<string, JsonValue>>({
-  formik,
   label,
-  viewOnly = false,
-  lsize = 4,
-  rsize = 8,
   name,
+  value,
+  formik,
+  lsize = 3,
+  handler,
+  rsize = 9,
   doc_category,
-}: GluuToggleRowProps<T>) => {
+  doc_entry,
+  disabled = false,
+  required = false,
+  isLabelVisible = true,
+  labelStyle,
+  isDark,
+  viewOnly = false,
+}: GluuToggleRowProps<T> & {
+  labelStyle?: CSSProperties
+}) => {
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
+      {isLabelVisible && (
+        <GluuLabel
+          required={required}
+          label={label}
+          size={lsize}
+          doc_category={doc_category}
+          doc_entry={doc_entry ?? name}
+          style={labelStyle}
+          isDark={isDark}
+        />
+      )}
       <Col sm={rsize}>
-        <Toggle
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            formik.setFieldValue(name, event.target.checked)
-          }}
-          checked={Boolean(formik.values[name as keyof T])}
-          disabled={viewOnly}
+        <GluuToggle
+          id={name}
+          name={name}
+          handler={
+            handler ??
+            (formik
+              ? (event: React.ChangeEvent<HTMLInputElement>) => {
+                  formik.setFieldValue(name, event.target.checked)
+                }
+              : undefined)
+          }
+          formik={formik}
+          value={value ?? (formik ? Boolean(formik.values[name as keyof T]) : false)}
+          disabled={disabled || viewOnly}
         />
       </Col>
     </FormGroup>

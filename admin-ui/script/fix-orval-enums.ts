@@ -26,10 +26,17 @@ const SAML_FORMDATA_FIXES: readonly [string, string][] = [
   ],
 ]
 
+const LOAD_SERVICE_ASSET_FORMDATA_REGEX =
+  /formData\.append\(\s*(['"`])data\1\s*,\s*loadServiceAssetBody(?:\s*\?\?\s*''\s*)?\)/g
+
 let result = enumFix
 for (const [from, to] of SAML_FORMDATA_FIXES) {
   result = result.split(from).join(to)
 }
+result = result.replace(
+  LOAD_SERVICE_ASSET_FORMDATA_REGEX,
+  "formData.append('data', loadServiceAssetBody ?? '')",
+)
 
 if (result !== content) {
   fs.writeFileSync(filePath, result)

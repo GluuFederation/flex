@@ -1,4 +1,4 @@
-import type { AdminUiFeatureResource, ApiPermissionType, CedarAction } from '@/cedarling'
+import type { AdminUiFeatureResource, ApiPermissionType, CedarAction } from '@/cedarling/types'
 
 export const CEDARLING_BYPASS = 'CEDARLING_BYPASS' as const
 

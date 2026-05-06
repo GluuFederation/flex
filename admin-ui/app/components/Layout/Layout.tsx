@@ -8,6 +8,7 @@ import { LayoutNavbar } from './LayoutNavbar'
 import { LayoutSidebar } from './LayoutSidebar'
 import { PageConfigContext } from './PageConfigContext'
 import { ThemeClass } from './../Theme'
+import { siteDescription, siteKeywords } from '@/config/site'
 import type {
   LayoutPartComponentType,
   LayoutProps,
@@ -15,8 +16,6 @@ import type {
   ResponsiveBreakpoints,
   ScreenSize,
 } from './types'
-
-import config from './../../../config.js'
 import SetTitle from 'Utils/SetTitle'
 
 const getLayoutPartName = (type: React.ReactElement['type']): string | undefined => {
@@ -85,8 +84,8 @@ const initialLayoutState: LayoutState = {
   screenSize: (typeof window !== 'undefined' ? getScreenSize() : '') as ScreenSize,
   animationsDisabled: true,
   pageTitle: null,
-  pageDescription: config.siteDescription,
-  pageKeywords: config.siteKeywords,
+  pageDescription: siteDescription,
+  pageKeywords: siteKeywords,
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {

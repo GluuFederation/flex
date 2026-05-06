@@ -6,7 +6,7 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import CachedIcon from '@mui/icons-material/Cached'
+import { CachedIcon } from '@/components/icons'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
@@ -26,7 +26,8 @@ import {
   ScriptsIcon,
   LockIcon,
 } from '../../../components/SVG'
-import { AdminUiFeatureResource, useCedarling } from '@/cedarling'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import type { AdminUiFeatureResource } from '@/cedarling/types'
 import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'

@@ -1,0 +1,270 @@
+import { existsSync, readFileSync } from 'fs'
+import path from 'path'
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import wasm from 'vite-plugin-wasm'
+import {
+  REGEX_BACKSLASH,
+  REGEX_FORWARD_SLASH,
+  REGEX_NODE_MODULES_SEGMENT,
+  REGEX_STYLE_IMPORT_TILDE_PREFIX,
+} from './app/utils/regex'
+import type { HmrContext } from 'vite'
+
+const timingPlugin = () => {
+  return {
+    name: 'admin-ui:timing',
+    handleHotUpdate(ctx: HmrContext) {
+      const willReload = ctx.modules.length === 0
+      if (willReload) {
+        console.log(`\n🔴 FULL RELOAD  ${ctx.file}`)
+      } else {
+        console.log(`\n🔄 HMR update   ${ctx.file}`)
+      }
+    },
+  }
+}
+
+const MUI_ICON_REGISTRY_PATH = path.resolve(process.cwd(), 'app/components/icons/index.ts')
+const REGEX_MUI_ICON_EXPORT = /from\s+['"](@mui\/icons-material\/[^'"]+)['"]/g
+
+const getMuiIconOptimizeDeps = (): string[] => {
+  if (!existsSync(MUI_ICON_REGISTRY_PATH)) {
+    return []
+  }
+
+  const registrySource = readFileSync(MUI_ICON_REGISTRY_PATH, 'utf-8')
+  const iconImports = new Set<string>()
+
+  for (const match of registrySource.matchAll(REGEX_MUI_ICON_EXPORT)) {
+    const iconImport = match[1]
+    if (iconImport) {
+      iconImports.add(iconImport)
+    }
+  }
+
+  return [...iconImports].sort()
+}
+
+const normalizeBasePath = (value?: string): string => {
+  const basePath = value || '/admin'
+  return basePath.endsWith('/') ? basePath : `${basePath}/`
+}
+
+const getPolicyStoreConfig = (mode: string): string => {
+  const configFile = mode === 'production' ? 'policy-store-prod.json' : 'policy-store-dev.json'
+  const configPath = path.resolve(process.cwd(), 'app/cedarling/config', configFile)
+
+  if (!existsSync(configPath)) {
+    throw new Error(
+      `Missing Cedarling policy store config for mode "${mode}": ${configPath}. Expected file "${configFile}" under app/cedarling/config.`,
+    )
+  }
+
+  try {
+    return readFileSync(configPath, 'utf-8')
+  } catch (error) {
+    throw new Error(
+      `Failed to read Cedarling policy store config for mode "${mode}" at ${configPath}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
+}
+
+const CHUNK_GROUPS: Array<{ name: string; packages: string[] }> = [
+  {
+    name: 'vendor-react',
+    packages: [
+      'react',
+      'react-dom',
+      'react-router',
+      'react-router-dom',
+      'react-redux',
+      'react-i18next',
+      'react-error-boundary',
+      'react-responsive',
+      'react-idle-timer',
+    ],
+  },
+  {
+    name: 'vendor-mui-core',
+    packages: [
+      '@mui/material',
+      '@mui/system',
+      '@mui/base',
+      '@mui/private-theming',
+      '@mui/styled-engine',
+      '@mui/utils',
+      '@emotion/react',
+      '@emotion/styled',
+      '@emotion/cache',
+      '@emotion/is-prop-valid',
+      'tss-react',
+    ],
+  },
+  {
+    name: 'vendor-mui-icons',
+    packages: ['@mui/icons-material'],
+  },
+  {
+    name: 'vendor-mui-pickers',
+    packages: ['@mui/x-date-pickers'],
+  },
+  {
+    name: 'vendor-state',
+    packages: ['@reduxjs/toolkit', 'redux-saga', 'redux-persist', '@tanstack/react-query'],
+  },
+  {
+    name: 'vendor-table',
+    packages: ['@material-table/core'],
+  },
+  {
+    name: 'vendor-dnd',
+    packages: ['@hello-pangea/dnd'],
+  },
+  {
+    name: 'vendor-editor',
+    packages: ['react-ace', 'ace-builds'],
+  },
+  {
+    name: 'vendor-charts',
+    packages: [
+      'recharts',
+      'd3-array',
+      'd3-color',
+      'd3-format',
+      'd3-interpolate',
+      'd3-path',
+      'd3-scale',
+      'd3-shape',
+    ],
+  },
+  {
+    name: 'vendor-bootstrap',
+    packages: ['bootstrap', 'reactstrap', 'react-toggle', 'react-bootstrap-typeahead'],
+  },
+  {
+    name: 'vendor-data',
+    packages: ['axios', 'dayjs', 'formik', 'yup', 'lodash', 'query-string', 'jszip'],
+  },
+  {
+    name: 'vendor-date',
+    packages: ['date-fns'],
+  },
+  {
+    name: 'vendor-feedback',
+    packages: ['react-toastify', 'react-tooltip'],
+  },
+]
+
+const getManualChunkName = (id: string): string | undefined => {
+  if (!id.includes('node_modules') || id.includes('.css')) {
+    return undefined
+  }
+
+  const normalizedId = id.replace(REGEX_BACKSLASH, '/')
+  const nodeModulesSegment = normalizedId.split(REGEX_NODE_MODULES_SEGMENT).pop()
+  if (!nodeModulesSegment) {
+    return undefined
+  }
+
+  const [firstPart, secondPart] = nodeModulesSegment.split('/')
+  const packageName =
+    firstPart?.startsWith('@') && secondPart ? `${firstPart}/${secondPart}` : firstPart
+
+  if (!packageName) {
+    return undefined
+  }
+
+  for (const group of CHUNK_GROUPS) {
+    if (group.packages.some((pkg) => packageName === pkg || packageName.startsWith(`${pkg}/`))) {
+      return group.name
+    }
+  }
+
+  return `vendor-${packageName.replace('@', '').replace(REGEX_FORWARD_SLASH, '-')}`
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const base = normalizeBasePath(env.BASE_PATH)
+  const muiIconOptimizeDeps = getMuiIconOptimizeDeps()
+  const nodeEnv = mode === 'production' ? 'production' : 'development'
+  const processEnv = {
+    NODE_ENV: nodeEnv,
+    BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
+    API_BASE_URL: env.API_BASE_URL,
+    CONFIG_API_BASE_URL:
+      env.CONFIG_API_BASE_URL && !env.CONFIG_API_BASE_URL.includes('%(')
+        ? env.CONFIG_API_BASE_URL
+        : undefined,
+    POLICY_STORE_CONFIG: getPolicyStoreConfig(mode),
+  }
+
+  return {
+    appType: 'spa',
+    base,
+    publicDir: 'public',
+    plugins: [
+      timingPlugin(),
+      wasm(),
+      react({
+        exclude: [/node_modules/, /jans_config_api_orval/],
+      }),
+    ],
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+      alias: [
+        { find: REGEX_STYLE_IMPORT_TILDE_PREFIX, replacement: '' },
+        { find: '@', replacement: path.resolve(process.cwd(), 'app') },
+        { find: 'Components', replacement: path.resolve(process.cwd(), 'app/components') },
+        { find: 'Context', replacement: path.resolve(process.cwd(), 'app/context') },
+        { find: 'Images', replacement: path.resolve(process.cwd(), 'app/images') },
+        {
+          find: 'JansConfigApi',
+          replacement: path.resolve(process.cwd(), 'jans_config_api_orval/src/JansConfigApi.ts'),
+        },
+        { find: 'Plugins', replacement: path.resolve(process.cwd(), 'plugins') },
+        { find: 'Redux', replacement: path.resolve(process.cwd(), 'app/redux') },
+        { find: 'Routes', replacement: path.resolve(process.cwd(), 'app/routes') },
+        { find: 'Styles', replacement: path.resolve(process.cwd(), 'app/styles') },
+        { find: 'Utils', replacement: path.resolve(process.cwd(), 'app/utils') },
+      ],
+    },
+    define: {
+      'process.env': JSON.stringify(processEnv),
+    },
+    css: {
+      devSourcemap: true,
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+        },
+      },
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 4100,
+    },
+    preview: {
+      host: '0.0.0.0',
+      port: 4100,
+    },
+    optimizeDeps: {
+      exclude: ['@janssenproject/cedarling_wasm'],
+      include: ['animejs', ...muiIconOptimizeDeps],
+    },
+    build: {
+      outDir: 'dist',
+      sourcemap: mode !== 'production',
+      emptyOutDir: true,
+      chunkSizeWarningLimit: 900,
+      rollupOptions: {
+        output: {
+          manualChunks: getManualChunkName,
+        },
+      },
+    },
+  }
+})

@@ -1,7 +1,9 @@
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setCedarlingPermission } from '@/redux/features/cedarPermissionsSlice'
-import { cedarlingClient, buildCedarPermissionKey, CEDARLING_CONSTANTS } from '@/cedarling'
+import { cedarlingClient } from '@/cedarling/client'
+import { buildCedarPermissionKey } from '@/cedarling/utility'
+import { CEDARLING_CONSTANTS } from '@/cedarling/constants'
 import type {
   UseCedarlingReturn,
   AuthorizationResult,
@@ -9,7 +11,7 @@ import type {
   CedarAction,
   AdminUiFeatureResource,
   ITokenEntry,
-} from '@/cedarling'
+} from '@/cedarling/types'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
 

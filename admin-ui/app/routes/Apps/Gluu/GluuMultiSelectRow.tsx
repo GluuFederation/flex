@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect, memo } from 'react'
 import { FormGroup, Col } from 'Components'
+import { Close } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
 import GluuText from './GluuText'
@@ -229,7 +230,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
                       }}
                       aria-label={`Remove ${getOptionLabel(val)}`}
                     >
-                      <i className="fa fa-fw fa-close" />
+                      <Close fontSize="small" />
                     </button>
                   )}
                 </span>

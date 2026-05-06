@@ -1,10 +1,8 @@
-interface GluuErrorFallBackProps {
-  error: { message: string }
-}
+import type { FallbackProps } from 'react-error-boundary'
 
-const GluuErrorFallBack = ({ error }: GluuErrorFallBackProps) => (
+const GluuErrorFallBack = ({ error }: FallbackProps) => (
   <div role="alert">
-    <pre>{error.message}</pre>
+    <pre>{error instanceof Error ? error.message : String(error)}</pre>
   </div>
 )
 

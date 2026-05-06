@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDropzone, type Accept } from 'react-dropzone'
 import { Box } from '@mui/material'
+import { DeleteOutline } from '@/components/icons'
 import { Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
@@ -111,7 +112,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
                     clearFiles()
                   }}
                 >
-                  <i className="fa fa-remove me-2" />
+                  <DeleteOutline fontSize="small" className="me-2" />
                   {t('actions.remove')}
                 </Button>
               </Box>

@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { CardHeader as BsCardHeader } from 'reactstrap'
 
-import classes from './CardHeader.scss'
+import classes from './CardHeader.module.scss'
 
 type CardHeaderProps = {
   type?: string

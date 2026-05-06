@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import { getClaimLabel } from '../utils/claimLabelUtils'
 import { useTranslation } from 'react-i18next'
+import { Close } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { PersonAttribute, AvailableClaimsPanelProps } from '../types'
 import { USER_PASSWORD_ATTR } from '../common'
@@ -84,7 +85,7 @@ const AvailableClaimsPanel = ({
               onClick={() => handleSearchChange('')}
               aria-label={t('actions.clear_search')}
             >
-              <i className="fa fa-fw fa-close" />
+              <Close fontSize="small" />
             </button>
           )}
         </div>

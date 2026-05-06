@@ -1,25 +1,13 @@
 import { BrowserRouter as Router } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { configStore } from 'Redux/store'
-import { PersistGate } from 'redux-persist/integration/react'
 import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
-import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
-const basePath = process.env.BASE_PATH || '/admin'
 
-const { store, persistor } = configStore()
+const basePath = process.env.BASE_PATH ?? '/admin'
 
 const AppMain = () => {
   return (
-    <Provider store={store}>
-      <PersistGate loading={<GluuLoader blocking />} persistor={persistor}>
-        <Router
-          basename={basePath}
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
-          <AuthenticatedRouteSelector />
-        </Router>
-      </PersistGate>
-    </Provider>
+    <Router basename={basePath} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <AuthenticatedRouteSelector />
+    </Router>
   )
 }
 

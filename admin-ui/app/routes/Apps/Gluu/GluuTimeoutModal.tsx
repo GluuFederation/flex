@@ -6,6 +6,7 @@ import { handleApiTimeout } from 'Redux/features/initSlice'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { Close } from '@/components/icons'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
@@ -84,7 +85,7 @@ const GluuTimeoutModal = () => {
           aria-label={t('actions.close')}
           title={t('actions.close')}
         >
-          <i className="fa fa-times" aria-hidden />
+          <Close fontSize="small" aria-hidden />
         </button>
         <div className={commitClasses.contentArea}>
           <GluuText variant="h2" className={commitClasses.title} id="timeout-modal-title">

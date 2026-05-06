@@ -1,4 +1,5 @@
-import anime from 'animejs'
+import { createTimeline, stagger } from 'animejs'
+import type { Timeline } from 'animejs'
 
 interface SidebarEntryAnimateOptions {
   duration?: number
@@ -57,24 +58,6 @@ export default class SidebarEntryAnimate {
           }
         })
 
-      const timeline = anime.timeline({
-        easing: config.easing,
-        duration: config.duration,
-        complete: () => {
-          const allElements: HTMLElement[] = [
-            ...sidebarSectionsPreMenu,
-            ...sideMenuEntries,
-            ...sidebarSectionsPostMenu,
-          ]
-          if (sidebarMenuSection) {
-            allElements.push(sidebarMenuSection)
-          }
-          allElements.forEach((element) => {
-            element.style.opacity = ''
-          })
-        },
-      })
-
       const totalSections = sidebarSectionsPreMenu.length + sidebarSectionsPostMenu.length
       const totalEntries = sideMenuEntries.length
       const staggerDelay =
@@ -82,31 +65,57 @@ export default class SidebarEntryAnimate {
           ? config.duration / totalSections / totalEntries
           : config.duration / 10
 
-      timeline
-        .add({
-          targets: sidebarSectionsPreMenu,
-          delay: anime.stagger(staggerDelay),
+      const capturedMenuSection = sidebarMenuSection as HTMLElement | null
+
+      const timeline: Timeline = createTimeline({
+        defaults: { ease: config.easing },
+        duration: config.duration,
+        onComplete: () => {
+          const allElements: HTMLElement[] = [
+            ...sidebarSectionsPreMenu,
+            ...sideMenuEntries,
+            ...sidebarSectionsPostMenu,
+          ]
+          if (capturedMenuSection) {
+            allElements.push(capturedMenuSection)
+          }
+          allElements.forEach((element) => {
+            element.style.opacity = ''
+          })
+        },
+      })
+
+      if (sidebarSectionsPreMenu.length > 0) {
+        timeline.add(sidebarSectionsPreMenu, {
+          delay: stagger(staggerDelay),
           opacity: [0, 1],
         })
-        .add({
-          targets: sideMenuEntries,
-          delay: anime.stagger(staggerDelay),
-          begin: () => {
-            if (sidebarMenuSection) {
-              sidebarMenuSection.style.opacity = '1'
+      }
+
+      if (sideMenuEntries.length > 0) {
+        timeline.add(sideMenuEntries, {
+          delay: stagger(staggerDelay),
+          onBegin: () => {
+            if (capturedMenuSection) {
+              capturedMenuSection.style.opacity = '1'
             }
           },
           opacity: [0, 1],
         })
-        .add({
-          targets: sidebarSectionsPostMenu,
-          delay: anime.stagger(staggerDelay),
+      }
+
+      if (sidebarSectionsPostMenu.length > 0) {
+        timeline.add(sidebarSectionsPostMenu, {
+          delay: stagger(staggerDelay),
           opacity: [0, 1],
         })
+      }
 
       this.wasAnimated = true
 
-      return timeline.finished
+      return new Promise<void>((resolve) => {
+        timeline.then(() => resolve())
+      })
     }
 
     return Promise.resolve()

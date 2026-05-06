@@ -1,4 +1,4 @@
-import type { CedarlingLogType } from '@/cedarling'
+import type { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import type { AppConfigResponse, KeyValuePair } from 'JansConfigApi'
 
 export type SettingsConfigData = Pick<

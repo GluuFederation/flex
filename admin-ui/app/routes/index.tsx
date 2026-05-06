@@ -3,7 +3,6 @@ import { Route, Routes, Navigate } from 'react-router-dom'
 import { ROUTES } from '@/helpers/navigation'
 import { devLogger } from '@/utils/devLogger'
 import { useAppSelector } from '@/redux/hooks'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 
 // ----------- Layout Imports ---------------
@@ -12,6 +11,7 @@ import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
+import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 
 //------ Route Definitions --------
 
@@ -43,17 +43,18 @@ export const RoutedContent = () => {
     const roles = userinfo?.jansAdminUIRole
     if (!roles || (Array.isArray(roles) && roles.length === 0)) {
       const state = uuidv4()
-      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
-      window.location.href = sessionEndpoint
+      const sessionEndpoint = buildSafeLogoutUrl(
+        typeof config.endSessionEndpoint === 'string' ? config.endSessionEndpoint : null,
+        typeof config.postLogoutRedirectUri === 'string' ? config.postLogoutRedirectUri : null,
+        state,
+      )
+
+      window.location.href = sessionEndpoint || '/admin/logout'
     }
   }, [userinfo])
 
   if (cedarFailedStatusAfterMaxTries && !initialized) {
     return <GluuViewWrapper canShow={false}>{null}</GluuViewWrapper>
-  }
-
-  if (!initialized) {
-    return <GluuLoader blocking>{null}</GluuLoader>
   }
 
   return (
@@ -76,14 +77,6 @@ export const RoutedContent = () => {
       {/*    Pages Routes    */}
       <Route element={<LazyRoutes.ProfilePage />} path={ROUTES.PROFILE} />
 
-      <Route
-        path={ROUTES.LOGOUT}
-        element={
-          <ProtectedRoute>
-            <LazyRoutes.ByeBye />
-          </ProtectedRoute>
-        }
-      />
       <Route element={<LazyRoutes.Gluu404Error />} path={ROUTES.ERROR_404} />
 
       {/*    404    */}

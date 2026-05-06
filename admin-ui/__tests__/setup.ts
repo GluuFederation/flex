@@ -1,5 +1,3 @@
-import ResizeObserverPolyfill from 'resize-observer-polyfill'
-import 'whatwg-fetch'
 import '@testing-library/jest-dom'
 import i18n from '../app/i18n'
 
@@ -53,7 +51,11 @@ if (typeof globalThis.URL !== 'undefined') {
   }
 }
 
-global.ResizeObserver = ResizeObserverPolyfill
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

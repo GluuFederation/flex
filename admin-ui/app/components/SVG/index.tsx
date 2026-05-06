@@ -1,6 +1,3 @@
-import { MenuContext } from '../SidebarMenu/MenuContext'
-import { SidebarMenu } from '../SidebarMenu/SidebarMenu'
-import { SidebarMenuItem } from '../SidebarMenu/SidebarMenuItem'
 import JansKcLinkIcon from './menu/JansKcLinkIcon'
 import UsersIcon from './menu/Users'
 import UserClaimsIcon from './menu/UserClaims'
@@ -18,9 +15,6 @@ import ArrowIcon from './Arrow'
 import { ChevronIcon } from './Chevron'
 
 export {
-  MenuContext,
-  SidebarMenu,
-  SidebarMenuItem,
   JansKcLinkIcon,
   ShortCodesIcon,
   UsersIcon,

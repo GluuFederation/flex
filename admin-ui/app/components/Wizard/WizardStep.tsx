@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import classNames from 'classnames'
+import { Check } from '@/components/icons'
 
 export interface WizardStepProps {
   'active'?: boolean
@@ -22,7 +23,7 @@ const WizardStep: React.FC<WizardStepProps> = ({
   'id': _id,
   onClick = () => {},
   icon,
-  successIcon = <i className="fa fa-check fa-fw"></i>,
+  successIcon = <Check fontSize="small" />,
   children,
   'data-testid': dataTestId,
 }) => {

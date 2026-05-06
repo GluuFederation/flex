@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Box } from '@mui/material'
-import { InfoOutlined } from '@mui/icons-material'
+import { InfoOutlined } from '@/components/icons'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import JwkItem from './JwkItem'

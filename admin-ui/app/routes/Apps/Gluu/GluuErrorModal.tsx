@@ -1,12 +1,17 @@
 import customColors from '@/customColors'
 import { useAppSelector } from '@/redux/hooks'
 import logo192 from 'Images/logos/logo192.png'
+import DOMPurify from 'dompurify'
+import { buildSafeNavigationUrl } from '@/utils/urlSecurity'
 
 const GluuErrorModal = ({ message = '', description = '' }) => {
   const { authServerHost } = useAppSelector((state) => state.authReducer.config)
+  const safeDescription = DOMPurify.sanitize(description)
 
   const handleRefresh = () => {
-    const host = authServerHost ? `${authServerHost}/admin` : null
+    const host = buildSafeNavigationUrl('/admin', {
+      baseUrl: typeof authServerHost === 'string' ? authServerHost : undefined,
+    })
 
     if (host) {
       window.location.href = host
@@ -40,7 +45,7 @@ const GluuErrorModal = ({ message = '', description = '' }) => {
         }}
       />
       <h2 style={{ color: customColors.white }}>{message}</h2>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      <p dangerouslySetInnerHTML={{ __html: safeDescription }}></p>
       <button
         style={{
           border: 0,

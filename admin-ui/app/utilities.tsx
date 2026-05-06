@@ -1,19 +1,8 @@
-// Define the type for webpack's require.context
-declare const require: {
-  context: (
-    directory: string,
-    useSubdirectories: boolean,
-    regExp: RegExp,
-  ) => {
-    keys: () => string[];
-    (id: string): string
-  }
-}
-
-const allAvatars = ((ctx) => {
-  const keys = ctx.keys()
-  return keys.map(ctx)
-})(require.context('./images/avatars', true, /.*/))
+const avatarModules = import.meta.glob('./images/avatars/*', {
+  eager: true,
+  import: 'default',
+})
+const allAvatars = Object.values(avatarModules) as string[]
 
 export const randomArray = <T,>(arr: T[]): T => arr[0]
 

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useQueryClient } from '@tanstack/react-query'
+import type { UseMutationResult } from '@tanstack/react-query'
 import {
   useGetAttributes,
   useGetAttributesByInum,
@@ -54,7 +55,12 @@ export const useAttribute = (inum: string) => {
   })
 }
 
-export const useCreateAttribute = () => {
+export const useCreateAttribute = (): UseMutationResult<
+  JansAttribute,
+  Error,
+  { data: JansAttribute; userMessage?: string },
+  void
+> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -96,10 +102,15 @@ export const useCreateAttribute = () => {
       mutateAsync(...args).catch(() => {})
     },
     mutateAsync,
-  }
+  } as UseMutationResult<JansAttribute, Error, { data: JansAttribute; userMessage?: string }, void>
 }
 
-export const useUpdateAttribute = () => {
+export const useUpdateAttribute = (): UseMutationResult<
+  JansAttribute,
+  Error,
+  { data: JansAttribute; userMessage?: string; modifiedFields?: ModifiedFields },
+  void
+> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -156,7 +167,12 @@ export const useUpdateAttribute = () => {
       mutateAsync(...args).catch(() => {})
     },
     mutateAsync,
-  }
+  } as UseMutationResult<
+    JansAttribute,
+    Error,
+    { data: JansAttribute; userMessage?: string; modifiedFields?: ModifiedFields },
+    void
+  >
 }
 
 export const useDeleteAttribute = () => {

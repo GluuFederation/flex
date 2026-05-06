@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import CardHeader from './../CardHeader'
 import { Consumer } from './context'
-import classes from './AccordionHeader.scss'
+import classes from './AccordionHeader.module.scss'
 import { AccordionHeaderProps } from './Accordion.d'
 
 interface AccordionContext {
