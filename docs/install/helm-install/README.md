@@ -5,21 +5,78 @@ tags:
   - helm
 ---
 
-# Helm Deployment
+# Helm Deployments
 
-Gluu Flex enables organizations to build a scalable centralized authentication and authorization service using free open source software.
+Deploy Flex on Kubernetes using Helm charts. This guide walks you through the installation process step by step.
 
-The components of the project include client and server implementations of the OAuth, OpenID Connect, SCIM and FIDO standards.
+## Installation Flow
 
-All these components are deployed using Gluu [helm chart](https://github.com/GluuFederation/flex/blob/main/charts/gluu).
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│  1. Choose Your Platform                                        │ 
+│     └─> Set up your Kubernetes cluster                          │
+├─────────────────────────────────────────────────────────────────┤
+│  2. Configure Ingress                                           │
+│     └─> Gateway API (recommended) or Nginx Ingress              │
+├─────────────────────────────────────────────────────────────────┤
+│  3. Set Up Database                                             │
+│     └─> PostgreSQL (recommended) or MySQL                       │
+├─────────────────────────────────────────────────────────────────┤
+│  4. Install Flex                                                │
+│     └─> Run helm install with your override.yaml                │
+├─────────────────────────────────────────────────────────────────┤
+│  5. Post-Installation                                           │
+│     └─> Verify and configure using TUI                          │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-You can check the [reference](../../reference/kubernetes/helm-chart.md) guide to view the list of the chart components and values.
+## Step 1: Choose Your Platform
 
-## Looking for older helm charts?
+Select your Kubernetes platform to get started:
 
- If you are looking for older helm charts, you need to build them from the [Gluu Flex](https://github.com/GluuFederation/flex/tree/main/charts/gluu) repository. We only keep the last 5 versions of the chart up. We support auto-upgrade using helm upgrade and hence want everyone to stay up to date with our charts.
+| Platform | Guide |
+|----------|-------|
+| Amazon EKS | [Amazon EKS Setup](prerequisites/amazon-eks.md) |
+| Google GKE | [Google GKE Setup](prerequisites/google-gke.md) |
+| Microsoft AKS | [Microsoft AKS Setup](prerequisites/microsoft-aks.md) |
+| Local (Minikube/MicroK8s) | [Local Setup](prerequisites/local.md) |
+| Rancher Marketplace | [Rancher Setup](prerequisites/rancher.md) (includes all steps) |
 
- To build older charts manually from the Gluu Flex repository, you can use the following example which assumes we are building for janssen version `v5.0.0`:
+## Step 2: Configure Ingress
+
+After your cluster is ready, configure how traffic reaches Flex:
+
+[Ingress Setup Guide](ingress-setup.md) - Gateway API or Nginx Ingress
+
+## Step 3: Set Up Database
+
+Configure persistence storage:
+
+[Database Setup Guide](database-setup.md) - PostgreSQL or MySQL
+
+## Step 4: Install Flex
+
+Deploy the Helm chart:
+
+[Install Flex Guide](install-flex.md)
+
+## Step 5: Post-Installation
+
+Verify and configure your deployment:
+
+[Post-Installation Guide](post-install.md)
+
+## System Requirements
+
+{% include "includes/cn-system-requirements.md" %}
+
+## Helm Chart Reference
+
+For all configuration options, see the [Helm Chart Reference](../../reference/kubernetes/README.md#helm-chart-references).
+
+## Looking for Older Charts?
+
+We maintain the last 5 versions. For older charts, build from the repository:
 
  ```bash
  git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex.git /tmp/flex \
