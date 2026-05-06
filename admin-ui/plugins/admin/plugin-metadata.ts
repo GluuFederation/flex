@@ -70,7 +70,7 @@ const pluginMetadata = {
           title: 'menus.metrics',
           path: ROUTES.ADMIN_METRICS,
           permission: FIDO_ADMIN,
-          resourceKey: ADMIN_UI_RESOURCES.Metrics,
+          resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
         },
         {
           title: 'menus.maugraph',
@@ -146,7 +146,7 @@ const pluginMetadata = {
       component: MetricsPage,
       path: ROUTES.ADMIN_METRICS,
       permission: FIDO_ADMIN,
-      resourceKey: ADMIN_UI_RESOURCES.Metrics,
+      resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
     },
     {
       component: SettingsPage,
