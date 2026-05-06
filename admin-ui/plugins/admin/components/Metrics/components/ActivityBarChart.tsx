@@ -21,14 +21,7 @@ import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { AGGREGATION_SERIES_COLORS } from '../constants'
-
-export type ActivityDataPoint = {
-  label: string
-  regSuccess: number
-  regAttempts: number
-  authAttempts: number
-  authSuccess: number
-}
+import type { ActivityDataPoint } from '../types'
 
 interface ActivityBarChartProps {
   title: string
@@ -103,7 +96,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
             barSize={barSize}
             barCategoryGap={barCategoryGap}
             barGap={2}
-            margin={{ top: 20 }}
+            margin={{ top: 20, left: 10 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis
@@ -114,7 +107,12 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               height={hasMultiLineLabel ? 50 : 30}
               tick={(props: TickProps) => <MultiLineTick {...props} fill={axisColor} />}
             />
-            <YAxis tick={{ fill: axisColor, fontSize: 12 }} axisLine={false} tickLine={false} />
+            <YAxis
+              tick={{ fill: axisColor, fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              width={45}
+            />
             <Tooltip
               cursor={false}
               content={({ payload, active }) => (

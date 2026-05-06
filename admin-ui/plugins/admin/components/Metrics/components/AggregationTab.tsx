@@ -14,13 +14,17 @@ import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { MOCK_AGGREGATION, AGGREGATION_TYPES, type AggregationType } from '../constants'
+import { AGGREGATION_TYPES, type AggregationType } from '../constants'
 import { useAggregationMetrics } from '../hooks'
-import type { AggregationEntry, AggregationTypeParam, MetricsDateRange } from '../types'
+import type {
+  AggregationEntry,
+  AggregationTypeParam,
+  MetricsDateRange,
+  ActivityDataPoint,
+  HeatmapData,
+} from '../types'
 import ActivityBarChart from './ActivityBarChart'
-import type { ActivityDataPoint } from './ActivityBarChart'
 import DurationHeatmap from './DurationHeatmap'
-import type { HeatmapData } from './DurationHeatmap'
 
 const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
   hourly: 'Hourly',
@@ -29,40 +33,7 @@ const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
   monthly: 'Monthly',
 }
 
-const formatPeriodLabel = (entry: AggregationEntry): string => {
-  if (entry.period) return entry.period
-  if (entry.startTime) return entry.startTime.slice(0, 10)
-  return entry.id ?? ''
-}
-
-const entriesToActivityData = (entries: AggregationEntry[]): ActivityDataPoint[] =>
-  entries.map((e) => ({
-    label: formatPeriodLabel(e),
-    regSuccess: e.registrationSuccesses ?? 0,
-    regAttempts: e.registrationAttempts ?? 0,
-    authAttempts: e.authenticationAttempts ?? 0,
-    authSuccess: e.authenticationSuccesses ?? 0,
-  }))
-
-const entriesToHeatmapData = (entries: AggregationEntry[]): HeatmapData => {
-  const cols = entries.map(formatPeriodLabel)
-  const regRow = entries.map((e) => e.registrationAvgDuration ?? 0)
-  const authRow = entries.map((e) => e.authenticationAvgDuration ?? 0)
-  const allVals = [...regRow, ...authRow]
-  const minVal = allVals.length ? Math.min(...allVals) : 0
-  const maxVal = allVals.length ? Math.max(...allVals) : 1
-  return {
-    rows: ['Registration', 'Authentication'],
-    cols,
-    data: [regRow, authRow],
-    minVal: Math.max(0, minVal),
-    maxVal: maxVal > minVal ? maxVal : minVal + 1,
-  }
-}
-
-const HOURS_OF_DAY = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
-
-const SHORT_MONTHS = [
+const SHORT_MONTHS_UPPER = [
   'Jan',
   'Feb',
   'Mar',
@@ -77,11 +48,93 @@ const SHORT_MONTHS = [
   'Dec',
 ]
 
+// Convert ISO week string "YYYY-WNN" to the Monday of that week as { mm, dd, yyyy }
+const isoWeekToMonday = (year: number, week: number): { mm: number; dd: number; yyyy: number } => {
+  // Jan 4 is always in week 1 of the ISO year
+  const jan4 = new Date(year, 0, 4)
+  const dow = jan4.getDay() || 7 // 1=Mon … 7=Sun
+  // Monday of week 1
+  const week1Mon = new Date(jan4)
+  week1Mon.setDate(jan4.getDate() - (dow - 1))
+  // Add (week-1) weeks
+  const monday = new Date(week1Mon)
+  monday.setDate(week1Mon.getDate() + (week - 1) * 7)
+  return { mm: monday.getMonth() + 1, dd: monday.getDate(), yyyy: monday.getFullYear() }
+}
+
+// "YYYY-MM-DD" → "Feb-02" (dash-separated, zero-padded day)
+const formatDashDate = (iso: string): string => {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!m) return iso
+  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
+  return `${month}-${m[3]}`
+}
+
+// "YYYY-MM-DD" → "Feb 02" (space-separated, zero-padded day)
+const formatSpaceDate = (iso: string): string => {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!m) return iso
+  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
+  return `${month} ${m[3]}`
+}
+
+// "YYYY-MM" or "YYYY-MM-DD" → "Feb-2026"
+const formatMonthYear = (iso: string): string => {
+  const m = iso.match(/^(\d{4})-(\d{2})/)
+  if (!m) return iso
+  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
+  return `${month}-${m[1]}`
+}
+
+const formatPeriodLabel = (entry: AggregationEntry, aggType?: AggregationType): string => {
+  const raw =
+    entry.period ?? (entry.startTime ? entry.startTime.slice(0, 10) : null) ?? entry.id ?? ''
+  if (!raw) return ''
+
+  // weekly: "YYYY-WNN" (ISO week) → "Feb-02"
+  if (aggType === 'weekly') {
+    const isoWeek = raw.match(/^(\d{4})-W(\d{1,2})$/)
+    if (isoWeek) {
+      const { mm, dd } = isoWeekToMonday(Number(isoWeek[1]), Number(isoWeek[2]))
+      const month = SHORT_MONTHS_UPPER[mm - 1] ?? ''
+      return `${month}-${String(dd).padStart(2, '0')}`
+    }
+    return formatDashDate(raw)
+  }
+
+  if (aggType === 'monthly') return formatMonthYear(raw)
+  if (aggType === 'daily') return formatSpaceDate(raw)
+
+  return raw
+}
+
+// Build the range label shown as the first x-axis tick, e.g. "Weekly Feb 01\nto Feb-29"
+const buildRangeLabel = (aggType: AggregationType, range: MetricsDateRange): string => {
+  const startSpaceDate = range.startDate.format('MMM DD') // "Feb 01"
+  const startDashDate = range.startDate.format('MMM-DD') // "Feb-01"
+  const endDashDate = range.endDate.format('MMM-DD') // "Feb-29"
+  const startMonthYear = range.startDate.format('MMM YYYY') // "Feb 2026"
+  const endMonthYear = range.endDate.format('MMM YYYY') // "May 2026"
+
+  switch (aggType) {
+    case 'hourly':
+      return `Hourly ${startDashDate}\nto ${endDashDate}`
+    case 'daily':
+      return `Daily ${startDashDate}\nto ${endDashDate}`
+    case 'weekly':
+      return `Weekly ${startSpaceDate}\nto ${endDashDate}`
+    case 'monthly':
+      return `Monthly ${startMonthYear}\nto ${endMonthYear}`
+  }
+}
+
+const HOURS_OF_DAY = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+
 const formatShortDate = (isoDate: string): string => {
   const match = isoDate.match(/^\d{4}-(\d{2})-(\d{2})$/)
   if (!match) return isoDate
-  const month = SHORT_MONTHS[Number(match[1]) - 1] ?? ''
-  return `${month}-${Number(match[2])}`
+  const month = SHORT_MONTHS_UPPER[Number(match[1]) - 1] ?? ''
+  return `${month}-${match[2]}`
 }
 
 const parseHourlyPeriod = (entry: AggregationEntry): { date: string; hour: number } | null => {
@@ -98,6 +151,51 @@ const parseHourlyPeriod = (entry: AggregationEntry): { date: string; hour: numbe
     if (date && Number.isFinite(hour)) return { date, hour }
   }
   return null
+}
+
+// Hourly activity label: "YYYY-MM-DD" + hour → "Feb-02 H12"
+const formatHourlyActivityLabel = (entry: AggregationEntry): string => {
+  const parsed = parseHourlyPeriod(entry)
+  if (!parsed) return formatPeriodLabel(entry)
+  return `${formatShortDate(parsed.date)} H${String(parsed.hour).padStart(2, '0')}`
+}
+
+const entriesToActivityData = (
+  entries: AggregationEntry[],
+  aggType?: AggregationType,
+): ActivityDataPoint[] =>
+  entries.map((e) => ({
+    label: aggType === 'hourly' ? formatHourlyActivityLabel(e) : formatPeriodLabel(e, aggType),
+    regSuccess: e.registrationSuccesses ?? 0,
+    regAttempts: e.registrationAttempts ?? 0,
+    authAttempts: e.authenticationAttempts ?? 0,
+    authSuccess: e.authenticationSuccesses ?? 0,
+  }))
+
+const entriesToHeatmapData = (
+  entries: AggregationEntry[],
+  aggType?: AggregationType,
+): HeatmapData => {
+  const dateCols = entries.map((e) => formatPeriodLabel(e, aggType))
+
+  // Weekly: cols = "Week N", colsSub = "Feb-DD" date labels
+  const isWeekly = aggType === 'weekly'
+  const cols = isWeekly ? dateCols.map((_, i) => `Week ${i + 1}`) : dateCols
+  const colsSub = isWeekly ? dateCols : undefined
+
+  const authRow = entries.map((e) => e.authenticationAvgDuration ?? 0)
+  const regRow = entries.map((e) => e.registrationAvgDuration ?? 0)
+  const allVals = [...regRow, ...authRow]
+  const minVal = allVals.length ? Math.min(...allVals) : 0
+  const maxVal = allVals.length ? Math.max(...allVals) : 1
+  return {
+    rows: ['Authentication', 'Registration'],
+    cols,
+    ...(colsSub ? { colsSub } : {}),
+    data: [authRow, regRow],
+    minVal: Math.max(0, minVal),
+    maxVal: maxVal > minVal ? maxVal : minVal + 1,
+  }
 }
 
 const entriesToHourlyHeatmap = (
@@ -175,34 +273,23 @@ const AggregationTab: React.FC = () => {
   } = useAggregationMetrics(AGG_TYPE_MAP[appliedAggType], appliedRange)
 
   const isAggLoading = aggLoading || aggFetching
-  const useMockFallback = !isAggLoading && aggApiData == null
 
   const activityData: ActivityDataPoint[] = useMemo(() => {
     const entries = aggApiData?.entries
-    if (!entries || entries.length === 0) {
-      if (useMockFallback) {
-        return [...MOCK_AGGREGATION[appliedAggType].activity] as ActivityDataPoint[]
-      }
-      return []
+    if (!entries || entries.length === 0) return []
+    const rangeEntry: ActivityDataPoint = {
+      label: buildRangeLabel(appliedAggType, appliedRange),
+      regSuccess: 0,
+      regAttempts: 0,
+      authAttempts: 0,
+      authSuccess: 0,
     }
-    return entriesToActivityData(entries)
-  }, [aggApiData, appliedAggType, useMockFallback])
+    return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
+  }, [aggApiData, appliedAggType, appliedRange])
 
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
-      if (useMockFallback) {
-        switch (appliedAggType) {
-          case 'hourly':
-            return MOCK_AGGREGATION.hourly.registrationHeatmap as HeatmapData
-          case 'daily':
-            return MOCK_AGGREGATION.daily.combinedHeatmap as HeatmapData
-          case 'weekly':
-            return MOCK_AGGREGATION.weekly.durationHeatmap as HeatmapData
-          case 'monthly':
-            return MOCK_AGGREGATION.monthly.combinedHeatmap as HeatmapData
-        }
-      }
       const isHourly = appliedAggType === 'hourly'
       return {
         rows: [],
@@ -215,22 +302,19 @@ const AggregationTab: React.FC = () => {
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'registration')
     }
-    return entriesToHeatmapData(entries)
-  }, [aggApiData, appliedAggType, useMockFallback])
+    return entriesToHeatmapData(entries, appliedAggType)
+  }, [aggApiData, appliedAggType])
 
   const rawAuthHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
-      if (useMockFallback) {
-        return MOCK_AGGREGATION.hourly.authHeatmap as HeatmapData
-      }
       return { rows: [], cols: [], data: [], minVal: 1, maxVal: 3.5 }
     }
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'authentication')
     }
-    return entriesToHeatmapData(entries)
-  }, [aggApiData, appliedAggType, useMockFallback])
+    return entriesToHeatmapData(entries, appliedAggType)
+  }, [aggApiData, appliedAggType])
 
   const heatmapData: HeatmapData = useMemo(() => {
     if (appliedAggType !== 'hourly') return rawHeatmapData
@@ -350,12 +434,7 @@ const AggregationTab: React.FC = () => {
           <>
             <Row className="mb-4">
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
-                <ActivityBarChart
-                  title={t('titles.agg_monthly_activity')}
-                  data={activityData}
-                  barSize={18}
-                  barCategoryGap="35%"
-                />
+                <ActivityBarChart title={t('titles.agg_monthly_activity')} data={activityData} />
               </Col>
               <Col xs={12} xxl={6}>
                 <DurationHeatmap

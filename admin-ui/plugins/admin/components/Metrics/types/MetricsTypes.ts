@@ -1,30 +1,47 @@
 import type { Dayjs } from 'dayjs'
 
-export interface MetricsDateRange {
+export type HeatmapData = {
+  rows: readonly string[]
+  cols: readonly string[]
+  colsSub?: readonly string[]
+  data: readonly (readonly number[])[]
+  minVal: number
+  maxVal: number
+}
+
+export type ActivityDataPoint = {
+  label: string
+  regSuccess: number
+  regAttempts: number
+  authAttempts: number
+  authSuccess: number
+}
+
+export type MetricsDateRange = {
   startDate: Dayjs
   endDate: Dayjs
 }
 
-export interface PasskeyAuthData {
+export type PasskeyAuthData = {
   name: string
   value: number
   color: string
 }
 
-export interface PasskeyAdoptionData {
+export type PasskeyAdoptionData = {
   name: string
   newUsers: number
   totalUsers: number
 }
 
-export interface OnboardingTimeEntry {
+export type OnboardingTimeEntry = {
   category: string
   minDuration: number
   avgDuration: number
   maxDuration: number
 }
 
-export interface MetricsData {
+export type MetricsData = {
   passkeyAuth: PasskeyAuthData[]
   adoption: {
     newRegisteredUsers: number
@@ -37,7 +54,7 @@ export interface MetricsData {
 
 export type AggregationTypeParam = 'Hourly' | 'Daily' | 'Weekly' | 'Monthly'
 
-export interface AggregationParams {
+export type AggregationParams = {
   aggregationType: AggregationTypeParam
   start_date: string
   end_date: string
@@ -45,7 +62,7 @@ export interface AggregationParams {
   startIndex?: number
 }
 
-export interface AggregationEntry {
+export type AggregationEntry = {
   dn?: string | null
   id?: string | null
   aggregationType?: string | null
@@ -72,14 +89,14 @@ export interface AggregationEntry {
   errorCounts?: Record<string, number | null> | null
 }
 
-export interface AggregationResponse {
+export type AggregationResponse = {
   start?: number | null
   totalEntriesCount?: number | null
   entriesCount?: number | null
   entries?: AggregationEntry[] | null
 }
 
-export interface MetricsDateRangeParams {
+export type MetricsDateRangeParams = {
   start_date: string
   end_date: string
 }
@@ -88,7 +105,7 @@ export type AdoptionMetricsParams = MetricsDateRangeParams
 export type ErrorsAnalyticsParams = MetricsDateRangeParams
 export type PerformanceAnalyticsParams = MetricsDateRangeParams
 
-export interface AdoptionMetricsResponse {
+export type AdoptionMetricsResponse = {
   newUsers?: number | null
   totalUniqueUsers?: number | null
   adoptionRate?: number | null
@@ -98,14 +115,14 @@ export interface AdoptionMetricsResponse {
   [key: string]: number | string | boolean | null | undefined
 }
 
-export interface ErrorsAnalyticsResponse {
+export type ErrorsAnalyticsResponse = {
   successRate?: number | null
   failureRate?: number | null
   dropOffRate?: number | null
   [key: string]: number | string | boolean | null | undefined
 }
 
-export interface PerformanceAnalyticsResponse {
+export type PerformanceAnalyticsResponse = {
   registrationAvgDuration?: number | null
   registrationMaxDuration?: number | null
   registrationMinDuration?: number | null

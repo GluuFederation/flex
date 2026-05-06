@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import ActivityBarChart from 'Plugins/admin/components/Metrics/components/ActivityBarChart'
-import type { ActivityDataPoint } from 'Plugins/admin/components/Metrics/components/ActivityBarChart'
+import type { ActivityDataPoint } from 'Plugins/admin/components/Metrics/types'
 
 jest.mock('recharts', () => {
   const actual = jest.requireActual('recharts')

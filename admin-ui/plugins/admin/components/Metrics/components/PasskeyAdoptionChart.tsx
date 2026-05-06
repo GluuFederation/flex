@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef, useState, useEffect } from 'react'
 import { Card, CardBody } from 'Components'
 import {
   BarChart,
@@ -10,7 +10,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Customized,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
@@ -26,6 +25,19 @@ import type { MetricsDateRange } from '../types'
 import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
 
 const ARROW_S = 6
+const BAR_SIZE = 68
+const CHART_MARGIN = { top: 40, right: 220, bottom: 40, left: 220 }
+const Y_TICKS = [12, 10, 8, 6, 4, 2]
+const Y_MAX = 14
+
+interface PasskeyAdoptionChartProps {
+  dateRange: MetricsDateRange | null
+}
+
+const toNumber = (value: number | string | boolean | null | undefined): number => {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  return 0
+}
 
 const Arrowhead: React.FC<{ x: number; y: number; dir: 'up' | 'down'; color: string }> = ({
   x,
@@ -38,30 +50,6 @@ const Arrowhead: React.FC<{ x: number; y: number; dir: 'up' | 'down'; color: str
       ? `${x - ARROW_S / 2},${y - ARROW_S} ${x + ARROW_S / 2},${y - ARROW_S} ${x},${y}`
       : `${x - ARROW_S / 2},${y + ARROW_S} ${x + ARROW_S / 2},${y + ARROW_S} ${x},${y}`
   return <polygon points={pts} fill={color} />
-}
-
-const CHART_MARGIN = { top: 40, right: 220, bottom: 40, left: 220 }
-const Y_TICKS = [12, 10, 8, 6, 4, 2]
-const Y_MAX = 14
-
-interface PasskeyAdoptionChartProps {
-  dateRange: MetricsDateRange | null
-}
-
-interface BarItemData {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-interface BarArrowsProps {
-  formattedGraphicalItems?: Array<{ props: { data?: BarItemData[] } }>
-}
-
-const toNumber = (value: number | string | boolean | null | undefined): number => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value
-  return 0
 }
 
 const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }) => {
@@ -111,30 +99,58 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
     [adoptionPasskeyRate, themeColors],
   )
 
-  const BarArrows = (props: BarArrowsProps) => {
-    const { formattedGraphicalItems } = props
-    const eBar = formattedGraphicalItems?.[0]?.props?.data?.[0]
-    const nBar = formattedGraphicalItems?.[1]?.props?.data?.[0]
-    if (!eBar) return null
+  // Measure the chart container to compute bar positions for the SVG overlay
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
-    const barLeft = eBar.x as number
-    const barRight = (eBar.x as number) + (eBar.width as number)
-    const barBottom = (eBar.y as number) + (eBar.height as number)
-    const totalTop = nBar ? (nBar.y as number) : (eBar.y as number)
-    const newTop = nBar ? (nBar.y as number) : barBottom
-    const newBottom = nBar ? (nBar.y as number) + (nBar.height as number) : barBottom
-    const hasNewUsers = nBar && (nBar.height as number) > 0
-    const midBar = (totalTop + barBottom) / 2
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver((entries) => {
+      const { width, height } = entries[0]!.contentRect
+      setContainerSize({ width, height })
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  // Compute bar geometry from known chart parameters
+  const arrowOverlay = useMemo(() => {
+    const { width, height } = containerSize
+    if (width === 0 || height === 0) return null
+
+    const plotW = width - CHART_MARGIN.left - CHART_MARGIN.right
+    const plotH = height - CHART_MARGIN.top - CHART_MARGIN.bottom
+
+    // Bar is centered in the plot area
+    const barCenterX = CHART_MARGIN.left + plotW / 2
+    const barLeft = barCenterX - BAR_SIZE / 2
+    const barRight = barCenterX + BAR_SIZE / 2
+
+    // Y positions (recharts maps domain [0, Y_MAX] linearly onto plotH, top = Y_MAX)
+    const yScale = (val: number) => CHART_MARGIN.top + plotH * (1 - val / Y_MAX)
+
+    const totalBottom = yScale(0)
+    const totalTop = yScale(existingShare + newShare)
+    const newSegmentTop = yScale(newShare)
+
+    const hasNewUsers = newShare > 0
+
+    const midBar = (totalTop + totalBottom) / 2
     const leftArrowX = barLeft - 28
     const rightArrowX = barRight + 28
+    const labelY = midBar + 5
+    const ARROW_GAP = 20
     const totalColor = METRICS_CHART_COLORS.errorRate
     const newColor = METRICS_CHART_COLORS.newUsers
 
-    const labelY = midBar + 5
-    const ARROW_GAP = 20
-
     return (
-      <g>
+      <svg
+        style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'visible' }}
+        width={width}
+        height={height}
+      >
+        {/* Left: total span arrow (top of bar → bottom) */}
         <line
           x1={leftArrowX}
           y1={totalTop + ARROW_S}
@@ -148,11 +164,11 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
           x1={leftArrowX}
           y1={labelY + ARROW_GAP}
           x2={leftArrowX}
-          y2={barBottom - ARROW_S}
+          y2={totalBottom - ARROW_S}
           stroke={newColor}
           strokeWidth={2}
         />
-        <Arrowhead x={leftArrowX} y={barBottom} dir="down" color={newColor} />
+        <Arrowhead x={leftArrowX} y={totalBottom} dir="down" color={newColor} />
         <text
           x={barLeft - 10}
           y={labelY}
@@ -162,28 +178,30 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
           fill={textColor}
           fontFamily={fontFamily}
         >
-          {t('fields.total_users_label')}:{' '}
+          {`Total Users: `}
           <tspan fontSize={16} fontWeight={fontWeights.bold}>
             {totalRegisteredUsers}
           </tspan>
         </text>
+
+        {/* Right: new users segment arrows */}
         {hasNewUsers && (
           <>
             <line
               x1={rightArrowX}
-              y1={newTop + ARROW_S}
+              y1={newSegmentTop + ARROW_S}
               x2={rightArrowX}
-              y2={newBottom - ARROW_S}
+              y2={totalBottom - ARROW_S}
               stroke={newColor}
               strokeWidth={2}
             />
-            <Arrowhead x={rightArrowX} y={newTop} dir="up" color={newColor} />
-            <Arrowhead x={rightArrowX} y={newBottom} dir="down" color={newColor} />
+            <Arrowhead x={rightArrowX} y={newSegmentTop} dir="up" color={newColor} />
+            <Arrowhead x={rightArrowX} y={totalBottom} dir="down" color={newColor} />
           </>
         )}
-      </g>
+      </svg>
     )
-  }
+  }, [containerSize, existingShare, newShare, totalRegisteredUsers, textColor])
 
   return (
     <Card className={`${classes.chartCard} h-100`}>
@@ -207,65 +225,67 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
             className={classes.adoptionDottedBox}
             style={{ border: `1px dashed ${borderColor}` }}
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} barSize={68} margin={CHART_MARGIN}>
-                <YAxis width={0} domain={[0, Y_MAX]} hide />
-                <XAxis dataKey="name" hide />
-                <Tooltip
-                  cursor={false}
-                  content={({ payload: rawPayload, active }) => {
-                    const payload = rawPayload as ReadonlyArray<TooltipPayloadItem> | undefined
-                    const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
-                      (item) => {
-                        const realKey =
-                          item.dataKey === 'existingUsers'
-                            ? 'existingUsersCount'
-                            : item.dataKey === 'newRegisteredUsers'
-                              ? 'newRegisteredUsersCount'
-                              : null
-                        if (!realKey) return item
-                        const realValueRaw = (
-                          item.payload as Record<string, number | undefined> | undefined
-                        )?.[realKey]
-                        const realValue = typeof realValueRaw === 'number' ? realValueRaw : 0
-                        return {
-                          ...item,
-                          value: realValue,
-                          payload: {
-                            ...(item.payload ?? {}),
-                            [item.dataKey as string]: realValue,
-                          },
-                        }
-                      },
-                    )
-                    return (
-                      <TooltipDesign
-                        payload={remappedPayload}
-                        active={active}
-                        backgroundColor={cardBg}
-                        textColor={textColor}
-                        isDark={isDark}
-                      />
-                    )
-                  }}
-                />
-                <Bar
-                  dataKey="existingUsers"
-                  name={t('fields.total_registered_users')}
-                  fill={METRICS_CHART_COLORS.totalUsers}
-                  stackId="a"
-                  radius={[0, 0, 4, 4]}
-                />
-                <Bar
-                  dataKey="newRegisteredUsers"
-                  name={t('fields.new_registered_users')}
-                  fill={METRICS_CHART_COLORS.newUsers}
-                  stackId="a"
-                  radius={[4, 4, 0, 0]}
-                />
-                <Customized component={BarArrows} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData} barSize={BAR_SIZE} margin={CHART_MARGIN}>
+                  <YAxis width={0} domain={[0, Y_MAX]} hide />
+                  <XAxis dataKey="name" hide />
+                  <Tooltip
+                    cursor={false}
+                    content={({ payload: rawPayload, active }) => {
+                      const payload = rawPayload as ReadonlyArray<TooltipPayloadItem> | undefined
+                      const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
+                        (item) => {
+                          const realKey =
+                            item.dataKey === 'existingUsers'
+                              ? 'existingUsersCount'
+                              : item.dataKey === 'newRegisteredUsers'
+                                ? 'newRegisteredUsersCount'
+                                : null
+                          if (!realKey) return item
+                          const realValueRaw = (
+                            item.payload as Record<string, number | undefined> | undefined
+                          )?.[realKey]
+                          const realValue = typeof realValueRaw === 'number' ? realValueRaw : 0
+                          return {
+                            ...item,
+                            value: realValue,
+                            payload: {
+                              ...(item.payload ?? {}),
+                              [item.dataKey as string]: realValue,
+                            },
+                          }
+                        },
+                      )
+                      return (
+                        <TooltipDesign
+                          payload={remappedPayload}
+                          active={active}
+                          backgroundColor={cardBg}
+                          textColor={textColor}
+                          isDark={isDark}
+                        />
+                      )
+                    }}
+                  />
+                  <Bar
+                    dataKey="existingUsers"
+                    name={t('fields.total_registered_users')}
+                    fill={METRICS_CHART_COLORS.totalUsers}
+                    stackId="a"
+                    radius={[0, 0, 4, 4]}
+                  />
+                  <Bar
+                    dataKey="newRegisteredUsers"
+                    name={t('fields.new_registered_users')}
+                    fill={METRICS_CHART_COLORS.newUsers}
+                    stackId="a"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+              {arrowOverlay}
+            </div>
 
             <div className={classes.adoptionStatsLabels}>
               <div

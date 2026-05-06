@@ -2282,7 +2282,7 @@
       "status": "Status do SSA (ATIVO, USADO, EXPIRADO ou REVOGADO)"
     },
     "authn": {
-      "acr": "Référence de classe de contexte d'authentification",
+      "acr": "Referência de classe de contexto de autenticação",
       "description": "Descrição",
       "hash_algorithm": "Algoritmo de Hash",
       "level": "Nível de garantia de autenticação",

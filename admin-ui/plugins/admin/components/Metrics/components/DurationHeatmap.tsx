@@ -7,15 +7,7 @@ import customColors from '@/customColors'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { HEATMAP_COLOR_STOPS } from '../constants'
-
-export interface HeatmapData {
-  rows: readonly string[]
-  cols: readonly string[]
-  colsSub?: readonly string[]
-  data: readonly (readonly number[])[]
-  minVal: number
-  maxVal: number
-}
+import type { HeatmapData } from '../types'
 
 interface DurationHeatmapProps {
   title: string
