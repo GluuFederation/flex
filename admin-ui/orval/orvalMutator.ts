@@ -61,6 +61,7 @@ const recoverAdminUiSession = async (): Promise<boolean> => {
         }
 
         await createAdminUiSession(userJwt, apiProtectionToken)
+        setApiToken(apiProtectionToken)
         return true
       } catch (error) {
         devLogger.error(
