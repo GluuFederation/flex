@@ -253,7 +253,7 @@ const AggregationTab: React.FC = () => {
     endDate: createDate().hour(23).minute(59).second(0).millisecond(0),
   }))
 
-  const isApplyEnabled = !!(startDate && endDate)
+  const isApplyEnabled = !!(startDate && endDate && !endDate.isBefore(startDate))
 
   const handleStartDateChange = useCallback((d: Dayjs | null) => {
     if (d) setStartDate(d)
@@ -262,6 +262,7 @@ const AggregationTab: React.FC = () => {
     if (d) setEndDate(d)
   }, [])
   const handleApply = useCallback(() => {
+    if (!startDate || !endDate || endDate.isBefore(startDate)) return
     setAppliedRange({ startDate, endDate })
     setAppliedAggType(aggType || 'hourly')
   }, [startDate, endDate, aggType])
