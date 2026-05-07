@@ -60,7 +60,7 @@ export const useStyles = makeStyles<DefaultAcrStylesParams>()((_theme, { themeCo
       },
       '& [role="combobox"][tabindex="-1"]': {
         backgroundColor: `${formInputBg} !important`,
-        opacity: OPACITY.FULL,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },
@@ -104,7 +104,7 @@ export const useStyles = makeStyles<DefaultAcrStylesParams>()((_theme, { themeCo
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.FULL,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { Card, CardBody, Wizard, WizardStep } from 'Components'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { Form } from 'reactstrap'
+import { Form } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientScript from './ClientScriptPanel'
@@ -523,6 +523,7 @@ const ClientWizardForm = ({
                 <CardBody
                   className={[
                     classes.wizardSection,
+                    currentStep === WIZARD_STEP_IDS.LOGOUT ? classes.wizardSectionTight : '',
                     currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
                       ? classes.wizardSectionCompact
                       : '',
@@ -579,6 +580,7 @@ const ClientWizardForm = ({
                 <CardBody
                   className={[
                     classes.contentSection,
+                    currentStep === WIZARD_STEP_IDS.LOGOUT ? classes.contentSectionTight : '',
                     currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
                       ? classes.contentSectionCompact
                       : '',

@@ -26,6 +26,7 @@ const persistConfig = {
   key: 'root',
   storage,
   stateReconciler: hardSet,
+  blacklist: ['cedarPermissions', 'toastReducer', 'logoutAuditReducer', 'initReducer'],
 }
 // Preserve initial state for not-yet-loaded reducers
 const combine = (reducersObjects: ReducerMap) => {

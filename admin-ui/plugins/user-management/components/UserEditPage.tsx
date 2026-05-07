@@ -40,7 +40,7 @@ import {
 } from '../utils'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { isPersistenceInfo } from 'Plugins/services/helper/utils'
-import { AXIOS_INSTANCE } from '../../../api-client'
+import { AXIOS_INSTANCE } from 'Orval'
 import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
 import { devLogger } from '@/utils/devLogger'
 import { useTheme } from '@/context/theme/themeContext'

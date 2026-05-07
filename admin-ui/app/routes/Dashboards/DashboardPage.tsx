@@ -380,11 +380,11 @@ const DashboardPage = () => {
             <div className={classes.userInfoChartRow}>
               <div className={classes.userInfoChartCol}>
                 <Paper
-                  className={classes.dashboardCard + ' d-flex justify-content-center'}
+                  className={`${classes.dashboardCard} ${classes.dashboardCardCentered}`}
                   elevation={0}
                 >
                   <Grid className={classes.flex} container>
-                    <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
+                    <Grid item xs={12} className={isMobile ? classes.mobileTopSpacing : ''}>
                       <div className={classes.userInfo}>
                         <GluuText variant="div" className={classes.userInfoTitle}>
                           {t('dashboard.user_info')}

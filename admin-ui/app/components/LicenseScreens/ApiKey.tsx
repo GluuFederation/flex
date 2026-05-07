@@ -23,28 +23,28 @@ const ApiKey = () => {
 
   return (
     <GluuLoader blocking={isLoading || generatingTrialKey}>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 text-center my-5">
+      <div className={classes.container}>
+        <div className={classes.row}>
+          <div className={classes.logoSection}>
             <img src={logo} alt="Logo" className={`img-fluid ${classes.logo}`} />
           </div>
         </div>
-        <div className="row">
-          <Box className="col-md-8 text-center mx-auto mb-3">
+        <div className={classes.row}>
+          <Box className={classes.messageBlock}>
             <GluuText variant="h2" className={classes.title} disableThemeColor>
               {t('licenseScreen.welcomeTitle')}
             </GluuText>
           </Box>
         </div>
-        <div className="row">
-          <Box className="col-md-8 text-center mx-auto mb-3">
+        <div className={classes.row}>
+          <Box className={classes.messageBlock}>
             <GluuText className={classes.error} disableThemeColor>
               {serverError}
             </GluuText>
           </Box>
         </div>
-        <Box className="row mt-3">
-          <Box className={`mx-auto col-md-8 ${classes.cardWrapper}`}>
+        <Box className={classes.cardRow}>
+          <Box className={`${classes.messageBlock} ${classes.cardWrapper}`}>
             <GenerateLicenseCard />
           </Box>
         </Box>

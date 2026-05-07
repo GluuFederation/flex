@@ -25,6 +25,8 @@
       "context/*": ["./app/context/*"],
       "Utils/*": ["./app/utils/*"],
       "Styles/*": ["./app/styles/*"],
+      "Orval": ["./orval/index"],
+      "Orval/*": ["./orval/*"],
       "Redux/*": ["./app/redux/*"],
       "Images/*": ["./app/images/*"],
       "SVG/*": ["./app/components/SVG/*"],

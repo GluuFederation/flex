@@ -490,7 +490,7 @@ const UserForm = ({
           </Col>
           <Col sm={4}>
             <div
-              className={`d-flex flex-column ${classes.claimsPanelWrap}`}
+              className={`${classes.claimsPanelLayout} ${classes.claimsPanelWrap}`}
               style={formHeight ? { maxHeight: formHeight } : undefined}
             >
               <AvailableClaimsPanel

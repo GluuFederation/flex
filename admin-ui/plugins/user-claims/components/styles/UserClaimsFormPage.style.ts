@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormGroupOverrides } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface AttributeFormPageStylesParams {
@@ -14,8 +15,6 @@ const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const CONTENT_HORIZONTAL_PADDING = 52
-const FORM_CARD_MIN_HEIGHT = 400
 
 export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
   _,
@@ -32,7 +31,6 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
-      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative' as const,
       overflow: 'visible' as const,
       display: 'flex',
@@ -40,10 +38,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       boxSizing: 'border-box' as const,
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box' as const,
       display: 'flex',
@@ -63,31 +58,17 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
-      '& .form-group': {
-        display: 'flex',
-        flexDirection: 'column' as const,
-        margin: 0,
-        padding: 0,
-      },
-      '& .form-group.row': {
-        marginLeft: 0,
-        marginRight: 0,
-      },
+      ...createFormGroupOverrides(),
       '& .form-group > label': {
-        flex: '0 0 auto',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
-        marginBottom: 6,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
       },
       '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
         position: 'relative',
+        paddingBottom: 0,
+      },
+      '& .form-group [class*="col"]:has([data-field-error])': {
         paddingBottom: 20,
       },
       '& [data-field-error]': {
@@ -99,12 +80,15 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       },
       '& [role="combobox"][tabindex="-1"]': {
         backgroundColor: `${formInputBg} !important`,
-        opacity: OPACITY.FULL,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',
+      '& .form-group [class*="col"]': {
+        paddingBottom: 12,
+      },
       '& input, & input:disabled': {
         backgroundColor: 'var(--theme-input-bg) !important',
         border: `1px solid ${inputBorderColor} !important`,
@@ -116,34 +100,17 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
-      '& .form-group': {
-        display: 'flex',
-        flexDirection: 'column' as const,
-        margin: 0,
-        padding: 0,
-        width: '100%',
-      },
-      '& .form-group.row': {
-        marginLeft: 0,
-        marginRight: 0,
-      },
+      ...createFormGroupOverrides(),
       '& .form-group > label': {
-        flex: '0 0 auto',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
-        marginBottom: '20px !important',
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
       },
       '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
+        boxSizing: 'border-box' as const,
       },
       '& .react-toggle--disabled': {
-        opacity: `${OPACITY.FULL} !important`,
+        opacity: `${OPACITY.DISABLED} !important`,
         cursor: 'not-allowed',
       },
     },
@@ -155,6 +122,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         fontStyle: 'normal !important',
         fontWeight: `${fontWeights.semiBold} !important`,
         lineHeight: `${lineHeights.normal} !important`,
+        margin: '0 !important',
       },
     },
     formWithInputs: {
@@ -191,7 +159,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: OPACITY.FULL,
+          opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

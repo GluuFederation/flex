@@ -77,8 +77,12 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ scopes?: string[]; issuer?: string }>,
     ) => {
-      state.issuer = action.payload?.issuer || null
-      state.permissions = action.payload?.scopes || []
+      if (action.payload?.issuer) {
+        state.issuer = action.payload.issuer
+      }
+      if (action.payload?.scopes) {
+        state.permissions = action.payload.scopes
+      }
       state.isAuthenticated = true
     },
     getUserLocation: (_state, _action: PayloadAction<void>) => {},
@@ -88,7 +92,9 @@ const authSlice = createSlice({
       }
     },
     setApiDefaultToken: (state, action: PayloadAction<ApiTokenPayload>) => {
-      state.issuer = action.payload?.issuer || null
+      if (action.payload?.issuer) {
+        state.issuer = action.payload.issuer
+      }
     },
     putConfigWorker: (state, _action: PayloadAction<Config & { _meta?: PutConfigMeta }>) => {
       state.loadingConfig = true

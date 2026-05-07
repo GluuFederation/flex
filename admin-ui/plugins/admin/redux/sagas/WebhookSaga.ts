@@ -3,7 +3,7 @@ import i18n from 'i18next'
 import type { SagaIterator } from 'redux-saga'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { getWebhooksByFeatureId } from 'JansConfigApi'
-import { customInstance } from '../../../../orval-mutator'
+import { customInstance } from 'Orval/orvalMutator'
 import {
   getWebhooksByFeatureId as getWebhooksByFeatureIdAction,
   getWebhooksByFeatureIdResponse,

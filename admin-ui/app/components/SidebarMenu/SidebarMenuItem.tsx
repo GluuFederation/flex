@@ -158,7 +158,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
       style={getStyle(itemClass)}
       className={classNames(itemClass, {
         'sidebar-menu__entry--no-caret': noCaret,
-        'mb-20': !!icon,
+        'sidebar-menu__entry--with-icon': !!icon,
       })}
     >
       {!isEmptyNode && (

@@ -127,7 +127,7 @@ const MauPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <GluuViewWrapper canShow={canViewMau}>
         <GluuPageContent>
-          <div className="mb-4">
+          <div className={mauClasses.sectionSpacing}>
             <DateRangeSelector
               startDate={startDate}
               endDate={endDate}
@@ -141,26 +141,26 @@ const MauPage: React.FC = () => {
           </div>
 
           {isError && (
-            <Alert color="danger" className="mb-4" fade={false}>
-              <WarningAmberOutlined fontSize="small" className="me-2" />
+            <Alert color="danger" className={mauClasses.sectionSpacing} fade={false}>
+              <WarningAmberOutlined fontSize="small" className={mauClasses.alertIcon} />
               {t('messages.error_loading_data')}
             </Alert>
           )}
 
           {!isLoading && !isError && !hasData && (
-            <Alert color="info" className="mb-4" fade={false}>
-              <InfoOutlined fontSize="small" className="me-2" />
+            <Alert color="info" className={mauClasses.sectionSpacing} fade={false}>
+              <InfoOutlined fontSize="small" className={mauClasses.alertIcon} />
               {t('messages.no_mau_data')}
             </Alert>
           )}
 
           {hasData && (
             <>
-              <Row className="mb-4">
+              <Row className={mauClasses.sectionSpacing}>
                 <Col xs={12}>
                   <Row>
                     {summaryCards.map((card) => (
-                      <Col key={card.text} xs={12} sm={6} md={3} className="mb-3 mb-md-0">
+                      <Col key={card.text} xs={12} sm={6} md={3} className={mauClasses.summaryCol}>
                         <DashboardSummaryCard
                           text={card.text}
                           value={card.value}
@@ -175,7 +175,7 @@ const MauPage: React.FC = () => {
               <MauTrendChart data={mauData} />
 
               <Row>
-                <Col xs={12} lg={5} className="mb-4 mb-lg-0">
+                <Col xs={12} lg={5} className={mauClasses.chartCol}>
                   <TokenDistributionChart summary={summary} />
                 </Col>
                 <Col xs={12} lg={7}>

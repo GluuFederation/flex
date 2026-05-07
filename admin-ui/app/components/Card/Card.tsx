@@ -1,27 +1,27 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Card as BsCard } from 'reactstrap'
 
 import classes from './Card.module.scss'
 
-interface CardProps extends Omit<React.ComponentProps<typeof BsCard>, 'color'> {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   type?: string
-  color?: string | null
+  color?: string
   className?: string
 }
 
-const Card = ({ children, type = 'border', color = null, className, ...otherProps }: CardProps) => {
+const Card = ({ children, type = 'border', color, className, ...otherProps }: CardProps) => {
   const cardClass = classNames(
+    'card',
     className,
     classes['custom-card'],
     classes[`custom-card--${type}`],
     color && classes[`custom-card--color-${color}`],
   )
   return (
-    <BsCard className={cardClass} {...otherProps}>
+    <div className={cardClass} {...otherProps}>
       {children}
-    </BsCard>
+    </div>
   )
 }
 export { Card }

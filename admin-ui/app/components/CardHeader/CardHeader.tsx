@@ -1,6 +1,5 @@
 import React from 'react'
 import classNames from 'classnames'
-import { CardHeader as BsCardHeader } from 'reactstrap'
 
 import classes from './CardHeader.module.scss'
 
@@ -10,11 +9,12 @@ type CardHeaderProps = {
   className?: string
   children?: React.ReactNode
   style?: React.CSSProperties
-} & Omit<React.ComponentProps<typeof BsCardHeader>, 'className' | 'style'>
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'>
 
 const CardHeader: React.FC<CardHeaderProps> = (props) => {
   const { type, color, className, children, style, ...otherProps } = props
   const cardHeaderClass = classNames(
+    'card-header',
     className,
     classes['custom-card-header'],
     type && classes[`custom-card-header--${type}`],
@@ -22,9 +22,9 @@ const CardHeader: React.FC<CardHeaderProps> = (props) => {
   )
 
   return (
-    <BsCardHeader style={style} className={cardHeaderClass} {...otherProps}>
+    <div style={style} className={cardHeaderClass} {...otherProps}>
       {children}
-    </BsCardHeader>
+    </div>
   )
 }
 

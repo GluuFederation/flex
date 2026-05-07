@@ -42,6 +42,8 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
   helperText,
   placeholder,
   inputBackgroundColor,
+  hideHelperWhenSelected = false,
+  compactSelectionSpacing = false,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -50,7 +52,12 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
     [themeState?.theme],
   )
   const isDark = isDarkProp ?? themeState?.theme === THEME_DARK
-  const { classes } = useStyles({ themeColors, isDark, inputBackgroundColor })
+  const { classes } = useStyles({
+    themeColors,
+    isDark,
+    inputBackgroundColor,
+    compactSelectionSpacing,
+  })
 
   const [isOpen, setIsOpen] = useState(false)
   const [selectedValues, setSelectedValues] = useState<string[]>(Array.isArray(value) ? value : [])
@@ -244,7 +251,7 @@ const GluuMultiSelectRow: React.FC<GluuMultiSelectRowProps> = ({
             {errorMessage}
           </GluuText>
         )}
-        {helperText && !showError && (
+        {helperText && !showError && !(hideHelperWhenSelected && selectedValues.length > 0) && (
           <GluuText variant="span" className={classes.helperText}>
             {helperText}
           </GluuText>

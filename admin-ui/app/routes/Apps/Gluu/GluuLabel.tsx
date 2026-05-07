@@ -8,6 +8,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import GluuTooltip from './GluuTooltip'
 import type { GluuLabelProps } from './types'
+import { useStyles } from './styles/GluuLabel.style'
 
 const getSize = (size: number | undefined): number => (size != null ? size : 3)
 
@@ -40,15 +41,12 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
     }),
     [labelColor, style],
   )
+  const { classes } = useStyles({ labelColor })
 
   return (
     <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
-      <h5
-        className="d-flex justify-content-between align-items-center"
-        aria-label={label}
-        style={{ color: labelColor }}
-      >
-        <span className="d-flex align-items-center">
+      <h5 className={classes.titleRow} aria-label={label}>
+        <span className={classes.titleContent}>
           {t(label)}
           {allowColon && <span>:</span>}
           {required && <span style={applicationStyle.fieldRequired}> *</span>}

@@ -243,25 +243,6 @@ const ClientLogoutPanel = ({
           />
         </div>
         <div className={classes.fieldItem}>
-          <GluuToggleRow
-            name="attributes.backchannelLogoutSessionRequired"
-            label="fields.backchannelLogoutSessionRequired"
-            formik={formik}
-            value={Boolean(backchannelLogoutSessionRequired)}
-            lsize={12}
-            rsize={12}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-            handler={(e) => {
-              setModifiedFields((prev) => ({
-                ...prev,
-                [CLIENT_LOGOUT_MODIFIED_FIELDS.LOGOUT_SESSION_REQUIRED]: e.target.checked,
-              }))
-            }}
-          />
-        </div>
-        <div className={classes.fieldItem} />
-        <div className={classes.fieldItem}>
           <GluuDynamicList
             label={`${t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}:`}
             title={t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}
@@ -280,6 +261,24 @@ const ClientLogoutPanel = ({
           />
         </div>
         <div className={classes.fieldItem}>
+          <GluuToggleRow
+            name="attributes.backchannelLogoutSessionRequired"
+            label="fields.backchannelLogoutSessionRequired"
+            formik={formik}
+            value={Boolean(backchannelLogoutSessionRequired)}
+            lsize={12}
+            rsize={12}
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+            handler={(e) => {
+              setModifiedFields((prev) => ({
+                ...prev,
+                [CLIENT_LOGOUT_MODIFIED_FIELDS.LOGOUT_SESSION_REQUIRED]: e.target.checked,
+              }))
+            }}
+          />
+        </div>
+        <div className={classes.fieldItemFullWidth}>
           <GluuDynamicList
             label={`${t(CLIENT_DYNAMIC_LIST_I18N.POST_LOGOUT_REDIRECT_URIS.fieldKey)}:`}
             title={t(CLIENT_DYNAMIC_LIST_I18N.POST_LOGOUT_REDIRECT_URIS.fieldKey)}

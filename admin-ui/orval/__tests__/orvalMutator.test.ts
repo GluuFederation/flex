@@ -5,16 +5,16 @@ const mockGetRootState = jest.fn()
 const mockFetchApiTokenWithDefaultScopes = jest.fn()
 const mockDeleteAdminUiSession = jest.fn()
 
-jest.mock('../app/redux/hooks', () => ({
+jest.mock('@/redux/hooks', () => ({
   getRootState: () => mockGetRootState(),
 }))
 
-jest.mock('../app/redux/api/backend-api', () => ({
+jest.mock('@/redux/api/backend-api', () => ({
   fetchApiTokenWithDefaultScopes: mockFetchApiTokenWithDefaultScopes,
   deleteAdminUiSession: mockDeleteAdminUiSession,
 }))
 
-jest.mock('../app/utils/devLogger', () => ({
+jest.mock('@/utils/devLogger', () => ({
   devLogger: {
     error: jest.fn(),
   },
@@ -43,7 +43,7 @@ describe('orval-mutator request interceptor', () => {
       },
     })
 
-    const { AXIOS_INSTANCE } = await import('../orval-mutator')
+    const { AXIOS_INSTANCE } = await import('Orval/orvalMutator')
     const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
       .handlers[0]?.fulfilled
 
@@ -67,7 +67,7 @@ describe('orval-mutator request interceptor', () => {
       },
     })
 
-    const { AXIOS_INSTANCE } = await import('../orval-mutator')
+    const { AXIOS_INSTANCE } = await import('Orval/orvalMutator')
     const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
       .handlers[0]?.fulfilled
 

@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button } from 'Components'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
@@ -244,7 +248,7 @@ const ClientCibaParUmaPanel = ({
     <GluuLoader blocking={isLoading}>
       <div className={classes.root}>
         {/* CIBA */}
-        <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
           <AccordionHeader>{t('titles.CIBA')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -319,7 +323,7 @@ const ClientCibaParUmaPanel = ({
         </Accordion>
 
         {/* PAR */}
-        <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
           <AccordionHeader>{t('titles.PAR')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -375,7 +379,7 @@ const ClientCibaParUmaPanel = ({
         </Accordion>
 
         {/* UMA */}
-        <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
           <AccordionHeader>{t('titles.UMA')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -452,11 +456,11 @@ const ClientCibaParUmaPanel = ({
                     <GluuLabel label="fields.resources" size={3} />
                     <Col sm={9}>
                       {umaResources.map((uma) => (
-                        <Box key={uma.id as string} className="mb-2">
+                        <Box key={uma.id as string} className={classes.dynamicListItem}>
                           <Box display="flex">
                             <Box width="40%">
                               <Link
-                                className="common-link cursor-pointer"
+                                className={classes.clickableLink}
                                 onClick={() => handleUMADetail(uma)}
                               >
                                 {uma.id as string}
@@ -481,16 +485,15 @@ const ClientCibaParUmaPanel = ({
           </AccordionBody>
         </Accordion>
 
-        <Modal
-          isOpen={open}
-          toggle={() => setOpen((v) => !v)}
-          size="lg"
-          className="modal-outline-primary modal-lg-900"
+        <Dialog
+          open={open}
+          onClose={() => setOpen((v) => !v)}
+          maxWidth="lg"
+          fullWidth
+          PaperProps={{ className: 'modal-outline-primary modal-lg-900' }}
         >
-          <ModalHeader toggle={() => setOpen((v) => !v)}>
-            {t('titles.uma_resource_detail')}
-          </ModalHeader>
-          <ModalBody>
+          <DialogTitle>{t('titles.uma_resource_detail')}</DialogTitle>
+          <DialogContent>
             <Card style={applicationStyle.mainCard}>
               <FormGroup row>
                 <GluuLabel label={t('fields.resourceId')} size={3} />
@@ -511,7 +514,6 @@ const ClientCibaParUmaPanel = ({
                     href={selectedUMA?.iconUri as string}
                     target="_blank"
                     aria-label="iconUrl"
-                    className="common-link"
                     rel="noreferrer"
                   >
                     {(selectedUMA?.iconUri as string) || '-'}
@@ -552,7 +554,10 @@ const ClientCibaParUmaPanel = ({
                       {scopeInums.map((inum, key) => (
                         <Box key={key}>
                           <Box display="flex">
-                            <Link onClick={() => handleScopeNavigate(inum)} className="common-link">
+                            <Link
+                              onClick={() => handleScopeNavigate(inum)}
+                              className={classes.clickableLink}
+                            >
                               {inum}
                             </Link>
                           </Box>
@@ -588,7 +593,10 @@ const ClientCibaParUmaPanel = ({
                       return (
                         <Box key={key}>
                           <Box display="flex">
-                            <Link onClick={() => handleClientEdit(inum)} className="common-link">
+                            <Link
+                              onClick={() => handleClientEdit(inum)}
+                              className={classes.clickableLink}
+                            >
                               {inum}
                             </Link>
                           </Box>
@@ -606,13 +614,13 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
             </Card>
-          </ModalBody>
-          <ModalFooter>
+          </DialogContent>
+          <DialogActions>
             <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
               {t('actions.delete')}
             </Button>
-          </ModalFooter>
-        </Modal>
+          </DialogActions>
+        </Dialog>
 
         {selectedUMA && (
           <GluuDialog

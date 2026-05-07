@@ -77,6 +77,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       background: 'transparent',
       marginTop: 0,
     },
+    dashboardCardCentered: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    mobileTopSpacing: {
+      marginTop: 20,
+    },
     slider: {
       border: `5px solid ${customColors.white} `,
       borderRadius: BORDER_RADIUS.LARGE,

@@ -353,7 +353,7 @@ const JsonPropertyBuilderConfigApi = ({
   if (isObjectArray(propValue)) {
     const arrayValue = (Array.isArray(propValue) ? propValue : []) as AppConfiguration[]
     return (
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>
           <span>{t(getLocalizedLabelKey(propKey))}</span>
         </AccordionHeader>
@@ -404,7 +404,7 @@ const JsonPropertyBuilderConfigApi = ({
     return (
       <>
         {show && (
-          <Accordion className="mb-2 b-primary" initialOpen>
+          <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
             <AccordionHeader>
               <div className={classes.accordionHeaderRow}>
                 <GluuText variant="span">{displayLabel}</GluuText>

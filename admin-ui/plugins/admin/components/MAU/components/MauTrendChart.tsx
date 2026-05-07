@@ -42,7 +42,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
   }))
 
   return (
-    <Card className={`${classes.trendCard} mb-4`}>
+    <Card className={`${classes.trendCard} ${classes.trendCardWithSpacing}`}>
       <CardBody>
         <GluuText variant="div" className={classes.trendTitle}>
           {t('titles.mau_trend')}

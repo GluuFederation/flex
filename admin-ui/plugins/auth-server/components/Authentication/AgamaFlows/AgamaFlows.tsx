@@ -34,7 +34,7 @@ import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useA
 import { devLogger } from '@/utils/devLogger'
 import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
-import { AXIOS_INSTANCE } from '../../../../../api-client'
+import { AXIOS_INSTANCE } from 'Orval'
 import {
   useGetAgamaPrj,
   useDeleteAgamaPrj,

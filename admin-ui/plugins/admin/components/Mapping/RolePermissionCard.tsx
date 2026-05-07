@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { Box, Collapse } from '@mui/material'
-import { Check, ExpandMore } from '@/components/icons'
+import Check from '@mui/icons-material/Check'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'

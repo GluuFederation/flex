@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
-import { Input } from 'reactstrap'
+import { Input } from '@/components'
 import { Add as AddIcon, Delete as DeleteIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import getThemeColor from '@/context/theme/config'

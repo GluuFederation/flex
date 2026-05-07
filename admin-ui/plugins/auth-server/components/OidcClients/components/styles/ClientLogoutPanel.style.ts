@@ -9,6 +9,7 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
+import { createClientFormLayoutStyles } from './clientFormLayout'
 import type { ThemeConfig } from '@/context/theme/config'
 
 type ClientLogoutPanelStyleParams = {
@@ -27,6 +28,7 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const formGroupBase = createFormGroupOverrides({ columnPaddingBottom: ERROR_SPACE })
+  const layoutStyles = createClientFormLayoutStyles(theme, formGroupBase)
   const inputColors = {
     inputBg: formInputBg,
     inputBorderColor,
@@ -35,36 +37,7 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
   }
 
   return {
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
-      width: '100%',
-    },
-    fieldsGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      alignItems: 'start',
-      [theme.breakpoints.down('md')]: {
-        gridTemplateColumns: '1fr',
-      },
-    },
-    fieldItem: {
-      width: '100%',
-      minWidth: 0,
-      boxSizing: 'border-box',
-      ...formGroupBase,
-    },
-    fieldItemFullWidth: {
-      width: '100%',
-      minWidth: 0,
-      gridColumn: '1 / -1',
-      boxSizing: 'border-box',
-      ...formGroupBase,
-    },
+    ...layoutStyles,
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },
@@ -93,6 +66,7 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
         {
           backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
           color: `${themeColors.fontColor} !important`,
+          opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input)::placeholder, & textarea::placeholder':

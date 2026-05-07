@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
 import { DeleteOutline } from '@/components/icons'
 import customColors from '@/customColors'
+import { useStyles } from './styles/GluuPropertyItem.style'
 import type { GluuPropertyItemProps } from './types/GluuPropertyItem.types'
 
 const GluuPropertyItem = ({
@@ -24,6 +25,7 @@ const GluuPropertyItem = ({
   sourcePlaceholder = '',
 }: GluuPropertyItemProps) => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
   return (
     <FormGroup row>
       {isKeys && (
@@ -85,7 +87,7 @@ const GluuPropertyItem = ({
         )}
       </Col>
       {isRemoveButton && (
-        <Col sm={2} className={isInputLables ? 'mt-4' : ''}>
+        <Col sm={2} className={isInputLables ? classes.removeButtonOffset : undefined}>
           <Button
             type="button"
             color="danger"
@@ -96,7 +98,7 @@ const GluuPropertyItem = ({
             disabled={disabled}
             onClick={() => onPropertyRemove(position)}
           >
-            <DeleteOutline fontSize="small" className="me-2" />
+            <DeleteOutline fontSize="small" className={classes.actionIcon} />
             {t('actions.remove')}
           </Button>
         </Col>
