@@ -411,10 +411,10 @@ const AggregationTab: React.FC = () => {
         return (
           <>
             <Row className="mb-4">
-              <Col xs={12} xxl={7} className="mb-4 mb-xxl-0">
+              <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_weekly_activity')} data={activityData} />
               </Col>
-              <Col xs={12} xxl={5}>
+              <Col xs={12} xxl={6}>
                 <DurationHeatmap
                   title={t('titles.agg_weekly_heatmap')}
                   heatmapData={heatmapData}
