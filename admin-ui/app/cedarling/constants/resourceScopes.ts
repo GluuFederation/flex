@@ -201,6 +201,10 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
   [ADMIN_UI_RESOURCES.AuditLogs]: [
     { permission: LOGGING_READ, resourceId: ADMIN_UI_RESOURCES.AuditLogs },
   ],
+  [ADMIN_UI_RESOURCES.Metrics]: [
+    { permission: STAT_READ, resourceId: ADMIN_UI_RESOURCES.Metrics },
+    { permission: STAT_JANS_READ, resourceId: ADMIN_UI_RESOURCES.Metrics },
+  ],
 } as const satisfies Record<AdminUiFeatureResource, ResourceScopeEntry[]>
 
 export { CEDARLING_CONSTANTS } from './cedarlingConstants'

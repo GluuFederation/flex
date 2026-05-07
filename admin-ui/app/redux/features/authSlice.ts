@@ -39,8 +39,7 @@ const authSlice = createSlice({
     },
     getOAuth2ConfigResponse: (state, action: PayloadAction<{ config?: Config }>) => {
       if (action.payload?.config) {
-        const newDataConfigObject = { ...state.config, ...action.payload.config }
-        state.config = newDataConfigObject
+        state.config = { ...state.config, ...action.payload.config }
       }
     },
     setOAuthState: (state, action: PayloadAction<{ authState: string | null }>) => {

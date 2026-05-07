@@ -1,4 +1,4 @@
-import customColors from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from './constants'
 import type { FormFooterColors, ThemeConfig } from './types'
 
@@ -95,6 +95,12 @@ const createLightTheme = (): ThemeConfig => {
     availableClaims: {
       focusOutline: customColors.lightBlue,
     },
+    chart: {
+      gridColor: getLoadingOverlayRgba(customColors.black, 0.08),
+      axisColor: getLoadingOverlayRgba(customColors.black, 0.4),
+      donutEmptyColor: customColors.chartDonutEmptyLight,
+      cellBorderColor: getLoadingOverlayRgba(customColors.black, 0.08),
+    },
   }
 }
 
@@ -188,6 +194,12 @@ const createDarkTheme = (): ThemeConfig => {
     },
     availableClaims: {
       focusOutline: customColors.lightBlue,
+    },
+    chart: {
+      gridColor: getLoadingOverlayRgba(customColors.white, 0.1),
+      axisColor: getLoadingOverlayRgba(customColors.white, 0.4),
+      donutEmptyColor: customColors.chartDonutEmptyDark,
+      cellBorderColor: getLoadingOverlayRgba(customColors.white, 0.06),
     },
   }
 }

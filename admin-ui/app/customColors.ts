@@ -4,6 +4,7 @@ export const customColors = {
   // Base
   white: '#ffffff',
   black: '#000000',
+  nearBlack: '#1a1a1a',
   whiteSmoke: '#f5f5f5',
   lightGray: '#eaecf1',
   darkGray: '#323c47',
@@ -61,11 +62,14 @@ export const customColors = {
   buttonLightBg: '#f4f6f8',
 
   // Charts
+  chartDonutEmptyLight: '#e8eaed',
+  chartDonutEmptyDark: '#1a3150',
   mauPieClientCredentials: '#64b5f6',
   mauPieAuthCodeAccess: '#ffb74d',
   mauTrendClientCredentials: '#5daafa',
   mauTrendAuthCodeAccess: '#f9aa35',
   mauTrendAuthCodeId: '#da51f0',
+  chartBlue: '#4271DA',
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
