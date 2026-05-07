@@ -26,7 +26,6 @@ const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO = 0
 const OUTLINE_NONE = 'none'
-const FIELD_VERTICAL_PADDING = 4
 const ERROR_SPACE = 20
 const LABEL_MARGIN_BOTTOM = 6
 const CONTENT_GAP = 0
@@ -86,10 +85,12 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       gap: CONTENT_GAP,
     },
     formSection: {
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 0,
-      width: WIDTH_FULL,
+      'display': DISPLAY_FLEX,
+      'flexDirection': FLEX_DIRECTION_COLUMN,
+      'width': WIDTH_FULL,
+      '& > * + *:not(:last-child)': {
+        marginTop: SPACING.SECTION_GAP,
+      },
     },
     fieldsGrid: {
       display: 'grid',
@@ -259,9 +260,10 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',
-      'paddingTop': FIELD_VERTICAL_PADDING,
-      'paddingBottom': FIELD_VERTICAL_PADDING,
       'boxSizing': BOX_SIZING_BORDER,
+      'display': DISPLAY_FLEX,
+      'flexDirection': FLEX_DIRECTION_COLUMN,
+      'gap': SPACING.SECTION_GAP,
       '& .form-group': {
         display: DISPLAY_FLEX,
         flexDirection: FLEX_DIRECTION_COLUMN,

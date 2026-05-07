@@ -106,16 +106,17 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       margin: 0,
     },
     formSection: {
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: SPACING.SECTION_GAP,
-      width: WIDTH_FULL,
+      'display': DISPLAY_FLEX,
+      'flexDirection': FLEX_DIRECTION_COLUMN,
+      'width': WIDTH_FULL,
+      '& > * + *:not(:last-child)': {
+        marginTop: SPACING.SECTION_GAP,
+      },
     },
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
       width: WIDTH_FULL,
       alignItems: 'start',
       minWidth: 0,

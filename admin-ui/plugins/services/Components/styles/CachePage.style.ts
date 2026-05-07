@@ -66,10 +66,12 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       },
     },
     formSection: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
-      width: '100%',
+      'display': 'flex',
+      'flexDirection': 'column',
+      'width': '100%',
+      '& > * + *:not(:last-child)': {
+        marginTop: SPACING.SECTION_GAP,
+      },
     },
     fieldsGrid: {
       display: 'grid',

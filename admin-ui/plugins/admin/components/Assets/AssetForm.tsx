@@ -301,7 +301,6 @@ const AssetForm: React.FC = () => {
           </div>
         </div>
         <GluuThemeFormFooter
-          className={classes.footerSpacing}
           showBack
           onBack={handleBack}
           showCancel

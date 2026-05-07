@@ -68,7 +68,6 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
     },
     alertBox: {
@@ -321,9 +320,6 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     },
     extraPaddingTop: {
       paddingTop: 8,
-    },
-    footerSpacing: {
-      marginTop: SPACING.FORM_FOOTER_GAP,
     },
   }
 })

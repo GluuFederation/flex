@@ -23,7 +23,8 @@ const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
-const PROPS_HEADER_MB = 16
+const PROPS_HEADER_MB = 10
+const PROPS_LIST_GAP = 12
 
 export const useStyles = makeStyles<FidoConfigStylesParams>()((
   theme: Theme,
@@ -53,7 +54,7 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: SPACING.SECTION_GAP,
+      gap: SPACING.CARD_CONTENT_GAP,
       width: WIDTH_FULL,
     },
     fieldsGrid: {
@@ -173,13 +174,25 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
           transition: 'background-color 5000s ease-in-out 0s',
         },
     },
-    propsBox: dl.listBox,
+    propsBox: {
+      ...dl.listBox,
+      paddingTop: SPACING.CARD_CONTENT_GAP,
+    },
     propsBoxEmpty: dl.listBoxEmpty,
-    propsHeader: dl.listHeader,
+    propsHeader: {
+      ...dl.listHeader,
+      marginBottom: PROPS_HEADER_MB,
+    },
     propsHeaderEmpty: dl.listHeaderEmpty,
     propsTitle: dl.listTitle,
-    propsBody: dl.listBody,
-    propsRow: dl.listRow,
+    propsBody: {
+      ...dl.listBody,
+      gap: PROPS_LIST_GAP,
+    },
+    propsRow: {
+      ...dl.listRow,
+      gap: PROPS_LIST_GAP,
+    },
     propsInput: dl.listInput,
     propsError: dl.listError,
     propsActionBtn: dl.listActionBtn,
@@ -189,7 +202,7 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
       flexShrink: 0,
     },
     hintsSection: {
-      marginTop: PROPS_HEADER_MB,
+      marginTop: SPACING.CARD_CONTENT_GAP,
     },
   }
 })

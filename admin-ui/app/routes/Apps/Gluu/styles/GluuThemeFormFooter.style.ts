@@ -29,7 +29,7 @@ export const useStyles = makeStyles<FormFooterStyleParams>()((_theme, { hasRight
     alignItems: 'center',
     justifyContent: hasRightGroup ? 'space-between' : 'flex-start',
     gap: 12,
-    marginTop: SPACING.FORM_FOOTER_GAP,
+    marginTop: SPACING.SECTION_GAP,
     paddingTop: 16,
     paddingBottom: 8,
   },
