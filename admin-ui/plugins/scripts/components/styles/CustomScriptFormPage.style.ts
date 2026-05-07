@@ -29,8 +29,6 @@ const OUTLINE_NONE = 'none'
 const FIELD_VERTICAL_PADDING = 4
 const ERROR_SPACE = 20
 const LABEL_MARGIN_BOTTOM = 6
-const FORM_CARD_MIN_HEIGHT = 400
-const CONTENT_HORIZONTAL_PADDING = 52
 const CONTENT_GAP = 0
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
@@ -73,7 +71,6 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: WIDTH_FULL,
-      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative' as const,
       overflow: 'visible' as const,
       display: DISPLAY_FLEX,
@@ -81,10 +78,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       boxSizing: BOX_SIZING_BORDER,
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: WIDTH_FULL,
       boxSizing: BOX_SIZING_BORDER,
       display: DISPLAY_FLEX,
@@ -176,6 +170,8 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         flex: '0 0 auto',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
+        paddingTop: '4px !important',
+        paddingBottom: '4px !important',
         paddingLeft: MARGIN_ZERO,
         paddingRight: MARGIN_ZERO,
         marginBottom: LABEL_MARGIN_BOTTOM,
@@ -280,6 +276,8 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         flex: '0 0 auto',
         width: WIDTH_FULL,
         maxWidth: WIDTH_FULL,
+        paddingTop: '4px !important',
+        paddingBottom: '4px !important',
         paddingLeft: MARGIN_ZERO,
         paddingRight: MARGIN_ZERO,
         marginBottom: LABEL_MARGIN_BOTTOM,
@@ -335,7 +333,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

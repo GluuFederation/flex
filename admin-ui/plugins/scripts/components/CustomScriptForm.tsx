@@ -12,7 +12,7 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { Button } from 'reactstrap'
+import { Button } from 'Components'
 import { Add, DeleteOutline, ErrorIcon } from '@/components/icons'
 import { Skeleton, Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -42,7 +42,6 @@ import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-import Counter from '@/components/Widgets/GroupedButtons/Counter'
 import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
 
 const transformPropertyForApi = (
@@ -424,24 +423,22 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
 
           <div className={classes.levelEnabledRow}>
             <div className={classes.fieldItem}>
-              <FormGroup row>
-                <GluuLabel
-                  label="fields.level"
-                  size={12}
-                  doc_category={SCRIPT}
-                  doc_entry="level"
-                  isDark={isDark}
-                />
-                <Counter
-                  counter={formik.values.level}
-                  disabled={viewOnly}
-                  onCounterChange={onLevelChange}
-                />
-                <Input type="hidden" id="level" value={formik.values.level} />
-                {formik.errors.level && formik.touched.level && (
-                  <div className={classes.levelError}>{String(formik.errors.level)}</div>
-                )}
-              </FormGroup>
+              <GluuInputRow
+                label="fields.level"
+                name="level"
+                type="number"
+                value={formik.values.level}
+                formik={formik}
+                lsize={12}
+                rsize={12}
+                doc_category={SCRIPT}
+                doc_entry="level"
+                isDark={isDark}
+                disabled={viewOnly}
+                handleChange={(e) => onLevelChange(Number(e.target.value))}
+                showError={!!(formik.errors.level && formik.touched.level)}
+                errorMessage={String(formik.errors.level ?? '')}
+              />
             </div>
             <div className={classes.fieldItem}>
               <FormGroup>

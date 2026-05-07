@@ -6,6 +6,7 @@ import {
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
   ICON_SIZE,
+  OPACITY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
@@ -22,9 +23,6 @@ const BOX_SIZING_BORDER = 'border-box'
 const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO_IMPORTANT = '0 !important'
-
-const CONTENT_PADDING_H = 52
-const FIELD_VERTICAL_PADDING = 4
 const OUTLINE_NONE = 'none'
 
 export const useStyles = makeStyles<AssetFormPageStylesParams>()((
@@ -50,7 +48,6 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: WIDTH_FULL,
-      minHeight: 400,
       position: 'relative',
       overflow: 'visible',
       display: DISPLAY_FLEX,
@@ -58,24 +55,20 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       boxSizing: BOX_SIZING_BORDER,
     },
     content: {
-      paddingTop: `${SPACING.PAGE}px`,
-      paddingLeft: `${CONTENT_PADDING_H}px`,
-      paddingRight: `${CONTENT_PADDING_H}px`,
-      paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+      padding: SPACING.CONTENT_PADDING,
       width: WIDTH_FULL,
       boxSizing: BOX_SIZING_BORDER,
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
       gap: 32,
       [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${SPACING.PAGE}px`,
-        paddingRight: `${SPACING.PAGE}px`,
+        padding: SPACING.PAGE,
       },
     },
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 0,
+      gap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
     },
     alertBox: {
@@ -143,6 +136,8 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       '& .form-group.row': {
         marginLeft: MARGIN_ZERO_IMPORTANT,
         marginRight: MARGIN_ZERO_IMPORTANT,
+        flexDirection: 'column' as const,
+        flexWrap: 'nowrap' as const,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
@@ -150,7 +145,9 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         maxWidth: WIDTH_FULL,
         paddingLeft: MARGIN_ZERO_IMPORTANT,
         paddingRight: MARGIN_ZERO_IMPORTANT,
-        marginBottom: '6px !important',
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
@@ -158,6 +155,8 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         maxWidth: WIDTH_FULL,
         paddingLeft: MARGIN_ZERO_IMPORTANT,
         paddingRight: MARGIN_ZERO_IMPORTANT,
+        minWidth: 0,
+        boxSizing: BOX_SIZING_BORDER,
       },
       '& .input-group': {
         margin: MARGIN_ZERO_IMPORTANT,
@@ -166,8 +165,8 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',
-      'paddingTop': FIELD_VERTICAL_PADDING,
-      'paddingBottom': FIELD_VERTICAL_PADDING,
+      'paddingTop': 0,
+      'paddingBottom': SPACING.CARD_CONTENT_GAP,
       'boxSizing': BOX_SIZING_BORDER,
       '& .form-group': {
         marginBottom: 0,
@@ -224,7 +223,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input:not(.MuiInputBase-input)::placeholder': {
@@ -250,22 +249,6 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           transition: 'background-color 5000s ease-in-out 0s',
         },
-      '& .serviceSelectField .MuiOutlinedInput-root': {
-        borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
-      },
-      '& .serviceSelectField .MuiOutlinedInput-input': {
-        border: 'none !important',
-        backgroundColor: 'transparent !important',
-        boxShadow: 'none !important',
-        minHeight: 'unset !important',
-        height: '100% !important',
-        paddingTop: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px !important`,
-        paddingBottom: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px !important`,
-        paddingLeft: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px !important`,
-        paddingRight: `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px !important`,
-        lineHeight: `${nativeInputLineHeightPx}px !important`,
-        boxSizing: 'border-box',
-      },
     },
     uploadError: {
       display: 'block',
@@ -274,7 +257,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       marginTop: 4,
     },
     uploadBox: {
-      'marginTop': 8,
+      'marginTop': 0,
       'width': WIDTH_FULL,
       '& .dropzone': {
         backgroundColor: `${isDark ? formInputBg : infoBg} !important`,
@@ -311,7 +294,22 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
           backgroundColor: 'transparent !important',
         },
     },
-    serviceSelectField: {},
+    uploadField: {
+      '& > label': {
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
+      },
+      '& > label h5, & > label h5 span, & > label span': {
+        margin: '0 !important',
+        lineHeight: `${lineHeights.normal} !important`,
+      },
+    },
+    serviceSelectField: {
+      '& [data-field-error]': {
+        marginTop: 6,
+      },
+    },
     toggleRow: {
       'display': DISPLAY_FLEX,
       'alignItems': 'center',
@@ -323,6 +321,9 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     },
     extraPaddingTop: {
       paddingTop: 8,
+    },
+    footerSpacing: {
+      marginTop: SPACING.FORM_FOOTER_GAP,
     },
   }
 })

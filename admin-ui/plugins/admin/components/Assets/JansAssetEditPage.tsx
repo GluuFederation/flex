@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -31,7 +31,11 @@ const JansAssetEditPage: React.FC = () => {
 
   const loading = useAppSelector((state) => state.assetReducer?.loading ?? false)
 
-  SetTitle(t(T_KEYS.TITLE_ASSET_EDIT))
+  const pageTitle = t(T_KEYS.TITLE_ASSET_EDIT)
+
+  useEffect(() => {
+    SetTitle(pageTitle)
+  }, [pageTitle])
 
   return (
     <GluuLoader blocking={loading}>

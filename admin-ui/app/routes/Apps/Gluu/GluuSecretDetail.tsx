@@ -5,6 +5,7 @@ import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 import type { GluuSecretDetailProps } from './types'
+import { useStyles } from './styles/GluuSecretDetail.style'
 
 const defaultLabelStyle: CSSProperties = { fontWeight: 'bold', color: customColors.black }
 
@@ -29,7 +30,8 @@ const GluuSecretDetail = ({
     () => ({ ...defaultLabelStyle, ...labelStyle }),
     [labelStyle],
   )
-  const appliedRowClassName = rowClassName || 'align-items-center mb-2'
+  const { classes } = useStyles()
+  const appliedRowClassName = rowClassName || classes.rowDefault
 
   const valueStyle: CSSProperties = useMemo(
     () => ({ fontWeight: 'bold', color: customColors.black }),
@@ -44,7 +46,7 @@ const GluuSecretDetail = ({
         </Label>
         <Col
           sm={rsize}
-          className="d-flex align-items-center"
+          className={classes.valueCol}
           style={{ gap: '0.5rem', wordBreak: 'break-all' }}
         >
           {value !== '-' && <Toggle defaultChecked={false} onChange={handleSecret} />}

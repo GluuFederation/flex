@@ -56,6 +56,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${fontColor} !important`,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },

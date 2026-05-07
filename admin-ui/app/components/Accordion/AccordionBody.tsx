@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Collapse, CardBody } from 'reactstrap'
+import Collapse from '@mui/material/Collapse'
 
 import { Consumer } from './context'
 import type { AccordionBodyProps } from './Accordion.d'
@@ -8,8 +8,8 @@ import type { AccordionBodyProps } from './Accordion.d'
 export const AccordionBody: React.FC<AccordionBodyProps> = ({ children, className }) => (
   <Consumer>
     {({ isOpen }) => (
-      <Collapse isOpen={isOpen}>
-        <CardBody className={classNames(className, 'pt-0')}>{children}</CardBody>
+      <Collapse in={isOpen}>
+        <div className={classNames('card-body', className, 'pt-0')}>{children}</div>
       </Collapse>
     )}
   </Consumer>

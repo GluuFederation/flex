@@ -36,6 +36,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
 
   const { classes } = useStyles({
     fontColor: themeColors.fontColor,
+    removeColor: themeColors.errorColor,
     removeDisabled: disabled,
   })
 
@@ -112,7 +113,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
                     clearFiles()
                   }}
                 >
-                  <DeleteOutline fontSize="small" className="me-2" />
+                  <DeleteOutline fontSize="small" className={classes.removeIcon} />
                   {t('actions.remove')}
                 </Button>
               </Box>

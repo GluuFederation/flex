@@ -40,6 +40,10 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
         outline: 'none',
         boxShadow: 'none',
       },
+      '&:disabled': {
+        opacity: OPACITY.DISABLED,
+        cursor: 'not-allowed',
+      },
     },
     chevronWrapper: {
       position: 'absolute',
@@ -98,6 +102,10 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
           boxShadow: 'none !important',
           color: `${fontColor} !important`,
           caretColor: fontColor,
+        },
+        '&.Mui-disabled': {
+          opacity: OPACITY.DISABLED,
+          cursor: 'not-allowed',
         },
       },
     },

@@ -122,8 +122,17 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       },
     },
     uploadBox: {
-      'marginTop': theme.spacing(5),
+      'marginTop': 0,
       'marginBottom': theme.spacing(1),
+      '& > label': {
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
+      },
+      '& > label h5, & > label h5 span, & > label span': {
+        margin: '0 !important',
+        lineHeight: `${lineHeights.normal} !important`,
+      },
       '& .dropzone': {
         'border': `1px solid ${inputBorderColor}`,
         'backgroundColor': formInputBg,

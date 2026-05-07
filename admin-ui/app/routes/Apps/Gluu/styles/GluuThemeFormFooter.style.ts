@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import getThemeColor, { type FormFooterColors } from '@/context/theme/config'
-import { OPACITY } from '@/constants'
+import { OPACITY, SPACING } from '@/constants'
 
 interface FormFooterStyleParams {
   hasRightGroup: boolean
@@ -29,6 +29,7 @@ export const useStyles = makeStyles<FormFooterStyleParams>()((_theme, { hasRight
     alignItems: 'center',
     justifyContent: hasRightGroup ? 'space-between' : 'flex-start',
     gap: 12,
+    marginTop: SPACING.FORM_FOOTER_GAP,
     paddingTop: 16,
     paddingBottom: 8,
   },

@@ -17,8 +17,6 @@ type ScimFormPageStylesParams = {
   themeColors: ThemeConfig
 }
 
-const FORM_CARD_MIN_HEIGHT = 400
-const CONTENT_HORIZONTAL_PADDING = 52
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
@@ -45,7 +43,6 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       ...getCardBorderStyle({ isDark }),
       'borderRadius': BORDER_RADIUS.DEFAULT,
       'width': '100%',
-      'minHeight': FORM_CARD_MIN_HEIGHT,
       'position': 'relative',
       'overflow': 'visible',
       'display': 'flex',
@@ -57,10 +54,7 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       },
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
@@ -142,6 +136,7 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${alpha(themeColors.fontColor, OPACITY.PLACEHOLDER)} !important`,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

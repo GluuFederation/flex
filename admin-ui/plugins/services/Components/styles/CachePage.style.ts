@@ -17,8 +17,8 @@ const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const LABEL_MARGIN_BOTTOM = 6
-const ERROR_SPACE = 20
+const LABEL_MARGIN_BOTTOM = 2
+const ERROR_SPACE = 12
 const SECTION_BOX_TOP_PADDING = 12
 const SECTION_HEADER_MB = 16
 
@@ -40,7 +40,6 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
-      minHeight: 480,
       position: 'relative',
       overflow: 'visible',
       display: 'flex',
@@ -48,19 +47,12 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       boxSizing: 'border-box',
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: `${SPACING.CONTENT_PADDING}px`,
-      paddingRight: `${SPACING.CONTENT_PADDING}px`,
-      paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
       gap: 0,
-      [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${SPACING.PAGE}px`,
-        paddingRight: `${SPACING.PAGE}px`,
-      },
     },
     formLabels: {
       '& label, & label h5, & label h5 span, & label .MuiSvgIcon-root': {
@@ -104,6 +96,8 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       '& .form-group.row': {
         marginLeft: 0,
         marginRight: 0,
+        flexDirection: 'column' as const,
+        flexWrap: 'nowrap' as const,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
@@ -111,7 +105,12 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        marginBottom: LABEL_MARGIN_BOTTOM,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: `${LABEL_MARGIN_BOTTOM}px !important`,
+      },
+      '& .form-group > label h5, & .form-group > label h5 span': {
+        margin: '0 !important',
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
@@ -121,6 +120,8 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         paddingRight: 0,
         position: 'relative',
         paddingBottom: ERROR_SPACE,
+        minWidth: 0,
+        boxSizing: 'border-box',
       },
       '& .input-group': {
         margin: 0,
@@ -165,6 +166,7 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
@@ -194,6 +196,9 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
           boxShadow: 'none !important',
           color: `${themeColors.fontColor} !important`,
         },
+      '& input:disabled': {
+        opacity: OPACITY.DISABLED,
+      },
       '& select, & select:focus, & select:focus-visible, & select:active, & select:disabled, & .custom-select':
         {
           backgroundColor: `${sectionInputBg} !important`,
@@ -202,6 +207,9 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
           outline: 'none !important',
           boxShadow: 'none !important',
         },
+      '& select:disabled, & .custom-select:disabled': {
+        opacity: OPACITY.DISABLED,
+      },
     },
     sectionHeader: {
       display: 'flex',

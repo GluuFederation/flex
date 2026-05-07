@@ -1,5 +1,9 @@
 import { useState, useEffect, useContext, useMemo } from 'react'
-import { FormGroup, Col, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import TextField from '@mui/material/TextField'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -12,6 +16,7 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
 import { WarningAmberOutlined } from '@/components/icons'
+import { useStyles } from './styles/GluuDialog.style'
 
 import type { GluuDialogProps } from './types'
 
@@ -28,6 +33,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   const isDark = selectedTheme === THEME_DARK
   const inverseTheme = isDark ? 'light' : 'dark'
   const inverseColors = getThemeColor(inverseTheme)
+  const { classes } = useStyles()
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -58,7 +64,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     }
   }, [userMessage])
 
-  // Reset user message when modal opens with a new item
   useEffect(() => {
     if (modal) {
       setUserMessage('')
@@ -83,41 +88,39 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
       {(webhookModal || loadingWebhooks) && canReadWebhooks ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
-        <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
-          <ModalHeader toggle={closeModal}>
+        <Dialog
+          open={modal}
+          onClose={closeModal}
+          PaperProps={{ className: 'modal-outline-primary' }}
+        >
+          <DialogTitle>
             <WarningAmberOutlined
               style={{ color: customColors.accentRed }}
-              className="modal-icon mb-3"
+              className={`modal-icon ${classes.warningIcon}`}
             />
             {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${row.inum || row.id ? `-${row.inum || row.id}` : ''})`}
-          </ModalHeader>
-          <ModalBody>{t('messages.action_deletion_question')}</ModalBody>
-          <ModalBody>
-            <FormGroup row>
-              <Col sm={12}>
-                <Input
-                  id="user_action_message"
-                  type="textarea"
-                  name="user_action_message"
-                  onChange={(e) => setUserMessage(e.target.value)}
-                  placeholder={t('placeholders.action_commit_message')}
-                  value={userMessage}
-                  style={{ borderColor: inverseColors.borderColor }}
-                />
-                {userMessage.length < 10 && (
-                  <span
-                    style={{
-                      color: customColors.accentRed,
-                    }}
-                  >
-                    {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
-                    required
-                  </span>
-                )}
-              </Col>
-            </FormGroup>
-          </ModalBody>
-          <ModalFooter>
+          </DialogTitle>
+          <DialogContent>
+            <p>{t('messages.action_deletion_question')}</p>
+            <TextField
+              id="user_action_message"
+              multiline
+              rows={4}
+              name="user_action_message"
+              fullWidth
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder={t('placeholders.action_commit_message')}
+              value={userMessage}
+              sx={{ '& .MuiOutlinedInput-root': { borderColor: inverseColors.borderColor } }}
+              helperText={
+                userMessage.length < 10
+                  ? `${10 - userMessage.length}${userMessage.length ? ' more' : ''} characters required`
+                  : undefined
+              }
+              FormHelperTextProps={{ style: { color: customColors.accentRed } }}
+            />
+          </DialogContent>
+          <DialogActions>
             {active && (
               <GluuButton theme="dark" onClick={handleAccept}>
                 {t('actions.yes')}
@@ -126,8 +129,8 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
             <GluuButton theme="dark" onClick={closeModal}>
               {t('actions.no')}
             </GluuButton>
-          </ModalFooter>
-        </Modal>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   )

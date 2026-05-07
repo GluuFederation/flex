@@ -3,6 +3,7 @@ import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY, ICON_SIZE } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
+import { createFormGroupOverrides } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -17,10 +18,8 @@ const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO = 0
 const OUTLINE_NONE = 'none'
-const LABEL_MARGIN_BOTTOM = 6
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const ERROR_SPACE = 20
 const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
@@ -54,14 +53,14 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 0,
+      gap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
     },
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
+      rowGap: SPACING.SECTION_GAP,
       width: WIDTH_FULL,
       alignItems: 'start',
       minWidth: 0,
@@ -69,73 +68,41 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         gridTemplateColumns: '1fr',
       },
     },
-    fieldItem: {
-      'width': WIDTH_FULL,
-      'minWidth': 0,
-      'boxSizing': BOX_SIZING_BORDER,
-      '& .form-group': {
-        display: DISPLAY_FLEX,
-        flexDirection: FLEX_DIRECTION_COLUMN,
-        margin: MARGIN_ZERO,
-        padding: MARGIN_ZERO,
-      },
-      '& .form-group.row': {
-        marginLeft: MARGIN_ZERO,
-        marginRight: MARGIN_ZERO,
-      },
-      '& .form-group > label': {
-        flex: '0 0 auto',
-        width: WIDTH_FULL,
-        maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO,
-        paddingRight: MARGIN_ZERO,
-        marginBottom: LABEL_MARGIN_BOTTOM,
-      },
-      '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: WIDTH_FULL,
-        maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO,
-        paddingRight: MARGIN_ZERO,
-        position: 'relative',
-        paddingBottom: ERROR_SPACE,
-      },
-      '& [data-field-error]': {
-        position: 'absolute',
-        fontSize: `${fontSizes.sm} !important`,
-      },
-      '& .input-group': {
-        margin: MARGIN_ZERO,
-      },
-    },
+    fieldItem: (() => {
+      const overrides = createFormGroupOverrides()
+      return {
+        'width': WIDTH_FULL,
+        'minWidth': 0,
+        'boxSizing': BOX_SIZING_BORDER,
+        ...overrides,
+        '& .form-group > label': {
+          paddingTop: '0 !important',
+          paddingBottom: '0 !important',
+          marginBottom: '2px !important',
+        },
+        '& .form-group [class*="col"]': {
+          ...overrides['& .form-group [class*="col"]'],
+          position: 'relative' as const,
+          paddingBottom: 12,
+        },
+        '& [data-field-error]': {
+          position: 'absolute' as const,
+          fontSize: `${fontSizes.sm} !important`,
+        },
+        '& .input-group': {
+          margin: MARGIN_ZERO,
+        },
+      }
+    })(),
     fieldItemFullWidth: {
       'width': WIDTH_FULL,
       'gridColumn': '1 / -1',
       'boxSizing': BOX_SIZING_BORDER,
-      '& .form-group': {
-        display: DISPLAY_FLEX,
-        flexDirection: FLEX_DIRECTION_COLUMN,
-        margin: MARGIN_ZERO,
-        padding: MARGIN_ZERO,
-      },
-      '& .form-group.row': {
-        marginLeft: MARGIN_ZERO,
-        marginRight: MARGIN_ZERO,
-      },
+      ...createFormGroupOverrides(),
       '& .form-group > label': {
-        flex: '0 0 auto',
-        width: WIDTH_FULL,
-        maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO,
-        paddingRight: MARGIN_ZERO,
-        marginBottom: LABEL_MARGIN_BOTTOM,
-      },
-      '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: WIDTH_FULL,
-        maxWidth: WIDTH_FULL,
-        paddingLeft: MARGIN_ZERO,
-        paddingRight: MARGIN_ZERO,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
       },
       '& .input-group': {
         margin: MARGIN_ZERO,
@@ -188,7 +155,7 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.FULL,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
@@ -207,7 +174,6 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         },
     },
     propsBox: dl.listBox,
-    propsBoxWithMargin: { marginTop: PROPS_HEADER_MB },
     propsBoxEmpty: dl.listBoxEmpty,
     propsHeader: dl.listHeader,
     propsHeaderEmpty: dl.listHeaderEmpty,

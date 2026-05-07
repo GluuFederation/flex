@@ -1,6 +1,6 @@
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
-import customColors from '@/customColors'
+import { OPACITY } from '@/constants'
 import type { GluuInumInputProps } from './types/GluuInumInput.types'
 
 const GluuInumInput = ({
@@ -23,12 +23,12 @@ const GluuInumInput = ({
       />
       <Col sm={rsize}>
         <Input
-          style={{ backgroundColor: customColors.whiteSmoke }}
           id={name}
           data-testid={name}
           name={name}
           disabled
           value={value}
+          style={{ opacity: OPACITY.DISABLED }}
         />
       </Col>
     </FormGroup>

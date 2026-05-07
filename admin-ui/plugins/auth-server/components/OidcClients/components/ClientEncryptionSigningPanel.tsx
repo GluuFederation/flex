@@ -116,7 +116,7 @@ const ClientEncryptionSigningPanel = ({
       </div>
 
       {/* Id_token */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.id_token')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>
@@ -185,7 +185,7 @@ const ClientEncryptionSigningPanel = ({
       </Accordion>
 
       {/* Access token */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.access_token')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>
@@ -214,7 +214,7 @@ const ClientEncryptionSigningPanel = ({
       </Accordion>
 
       {/* User Info */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.userinfo')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>
@@ -283,7 +283,7 @@ const ClientEncryptionSigningPanel = ({
       </Accordion>
 
       {/* JARM */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.JARM')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>
@@ -352,7 +352,7 @@ const ClientEncryptionSigningPanel = ({
       </Accordion>
 
       {/* Request Object */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.request_object')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>
@@ -421,7 +421,7 @@ const ClientEncryptionSigningPanel = ({
       </Accordion>
 
       {/* Introspection Object */}
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>{t('titles.introspection_object')}</AccordionHeader>
         <AccordionBody>
           <div className={gridClass}>

@@ -120,7 +120,7 @@ const GluuThemeFormFooter = ({
 
   return (
     <>
-      <Box className={`${classes.footerWrapper} ${className}`} sx={{ my: 2 }}>
+      <Box className={`${classes.footerWrapper} ${className}`}>
         {stepNavigation && (
           <Box className={classes.centerGroup}>
             <GluuButton

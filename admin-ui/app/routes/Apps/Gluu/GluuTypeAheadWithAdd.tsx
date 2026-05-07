@@ -3,10 +3,10 @@ import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import applicationStyle from './styles/applicationStyle'
+import { useStyles } from './styles/GluuTypeAheadWithAdd.style'
 import { useTranslation } from 'react-i18next'
 import { AddCircleOutline } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
-import customColors from '@/customColors'
 import type { GluuTypeAheadWithAddProps } from './types'
 
 const GluuTypeAheadWithAdd = ({
@@ -25,6 +25,7 @@ const GluuTypeAheadWithAdd = ({
   handler = null,
   multiple = true,
 }: GluuTypeAheadWithAddProps) => {
+  const { classes } = useStyles()
   const [items, setItems] = useState<string[]>(value ?? [])
   const [opts, setOpts] = useState<string[]>(options ?? [])
   const { t } = useTranslation()
@@ -64,15 +65,8 @@ const GluuTypeAheadWithAdd = ({
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
-      <Col
-        sm={rsize}
-        style={{
-          borderStyle: 'solid',
-          borderRadius: '5px',
-          borderColor: customColors.logo,
-        }}
-      >
-        &nbsp;
+      <Col sm={rsize} className={classes.inputContainer}>
+        <div className={classes.spacer} />
         <Row>
           <Col sm={10}>
             <Input
@@ -92,12 +86,12 @@ const GluuTypeAheadWithAdd = ({
               onClick={addItem}
               data-testid={t('actions.add')}
             >
-              <AddCircleOutline fontSize="small" className="me-2" />
+              <AddCircleOutline fontSize="small" className={classes.actionIcon} />
               {t('actions.add')}
             </Button>
           </Col>
         </Row>
-        &nbsp;
+        <div className={classes.spacer} />
         <Typeahead
           emptyLabel=""
           labelKey={name}
@@ -109,7 +103,7 @@ const GluuTypeAheadWithAdd = ({
           selected={items}
           options={opts}
         />
-        &nbsp;
+        <div className={classes.spacer} />
       </Col>
     </FormGroup>
   )

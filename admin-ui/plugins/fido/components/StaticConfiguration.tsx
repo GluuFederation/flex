@@ -317,7 +317,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             />
           </div>
 
-          <div className={classes.fieldItemFullWidth}>
+          <div className={classes.fieldItem}>
             <GluuSelectRow
               label={fidoConstants.LABELS.ATTESTATION_MODE}
               name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
@@ -370,7 +370,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         </div>
 
         <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
+          className={`${classes.propsBox} ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
         >
           <div
             className={`${classes.propsHeader} ${!requestedParties.length ? classes.propsHeaderEmpty : ''}`.trim()}
@@ -432,7 +432,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         </div>
 
         <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
+          className={`${classes.propsBox} ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
         >
           <div
             className={`${classes.propsHeader} ${!enabledFidoAlgorithms.length ? classes.propsHeaderEmpty : ''}`.trim()}
@@ -486,7 +486,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         </div>
 
         <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
+          className={`${classes.propsBox} ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
         >
           <div
             className={`${classes.propsHeader} ${!metadataServers.length ? classes.propsHeaderEmpty : ''}`.trim()}

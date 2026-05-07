@@ -28,6 +28,8 @@ const config: Config = {
     '^Redux(.*)$': '<rootDir>/app/redux$1',
     '^Routes(.*)$': '<rootDir>/app/routes$1',
     '^Styles(.*)$': '<rootDir>/app/styles$1',
+    '^Orval$': '<rootDir>/orval/index.ts',
+    '^Orval/(.*)$': '<rootDir>/orval/$1',
     '^Utils(.*)$': '<rootDir>/app/utils$1',
     '^JansConfigApi$': '<rootDir>/jans_config_api_orval/src/JansConfigApi.ts',
     'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',

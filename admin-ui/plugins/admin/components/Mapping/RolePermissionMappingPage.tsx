@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Box } from '@mui/material'
-import { InfoOutlined } from '@/components/icons'
+import InfoOutlined from '@mui/icons-material/InfoOutlined'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@/context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'
@@ -16,7 +16,7 @@ import { ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { useMappingData } from './hooks'
+import { useMappingData } from './hooks/useMappingApi'
 import { useStyles } from './styles/MappingPage.style'
 
 const MAPPING_RESOURCE_ID = ADMIN_UI_RESOURCES.Security

@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Col, FormGroup, Input } from 'Components'
-import type { InputProps } from 'reactstrap'
+import type { InputProps } from '@/components/BootstrapWrappers/types'
 import { Visibility, VisibilityOff } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
@@ -185,13 +186,25 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
               {customType === 'text' ? <Visibility /> : <VisibilityOff />}
             </button>
           </div>
-        ) : (
-          <Input
-            {...sharedInputProps}
-            type={(customType ?? type) as InputProps['type']}
+        ) : type === 'textarea' ? (
+          <textarea
+            id={name}
+            data-testid={name}
+            name={name}
+            value={displayValue}
+            disabled={disabled}
+            placeholder={placeholder}
+            className={classNames('form-control', inputClassName_)}
             rows={rows}
             cols={cols}
+            onChange={(e) => {
+              formik?.setFieldValue(name, e.target.value)
+              handleChange?.({ target: { name, value: e.target.value } })
+            }}
+            onBlur={() => formik?.handleBlur?.(name)}
           />
+        ) : (
+          <Input {...sharedInputProps} type={(customType ?? type) as InputProps['type']} />
         )}
         {type !== 'number' ? shortcode : null}
         <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>

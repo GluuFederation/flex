@@ -4,6 +4,7 @@ import GluuLabel from './GluuLabel'
 import GluuToggle from './GluuToggle'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
+import { useStyles } from '@/routes/Apps/Gluu/styles/GluuInlineInput.style'
 import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
@@ -29,6 +30,7 @@ const GluuInlineInput = ({
   showSaveButtons = true,
   placeholder,
 }: GluuInlineInputProps) => {
+  const { classes } = useStyles()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
   const [show, setShow] = useState(false)
@@ -200,7 +202,7 @@ const GluuInlineInput = ({
               size="sm"
               onClick={onAccept}
             >
-              <Check fontSize="small" className="me-2" />
+              <Check fontSize="small" className={classes.actionButton} />
             </Button>
             <Button
               style={{
@@ -211,7 +213,7 @@ const GluuInlineInput = ({
               size="sm"
               onClick={onCancel}
             >
-              <Close fontSize="small" className="me-2" />
+              <Close fontSize="small" className={classes.actionButton} />
             </Button>
           </>
         )}

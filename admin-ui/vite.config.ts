@@ -142,7 +142,7 @@ const CHUNK_GROUPS: Array<{ name: string; packages: string[] }> = [
   },
   {
     name: 'vendor-bootstrap',
-    packages: ['bootstrap', 'reactstrap', 'react-toggle', 'react-bootstrap-typeahead'],
+    packages: ['bootstrap', 'react-toggle', 'react-bootstrap-typeahead'],
   },
   {
     name: 'vendor-data',
@@ -225,6 +225,7 @@ export default defineConfig(({ mode }) => {
           find: 'JansConfigApi',
           replacement: path.resolve(process.cwd(), 'jans_config_api_orval/src/JansConfigApi.ts'),
         },
+        { find: 'Orval', replacement: path.resolve(process.cwd(), 'orval') },
         { find: 'Plugins', replacement: path.resolve(process.cwd(), 'plugins') },
         { find: 'Redux', replacement: path.resolve(process.cwd(), 'app/redux') },
         { find: 'Routes', replacement: path.resolve(process.cwd(), 'app/routes') },

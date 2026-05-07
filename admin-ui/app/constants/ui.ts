@@ -80,6 +80,7 @@ export const SPACING = {
   CARD_PADDING: 24,
   CARD_BUTTON_GAP: 16,
   CARD_CONTENT_GAP: 8,
+  FORM_FOOTER_GAP: 30,
 } as const
 
 export const BORDER_RADIUS = {

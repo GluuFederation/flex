@@ -12,6 +12,7 @@ import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { useStyles } from './styles/SamlPage.style'
 import { samlConfigurationValidationSchema, transformToFormValues } from '../helper'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
@@ -25,6 +26,7 @@ const SamlConfigurationForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const [modal, setModal] = useState<boolean>(false)
+  const { classes } = useStyles()
 
   const { data: configuration, isLoading: queryLoading } = useSamlConfiguration()
   const updateConfigMutation = useUpdateSamlConfiguration()
@@ -119,7 +121,7 @@ const SamlConfigurationForm: React.FC = () => {
 
   return (
     <GluuLoader blocking={loading}>
-      <Form onSubmit={handleFormSubmit} className="mt-4">
+      <Form onSubmit={handleFormSubmit} className={classes.form}>
         <FormGroup row>
           <Col sm={10}>
             <GluuToggleRow

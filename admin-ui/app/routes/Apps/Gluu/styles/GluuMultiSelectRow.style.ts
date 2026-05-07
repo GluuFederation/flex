@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { MAPPING_SPACING } from '@/constants'
+import { MAPPING_SPACING, OPACITY } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontSizes, fontWeights } from '@/styles/fonts'
@@ -8,11 +8,12 @@ interface GluuMultiSelectRowStyleParams {
   themeColors: ThemeConfig
   isDark: boolean
   inputBackgroundColor?: string
+  compactSelectionSpacing?: boolean
 }
 
 export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
   _theme,
-  { themeColors, isDark, inputBackgroundColor },
+  { themeColors, isDark, inputBackgroundColor, compactSelectionSpacing },
 ) => {
   const fontColor = themeColors.fontColor
   const formInputBg =
@@ -47,6 +48,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     },
     selectTriggerDisabled: {
       cursor: 'not-allowed',
+      opacity: OPACITY.DISABLED,
     },
     placeholder: {
       color: textMuted,
@@ -54,9 +56,9 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
       userSelect: 'none',
     },
     tags: {
-      marginTop: 12,
+      marginTop: compactSelectionSpacing ? 6 : 12,
       display: 'flex',
-      gap: 10,
+      gap: compactSelectionSpacing ? 8 : 10,
       flexWrap: 'wrap',
     },
     tag: {
@@ -174,7 +176,7 @@ export const useStyles = makeStyles<GluuMultiSelectRowStyleParams>()((
     helperText: {
       display: 'block',
       color: textMuted,
-      marginTop: 4,
+      marginTop: compactSelectionSpacing ? 2 : 4,
       fontSize: fontSizes.sm,
     },
   }

@@ -48,7 +48,6 @@ import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from '@/utils/errorHandler'
 import { devLogger } from '@/utils/devLogger'
-import { SPACING } from '@/constants'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
@@ -312,8 +311,12 @@ const SettingsPage: React.FC = () => {
     }
 
     return (
-      <Alert color="danger" className="mb-3" transition={{ timeout: 150, unmountOnExit: true }}>
-        <div className="d-flex justify-content-between align-items-center">
+      <Alert
+        color="danger"
+        className={classes.errorAlert}
+        transition={{ timeout: 150, unmountOnExit: true }}
+      >
+        <div className={classes.errorAlertContent}>
           <div>
             {errorMessages.map((msg, idx) => (
               <div key={`error-${idx}`}>{msg}</div>
@@ -461,6 +464,7 @@ const SettingsPage: React.FC = () => {
                 </div>
 
                 <GluuDynamicList
+                  className={classes.customParamsSpacing}
                   title={t('fields.custom_params_auth')}
                   items={additionalParameters}
                   mode="pair"
@@ -475,7 +479,6 @@ const SettingsPage: React.FC = () => {
                   showError={showAdditionalParametersError}
                   errorMessage={additionalParametersErrorText}
                   getItemKey={(item, index) => item.id ?? index}
-                  style={{ marginTop: SPACING.CARD_CONTENT_GAP + 20 }}
                 />
 
                 <GluuThemeFormFooter

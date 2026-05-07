@@ -37,7 +37,7 @@ import {
   getStat,
 } from 'JansConfigApi'
 import type { GenericResponse, GetStatParams } from 'JansConfigApi'
-import { setApiToken } from '../../../orval-mutator'
+import { setApiToken } from 'Orval/orvalMutator'
 
 let defaultToken: ApiTokenResponse | undefined
 

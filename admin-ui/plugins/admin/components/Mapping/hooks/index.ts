@@ -1,3 +1,3 @@
 export { useMappingData } from './useMappingApi'
 
-export type { MutationCallbacks } from '../types'
+export type { MutationCallbacks } from '../types/MappingTypes'

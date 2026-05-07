@@ -6,6 +6,7 @@ import {
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
   getHoverOpacity,
+  OPACITY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
@@ -25,7 +26,6 @@ const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO_IMPORTANT = '0 !important'
 const OUTLINE_NONE = 'none'
 const GAP_SM = 12
-const CONTENT_PADDING_H = 52
 const ALERT_ICON_SIZE = 20
 const EDITOR_FALLBACK_MIN_HEIGHT = 120
 const ERROR_SPACE = 20
@@ -62,7 +62,6 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: WIDTH_FULL,
-      minHeight: 400,
       position: 'relative',
       overflow: 'visible',
       display: DISPLAY_FLEX,
@@ -70,18 +69,14 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       boxSizing: BOX_SIZING_BORDER,
     },
     content: {
-      paddingTop: `${SPACING.PAGE}px`,
-      paddingLeft: `${CONTENT_PADDING_H}px`,
-      paddingRight: `${CONTENT_PADDING_H}px`,
-      paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+      padding: SPACING.CONTENT_PADDING,
       width: WIDTH_FULL,
       boxSizing: BOX_SIZING_BORDER,
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
       gap: 32,
       [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${SPACING.PAGE}px`,
-        paddingRight: `${SPACING.PAGE}px`,
+        padding: SPACING.PAGE,
       },
     },
     alertBox: {
@@ -180,6 +175,8 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       '& .form-group.row': {
         marginLeft: MARGIN_ZERO_IMPORTANT,
         marginRight: MARGIN_ZERO_IMPORTANT,
+        flexDirection: 'column' as const,
+        flexWrap: 'nowrap' as const,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
@@ -187,7 +184,9 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         maxWidth: WIDTH_FULL,
         paddingLeft: MARGIN_ZERO_IMPORTANT,
         paddingRight: MARGIN_ZERO_IMPORTANT,
-        marginBottom: '6px !important',
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
@@ -197,6 +196,8 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         paddingRight: MARGIN_ZERO_IMPORTANT,
         position: 'relative',
         paddingBottom: ERROR_SPACE,
+        minWidth: 0,
+        boxSizing: BOX_SIZING_BORDER,
       },
       '& [data-field-error]': {
         position: 'absolute',
@@ -272,7 +273,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
