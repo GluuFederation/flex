@@ -1,8 +1,9 @@
 import { existsSync, readFileSync } from 'fs'
 import path from 'path'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react'
 import wasm from 'vite-plugin-wasm'
+import { visualizer } from 'rollup-plugin-visualizer'
 import {
   REGEX_BACKSLASH,
   REGEX_FORWARD_SLASH,
@@ -191,6 +192,16 @@ export default defineConfig(({ mode }) => {
   const base = normalizeBasePath(env.BASE_PATH)
   const muiIconOptimizeDeps = getMuiIconOptimizeDeps()
   const nodeEnv = mode === 'production' ? 'production' : 'development'
+  const analyzePlugin: PluginOption | false =
+    process.env.ANALYZE === 'true'
+      ? (visualizer({
+          filename: 'dist/stats.html',
+          template: 'treemap',
+          gzipSize: true,
+          brotliSize: true,
+          open: false,
+        }) as PluginOption)
+      : false
   const processEnv = {
     NODE_ENV: nodeEnv,
     BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
@@ -212,6 +223,7 @@ export default defineConfig(({ mode }) => {
       react({
         exclude: [/node_modules/, /jans_config_api_orval/],
       }),
+      analyzePlugin,
     ],
     resolve: {
       dedupe: ['react', 'react-dom'],
