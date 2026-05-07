@@ -1,3 +1,5 @@
+type TitleChangeEvent = CustomEvent<string>
+
 declare global {
   interface Window {
     __gluuPageTitle?: string
@@ -6,6 +8,8 @@ declare global {
 
 const TITLE_CHANGE_EVENT = 'gluu-page-title-change'
 const DEFAULT_TITLE = 'Dashboard'
+let queuedTitle: string | null = null
+let isFlushQueued = false
 
 const normalizeTitle = (title?: string | null): string => {
   const trimmed = (title ?? '').trim()
@@ -21,6 +25,37 @@ const applyTitleToDom = (title: string): void => {
   }
 }
 
+const flushTitleUpdate = (): void => {
+  isFlushQueued = false
+
+  if (typeof window === 'undefined') return
+
+  const normalizedTitle = queuedTitle
+  queuedTitle = null
+
+  if (!normalizedTitle) {
+    return
+  }
+
+  window.__gluuPageTitle = normalizedTitle
+  document.title = normalizedTitle
+  applyTitleToDom(normalizedTitle)
+  window.dispatchEvent(new CustomEvent<string>(TITLE_CHANGE_EVENT, { detail: normalizedTitle }))
+}
+
+const queueTitleUpdate = (): void => {
+  if (typeof window === 'undefined' || isFlushQueued) return
+
+  isFlushQueued = true
+
+  if (typeof queueMicrotask === 'function') {
+    queueMicrotask(flushTitleUpdate)
+    return
+  }
+
+  Promise.resolve().then(flushTitleUpdate)
+}
+
 const setTitle = (title: string = DEFAULT_TITLE) => {
   if (typeof window === 'undefined') return
 
@@ -29,11 +64,8 @@ const setTitle = (title: string = DEFAULT_TITLE) => {
     return
   }
 
-  window.__gluuPageTitle = normalizedTitle
-  document.title = normalizedTitle
-
-  applyTitleToDom(normalizedTitle)
-  window.dispatchEvent(new CustomEvent(TITLE_CHANGE_EVENT, { detail: normalizedTitle }))
+  queuedTitle = normalizedTitle
+  queueTitleUpdate()
 }
 
 export const getStoredPageTitle = (): string => {
@@ -45,7 +77,7 @@ export const subscribeToPageTitle = (callback: (title: string) => void): (() => 
   if (typeof window === 'undefined') return () => {}
 
   const handler = (event: Event) => {
-    const customEvent = event as CustomEvent<string>
+    const customEvent = event as TitleChangeEvent
     const nextTitle = normalizeTitle(customEvent.detail) || getStoredPageTitle()
     applyTitleToDom(nextTitle)
     callback(nextTitle)
