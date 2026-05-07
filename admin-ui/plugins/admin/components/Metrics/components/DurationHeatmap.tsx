@@ -221,16 +221,21 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
     const rowsCount = Math.max(rows.length, 1)
     const safeColsLen = Math.max(layoutColsLen, 1)
+    const compactDenseCellH = 26
+    const compactRowsThreshold = 4
+    const isCompactDense = compact && !fullscreen && rowsCount >= compactRowsThreshold
     const cellH = fullscreen
       ? Math.max(baseCellH, Math.min(160, Math.floor(700 / rowsCount)))
       : compact
-        ? Math.min(
-            maxCellHeight ?? 90,
-            Math.max(
-              baseCellH,
-              Math.floor(((effectiveCompactMinHeight ?? 460) - 80 - reservedH) / rowsCount),
-            ),
-          )
+        ? isCompactDense
+          ? compactDenseCellH
+          : Math.min(
+              maxCellHeight ?? 90,
+              Math.max(
+                baseCellH,
+                Math.floor(((effectiveCompactMinHeight ?? 460) - 80 - reservedH) / rowsCount),
+              ),
+            )
         : minHeight
           ? Math.min(
               maxCellHeight ?? Infinity,
@@ -299,6 +304,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const svgWidth = gridRightX + colorBarW + 8 + colorBarLabelW
     const svgHeight = colLabelH + Math.max(gridHeight, colorBarHeight) + bottomColLabelH + xAxisH
 
+    const compactScrollMaxHeight = effectiveCompactMinHeight ?? 460
+    const useVerticalScroll = isCompactDense && svgHeight > compactScrollMaxHeight
+
     return (
       <div
         style={{
@@ -331,17 +339,18 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
             flex: 1,
             minWidth: 0,
             overflowX: 'auto',
+            ...(useVerticalScroll ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' } : {}),
             ...(fullscreen ? { height: '100%', display: 'flex', alignItems: 'center' } : {}),
           }}
         >
           <svg
             viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio={useVerticalScroll ? 'xMidYMin meet' : 'xMidYMid meet'}
             style={{
               display: 'block',
               width: '100%',
               ...(compact && !fullscreen ? { maxWidth: svgWidth } : {}),
-              height: 'auto',
+              ...(useVerticalScroll ? { height: svgHeight } : { height: 'auto' }),
             }}
           >
             {!colLabelsBottom &&
