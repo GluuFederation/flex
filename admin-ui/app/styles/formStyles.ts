@@ -60,9 +60,6 @@ export const createFormGroupOverrides = (opts?: { columnPaddingBottom?: number }
   },
 })
 
-/**
- * Styles labels (label, h5, span, MUI icon) inside a form section.
- */
 export const createFormLabelStyles = (fontColor: string) => ({
   '& label, & label h5, & label h5 span, & label span, & label .MuiSvgIcon-root, & h5': {
     color: `${fontColor} !important`,

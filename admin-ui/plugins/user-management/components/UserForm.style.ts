@@ -84,13 +84,24 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'boxSizing': 'border-box',
       'display': 'flex',
       'flexDirection': 'column',
-      'gap': SPACING.CARD_CONTENT_GAP,
+      'gap': SPACING.SECTION_GAP,
       ...formGroupNoErrors,
       '& .form-group > label': {
         ...formGroupNoErrors['& .form-group > label'],
         paddingTop: '0 !important',
         paddingBottom: '0 !important',
         marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+      },
+      '& .form-group > label h5, & .form-group > label h5 span': {
+        fontSize: `${fontSizes.base} !important`,
+        fontWeight: `${fontWeights.semiBold} !important`,
+        lineHeight: `${lineHeights.normal} !important`,
       },
       '& > .form-group [data-field-error]': {
         display: 'none !important',
@@ -101,6 +112,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
       'columnGap': SPACING.SECTION_GAP,
       'rowGap': SPACING.CARD_CONTENT_GAP,
+      'alignItems': 'start',
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
@@ -113,6 +125,13 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         paddingTop: '0 !important',
         paddingBottom: '0 !important',
         marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+        paddingBottom: '0 !important',
       },
       '& > div:not(.form-group)': {
         minWidth: 0,
@@ -154,6 +173,13 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         paddingTop: '0 !important',
         paddingBottom: '0 !important',
         marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+        paddingBottom: '0 !important',
       },
     },
     changePasswordButton: {
