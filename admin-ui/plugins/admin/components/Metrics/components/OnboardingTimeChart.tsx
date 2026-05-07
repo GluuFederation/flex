@@ -40,7 +40,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
   const gridColor = themeColors.chart.gridColor
-  const axisColor = themeColors.chart.axisColor
+  const axisColor = themeColors.fontColor
 
   const { data: performanceData } = usePerformanceAnalytics(dateRange)
 
@@ -73,8 +73,12 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
         </GluuText>
         <GluuText
           variant="div"
-          secondary
-          style={{ textAlign: 'center', fontSize: 13, marginBottom: 16 }}
+          style={{
+            textAlign: 'center',
+            fontSize: 13,
+            marginBottom: 16,
+            color: themeColors.fontColor,
+          }}
         >
           {t('titles.auth_vs_registration_performance')}
         </GluuText>

@@ -26,7 +26,10 @@ import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
 
 const ARROW_S = 6
 const BAR_SIZE = 68
-const CHART_MARGIN = { top: 40, right: 220, bottom: 40, left: 220 }
+const WIDE_VIEWPORT_BREAKPOINT = 1500
+const NARROW_VIEWPORT_BREAKPOINT = 1000
+const CHART_MARGIN_DEFAULT = { top: 40, right: 220, bottom: 40, left: 220 }
+const CHART_MARGIN_WIDE = { top: 40, right: 340, bottom: 40, left: 100 }
 const Y_TICKS = [12, 10, 8, 6, 4, 2]
 const Y_MAX = 14
 
@@ -114,21 +117,41 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
     return () => ro.disconnect()
   }, [])
 
+  const computeUseShiftedMargin = () => {
+    if (typeof window === 'undefined') return false
+    const w = window.innerWidth
+    return w >= WIDE_VIEWPORT_BREAKPOINT || w < NARROW_VIEWPORT_BREAKPOINT
+  }
+
+  const [useShiftedMargin, setUseShiftedMargin] = useState(computeUseShiftedMargin)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const onResize = () => setUseShiftedMargin(computeUseShiftedMargin())
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  const chartMargin = useShiftedMargin ? CHART_MARGIN_WIDE : CHART_MARGIN_DEFAULT
+
+  const newUsersLabel = t('fields.new_users_label')
+
   // Compute bar geometry from known chart parameters
   const arrowOverlay = useMemo(() => {
     const { width, height } = containerSize
     if (width === 0 || height === 0) return null
 
-    const plotW = width - CHART_MARGIN.left - CHART_MARGIN.right
-    const plotH = height - CHART_MARGIN.top - CHART_MARGIN.bottom
+    const plotW = width - chartMargin.left - chartMargin.right
+    const plotH = height - chartMargin.top - chartMargin.bottom
 
     // Bar is centered in the plot area
-    const barCenterX = CHART_MARGIN.left + plotW / 2
+    const barCenterX = chartMargin.left + plotW / 2
     const barLeft = barCenterX - BAR_SIZE / 2
     const barRight = barCenterX + BAR_SIZE / 2
 
     // Y positions (recharts maps domain [0, Y_MAX] linearly onto plotH, top = Y_MAX)
-    const yScale = (val: number) => CHART_MARGIN.top + plotH * (1 - val / Y_MAX)
+    const yScale = (val: number) => chartMargin.top + plotH * (1 - val / Y_MAX)
 
     const totalBottom = yScale(0)
     const totalTop = yScale(existingShare + newShare)
@@ -170,7 +193,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
         />
         <Arrowhead x={leftArrowX} y={totalBottom} dir="down" color={newColor} />
         <text
-          x={barLeft - 10}
+          x={Math.max(barLeft - 10, 118)}
           y={labelY}
           textAnchor="end"
           fontSize={14}
@@ -199,9 +222,32 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
             <Arrowhead x={rightArrowX} y={totalBottom} dir="down" color={newColor} />
           </>
         )}
+        <text
+          x={rightArrowX + 10}
+          y={hasNewUsers ? newSegmentTop - 8 : labelY}
+          textAnchor="start"
+          fontSize={14}
+          fontWeight={fontWeights.semiBold}
+          fill={newColor}
+          fontFamily={fontFamily}
+        >
+          {`${newUsersLabel}: `}
+          <tspan fontSize={18} fontWeight={fontWeights.bold}>
+            {newRegisteredUsers}
+          </tspan>
+        </text>
       </svg>
     )
-  }, [containerSize, existingShare, newShare, totalRegisteredUsers, textColor])
+  }, [
+    containerSize,
+    chartMargin,
+    existingShare,
+    newShare,
+    totalRegisteredUsers,
+    newRegisteredUsers,
+    newUsersLabel,
+    textColor,
+  ])
 
   return (
     <Card className={`${classes.chartCard} h-100`}>
@@ -211,183 +257,162 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
         </GluuText>
 
         <div className={classes.adoptionChartWrapper}>
-          <div className={classes.adoptionYAxisColumn}>
-            <div className={classes.adoptionYAxisTicks}>
-              {Y_TICKS.map((n) => (
-                <span key={n} style={{ fontSize: 11, color: textColor, lineHeight: 1 }}>
-                  {n}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className={classes.adoptionDottedBox}
-            style={{ border: `1px dashed ${borderColor}` }}
-          >
-            <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData} barSize={BAR_SIZE} margin={CHART_MARGIN}>
-                  <YAxis width={0} domain={[0, Y_MAX]} hide />
-                  <XAxis dataKey="name" hide />
-                  <Tooltip
-                    cursor={false}
-                    content={({ payload: rawPayload, active }) => {
-                      const payload = rawPayload as ReadonlyArray<TooltipPayloadItem> | undefined
-                      const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
-                        (item) => {
-                          const realKey =
-                            item.dataKey === 'existingUsers'
-                              ? 'existingUsersCount'
-                              : item.dataKey === 'newRegisteredUsers'
-                                ? 'newRegisteredUsersCount'
-                                : null
-                          if (!realKey) return item
-                          const realValueRaw = (
-                            item.payload as Record<string, number | undefined> | undefined
-                          )?.[realKey]
-                          const realValue = typeof realValueRaw === 'number' ? realValueRaw : 0
-                          return {
-                            ...item,
-                            value: realValue,
-                            payload: {
-                              ...(item.payload ?? {}),
-                              [item.dataKey as string]: realValue,
-                            },
-                          }
-                        },
-                      )
-                      return (
-                        <TooltipDesign
-                          payload={remappedPayload}
-                          active={active}
-                          backgroundColor={cardBg}
-                          textColor={textColor}
-                          isDark={isDark}
-                        />
-                      )
-                    }}
-                  />
-                  <Bar
-                    dataKey="existingUsers"
-                    name={t('fields.total_registered_users')}
-                    fill={METRICS_CHART_COLORS.totalUsers}
-                    stackId="a"
-                    radius={[0, 0, 4, 4]}
-                  />
-                  <Bar
-                    dataKey="newRegisteredUsers"
-                    name={t('fields.new_registered_users')}
-                    fill={METRICS_CHART_COLORS.newUsers}
-                    stackId="a"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-              {arrowOverlay}
-            </div>
-
-            <div className={classes.adoptionStatsLabels}>
-              <div
-                style={{
-                  color: METRICS_CHART_COLORS.newUsers,
-                  fontSize: fontSizes.sm,
-                  fontWeight: fontWeights.semiBold,
-                  fontFamily,
-                }}
-              >
-                {t('fields.new_registered_users')} {newRegisteredUsers}
-              </div>
-              <div
-                style={{
-                  color: textColor,
-                  fontSize: fontSizes.sm,
-                  fontWeight: fontWeights.semiBold,
-                  fontFamily,
-                }}
-              >
-                {t('fields.total_registered_users')} {totalRegisteredUsers}
-              </div>
-              <div
-                style={{
-                  color: METRICS_CHART_COLORS.adoptionRate,
-                  fontSize: fontSizes.sm,
-                  fontWeight: fontWeights.semiBold,
-                  fontFamily,
-                }}
-              >
-                {t('fields.adoption_passkey_rate')} {adoptionPasskeyRate}%
+          <div className={classes.adoptionChartRow}>
+            <div className={classes.adoptionYAxisColumn}>
+              <div className={classes.adoptionYAxisTicks}>
+                {Y_TICKS.map((n) => (
+                  <span key={n} style={{ fontSize: 11, color: textColor, lineHeight: 1 }}>
+                    {n}
+                  </span>
+                ))}
               </div>
             </div>
 
-            <div className={classes.adoptionNewUsersOverlay}>
-              <span
-                style={{
-                  color: METRICS_CHART_COLORS.newUsers,
-                  fontSize: fontSizes.base,
-                  fontWeight: fontWeights.semiBold,
-                  fontFamily,
-                }}
+            <div
+              className={classes.adoptionDottedBox}
+              style={{ border: `1px dashed ${borderColor}` }}
+            >
+              <div
+                ref={containerRef}
+                style={{ position: 'relative', width: '100%', height: '100%' }}
               >
-                {t('fields.new_users_label')}:{' '}
-              </span>
-              <span
-                style={{
-                  color: METRICS_CHART_COLORS.newUsers,
-                  fontSize: fontSizes.xl,
-                  fontWeight: fontWeights.bold,
-                  fontFamily,
-                }}
-              >
-                {newRegisteredUsers}
-              </span>
-            </div>
-
-            <div className={classes.adoptionDonutOverlay}>
-              <div className={classes.adoptionDonutWrapper}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={donutData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius="65%"
-                      outerRadius="90%"
-                      startAngle={90}
-                      endAngle={-270}
-                      dataKey="value"
-                      strokeWidth={0}
-                      isAnimationActive={false}
-                    >
-                      {donutData.map((entry, index) => (
-                        <Cell key={`donut-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
+                  <BarChart data={barData} barSize={BAR_SIZE} margin={chartMargin}>
+                    <YAxis width={0} domain={[0, Y_MAX]} hide />
+                    <XAxis dataKey="name" hide />
+                    <Tooltip
+                      cursor={false}
+                      content={({ payload: rawPayload, active }) => {
+                        const payload = rawPayload as ReadonlyArray<TooltipPayloadItem> | undefined
+                        const remappedPayload: TooltipPayloadItem[] | undefined = payload?.map(
+                          (item) => {
+                            const realKey =
+                              item.dataKey === 'existingUsers'
+                                ? 'existingUsersCount'
+                                : item.dataKey === 'newRegisteredUsers'
+                                  ? 'newRegisteredUsersCount'
+                                  : null
+                            if (!realKey) return item
+                            const realValueRaw = (
+                              item.payload as Record<string, number | undefined> | undefined
+                            )?.[realKey]
+                            const realValue = typeof realValueRaw === 'number' ? realValueRaw : 0
+                            return {
+                              ...item,
+                              value: realValue,
+                              payload: {
+                                ...(item.payload ?? {}),
+                                [item.dataKey as string]: realValue,
+                              },
+                            }
+                          },
+                        )
+                        return (
+                          <TooltipDesign
+                            payload={remappedPayload}
+                            active={active}
+                            backgroundColor={cardBg}
+                            textColor={textColor}
+                            isDark={isDark}
+                          />
+                        )
+                      }}
+                    />
+                    <Bar
+                      dataKey="existingUsers"
+                      name={t('fields.total_registered_users')}
+                      fill={METRICS_CHART_COLORS.totalUsers}
+                      stackId="a"
+                      radius={[0, 0, 4, 4]}
+                    />
+                    <Bar
+                      dataKey="newRegisteredUsers"
+                      name={t('fields.new_registered_users')}
+                      fill={METRICS_CHART_COLORS.newUsers}
+                      stackId="a"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
                 </ResponsiveContainer>
-                <div className={classes.adoptionDonutCenter}>
-                  <div
-                    style={{
-                      color: METRICS_CHART_COLORS.adoptionRate,
-                      fontWeight: fontWeights.semiBold,
-                      fontSize: fontSizes.sm,
-                      fontFamily,
-                    }}
-                  >
-                    {t('fields.adoption_rate')}
-                  </div>
-                  <div
-                    style={{
-                      color: METRICS_CHART_COLORS.adoptionRate,
-                      fontWeight: fontWeights.bold,
-                      fontSize: fontSizes.lg,
-                      fontFamily,
-                    }}
-                  >
-                    {adoptionPasskeyRate}%
+                {arrowOverlay}
+              </div>
+
+              <div className={classes.adoptionDonutOverlay}>
+                <div className={classes.adoptionDonutWrapper}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={donutData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="65%"
+                        outerRadius="90%"
+                        startAngle={90}
+                        endAngle={-270}
+                        dataKey="value"
+                        strokeWidth={0}
+                        isAnimationActive={false}
+                      >
+                        {donutData.map((entry, index) => (
+                          <Cell key={`donut-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className={classes.adoptionDonutCenter}>
+                    <div
+                      style={{
+                        color: METRICS_CHART_COLORS.adoptionRate,
+                        fontWeight: fontWeights.semiBold,
+                        fontSize: fontSizes.sm,
+                        fontFamily,
+                      }}
+                    >
+                      {t('fields.adoption_rate')}
+                    </div>
+                    <div
+                      style={{
+                        color: METRICS_CHART_COLORS.adoptionRate,
+                        fontWeight: fontWeights.bold,
+                        fontSize: fontSizes.lg,
+                        fontFamily,
+                      }}
+                    >
+                      {adoptionPasskeyRate}%
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className={classes.adoptionLegend}>
+            <div className={classes.adoptionLegendItem}>
+              <span
+                className={classes.adoptionLegendDot}
+                style={{ backgroundColor: METRICS_CHART_COLORS.newUsers }}
+              />
+              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+                {t('fields.new_registered_users')} {newRegisteredUsers}
+              </span>
+            </div>
+            <div className={classes.adoptionLegendItem}>
+              <span
+                className={classes.adoptionLegendDot}
+                style={{ backgroundColor: METRICS_CHART_COLORS.totalUsers }}
+              />
+              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+                {t('fields.total_registered_users')} {totalRegisteredUsers}
+              </span>
+            </div>
+            <div className={classes.adoptionLegendItem}>
+              <span
+                className={classes.adoptionLegendDot}
+                style={{ backgroundColor: METRICS_CHART_COLORS.adoptionRate }}
+              />
+              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+                {t('fields.adoption_passkey_rate')} {adoptionPasskeyRate}%
+              </span>
             </div>
           </div>
         </div>

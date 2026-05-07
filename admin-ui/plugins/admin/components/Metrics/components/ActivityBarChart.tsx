@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
 import {
   BarChart,
@@ -72,17 +72,15 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
 }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
   const gridColor = themeColors.chart.gridColor
-  const axisColor = themeColors.chart.axisColor
+  const axisColor = themeColors.fontColor
 
-  const chartData = data.map((d) => ({ ...d }))
-
-  const hasMultiLineLabel = data.some((d) => d.label.includes('\n'))
+  const hasMultiLineLabel = useMemo(() => data.some((d) => d.label.includes('\n')), [data])
 
   return (
     <Card className={classes.chartCard}>
@@ -92,7 +90,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
         </GluuText>
         <ResponsiveContainer width="100%" height={height}>
           <BarChart
-            data={chartData}
+            data={data as ActivityDataPoint[]}
             barSize={barSize}
             barCategoryGap={barCategoryGap}
             barGap={2}

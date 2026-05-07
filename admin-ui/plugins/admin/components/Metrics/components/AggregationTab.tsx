@@ -13,7 +13,6 @@ import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useMetricsStyles } from '../MetricsPage.style'
 import { AGGREGATION_TYPES, type AggregationType } from '../constants'
 import { useAggregationMetrics } from '../hooks'
 import type {
@@ -238,7 +237,6 @@ const AggregationTab: React.FC = () => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  useMetricsStyles({ isDark, themeColors })
 
   const [startDate, setStartDate] = useState<Dayjs>(() =>
     createDate().startOf('month').startOf('day').millisecond(0),
@@ -402,6 +400,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   verticalRowLabels
                   colLabelsBottom
+                  showExpand={false}
                 />
               </Col>
             </Row>
@@ -424,6 +423,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   minHeight={500}
                   maxCellHeight={200}
+                  showExpand={false}
                 />
               </Col>
             </Row>
@@ -446,6 +446,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   minHeight={500}
                   maxCellHeight={160}
+                  showExpand={false}
                 />
               </Col>
             </Row>

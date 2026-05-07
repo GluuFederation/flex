@@ -1,5 +1,8 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Card, CardBody } from 'Components'
+import { Close, Fullscreen } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -23,6 +26,7 @@ interface DurationHeatmapProps {
   verticalRowLabels?: boolean
   colLabelsBottom?: boolean
   emptyStateCols?: number
+  showExpand?: boolean
 }
 
 const interpolateHeatmapColor = (value: number, min: number, max: number): string => {
@@ -144,73 +148,37 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   verticalRowLabels = false,
   colLabelsBottom = false,
   emptyStateCols,
+  showExpand = true,
 }) => {
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { t } = useTranslation()
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  const openFullscreen = useCallback(() => setIsFullscreen(true), [])
+  const closeFullscreen = useCallback(() => setIsFullscreen(false), [])
+
+  useEffect(() => {
+    if (!isFullscreen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setIsFullscreen(false)
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isFullscreen])
 
   const { rows, cols, colsSub, data, minVal, maxVal } = heatmapData
   const hasColsSub = Boolean(colsSub && colsSub.length === cols.length)
-
-  const colLabelH = compact ? 20 : hasColsSub || colLabelsBottom ? 0 : 28
-  const bottomColLabelH = hasColsSub ? 40 : colLabelsBottom ? 24 : 0
-  const xAxisH = xAxisLabel ? 28 : 0
-  const reservedH = colLabelH + bottomColLabelH + xAxisH
-  const effectiveCompactMinHeight = compact ? (minHeight ?? 460) : undefined
-  const baseCellH = compact ? 36 : 56
-  const fallbackCols = emptyStateCols ?? (compact ? 24 : minHeight ? 4 : 6)
-  const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
-  const rowsCount = Math.max(rows.length, 1)
-  const safeColsLen = Math.max(layoutColsLen, 1)
-  const cellH = compact
-    ? Math.min(
-        maxCellHeight ?? 90,
-        Math.max(
-          baseCellH,
-          Math.floor(((effectiveCompactMinHeight ?? 460) - 80 - reservedH) / rowsCount),
-        ),
-      )
-    : minHeight
-      ? Math.min(
-          maxCellHeight ?? Infinity,
-          Math.max(baseCellH, Math.floor((minHeight - 80 - reservedH) / rowsCount)),
-        )
-      : baseCellH
-  const cellW = compact
-    ? Math.min(56, Math.max(32, Math.round(900 / safeColsLen)))
-    : minHeight
-      ? Math.max(110, Math.round(500 / safeColsLen))
-      : Math.max(60, Math.floor(560 / safeColsLen))
-  const isDailyLayout = !compact && !minHeight
-  const colorBarW = isDailyLayout ? 36 : 44
-  const colorBarLabelW = colorBarLabel ? 16 : 0
-  const axisFontSize = compact ? 10 : isDailyLayout ? 6 : 12
-  const rowLabelFontSize = compact ? 11 : minHeight ? 14 : verticalRowLabels ? 6 : 11
-  const rowLabelW = compact ? 64 : minHeight ? 110 : verticalRowLabels ? rowLabelFontSize + 24 : 100
-  const cellFontSize = compact
-    ? Math.min(11, Math.max(8, Math.round(cellW * 0.28)))
-    : minHeight
-      ? Math.min(32, Math.max(14, Math.round(cellH * 0.26)))
-      : 11
-
-  const isEmpty = rows.length === 0 || cols.length === 0
-  const fallbackRows = compact ? 12 : 2
-  const layoutGridHeight = isEmpty
-    ? minHeight
-      ? minHeight - 80 - reservedH
-      : compact
-        ? (effectiveCompactMinHeight ?? 460) - 80 - reservedH
-        : fallbackRows * baseCellH
-    : rowsCount * cellH
-  const gridHeight = layoutGridHeight
-  const colorBarHeight = minColorBarHeight
-    ? Math.max(layoutGridHeight, minColorBarHeight)
-    : layoutGridHeight
-  const gridRightX = rowLabelW + layoutColsLen * cellW
-
-  const svgWidth = gridRightX + colorBarW + 8 + colorBarLabelW
-  const svgHeight = colLabelH + Math.max(gridHeight, colorBarHeight) + bottomColLabelH + xAxisH
 
   const cells = useMemo(() => {
     return rows.flatMap((_, ri) =>
@@ -224,261 +192,449 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const textColor = themeColors.fontColor
   const borderColor = themeColors.chart.cellBorderColor
 
-  return (
-    <Card className={`${classes.chartCard} h-100`} style={minHeight ? { minHeight } : undefined}>
-      <CardBody>
-        <GluuText variant="div" className={classes.chartTitle}>
-          {title}
-        </GluuText>
-        {caption && (
-          <GluuText
-            variant="div"
-            secondary
-            style={{ textAlign: 'center', fontSize: 11, marginBottom: 12 }}
+  const renderHeatmapSvg = (fullscreen: boolean) => {
+    const colLabelH = fullscreen
+      ? hasColsSub || colLabelsBottom
+        ? 0
+        : 36
+      : compact
+        ? 20
+        : hasColsSub || colLabelsBottom
+          ? 0
+          : 28
+    const bottomColLabelH = fullscreen
+      ? hasColsSub
+        ? 56
+        : colLabelsBottom
+          ? 32
+          : 0
+      : hasColsSub
+        ? 40
+        : colLabelsBottom
+          ? 24
+          : 0
+    const xAxisH = xAxisLabel ? (fullscreen ? 36 : 28) : 0
+    const reservedH = colLabelH + bottomColLabelH + xAxisH
+    const effectiveCompactMinHeight = compact ? (minHeight ?? 460) : undefined
+    const baseCellH = fullscreen ? 80 : compact ? 36 : 56
+    const fallbackCols = emptyStateCols ?? (compact ? 24 : minHeight ? 4 : 6)
+    const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
+    const rowsCount = Math.max(rows.length, 1)
+    const safeColsLen = Math.max(layoutColsLen, 1)
+    const cellH = fullscreen
+      ? Math.max(baseCellH, Math.min(160, Math.floor(700 / rowsCount)))
+      : compact
+        ? Math.min(
+            maxCellHeight ?? 90,
+            Math.max(
+              baseCellH,
+              Math.floor(((effectiveCompactMinHeight ?? 460) - 80 - reservedH) / rowsCount),
+            ),
+          )
+        : minHeight
+          ? Math.min(
+              maxCellHeight ?? Infinity,
+              Math.max(baseCellH, Math.floor((minHeight - 80 - reservedH) / rowsCount)),
+            )
+          : baseCellH
+    const cellW = fullscreen
+      ? Math.max(60, Math.min(160, Math.round(1200 / safeColsLen)))
+      : compact
+        ? Math.min(56, Math.max(32, Math.round(900 / safeColsLen)))
+        : minHeight
+          ? Math.max(110, Math.round(500 / safeColsLen))
+          : Math.max(60, Math.floor(560 / safeColsLen))
+    const isDailyLayout = !compact && !minHeight
+    const colorBarW = fullscreen ? 60 : isDailyLayout ? 36 : 44
+    const colorBarLabelW = colorBarLabel ? (fullscreen ? 24 : 16) : 0
+    const axisFontSize = fullscreen ? 14 : compact ? 10 : isDailyLayout ? 6 : 12
+    const rowLabelFontSize = fullscreen
+      ? verticalRowLabels
+        ? 12
+        : 14
+      : compact
+        ? 11
+        : minHeight
+          ? 14
+          : verticalRowLabels
+            ? 6
+            : 11
+    const rowLabelW = fullscreen
+      ? verticalRowLabels
+        ? rowLabelFontSize + 32
+        : 140
+      : compact
+        ? 64
+        : minHeight
+          ? 110
+          : verticalRowLabels
+            ? rowLabelFontSize + 24
+            : 100
+    const cellFontSize = fullscreen
+      ? Math.min(28, Math.max(12, Math.round(cellH * 0.28)))
+      : compact
+        ? Math.min(11, Math.max(8, Math.round(cellW * 0.28)))
+        : minHeight
+          ? Math.min(32, Math.max(14, Math.round(cellH * 0.26)))
+          : 11
+
+    const isEmpty = rows.length === 0 || cols.length === 0
+    const fallbackRows = compact ? 12 : 2
+    const layoutGridHeight = isEmpty
+      ? fullscreen
+        ? Math.max(rowsCount, fallbackRows) * baseCellH
+        : minHeight
+          ? minHeight - 80 - reservedH
+          : compact
+            ? (effectiveCompactMinHeight ?? 460) - 80 - reservedH
+            : fallbackRows * baseCellH
+      : rowsCount * cellH
+    const gridHeight = layoutGridHeight
+    const colorBarHeight =
+      !fullscreen && minColorBarHeight
+        ? Math.max(layoutGridHeight, minColorBarHeight)
+        : layoutGridHeight
+    const gridRightX = rowLabelW + layoutColsLen * cellW
+
+    const svgWidth = gridRightX + colorBarW + 8 + colorBarLabelW
+    const svgHeight = colLabelH + Math.max(gridHeight, colorBarHeight) + bottomColLabelH + xAxisH
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: verticalRowLabels ? 12 : 4,
+          ...(fullscreen ? { flex: 1, minHeight: 0, height: '100%' } : {}),
+        }}
+      >
+        {yAxisLabel && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              writingMode: 'vertical-lr',
+              transform: 'rotate(180deg)',
+              fontSize: fullscreen ? 14 : verticalRowLabels ? 11 : rowLabelFontSize,
+              color: textColor,
+              minWidth: 16,
+              alignSelf: 'stretch',
+            }}
           >
-            {caption}
-          </GluuText>
+            {yAxisLabel}
+          </div>
         )}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: verticalRowLabels ? 12 : 4 }}>
-          {yAxisLabel && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                writingMode: 'vertical-lr',
-                transform: 'rotate(180deg)',
-                fontSize: verticalRowLabels ? 11 : rowLabelFontSize,
-                color: textColor,
-                opacity: 0.6,
-                minWidth: 16,
-                alignSelf: 'stretch',
-              }}
-            >
-              {yAxisLabel}
-            </div>
-          )}
 
-          <div style={{ flex: 1, minWidth: 0, overflowX: 'auto' }}>
-            <svg
-              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              preserveAspectRatio="xMidYMid meet"
-              style={{
-                display: 'block',
-                width: '100%',
-                ...(compact ? { maxWidth: svgWidth } : {}),
-                height: 'auto',
-              }}
-            >
-              {!colLabelsBottom &&
-                cols.map((col, ci) => {
-                  const cx = rowLabelW + ci * cellW + cellW / 2
-                  if (hasColsSub) {
-                    return (
-                      <g key={`ch-${ci}`}>
-                        <text
-                          x={cx}
-                          y={colLabelH - 28}
-                          textAnchor="middle"
-                          fontSize={axisFontSize}
-                          fill={textColor}
-                          opacity={0.8}
-                          fontWeight={600}
-                        >
-                          {col}
-                        </text>
-                        <text
-                          x={cx}
-                          y={colLabelH - 8}
-                          textAnchor="middle"
-                          fontSize={axisFontSize - 1}
-                          fill={textColor}
-                          opacity={0.55}
-                        >
-                          {colsSub![ci]}
-                        </text>
-                      </g>
-                    )
-                  }
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            overflowX: 'auto',
+            ...(fullscreen ? { height: '100%', display: 'flex', alignItems: 'center' } : {}),
+          }}
+        >
+          <svg
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            preserveAspectRatio="xMidYMid meet"
+            style={{
+              display: 'block',
+              width: '100%',
+              ...(compact && !fullscreen ? { maxWidth: svgWidth } : {}),
+              height: 'auto',
+            }}
+          >
+            {!colLabelsBottom &&
+              cols.map((col, ci) => {
+                const cx = rowLabelW + ci * cellW + cellW / 2
+                if (hasColsSub) {
                   return (
-                    <text
-                      key={`ch-${ci}`}
-                      x={cx}
-                      y={colLabelH - 4}
-                      textAnchor="middle"
-                      fontSize={axisFontSize}
-                      fill={textColor}
-                      opacity={0.7}
-                    >
-                      {col}
-                    </text>
+                    <g key={`ch-${ci}`}>
+                      <text
+                        x={cx}
+                        y={colLabelH - 28}
+                        textAnchor="middle"
+                        fontSize={axisFontSize}
+                        fill={textColor}
+                        fontWeight={600}
+                      >
+                        {col}
+                      </text>
+                      <text
+                        x={cx}
+                        y={colLabelH - 8}
+                        textAnchor="middle"
+                        fontSize={axisFontSize - 1}
+                        fill={textColor}
+                      >
+                        {colsSub![ci]}
+                      </text>
+                    </g>
                   )
-                })}
-
-              {(hasColsSub || colLabelsBottom) &&
-                cols.map((col, ci) => {
-                  const cx = rowLabelW + ci * cellW + cellW / 2
-                  const baseY = colLabelH + rows.length * cellH
-                  if (hasColsSub) {
-                    return (
-                      <g key={`chb-${ci}`}>
-                        <text
-                          x={cx}
-                          y={baseY + 20}
-                          textAnchor="middle"
-                          fontSize={axisFontSize}
-                          fill={textColor}
-                          opacity={0.8}
-                          fontWeight={600}
-                        >
-                          {col}
-                        </text>
-                        <text
-                          x={cx}
-                          y={baseY + 40}
-                          textAnchor="middle"
-                          fontSize={axisFontSize - 1}
-                          fill={textColor}
-                          opacity={0.55}
-                        >
-                          {colsSub![ci]}
-                        </text>
-                      </g>
-                    )
-                  }
-                  return (
-                    <text
-                      key={`chb-${ci}`}
-                      x={cx}
-                      y={baseY + 16}
-                      textAnchor="middle"
-                      fontSize={axisFontSize}
-                      fill={textColor}
-                      opacity={0.7}
-                    >
-                      {col}
-                    </text>
-                  )
-                })}
-
-              {rows.map((row, ri) => {
-                const cy = colLabelH + ri * cellH + cellH / 2
-                const cx = verticalRowLabels ? rowLabelW / 2 : rowLabelW - 4
-                return verticalRowLabels ? (
-                  <text
-                    key={`rl-${ri}`}
-                    x={cx}
-                    y={cy}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={rowLabelFontSize}
-                    fill={textColor}
-                    opacity={0.7}
-                    transform={`rotate(-90, ${cx}, ${cy})`}
-                  >
-                    {row}
-                  </text>
-                ) : (
-                  <text
-                    key={`rl-${ri}`}
-                    x={cx}
-                    y={cy}
-                    textAnchor="end"
-                    dominantBaseline="middle"
-                    fontSize={rowLabelFontSize}
-                    fill={textColor}
-                    opacity={0.7}
-                  >
-                    {row}
-                  </text>
-                )
-              })}
-
-              {cells.map(({ ri, ci, value, color }) => {
-                const x = rowLabelW + ci * cellW
-                const y = colLabelH + ri * cellH
-                const brightness = parseInt(color.replace(/[^\d,]/g, '').split(',')[0] ?? '100')
-                const cellTextColor = brightness < 160 ? customColors.white : customColors.nearBlack
+                }
                 return (
-                  <g key={`cell-${ri}-${ci}`}>
-                    <rect
-                      x={x + 0.5}
-                      y={y + 0.5}
-                      width={cellW - 1}
-                      height={cellH - 1}
-                      fill={color}
-                      rx={compact ? 2 : 4}
-                      stroke={borderColor}
-                      strokeWidth={0.5}
-                    />
-                    <text
-                      x={x + cellW / 2}
-                      y={y + cellH / 2}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize={cellFontSize}
-                      fill={cellTextColor}
-                      fontWeight={compact ? 400 : 600}
-                    >
-                      {value}
-                    </text>
-                  </g>
+                  <text
+                    key={`ch-${ci}`}
+                    x={cx}
+                    y={colLabelH - 4}
+                    textAnchor="middle"
+                    fontSize={axisFontSize}
+                    fill={textColor}
+                  >
+                    {col}
+                  </text>
                 )
               })}
 
-              <foreignObject
-                x={gridRightX + 8}
-                y={colLabelH}
-                width={colorBarW}
-                height={colorBarHeight}
-              >
-                <div style={{ height: '100%' }}>
-                  <ColorBar
-                    minVal={minVal}
-                    maxVal={maxVal}
-                    height={colorBarHeight}
-                    textColor={textColor}
-                    barWidth={isDailyLayout ? 8 : 18}
-                  />
-                </div>
-              </foreignObject>
+            {(hasColsSub || colLabelsBottom) &&
+              cols.map((col, ci) => {
+                const cx = rowLabelW + ci * cellW + cellW / 2
+                const baseY = colLabelH + rows.length * cellH
+                if (hasColsSub) {
+                  return (
+                    <g key={`chb-${ci}`}>
+                      <text
+                        x={cx}
+                        y={baseY + 20}
+                        textAnchor="middle"
+                        fontSize={axisFontSize}
+                        fill={textColor}
+                        fontWeight={600}
+                      >
+                        {col}
+                      </text>
+                      <text
+                        x={cx}
+                        y={baseY + 40}
+                        textAnchor="middle"
+                        fontSize={axisFontSize - 1}
+                        fill={textColor}
+                      >
+                        {colsSub![ci]}
+                      </text>
+                    </g>
+                  )
+                }
+                return (
+                  <text
+                    key={`chb-${ci}`}
+                    x={cx}
+                    y={baseY + 16}
+                    textAnchor="middle"
+                    fontSize={axisFontSize}
+                    fill={textColor}
+                  >
+                    {col}
+                  </text>
+                )
+              })}
 
-              {colorBarLabel && (
+            {rows.map((row, ri) => {
+              const cy = colLabelH + ri * cellH + cellH / 2
+              const cx = verticalRowLabels ? rowLabelW / 2 : rowLabelW - 4
+              return verticalRowLabels ? (
                 <text
-                  x={gridRightX + colorBarW + 8 + colorBarLabelW - 4}
-                  y={colLabelH + colorBarHeight / 2}
+                  key={`rl-${ri}`}
+                  x={cx}
+                  y={cy}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fontSize={compact ? axisFontSize + 1 : minHeight ? axisFontSize + 1 : 6}
+                  fontSize={rowLabelFontSize}
                   fill={textColor}
-                  opacity={0.65}
-                  transform={`rotate(-90, ${gridRightX + colorBarW + 8 + colorBarLabelW - 4}, ${colLabelH + colorBarHeight / 2})`}
+                  transform={`rotate(-90, ${cx}, ${cy})`}
                 >
-                  {colorBarLabel}
+                  {row}
                 </text>
-              )}
-
-              {xAxisLabel && (
+              ) : (
                 <text
-                  x={rowLabelW + (layoutColsLen * cellW) / 2}
-                  y={
-                    compact
-                      ? colLabelH + colorBarHeight + bottomColLabelH + 20
-                      : colLabelH + rows.length * cellH + bottomColLabelH + 20
-                  }
-                  textAnchor="middle"
-                  fontSize={axisFontSize + 1}
+                  key={`rl-${ri}`}
+                  x={cx}
+                  y={cy}
+                  textAnchor="end"
+                  dominantBaseline="middle"
+                  fontSize={rowLabelFontSize}
                   fill={textColor}
-                  opacity={0.6}
                 >
-                  {xAxisLabel}
+                  {row}
                 </text>
-              )}
-            </svg>
+              )
+            })}
+
+            {cells.map(({ ri, ci, value, color }) => {
+              const x = rowLabelW + ci * cellW
+              const y = colLabelH + ri * cellH
+              const brightness = parseInt(color.replace(/[^\d,]/g, '').split(',')[0] ?? '100')
+              const cellTextColor = brightness < 160 ? customColors.white : customColors.nearBlack
+              return (
+                <g key={`cell-${ri}-${ci}`}>
+                  <rect
+                    x={x + 0.5}
+                    y={y + 0.5}
+                    width={cellW - 1}
+                    height={cellH - 1}
+                    fill={color}
+                    rx={compact ? 2 : 4}
+                    stroke={borderColor}
+                    strokeWidth={0.5}
+                  />
+                  <text
+                    x={x + cellW / 2}
+                    y={y + cellH / 2}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={cellFontSize}
+                    fill={cellTextColor}
+                    fontWeight={compact ? 400 : 600}
+                  >
+                    {value}
+                  </text>
+                </g>
+              )
+            })}
+
+            <foreignObject
+              x={gridRightX + 8}
+              y={colLabelH}
+              width={colorBarW}
+              height={colorBarHeight}
+            >
+              <div style={{ height: '100%' }}>
+                <ColorBar
+                  minVal={minVal}
+                  maxVal={maxVal}
+                  height={colorBarHeight}
+                  textColor={textColor}
+                  barWidth={isDailyLayout ? 8 : 18}
+                />
+              </div>
+            </foreignObject>
+
+            {colorBarLabel && (
+              <text
+                x={gridRightX + colorBarW + 8 + colorBarLabelW - 4}
+                y={colLabelH + colorBarHeight / 2}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize={compact ? axisFontSize + 1 : minHeight ? axisFontSize + 1 : 6}
+                fill={textColor}
+                transform={`rotate(-90, ${gridRightX + colorBarW + 8 + colorBarLabelW - 4}, ${colLabelH + colorBarHeight / 2})`}
+              >
+                {colorBarLabel}
+              </text>
+            )}
+
+            {xAxisLabel && (
+              <text
+                x={rowLabelW + (layoutColsLen * cellW) / 2}
+                y={
+                  compact
+                    ? colLabelH + colorBarHeight + bottomColLabelH + 20
+                    : colLabelH + rows.length * cellH + bottomColLabelH + 20
+                }
+                textAnchor="middle"
+                fontSize={axisFontSize + 1}
+                fill={textColor}
+              >
+                {xAxisLabel}
+              </text>
+            )}
+          </svg>
+        </div>
+      </div>
+    )
+  }
+
+  const fullscreenModal =
+    isFullscreen &&
+    createPortal(
+      <>
+        <button
+          type="button"
+          className={classes.heatmapModalOverlay}
+          onClick={closeFullscreen}
+          aria-label={t('actions.close')}
+        />
+        <div
+          className={classes.heatmapModalContainer}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="heatmap-fullscreen-title"
+        >
+          <div className={classes.heatmapModalHeader}>
+            <GluuText
+              variant="h2"
+              className={classes.heatmapModalTitle}
+              id="heatmap-fullscreen-title"
+            >
+              {title}
+            </GluuText>
+            <button
+              type="button"
+              onClick={closeFullscreen}
+              className={classes.heatmapModalCloseButton}
+              aria-label={t('actions.close')}
+              title={t('actions.close')}
+            >
+              <Close fontSize="small" aria-hidden />
+            </button>
+          </div>
+          <div className={classes.heatmapModalBody}>
+            {caption && (
+              <GluuText
+                variant="div"
+                style={{
+                  textAlign: 'center',
+                  fontSize: 13,
+                  marginBottom: 16,
+                  color: themeColors.fontColor,
+                }}
+              >
+                {caption}
+              </GluuText>
+            )}
+            {renderHeatmapSvg(true)}
           </div>
         </div>
-      </CardBody>
-    </Card>
+      </>,
+      document.body,
+    )
+
+  return (
+    <>
+      <Card className={`${classes.chartCard} h-100`} style={minHeight ? { minHeight } : undefined}>
+        {showExpand && (
+          <button
+            type="button"
+            className={classes.heatmapExpandButton}
+            onClick={openFullscreen}
+            aria-label={t('messages.expand')}
+            title={t('messages.expand')}
+          >
+            <Fullscreen fontSize="small" aria-hidden />
+          </button>
+        )}
+        <CardBody>
+          <GluuText variant="div" className={classes.chartTitle}>
+            {title}
+          </GluuText>
+          {caption && (
+            <GluuText
+              variant="div"
+              style={{
+                textAlign: 'center',
+                fontSize: 11,
+                marginBottom: 12,
+                color: themeColors.fontColor,
+              }}
+            >
+              {caption}
+            </GluuText>
+          )}
+          {renderHeatmapSvg(false)}
+        </CardBody>
+      </Card>
+      {fullscreenModal}
+    </>
   )
 }
 
