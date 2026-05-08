@@ -11,15 +11,11 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { useErrorsAnalytics } from '../hooks'
-import type { MetricsDateRange } from '../types'
+import type { PasskeyAuthChartProps } from '../types'
 
 const RADIAN = Math.PI / 180
 
 import type { PieLabelRenderProps } from 'recharts'
-
-interface PasskeyAuthChartProps {
-  dateRange: MetricsDateRange | null
-}
 
 const toPercent = (value: number | null | undefined): number => {
   if (typeof value !== 'number' || Number.isNaN(value)) return 0

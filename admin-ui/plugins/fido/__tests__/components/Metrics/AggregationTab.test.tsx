@@ -1,18 +1,18 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import AggregationTab from 'Plugins/admin/components/Metrics/components/AggregationTab'
+import AggregationTab from 'Plugins/fido/components/Metrics/components/AggregationTab'
 
-jest.mock('Plugins/admin/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
   useAggregationMetrics: jest.fn(() => ({ data: undefined, isLoading: false, isFetching: false })),
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/ActivityBarChart', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/ActivityBarChart', () => ({
   __esModule: true,
   default: ({ title }: { title: string }) => <div data-testid="activity-bar-chart">{title}</div>,
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/DurationHeatmap', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/DurationHeatmap', () => ({
   __esModule: true,
   default: ({ title }: { title: string }) => <div data-testid="duration-heatmap">{title}</div>,
 }))
@@ -91,7 +91,7 @@ describe('AggregationTab', () => {
   })
 
   it('renders chart data from API entries when available', () => {
-    const { useAggregationMetrics } = jest.requireMock('Plugins/admin/components/Metrics/hooks')
+    const { useAggregationMetrics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
     useAggregationMetrics.mockReturnValueOnce({
       data: {
         entries: [

@@ -20,11 +20,7 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { usePerformanceAnalytics } from '../hooks'
-import type { MetricsDateRange } from '../types'
-
-interface OnboardingTimeChartProps {
-  dateRange: MetricsDateRange | null
-}
+import type { OnboardingTimeChartProps } from '../types'
 
 const toNumber = (value: number | string | boolean | null | undefined): number => {
   if (typeof value === 'number' && Number.isFinite(value)) return value

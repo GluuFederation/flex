@@ -9,6 +9,43 @@ export type HeatmapData = {
   maxVal: number
 }
 
+export type DurationHeatmapProps = {
+  title: string
+  heatmapData: HeatmapData
+  xAxisLabel?: string
+  yAxisLabel?: string
+  caption?: string
+  colorBarLabel?: string
+  compact?: boolean
+  minHeight?: number
+  maxCellHeight?: number
+  minColorBarHeight?: number
+  verticalRowLabels?: boolean
+  colLabelsBottom?: boolean
+  emptyStateCols?: number
+  showExpand?: boolean
+}
+
+export type ActivityBarChartProps = {
+  title: string
+  data: readonly ActivityDataPoint[]
+  height?: number
+  barSize?: number
+  barCategoryGap?: string | number
+}
+
+export type PasskeyAuthChartProps = {
+  dateRange: MetricsDateRange | null
+}
+
+export type PasskeyAdoptionChartProps = {
+  dateRange: MetricsDateRange | null
+}
+
+export type OnboardingTimeChartProps = {
+  dateRange: MetricsDateRange | null
+}
+
 export type ActivityDataPoint = {
   label: string
   regSuccess: number

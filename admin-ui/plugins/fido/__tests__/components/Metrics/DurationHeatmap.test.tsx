@@ -1,8 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import DurationHeatmap from 'Plugins/admin/components/Metrics/components/DurationHeatmap'
-import type { HeatmapData } from 'Plugins/admin/components/Metrics/types'
+import DurationHeatmap from 'Plugins/fido/components/Metrics/components/DurationHeatmap'
+import type { HeatmapData } from 'Plugins/fido/components/Metrics/types'
 
 const mockHeatmapData: HeatmapData = {
   rows: ['Registration', 'Authentication'],

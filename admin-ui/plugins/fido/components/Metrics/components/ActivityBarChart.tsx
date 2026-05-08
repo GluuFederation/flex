@@ -21,15 +21,7 @@ import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { AGGREGATION_SERIES_COLORS } from '../constants'
-import type { ActivityDataPoint } from '../types'
-
-interface ActivityBarChartProps {
-  title: string
-  data: readonly ActivityDataPoint[]
-  height?: number
-  barSize?: number
-  barCategoryGap?: string | number
-}
+import type { ActivityBarChartProps, ActivityDataPoint } from '../types'
 
 interface TickProps {
   x?: number | string
@@ -130,13 +122,13 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               iconSize={8}
             />
             <Bar
-              dataKey="regSuccess"
-              name={t('fields.agg_reg_success')}
-              fill={AGGREGATION_SERIES_COLORS.regSuccess}
+              dataKey="regAttempts"
+              name={t('fields.agg_reg_attempts')}
+              fill={AGGREGATION_SERIES_COLORS.regAttempts}
               radius={[3, 3, 0, 0]}
             >
               <LabelList
-                dataKey="regSuccess"
+                dataKey="regAttempts"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
                 formatter={(v: string | number | boolean | null | undefined) =>
@@ -145,13 +137,13 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               />
             </Bar>
             <Bar
-              dataKey="regAttempts"
-              name={t('fields.agg_reg_attempts')}
-              fill={AGGREGATION_SERIES_COLORS.regAttempts}
+              dataKey="regSuccess"
+              name={t('fields.agg_reg_success')}
+              fill={AGGREGATION_SERIES_COLORS.regSuccess}
               radius={[3, 3, 0, 0]}
             >
               <LabelList
-                dataKey="regAttempts"
+                dataKey="regSuccess"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
                 formatter={(v: string | number | boolean | null | undefined) =>

@@ -229,9 +229,6 @@ const entriesToHourlyHeatmap = (
   }
 }
 
-const HOURLY_MIN_VAL = 1
-const HOURLY_MAX_VAL = 3.5
-
 const AggregationTab: React.FC = () => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -289,14 +286,7 @@ const AggregationTab: React.FC = () => {
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
-      const isHourly = appliedAggType === 'hourly'
-      return {
-        rows: [],
-        cols: [],
-        data: [],
-        minVal: isHourly ? 1 : 140,
-        maxVal: isHourly ? 3.5 : 250,
-      }
+      return { rows: [], cols: [], data: [], minVal: 1, maxVal: 3.5 }
     }
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'registration')
@@ -315,15 +305,8 @@ const AggregationTab: React.FC = () => {
     return entriesToHeatmapData(entries, appliedAggType)
   }, [aggApiData, appliedAggType])
 
-  const heatmapData: HeatmapData = useMemo(() => {
-    if (appliedAggType !== 'hourly') return rawHeatmapData
-    return { ...rawHeatmapData, minVal: HOURLY_MIN_VAL, maxVal: HOURLY_MAX_VAL }
-  }, [appliedAggType, rawHeatmapData])
-
-  const authHeatmapData: HeatmapData = useMemo(() => {
-    if (appliedAggType !== 'hourly') return rawAuthHeatmapData
-    return { ...rawAuthHeatmapData, minVal: HOURLY_MIN_VAL, maxVal: HOURLY_MAX_VAL }
-  }, [appliedAggType, rawAuthHeatmapData])
+  const heatmapData: HeatmapData = rawHeatmapData
+  const authHeatmapData: HeatmapData = rawAuthHeatmapData
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
   const inputBg = themeColors.inputBackground
@@ -360,7 +343,7 @@ const AggregationTab: React.FC = () => {
                   heatmapData={heatmapData}
                   xAxisLabel={t('fields.agg_time_series_hours')}
                   yAxisLabel={t('fields.agg_date')}
-                  colorBarLabel={t('fields.agg_duration_seconds')}
+                  colorBarLabel={t('fields.agg_mili_seconds')}
                   compact
                   maxCellHeight={140}
                   minColorBarHeight={320}
@@ -372,7 +355,7 @@ const AggregationTab: React.FC = () => {
                   heatmapData={authHeatmapData}
                   xAxisLabel={t('fields.agg_time_series_hours')}
                   yAxisLabel={t('fields.agg_date')}
-                  colorBarLabel={t('fields.agg_duration_seconds')}
+                  colorBarLabel={t('fields.agg_mili_seconds')}
                   compact
                   maxCellHeight={140}
                   minColorBarHeight={320}

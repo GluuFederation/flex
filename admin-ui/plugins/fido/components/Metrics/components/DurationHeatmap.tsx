@@ -10,24 +10,7 @@ import customColors from '@/customColors'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { HEATMAP_COLOR_STOPS } from '../constants'
-import type { HeatmapData } from '../types'
-
-interface DurationHeatmapProps {
-  title: string
-  heatmapData: HeatmapData
-  xAxisLabel?: string
-  yAxisLabel?: string
-  caption?: string
-  colorBarLabel?: string
-  compact?: boolean
-  minHeight?: number
-  maxCellHeight?: number
-  minColorBarHeight?: number
-  verticalRowLabels?: boolean
-  colLabelsBottom?: boolean
-  emptyStateCols?: number
-  showExpand?: boolean
-}
+import type { DurationHeatmapProps } from '../types'
 
 const interpolateHeatmapColor = (value: number, min: number, max: number): string => {
   const t = Math.max(0, Math.min(1, (value - min) / (max - min)))
@@ -70,7 +53,7 @@ const getNiceStep = (min: number, max: number, targetTicks = 6): number => {
   else if (norm < 3) nice = 2
   else if (norm < 7) nice = 5
   else nice = 10
-  return nice * pow10
+  return Math.max(1, nice * pow10)
 }
 
 const ColorBar: React.FC<{
@@ -97,7 +80,7 @@ const ColorBar: React.FC<{
   return (
     <svg width={svgWidth} height={height} style={{ flexShrink: 0 }}>
       <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="1" x2="0" y2="0">
           {stops.map((s, i) => (
             <stop key={i} offset={`${s.stop * 100}%`} stopColor={s.color} />
           ))}

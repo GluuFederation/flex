@@ -2,19 +2,18 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import StaticConfiguration from './StaticConfiguration'
-import DynamicConfiguration from './DynamicConfiguration'
+import StaticConfiguration from './components/StaticConfiguration'
+import DynamicConfiguration from './components/DynamicConfiguration'
 import SetTitle from 'Utils/SetTitle'
 import { GluuPageContent } from '@/components'
-import { fidoConstants } from '../helper'
-import { useFidoConfig, useUpdateFidoConfig } from '../hooks'
-import type { DynamicConfigFormValues, StaticConfigFormValues } from '../types'
-import type { UpdateFidoParams } from '../types'
+import { fidoConstants } from '../../helper'
+import { useFidoConfig, useUpdateFidoConfig } from '../../hooks'
+import type { DynamicConfigFormValues, StaticConfigFormValues } from '../../types'
+import type { UpdateFidoParams } from '../../types'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
-import { ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -65,10 +64,7 @@ const Fido: React.FC = () => {
     [canWriteFido, updateFidoMutation],
   )
 
-  const tabNames = [
-    { name: t('menus.static_configuration'), path: ROUTES.FIDO_STATIC_CONFIG },
-    { name: t('menus.dynamic_configuration'), path: ROUTES.FIDO_DYNAMIC_CONFIG },
-  ]
+  const tabNames = [t('menus.static_configuration'), t('menus.dynamic_configuration')]
 
   const tabToShow = useCallback(
     (tabName: string) => {
@@ -109,7 +105,7 @@ const Fido: React.FC = () => {
         <GluuLoader blocking={isLoading || updateFidoMutation.isPending}>
           <div className={classes.formCard}>
             <div className={classes.content}>
-              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
+              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />
             </div>
           </div>
         </GluuLoader>

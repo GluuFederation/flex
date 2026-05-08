@@ -38,7 +38,6 @@ const ROUTES = {
   ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.HOME}/mapping`,
   ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.HOME}/cedarlingconfig`,
   ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
-  ADMIN_METRICS: `${PLUGIN_BASE_PATHS.HOME}/metrics`,
 
   // Assets
   ASSETS_LIST: `${PLUGIN_BASE_PATHS.HOME}/assets`,
@@ -128,9 +127,8 @@ const ROUTES = {
   SCIM_BASE: PLUGIN_BASE_PATHS.SCIM,
 
   // ========== FIDO Plugin ==========
-  FIDO_BASE: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement`,
-  FIDO_STATIC_CONFIG: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement/static-configuration`,
-  FIDO_DYNAMIC_CONFIG: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement/dynamic-configuration`,
+  FIDO_BASE: `${PLUGIN_BASE_PATHS.FIDO}/configuration`,
+  FIDO_METRICS: `${PLUGIN_BASE_PATHS.FIDO}/metrics`,
 
   // ========== SMTP Plugin ==========
   SMTP_BASE: `${PLUGIN_BASE_PATHS.SMTP}/smtpmanagement`,

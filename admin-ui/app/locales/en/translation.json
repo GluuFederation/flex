@@ -452,7 +452,6 @@
     "agg_auth_success": "Auth Success",
     "agg_time_series_hours": "Time Series (in hours)",
     "agg_date": "Date",
-    "agg_duration_seconds": "Duration (Seconds)",
     "agg_avg_duration_heatmap_caption": "Average Duration Heatmap (Milliseconds)",
     "agg_monthly_avg_duration_heatmap_caption": "Monthly Average Duration Heatmap (Milliseconds)",
     "agg_mili_seconds": "Milliseconds",

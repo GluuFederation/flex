@@ -724,7 +724,6 @@
     "agg_auth_success": "Autenticaciones Exitosas",
     "agg_avg_duration_heatmap_caption": "Mapa de Calor de Duración Promedio (Milisegundos)",
     "agg_date": "Fecha",
-    "agg_duration_seconds": "Duración (Segundos)",
     "agg_metrics_type_label": "Tipo de Agregación de Métricas",
     "agg_mili_seconds": "Mili (Segundos)",
     "agg_monthly_avg_duration_heatmap_caption": "Mapa de Calor de Duración Promedio Mensual (Milisegundos)",

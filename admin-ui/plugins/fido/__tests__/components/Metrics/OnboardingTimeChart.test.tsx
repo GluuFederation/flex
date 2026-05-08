@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import OnboardingTimeChart from 'Plugins/admin/components/Metrics/components/OnboardingTimeChart'
-import type { MetricsDateRange } from 'Plugins/admin/components/Metrics/types'
+import OnboardingTimeChart from 'Plugins/fido/components/Metrics/components/OnboardingTimeChart'
+import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
 import dayjs from 'dayjs'
 
-jest.mock('Plugins/admin/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
   usePerformanceAnalytics: jest.fn(() => ({ data: undefined, isLoading: false })),
 }))
 
@@ -51,7 +51,7 @@ describe('OnboardingTimeChart', () => {
   })
 
   it('uses API performance data when available', () => {
-    const { usePerformanceAnalytics } = jest.requireMock('Plugins/admin/components/Metrics/hooks')
+    const { usePerformanceAnalytics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
     usePerformanceAnalytics.mockReturnValueOnce({
       data: {
         authenticationMinDuration: 50,

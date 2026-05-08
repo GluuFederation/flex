@@ -15,7 +15,6 @@ import {
   LOGGING_READ,
   PROPERTIES_READ,
   STAT_READ,
-  FIDO_ADMIN,
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
@@ -40,7 +39,6 @@ const AuditListPage = createLazyRoute(() => import('../admin/components/Audit/Au
 const JansAssetListPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetListPage'))
 const JansAssetAddPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetAddPage'))
 const JansAssetEditPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetEditPage'))
-const MetricsPage = createLazyRoute(() => import('./components/Metrics/MetricsPage'))
 
 const pluginMetadata = {
   menus: [
@@ -65,12 +63,6 @@ const pluginMetadata = {
           path: ROUTES.ADMIN_LICENSE_DETAILS,
           permission: LICENSE_DETAILS_READ,
           resourceKey: ADMIN_UI_RESOURCES.License,
-        },
-        {
-          title: 'menus.metrics',
-          path: ROUTES.ADMIN_METRICS,
-          permission: FIDO_ADMIN,
-          resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
         },
         {
           title: 'menus.maugraph',
@@ -141,12 +133,6 @@ const pluginMetadata = {
       path: ROUTES.ADMIN_MAU_GRAPH,
       permission: ACR_READ,
       resourceKey: ADMIN_UI_RESOURCES.MAU,
-    },
-    {
-      component: MetricsPage,
-      path: ROUTES.ADMIN_METRICS,
-      permission: FIDO_ADMIN,
-      resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
     },
     {
       component: SettingsPage,

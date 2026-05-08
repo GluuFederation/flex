@@ -608,7 +608,6 @@
     "agg_auth_success": "Auth. Réussies",
     "agg_time_series_hours": "Série Temporelle (en heures)",
     "agg_date": "Date",
-    "agg_duration_seconds": "Durée (Secondes)",
     "agg_avg_duration_heatmap_caption": "Carte Thermique de la Durée Moyenne (Millisecondes)",
     "agg_monthly_avg_duration_heatmap_caption": "Carte Thermique de la Durée Moyenne Mensuelle (Millisecondes)",
     "agg_mili_seconds": "Milli (Secondes)",

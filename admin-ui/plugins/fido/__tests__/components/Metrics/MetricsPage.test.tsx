@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import MetricsPage from 'Plugins/admin/components/Metrics/MetricsPage'
+import MetricsPage from 'Plugins/fido/components/Metrics/MetricsPage'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -18,7 +18,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { mau: [] },
 }))
 
-jest.mock('Plugins/admin/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
   useAdoptionMetrics: jest.fn(() => ({ isLoading: false, isFetching: false, data: undefined })),
   useErrorsAnalytics: jest.fn(() => ({ isLoading: false, isFetching: false, data: undefined })),
   usePerformanceAnalytics: jest.fn(() => ({
@@ -29,22 +29,22 @@ jest.mock('Plugins/admin/components/Metrics/hooks', () => ({
   useAggregationMetrics: jest.fn(() => ({ isLoading: false, isFetching: false, data: undefined })),
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/PasskeyAuthChart', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/PasskeyAuthChart', () => ({
   __esModule: true,
   default: () => <div data-testid="passkey-auth-chart">PasskeyAuthChart</div>,
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/PasskeyAdoptionChart', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/PasskeyAdoptionChart', () => ({
   __esModule: true,
   default: () => <div data-testid="passkey-adoption-chart">PasskeyAdoptionChart</div>,
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/OnboardingTimeChart', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/OnboardingTimeChart', () => ({
   __esModule: true,
   default: () => <div data-testid="onboarding-time-chart">OnboardingTimeChart</div>,
 }))
 
-jest.mock('Plugins/admin/components/Metrics/components/AggregationTab', () => ({
+jest.mock('Plugins/fido/components/Metrics/components/AggregationTab', () => ({
   __esModule: true,
   default: () => <div data-testid="aggregation-tab">AggregationTab</div>,
 }))
