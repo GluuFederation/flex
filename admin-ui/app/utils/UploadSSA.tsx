@@ -75,7 +75,7 @@ const UploadSSA = () => {
   })
 
   const submitData = () => {
-    if (selectedFile) {
+    if (selectedFile && jwt) {
       dispatch(uploadNewSsaToken({ payload: { ssa: jwt } }))
     }
   }
@@ -112,7 +112,7 @@ const UploadSSA = () => {
               )}
               <div className={classes.actionSection}>
                 <GluuButton
-                  disabled={!selectedFile || isLoading}
+                  disabled={!selectedFile || !jwt || isLoading}
                   className={classes.button}
                   onClick={() => submitData()}
                   backgroundColor={themeColors.formFooter?.back?.backgroundColor}

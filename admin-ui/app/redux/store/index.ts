@@ -61,8 +61,11 @@ export const configStore = () => {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
+    const nextRootReducer = persistReducer(persistConfig, combine(reds))
     store.replaceReducer(
-      combine(reds) as Reducer<object, UnknownAction> as Parameters<typeof store.replaceReducer>[0],
+      nextRootReducer as Reducer<object, UnknownAction> as Parameters<
+        typeof store.replaceReducer
+      >[0],
     )
   })
   hmrAccept('../reducers/index', () => {

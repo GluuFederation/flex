@@ -20,7 +20,7 @@ import type {
 
 export const Col: React.FC<ColProps> = ({ sm, md, lg, xl, xs, className, children, ...props }) => {
   const colClass = classNames(
-    xs != null && `col-xs-${xs}`,
+    xs != null && `col-${xs}`,
     sm != null && `col-sm-${sm}`,
     md != null && `col-md-${md}`,
     lg != null && `col-lg-${lg}`,
@@ -114,12 +114,15 @@ export const Alert: React.FC<AlertProps> = ({
   color,
   fade: _fade,
   transition: _transition,
-  isOpen: _isOpen,
+  isOpen,
   toggle: _toggle,
   className,
   children,
   ...props
 }) => {
+  if (!isOpen) {
+    return null
+  }
   const severity =
     color === 'danger'
       ? 'error'
@@ -135,30 +138,43 @@ export const Alert: React.FC<AlertProps> = ({
   )
 }
 
-export const Input = React.forwardRef<HTMLInputElement | HTMLSelectElement, InputProps>(
-  ({ type = 'text', className, children, ...props }, ref) => {
-    if (type === 'select') {
-      return (
-        <select
-          ref={ref as React.Ref<HTMLSelectElement>}
-          className={classNames('form-control', className)}
-          {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
-        >
-          {children}
-        </select>
-      )
-    }
-
+export const Input = React.forwardRef<
+  HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+  InputProps
+>(({ type = 'text', className, children, ...props }, ref) => {
+  if (type === 'select') {
     return (
-      <input
-        ref={ref as React.Ref<HTMLInputElement>}
-        type={type}
+      <select
+        ref={ref as React.Ref<HTMLSelectElement>}
         className={classNames('form-control', className)}
-        {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
-      />
+        {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
+      >
+        {children}
+      </select>
     )
-  },
-)
+  }
+
+  if (type === 'textarea') {
+    return (
+      <textarea
+        ref={ref as React.Ref<HTMLTextAreaElement>}
+        className={classNames('form-control', className)}
+        {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+      >
+        {children}
+      </textarea>
+    )
+  }
+
+  return (
+    <input
+      ref={ref as React.Ref<HTMLInputElement>}
+      type={type}
+      className={classNames('form-control', className)}
+      {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+    />
+  )
+})
 Input.displayName = 'Input'
 
 const bootstrapColorToMui = (

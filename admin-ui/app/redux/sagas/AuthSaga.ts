@@ -166,6 +166,7 @@ function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): G
           )
           yield put(getOAuth2Config({ access_token: response.access_token }))
         } else {
+          setApiToken(null)
           devLogger.error('Failed to obtain API token for session creation')
           yield put(
             createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
@@ -174,6 +175,7 @@ function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): G
       }
     }
   } catch (error) {
+    setApiToken(null)
     const err = asApiError(error as Throwable)
     devLogger.error('Problems getting API Access Token.', err?.response?.data ?? err.message)
     yield put(

@@ -45,7 +45,7 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
 
   return (
     <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
-      <h5 className={classes.titleRow} aria-label={label}>
+      <h5 className={classes.titleRow} aria-label={t(label)}>
         <span className={classes.titleContent}>
           {t(label)}
           {allowColon && <span>:</span>}

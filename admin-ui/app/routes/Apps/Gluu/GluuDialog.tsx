@@ -111,7 +111,14 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder={t('placeholders.action_commit_message')}
               value={userMessage}
-              sx={{ '& .MuiOutlinedInput-root': { borderColor: inverseColors.borderColor } }}
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: inverseColors.borderColor,
+                },
+                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: inverseColors.borderColor,
+                },
+              }}
               helperText={
                 userMessage.length < 10
                   ? `${10 - userMessage.length}${userMessage.length ? ' more' : ''} characters required`

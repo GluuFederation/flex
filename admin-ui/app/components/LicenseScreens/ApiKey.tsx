@@ -26,7 +26,7 @@ const ApiKey = () => {
       <div className={classes.container}>
         <div className={classes.row}>
           <div className={classes.logoSection}>
-            <img src={logo} alt="Logo" className={`img-fluid ${classes.logo}`} />
+            <img src={logo} alt="Logo" className={classes.logo} />
           </div>
         </div>
         <div className={classes.row}>
@@ -36,13 +36,15 @@ const ApiKey = () => {
             </GluuText>
           </Box>
         </div>
+
         <div className={classes.row}>
           <Box className={classes.messageBlock}>
             <GluuText className={classes.error} disableThemeColor>
-              {serverError}
+              {serverError ?? ''}
             </GluuText>
           </Box>
         </div>
+
         <Box className={classes.cardRow}>
           <Box className={`${classes.messageBlock} ${classes.cardWrapper}`}>
             <GenerateLicenseCard />

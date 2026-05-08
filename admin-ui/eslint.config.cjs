@@ -3,6 +3,7 @@ const tsParser = require('@typescript-eslint/parser')
 const tsPlugin = require('@typescript-eslint/eslint-plugin')
 const reactPlugin = require('eslint-plugin-react')
 const jestPlugin = require('eslint-plugin-jest')
+const jsoncPlugin = require('eslint-plugin-jsonc')
 const globals = require('globals')
 
 module.exports = [
@@ -175,6 +176,18 @@ module.exports = [
     },
   },
 
+  // JSON / JSONC linting
+  ...jsoncPlugin.configs['flat/recommended-with-jsonc'],
+  ...jsoncPlugin.configs['flat/recommended-with-json'],
+  {
+    files: ['**/*.json', '**/*.jsonc'],
+    rules: {
+      // JSON string values legitimately contain NBSP and other whitespace
+      // (e.g., French typography in locale files). The rule targets JS source.
+      'no-irregular-whitespace': 'off',
+    },
+  },
+
   // Ignore build output, generated files, and any non-JS/TS payloads
   {
     ignores: [
@@ -183,8 +196,8 @@ module.exports = [
       'coverage/**',
       '**/*.generated.ts',
       'app/redux/api/backend/**',
-      '**/*.json',
       'jans_config_api_orval/**',
+      'package-lock.json',
     ],
   },
 ]

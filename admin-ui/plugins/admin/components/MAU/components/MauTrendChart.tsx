@@ -27,7 +27,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
   const { state } = useTheme()
   const themeColors = getThemeColor(state.theme)
   const isDark = state.theme === THEME_DARK
-  const { classes } = useMauStyles({
+  const { classes, cx } = useMauStyles({
     themeColors: {
       cardBg: themeColors.dashboard.supportCard ?? themeColors.menu.background,
       text: themeColors.fontColor,
@@ -42,7 +42,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
   }))
 
   return (
-    <Card className={`${classes.trendCard} ${classes.trendCardWithSpacing}`}>
+    <Card className={cx(classes.trendCard, classes.trendCardWithSpacing)}>
       <CardBody>
         <GluuText variant="div" className={classes.trendTitle}>
           {t('titles.mau_trend')}

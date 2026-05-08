@@ -49,6 +49,7 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((_theme, { themeCol
   },
   logo: {
     maxWidth: 200,
+    height: 'auto',
   },
   cardWrapper: {
     display: 'block',

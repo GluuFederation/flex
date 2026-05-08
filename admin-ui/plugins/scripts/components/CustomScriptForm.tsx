@@ -138,7 +138,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
   )
 
   const onLevelChange = useCallback(
-    (level: number): void => {
+    (level: number | undefined): void => {
       formik.setFieldValue('level', level)
       formik.setFieldTouched('level', true)
     },
@@ -438,7 +438,15 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                 doc_entry="level"
                 isDark={isDark}
                 disabled={viewOnly}
-                handleChange={(e) => onLevelChange(Number(e.target.value))}
+                handleChange={(e) => {
+                  const raw = String(e.target.value ?? '').trim()
+                  if (raw === '') {
+                    onLevelChange(undefined)
+                    return
+                  }
+                  const parsed = Number(raw)
+                  onLevelChange(Number.isFinite(parsed) ? parsed : undefined)
+                }}
                 showError={!!(formik.errors.level && formik.touched.level)}
                 errorMessage={String(formik.errors.level ?? '')}
               />

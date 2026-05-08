@@ -45,7 +45,7 @@ export type AlertProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 type StandardInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children'> & {
-  type?: Exclude<React.HTMLInputTypeAttribute, 'select'>
+  type?: Exclude<React.HTMLInputTypeAttribute, 'select' | 'textarea'>
   children?: React.ReactNode
 }
 
@@ -54,7 +54,12 @@ type SelectInputProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   children?: React.ReactNode
 }
 
-export type InputProps = StandardInputProps | SelectInputProps
+type TextareaInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  type: 'textarea'
+  children?: React.ReactNode
+}
+
+export type InputProps = StandardInputProps | SelectInputProps | TextareaInputProps
 
 export type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
   color?: string

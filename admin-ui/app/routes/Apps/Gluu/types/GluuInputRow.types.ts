@@ -19,7 +19,10 @@ export type GluuInputRowProps<T = Record<string, JsonValue>> = {
   errorMessage?: string
   handleChange?:
     | ((
-        event: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } },
+        event:
+          | React.ChangeEvent<HTMLInputElement>
+          | React.ChangeEvent<HTMLTextAreaElement>
+          | { target: { name: string; value: string } },
       ) => void)
     | null
   doc_entry?: string

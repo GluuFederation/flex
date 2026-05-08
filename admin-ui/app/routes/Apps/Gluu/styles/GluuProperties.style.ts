@@ -7,6 +7,7 @@ export const useStyles = makeStyles()(() => ({
   },
   headerRow: {
     display: 'flex',
+    alignItems: 'center',
   },
   addButtonIcon: {
     marginRight: SPACING.CARD_CONTENT_GAP,

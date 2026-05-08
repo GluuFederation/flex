@@ -487,7 +487,7 @@ const ClientCibaParUmaPanel = ({
 
         <Dialog
           open={open}
-          onClose={() => setOpen((v) => !v)}
+          onClose={() => setOpen(false)}
           maxWidth="lg"
           fullWidth
           PaperProps={{ className: 'modal-outline-primary modal-lg-900' }}
