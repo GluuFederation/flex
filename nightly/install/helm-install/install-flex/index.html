@@ -12,13 +12,13 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/nightly/install/helm-install/google-gke/">
+        <link rel="canonical" href="https://docs.gluu.org/nightly/install/helm-install/install-flex/">
       
       
-        <link rel="prev" href="../amazon-eks/">
+        <link rel="prev" href="../database-setup/">
       
       
-        <link rel="next" href="../microsoft-azure/">
+        <link rel="next" href="../post-install/">
       
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Google GKE - Gluu Flex Documentation</title>
+        <title>Install Flex - Gluu Flex Documentation</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-gluu-flex-on-gke" class="md-skip">
+        <a href="#install-flex-with-helm" class="md-skip">
           Skip to content
         </a>
       
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Google GKE
+              Install Flex
             
           </span>
         </div>
@@ -248,82 +248,19 @@
   
   
   
-  
-    <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
-        
-  
-  
-    
-  
-  Overview
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
     
   
   
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   
     
   
-  Installation
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../../admin/" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Administration
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../../reference/kubernetes/" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Reference
+  Flex
 
         </a>
       </li>
@@ -429,28 +366,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -460,10 +375,6 @@
       
         
           
-        
-      
-        
-      
         
       
         
@@ -486,7 +397,75 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../.." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Flex
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Flex
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -503,14 +482,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
             Installation
           </label>
@@ -577,7 +556,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -594,14 +573,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_2_3">
             <span class="md-nav__icon md-icon"></span>
             Helm Deployments
           </label>
@@ -615,13 +594,66 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3_2" id="__nav_1_2_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Platform Setup
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_2_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Platform Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../local/" class="md-nav__link">
+      <a href="../prerequisites/amazon-eks/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Local Kubernetes Cluster
+    Amazon EKS
     
   </span>
   
@@ -639,12 +671,135 @@
   
   
     <li class="md-nav__item">
-      <a href="../amazon-eks/" class="md-nav__link">
+      <a href="../prerequisites/google-gke/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Amazon EKS
+    Google GKE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prerequisites/microsoft-aks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Microsoft AKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prerequisites/local/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Local (Minikube/MicroK8s)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prerequisites/rancher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Marketplace
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingress-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database Setup
     
   </span>
   
@@ -676,7 +831,7 @@
   
   
   <span class="md-ellipsis">
-    Google GKE
+    Install Flex
     
   </span>
   
@@ -689,7 +844,7 @@
   
   
   <span class="md-ellipsis">
-    Google GKE
+    Install Flex
     
   </span>
   
@@ -712,36 +867,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#complete-overrideyaml-example" class="md-nav__link">
     <span class="md-ellipsis">
-      System Requirements
+      Complete override.yaml Example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
+  <a href="#add-the-flex-helm-repository" class="md-nav__link">
     <span class="md-ellipsis">
-      Initial Setup
+      Add the Flex Helm Repository
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gluu-flex-installation-using-helm" class="md-nav__link">
+  <a href="#install-flex" class="md-nav__link">
     <span class="md-ellipsis">
-      Gluu Flex Installation using Helm
+      Install Flex
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-gluu-flex" class="md-nav__link">
+  <a href="#verify-installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure Gluu Flex
+      Verify Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrade-an-existing-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade an Existing Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstall
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chart-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chart Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -763,35 +954,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../microsoft-azure/" class="md-nav__link">
+      <a href="../post-install/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Microsoft Azure AKS
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rancher/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Rancher Marketplace
+    Post-Installation
     
   </span>
   
@@ -821,8 +989,6 @@
       
         
       
-        
-      
     
     
     
@@ -834,15 +1000,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_2_4" id="__nav_1_2_4_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Docker Deployments
+    Docker
     
   </span>
   
@@ -850,10 +1016,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_4">
             <span class="md-nav__icon md-icon"></span>
-            Docker Deployments
+            Docker
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -880,29 +1046,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../docker-install/compose/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Docker compose
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -939,10 +1082,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_2_5" id="__nav_1_2_5_label" tabindex="0">
             
   
   
@@ -955,8 +1098,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             VM Installation
           </label>
@@ -1091,9 +1234,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -1126,7 +1270,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1143,14 +1287,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Administration
           </label>
@@ -1209,7 +1353,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1226,14 +1370,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_3">
             <span class="md-nav__icon md-icon"></span>
             K8s Operations Guide
           </label>
@@ -1327,10 +1471,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4" id="__nav_1_3_4_label" tabindex="0">
             
   
   
@@ -1343,8 +1487,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4">
             <span class="md-nav__icon md-icon"></span>
             Admin UI
           </label>
@@ -1397,10 +1541,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_2" >
         
           
-          <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4_2" id="__nav_1_3_4_2_label" tabindex="0">
             
   
   
@@ -1413,8 +1557,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_4_2">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4_2">
             <span class="md-nav__icon md-icon"></span>
             Design & Implementation
           </label>
@@ -1564,10 +1708,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_4_5" id="__nav_3_4_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4_5" id="__nav_1_3_4_5_label" tabindex="0">
             
   
   
@@ -1580,8 +1724,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_4_5">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4_5">
             <span class="md-nav__icon md-icon"></span>
             Left Navigation Menu
           </label>
@@ -1919,8 +2063,6 @@
       
         
       
-        
-      
     
     
     
@@ -1932,7 +2074,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_5" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1949,42 +2091,19 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_3_5" id="__nav_1_3_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_5">
             <span class="md-nav__icon md-icon"></span>
             Flex Recipes
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../admin/recipes/getting-started-rancher/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Getting Started with Rancher
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -2070,9 +2189,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -2082,8 +2202,6 @@
       
         
           
-        
-      
         
       
         
@@ -2101,7 +2219,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2118,14 +2236,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
             <span class="md-nav__icon md-icon"></span>
             Reference
           </label>
@@ -2163,29 +2281,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/kubernetes/docker-flex-monolith/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Flex Monolith Docker Image
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
         
   
@@ -2197,6 +2292,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2239,7 +2342,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2256,14 +2359,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Open Banking
           </label>
@@ -2295,10 +2398,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   
@@ -2311,8 +2414,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             Installation
           </label>
@@ -2398,10 +2501,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   
@@ -2414,8 +2517,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             Operation Guide
           </label>
@@ -2554,10 +2657,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -2570,8 +2673,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Gluu Solo
           </label>
@@ -2680,36 +2783,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#complete-overrideyaml-example" class="md-nav__link">
     <span class="md-ellipsis">
-      System Requirements
+      Complete override.yaml Example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
+  <a href="#add-the-flex-helm-repository" class="md-nav__link">
     <span class="md-ellipsis">
-      Initial Setup
+      Add the Flex Helm Repository
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gluu-flex-installation-using-helm" class="md-nav__link">
+  <a href="#install-flex" class="md-nav__link">
     <span class="md-ellipsis">
-      Gluu Flex Installation using Helm
+      Install Flex
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-gluu-flex" class="md-nav__link">
+  <a href="#verify-installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure Gluu Flex
+      Verify Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrade-an-existing-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade an Existing Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstall
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chart-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chart Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -2731,24 +2870,6 @@
                   
 
   <nav class="md-tags" >
-    
-      
-      
-      
-        <span class="md-tag">GCP</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">GKE</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">Google Cloud</span>
-      
     
       
       
@@ -2775,288 +2896,64 @@
   
 
 
-<h1 id="install-gluu-flex-on-gke">Install Gluu Flex on GKE<a class="headerlink" href="#install-gluu-flex-on-gke" title="Permanent link">#</a></h1>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
-<p>The resources may be set minimally to the below:</p>
-<ul>
-<li>8-13 GB RAM based on the services deployed</li>
-<li>8-11 CPU cores based on the services deployed</li>
-<li>50GB hard-disk</li>
-</ul>
-<p>Use the listing below for a detailed estimation of the minimum required resources. The table contains the default resources recommendation per service. Depending on the use of each service the resources need may be increase or decrease.</p>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>CPU Unit</th>
-<th>RAM</th>
-<th>Disk Space</th>
-<th>Processor Type</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Auth server</td>
-<td>2.5</td>
-<td>2.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>config - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>persistence - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>auth-key-rotation</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No [Strongly recommended]</td>
-</tr>
-<tr>
-<td>cleanup - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No [Strongly recommended]</td>
-</tr>
-<tr>
-<td>fido2</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>scim</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>nginx</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>config-api</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>casa</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>admin-ui</td>
-<td>2</td>
-<td>2GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>link</td>
-<td>0.5</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>saml</td>
-<td>0.5</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>kc-scheduler - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>Releases of images are in style 0.0.0-nightly or x.y-z-1</p>
-<h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/nightly/install/flex/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
-</li>
-<li>
-<p>Enable <a href="https://console.cloud.google.com/kubernetes">GKE API</a> if not enabled yet.</p>
-</li>
-<li>
-<p>If you are using <code>Cloud Shell</code>, you can skip to step 7.</p>
-</li>
-<li>
-<p>Install <a href="https://cloud.google.com/sdk/docs/quickstarts">gcloud</a>.</p>
-</li>
-<li>
-<p>Install <code>kubectl</code> using <code>gcloud components install kubectl</code> command.</p>
-</li>
-<li>
-<p>Install <a href="https://helm.sh/docs/intro/install/">Helm3</a>.</p>
-</li>
-<li>
-<p>Create cluster using a command such as the following example:</p>
-<p><div class="highlight"><pre><span></span><code>gcloud container clusters create gluu-cluster --num-nodes 2 --machine-type e2-standard-4 --zone us-west1-a
-</code></pre></div>
-You can adjust <code>num-nodes</code> and <code>machine-type</code> as per your desired cluster size    </p>
-</li>
-<li>
-<p>Create <code>gluu</code> namespace where our resources will reside
-    <div class="highlight"><pre><span></span><code>kubectl create namespace gluu
-</code></pre></div></p>
-</li>
-</ol>
-<h2 id="gluu-flex-installation-using-helm">Gluu Flex Installation using Helm<a class="headerlink" href="#gluu-flex-installation-using-helm" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Install <a href="https://github.com/kubernetes/ingress-nginx">Nginx-Ingress</a>, if you are not using Istio ingress</p>
-<div class="highlight"><pre><span></span><code>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-helm install nginx ingress-nginx/ingress-nginx
-</code></pre></div>
-</li>
-<li>
-<p>Create a file named <code>override.yaml</code> and add changes as per your desired configuration:</p>
-<ul>
-<li>
-<p>FQDN/domain is <em>not</em> registered:</p>
-<p>Get the Loadbalancer IP: 
-<div class="highlight"><pre><span></span><code>kubectl get svc nginx-ingress-nginx-controller --output jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;
-</code></pre></div></p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
+<h1 id="install-flex-with-helm">Install Flex with Helm<a class="headerlink" href="#install-flex-with-helm" title="Permanent link">#</a></h1>
+<p>After configuring your cluster, ingress, and database, you're ready to install Flex.</p>
+<h2 id="complete-overrideyaml-example">Complete override.yaml Example<a class="headerlink" href="#complete-overrideyaml-example" title="Permanent link">#</a></h2>
+<p>Here's a complete <code>override.yaml</code> combining Gateway API and MySQL:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">lbIp</span><span class="p">:</span><span class="w"> </span><span class="c1">#Add the Loadbalance IP from the previous command</span>
-</code></pre></div>
-</li>
-<li>
-<p>FQDN/domain is registered:</p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">lbIp</span><span class="p">:</span><span class="w"> </span><span class="c1">#Add the LoadBalancer IP from the previous command</span>
-<span class="w">    </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span>
-<span class="nt">nginx-ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
-<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span>
-<span class="w">      </span><span class="nt">tls</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span>
-<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span>
-</code></pre></div>
-</li>
-<li>
-<p>PostgreSQL for persistence storage</p>
-<p>In a production environment, a production grade PostgreSQL server should be used such as <code>Cloud SQL</code></p>
-<p>For testing purposes, you can deploy it on the GKE cluster using the following commands:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pgsql.yaml
-</code></pre></div>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">config</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span>
-<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
-<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pgsql</span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql.gluu.svc</span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
-<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span>
-</code></pre></div>
-</li>
-<li>
-<p>MySQL for persistence storage</p>
-<p>In a production environment, a production grade MySQL server should be used such as <code>Cloud SQL</code></p>
-<p>For testing purposes, you can deploy it on the GKE cluster using the following commands:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>mysql.yaml
-</code></pre></div>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">config</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span>
-<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span>
-<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql.gluu.svc</span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
-<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span>
-</code></pre></div>
-<p>So if your desired configuration has FQDN and MySQL, the final <code>override.yaml</code> file will look something like that:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">lbIp</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="c1">#Add the LoadBalancer IP from previous command</span>
-<span class="w">  </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span>
-<span class="nt">nginx-ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
-<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span>
-<span class="w">      </span><span class="nt">tls</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span>
-<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu  </span>
+<span class="w">  </span><span class="nt">lbIp</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w">  </span><span class="c1"># Add your LoadBalancer IP</span>
+<span class="w">  </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w">  </span><span class="c1"># Your domain</span>
+<span class="w">  </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">gateway-api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">nginx-ingress</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">gateway-api</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">gateway</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">className</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"> </span><span class="c1"># Match your controller (nginx, istio, etc.)</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu-gateway</span>
+<span class="w">    </span><span class="nt">httpPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">    </span><span class="nt">httpsPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>
+<span class="w">    </span><span class="nt">attachLbIp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># Set the value to true if loadbalancer didn&#39;t assign IP address to the gateway automatically</span>
 <span class="nt">config</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">configmap</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span>
 <span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span>
 <span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
 <span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql.gluu.svc</span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span><span class="w"> </span><span class="c1"># Use a dedicated user in production</span>
 <span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span>
+<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"> </span><span class="c1"># Change for production!</span>
 </code></pre></div>
-</li>
-</ul>
-</li>
-<li>
-<p>Install Gluu Flex</p>
-<p>After finishing all the tweaks to the <code>override.yaml</code> file, we can use it to install gluu flex.</p>
-<div class="highlight"><pre><span></span><code>helm repo add gluu-flex https://docs.gluu.org/charts
-helm repo update
-helm install gluu gluu-flex/gluu -n gluu -f override.yaml
+<div class="admonition warning">
+<p class="admonition-title">Security</p>
+<p>Replace example credentials with secure values for production deployments.</p>
+</div>
+<p>Adjust values based on your choices from the previous steps.</p>
+<h2 id="add-the-flex-helm-repository">Add the Flex Helm Repository<a class="headerlink" href="#add-the-flex-helm-repository" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>gluu-flex<span class="w"> </span>https://docs.gluu.org/charts
+helm<span class="w"> </span>repo<span class="w"> </span>update
 </code></pre></div>
-</li>
-</ol>
-<h2 id="configure-gluu-flex">Configure Gluu Flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
-<p>You can use the Janssen <a href="https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/">TUI</a> to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.</p>
+<h2 id="install-flex">Install Flex<a class="headerlink" href="#install-flex" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>install<span class="w"> </span>gluu<span class="w"> </span>gluu-flex/gluu<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--create-namespace<span class="w"> </span>-f<span class="w"> </span>override.yaml
+</code></pre></div>
+<h2 id="verify-installation">Verify Installation<a class="headerlink" href="#verify-installation" title="Permanent link">#</a></h2>
+<p>Check pod status:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>gluu
+</code></pre></div>
+<p>Wait for all pods to reach <code>Running</code> or <code>Completed</code> status.</p>
+<h2 id="upgrade-an-existing-installation">Upgrade an Existing Installation<a class="headerlink" href="#upgrade-an-existing-installation" title="Permanent link">#</a></h2>
+<p>To apply configuration changes:</p>
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>upgrade<span class="w"> </span>gluu<span class="w"> </span>gluu-flex/gluu<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--create-namespace<span class="w"> </span>-f<span class="w"> </span>override.yaml
+</code></pre></div>
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">#</a></h2>
+<p>To remove Flex:</p>
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>uninstall<span class="w"> </span>gluu<span class="w"> </span>-n<span class="w"> </span>gluu
+</code></pre></div>
+<h2 id="chart-reference">Chart Reference<a class="headerlink" href="#chart-reference" title="Permanent link">#</a></h2>
+<p>For all available Helm values, see the <a href="../../../reference/kubernetes/#helm-chart-references">Helm Chart Reference</a>.</p>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<p>Proceed to <a href="../post-install/">Post-Installation</a> to configure and verify your deployment.</p>
 
 
 
@@ -3079,7 +2976,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 6, 2026 11:07:54 UTC"><span class="timeago" datetime="2026-01-06T11:07:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 6, 2026 11:07:54 UTC">2026-01-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 8, 2026 12:15:37 UTC"><span class="timeago" datetime="2026-05-08T12:15:37+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 8, 2026 12:15:37 UTC">2026-05-08</span>
   </span>
 
     
@@ -3089,7 +2986,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 22, 2022 19:37:05 UTC"><span class="timeago" datetime="2022-09-22T19:37:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 22, 2022 19:37:05 UTC">2022-09-22</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 8, 2026 12:15:37 UTC"><span class="timeago" datetime="2026-05-08T12:15:37+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 8, 2026 12:15:37 UTC">2026-05-08</span>
   </span>
 
     
@@ -3119,7 +3016,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2025, Gluu Flex
+      Copyright &copy; 2026, Gluu Flex
     </div>
   
   
