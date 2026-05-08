@@ -35,7 +35,9 @@ const formGroupOverrides = {
     maxWidth: '100%',
     paddingLeft: 0,
     paddingRight: 0,
-    marginBottom: 6,
+    paddingTop: '0 !important',
+    paddingBottom: '0 !important',
+    marginBottom: '2px !important',
   },
   '& .form-group [class*="col"]': {
     flex: '0 0 100%',
@@ -63,6 +65,9 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
     '& .form-group [class*="col"]': {
       ...formGroupOverrides['& .form-group [class*="col"]'],
       position: 'relative' as const,
+      paddingBottom: 0,
+    },
+    '& .form-group [class*="col"]:has([data-field-error])': {
       paddingBottom: ERROR_SPACE,
     },
   }

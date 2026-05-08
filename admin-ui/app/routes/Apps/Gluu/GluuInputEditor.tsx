@@ -23,7 +23,7 @@ const GluuInputEditor = <T extends object>({
   label,
   showError = false,
   errorMessage,
-  theme = 'xcode',
+  theme,
   placeholder = 'Write your custom script here',
   doc_entry,
   shortcode,
@@ -32,6 +32,7 @@ const GluuInputEditor = <T extends object>({
   isDark,
 }: GluuInputEditorProps<T>): React.ReactElement => {
   const { classes } = useStyles()
+  const aceTheme = theme ?? (isDark ? 'monokai' : 'xcode')
 
   const handleChange = (scripts: string) => {
     if (!readOnly) {
@@ -56,7 +57,7 @@ const GluuInputEditor = <T extends object>({
           readOnly={readOnly}
           wrapEnabled
           setOptions={{ useWorker: false, hScrollBarAlwaysVisible: false }}
-          theme={theme}
+          theme={aceTheme}
           placeholder={placeholder}
           fontSize={16}
           onCursorChange={onCursorChange}

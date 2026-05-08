@@ -360,7 +360,12 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
     propsTitle: dl.listTitle,
     propsBody: dl.listBody,
     propsRow: dl.listRow,
-    propsInput: dl.listInput,
+    propsInput: {
+      ...dl.listInput,
+      '&&': {
+        backgroundColor: `${cardBg} !important`,
+      },
+    },
     propsActionBtn: dl.listActionBtn,
     editorTheme: {
       '& .ace_editor': {
