@@ -98,10 +98,8 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     validateOnMount: false,
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: (_values, { setSubmitting }) => {
-      const operations = isEditMode
-        ? buildChangedFieldOperations(initialValues, formik.values, t)
-        : []
+    onSubmit: (values, { setSubmitting }) => {
+      const operations = isEditMode ? buildChangedFieldOperations(initialValues, values, t) : []
       setCommitOperations(operations)
       setSubmitting(false)
       toggle()
@@ -485,10 +483,14 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
 
         <div className={classes.fieldItemFullWidth}>
           <div
-            className={`${classes.propsBox} ${!formik.values.configurationProperties?.length ? classes.propsBoxEmpty : ''}`.trim()}
+            className={cx(classes.propsBox, {
+              [classes.propsBoxEmpty]: !formik.values.configurationProperties?.length,
+            })}
           >
             <div
-              className={`${classes.propsHeader} ${!formik.values.configurationProperties?.length ? classes.propsHeaderEmpty : ''}`.trim()}
+              className={cx(classes.propsHeader, {
+                [classes.propsHeaderEmpty]: !formik.values.configurationProperties?.length,
+              })}
             >
               <GluuText variant="h5" disableThemeColor>
                 <span className={classes.propsTitle}>{t('fields.custom_properties')}</span>
@@ -547,10 +549,14 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
 
         <div className={classes.fieldItemFullWidth}>
           <div
-            className={`${classes.propsBox} ${!formik.values.moduleProperties?.length ? classes.propsBoxEmpty : ''}`.trim()}
+            className={cx(classes.propsBox, {
+              [classes.propsBoxEmpty]: !formik.values.moduleProperties?.length,
+            })}
           >
             <div
-              className={`${classes.propsHeader} ${!formik.values.moduleProperties?.length ? classes.propsHeaderEmpty : ''}`.trim()}
+              className={cx(classes.propsHeader, {
+                [classes.propsHeaderEmpty]: !formik.values.moduleProperties?.length,
+              })}
             >
               <GluuText variant="h5" disableThemeColor>
                 <span className={classes.propsTitle}>{t('fields.module_properties')}</span>

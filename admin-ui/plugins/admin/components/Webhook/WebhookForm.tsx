@@ -481,11 +481,12 @@ const WebhookForm: React.FC = () => {
                   const currentPosition = target.selectionStart || 0
                   setCursorPosition((prev) => ({ ...prev, url: currentPosition }))
                 }}
-                onFocus={(event: React.FocusEvent<HTMLInputElement>) => {
+                onFocus={(event) => {
+                  const target = event.target as HTMLInputElement
                   setTimeout(() => {
                     setCursorPosition((prev) => ({
                       ...prev,
-                      url: event.target.selectionStart || 0,
+                      url: target.selectionStart || 0,
                     }))
                   }, 0)
                 }}

@@ -88,6 +88,9 @@ jest.mock('Orval', () => ({
     post: jest.fn().mockResolvedValue({ data: 'success' }),
     get: jest.fn().mockResolvedValue({ data: '' }),
   },
+  installInterceptors: jest.fn(() => () => {}),
+  setApiToken: jest.fn(),
+  customInstance: jest.fn(),
 }))
 
 type WebhookRecord = Record<string, string>

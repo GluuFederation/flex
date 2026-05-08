@@ -63,6 +63,7 @@ export const createPropertiesPageStyles = (
       ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),
       '& .form-group > label': {
+        ...createFormGroupOverrides()['& .form-group > label'],
         paddingTop: '0 !important',
         paddingBottom: '0 !important',
         marginBottom: '2px !important',

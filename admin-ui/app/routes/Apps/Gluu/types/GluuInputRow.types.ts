@@ -27,7 +27,7 @@ export type GluuInputRowProps<T = Record<string, JsonValue>> = {
     | null
   doc_entry?: string
   shortcode?: React.ReactNode
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   rows?: number
   cols?: number
   isDark?: boolean

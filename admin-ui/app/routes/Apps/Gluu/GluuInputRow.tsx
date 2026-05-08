@@ -201,6 +201,7 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
               handleChange?.(e)
             }}
             onBlur={(e) => formik?.handleBlur?.(e)}
+            onFocus={onFocus}
           />
         ) : (
           <Input {...sharedInputProps} type={(customType ?? type) as InputProps['type']} />
