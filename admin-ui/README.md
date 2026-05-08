@@ -9,7 +9,7 @@ The Gluu Flex Admin UI is a reactive web interface for managing Auth Server conf
 - Node.js `24.x` LTS
 - npm `10+`
 - Java `17+`
-- Gluu Flex: follow the [Gluu Flex Docker monolith setup instructions](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith)
+- Gluu Flex : You can follow the instructions [here](https://docs.gluu.org/stable/install/docker-install/quick-start) for Docker quick installation.
 
 ### Installation
 
