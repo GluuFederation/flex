@@ -49,7 +49,7 @@ const UploadSSA = () => {
       setJWT(typeof token === 'string' ? token : null)
     }
 
-    reader.readAsText(new Blob([selectedFile]))
+    reader.readAsText(selectedFile)
 
     return () => {
       cancelled = true

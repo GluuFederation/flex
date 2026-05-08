@@ -70,7 +70,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
     }),
     [themeState.theme],
   )
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
   const [modal, setModal] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
@@ -317,7 +317,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
       )}
       <Form
         onSubmit={formik.handleSubmit}
-        className={`${classes.formSection} ${classes.formLabels} ${classes.formWithInputs}`}
+        className={cx(classes.formSection, classes.formLabels, classes.formWithInputs)}
       >
         <div className={classes.fieldsGrid}>
           {item.inum && (

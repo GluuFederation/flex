@@ -103,7 +103,7 @@ export const CardTitle: React.FC<CardTitleProps> = ({
 
 export const Badge: React.FC<BadgeProps> = ({ pill, color, className, children, ...props }) => (
   <span
-    className={classNames('badge', color && `badge-${color}`, pill && 'badge-pill', className)}
+    className={classNames('badge', color && `text-bg-${color}`, pill && 'rounded-pill', className)}
     {...props}
   >
     {children}

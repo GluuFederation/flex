@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Col, FormGroup, Input } from 'Components'
 import type { InputProps } from '@/components/BootstrapWrappers/types'
@@ -42,7 +41,7 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
   const [customType, setCustomType] = useState<string | null>(null)
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state?.theme ?? DEFAULT_THEME), [state?.theme])
-  const { classes } = useStyles({
+  const { classes, cx } = useStyles({
     errorColor: themeColors.errorColor,
     fontColor: themeColors.fontColor,
   })
@@ -194,7 +193,7 @@ const GluuInputRow = <T = Record<string, JsonValue>,>({
             value={displayValue}
             disabled={disabled}
             placeholder={placeholder}
-            className={classNames('form-control', inputClassName_)}
+            className={cx('form-control', inputClassName_)}
             rows={rows}
             cols={cols}
             onChange={(e) => {
