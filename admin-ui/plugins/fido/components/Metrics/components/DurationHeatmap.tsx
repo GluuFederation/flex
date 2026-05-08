@@ -10,7 +10,7 @@ import customColors from '@/customColors'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { HEATMAP_COLOR_STOPS } from '../constants'
-import { getNiceStep, interpolateHeatmapColor } from '../utils'
+import { formatChartValue, getNiceStep, interpolateHeatmapColor } from '../utils'
 import type { DurationHeatmapProps } from '../types'
 
 const ColorBar: React.FC<{
@@ -430,7 +430,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                     fill={cellTextColor}
                     fontWeight={compact ? 400 : 600}
                   >
-                    {value}
+                    {formatChartValue(value)}
                   </text>
                 </g>
               )

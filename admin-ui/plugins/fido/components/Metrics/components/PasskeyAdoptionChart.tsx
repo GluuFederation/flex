@@ -21,7 +21,7 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { useAdoptionMetrics } from '../hooks'
-import { toNumber } from '../utils'
+import { formatChartValue, toNumber } from '../utils'
 import type { PasskeyAdoptionChartProps } from '../types'
 import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
 
@@ -195,7 +195,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
         >
           {`Total Users: `}
           <tspan fontSize={16} fontWeight={fontWeights.bold}>
-            {totalRegisteredUsers}
+            {formatChartValue(totalRegisteredUsers)}
           </tspan>
         </text>
 
@@ -225,7 +225,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
         >
           {`${newUsersLabel}: `}
           <tspan fontSize={18} fontWeight={fontWeights.bold}>
-            {newRegisteredUsers}
+            {formatChartValue(newRegisteredUsers)}
           </tspan>
         </text>
       </svg>
