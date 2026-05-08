@@ -36,7 +36,7 @@
     "preview": "npm run cache:terminal:clean && vite preview",
     "preview:dev": "ANALYZE=true npm run build:dev && printf \"\\n>> Bundle analyzer (copy-paste in browser): http://localhost:4100/admin/stats.html\\n\\n\" && vite preview --host 0.0.0.0",
     "preview:prod": "ANALYZE=true npm run build:prod && ts-node --files --project script/tsconfig.json script/patch-dist-runtime-config.ts production && printf \"\\n>> Bundle analyzer (copy-paste in browser): http://localhost:4100/admin/stats.html\\n\\n\" && vite preview --host 0.0.0.0",
-    "cache:terminal:clean": "npm cache clean --f && clear",
+    "cache:terminal:clean": "npm cache clean --force && (clear 2>/dev/null || true)",
     "clean": "rimraf dist node_modules/.vite node_modules/.cache .eslintcache",
     "lint": "eslint app/ plugins/ --ext .js,.jsx,.ts,.tsx --fix",
     "lint:check": "eslint app/ plugins/ --ext .js,.jsx,.ts,.tsx",

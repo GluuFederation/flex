@@ -68,9 +68,6 @@ export const useStyles = makeStyles()(() => ({
     gap: SPACING.SECTION_GAP / 2,
     width: '100%',
   },
-  accordionSpacing: {
-    marginBottom: SPACING.CARD_CONTENT_GAP,
-  },
   removeButtonIcon: {
     fontSize: '16px',
   },

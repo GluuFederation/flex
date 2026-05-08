@@ -43,6 +43,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { CEDARLING_CONFIG_SPACING } from '@/constants'
 import { useStyles } from './JansAssetFormPage.style'
 import { T_KEYS } from './constants'
 
@@ -181,6 +182,11 @@ const AssetForm: React.FC = () => {
     formik.resetForm({ values: initialValues })
   }, [formik, initialValues])
 
+  const serviceOptions = useMemo(
+    () => (services || []).map((s) => ({ value: s, label: s })),
+    [services],
+  )
+
   const isFormChanged = formik.dirty
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.ASSETS_LIST)
@@ -190,9 +196,7 @@ const AssetForm: React.FC = () => {
     <>
       <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
         <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
-          <div
-            className={`${classes.fieldItem} ${classes.fieldItemFullWidth} ${classes.uploadField}`}
-          >
+          <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
             <GluuLabel
               label={T_KEYS.FIELD_UPLOAD}
               size={12}
@@ -239,21 +243,19 @@ const AssetForm: React.FC = () => {
               label={T_KEYS.FIELD_JANS_SERVICE}
               name="service"
               value={formik.values.service?.[0] ?? ''}
-              formik={{
-                handleChange: (event) =>
-                  formik.setFieldValue(
-                    'service',
-                    event.target.value ? [String(event.target.value)] : [],
-                  ),
-                handleBlur: formik.handleBlur,
-              }}
-              values={services}
+              formik={formik}
+              values={serviceOptions}
               lsize={12}
               rsize={12}
               doc_category={ASSET}
               doc_entry="jansService"
               isDark={isDark}
               required
+              freeSolo
+              onValueChange={(v) => formik.setFieldValue('service', v ? [String(v)] : [])}
+              inputHeight={CEDARLING_CONFIG_SPACING.INPUT_HEIGHT}
+              inputPaddingTop={CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}
+              inputPaddingBottom={CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}
               showError={Boolean(formik.errors.service && formik.touched.service)}
               errorMessage={
                 formik.errors.service
