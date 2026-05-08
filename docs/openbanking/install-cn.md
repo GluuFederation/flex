@@ -52,10 +52,12 @@ Use the listing below for a detailed estimation of the minimum required resource
         ```yaml
         auth-server:
             image:
+                repository: gluufederation/openbanking-auth-server
                 pullSecrets:
                 - name: regcred
         persistence:
             image:
+                repository: gluufederation/openbanking-persistence-loader
                 pullSecrets:
                 - name: regcred
         ```
@@ -111,10 +113,10 @@ Use the listing below for a detailed estimation of the minimum required resource
 
     ```bash
     kubectl get secret cn -n gluu --template={{.data.ssl_ca_cert}} | base64 -d > ca.crt
-    kubectl get secret cn -n gluu --template={{.data.ssl_cert}} | base64 -d > server.crt
-    kubectl get secret cn -n gluu --template={{.data.ssl_key}} | base64 -d > server.key
+    kubectl get secret cn -n gluu --template={{.data.ssl_cert}} | base64 -d > web_https.crt
+    kubectl get secret cn -n gluu --template={{.data.ssl_key}} | base64 -d > web_https.key
 
-    kubectl create secret generic tls-ob-ca-certificates -n gluu --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
+    kubectl create secret generic tls-ob-ca-certificates -n gluu --from-file=tls.crt=web_https.crt --from-file=tls.key=web_https.key --from-file=ca.crt=ca.crt
     ```
 
 1.  Inject OBIE certificates, keys and URI: 
@@ -182,7 +184,7 @@ Use the listing below for a detailed estimation of the minimum required resource
       
       The above password is needed in custom scripts such as the `Client Registration script`
 
-   - After finishing all the tweaks to the `openbanking-values.yaml` file, run `helm install` or `helm upgrade` if `Gluu` is already installed
+   - Install after finishing all the tweaks to the `openbanking-values.yaml` file:
 
     ```bash
     helm repo add gluu-flex https://docs.gluu.org/charts
@@ -195,7 +197,7 @@ Use the listing below for a detailed estimation of the minimum required resource
 After successful installation, you can access and test the Gluu Open Banking Platform using either [curl](https://docs.gluu.org/head/openbanking/curl/) or [Jans-CLI](https://docs.gluu.org/head/openbanking/jans-cli/).
 
 
-## Changing the signing key kid for the AS dynamically
+### Changing the signing key kid for the AS dynamically
 
 
 1.  Get a client id and its associated password. We will use the `jans-config-api` client id and secret:
