@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Close, DeleteOutlined } from '@/components/icons'
+import { DeleteOutlined } from '@/components/icons'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -297,12 +297,10 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
             <div className={classes.headerTopRow}>
               <button
                 type="button"
-                className={classes.closeButton}
+                className="btn-close"
                 aria-label={t('actions.close')}
                 onClick={onClose}
-              >
-                <Close fontSize="small" />
-              </button>
+              />
             </div>
             <GluuText variant="h5" className={classes.modalTitle}>
               {t('messages.2FA_details')}

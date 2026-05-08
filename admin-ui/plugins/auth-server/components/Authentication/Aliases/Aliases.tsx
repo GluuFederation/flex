@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close, DeleteOutlined, Edit } from '@/components/icons'
 import { useFormik } from 'formik'
+import { Divider } from '@mui/material'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -357,6 +358,7 @@ const Aliases = ({
               </div>
             </div>
 
+            <Divider sx={{ mt: 2 }} />
             <div className={classes.formFooter}>
               <GluuButton
                 type="submit"

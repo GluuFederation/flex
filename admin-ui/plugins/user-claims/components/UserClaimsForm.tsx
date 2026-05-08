@@ -308,8 +308,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     showError={!!(formik.errors.editType && formik.touched.editType)}
                     errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
                     inputBackgroundColor={userClaimsMultiSelectBg}
-                    hideHelperWhenSelected
-                    compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
@@ -329,12 +327,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
                     errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
                     inputBackgroundColor={userClaimsMultiSelectBg}
-                    hideHelperWhenSelected
-                    compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={`${classes.fieldItem} ${classes.formGridFullSpan}`}>
+                <div className={classes.fieldItem}>
                   <GluuMultiSelectRow
                     label="fields.usage_type"
                     name="usageType"
@@ -351,11 +347,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                       formik.errors.usageType ? t(formik.errors.usageType as string) : ''
                     }
                     inputBackgroundColor={userClaimsMultiSelectBg}
-                    hideHelperWhenSelected
-                    compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
+                <div />
                 <div className={classes.fieldItem}>
                   <GluuInputRow
                     label="fields.saml1_uri"
@@ -484,6 +479,8 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                         placeholder={getFieldPlaceholder(t, 'fields.maximum_length')}
                       />
                     </div>
+
+                    <div />
                   </>
                 )}
               </div>

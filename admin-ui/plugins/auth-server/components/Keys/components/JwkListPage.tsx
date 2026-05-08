@@ -45,16 +45,14 @@ const JwkListPage: React.FC<JwkListPageProps> = ({ classes }) => {
       <GluuText variant="h5" className={classes.sectionTitle}>
         {t('fields.json_web_keys')}
       </GluuText>
-      <Box className={classes.list}>
-        {jwkItems || (
-          <Box className={classes.infoAlert}>
-            <InfoOutlined className={classes.infoIcon} />
-            <GluuText variant="span" className={classes.infoText} disableThemeColor>
-              {t('messages.no_jwks_found')}
-            </GluuText>
-          </Box>
-        )}
-      </Box>
+      {jwkItems || (
+        <Box className={classes.infoAlert}>
+          <InfoOutlined className={classes.infoIcon} />
+          <GluuText variant="span" className={classes.infoText} disableThemeColor>
+            {t('messages.no_jwks_found')}
+          </GluuText>
+        </Box>
+      )}
     </GluuLoader>
   )
 }

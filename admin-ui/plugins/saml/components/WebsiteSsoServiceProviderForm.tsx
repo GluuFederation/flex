@@ -36,7 +36,6 @@ import {
 import type { LocationState } from '../types'
 import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useStyles } from './styles/SamlPage.style'
 
 interface ScopeOption {
   dn: string
@@ -69,7 +68,6 @@ const WebsiteSsoServiceProviderForm = ({
     [propsViewOnly, state?.viewOnly],
   )
   const { t } = useTranslation()
-  const { classes } = useStyles()
 
   const title = useMemo(() => {
     if (viewOnly) {
@@ -325,7 +323,7 @@ const WebsiteSsoServiceProviderForm = ({
     <GluuLoader blocking={loading}>
       <Card>
         <CardBody>
-          <Form onSubmit={handleFormSubmit} className={classes.form}>
+          <Form onSubmit={handleFormSubmit} className="mt-4">
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow

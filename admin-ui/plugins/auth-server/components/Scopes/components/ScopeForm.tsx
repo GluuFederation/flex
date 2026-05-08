@@ -560,6 +560,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)
                                 }}
+                                className="common-link"
                               >
                                 {item.displayName ? item.displayName : item.inum}
                               </Link>
@@ -605,7 +606,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               )}
 
               {showSpontaneousPanel && (
-                <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+                <Accordion className="mb-2 b-primary" initialOpen>
                   <AccordionHeader className="text-primary">
                     {t('fields.spontaneous_scopes').toUpperCase()}
                   </AccordionHeader>
@@ -623,6 +624,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)
                                 }}
+                                className="common-link"
                               >
                                 {item.displayName ? item.displayName : item.inum}
                               </Link>

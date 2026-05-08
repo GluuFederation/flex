@@ -38,16 +38,10 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       color: fontColor,
       fontSize: fontSizes.lg,
       fontWeight: fontWeights.bold,
-      marginBottom: 0,
-    },
-    list: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
-      marginTop: SPACING.SECTION_GAP,
+      marginBottom: SPACING.CARD_CONTENT_GAP * 2,
     },
     accordionWrapper: {
-      marginBottom: 0,
+      marginBottom: SPACING.CARD_CONTENT_GAP,
     },
     accordionHeader: {
       'display': 'flex',
@@ -118,8 +112,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
+      gap: SPACING.CARD_CONTENT_GAP * 2,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
       },

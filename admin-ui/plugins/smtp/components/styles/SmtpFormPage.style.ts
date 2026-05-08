@@ -12,8 +12,10 @@ interface SmtpFormPageStylesParams {
   themeColors: ThemeConfig
 }
 
-const LABEL_MARGIN_BOTTOM = 2
+const LABEL_MARGIN_BOTTOM = 6
 const LABEL_AREA_HEIGHT = 30
+const FORM_CARD_MIN_HEIGHT = 400
+const CONTENT_HORIZONTAL_PADDING = 52
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
@@ -42,8 +44,6 @@ const formGroupOverrides = {
     maxWidth: '100%',
     paddingLeft: 0,
     paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
     marginBottom: LABEL_MARGIN_BOTTOM,
   },
   '& .form-group [class*="col"]': {
@@ -79,6 +79,7 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
+      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative',
       overflow: 'visible',
       display: 'flex',
@@ -86,7 +87,10 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
       boxSizing: 'border-box',
     },
     content: {
-      padding: SPACING.CONTENT_PADDING,
+      paddingTop: SPACING.PAGE,
+      paddingLeft: CONTENT_HORIZONTAL_PADDING,
+      paddingRight: CONTENT_HORIZONTAL_PADDING,
+      paddingBottom: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
@@ -161,11 +165,6 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
         lineHeight: `${lineHeights.normal} !important`,
         margin: '0 !important',
       },
-      '& label': {
-        paddingTop: '0 !important',
-        paddingBottom: '0 !important',
-        marginBottom: `${LABEL_MARGIN_BOTTOM}px !important`,
-      },
     },
     formWithInputs: {
       '& input, & select, & .custom-select': {
@@ -196,7 +195,6 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

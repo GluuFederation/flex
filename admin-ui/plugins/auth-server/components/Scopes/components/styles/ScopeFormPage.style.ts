@@ -21,7 +21,9 @@ const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const LABEL_MARGIN_BOTTOM = 2
+const CONTENT_HORIZONTAL_PADDING = 52
+const CONTENT_HORIZONTAL_PADDING_MOBILE = 20
+const FORM_CARD_MIN_HEIGHT = 400
 const MOBILE_BREAKPOINT = 768
 
 export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, themeColors }) => {
@@ -36,6 +38,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
+      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative' as const,
       overflow: 'visible' as const,
       display: 'flex',
@@ -43,13 +46,17 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       boxSizing: 'border-box' as const,
     },
     content: {
-      padding: SPACING.CONTENT_PADDING,
+      paddingTop: SPACING.PAGE,
+      paddingLeft: CONTENT_HORIZONTAL_PADDING,
+      paddingRight: CONTENT_HORIZONTAL_PADDING,
+      paddingBottom: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
       [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
-        padding: SPACING.PAGE,
+        paddingLeft: CONTENT_HORIZONTAL_PADDING_MOBILE,
+        paddingRight: CONTENT_HORIZONTAL_PADDING_MOBILE,
       },
     },
     formGrid: {
@@ -61,9 +68,6 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
         gridTemplateColumns: '1fr',
       },
-    },
-    accordionSpacing: {
-      marginBottom: SPACING.CARD_CONTENT_GAP,
     },
     fieldItem: {
       'width': '100%',
@@ -85,12 +89,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        paddingTop: '0 !important',
-        paddingBottom: '0 !important',
-        marginBottom: `${LABEL_MARGIN_BOTTOM}px !important`,
-      },
-      '& .form-group > label h5, & .form-group > label h5 span': {
-        margin: '0 !important',
+        marginBottom: 6,
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
@@ -110,7 +109,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       },
       '& [role="combobox"][tabindex="-1"]': {
         backgroundColor: `${formInputBg} !important`,
-        opacity: OPACITY.DISABLED,
+        opacity: OPACITY.FULL,
         cursor: 'not-allowed',
       },
     },
@@ -119,13 +118,11 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',
-      '& input:disabled': {
-        backgroundColor: `${formInputBg} !important`,
+      '& input, & input:disabled': {
+        backgroundColor: 'var(--theme-input-bg) !important',
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.textMuted} !important`,
-        WebkitTextFillColor: `${themeColors.textMuted} !important`,
-        opacity: `${OPACITY.DISABLED} !important`,
-        cursor: 'not-allowed',
+        color: 'var(--theme-input-color) !important',
+        WebkitTextFillColor: 'var(--theme-input-color) !important',
       },
     },
     toggleRow: {
@@ -149,12 +146,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        paddingTop: '0 !important',
-        paddingBottom: '0 !important',
-        marginBottom: `${LABEL_MARGIN_BOTTOM}px !important`,
-      },
-      '& .form-group > label h5, & .form-group > label h5 span': {
-        margin: '0 !important',
+        marginBottom: 6,
       },
       '& .form-group [class*="col"]': {
         flex: '0 0 100%',
@@ -164,7 +156,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         paddingRight: 0,
       },
       '& .react-toggle--disabled': {
-        opacity: `${OPACITY.DISABLED} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
     },
@@ -212,7 +204,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: `${OPACITY.DISABLED} !important`,
+          opacity: OPACITY.FULL,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

@@ -83,7 +83,7 @@ jest.mock('Plugins/auth-server/hooks/useAuthServerJsonProperties', () => ({
   })),
 }))
 
-jest.mock('Orval', () => ({
+jest.mock('../../../../../../../api-client', () => ({
   AXIOS_INSTANCE: {
     post: jest.fn().mockResolvedValue({ data: 'success' }),
     get: jest.fn().mockResolvedValue({ data: '' }),
