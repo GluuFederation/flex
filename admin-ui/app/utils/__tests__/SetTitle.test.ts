@@ -18,12 +18,13 @@ describe('SetTitle', () => {
 
   it('defers title notifications until after the current render tick', async () => {
     const callback = jest.fn()
+    const initialTitle = getStoredPageTitle()
     const cleanup = subscribeToPageTitle(callback)
     try {
       setTitle('SMTP Management')
 
       expect(callback).not.toHaveBeenCalled()
-      expect(getStoredPageTitle()).toBe('Dashboard')
+      expect(getStoredPageTitle()).toBe(initialTitle)
 
       await flushMicrotask()
 

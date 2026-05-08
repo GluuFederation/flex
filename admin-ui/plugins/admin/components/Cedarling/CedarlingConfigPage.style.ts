@@ -122,7 +122,7 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       },
     },
     uploadBox: {
-      'marginTop': 0,
+      'marginTop': '4rem',
       'marginBottom': theme.spacing(1),
       '& > label': {
         paddingTop: '0 !important',

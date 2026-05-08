@@ -37,28 +37,30 @@ const UploadSSA = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [jwt, setJWT] = useState<string | null>(null)
 
-  const readJWTFile = useCallback(() => {
+  useEffect(() => {
     if (!selectedFile) return
+
+    let cancelled = false
     const reader = new FileReader()
 
     reader.onload = () => {
+      if (cancelled) return
       const token = reader.result
       setJWT(typeof token === 'string' ? token : null)
     }
 
-    const blob = new Blob([selectedFile])
-    reader.readAsText(blob)
-  }, [selectedFile])
+    reader.readAsText(new Blob([selectedFile]))
 
-  useEffect(() => {
-    if (selectedFile) {
-      readJWTFile()
+    return () => {
+      cancelled = true
+      reader.abort()
     }
-  }, [selectedFile, readJWTFile])
+  }, [selectedFile])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
     if (file) {
+      setJWT(null)
       setSelectedFileName(file.name)
       setSelectedFile(file)
     }

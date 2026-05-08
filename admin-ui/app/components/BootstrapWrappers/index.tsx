@@ -120,7 +120,7 @@ export const Alert: React.FC<AlertProps> = ({
   children,
   ...props
 }) => {
-  if (!isOpen) {
+  if (isOpen === false) {
     return null
   }
   const severity =
@@ -189,14 +189,7 @@ const bootstrapColorToMui = (
   return 'primary'
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  color,
-  size,
-  variant: _variant,
-  className,
-  children,
-  ...props
-}) => {
+export const Button: React.FC<ButtonProps> = ({ color, size, className, children, ...props }) => {
   const muiColor = bootstrapColorToMui(color)
   const muiSize = size === 'sm' ? 'small' : size === 'lg' ? 'large' : 'medium'
   return (

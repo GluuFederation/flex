@@ -64,5 +64,4 @@ export type InputProps = StandardInputProps | SelectInputProps | TextareaInputPr
 export type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
   color?: string
   size?: 'sm' | 'lg'
-  variant?: string
 }
