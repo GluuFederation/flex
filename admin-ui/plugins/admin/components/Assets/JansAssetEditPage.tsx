@@ -18,6 +18,8 @@ const assetResourceId = ADMIN_UI_RESOURCES.Assets
 
 const JansAssetEditPage: React.FC = () => {
   const { t } = useTranslation()
+  SetTitle(t(T_KEYS.TITLE_ASSET_EDIT))
+
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
@@ -30,8 +32,6 @@ const JansAssetEditPage: React.FC = () => {
   )
 
   const loading = useAppSelector((state) => state.assetReducer?.loading ?? false)
-
-  SetTitle(t(T_KEYS.TITLE_ASSET_EDIT))
 
   return (
     <GluuLoader blocking={loading}>

@@ -57,11 +57,9 @@ export const createPropertiesPageStyles = (
     form: {
       display: 'flex',
       flexDirection: 'column' as const,
-      minHeight: '100%',
     },
     formContent: {
-      'flex': 1,
-      'padding': `${SPACING.SECTION_GAP}px ${SPACING.CARD_PADDING}px 100px`,
+      'padding': SPACING.CONTENT_PADDING,
       ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),
       '& .form-group > label': {
@@ -203,10 +201,10 @@ export const createPropertiesPageStyles = (
       'bottom': 0,
       'zIndex': 10,
       'backgroundColor': cardBg,
-      'paddingTop': SPACING.FORM_FOOTER_GAP,
-      'paddingLeft': SPACING.CARD_PADDING,
-      'paddingRight': SPACING.CARD_PADDING,
-      'paddingBottom': SPACING.CARD_CONTENT_GAP,
+      'paddingTop': 0,
+      'paddingLeft': SPACING.CONTENT_PADDING,
+      'paddingRight': SPACING.CONTENT_PADDING,
+      'paddingBottom': SPACING.CONTENT_PADDING,
       '& hr, & .MuiDivider-root': {
         display: 'none !important',
       },
