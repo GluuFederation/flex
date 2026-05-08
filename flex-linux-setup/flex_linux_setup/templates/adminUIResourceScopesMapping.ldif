@@ -473,6 +473,7 @@ inum: 9846cf37-e701-4c52-881f-3d433233bf58
 jansAccessType: READ
 jansResource: fido
 jansScope: https://jans.io/oauth/config/fido2.readonly
+jansScope: https://jans.io/oauth/config/fido2-metrics.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 jansScope: https://jans.io/oauth/config/data.readonly
 objectClass: top
@@ -483,6 +484,7 @@ inum: 4a953049-ddf1-4d55-aa4f-760f08b584a0
 jansAccessType: WRITE
 jansResource: fido
 jansScope: https://jans.io/oauth/config/fido2.write
+jansScope: https://jans.io/oauth/config/fido2.admin
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 objectClass: top
 objectClass: adminUIResourceScopesMapping
