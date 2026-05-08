@@ -57,6 +57,20 @@ export const toPercent = (value: number | null | undefined): number => {
   return Math.max(0, Math.min(100, Math.round(normalised)))
 }
 
+export const formatChartValue = (value: string | number | boolean | null | undefined): string => {
+  const n = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(n)) return ''
+  return Number(n.toFixed(2)).toString()
+}
+
+export const formatNonZeroChartValue = (
+  value: string | number | boolean | null | undefined,
+): string => {
+  const n = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(n) || n <= 0) return ''
+  return Number(n.toFixed(2)).toString()
+}
+
 export const isoWeekToMonday = (
   year: number,
   week: number,
@@ -217,7 +231,7 @@ export const entriesToHourlyHeatmap = (
     matrix[date] ??= {}
     matrix[date]![hour] = value
   })
-  const sortedDates = Array.from(dateSet).sort()
+  const sortedDates = Array.from(dateSet).sort((a, b) => b.localeCompare(a))
   const data = sortedDates.map((date) => HOURS_OF_DAY.map((_, ci) => matrix[date]?.[ci] ?? 0))
   const allVals = data.flat()
   const minVal = allVals.length ? Math.min(...allVals) : 0

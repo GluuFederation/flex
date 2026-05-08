@@ -21,9 +21,10 @@ import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { AGGREGATION_SERIES_COLORS } from '../constants'
+import { formatNonZeroChartValue } from '../utils'
 import type { ActivityBarChartProps, ActivityDataPoint } from '../types'
 
-interface TickProps {
+type TickProps = {
   x?: number | string
   y?: number | string
   payload?: { value: string }
@@ -131,9 +132,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="regAttempts"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: string | number | boolean | null | undefined) =>
-                  Number(v) > 0 ? String(v) : ''
-                }
+                formatter={formatNonZeroChartValue}
               />
             </Bar>
             <Bar
@@ -146,9 +145,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="regSuccess"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: string | number | boolean | null | undefined) =>
-                  Number(v) > 0 ? String(v) : ''
-                }
+                formatter={formatNonZeroChartValue}
               />
             </Bar>
             <Bar
@@ -161,9 +158,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="authAttempts"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: string | number | boolean | null | undefined) =>
-                  Number(v) > 0 ? String(v) : ''
-                }
+                formatter={formatNonZeroChartValue}
               />
             </Bar>
             <Bar
@@ -176,9 +171,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
                 dataKey="authSuccess"
                 position="top"
                 style={{ fill: axisColor, fontSize: 10 }}
-                formatter={(v: string | number | boolean | null | undefined) =>
-                  Number(v) > 0 ? String(v) : ''
-                }
+                formatter={formatNonZeroChartValue}
               />
             </Bar>
           </BarChart>

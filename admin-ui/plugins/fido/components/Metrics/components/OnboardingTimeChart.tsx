@@ -20,7 +20,7 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { usePerformanceAnalytics } from '../hooks'
-import { toNumber } from '../utils'
+import { formatChartValue, toNumber } from '../utils'
 import type { OnboardingTimeChartProps } from '../types'
 
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
@@ -151,6 +151,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                   dataKey="minDuration"
                   position="top"
                   style={{ fill: axisColor, fontSize: 11 }}
+                  formatter={formatChartValue}
                 />
               </Bar>
               <Bar
@@ -163,6 +164,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                   dataKey="avgDuration"
                   position="top"
                   style={{ fill: axisColor, fontSize: 11 }}
+                  formatter={formatChartValue}
                 />
               </Bar>
               <Bar
@@ -175,6 +177,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                   dataKey="maxDuration"
                   position="top"
                   style={{ fill: axisColor, fontSize: 11 }}
+                  formatter={formatChartValue}
                 />
               </Bar>
             </BarChart>

@@ -12,7 +12,7 @@ const HEATMAP_MODAL_SHADOW_DARK = '0 24px 64px rgba(0, 0, 0, 0.6), 0 12px 32px r
 const HEATMAP_MODAL_SHADOW_LIGHT =
   '0 24px 64px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.15)'
 
-interface MetricsStylesParams {
+type MetricsStylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -87,13 +87,13 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       margin: 0,
     },
     heatmapModalContainer: {
+      ...cardBorderStyle,
       position: 'fixed' as const,
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: cardBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.12)'}`,
       boxShadow: isDark ? HEATMAP_MODAL_SHADOW_DARK : HEATMAP_MODAL_SHADOW_LIGHT,
       width: 'min(1400px, 95vw)',
       maxWidth: '95vw',
@@ -102,7 +102,6 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       zIndex: 1050,
       padding: 0,
       boxSizing: 'border-box' as const,
-      overflow: 'hidden' as const,
       display: 'flex',
       flexDirection: 'column' as const,
     },

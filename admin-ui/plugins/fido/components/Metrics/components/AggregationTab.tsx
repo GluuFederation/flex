@@ -153,6 +153,7 @@ const AggregationTab: React.FC = () => {
                   yAxisLabel={t('fields.agg_date')}
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   compact
+                  colLabelsBottom
                   maxCellHeight={140}
                   minColorBarHeight={320}
                 />
@@ -165,6 +166,7 @@ const AggregationTab: React.FC = () => {
                   yAxisLabel={t('fields.agg_date')}
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   compact
+                  colLabelsBottom
                   maxCellHeight={140}
                   minColorBarHeight={320}
                 />
@@ -237,6 +239,7 @@ const AggregationTab: React.FC = () => {
                   colorBarLabel={t('fields.agg_mili_seconds')}
                   minHeight={500}
                   maxCellHeight={160}
+                  colLabelsBottom
                   showExpand={false}
                 />
               </Col>

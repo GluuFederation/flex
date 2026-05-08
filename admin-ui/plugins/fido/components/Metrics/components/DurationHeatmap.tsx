@@ -156,26 +156,15 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const xAxisH = xAxisLabel ? (fullscreen ? 36 : 28) : 0
     const reservedH = colLabelH + bottomColLabelH + xAxisH
     const effectiveCompactMinHeight = compact ? (minHeight ?? 460) : undefined
-    const baseCellH = fullscreen ? 80 : compact ? 36 : 56
+    const baseCellH = fullscreen ? 40 : compact ? 36 : 56
     const fallbackCols = emptyStateCols ?? (compact ? 24 : minHeight ? 4 : 6)
     const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
     const rowsCount = Math.max(rows.length, 1)
     const safeColsLen = Math.max(layoutColsLen, 1)
-    const compactDenseCellH = 26
-    const compactRowsThreshold = 4
-    const isCompactDense = compact && !fullscreen && rowsCount >= compactRowsThreshold
     const cellH = fullscreen
-      ? Math.max(baseCellH, Math.min(160, Math.floor(700 / rowsCount)))
+      ? baseCellH
       : compact
-        ? isCompactDense
-          ? compactDenseCellH
-          : Math.min(
-              maxCellHeight ?? 90,
-              Math.max(
-                baseCellH,
-                Math.floor(((effectiveCompactMinHeight ?? 460) - 80 - reservedH) / rowsCount),
-              ),
-            )
+        ? baseCellH
         : minHeight
           ? Math.min(
               maxCellHeight ?? Infinity,
@@ -235,8 +224,10 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
             : fallbackRows * baseCellH
       : rowsCount * cellH
     const gridHeight = layoutGridHeight
-    const colorBarHeight =
-      !fullscreen && minColorBarHeight
+    const fullscreenMinColorBarHeight = 320
+    const colorBarHeight = fullscreen
+      ? Math.max(layoutGridHeight, fullscreenMinColorBarHeight)
+      : minColorBarHeight
         ? Math.max(layoutGridHeight, minColorBarHeight)
         : layoutGridHeight
     const gridRightX = rowLabelW + layoutColsLen * cellW
@@ -245,7 +236,8 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const svgHeight = colLabelH + Math.max(gridHeight, colorBarHeight) + bottomColLabelH + xAxisH
 
     const compactScrollMaxHeight = effectiveCompactMinHeight ?? 460
-    const useVerticalScroll = isCompactDense && svgHeight > compactScrollMaxHeight
+    const useVerticalScroll = compact && !fullscreen && svgHeight > compactScrollMaxHeight
+    const useFullscreenNaturalHeight = fullscreen
 
     return (
       <div
@@ -253,7 +245,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
           display: 'flex',
           alignItems: 'flex-start',
           gap: verticalRowLabels ? 12 : 4,
-          ...(fullscreen ? { flex: 1, minHeight: 0, height: '100%' } : {}),
+          ...(fullscreen ? { marginTop: 'auto', marginBottom: 'auto', flexShrink: 0 } : {}),
         }}
       >
         {yAxisLabel && (
@@ -280,17 +272,20 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
             minWidth: 0,
             overflowX: 'auto',
             ...(useVerticalScroll ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' } : {}),
-            ...(fullscreen ? { height: '100%', display: 'flex', alignItems: 'center' } : {}),
           }}
         >
           <svg
             viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-            preserveAspectRatio={useVerticalScroll ? 'xMidYMin meet' : 'xMidYMid meet'}
+            preserveAspectRatio={
+              useVerticalScroll || useFullscreenNaturalHeight ? 'xMidYMin meet' : 'xMidYMid meet'
+            }
             style={{
               display: 'block',
               width: '100%',
               ...(compact && !fullscreen ? { maxWidth: svgWidth } : {}),
-              ...(useVerticalScroll ? { height: svgHeight } : { height: 'auto' }),
+              ...(useVerticalScroll || useFullscreenNaturalHeight
+                ? { height: svgHeight }
+                : { height: 'auto' }),
             }}
           >
             {!colLabelsBottom &&
