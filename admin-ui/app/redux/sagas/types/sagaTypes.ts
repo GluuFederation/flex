@@ -39,13 +39,6 @@ export type AuditLog = AuditRecord & {
   payload?: Record<string, JsonValue>
 }
 
-export type AuthReducerShape = {
-  hasSession?: boolean
-  jwtToken?: string | null
-  idToken?: string | null
-  userinfo_jwt?: string | null
-}
-
 export type AuthState = {
   config: {
     clientId: string

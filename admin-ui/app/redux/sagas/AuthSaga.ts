@@ -33,7 +33,7 @@ import { isFourZeroThreeError } from 'Utils/TokenController'
 import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import type { ApiErrorLike } from './types'
 import { devLogger } from '@/utils/devLogger'
-import { setApiToken } from 'Orval/orvalMutator'
+import { setApiToken } from 'Orval'
 
 type Throwable = Error | ApiErrorLike | string | number | boolean | object | null | undefined
 

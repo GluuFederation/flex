@@ -22,7 +22,6 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/app/$1',
     '^Components(.*)$': '<rootDir>/app/components$1',
     '^Context(.*)$': '<rootDir>/app/context$1',
-    '^context(.*)$': '<rootDir>/app/context$1',
     '^Images(.*)$': '<rootDir>/app/images$1',
     '^Plugins(.*)$': '<rootDir>/plugins$1',
     '^Redux(.*)$': '<rootDir>/app/redux$1',

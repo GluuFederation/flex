@@ -106,9 +106,9 @@ module.exports = [
     },
   },
 
-  // CommonJS config files — also add Node/CommonJS globals here
+  // CommonJS / config files — also add Node/CommonJS globals here.
   {
-    files: ['**/*.cjs', 'config/**/*', '**/*.config.*'],
+    files: ['**/*.cjs', 'config/**/*.{js,cjs,mjs,ts}', '**/*.config.{js,cjs,mjs,ts}'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -175,7 +175,7 @@ module.exports = [
     },
   },
 
-  // Ignore build output and generated files
+  // Ignore build output, generated files, and any non-JS/TS payloads
   {
     ignores: [
       'dist/**',
@@ -183,6 +183,8 @@ module.exports = [
       'coverage/**',
       '**/*.generated.ts',
       'app/redux/api/backend/**',
+      '**/*.json',
+      'jans_config_api_orval/**',
     ],
   },
 ]

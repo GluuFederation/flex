@@ -37,9 +37,7 @@ import {
   getStat,
 } from 'JansConfigApi'
 import type { GenericResponse, GetStatParams } from 'JansConfigApi'
-import { setApiToken } from 'Orval/orvalMutator'
-
-let defaultToken: ApiTokenResponse | undefined
+import { setApiToken } from 'Orval'
 
 const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
   const err = error as ApiErrorLike
@@ -52,26 +50,25 @@ const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
 }
 
 export function* getAccessToken() {
-  if (!defaultToken) {
-    try {
-      defaultToken = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
-      yield put(setApiDefaultToken(defaultToken))
-      yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
-    } catch (error) {
-      devLogger.error(
-        'Failed to fetch API token with default scopes',
-        error instanceof Error ? error : String(error),
-      )
-      yield put(setBackendStatus(getBackendStatusFromError(error as Error | ApiErrorLike)))
-      throw error
-    }
+  try {
+    const token = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
+    yield put(setApiDefaultToken(token))
+    yield put(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
+    return token
+  } catch (error) {
+    devLogger.error(
+      'Failed to fetch API token with default scopes',
+      error instanceof Error ? error : String(error),
+    )
+    yield put(setBackendStatus(getBackendStatusFromError(error as Error | ApiErrorLike)))
+    throw error
   }
-  return defaultToken
 }
 
 function* setupApiToken() {
-  const token = (yield call(getAccessToken)) as ApiTokenResponse
+  const token = yield* getAccessToken()
   setApiToken(token.access_token)
+  return token
 }
 
 function* checkLicensePresentWorker(_action?: { type: string }) {
@@ -226,7 +223,7 @@ function* activateCheckUserLicenseKey(action: { payload: LicenseRequestPayload }
 function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }) {
   const { payload } = action
   try {
-    yield* setupApiToken()
+    const token = yield* setupApiToken()
     const response = (yield call(adminuiPostSsa, payload.payload)) as GenericResponse | null
     if (!response?.success) {
       yield put(
@@ -236,7 +233,7 @@ function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }
       )
     }
     yield put(checkLicenseConfigValidResponse(response?.success ?? false))
-    yield put(getOAuth2Config(defaultToken))
+    yield put(getOAuth2Config(token))
   } catch (err) {
     yield put(checkLicenseConfigValidResponse(false))
     devLogger.log(err instanceof Error ? err : String(err))
@@ -246,8 +243,8 @@ function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }
 
 function* checkAdminuiLicenseConfigWorker(_action?: { type: string }) {
   try {
-    yield* setupApiToken()
-    yield put(getOAuth2Config(defaultToken))
+    const token = yield* setupApiToken()
+    yield put(getOAuth2Config(token))
     const response = (yield call(checkAdminuiLicenseConfigApi)) as GenericResponse | null
     yield put(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
