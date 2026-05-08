@@ -10,51 +10,8 @@ import customColors from '@/customColors'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { HEATMAP_COLOR_STOPS } from '../constants'
+import { getNiceStep, interpolateHeatmapColor } from '../utils'
 import type { DurationHeatmapProps } from '../types'
-
-const interpolateHeatmapColor = (value: number, min: number, max: number): string => {
-  const t = Math.max(0, Math.min(1, (value - min) / (max - min)))
-  const stops = HEATMAP_COLOR_STOPS
-  for (let i = 0; i < stops.length - 1; i++) {
-    const s0 = stops[i]!
-    const s1 = stops[i + 1]!
-    if (t >= s0.stop && t <= s1.stop) {
-      const localT = (t - s0.stop) / (s1.stop - s0.stop)
-      return lerpColor(s0.color, s1.color, localT)
-    }
-  }
-  return stops[stops.length - 1]!.color
-}
-
-const hexToRgb = (hex: string): [number, number, number] => {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-  return [r, g, b]
-}
-
-const lerpColor = (hexA: string, hexB: string, t: number): string => {
-  const [r1, g1, b1] = hexToRgb(hexA)
-  const [r2, g2, b2] = hexToRgb(hexB)
-  const r = Math.round(r1 + (r2 - r1) * t)
-  const g = Math.round(g1 + (g2 - g1) * t)
-  const b = Math.round(b1 + (b2 - b1) * t)
-  return `rgb(${r},${g},${b})`
-}
-
-const getNiceStep = (min: number, max: number, targetTicks = 6): number => {
-  const range = max - min
-  if (range <= 0) return 1
-  const rough = range / targetTicks
-  const pow10 = Math.pow(10, Math.floor(Math.log10(rough)))
-  const norm = rough / pow10
-  let nice: number
-  if (norm < 1.5) nice = 1
-  else if (norm < 3) nice = 2
-  else if (norm < 7) nice = 5
-  else nice = 10
-  return Math.max(1, nice * pow10)
-}
 
 const ColorBar: React.FC<{
   minVal: number

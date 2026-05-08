@@ -20,12 +20,8 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { usePerformanceAnalytics } from '../hooks'
+import { toNumber } from '../utils'
 import type { OnboardingTimeChartProps } from '../types'
-
-const toNumber = (value: number | string | boolean | null | undefined): number => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value
-  return 0
-}
 
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()

@@ -55,6 +55,33 @@ export const MOCK_METRICS_DATA = {
 export const AGGREGATION_TYPES = ['hourly', 'daily', 'weekly', 'monthly'] as const
 export type AggregationType = (typeof AGGREGATION_TYPES)[number]
 
+export const SHORT_MONTHS_UPPER = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const
+
+export const HOURS_OF_DAY = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+
+export const EMPTY_HEATMAP_DATA_DEFAULT = {
+  rows: [] as readonly string[],
+  cols: [] as readonly string[],
+  data: [] as readonly (readonly number[])[],
+  minVal: 1,
+  maxVal: 3.5,
+} as const
+
+export const RADIAN = Math.PI / 180
+
 const makeHourlyGrid = (seed: number): number[][] => {
   const rows: number[][] = []
   for (let r = 0; r < 12; r++) {

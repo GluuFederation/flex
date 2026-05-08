@@ -21,6 +21,7 @@ import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_CHART_COLORS } from '../constants'
 import { useAdoptionMetrics } from '../hooks'
+import { toNumber } from '../utils'
 import type { PasskeyAdoptionChartProps } from '../types'
 import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
 
@@ -32,11 +33,6 @@ const CHART_MARGIN_DEFAULT = { top: 40, right: 220, bottom: 40, left: 220 }
 const CHART_MARGIN_WIDE = { top: 40, right: 340, bottom: 40, left: 100 }
 const Y_TICKS = [12, 10, 8, 6, 4, 2]
 const Y_MAX = 14
-
-const toNumber = (value: number | string | boolean | null | undefined): number => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value
-  return 0
-}
 
 const Arrowhead: React.FC<{ x: number; y: number; dir: 'up' | 'down'; color: string }> = ({
   x,

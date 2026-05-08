@@ -9,19 +9,12 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS } from '../constants'
+import { METRICS_CHART_COLORS, RADIAN } from '../constants'
 import { useErrorsAnalytics } from '../hooks'
+import { toPercent } from '../utils'
 import type { PasskeyAuthChartProps } from '../types'
 
-const RADIAN = Math.PI / 180
-
 import type { PieLabelRenderProps } from 'recharts'
-
-const toPercent = (value: number | null | undefined): number => {
-  if (typeof value !== 'number' || Number.isNaN(value)) return 0
-  const normalised = value > 1 ? value : value * 100
-  return Math.max(0, Math.min(100, Math.round(normalised)))
-}
 
 const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
