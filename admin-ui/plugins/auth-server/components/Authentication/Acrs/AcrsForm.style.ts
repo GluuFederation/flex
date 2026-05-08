@@ -19,9 +19,6 @@ type AcrsFormStylesParams = {
 
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
-const CONTENT_HORIZONTAL_PADDING = 52
-const CONTENT_HORIZONTAL_PADDING_MOBILE = 20
-const FORM_CARD_MIN_HEIGHT = 400
 const MOBILE_BREAKPOINT = 768
 
 const PROPS_HEADER_MB = 16
@@ -47,7 +44,6 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
-      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative' as const,
       overflow: 'visible' as const,
       display: 'flex',
@@ -55,17 +51,13 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       boxSizing: 'border-box' as const,
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
       [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
-        paddingLeft: CONTENT_HORIZONTAL_PADDING_MOBILE,
-        paddingRight: CONTENT_HORIZONTAL_PADDING_MOBILE,
+        padding: SPACING.PAGE,
       },
     },
     formGrid: {
@@ -118,7 +110,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       },
       '& [role="combobox"][tabindex="-1"]': {
         backgroundColor: `${formInputBg} !important`,
-        opacity: OPACITY.FULL,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
     },
@@ -156,7 +148,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         paddingRight: 0,
       },
       '& .react-toggle--disabled': {
-        opacity: `${OPACITY.FULL} !important`,
+        opacity: `${OPACITY.DISABLED} !important`,
         cursor: 'not-allowed',
       },
     },
@@ -214,7 +206,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: OPACITY.FULL,
+          opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

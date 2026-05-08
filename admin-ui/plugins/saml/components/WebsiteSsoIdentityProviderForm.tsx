@@ -34,6 +34,7 @@ import {
 } from './hooks'
 import type { LocationState } from '../types'
 import { useAppDispatch } from '@/redux/hooks'
+import { useStyles } from './styles/SamlPage.style'
 
 interface WebsiteSsoIdentityProviderFormProps {
   configs?: IdentityProvider | null
@@ -58,6 +59,7 @@ const WebsiteSsoIdentityProviderForm = ({
     [propsViewOnly, state?.viewOnly],
   )
   const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
+  const { classes } = useStyles()
 
   const {
     mutateAsync: createIdentityProviderAsync,
@@ -320,7 +322,7 @@ const WebsiteSsoIdentityProviderForm = ({
     <GluuLoader blocking={loading}>
       <Card>
         <CardBody className="">
-          <Form onSubmit={handleFormSubmit} className="mt-4">
+          <Form onSubmit={handleFormSubmit} className={classes.form}>
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow

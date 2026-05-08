@@ -13,9 +13,6 @@ const WIDTH_FULL = '100%'
 const BOX_SIZING_BORDER = 'border-box'
 const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
-const FORM_CARD_MIN_HEIGHT = 400
-const CONTENT_HORIZONTAL_PADDING = 52
-const CONTENT_HORIZONTAL_PADDING_MOBILE = 20
 const MOBILE_BREAKPOINT = 768
 
 export const useStyles = makeStyles<AuthenticationStylesParams>()((
@@ -32,7 +29,6 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: WIDTH_FULL,
-      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative' as const,
       overflow: 'visible' as const,
       display: DISPLAY_FLEX,
@@ -40,10 +36,7 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
       boxSizing: BOX_SIZING_BORDER as 'border-box',
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: WIDTH_FULL,
       maxWidth: WIDTH_FULL,
       minWidth: 0,
@@ -53,8 +46,7 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
       gap: 0,
       overflow: 'visible',
       [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
-        paddingLeft: CONTENT_HORIZONTAL_PADDING_MOBILE,
-        paddingRight: CONTENT_HORIZONTAL_PADDING_MOBILE,
+        padding: SPACING.PAGE,
       },
     },
   }
