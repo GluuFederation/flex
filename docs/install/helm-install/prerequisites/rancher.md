@@ -15,7 +15,7 @@ For a stable, production-ready environment that natively supports Persistent Vol
 
 !!! tip "Testing/Dev Alternative"
 
-    If you are only testing and do not need PVs, you can use a single-node Docker installation. The Linux single-node are **4 CPU cores**, **16 GB RAM**, **50 GB SSD**, and ports **80** and **443** open
+    If you are only testing and do not need PVs, you can use a single-node Docker installation. Make sure the Linux single-node has **4 CPU cores**, **16 GB RAM**, **50 GB SSD**, and ports **80** and **443** open.
 
     ```bash
     docker run -d \
@@ -71,20 +71,9 @@ Open a kubectl shell from the top right navigation menu `>_` and run:
 Use this option if you are running a single-node Docker test environment or lack PV support. You can install the database package(MySQL/PostgreSQL) directly on your Linux VM.
 
 
-### 2. Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx)
-    
-```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-helm install nginx ingress-nginx/ingress-nginx
-```
+### 2. Configure Ingress and Traffic Management
 
-To get the Loadbalancer IP: 
-```bash
-kubectl get svc nginx-ingress-nginx-controller \
---output jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
+Follow this [guide](../ingress-setup.md) to choose between the modern Gateway API (recommended) or the legacy Kubernetes Ingress.
 
 ### 3. Install Gluu Flex
 
