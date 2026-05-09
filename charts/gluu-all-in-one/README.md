@@ -2,7 +2,7 @@
 
 ![Version: 0.0.0-nightly](https://img.shields.io/badge/Version-0.0.0--nightly-informational?style=flat-square) ![AppVersion: 0.0.0-nightly](https://img.shields.io/badge/AppVersion-0.0.0--nightly-informational?style=flat-square)
 
-Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected Gluu Flex microservice all in one deployment.
+Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected Gluu flex all-in-one microservice deployment.
 
 **Homepage:** <https://docs.gluu.org>
 
