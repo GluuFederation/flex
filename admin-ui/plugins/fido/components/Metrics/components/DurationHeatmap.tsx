@@ -7,6 +7,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
+import { REGEX_NON_DIGIT_COMMA } from '@/utils/regex'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { HEATMAP_COLOR_STOPS } from '../constants'
@@ -407,7 +408,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
             {cells.map(({ ri, ci, value, color }) => {
               const x = rowLabelW + ci * cellW
               const y = colLabelH + ri * cellH
-              const brightness = parseInt(color.replace(/[^\d,]/g, '').split(',')[0] ?? '100')
+              const brightness = parseInt(
+                color.replace(REGEX_NON_DIGIT_COMMA, '').split(',')[0] ?? '100',
+              )
               const cellTextColor = brightness < 160 ? customColors.white : customColors.nearBlack
               return (
                 <g key={`cell-${ri}-${ci}`}>
@@ -582,4 +585,4 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   )
 }
 
-export default DurationHeatmap
+export default React.memo(DurationHeatmap)

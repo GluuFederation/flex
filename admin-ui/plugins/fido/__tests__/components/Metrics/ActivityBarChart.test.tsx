@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import ActivityBarChart from 'Plugins/fido/components/Metrics/components/ActivityBarChart'
 import type { ActivityDataPoint } from 'Plugins/fido/components/Metrics/types'
@@ -24,6 +24,10 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 describe('ActivityBarChart', () => {
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   it('renders the chart title', () => {
     render(<ActivityBarChart title="Hourly Activity" data={mockData} />, { wrapper: Wrapper })
     expect(screen.getByText('Hourly Activity')).toBeInTheDocument()
@@ -58,6 +62,7 @@ describe('ActivityBarChart', () => {
   })
 
   it('applies barSize and barCategoryGap props to the rendered bars', () => {
+    jest.useFakeTimers()
     const { container } = render(
       <ActivityBarChart
         title="Monthly Activity"
@@ -67,6 +72,12 @@ describe('ActivityBarChart', () => {
       />,
       { wrapper: Wrapper },
     )
+    // Bars animate in via requestAnimationFrame; flush the animation so the final geometry is rendered.
+    act(() => {
+      jest.advanceTimersByTime(3000)
+    })
+    jest.useRealTimers()
+
     expect(screen.getByText('Monthly Activity')).toBeInTheDocument()
 
     const barRects = container.querySelectorAll<SVGRectElement>(

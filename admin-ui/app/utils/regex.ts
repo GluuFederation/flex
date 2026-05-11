@@ -95,6 +95,12 @@ export const REGEX_WEBHOOK_URL =
   /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
 /** Validates an email address (RFC 5321-compatible surface check). */
 export const REGEX_EMAIL = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+/** Matches an hourly aggregation period of the form YYYY-MM-DD-H (e.g. "2026-05-11-9"). Capture groups: [1] date, [2] hour. */
+export const REGEX_HOURLY_AGGREGATION_PERIOD = /^(\d{4}-\d{2}-\d{2})-(\d{1,2})$/
+/** Matches an ISO week period of the form YYYY-Www (e.g. "2026-W19"). Capture groups: [1] year, [2] week. */
+export const REGEX_ISO_WEEK_PERIOD = /^(\d{4})-W(\d{1,2})$/
+/** Matches any character that is not a digit or comma; use with replace('') to keep only the numeric components of an "rgb(r, g, b)" string. */
+export const REGEX_NON_DIGIT_COMMA = /[^\d,]/g
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
 const escapeRegexSpecialChars = (s: string): string => {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

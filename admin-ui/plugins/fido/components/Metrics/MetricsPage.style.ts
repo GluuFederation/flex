@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { getLoadingOverlayRgba } from '@/customColors'
+import customColors, { getLoadingOverlayRgba, hexToRgb } from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -8,9 +8,8 @@ import { METRICS_CHART_COLORS } from './constants'
 
 const HEATMAP_MODAL_OVERLAY_LIGHT = getLoadingOverlayRgba(customColors.black, 0.55)
 const HEATMAP_MODAL_OVERLAY_DARK = getLoadingOverlayRgba(customColors.black, 0.7)
-const HEATMAP_MODAL_SHADOW_DARK = '0 24px 64px rgba(0, 0, 0, 0.6), 0 12px 32px rgba(0, 0, 0, 0.4)'
-const HEATMAP_MODAL_SHADOW_LIGHT =
-  '0 24px 64px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.15)'
+const HEATMAP_MODAL_SHADOW_DARK = `0 24px 64px rgba(${hexToRgb(customColors.black)}, 0.6), 0 12px 32px rgba(${hexToRgb(customColors.black)}, 0.4)`
+const HEATMAP_MODAL_SHADOW_LIGHT = `0 24px 64px rgba(${hexToRgb(customColors.black)}, 0.25), 0 12px 32px rgba(${hexToRgb(customColors.black)}, 0.15)`
 
 type MetricsStylesParams = {
   isDark: boolean
@@ -73,7 +72,9 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       'color': themeColors.fontColor,
       'zIndex': 2,
       '&:hover': {
-        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+        backgroundColor: isDark
+          ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
+          : `rgba(${hexToRgb(customColors.black)}, 0.06)`,
       },
     },
     heatmapModalOverlay: {

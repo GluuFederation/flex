@@ -73,6 +73,13 @@ export const customColors = {
   chartPurple: '#8979ff',
   chartCoral: '#ff928a',
   chartCyan: '#3cc3df',
+  chartLightBlue: '#90caf9',
+  heatmapStop0: '#fff9c4',
+  heatmapStop1: '#ffcc80',
+  heatmapStop2: '#ffa726',
+  heatmapStop3: '#ef5350',
+  heatmapStop4: '#c62828',
+  heatmapStop5: '#7b0000',
 
   // Table
   tableHeaderTextLight: '#4F6377',

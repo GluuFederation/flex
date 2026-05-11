@@ -9,7 +9,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS, RADIAN } from '../constants'
+import { METRICS_CHART_COLORS, RADIAN, RECHARTS_INITIAL_DIMENSION } from '../constants'
 import { useErrorsAnalytics } from '../hooks'
 import { toPercent } from '../utils'
 import type { PasskeyAuthChartProps } from '../types'
@@ -19,7 +19,7 @@ import type { PieLabelRenderProps } from 'recharts'
 const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
@@ -144,7 +144,11 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
         </div>
 
         <div style={{ flex: 1, minHeight: 320 }}>
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            initialDimension={RECHARTS_INITIAL_DIMENSION}
+          >
             <PieChart margin={{ top: 30, right: 110, bottom: 30, left: 110 }}>
               <Pie
                 data={data}
@@ -181,4 +185,4 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   )
 }
 
-export default PasskeyAuthChart
+export default React.memo(PasskeyAuthChart)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
 import {
   BarChart,
@@ -18,15 +18,30 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS } from '../constants'
+import { METRICS_CHART_COLORS, RECHARTS_INITIAL_DIMENSION } from '../constants'
 import { usePerformanceAnalytics } from '../hooks'
 import { formatChartValue, toNumber } from '../utils'
-import type { OnboardingTimeChartProps } from '../types'
+import type { OnboardingTimeChartProps, OnboardingTimeEntry } from '../types'
+
+const ONBOARDING_DURATION_ROWS = [
+  {
+    categoryKey: 'fields.authentication',
+    min: 'authenticationMinDuration',
+    avg: 'authenticationAvgDuration',
+    max: 'authenticationMaxDuration',
+  },
+  {
+    categoryKey: 'fields.registration',
+    min: 'registrationMinDuration',
+    avg: 'registrationAvgDuration',
+    max: 'registrationMaxDuration',
+  },
+] as const
 
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
@@ -36,26 +51,25 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
 
   const { data: performanceData } = usePerformanceAnalytics(dateRange)
 
-  const chartData = [
-    {
-      category: t('fields.authentication'),
-      minDuration: toNumber(performanceData?.authenticationMinDuration),
-      avgDuration: toNumber(performanceData?.authenticationAvgDuration),
-      maxDuration: toNumber(performanceData?.authenticationMaxDuration),
-    },
-    {
-      category: t('fields.registration'),
-      minDuration: toNumber(performanceData?.registrationMinDuration),
-      avgDuration: toNumber(performanceData?.registrationAvgDuration),
-      maxDuration: toNumber(performanceData?.registrationMaxDuration),
-    },
-  ]
+  const chartData = useMemo<OnboardingTimeEntry[]>(
+    () =>
+      ONBOARDING_DURATION_ROWS.map((row) => ({
+        category: t(row.categoryKey),
+        minDuration: toNumber(performanceData?.[row.min]),
+        avgDuration: toNumber(performanceData?.[row.avg]),
+        maxDuration: toNumber(performanceData?.[row.max]),
+      })),
+    [t, performanceData],
+  )
 
-  const legendItems = [
-    { color: METRICS_CHART_COLORS.minDuration, label: t('fields.min_duration') },
-    { color: METRICS_CHART_COLORS.avgDuration, label: t('fields.avg_duration') },
-    { color: METRICS_CHART_COLORS.maxDuration, label: t('fields.max_duration') },
-  ]
+  const legendItems = useMemo(
+    () => [
+      { color: METRICS_CHART_COLORS.minDuration, label: t('fields.min_duration') },
+      { color: METRICS_CHART_COLORS.avgDuration, label: t('fields.avg_duration') },
+      { color: METRICS_CHART_COLORS.maxDuration, label: t('fields.max_duration') },
+    ],
+    [t],
+  )
 
   return (
     <Card className={classes.chartCard}>
@@ -107,7 +121,11 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
               </div>
             ))}
           </div>
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            initialDimension={RECHARTS_INITIAL_DIMENSION}
+          >
             <BarChart data={chartData} barSize={40} barGap={4} barCategoryGap="30%">
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis
@@ -188,4 +206,4 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
   )
 }
 
-export default OnboardingTimeChart
+export default React.memo(OnboardingTimeChart)

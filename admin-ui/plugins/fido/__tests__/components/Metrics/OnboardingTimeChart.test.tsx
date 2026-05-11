@@ -52,7 +52,7 @@ describe('OnboardingTimeChart', () => {
 
   it('uses API performance data when available', () => {
     const { usePerformanceAnalytics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
-    usePerformanceAnalytics.mockReturnValueOnce({
+    usePerformanceAnalytics.mockReturnValue({
       data: {
         authenticationMinDuration: 50,
         authenticationAvgDuration: 150,

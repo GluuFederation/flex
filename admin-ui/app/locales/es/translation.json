@@ -730,6 +730,8 @@
     "agg_reg_attempts": "Intentos de Registro",
     "agg_reg_success": "Registros Exitosos",
     "agg_time_series_hours": "Series de Tiempo (en horas)",
+    "agg_range_label": "{{type}} {{start}}\na {{end}}",
+    "agg_week_number": "Semana {{number}}",
     "agg_type_daily": "Diario",
     "agg_type_hourly": "Por Hora",
     "agg_type_monthly": "Mensual",

@@ -19,7 +19,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_CHART_COLORS } from '../constants'
+import { METRICS_CHART_COLORS, RECHARTS_INITIAL_DIMENSION } from '../constants'
 import { useAdoptionMetrics } from '../hooks'
 import { formatChartValue, toNumber } from '../utils'
 import type { PasskeyAdoptionChartProps } from '../types'
@@ -50,7 +50,7 @@ const Arrowhead: React.FC<{ x: number; y: number; dir: 'up' | 'down'; color: str
 const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
 
@@ -268,7 +268,11 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 ref={containerRef}
                 style={{ position: 'relative', width: '100%', height: '100%' }}
               >
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                  initialDimension={RECHARTS_INITIAL_DIMENSION}
+                >
                   <BarChart data={barData} barSize={BAR_SIZE} margin={chartMargin}>
                     <YAxis width={0} domain={[0, Y_MAX]} hide />
                     <XAxis dataKey="name" hide />
@@ -331,7 +335,11 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
               <div className={classes.adoptionDonutOverlay}>
                 <div className={classes.adoptionDonutWrapper}>
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    initialDimension={RECHARTS_INITIAL_DIMENSION}
+                  >
                     <PieChart>
                       <Pie
                         data={donutData}
@@ -413,4 +421,4 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   )
 }
 
-export default PasskeyAdoptionChart
+export default React.memo(PasskeyAdoptionChart)
