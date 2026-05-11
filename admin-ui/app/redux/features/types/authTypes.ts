@@ -1,5 +1,3 @@
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-
 export type BackendStatus = {
   active: boolean
   errorMessage: string | null
@@ -15,8 +13,10 @@ export type UserInfo = {
   [key: string]: string | string[] | number | boolean | undefined | null
 }
 
+type ConfigValue = string | number | boolean | null | object | undefined
+
 export type Config = {
-  [key: string]: JsonValue | undefined
+  [key: string]: ConfigValue
 }
 
 export type Location = {

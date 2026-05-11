@@ -1,9 +1,10 @@
-import { FIDO_READ, FIDO_WRITE } from 'Utils/PermChecker'
+import { FIDO_READ, FIDO_WRITE, FIDO_ADMIN } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
-const Fido = createLazyRoute(() => import('./components/Fido'))
+const Fido = createLazyRoute(() => import('./components/Configuration'))
+const MetricsPage = createLazyRoute(() => import('./components/Metrics'))
 
 const pluginMetadata = {
   menus: [
@@ -11,8 +12,20 @@ const pluginMetadata = {
       title: 'menus.fido',
       icon: 'fidomanagement',
       path: ROUTES.FIDO_BASE,
-      permission: FIDO_READ,
-      resourceKey: ADMIN_UI_RESOURCES.FIDO,
+      children: [
+        {
+          title: 'menus.configuration',
+          path: ROUTES.FIDO_BASE,
+          permission: FIDO_READ,
+          resourceKey: ADMIN_UI_RESOURCES.FIDO,
+        },
+        {
+          title: 'menus.metrics',
+          path: ROUTES.FIDO_METRICS,
+          permission: FIDO_ADMIN,
+          resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
+        },
+      ],
     },
   ],
   routes: [
@@ -23,16 +36,10 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },
     {
-      component: Fido,
-      path: ROUTES.FIDO_STATIC_CONFIG,
-      permission: FIDO_WRITE,
-      resourceKey: ADMIN_UI_RESOURCES.FIDO,
-    },
-    {
-      component: Fido,
-      path: ROUTES.FIDO_DYNAMIC_CONFIG,
-      permission: FIDO_WRITE,
-      resourceKey: ADMIN_UI_RESOURCES.FIDO,
+      component: MetricsPage,
+      path: ROUTES.FIDO_METRICS,
+      permission: FIDO_ADMIN,
+      resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
     },
   ],
   reducers: [],
