@@ -1,4 +1,7 @@
 interface ImportMetaEnv {
+  readonly MODE: string
+  readonly DEV: boolean
+  readonly PROD: boolean
   readonly BASE_PATH?: string
   readonly API_BASE_URL?: string
   readonly CONFIG_API_BASE_URL?: string

@@ -4,6 +4,8 @@ export { BORDER_RADIUS, STATUS_DETAILS } from '@/constants'
 
 export const USER_INFO_CHART_BREAKPOINT = 1370
 
+export const RECHARTS_INITIAL_DIMENSION = { width: 100, height: 100 }
+
 export const CHART_CONSTANTS = {
   MIN_MAX: 1200,
   TICK_INTERVAL: 300,

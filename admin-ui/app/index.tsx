@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -6,12 +7,20 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from './i18n'
 import { ThemeProvider } from 'Context/theme/themeContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryDefaults } from '@/utils/queryUtils'
 import { configStore } from 'Redux/store'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import './styles/index.css'
 import 'bootstrap/dist/css/bootstrap.css'
+
+// react-query devtools — dev only; the dynamic import is statically dropped from the production bundle.
+const ReactQueryDevtools = import.meta.env.PROD
+  ? () => null
+  : lazy(() =>
+      import('@tanstack/react-query-devtools').then((mod) => ({
+        default: mod.ReactQueryDevtools,
+      })),
+    )
 
 const { store, persistor } = configStore()
 
@@ -36,7 +45,9 @@ root.render(
             <App />
           </ThemeProvider>
         </I18nextProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        <Suspense fallback={null}>
+          <ReactQueryDevtools />
+        </Suspense>
       </QueryClientProvider>
     </PersistGate>
   </Provider>,

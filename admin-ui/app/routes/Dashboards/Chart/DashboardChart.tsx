@@ -22,7 +22,7 @@ import { fontFamily, fontSizes } from '@/styles/fonts'
 import TooltipDesign from './TooltipDesign'
 import { chartGlobalStyles } from './DashboardChart.style'
 import type { DashboardChartProps, MauStatEntry } from '../types'
-import { CHART_CONSTANTS, CHART_LEGEND_CONFIG } from '../constants'
+import { CHART_CONSTANTS, CHART_LEGEND_CONFIG, RECHARTS_INITIAL_DIMENSION } from '../constants'
 
 const DashboardChart = memo(
   ({
@@ -116,8 +116,13 @@ const DashboardChart = memo(
     return (
       <>
         <GlobalStyles styles={chartGlobalStyles} />
-        {/* height must be a number — recharts ResponsiveContainer renders at 0px with "100%" when parent has no explicit height */}
-        <ResponsiveContainer debounce={1} width="100%" height={340} minHeight={200}>
+        <ResponsiveContainer
+          debounce={1}
+          width="100%"
+          height="100%"
+          minHeight={200}
+          initialDimension={RECHARTS_INITIAL_DIMENSION}
+        >
           <AreaChart data={augmentedData} margin={CHART_CONSTANTS.MARGIN}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor || customColors.textMutedDark} />
             <XAxis

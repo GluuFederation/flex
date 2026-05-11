@@ -192,6 +192,10 @@ export default defineConfig(({ mode }) => {
   const base = normalizeBasePath(env.BASE_PATH)
   const muiIconOptimizeDeps = getMuiIconOptimizeDeps()
   const nodeEnv = mode === 'production' ? 'production' : 'development'
+
+  if (mode === 'production') {
+    process.env.NODE_ENV = 'production'
+  }
   const analyzePlugin: PluginOption | false =
     process.env.ANALYZE === 'true'
       ? (visualizer({
@@ -247,6 +251,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       'process.env': JSON.stringify(processEnv),
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
     },
     css: {
       devSourcemap: true,
