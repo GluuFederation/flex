@@ -59,7 +59,7 @@ Before the last question installer process will display the selected choices and
 | ---- | --------- |
 | Proceed with these values [Y/n]| Confirmation before setting up the services.
 
-### Uninstalling Janssen Server
+### Uninstalling Gluu Flex Server
 
 Execute the installation script with the `-uninstall` argument.
 

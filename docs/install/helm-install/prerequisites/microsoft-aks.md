@@ -21,14 +21,14 @@ This guide covers the prerequisites and cluster creation specific to Azure Kuber
 ## Create a Resource Group
 
 ```bash
-az group create --name janssen-resource-group --location eastus
+az group create --name flex-resource-group --location eastus
 ```
 
 ## Create the AKS Cluster
 
 ```bash
-az aks create -g janssen-resource-group \
--n janssen-cluster \
+az aks create -g flex-resource-group \
+-n flex-cluster \
 --enable-managed-identity \
 --node-vm-size NODE_TYPE \
 --node-count 2 \
@@ -46,8 +46,8 @@ az aks install-cli
 ```
 ```bash
 az aks get-credentials \
---resource-group janssen-resource-group \
---name janssen-cluster
+--resource-group flex-resource-group \
+--name flex-cluster
 ```
 
 ## Create the Gluu Namespace
