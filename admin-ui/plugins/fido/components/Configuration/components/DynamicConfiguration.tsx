@@ -24,10 +24,10 @@ import {
   isLastStringEntryComplete,
   LABEL_SIZE,
   INPUT_SIZE,
-} from '../helper'
-import type { DynamicConfigurationProps, DynamicConfigFormValues } from '../types'
+} from '../../../helper'
+import type { DynamicConfigurationProps, DynamicConfigFormValues } from '../../../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-import { useStyles } from './styles/FidoConfiguration.style'
+import { useStyles } from '../styles/FidoConfiguration.style'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,

@@ -5,13 +5,13 @@ import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
 export type CancellablePromise<T> = Promise<T> & { cancel?: () => void }
 
-export interface BackendStatus {
+export type BackendStatus = {
   active: boolean
   errorMessage: string | null
   statusCode: number | null
 }
 
-export interface UserInfo {
+export type UserInfo = {
   inum?: string
   user_name?: string
   name?: string
@@ -20,19 +20,19 @@ export interface UserInfo {
   [key: string]: string | string[] | number | boolean | undefined | null
 }
 
-export interface AuthConfig {
+export type AuthConfig = {
   clientId?: string
   endSessionEndpoint?: string
   postLogoutRedirectUri?: string
   [key: string]: string | number | boolean | undefined
 }
 
-export interface AuthLocation {
+export type AuthLocation = {
   IPv4?: string
   [key: string]: string | number | boolean | undefined
 }
 
-export interface AuthState {
+export type AuthState = {
   isAuthenticated: boolean
   userinfo: UserInfo | null
   userinfo_jwt: string | null
@@ -54,16 +54,16 @@ export interface AuthState {
 }
 
 // Init State
-export interface GenericItem {
+export type GenericItem = {
   [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
 }
 
-export interface PagedResult {
+export type PagedResult = {
   entries?: GenericItem[]
   totalEntriesCount?: number
 }
 
-export interface InitState {
+export type InitState = {
   scripts: GenericItem[]
   clients: GenericItem[]
   scopes: GenericItem[]
@@ -77,7 +77,7 @@ export interface InitState {
 export type LogoutState = Record<string, never>
 
 // License State
-export interface LicenseState {
+export type LicenseState = {
   isLicenseValid: boolean
   islicenseCheckResultLoaded: boolean
   isLicenseActivationResultLoaded: boolean
@@ -95,23 +95,23 @@ export interface LicenseState {
 // OIDC Discovery State
 export type OidcDiscoveryConfig = Record<string, string>
 
-export interface OidcDiscoveryState {
+export type OidcDiscoveryState = {
   configuration: OidcDiscoveryConfig
   loading: boolean
 }
 
-export interface MauEntry {
+export type MauEntry = {
   monthly_active_users?: number
 }
 
 // MAU State
-export interface MauStatItem {
+export type MauStatItem = {
   month?: string
   mau?: number
   [key: string]: string | number | boolean | null | undefined
 }
 
-export interface MauState {
+export type MauState = {
   stat: MauStatItem[]
   loading: boolean
   startMonth: string
@@ -135,7 +135,7 @@ export type HealthStatusResponse = Partial<Record<HealthServiceKey, HealthStatus
   [serviceName: string]: HealthStatus
 }
 
-export interface HealthState {
+export type HealthState = {
   serverStatus: HealthStatus | null
   dbStatus: HealthStatus | null
   health: HealthStatusResponse
@@ -153,7 +153,7 @@ export type ToastMessage =
       extras?: ToastMessageExtras
     }
 
-export interface ToastState {
+export type ToastState = {
   showToast: boolean
   message: ToastMessage
   type: ToastType
@@ -168,13 +168,13 @@ export type UpdateToastPayload = {
 }
 
 // Profile Details State
-export interface ProfileDetailsState {
+export type ProfileDetailsState = {
   profileDetails: ProfileDetails | null
   loading: boolean
 }
 
 // Cedar Permissions State
-export interface CedarPermissionsState {
+export type CedarPermissionsState = {
   permissions: Record<string, boolean>
   loading: boolean
   error: string | null
@@ -185,13 +185,13 @@ export interface CedarPermissionsState {
 }
 
 // Session State (logout audit)
-export interface SessionState {
+export type SessionState = {
   logoutAuditInFlight: boolean
   logoutAuditSucceeded: boolean | null
 }
 
 // Lock State
-export interface LockState {
+export type LockState = {
   lockDetail: Record<string, JsonValue>
   loading: boolean
 }
@@ -199,7 +199,7 @@ export interface LockState {
 // Admin plugin state types
 
 // Webhook State
-export interface WebhookEntry {
+export type WebhookEntry = {
   inum?: string
   displayName?: string
   url?: string
@@ -210,19 +210,19 @@ export interface WebhookEntry {
   [key: string]: JsonValue | Record<string, string> | undefined
 }
 
-export interface AuiFeature {
+export type AuiFeature = {
   inum?: string
   displayName?: string
   description?: string
   [key: string]: JsonValue | undefined
 }
 
-export interface StoredTriggerPayload {
+export type StoredTriggerPayload = {
   feature: string | null
   payload: JsonValue
 }
 
-export interface WebhookState {
+export type WebhookState = {
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
@@ -234,7 +234,7 @@ export interface WebhookState {
 }
 
 // Asset State
-export interface AssetDocument {
+export type AssetDocument = {
   inum?: string
   displayName?: string
   description?: string
@@ -244,7 +244,7 @@ export interface AssetDocument {
   [key: string]: JsonValue | undefined
 }
 
-export interface AssetState {
+export type AssetState = {
   assets: AssetDocument[]
   services: string[]
   fileTypes: string[]
@@ -262,20 +262,20 @@ export interface AssetState {
 // Auth server plugin state types
 
 // OIDC Client
-export interface OidcClientItem {
+export type OidcClientItem = {
   inum?: string
   clientName?: string
   displayName?: string
   [key: string]: JsonValue | undefined
 }
 
-export interface OidcTokensState {
+export type OidcTokensState = {
   items: JsonValue[]
   totalItems: number
   entriesCount: number
 }
 
-export interface OidcState {
+export type OidcState = {
   items: OidcClientItem[]
   item: OidcClientItem
   view: boolean
@@ -289,7 +289,7 @@ export interface OidcState {
 }
 
 // Scope State
-export interface ScopeItem {
+export type ScopeItem = {
   inum?: string
   id?: string
   displayName?: string
@@ -298,7 +298,7 @@ export interface ScopeItem {
   [key: string]: JsonValue | undefined
 }
 
-export interface ScopeState {
+export type ScopeState = {
   items: ScopeItem[]
   item: ScopeItem
   loading: boolean
@@ -313,20 +313,20 @@ export interface ScopeState {
 }
 
 // UMA Resource State
-export interface UmaResourceItem {
+export type UmaResourceItem = {
   inum?: string
   name?: string
   [key: string]: JsonValue | undefined
 }
 
-export interface UmaResourceState {
+export type UmaResourceState = {
   items: UmaResourceItem[]
   item: UmaResourceItem
   loading: boolean
 }
 
 // Message State
-export interface MessageState {
+export type MessageState = {
   messages: JsonValue[]
   loading: boolean
   error: string | null
@@ -334,7 +334,7 @@ export interface MessageState {
 
 // Root state: core reducers (always present)
 
-export interface CoreAppState {
+export type CoreAppState = {
   authReducer: AuthState
   initReducer: InitState
   logoutReducer: LogoutState
@@ -349,22 +349,21 @@ export interface CoreAppState {
 }
 
 // Admin plugin reducers
-export interface AdminPluginState {
+export type AdminPluginState = {
   mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
 }
 
 // Auth server plugin reducers
-export interface AuthServerPluginState {
+export type AuthServerPluginState = {
   oidcReducer: OidcState
   scopeReducer: ScopeState
   UMAResourceReducer: UmaResourceState
   messageReducer: MessageState
 }
 
-export interface RootState
-  extends CoreAppState, Partial<AdminPluginState & AuthServerPluginState> {}
+export type RootState = CoreAppState & Partial<AdminPluginState & AuthServerPluginState>
 
 export type ReducerMap = {
   [K in keyof RootState]?: Reducer<RootState[K], UnknownAction>

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import StaticConfiguration from 'Plugins/fido/components/StaticConfiguration'
+import StaticConfiguration from 'Plugins/fido/components/Configuration/components/StaticConfiguration'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

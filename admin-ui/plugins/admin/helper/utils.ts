@@ -17,9 +17,13 @@ const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue
     if (acc == null || typeof acc !== 'object') return undefined
     if (Array.isArray(acc)) {
       const index = Number(part)
-      return Number.isInteger(index) && index >= 0 && index < acc.length ? acc[index] : undefined
+      return Number.isInteger(index) && index >= 0 && index < acc.length
+        ? (acc[index] as JsonValue | undefined)
+        : undefined
     }
-    return part in acc ? (acc as Record<string, JsonValue>)[part] : undefined
+    return part in acc
+      ? ((acc as Record<string, JsonValue>)[part] as JsonValue | undefined)
+      : undefined
   }, obj as JsonValue)
 }
 
