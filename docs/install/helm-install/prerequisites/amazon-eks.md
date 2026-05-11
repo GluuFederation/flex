@@ -28,8 +28,8 @@ This guide covers the prerequisites and cluster creation specific to Amazon Elas
 
 ```bash
 eksctl create cluster \
-  --name janssen-cluster \
-  --nodegroup-name jans-nodes \
+  --name flex-cluster \
+  --nodegroup-name flex-nodes \
   --node-type NODE_TYPE \
   --nodes 2 \
   --managed \

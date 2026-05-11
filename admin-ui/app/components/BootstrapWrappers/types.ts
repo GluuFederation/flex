@@ -5,6 +5,7 @@ export type ColProps = React.HTMLAttributes<HTMLDivElement> & {
   md?: number
   lg?: number
   xl?: number
+  xxl?: number
   xs?: number
 }
 

@@ -1,5 +1,6 @@
 import type React from 'react'
 import type { HealthServiceKey, HealthStatusResponse } from 'Redux/features/healthSlice'
+import type { ROUTES } from '@/helpers/navigation'
 import type { PageConfig } from '../Layout/types'
 
 export type { PageConfig }
@@ -37,7 +38,11 @@ export type ThemeContextState = {
   }
 }
 
-type HealthVisibilityPath = '/jans-lock' | '/fido/fidomanagement' | '/scim' | '/saml'
+type HealthVisibilityPath =
+  | typeof ROUTES.JANS_LOCK_BASE
+  | typeof ROUTES.FIDO_BASE
+  | typeof ROUTES.SCIM_BASE
+  | typeof ROUTES.SAML_BASE
 
 export type VisibilityConditions = {
   readonly [P in HealthVisibilityPath]: HealthServiceKey

@@ -30,10 +30,10 @@ import {
   isLastKeyValueComplete,
   isLastStringEntryComplete,
   isLastMetadataServerComplete,
-} from '../helper'
-import type { StaticConfigurationProps, StaticConfigFormValues } from '../types'
+} from '../../../helper'
+import type { StaticConfigurationProps, StaticConfigFormValues } from '../../../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-import { useStyles } from './styles/FidoConfiguration.style'
+import { useStyles } from '../styles/FidoConfiguration.style'
 
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,

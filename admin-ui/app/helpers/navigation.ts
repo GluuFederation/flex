@@ -1,7 +1,6 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
-// Plugin Base Paths - Single source of truth
 const PLUGIN_BASE_PATHS = {
   SAML: '/saml',
   HOME: '/home',
@@ -128,9 +127,8 @@ const ROUTES = {
   SCIM_BASE: PLUGIN_BASE_PATHS.SCIM,
 
   // ========== FIDO Plugin ==========
-  FIDO_BASE: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement`,
-  FIDO_STATIC_CONFIG: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement/static-configuration`,
-  FIDO_DYNAMIC_CONFIG: `${PLUGIN_BASE_PATHS.FIDO}/fidomanagement/dynamic-configuration`,
+  FIDO_BASE: `${PLUGIN_BASE_PATHS.FIDO}/configuration`,
+  FIDO_METRICS: `${PLUGIN_BASE_PATHS.FIDO}/metrics`,
 
   // ========== SMTP Plugin ==========
   SMTP_BASE: `${PLUGIN_BASE_PATHS.SMTP}/smtpmanagement`,

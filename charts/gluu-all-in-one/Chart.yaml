@@ -19,6 +19,6 @@ sources:
 maintainers:
   - name: moabu
     email: team@gluu.org
-description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
+description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected Gluu flex all-in-one microservice deployment.
 name: gluu-all-in-one
 version: 0.0.0-nightly

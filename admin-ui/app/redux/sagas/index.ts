@@ -1,5 +1,10 @@
+/**
+ * Root Sagas
+ */
 import { all } from 'redux-saga/effects'
+import type { SagaIterator } from 'redux-saga'
 
+// sagas
 import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
 import initSaga from './InitSaga'
@@ -22,5 +27,5 @@ export default function* rootSaga() {
     lockSaga(),
     sessionSaga(),
   ]
-  yield all([...coreSagas, ...pluginSagaArr])
+  yield all([...coreSagas, ...pluginSagaArr] as SagaIterator[])
 }

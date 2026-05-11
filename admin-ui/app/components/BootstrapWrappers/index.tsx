@@ -18,14 +18,25 @@ import type {
   RowProps,
 } from './types'
 
-export const Col: React.FC<ColProps> = ({ sm, md, lg, xl, xs, className, children, ...props }) => {
+export const Col: React.FC<ColProps> = ({
+  sm,
+  md,
+  lg,
+  xl,
+  xxl,
+  xs,
+  className,
+  children,
+  ...props
+}) => {
   const colClass = classNames(
     xs != null && `col-${xs}`,
     sm != null && `col-sm-${sm}`,
     md != null && `col-md-${md}`,
     lg != null && `col-lg-${lg}`,
     xl != null && `col-xl-${xl}`,
-    xs == null && sm == null && md == null && lg == null && xl == null && 'col',
+    xxl != null && `col-xxl-${xxl}`,
+    xs == null && sm == null && md == null && lg == null && xl == null && xxl == null && 'col',
     className,
   )
   return (

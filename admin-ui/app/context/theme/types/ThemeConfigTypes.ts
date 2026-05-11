@@ -61,4 +61,10 @@ export type ThemeConfig = {
   availableClaims: {
     focusOutline: string
   }
+  chart: {
+    gridColor: string
+    axisColor: string
+    donutEmptyColor: string
+    cellBorderColor: string
+  }
 }

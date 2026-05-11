@@ -1,5 +1,6 @@
 import type { UserInfo } from 'Redux/features/types/authTypes'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+
+type ProfileDetailsValue = string | number | boolean | null | object | undefined
 
 export type CustomAttribute = {
   name: string
@@ -15,7 +16,7 @@ export type ProfileDetails = {
   sn?: string
   surname?: string
   customAttributes?: CustomAttribute[]
-  [key: string]: JsonValue | CustomAttribute[] | undefined
+  [key: string]: ProfileDetailsValue | CustomAttribute[]
 }
 
 export type ProfileDetailsState = {
@@ -25,7 +26,7 @@ export type ProfileDetailsState = {
 
 export type AuthToken = {
   access_token?: string
-  [key: string]: JsonValue | undefined
+  [key: string]: ProfileDetailsValue
 }
 
 export type AuthState = {
