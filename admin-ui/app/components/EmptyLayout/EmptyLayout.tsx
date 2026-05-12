@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { isNumber } from 'lodash'
+import isNumber from 'lodash/isNumber'
 import classNames from 'classnames'
 import { withPageConfig } from 'Components/Layout'
 import type { EmptyLayoutProps, SectionProps } from './types'

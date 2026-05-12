@@ -6,6 +6,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
+import { ensureLocaleLoaded } from '@/i18n'
 import { useStyles } from './styles/LanguageMenu.style'
 import type { LanguageMenuProps } from './types'
 
@@ -53,8 +54,8 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
 
     const userLang = getInitialLang(inum)
     if (userLang !== i18n.language) {
-      i18n.changeLanguage(userLang)
       setLang(userLang)
+      void ensureLocaleLoaded(userLang).then(() => i18n.changeLanguage(userLang))
     }
 
     hasInitializedRef.current = true
@@ -62,8 +63,8 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
 
   const changeLanguage = useCallback(
     (code: string) => {
-      i18n.changeLanguage(code)
       setLang(code)
+      void ensureLocaleLoaded(code).then(() => i18n.changeLanguage(code))
 
       const config = safeParseUserConfig()
       const langConfig = { ...(config?.lang || {}) }

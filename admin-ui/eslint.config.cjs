@@ -154,6 +154,51 @@ module.exports = [
               message:
                 'Import Cedarling leaf modules directly, for example "@/cedarling/hooks/useCedarling" or "@/cedarling/utility", to preserve Fast Refresh boundaries.',
             },
+            {
+              name: '@mui/styles',
+              message:
+                '@mui/styles is deprecated. Use @mui/material/styles (or tss-react) instead.',
+            },
+            {
+              name: 'lodash',
+              message:
+                "Don't barrel-import lodash — it pulls the whole library into the bundle. Import the method directly, e.g. import cloneDeep from 'lodash/cloneDeep'.",
+            },
+            {
+              name: '@mui/icons-material',
+              message:
+                "Don't barrel-import @mui/icons-material — it re-exports thousands of icons. Import the icon directly, e.g. import Add from '@mui/icons-material/Add'.",
+            },
+            {
+              name: '@mui/lab',
+              message:
+                "Don't barrel-import @mui/lab. Import the component directly, e.g. import LoadingButton from '@mui/lab/LoadingButton'.",
+            },
+            {
+              name: '@mui/x-date-pickers',
+              message:
+                "Don't barrel-import @mui/x-date-pickers. Import the component/adapter directly, e.g. import { DatePicker } from '@mui/x-date-pickers/DatePicker'.",
+            },
+            {
+              name: '@mui/x-date-pickers-pro',
+              message:
+                "Don't barrel-import @mui/x-date-pickers-pro. Import the component/adapter directly, e.g. import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'.",
+            },
+            {
+              name: '@mui/x-data-grid',
+              message:
+                "Don't barrel-import @mui/x-data-grid. Import the component directly, e.g. import { DataGrid } from '@mui/x-data-grid/DataGrid'.",
+            },
+            {
+              name: '@mui/x-data-grid-pro',
+              message:
+                "Don't barrel-import @mui/x-data-grid-pro. Import the component directly, e.g. import { DataGridPro } from '@mui/x-data-grid-pro/DataGridPro'.",
+            },
+            {
+              name: '@mui/x-data-grid-premium',
+              message:
+                "Don't barrel-import @mui/x-data-grid-premium. Import the component directly, e.g. import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium'.",
+            },
           ],
           patterns: [
             {

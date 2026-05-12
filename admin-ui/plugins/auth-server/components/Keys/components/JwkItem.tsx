@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Col, Input } from 'Components'
 import { formatDate } from '@/utils/dayjsUtils'
-import { ChevronIcon } from '@/components/SVG'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import type { JwkItemWithClassesProps, ReadOnlyFieldProps } from '../types'
 import { DATE_FORMAT } from '../constants'
@@ -80,9 +80,7 @@ const JwkItem = React.memo<JwkItemWithClassesProps>(({ item, classes }) => {
         aria-expanded={isOpen}
       >
         <span>{item.name ?? t('fields.unnamed_key')}</span>
-        <span className={classes.accordionIcon}>
-          <ChevronIcon width={16} height={16} direction={isOpen ? 'up' : 'down'} />
-        </span>
+        <ExpandMore className={`${classes.chevronIcon} ${isOpen ? classes.chevronIconOpen : ''}`} />
       </div>
       {isOpen && (
         <div className={classes.accordionBody}>

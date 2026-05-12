@@ -80,6 +80,16 @@ export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
 export const REGEX_STYLE_IMPORT_TILDE_PREFIX = /^~(?=.)/
 /** Matches the `/node_modules/` path segment so package subpaths can be extracted from resolved file ids. */
 export const REGEX_NODE_MODULES_SEGMENT = /\/node_modules\//
+/** Matches everything up to and including the final `/node_modules/` segment of a path; replace with `node_modules/` to display bundle-report dependency sources by package. */
+export const REGEX_NODE_MODULES_PREFIX = /^.*\/node_modules\//
+/** Matches the leading NUL byte(s) bundlers prepend to virtual module ids (e.g. `\0vite/preload-helper`); strip before normalizing bundle-report source paths. */
+export const REGEX_VIRTUAL_MODULE_NULL_PREFIX = /^\0+/
+/** Matches built code/style output assets (`.js`, `.mjs`, `.css`, `.wasm`); used to focus the bundle report on optimizable output. */
+export const REGEX_CODE_BUILD_ASSET = /\.(?:m?js|css|wasm)$/
+/** Matches the bare `date-fns` import specifier; aliased to date-fns's ESM entry so its CJS build isn't bundled alongside the ESM one (date-fns ships disjoint `.js`/`.mjs` graphs). */
+export const REGEX_DATE_FNS_BARE_SPECIFIER = /^date-fns$/
+/** Matches a `date-fns/<subpath>` import specifier (excluding `package.json`); capture group [1] is the subpath, used to alias the import to the corresponding ESM `.mjs` file so a single date-fns build ends up in the bundle. */
+export const REGEX_DATE_FNS_SUBPATH_SPECIFIER = /^date-fns\/(?!package\.json)(.+)$/
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
 export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */

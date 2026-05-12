@@ -16,7 +16,6 @@ import Sidebar from './Sidebar'
 import { SidebarMenuItem, SidebarMenu } from './SidebarMenu'
 import { ThemeClass, ThemeProvider } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
-import { GluuDatePicker } from './GluuDatePicker'
 import { GluuDropdown } from './GluuDropdown'
 import { GluuPageContent } from './GluuPageContent'
 import { GluuDynamicList } from './GluuDynamicList'
@@ -53,11 +52,6 @@ export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/t
 export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
 export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
 export type { GluuPageContentProps } from './GluuPageContent'
-export type {
-  GluuDatePickerProps,
-  GluuDatePickerSingleProps,
-  GluuDatePickerRangeProps,
-} from './GluuDatePicker'
 export {
   Accordion,
   AccordionHeader,
@@ -69,7 +63,6 @@ export {
   EmptyLayout,
   GluuBadge,
   GluuButton,
-  GluuDatePicker,
   GluuSpinner,
   Layout,
   Notifications,

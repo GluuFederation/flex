@@ -2,13 +2,16 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import type { InitOptions } from 'i18next'
 import translationEn from './locales/en/translation.json'
-import translationFr from './locales/fr/translation.json'
-import translationPt from './locales/pt/translation.json'
-import translationEs from './locales/es/translation.json'
 import { isDevelopment } from './utils/env'
 import { devLogger } from './utils/devLogger'
 import { hmrAccept } from '@/utils/hmr'
 import { toast } from 'react-toastify'
+
+const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof translationEn }>> = {
+  es: () => import('./locales/es/translation.json'),
+  fr: () => import('./locales/fr/translation.json'),
+  pt: () => import('./locales/pt/translation.json'),
+}
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
   devLogger.warn(
@@ -43,22 +46,31 @@ const getSavedLanguage = (): string => {
   return 'en'
 }
 
+export const ensureLocaleLoaded = async (lng: string): Promise<void> => {
+  const base = (lng || '').split('-')[0]
+  if (!base || base === 'en' || i18n.hasResourceBundle(base, 'translation')) return
+  const loader = LAZY_LOCALE_LOADERS[base]
+  if (!loader) return
+  try {
+    const mod = await loader()
+    i18n.addResourceBundle(base, 'translation', mod.default, true, true)
+  } catch (error) {
+    devLogger.warn(
+      `[i18n] Failed to load "${base}" translations:`,
+      error instanceof Error ? error : String(error),
+    )
+  }
+}
+
+const savedLanguage = getSavedLanguage()
+
 const i18nConfig: InitOptions = {
   resources: {
     en: {
       translation: translationEn,
     },
-    fr: {
-      translation: translationFr,
-    },
-    pt: {
-      translation: translationPt,
-    },
-    es: {
-      translation: translationEs,
-    },
   },
-  lng: getSavedLanguage(),
+  lng: savedLanguage,
   fallbackLng: 'en',
   debug: false,
   ns: ['translation'],
@@ -75,17 +87,14 @@ const i18nConfig: InitOptions = {
 
 i18n.use(initReactI18next).init(i18nConfig)
 
+i18n.on('languageChanged', (lng: string) => {
+  void ensureLocaleLoaded(lng)
+})
+
+void ensureLocaleLoaded(savedLanguage)
+
 hmrAccept<{ default: typeof translationEn }>('./locales/en/translation.json', (m) => {
   if (m) i18n.addResourceBundle('en', 'translation', m.default, true, true)
-})
-hmrAccept<{ default: typeof translationFr }>('./locales/fr/translation.json', (m) => {
-  if (m) i18n.addResourceBundle('fr', 'translation', m.default, true, true)
-})
-hmrAccept<{ default: typeof translationPt }>('./locales/pt/translation.json', (m) => {
-  if (m) i18n.addResourceBundle('pt', 'translation', m.default, true, true)
-})
-hmrAccept<{ default: typeof translationEs }>('./locales/es/translation.json', (m) => {
-  if (m) i18n.addResourceBundle('es', 'translation', m.default, true, true)
 })
 
 export default i18n

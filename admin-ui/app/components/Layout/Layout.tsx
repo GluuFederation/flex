@@ -1,7 +1,12 @@
 import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import classNames from 'classnames'
 import { useLocation } from 'react-router-dom'
-import { filter, forOwn, isUndefined, compact, differenceBy, pick } from 'lodash'
+import filter from 'lodash/filter'
+import forOwn from 'lodash/forOwn'
+import isUndefined from 'lodash/isUndefined'
+import compact from 'lodash/compact'
+import differenceBy from 'lodash/differenceBy'
+import pick from 'lodash/pick'
 
 import { LayoutContent } from './LayoutContent'
 import { LayoutNavbar } from './LayoutNavbar'

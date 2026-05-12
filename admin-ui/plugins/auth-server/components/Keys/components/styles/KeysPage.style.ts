@@ -79,16 +79,15 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       borderBottomRightRadius: 0,
       borderBottom: 'none',
     },
-    accordionIcon: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 32,
-      height: 32,
-      borderRadius: BORDER_RADIUS.CIRCLE,
-      backgroundColor: themeColors.infoAlert.background,
+    chevronIcon: {
+      width: 18,
+      height: 18,
       color: fontColor,
       flexShrink: 0,
+      transition: 'transform 0.3s ease',
+    },
+    chevronIconOpen: {
+      transform: 'rotate(180deg)',
     },
     accordionBody: {
       'padding': `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px ${SPACING.CARD_CONTENT_GAP}px`,
