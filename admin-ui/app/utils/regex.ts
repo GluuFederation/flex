@@ -90,6 +90,8 @@ export const REGEX_CODE_BUILD_ASSET = /\.(?:m?js|css|wasm)$/
 export const REGEX_DATE_FNS_BARE_SPECIFIER = /^date-fns$/
 /** Matches a `date-fns/<subpath>` import specifier (excluding `package.json`); capture group [1] is the subpath, used to alias the import to the corresponding ESM `.mjs` file so a single date-fns build ends up in the bundle. */
 export const REGEX_DATE_FNS_SUBPATH_SPECIFIER = /^date-fns\/(?!package\.json)(.+)$/
+/** Matches a `from '@mui/icons-material/<Icon>'` import in the MUI icon registry; capture group [1] is the full specifier, collected so optimizeDeps can pre-bundle every icon the app uses. */
+export const REGEX_MUI_ICON_EXPORT = /from\s+['"](@mui\/icons-material\/[^'"]+)['"]/g
 /** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
 export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */

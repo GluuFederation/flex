@@ -10,12 +10,13 @@ import {
   REGEX_DATE_FNS_BARE_SPECIFIER,
   REGEX_DATE_FNS_SUBPATH_SPECIFIER,
   REGEX_FORWARD_SLASH,
+  REGEX_MUI_ICON_EXPORT,
   REGEX_NODE_MODULES_PREFIX,
   REGEX_NODE_MODULES_SEGMENT,
   REGEX_STYLE_IMPORT_TILDE_PREFIX,
   REGEX_VIRTUAL_MODULE_NULL_PREFIX,
 } from './app/utils/regex'
-import type { HmrContext } from 'vite'
+import type { HmrContext, Plugin } from 'vite'
 
 const timingPlugin = () => {
   return {
@@ -30,6 +31,21 @@ const timingPlugin = () => {
     },
   }
 }
+
+const ENV_CONFIG_FILENAME = 'env-config.js'
+const ENV_CONFIG_SHIM = `// Per-deployment runtime config; replaced at install/deploy time (window.configApiBaseUrl, window.apiBaseUrl, ...).\n`
+
+const envConfigPlugin = (basePath: string): Plugin => ({
+  name: 'admin-ui:env-config',
+  transformIndexHtml(_html, ctx) {
+    return ctx.server
+      ? [{ tag: 'script', children: ENV_CONFIG_SHIM, injectTo: 'body' }]
+      : [{ tag: 'script', attrs: { src: `${basePath}${ENV_CONFIG_FILENAME}` }, injectTo: 'body' }]
+  },
+  generateBundle() {
+    this.emitFile({ type: 'asset', fileName: ENV_CONFIG_FILENAME, source: ENV_CONFIG_SHIM })
+  },
+})
 
 const DATE_FNS_PACKAGE_DIR = path.resolve(process.cwd(), 'node_modules/date-fns')
 
@@ -53,7 +69,6 @@ const dateFnsEsmResolverPlugin = () => {
 }
 
 const MUI_ICON_REGISTRY_PATH = path.resolve(process.cwd(), 'app/components/icons/index.ts')
-const REGEX_MUI_ICON_EXPORT = /from\s+['"](@mui\/icons-material\/[^'"]+)['"]/g
 
 const getMuiIconOptimizeDeps = (): string[] => {
   if (!existsSync(MUI_ICON_REGISTRY_PATH)) {
@@ -283,6 +298,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       dateFnsEsmResolverPlugin(),
       timingPlugin(),
+      envConfigPlugin(base),
       wasm(),
       react({
         exclude: [/node_modules/, /jans_config_api_orval/],
