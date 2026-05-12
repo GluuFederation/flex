@@ -102,7 +102,7 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
+      rowGap: SPACING.SECTION_GAP,
       width: '100%',
       alignItems: 'start',
       minWidth: 0,
