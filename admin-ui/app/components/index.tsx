@@ -41,17 +41,7 @@ export {
   Row,
 } from './BootstrapWrappers'
 
-export type { DropdownOption, ThemeDropdownProps } from './ThemeDropdown/types'
-export type {
-  GluuDropdownProps,
-  GluuDropdownOption,
-  DropdownPosition,
-  DropdownValue,
-} from './GluuDropdown/types'
-export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/types'
-export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
-export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
-export type { GluuPageContentProps } from './GluuPageContent'
+export type { GluuDropdownOption, DropdownPosition } from './GluuDropdown/types'
 export {
   Accordion,
   AccordionHeader,

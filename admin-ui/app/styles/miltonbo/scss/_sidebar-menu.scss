@@ -114,12 +114,6 @@
 @media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
     .sidebar--collapsed .sidebar-menu--slim {
         .sidebar-menu__entry {
-            &.active.open {
-                > .sidebar-menu__entry__link {
-                    @include sidebar-slim-menu-item--active;
-                }
-            }
-
             &--nested {
                 position: relative;
 
@@ -147,20 +141,13 @@
                     .sidebar-submenu__entry__link {
                         @include apply-padding-map($sidebar-slim-submenu-item-padding, 0.5rem);
 
-                        @include sidebar-slim-submenu-item;
-
                         &:hover {
                             text-decoration: none;
-                            @include sidebar-slim-submenu-item--hover;
                         }
                     }
                     // First Menu - hoverable
                     > .sidebar-submenu__entry > .sidebar-submenu__entry__link {
                         padding-left: 1rem;
-                    }
-                    // Nested menus
-                    .sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
-                        @include sidebar-slim-submenu-item--active;
                     }
                 }
 
@@ -188,8 +175,6 @@
 
             &:hover .sidebar-menu__entry__link {
                 text-decoration: none;
-
-                @include sidebar-slim-menu-item--hover;
             }
         }
     }

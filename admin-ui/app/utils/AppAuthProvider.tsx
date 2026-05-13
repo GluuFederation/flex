@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'

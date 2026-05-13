@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/knip/schema.json",
+  "entry": [
+    "app/index.tsx",
+    "plugins/*/plugin-metadata.{ts,tsx}",
+    "plugins/PluginMenuResolver.ts",
+    "plugins/PluginReducersResolver.ts",
+    "plugins/PluginSagasResolver.ts",
+    "build/plugin-cli.ts",
+    "build/cli-tools.ts",
+    "script/*.ts",
+    "vite.config.ts",
+    "orval.config.ts",
+    "babel.config.cjs",
+    "eslint.config.cjs"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx,js,jsx}",
+    "plugins/**/*.{ts,tsx,js,jsx}",
+    "build/**/*.ts",
+    "script/**/*.ts"
+  ],
+  "ignore": [
+    "jans_config_api_orval/**",
+    "**/__tests__/**",
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "public/**"
+  ],
+  "ignoreDependencies": ["@types/react-toggle", "babel-preset-jest"]
+}

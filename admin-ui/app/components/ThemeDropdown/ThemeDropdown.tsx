@@ -128,5 +128,3 @@ export const ThemeDropdown = memo<ThemeDropdownProps>(
 )
 
 ThemeDropdown.displayName = 'ThemeDropdown'
-
-export default ThemeDropdown

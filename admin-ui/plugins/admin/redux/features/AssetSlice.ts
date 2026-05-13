@@ -83,5 +83,4 @@ export const {
 } = assetSlice.actions
 
 export const { actions, reducer } = assetSlice
-export default reducer
 reducerRegistry.register('assetReducer', reducer)

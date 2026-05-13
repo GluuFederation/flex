@@ -127,23 +127,6 @@ $color-alternatives: (
     .navbar-dark-#{$key} {
         @include theme-dark-navbar($gray-800, $white, $gray-600, $color);
     }
-
-    // Sidebar theme
-    .sidebar-dark-#{key} {
-        @include theme-dark-sidebar(
-            $gray-800,
-            // background color
-            $white,
-            // text / active links
-            $gray-600,
-            // muted text menu
-            $color,
-            // brand color
-            none,
-            // sidebar border
-            1px solid rgba($white, 0.2) // slim menu border
-        );
-    }
 }
 
 /**
@@ -257,23 +240,6 @@ $color-alternatives: (
     .navbar-light-#{$key} {
         @include theme-light-navbar($white, $black, $body-color, $color);
     }
-
-    // Sidebar theme
-    .sidebar-light-#{key} {
-        @include theme-light-sidebar(
-            white,
-            // background color
-            $black,
-            // text / active links
-            $body-color,
-            // muted text menu
-            $color,
-            // brand color
-            1px solid $gray-300,
-            // sidebar border
-            1px solid $gray-300 // slim menu border
-        );
-    }
 }
 
 /**
@@ -356,13 +322,6 @@ $color-alternatives: (
 
         @include theme-color-navbar($color, $white);
 
-        // Override Layout Navbar Badges
-        .layout__navbar .navbar-themed {
-            .icon-with-badge .icon-with-badge__badge {
-                background-color: change-color($color, $lightness: 70%) !important;
-            }
-        }
-
         // Override Layout Sidebar Badges
         .layout__sidebar .sidebar {
             .badge {
@@ -388,30 +347,6 @@ $color-alternatives: (
         );
 
         @include theme-color-navbar($color, $white);
-
-        // Override Badges
-        &.navbar,
-        .navbar.navbar-themed {
-            .icon-with-badge .icon-with-badge__badge {
-                background-color: change-color($color, $lightness: 70%) !important;
-            }
-        }
-    }
-
-    // Sidebar theme
-    .sidebar-color-#{key} {
-        @include setup-theme(
-            (
-                "theme-color": $color
-            )
-        );
-
-        @include theme-color-sidebar($color, $white, 1px solid rgba($white, 0.5));
-
-        // Override Badges
-        .badge {
-            background-color: rgba($white, 0.4);
-        }
     }
 }
 

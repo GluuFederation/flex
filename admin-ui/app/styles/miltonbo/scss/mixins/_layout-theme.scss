@@ -8,10 +8,8 @@
 
 @mixin setup-sidebar($config) {
     --theme-sidebar-background: #{map-get($config, "background")};
-    --theme-sidebar-border: #{map-get($config, "border")};
     --theme-sidebar-border-slim-submenu: #{map-get($config, "border-slim-submenu")};
     --theme-sidebar-brand-color: #{map-get($config, "brand-color")};
-    --theme-sidebar-badge-override: #{map-get($config, "badge-override")};
     --theme-sidebar-close-color: #{map-get($config, "close-color")};
     --theme-sidebar-text-color: #{map-get($config, "text-color")};
     --theme-sidebar-text-color-muted: #{map-get($config, "text-color-muted")};
@@ -23,7 +21,6 @@
 }
 
 @mixin setup-sidebar-menu($config) {
-    --theme-menu-accent-color: #{map-get($config, "accent-color")};
     --theme-menu-accent-color-hover: #{map-get($config, "accent-color-hover")};
     --theme-menu-background-color: #{map-get($config, "background-color")};
     --theme-menu-text-color: #{map-get($config, "text-color")};
@@ -54,29 +51,9 @@
     --theme-navbar-menu-item-hover-color: #{map-get($config, "menu-item-hover-color")};
     --theme-navbar-menu-item-active-background: #{map-get($config, "menu-item-active-background")};
     --theme-navbar-menu-item-active-color: #{map-get($config, "menu-item-active-color")};
-    @if map-has-key($config, "menu-icon-w-badge-color") {
-        --theme-navbar-menu-icon-w-badge-color: #{map-get($config, "menu-icon-w-badge-color")};
-    }
-    --theme-navbar-menu-item-accent-color: #{map-get($config, "menu-item-accent-color")};
-    --theme-navbar-menu-item-accent-hover-color: #{map-get($config, "menu-item-accent-hover-color")};
     --theme-navbar-dropdown-active-color: #{map-get($config, "dropdown-active-color")};
     --theme-navbar-dropdown-active-background: #{map-get($config, "dropdown-active-background")};
 }
-
-/**
- *  background, border, border-slim-submenu, theme-color,
- *  brand-color, text-color, text-color-muted,
- *  link-color, link-color-hover, link-color-muted,
- *  scroll-rail-color, scroll-thumb-color,
- *  navbar-background, navbar-brand,
- *  navbar-menu-item-bg, navbar-menu-item-color,
- *  menu-background-color, menu-text-color, menu-icon-color, menu-arrow-color
- *  (OPTIONAL) menu-slim-backgroud-color, menu-slim-text-color, menu-slim-icon-color, menu-slim-arrow-color
- *  menu-background-color-hover, menu-text-color-hover, menu-icon-color-hover, menu-arrow-color-hover
- *  (OPTIONAL) menu-slim-background-color-hover, menu-slim-text-color-hover, menu-slim-icon-color-hover, menu-slim-arrow-color-hover
- *  menu-background-color-active, menu-text-color-active, menu-icon-color-active, menu-arrow-color-active
- *  (OPTIONAL) menu-slim-background-color-active, menu-slim-text-color-active, menu-slim-icon-color-active, menu-slim-arrow-color-active
- */
 
 @mixin collapsed-pills-menu($parent-class-name) {
     @each $breakpoint in map-keys($grid-breakpoints) {
@@ -106,13 +83,11 @@
                             box-shadow: none;
                         }
                     }
-                    .nested-dropdown__submenu-item--open > .dropdown-item,
                     .dropdown.show > .nav-link {
                         color: var(--theme-navbar-menu-item-hover-color);
 
                         box-shadow: none;
                     }
-                    .nested-dropdown__submenu-item--open .dropdown-menu,
                     .dropdown-menu.show {
                         background: none;
 
@@ -156,17 +131,6 @@
         /*
             General Navbar Elements =============
         */
-        // Avatar Status BG Circle
-        .nav-item,
-        .nav-link {
-            > .avatar-image,
-            > .avatar-font {
-                .avatar__icon--stack > .fa-circle:first-child {
-                    color: var(--theme-navbar-background) !important;
-                }
-            }
-        }
-
         // Stacked Navbars
         + nav {
             border-top: 1px solid var(--theme-navbar-between-border-color, var(--theme-navbar-background));
@@ -202,39 +166,6 @@
         }
 
         /*
-            NavAccent Menu Theming
-        */
-        .nav-accent {
-            .nav-item {
-                .nav-link {
-                    &:hover {
-                        box-shadow: inset 0px -3px 0px 0px var(--theme-navbar-menu-item-accent-hover-color);
-                    }
-
-                    &.active {
-                        box-shadow: inset 0px -3px 0px 0px var(--theme-navbar-menu-item-accent-color);
-                    }
-                }
-            }
-
-            .dropdown.show > .nav-link {
-                box-shadow: inset 0px -3px 0px 0px var(--theme-navbar-menu-item-accent-hover-color);
-                color: var(--theme-navbar-menu-item-active-color);
-            }
-
-            .dropdown-menu .dropdown-item {
-                &:active,
-                &.active {
-                    background-color: var(--theme-navbar-dropdown-active-background);
-                    color: var(--theme-navbar-dropdown-active-color);
-                }
-            }
-        }
-
-        // Accent Collapsed
-        @include collapsed-pills-menu("nav-accent");
-
-        /*
             NavPills Menu Theming ===============
         */
         // Pills Dropdown Open
@@ -261,17 +192,6 @@
             color: var(--theme-navbar-menu-item-active-color);
         }
 
-        // Avatar Status BG Circle
-        .nav-item,
-        .nav-link {
-            > .avatar-image,
-            > .avatar-font {
-                .avatar__icon--stack > .fa-circle:first-child {
-                    color: var(--theme-navbar-background) !important;
-                }
-            }
-        }
-
         // Stacked Navbars
         + nav {
             border-top: 1px solid var(--theme-navbar-between-border-color, var(--theme-navbar-background));
@@ -282,10 +202,6 @@
     .sidebar {
         background: var(--theme-sidebar-background);
         color: var(--theme-sidebar-text-color);
-    }
-
-    .sidebar .avatar__icon--stack > .fa-circle:first-child {
-        color: var(--theme-sidebar-background) !important;
     }
 
     .sidebar .text-muted {

@@ -15,7 +15,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getGetAllAssetsQueryKey } from 'JansConfigApi'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { useAssetServices } from './hooks'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import {
   createJansAsset,
   updateJansAsset,

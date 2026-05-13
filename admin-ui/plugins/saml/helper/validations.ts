@@ -204,5 +204,3 @@ export const websiteSsoServiceProviderValidationSchema = (
       ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_post_url')),
     }),
   }) as Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues>
-
-export default samlConfigurationValidationSchema

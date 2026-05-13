@@ -1,14 +1,3 @@
-export {
-  formatDateForApi,
-  generateMonthRange,
-  transformRawStatEntry,
-  createEmptyStatEntry,
-  augmentMauData,
-} from './dataAugmentation'
+export { formatDateForApi, transformRawStatEntry, augmentMauData } from './dataAugmentation'
 
-export {
-  formatMonth,
-  formatNumber,
-  calculatePercentChange,
-  formatPercentChange,
-} from './formatters'
+export { formatMonth, formatNumber, calculatePercentChange } from './formatters'

@@ -90,8 +90,6 @@ export const REGEX_CODE_BUILD_ASSET = /\.(?:m?js|css|wasm)$/
 export const REGEX_DATE_FNS_BARE_SPECIFIER = /^date-fns$/
 /** Matches a `date-fns/<subpath>` import specifier (excluding `package.json`); capture group [1] is the subpath, used to alias the import to the corresponding ESM `.mjs` file so a single date-fns build ends up in the bundle. */
 export const REGEX_DATE_FNS_SUBPATH_SPECIFIER = /^date-fns\/(?!package\.json)(.+)$/
-/** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
-export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */
 export const REGEX_PRETTIER_TIMESTAMP = /\d+ms/
 /** Extracts the file path from a Prettier --write output line (e.g. "src/foo.ts 5ms (unchanged)" → capture group [1] = "src/foo.ts"). */
