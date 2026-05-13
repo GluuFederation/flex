@@ -1,9 +1,9 @@
-import React, { useContext, useMemo } from 'react'
+import React, { lazy, Suspense, useContext, useMemo } from 'react'
 import { Container, ApiKey } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import GluuText from '../routes/Apps/Gluu/GluuText'
-import UploadSSA from './UploadSSA'
+import GluuLoader from '../routes/Apps/Gluu/GluuLoader'
 import { useAppSelector } from '@/redux/hooks'
 import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
 import loaderGif from 'Images/gif/loader.gif'
@@ -11,6 +11,8 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import useStyles from './styles/ApiKeyRedirect.style'
+
+const UploadSSA = lazy(() => import('./UploadSSA'))
 
 type ApiKeyRedirectProps = {
   isLicenseValid: boolean
@@ -72,7 +74,9 @@ const ApiKeyRedirect = ({
     <React.Fragment>
       <Container>
         {isConfigValid === false && backendStatus.active ? (
-          <UploadSSA />
+          <Suspense fallback={<GluuLoader blocking />}>
+            <UploadSSA />
+          </Suspense>
         ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
           shouldShowApiKey ? (
             <ApiKey />

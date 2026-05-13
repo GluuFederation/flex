@@ -10,6 +10,7 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
+import { createClientFormLayoutStyles } from './clientFormLayout'
 import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -83,6 +84,7 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const fontColor = themeColors.fontColor
   const formGroupBase = createFormGroupOverrides({ columnPaddingBottom: ERROR_SPACE })
+  const layoutStyles = createClientFormLayoutStyles(theme, formGroupBase)
   const inputColors = {
     inputBg: formInputBg,
     inputBorderColor,
@@ -100,10 +102,7 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
 
   return {
     root: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
-      width: '100%',
+      ...layoutStyles.root,
       ...accordionStyles,
     },
     section: {
@@ -112,30 +111,12 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
       gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
     },
-    fieldsGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      alignItems: 'start',
-      [theme.breakpoints.down('md')]: {
-        gridTemplateColumns: '1fr',
-      },
+    accordionSpacing: {
+      marginBottom: SPACING.CARD_CONTENT_GAP,
     },
-    fieldItem: {
-      width: '100%',
-      minWidth: 0,
-      boxSizing: 'border-box',
-      ...formGroupBase,
-    },
-    fieldItemFullWidth: {
-      width: '100%',
-      minWidth: 0,
-      gridColumn: '1 / -1',
-      boxSizing: 'border-box',
-      ...formGroupBase,
-    },
+    fieldsGrid: layoutStyles.fieldsGrid,
+    fieldItem: layoutStyles.fieldItem,
+    fieldItemFullWidth: layoutStyles.fieldItemFullWidth,
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },
@@ -154,6 +135,12 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
       borderRadius: BORDER_RADIUS.SMALL,
       padding: SPACING.CARD_PADDING,
       boxSizing: 'border-box',
+    },
+    dynamicListItem: {
+      marginBottom: SPACING.CARD_CONTENT_GAP,
+    },
+    clickableLink: {
+      cursor: 'pointer',
     },
     dynamicFieldCardLabel: {
       color: `${themeColors.fontColor} !important`,
@@ -188,6 +175,7 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
         {
           backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
           color: `${themeColors.fontColor} !important`,
+          opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input)::placeholder, & textarea::placeholder':

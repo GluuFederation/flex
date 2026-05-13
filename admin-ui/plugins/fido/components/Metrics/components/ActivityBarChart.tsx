@@ -20,7 +20,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { AGGREGATION_SERIES_COLORS } from '../constants'
+import { AGGREGATION_SERIES_COLORS, RECHARTS_INITIAL_DIMENSION } from '../constants'
 import { formatNonZeroChartValue } from '../utils'
 import type { ActivityBarChartProps, ActivityDataPoint } from '../types'
 
@@ -81,7 +81,11 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
         <GluuText variant="div" className={classes.chartTitle}>
           {title}
         </GluuText>
-        <ResponsiveContainer width="100%" height={height}>
+        <ResponsiveContainer
+          width="100%"
+          height={height}
+          initialDimension={RECHARTS_INITIAL_DIMENSION}
+        >
           <BarChart
             data={data as ActivityDataPoint[]}
             barSize={barSize}
@@ -181,4 +185,4 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
   )
 }
 
-export default ActivityBarChart
+export default React.memo(ActivityBarChart)

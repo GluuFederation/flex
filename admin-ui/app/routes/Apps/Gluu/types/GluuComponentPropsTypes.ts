@@ -171,7 +171,7 @@ export type TabPanelProps = {
   children?: ReactNode
   value: number
   px?: number
-  py?: number
+  pt?: number
   index: number
 }
 
@@ -182,6 +182,8 @@ export type GluuTabsProps = {
   defaultTab?: number
   rightAction?: ReactNode
   onTabChange?: (index: number) => void
+  panelPx?: number
+  panelPt?: number
 }
 
 type GluuTextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'small' | 'div'

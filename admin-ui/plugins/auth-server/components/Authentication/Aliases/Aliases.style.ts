@@ -57,8 +57,8 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       left: '50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: cardBg,
-      width: 'min(720px, 90vw)',
-      maxWidth: '720px',
+      width: 'min(900px, 90vw)',
+      maxWidth: '900px',
     },
     fieldsColumn: {
       display: 'flex',
@@ -99,6 +99,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       alignItems: 'center',
     },
     formFooter: {
+      marginTop: SPACING.FORM_FOOTER_GAP,
       paddingTop: 16,
       paddingBottom: 8,
     },

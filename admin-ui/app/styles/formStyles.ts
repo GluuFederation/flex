@@ -22,15 +22,22 @@ export const createFormGroupOverrides = (opts?: { columnPaddingBottom?: number }
     flexDirection: 'column' as const,
     margin: '0 !important',
     padding: 0,
+    minWidth: 0,
   },
   '& .form-group.row': {
     marginLeft: '0 !important',
     marginRight: '0 !important',
+    flexDirection: 'column' as const,
+    flexWrap: 'nowrap' as const,
+    minWidth: 0,
   },
   '& .form-group > label': {
     flex: '0 0 auto',
+    display: 'block',
     width: '100%',
     maxWidth: '100%',
+    paddingTop: '4px !important',
+    paddingBottom: '4px !important',
     paddingLeft: 0,
     paddingRight: 0,
     marginBottom: LABEL_MARGIN_BOTTOM,
@@ -41,6 +48,8 @@ export const createFormGroupOverrides = (opts?: { columnPaddingBottom?: number }
     maxWidth: '100%',
     paddingLeft: 0,
     paddingRight: 0,
+    minWidth: 0,
+    boxSizing: 'border-box' as const,
     ...(opts?.columnPaddingBottom != null
       ? { position: 'relative' as const, paddingBottom: opts.columnPaddingBottom }
       : {}),
@@ -51,9 +60,6 @@ export const createFormGroupOverrides = (opts?: { columnPaddingBottom?: number }
   },
 })
 
-/**
- * Styles labels (label, h5, span, MUI icon) inside a form section.
- */
 export const createFormLabelStyles = (fontColor: string) => ({
   '& label, & label h5, & label h5 span, & label span, & label .MuiSvgIcon-root, & h5': {
     color: `${fontColor} !important`,

@@ -4,6 +4,22 @@ import { MAPPING_SPACING } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
+  row: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  logoSection: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+    textAlign: 'center',
+  },
+  contentSection: {
+    width: '100%',
+  },
   logo: {
     maxWidth: 200,
   },
@@ -40,6 +56,9 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     fontWeight: fontWeights.semiBold,
     marginTop: theme.spacing(2),
     display: 'block',
+  },
+  actionSection: {
+    marginTop: theme.spacing(4),
   },
   dropzoneText: {
     color: themeColors.infoAlert.text,

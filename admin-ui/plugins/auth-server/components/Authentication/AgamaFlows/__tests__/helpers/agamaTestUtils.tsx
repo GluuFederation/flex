@@ -83,11 +83,14 @@ jest.mock('Plugins/auth-server/hooks/useAuthServerJsonProperties', () => ({
   })),
 }))
 
-jest.mock('../../../../../../../api-client', () => ({
+jest.mock('Orval', () => ({
   AXIOS_INSTANCE: {
     post: jest.fn().mockResolvedValue({ data: 'success' }),
     get: jest.fn().mockResolvedValue({ data: '' }),
   },
+  installInterceptors: jest.fn(() => () => {}),
+  setApiToken: jest.fn(),
+  customInstance: jest.fn(),
 }))
 
 type WebhookRecord = Record<string, string>

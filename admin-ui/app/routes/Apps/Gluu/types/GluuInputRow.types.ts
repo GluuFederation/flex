@@ -1,12 +1,13 @@
-import type { InputProps } from 'reactstrap'
 import type { FormikProps } from 'formik'
 
 import type { JsonValue } from './common'
 
+type HTMLInputType = React.HTMLInputTypeAttribute | 'textarea'
+
 export type GluuInputRowProps<T = Record<string, JsonValue>> = {
   label: string
   name: string
-  type?: InputProps['type']
+  type?: HTMLInputType
   value?: string | number
   formik?: FormikProps<T> | null
   required?: boolean
@@ -18,12 +19,15 @@ export type GluuInputRowProps<T = Record<string, JsonValue>> = {
   errorMessage?: string
   handleChange?:
     | ((
-        event: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } },
+        event:
+          | React.ChangeEvent<HTMLInputElement>
+          | React.ChangeEvent<HTMLTextAreaElement>
+          | { target: { name: string; value: string } },
       ) => void)
     | null
   doc_entry?: string
   shortcode?: React.ReactNode
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   rows?: number
   cols?: number
   isDark?: boolean

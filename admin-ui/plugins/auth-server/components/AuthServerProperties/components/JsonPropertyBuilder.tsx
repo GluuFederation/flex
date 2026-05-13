@@ -421,7 +421,7 @@ const JsonPropertyBuilder = ({
       const paired = toPairs(rowItems)
 
       return (
-        <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
           <AccordionHeader>
             <GluuText variant="span">{t(getLocalizedLabelKey(propKey))}</GluuText>
           </AccordionHeader>
@@ -460,7 +460,7 @@ const JsonPropertyBuilder = ({
     }
 
     return (
-      <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
         <AccordionHeader>
           <div className={classes.accordionHeaderRow}>
             <GluuText variant="span">{t(getLocalizedLabelKey(propKey))}</GluuText>
@@ -495,7 +495,7 @@ const JsonPropertyBuilder = ({
     return (
       <div>
         {show && (
-          <Accordion className="mb-2 b-primary" initialOpen>
+          <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
             <AccordionHeader>
               <div className={classes.accordionHeaderRow}>
                 <GluuText variant="span">{t(getLocalizedLabelKey(propKey))}</GluuText>

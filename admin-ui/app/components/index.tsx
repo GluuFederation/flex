@@ -16,7 +16,6 @@ import Sidebar from './Sidebar'
 import { SidebarMenuItem, SidebarMenu } from './SidebarMenu'
 import { ThemeClass, ThemeProvider } from './Theme'
 import { ThemeDropdown } from './ThemeDropdown'
-import { GluuDatePicker } from './GluuDatePicker'
 import { GluuDropdown } from './GluuDropdown'
 import { GluuPageContent } from './GluuPageContent'
 import { GluuDynamicList } from './GluuDynamicList'
@@ -29,73 +28,19 @@ import GenerateLicenseCard from './LicenseScreens/GenerateLicenseCard'
 export {
   Alert,
   Badge,
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
-  ButtonDropdown,
-  ButtonGroup,
-  ButtonToolbar,
   CardBody,
-  CardColumns,
-  CardDeck,
-  CardFooter,
-  CardGroup,
-  CardImg,
-  CardImgOverlay,
-  CardLink,
-  CardSubtitle,
-  CardText,
   CardTitle,
-  Carousel,
-  CarouselCaption,
-  CarouselControl,
-  CarouselIndicators,
-  CarouselItem,
   Col,
-  Collapse,
   Container,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Fade,
   Form,
-  FormFeedback,
   FormGroup,
-  FormText,
   Input,
   InputGroup,
-  InputGroupText,
   Label,
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  ListGroupItemText,
-  Media,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  NavbarBrand,
-  NavbarToggler,
-  NavLink,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Popover,
-  PopoverBody,
-  PopoverHeader,
   Row,
-  TabContent,
-  Table,
-  TabPane,
-  Tooltip,
-  UncontrolledAlert,
-  UncontrolledButtonDropdown,
-  UncontrolledDropdown,
-  UncontrolledCollapse,
-  UncontrolledTooltip,
-} from 'reactstrap'
+} from './BootstrapWrappers'
+
 export type { DropdownOption, ThemeDropdownProps } from './ThemeDropdown/types'
 export type {
   GluuDropdownProps,
@@ -107,11 +52,6 @@ export type { DropdownPosition as ThemeDropdownPosition } from './GluuDropdown/t
 export type { GluuBadgeProps, BadgeSize, BadgeTheme } from './GluuBadge/types'
 export type { GluuButtonProps, ButtonSize, ButtonTheme } from './GluuButton/types'
 export type { GluuPageContentProps } from './GluuPageContent'
-export type {
-  GluuDatePickerProps,
-  GluuDatePickerSingleProps,
-  GluuDatePickerRangeProps,
-} from './GluuDatePicker'
 export {
   Accordion,
   AccordionHeader,
@@ -123,7 +63,6 @@ export {
   EmptyLayout,
   GluuBadge,
   GluuButton,
-  GluuDatePicker,
   GluuSpinner,
   Layout,
   Notifications,

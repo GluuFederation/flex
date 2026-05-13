@@ -12,6 +12,7 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
+import { createClientFormLayoutStyles } from './clientFormLayout'
 
 type ClientBasicPanelStyleParams = {
   isDark: boolean
@@ -21,12 +22,13 @@ type ClientBasicPanelStyleParams = {
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
-const formGroupBase = createFormGroupOverrides()
 
 export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
+  const formGroupBase = createFormGroupOverrides()
+  const layoutStyles = createClientFormLayoutStyles(theme, formGroupBase)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
@@ -39,28 +41,9 @@ export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
   }
 
   return {
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: SPACING.SECTION_GAP,
-      width: '100%',
-    },
-    fieldsGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      alignItems: 'start',
-      [theme.breakpoints.down('md')]: {
-        gridTemplateColumns: '1fr',
-      },
-    },
+    ...layoutStyles,
     fieldItem: {
-      'width': '100%',
-      'minWidth': 0,
-      'boxSizing': 'border-box' as const,
-      ...formGroupBase,
+      ...layoutStyles.fieldItem,
       '& .form-group [class*="col"]': {
         ...formGroupBase['& .form-group [class*="col"]'],
         position: 'relative',
@@ -72,10 +55,7 @@ export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
       },
     },
     fieldItemFullWidth: {
-      'width': '100%',
-      'gridColumn': '1 / -1',
-      'boxSizing': 'border-box' as const,
-      ...formGroupBase,
+      ...layoutStyles.fieldItemFullWidth,
       '& .form-group [class*="col"]': {
         ...formGroupBase['& .form-group [class*="col"]'],
         position: 'relative',
@@ -107,6 +87,7 @@ export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
         {
           backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
           color: `${themeColors.fontColor} !important`,
+          opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input)::placeholder, & textarea::placeholder':

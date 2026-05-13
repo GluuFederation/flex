@@ -53,6 +53,12 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       margin: 0,
       paddingRight: SPACING.CONTENT_PADDING,
       wordBreak: 'break-word',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    titleIcon: {
+      marginRight: SPACING.CARD_CONTENT_GAP,
+      flexShrink: 0,
     },
     resultList: {
       ...getScrollbarStyles(themeColors),
@@ -97,6 +103,10 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       display: 'flex',
       justifyContent: 'flex-start',
       marginTop: 0,
+    },
+    actionIcon: {
+      marginRight: SPACING.CARD_CONTENT_GAP,
+      flexShrink: 0,
     },
   }
 })

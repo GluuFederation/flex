@@ -3,6 +3,7 @@ const tsParser = require('@typescript-eslint/parser')
 const tsPlugin = require('@typescript-eslint/eslint-plugin')
 const reactPlugin = require('eslint-plugin-react')
 const jestPlugin = require('eslint-plugin-jest')
+const jsoncPlugin = require('eslint-plugin-jsonc')
 const globals = require('globals')
 
 module.exports = [
@@ -106,9 +107,9 @@ module.exports = [
     },
   },
 
-  // CommonJS config files — also add Node/CommonJS globals here
+  // CommonJS / config files — also add Node/CommonJS globals here.
   {
-    files: ['**/*.cjs', 'config/**/*', '**/*.config.*'],
+    files: ['**/*.cjs', 'config/**/*.{js,cjs,mjs,ts}', '**/*.config.{js,cjs,mjs,ts}'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -153,6 +154,51 @@ module.exports = [
               message:
                 'Import Cedarling leaf modules directly, for example "@/cedarling/hooks/useCedarling" or "@/cedarling/utility", to preserve Fast Refresh boundaries.',
             },
+            {
+              name: '@mui/styles',
+              message:
+                '@mui/styles is deprecated. Use @mui/material/styles (or tss-react) instead.',
+            },
+            {
+              name: 'lodash',
+              message:
+                "Don't barrel-import lodash — it pulls the whole library into the bundle. Import the method directly, e.g. import cloneDeep from 'lodash/cloneDeep'.",
+            },
+            {
+              name: '@mui/icons-material',
+              message:
+                "Don't barrel-import @mui/icons-material — it re-exports thousands of icons. Import the icon directly, e.g. import Add from '@mui/icons-material/Add'.",
+            },
+            {
+              name: '@mui/lab',
+              message:
+                "Don't barrel-import @mui/lab. Import the component directly, e.g. import LoadingButton from '@mui/lab/LoadingButton'.",
+            },
+            {
+              name: '@mui/x-date-pickers',
+              message:
+                "Don't barrel-import @mui/x-date-pickers. Import the component/adapter directly, e.g. import { DatePicker } from '@mui/x-date-pickers/DatePicker'.",
+            },
+            {
+              name: '@mui/x-date-pickers-pro',
+              message:
+                "Don't barrel-import @mui/x-date-pickers-pro. Import the component/adapter directly, e.g. import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'.",
+            },
+            {
+              name: '@mui/x-data-grid',
+              message:
+                "Don't barrel-import @mui/x-data-grid. Import the component directly, e.g. import { DataGrid } from '@mui/x-data-grid/DataGrid'.",
+            },
+            {
+              name: '@mui/x-data-grid-pro',
+              message:
+                "Don't barrel-import @mui/x-data-grid-pro. Import the component directly, e.g. import { DataGridPro } from '@mui/x-data-grid-pro/DataGridPro'.",
+            },
+            {
+              name: '@mui/x-data-grid-premium',
+              message:
+                "Don't barrel-import @mui/x-data-grid-premium. Import the component directly, e.g. import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium'.",
+            },
           ],
           patterns: [
             {
@@ -175,7 +221,19 @@ module.exports = [
     },
   },
 
-  // Ignore build output and generated files
+  // JSON / JSONC linting
+  ...jsoncPlugin.configs['flat/recommended-with-jsonc'],
+  ...jsoncPlugin.configs['flat/recommended-with-json'],
+  {
+    files: ['**/*.json', '**/*.jsonc'],
+    rules: {
+      // JSON string values legitimately contain NBSP and other whitespace
+      // (e.g., French typography in locale files). The rule targets JS source.
+      'no-irregular-whitespace': 'off',
+    },
+  },
+
+  // Ignore build output, generated files, and any non-JS/TS payloads
   {
     ignores: [
       'dist/**',
@@ -183,6 +241,8 @@ module.exports = [
       'coverage/**',
       '**/*.generated.ts',
       'app/redux/api/backend/**',
+      'jans_config_api_orval/**',
+      'package-lock.json',
     ],
   },
 ]

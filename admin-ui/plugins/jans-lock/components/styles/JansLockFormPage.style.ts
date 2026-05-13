@@ -11,8 +11,6 @@ type JansLockFormPageStylesParams = {
   themeColors: ThemeConfig
 }
 
-const FORM_CARD_MIN_HEIGHT = 400
-const CONTENT_HORIZONTAL_PADDING = 52
 const SELECT_ARROW_SPACE = 44
 const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
@@ -37,7 +35,9 @@ const formGroupOverrides = {
     maxWidth: '100%',
     paddingLeft: 0,
     paddingRight: 0,
-    marginBottom: 6,
+    paddingTop: '0 !important',
+    paddingBottom: '0 !important',
+    marginBottom: '2px !important',
   },
   '& .form-group [class*="col"]': {
     flex: '0 0 100%',
@@ -65,6 +65,9 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
     '& .form-group [class*="col"]': {
       ...formGroupOverrides['& .form-group [class*="col"]'],
       position: 'relative' as const,
+      paddingBottom: 0,
+    },
+    '& .form-group [class*="col"]:has([data-field-error])': {
       paddingBottom: ERROR_SPACE,
     },
   }
@@ -75,7 +78,6 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
-      minHeight: FORM_CARD_MIN_HEIGHT,
       position: 'relative',
       overflow: 'visible',
       display: 'flex',
@@ -83,10 +85,7 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       boxSizing: 'border-box',
     },
     content: {
-      paddingTop: SPACING.PAGE,
-      paddingLeft: CONTENT_HORIZONTAL_PADDING,
-      paddingRight: CONTENT_HORIZONTAL_PADDING,
-      paddingBottom: SPACING.CONTENT_PADDING,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
@@ -103,7 +102,7 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
+      rowGap: SPACING.SECTION_GAP,
       width: '100%',
       alignItems: 'start',
       minWidth: 0,
@@ -206,6 +205,7 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
         backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

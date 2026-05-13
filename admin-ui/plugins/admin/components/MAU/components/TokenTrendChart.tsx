@@ -44,7 +44,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
   }))
 
   return (
-    <Card className={`${classes.trendCard} h-100`}>
+    <Card className={classes.trendCard}>
       <CardBody>
         <GluuText variant="div" className={classes.trendTitle}>
           {t('titles.token_trends')}

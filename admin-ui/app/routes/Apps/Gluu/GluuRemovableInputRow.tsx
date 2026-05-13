@@ -92,7 +92,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           name={name}
           className={classes.input}
           value={(currentValue as string) ?? (value as string) ?? ''}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setModifiedFields({
               ...modifiedFields,
               [name]: e.target.value,

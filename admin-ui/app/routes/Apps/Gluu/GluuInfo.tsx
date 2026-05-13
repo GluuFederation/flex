@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import IconButton from '@mui/material/IconButton'
 import { useTranslation } from 'react-i18next'
-import { CheckCircleOutline, HighlightOffOutlined } from '@/components/icons'
+import { CheckCircleOutline, HighlightOffOutlined, Close } from '@/components/icons'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -27,13 +31,25 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
   const { classes } = useStyles({ isDark, themeColors })
 
   return (
-    <Modal isOpen={item.openModal} toggle={handler} className="modal-outline-primary">
-      <ModalHeader toggle={handler} className={classes.modalHeader}>
+    <Dialog
+      open={item.openModal}
+      onClose={handler}
+      PaperProps={{ className: 'modal-outline-primary' }}
+    >
+      <DialogTitle className={classes.modalHeader} sx={{ pr: 6 }}>
         <GluuText variant="span" className={classes.title}>
           {t('titles.smtp_test_result')}
         </GluuText>
-      </ModalHeader>
-      <ModalBody className={classes.modalBody}>
+        <IconButton
+          aria-label="close"
+          onClick={handler}
+          sx={{ position: 'absolute', right: 8, top: 8, color: 'inherit' }}
+          size="small"
+        >
+          <Close fontSize="small" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent className={classes.modalBody}>
         <div className={classes.statusRow}>
           {item.testStatus ? (
             <CheckCircleOutline
@@ -55,8 +71,8 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
             {t('actions.server_response')}: {t('actions.server_fails_smtp')}
           </GluuText>
         )}
-      </ModalBody>
-      <ModalFooter className={classes.modalFooter}>
+      </DialogContent>
+      <DialogActions className={classes.modalFooter}>
         <GluuButton
           onClick={handler}
           backgroundColor={themeColors.formFooter.back.backgroundColor}
@@ -68,8 +84,8 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
         >
           {t('actions.ok')}
         </GluuButton>
-      </ModalFooter>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   )
 }
 

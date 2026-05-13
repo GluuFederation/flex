@@ -318,7 +318,7 @@ const ClientSoftwarePanel = ({ formik, viewOnly, setModifiedFields }: ClientPane
           />
         </div>
 
-        <div className={classes.fieldItem}>
+        <div className={classes.fieldItemFullWidth}>
           <GluuInputRow
             label="fields.softwareStatement"
             name="softwareStatement"
@@ -341,8 +341,6 @@ const ClientSoftwarePanel = ({ formik, viewOnly, setModifiedFields }: ClientPane
             }}
           />
         </div>
-
-        <div className={classes.fieldItem} />
 
         <div className={classes.fieldItem}>
           <GluuDynamicList

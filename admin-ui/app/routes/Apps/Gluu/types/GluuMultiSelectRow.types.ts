@@ -26,4 +26,6 @@ export type GluuMultiSelectRowProps = {
   helperText?: string
   placeholder?: string
   inputBackgroundColor?: string
+  hideHelperWhenSelected?: boolean
+  compactSelectionSpacing?: boolean
 }

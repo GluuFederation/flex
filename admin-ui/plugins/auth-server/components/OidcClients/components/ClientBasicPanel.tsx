@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { FormGroup, Input, GluuDynamicList } from 'Components'
+import { Col, FormGroup, Input, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
@@ -563,15 +563,17 @@ const ClientBasicPanel = ({
             <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="inum">
               <FormGroup>
                 <GluuLabel label="fields.inum" size={12} />
-                <Input
-                  className={classes.inumInput}
-                  id="inum"
-                  name="inum"
-                  disabled
-                  defaultValue={String(client.inum ?? '')}
-                  readOnly
-                  placeholder={t('placeholders.enter_here')}
-                />
+                <Col sm={12}>
+                  <Input
+                    className={classes.inumInput}
+                    id="inum"
+                    name="inum"
+                    disabled
+                    defaultValue={String(client.inum ?? '')}
+                    readOnly
+                    placeholder={t('placeholders.enter_here')}
+                  />
+                </Col>
               </FormGroup>
             </GluuTooltip>
           </div>

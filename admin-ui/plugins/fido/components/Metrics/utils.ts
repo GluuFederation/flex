@@ -1,4 +1,7 @@
-import { HEATMAP_COLOR_STOPS, HOURS_OF_DAY, SHORT_MONTHS_UPPER } from './constants'
+import type { TFunction } from 'i18next'
+import { REGEX_HOURLY_AGGREGATION_PERIOD, REGEX_ISO_WEEK_PERIOD } from '@/utils/regex'
+import { createDate, type Dayjs } from '@/utils/dayjsUtils'
+import { HEATMAP_COLOR_STOPS, HOURS_OF_DAY } from './constants'
 import type { AggregationType } from './constants'
 import type { ActivityDataPoint, AggregationEntry, HeatmapData, MetricsDateRange } from './types'
 
@@ -71,53 +74,35 @@ export const formatNonZeroChartValue = (
   return Number(n.toFixed(2)).toString()
 }
 
-export const isoWeekToMonday = (
-  year: number,
-  week: number,
-): { mm: number; dd: number; yyyy: number } => {
+export const isoWeekToMonday = (year: number, week: number): Dayjs => {
   const jan4 = new Date(year, 0, 4)
   const dow = jan4.getDay() || 7
   const week1Mon = new Date(jan4)
   week1Mon.setDate(jan4.getDate() - (dow - 1))
   const monday = new Date(week1Mon)
   monday.setDate(week1Mon.getDate() + (week - 1) * 7)
-  return { mm: monday.getMonth() + 1, dd: monday.getDate(), yyyy: monday.getFullYear() }
+  return createDate(monday)
 }
 
-export const formatDashDate = (iso: string): string => {
-  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/)
-  if (!m) return iso
-  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
-  return `${month}-${m[3]}`
+const formatIsoWith = (iso: string, format: string): string => {
+  const d = createDate(iso)
+  return d.isValid() ? d.format(format) : iso
 }
 
-export const formatSpaceDate = (iso: string): string => {
-  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/)
-  if (!m) return iso
-  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
-  return `${month} ${m[3]}`
-}
+export const formatDashDate = (iso: string): string => formatIsoWith(iso, 'MMM-DD')
 
-export const formatMonthYear = (iso: string): string => {
-  const m = iso.match(/^(\d{4})-(\d{2})/)
-  if (!m) return iso
-  const month = SHORT_MONTHS_UPPER[Number(m[2]) - 1] ?? ''
-  return `${month}-${m[1]}`
-}
+export const formatSpaceDate = (iso: string): string => formatIsoWith(iso, 'MMM DD')
 
-export const formatShortDate = (isoDate: string): string => {
-  const match = isoDate.match(/^\d{4}-(\d{2})-(\d{2})$/)
-  if (!match) return isoDate
-  const month = SHORT_MONTHS_UPPER[Number(match[1]) - 1] ?? ''
-  return `${month}-${match[2]}`
-}
+export const formatMonthYear = (iso: string): string => formatIsoWith(iso, 'MMM-YYYY')
+
+export const formatShortDate = (isoDate: string): string => formatIsoWith(isoDate, 'MMM-DD')
 
 export const parseHourlyPeriod = (
   entry: AggregationEntry,
 ): { date: string; hour: number } | null => {
   const period = entry.period
   if (period) {
-    const match = period.match(/^(\d{4}-\d{2}-\d{2})-(\d{1,2})$/)
+    const match = period.match(REGEX_HOURLY_AGGREGATION_PERIOD)
     if (match) {
       return { date: match[1]!, hour: Number(match[2]) }
     }
@@ -136,11 +121,9 @@ export const formatPeriodLabel = (entry: AggregationEntry, aggType?: Aggregation
   if (!raw) return ''
 
   if (aggType === 'weekly') {
-    const isoWeek = raw.match(/^(\d{4})-W(\d{1,2})$/)
+    const isoWeek = raw.match(REGEX_ISO_WEEK_PERIOD)
     if (isoWeek) {
-      const { mm, dd } = isoWeekToMonday(Number(isoWeek[1]), Number(isoWeek[2]))
-      const month = SHORT_MONTHS_UPPER[mm - 1] ?? ''
-      return `${month}-${String(dd).padStart(2, '0')}`
+      return isoWeekToMonday(Number(isoWeek[1]), Number(isoWeek[2])).format('MMM-DD')
     }
     return formatDashDate(raw)
   }
@@ -157,23 +140,20 @@ export const formatHourlyActivityLabel = (entry: AggregationEntry): string => {
   return `${formatShortDate(parsed.date)} H${String(parsed.hour).padStart(2, '0')}`
 }
 
-export const buildRangeLabel = (aggType: AggregationType, range: MetricsDateRange): string => {
-  const startSpaceDate = range.startDate.format('MMM DD')
-  const startDashDate = range.startDate.format('MMM-DD')
-  const endDashDate = range.endDate.format('MMM-DD')
-  const startMonthYear = range.startDate.format('MMM YYYY')
-  const endMonthYear = range.endDate.format('MMM YYYY')
-
-  switch (aggType) {
-    case 'hourly':
-      return `Hourly ${startDashDate}\nto ${endDashDate}`
-    case 'daily':
-      return `Daily ${startDashDate}\nto ${endDashDate}`
-    case 'weekly':
-      return `Weekly ${startSpaceDate}\nto ${endDashDate}`
-    case 'monthly':
-      return `Monthly ${startMonthYear}\nto ${endMonthYear}`
-  }
+export const buildRangeLabel = (
+  aggType: AggregationType,
+  range: MetricsDateRange,
+  t: TFunction,
+): string => {
+  const start =
+    aggType === 'weekly'
+      ? range.startDate.format('MMM DD')
+      : aggType === 'monthly'
+        ? range.startDate.format('MMM YYYY')
+        : range.startDate.format('MMM-DD')
+  const end =
+    aggType === 'monthly' ? range.endDate.format('MMM YYYY') : range.endDate.format('MMM-DD')
+  return t('fields.agg_range_label', { type: t(`fields.agg_type_${aggType}`), start, end })
 }
 
 export const entriesToActivityData = (
@@ -190,12 +170,15 @@ export const entriesToActivityData = (
 
 export const entriesToHeatmapData = (
   entries: AggregationEntry[],
-  aggType?: AggregationType,
+  aggType: AggregationType | undefined,
+  t: TFunction,
 ): HeatmapData => {
   const dateCols = entries.map((e) => formatPeriodLabel(e, aggType))
 
   const isWeekly = aggType === 'weekly'
-  const cols = isWeekly ? dateCols.map((_, i) => `Week ${i + 1}`) : dateCols
+  const cols = isWeekly
+    ? dateCols.map((_, i) => t('fields.agg_week_number', { number: i + 1 }))
+    : dateCols
   const colsSub = isWeekly ? dateCols : undefined
 
   const authRow = entries.map((e) => e.authenticationAvgDuration ?? 0)
@@ -204,7 +187,7 @@ export const entriesToHeatmapData = (
   const minVal = allVals.length ? Math.min(...allVals) : 0
   const maxVal = allVals.length ? Math.max(...allVals) : 1
   return {
-    rows: ['Authentication', 'Registration'],
+    rows: [t('fields.authentication'), t('fields.registration')],
     cols,
     ...(colsSub ? { colsSub } : {}),
     data: [authRow, regRow],

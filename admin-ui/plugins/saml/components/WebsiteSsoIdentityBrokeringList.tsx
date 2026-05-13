@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useContext, useMemo, useState, useRef } from 'react'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'

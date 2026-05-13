@@ -82,14 +82,14 @@ const AggregationTab: React.FC = () => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) return []
     const rangeEntry: ActivityDataPoint = {
-      label: buildRangeLabel(appliedAggType, appliedRange),
+      label: buildRangeLabel(appliedAggType, appliedRange, t),
       regSuccess: 0,
       regAttempts: 0,
       authAttempts: 0,
       authSuccess: 0,
     }
     return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
-  }, [aggApiData, appliedAggType, appliedRange])
+  }, [aggApiData, appliedAggType, appliedRange, t])
 
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
@@ -99,8 +99,8 @@ const AggregationTab: React.FC = () => {
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'registration')
     }
-    return entriesToHeatmapData(entries, appliedAggType)
-  }, [aggApiData, appliedAggType])
+    return entriesToHeatmapData(entries, appliedAggType, t)
+  }, [aggApiData, appliedAggType, t])
 
   const rawAuthHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
@@ -110,8 +110,8 @@ const AggregationTab: React.FC = () => {
     if (appliedAggType === 'hourly') {
       return entriesToHourlyHeatmap(entries, 'authentication')
     }
-    return entriesToHeatmapData(entries, appliedAggType)
-  }, [aggApiData, appliedAggType])
+    return entriesToHeatmapData(entries, appliedAggType, t)
+  }, [aggApiData, appliedAggType, t])
 
   const heatmapData: HeatmapData = rawHeatmapData
   const authHeatmapData: HeatmapData = rawAuthHeatmapData

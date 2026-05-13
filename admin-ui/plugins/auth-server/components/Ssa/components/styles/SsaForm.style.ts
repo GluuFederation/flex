@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
@@ -58,7 +58,7 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
         createFormInputFocusStyles(inputColors),
 
       '& input:disabled, & select:disabled, & textarea:disabled, & .custom-select:disabled': {
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
 

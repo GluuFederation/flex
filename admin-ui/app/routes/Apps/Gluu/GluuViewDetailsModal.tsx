@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import MuiButton from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import { Close } from '@/components/icons'
 import type { GluuViewDetailModalProps } from './types'
 
 const GluuViewDetailModal = ({
@@ -19,30 +25,41 @@ const GluuViewDetailModal = ({
   const { t } = useTranslation()
   const displayTitle = title ?? t('messages.details')
   return (
-    <Modal
-      centered
-      isOpen={isOpen}
-      style={{ minWidth: '70vw', ...modalStyle }}
-      toggle={handleClose}
-      className={`modal-outline-primary ${modalClassName}`.trim()}
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      PaperProps={{
+        className: `modal-outline-primary ${modalClassName}`.trim(),
+        style: { minWidth: '70vw', ...modalStyle },
+      }}
     >
       {customHeader ?? (
-        <ModalHeader toggle={handleClose} className={headerClassName} style={headerStyle}>
+        <DialogTitle className={headerClassName} style={headerStyle} sx={{ pr: 6 }}>
           {displayTitle}
-        </ModalHeader>
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{ position: 'absolute', right: 8, top: 8, color: 'inherit' }}
+            size="small"
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </DialogTitle>
       )}
-      <ModalBody
+      <DialogContent
         className={contentClassName}
         style={{ overflowX: 'auto', maxHeight: '60vh', ...contentStyle }}
       >
         {children}
-      </ModalBody>
+      </DialogContent>
       {!hideFooter && (
-        <ModalFooter>
-          <Button onClick={handleClose}>{t('actions.close')}</Button>
-        </ModalFooter>
+        <DialogActions>
+          <MuiButton onClick={handleClose} variant="contained">
+            {t('actions.close')}
+          </MuiButton>
+        </DialogActions>
       )}
-    </Modal>
+    </Dialog>
   )
 }
 export default GluuViewDetailModal

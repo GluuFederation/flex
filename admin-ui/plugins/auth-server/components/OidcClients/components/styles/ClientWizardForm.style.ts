@@ -61,6 +61,9 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     wizardSection: {
       padding: `0 ${SPACING.CARD_PADDING}px ${WIZARD_SECTION_GAP}px`,
     },
+    wizardSectionTight: {
+      paddingBottom: '0 !important',
+    },
     wizardSectionCompact: {
       flex: '0 0 auto',
     },
@@ -127,6 +130,10 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     },
     contentSectionCompact: {
       paddingTop: '0 !important',
+    },
+    contentSectionTight: {
+      paddingTop: '0 !important',
+      marginTop: `-${SPACING.SECTION_GAP}px`,
     },
     footer: {
       padding: `0 ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,

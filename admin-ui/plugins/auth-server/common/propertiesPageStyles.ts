@@ -3,7 +3,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, OPACITY, SPACING } from '@/constants'
 import customColors, { hexToRgb } from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { createFormLabelStyles } from '@/styles/formStyles'
+import { createFormGroupOverrides, createFormLabelStyles } from '@/styles/formStyles'
 
 export type PropertiesStyleProps = {
   isDark: boolean
@@ -57,12 +57,20 @@ export const createPropertiesPageStyles = (
     form: {
       display: 'flex',
       flexDirection: 'column' as const,
-      minHeight: '100%',
     },
     formContent: {
-      'flex': 1,
-      'padding': `${SPACING.SECTION_GAP}px ${SPACING.CARD_PADDING}px 100px`,
+      'padding': SPACING.CONTENT_PADDING,
+      ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),
+      '& .form-group > label': {
+        ...createFormGroupOverrides()['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
+      },
+      '& .form-group > label h5, & .form-group > label h5 span': {
+        margin: '0 !important',
+      },
       '& .form-control, & input, & select, & .custom-select': {
         'backgroundColor': `${formInputBg} !important`,
         'border': `1px solid ${inputBorderColor} !important`,
@@ -82,6 +90,10 @@ export const createPropertiesPageStyles = (
         '&::placeholder': {
           color: `${fontColor} !important`,
           opacity: OPACITY.PLACEHOLDER,
+        },
+        '&:disabled': {
+          opacity: OPACITY.DISABLED,
+          cursor: 'not-allowed',
         },
       },
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus': {
@@ -190,7 +202,10 @@ export const createPropertiesPageStyles = (
       'bottom': 0,
       'zIndex': 10,
       'backgroundColor': cardBg,
-      'padding': `${SPACING.CARD_CONTENT_GAP}px ${SPACING.CARD_PADDING}px`,
+      'paddingTop': 0,
+      'paddingLeft': SPACING.CONTENT_PADDING,
+      'paddingRight': SPACING.CONTENT_PADDING,
+      'paddingBottom': SPACING.CONTENT_PADDING,
       '& hr, & .MuiDivider-root': {
         display: 'none !important',
       },

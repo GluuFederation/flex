@@ -40,7 +40,8 @@ export const RoutedContent = () => {
   )
 
   useEffect(() => {
-    const roles = userinfo?.jansAdminUIRole
+    if (!userinfo) return
+    const roles = userinfo.jansAdminUIRole
     if (!roles || (Array.isArray(roles) && roles.length === 0)) {
       const state = uuidv4()
       const sessionEndpoint = buildSafeLogoutUrl(

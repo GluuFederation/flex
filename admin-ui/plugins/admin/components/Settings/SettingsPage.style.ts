@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -36,7 +36,6 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: '100%',
-      minHeight: 480,
       position: 'relative',
       overflow: 'visible',
       display: 'flex',
@@ -90,18 +89,14 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       },
     },
     content: {
-      paddingTop: `${SPACING.PAGE}px`,
-      paddingLeft: 52,
-      paddingRight: 52,
-      paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+      padding: SPACING.CONTENT_PADDING,
       width: '100%',
       boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
       gap: 0,
       [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${SPACING.PAGE}px`,
-        paddingRight: `${SPACING.PAGE}px`,
+        padding: SPACING.PAGE,
       },
     },
     formSection: {
@@ -132,6 +127,8 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       '& .form-group.row': {
         marginLeft: 0,
         marginRight: 0,
+        flexDirection: 'column' as const,
+        flexWrap: 'nowrap' as const,
       },
       '& .form-group > label': {
         flex: '0 0 auto',
@@ -139,9 +136,12 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        marginBottom: 6,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
+      },
+      '& .form-group > label h5, & .form-group > label h5 span': {
+        margin: '0 !important',
       },
       '& .form-group div[class*="col"]': {
         flex: '0 0 100%',
@@ -150,7 +150,9 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         paddingLeft: 0,
         paddingRight: 0,
         position: 'relative',
-        paddingBottom: 20,
+        paddingBottom: 12,
+        minWidth: 0,
+        boxSizing: 'border-box',
       },
       '& [data-field-error]': {
         position: 'absolute',
@@ -196,14 +198,30 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         backgroundColor: `${settings.formInputBackground} !important`,
         border: `1px solid ${settings.inputBorder} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
         color: `${themeColors.textMuted} !important`,
       },
     },
-    customParamsBox: { ...dl.listBox, marginTop: SPACING.CARD_CONTENT_GAP + 20 },
+    errorAlert: {
+      marginBottom: SPACING.CARD_CONTENT_GAP,
+    },
+    errorAlertContent: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: SPACING.CARD_CONTENT_GAP,
+      [theme.breakpoints.down('sm')]: {
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+      },
+    },
+    customParamsBox: { ...dl.listBox, marginTop: SPACING.SECTION_GAP },
+    customParamsSpacing: {
+      marginTop: SPACING.SECTION_GAP,
+    },
     customParamsBoxEmpty: dl.listBoxEmpty,
     customParamsHeader: dl.listHeader,
     customParamsHeaderEmpty: dl.listHeaderEmpty,

@@ -12,10 +12,10 @@ export default defineConfig({
       client: 'react-query',
       httpClient: 'axios',
       mock: false,
-      prettier: true,
+      formatter: 'prettier',
       override: {
         mutator: {
-          path: './orval-mutator.ts',
+          path: './orval/axiosInstance.ts',
           name: 'customInstance',
         },
         query: {

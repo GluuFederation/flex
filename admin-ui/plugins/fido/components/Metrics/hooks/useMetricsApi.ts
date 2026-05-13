@@ -10,7 +10,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { toApiDatetime } from '@/utils/dayjsUtils'
-import { AXIOS_INSTANCE } from '../../../../../api-client'
+import { AXIOS_INSTANCE } from 'Orval'
 import { METRICS_CACHE_CONFIG } from '../constants'
 import type {
   AdoptionMetricsParams,

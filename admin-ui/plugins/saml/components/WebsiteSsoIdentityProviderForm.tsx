@@ -34,6 +34,7 @@ import {
 } from './hooks'
 import type { LocationState } from '../types'
 import { useAppDispatch } from '@/redux/hooks'
+import { useStyles } from './styles/SamlPage.style'
 
 interface WebsiteSsoIdentityProviderFormProps {
   configs?: IdentityProvider | null
@@ -58,6 +59,7 @@ const WebsiteSsoIdentityProviderForm = ({
     [propsViewOnly, state?.viewOnly],
   )
   const [showUploadBtn, setShowUploadBtn] = useState<boolean>(false)
+  const { classes } = useStyles()
 
   const {
     mutateAsync: createIdentityProviderAsync,
@@ -295,9 +297,9 @@ const WebsiteSsoIdentityProviderForm = ({
       const value = formik.values[fieldName]
       return Boolean(
         error &&
-          (touched ||
-            formik.submitCount > 0 ||
-            (value !== undefined && value !== null && String(value).length > 0)),
+        (touched ||
+          formik.submitCount > 0 ||
+          (value !== undefined && value !== null && String(value).length > 0)),
       )
     },
     [formik.errors, formik.touched, formik.values, formik.submitCount],
@@ -320,7 +322,7 @@ const WebsiteSsoIdentityProviderForm = ({
     <GluuLoader blocking={loading}>
       <Card>
         <CardBody className="">
-          <Form onSubmit={handleFormSubmit} className="mt-4">
+          <Form onSubmit={handleFormSubmit} className={classes.form}>
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow
@@ -437,7 +439,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.idpEntityId &&
-                          (formik.touched.idpEntityId || formik.submitCount > 0),
+                        (formik.touched.idpEntityId || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
@@ -457,7 +459,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       required={!formik.values.metaDataFileImportedFlag}
                       showError={Boolean(
                         formik.errors.nameIDPolicyFormat &&
-                          (formik.touched.nameIDPolicyFormat || formik.submitCount > 0),
+                        (formik.touched.nameIDPolicyFormat || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.nameIDPolicyFormat}
                       disabled={viewOnly}
@@ -476,7 +478,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.singleSignOnServiceUrl &&
-                          (formik.touched.singleSignOnServiceUrl || formik.submitCount > 0),
+                        (formik.touched.singleSignOnServiceUrl || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.singleSignOnServiceUrl}
                       disabled={viewOnly}
@@ -493,7 +495,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.singleLogoutServiceUrl &&
-                          (formik.touched.singleLogoutServiceUrl || formik.submitCount > 0),
+                        (formik.touched.singleLogoutServiceUrl || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.singleLogoutServiceUrl}
                       disabled={viewOnly}
@@ -511,7 +513,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       type="textarea"
                       showError={Boolean(
                         formik.errors.signingCertificate &&
-                          (formik.touched.signingCertificate || formik.submitCount > 0),
+                        (formik.touched.signingCertificate || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.signingCertificate}
                       disabled={viewOnly}
@@ -530,7 +532,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       type="textarea"
                       showError={Boolean(
                         formik.errors.encryptionPublicKey &&
-                          (formik.touched.encryptionPublicKey || formik.submitCount > 0),
+                        (formik.touched.encryptionPublicKey || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
@@ -548,7 +550,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.principalAttribute &&
-                          (formik.touched.principalAttribute || formik.submitCount > 0),
+                        (formik.touched.principalAttribute || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.principalAttribute}
                       disabled={viewOnly}
@@ -565,7 +567,7 @@ const WebsiteSsoIdentityProviderForm = ({
                       rsize={8}
                       showError={Boolean(
                         formik.errors.principalType &&
-                          (formik.touched.principalType || formik.submitCount > 0),
+                        (formik.touched.principalType || formik.submitCount > 0),
                       )}
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}

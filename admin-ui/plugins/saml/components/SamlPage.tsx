@@ -8,9 +8,11 @@ import { ROUTES } from '@/helpers/navigation'
 import SamlConfigurationForm from './SamlConfigurationForm'
 import WebsiteSsoIdentityBrokeringList from './WebsiteSsoIdentityBrokeringList'
 import WebsiteSsoServiceProviderList from './WebsiteSsoServiceProviderList'
+import { useStyles } from './styles/SamlPage.style'
 
 const SamlPage = React.memo(() => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
 
   SetTitle(t('titles.saml_management'))
 
@@ -40,7 +42,7 @@ const SamlPage = React.memo(() => {
   )
 
   return (
-    <Card className="mb-3" style={applicationStyle.mainCard}>
+    <Card className={classes.pageCard} style={applicationStyle.mainCard}>
       <CardBody>
         <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
       </CardBody>

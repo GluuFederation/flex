@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   createFormInputStyles,
@@ -104,6 +105,11 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       margin: 0,
       marginTop: -3,
       minHeight: 18,
+    },
+    formFooter: {
+      marginTop: SPACING.FORM_FOOTER_GAP,
+      paddingTop: 16,
+      paddingBottom: 8,
     },
   }
 })

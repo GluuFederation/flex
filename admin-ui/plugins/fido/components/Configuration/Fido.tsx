@@ -105,7 +105,12 @@ const Fido: React.FC = () => {
         <GluuLoader blocking={isLoading || updateFidoMutation.isPending}>
           <div className={classes.formCard}>
             <div className={classes.content}>
-              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />
+              <GluuTabs
+                tabNames={tabNames}
+                tabToShow={tabToShow}
+                withNavigation={true}
+                panelPt={5}
+              />
             </div>
           </div>
         </GluuLoader>

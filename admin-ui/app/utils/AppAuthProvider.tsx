@@ -137,39 +137,41 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
       new DefaultCrypto(),
     )
 
-    if (isLicenseValid) {
-      if (!issuer) return
+    if (!isLicenseValid) return
+    if (!issuer) return
+    if (userinfo_jwt || hasSession) return
+    const callbackParams = new URLSearchParams(location.search)
+    if (callbackParams.get('code')) return
 
-      AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
-        .then((response) => {
-          const additionalParameters: Record<string, string> = {}
+    AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
+      .then((response) => {
+        const additionalParameters: Record<string, string> = {}
 
-          if (config.additionalParameters?.length) {
-            for (const { key = '', value = '' } of config.additionalParameters) {
-              additionalParameters[key] = value
-            }
+        if (config.additionalParameters?.length) {
+          for (const { key = '', value = '' } of config.additionalParameters) {
+            additionalParameters[key] = value
           }
+        }
 
-          const extras: Record<string, string> = {
-            ...(config.acrValues ? { acr_values: config.acrValues } : {}),
-            ...additionalParameters,
-          }
-          const authRequest = new AuthorizationRequest({
-            client_id: config.clientId ?? '',
-            redirect_uri: config.redirectUrl ?? '',
-            scope: config.scope ?? '',
-            response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-            state: undefined,
-            extras,
-          })
-          saveIssuer(issuer)
-          authorizationHandler.performAuthorizationRequest(response, authRequest)
+        const extras: Record<string, string> = {
+          ...(config.acrValues ? { acr_values: config.acrValues } : {}),
+          ...additionalParameters,
+        }
+        const authRequest = new AuthorizationRequest({
+          client_id: config.clientId ?? '',
+          redirect_uri: config.redirectUrl ?? '',
+          scope: config.scope ?? '',
+          response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
+          state: undefined,
+          extras,
         })
-        .catch((fetchError: Error) => {
-          setError(fetchError)
-        })
-    }
-  }, [isLicenseValid])
+        saveIssuer(issuer)
+        authorizationHandler.performAuthorizationRequest(response, authRequest)
+      })
+      .catch((fetchError: Error) => {
+        setError(fetchError)
+      })
+  }, [isLicenseValid, issuer, userinfo_jwt, hasSession, location.search, config])
   const [code, setCode] = useState<string | null>(null)
 
   useEffect(() => {

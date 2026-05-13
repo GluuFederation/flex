@@ -32,7 +32,7 @@ export const Accordion = (props: AccordionProps) => {
         isOpen: isOpen,
       }}
     >
-      <Card className={className} type="border" color={null} {...otherProps}>
+      <Card className={className} type="border" {...otherProps}>
         {children}
       </Card>
     </Provider>

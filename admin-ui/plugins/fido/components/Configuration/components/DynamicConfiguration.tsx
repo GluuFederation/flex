@@ -362,59 +362,59 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               )}
             />
           </div>
-        </div>
 
-        <div
-          className={`${classes.propsBox} ${!personCustomObjectClassList.length ? classes.propsBoxEmpty : ''}`.trim()}
-        >
           <div
-            className={`${classes.propsHeader} ${!personCustomObjectClassList.length ? classes.propsHeaderEmpty : ''}`.trim()}
+            className={`${classes.fieldItemFullWidth} ${classes.propsBox} ${!personCustomObjectClassList.length ? classes.propsBoxEmpty : ''}`.trim()}
           >
-            <GluuText variant="h5" disableThemeColor>
-              <span className={classes.propsTitle}>
-                {t(fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES)}
-              </span>
-            </GluuText>
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.settings.addPropertyButton.bg}
-              textColor={themeColors.settings.addPropertyButton.text}
-              useOpacityOnHover
-              className={classes.propsActionBtn}
-              onClick={addObjectClass}
-              disabled={!canAddObjectClass}
+            <div
+              className={`${classes.propsHeader} ${!personCustomObjectClassList.length ? classes.propsHeaderEmpty : ''}`.trim()}
             >
-              <Add fontSize="small" />
-              {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
-            </GluuButton>
-          </div>
-          <div className={classes.propsBody}>
-            {personCustomObjectClassList.map((item, index) => (
-              <div key={index} className={classes.propsRow}>
-                <Input
-                  value={item || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeObjectClass(index, e.target.value)
-                  }
-                  placeholder={t('placeholders.value')}
-                  className={classes.propsInput}
-                />
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.removeButton.bg}
-                  textColor={themeColors.settings.removeButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={() => removeObjectClass(index)}
-                >
-                  <DeleteIcon className={classes.propsActionIcon} />
-                  {t('actions.remove')}
-                </GluuButton>
-              </div>
-            ))}
-            {showObjectClassError && (
-              <div className={classes.propsError}>{t(objectClassError as string)}</div>
-            )}
+              <GluuText variant="h5" disableThemeColor>
+                <span className={classes.propsTitle}>
+                  {t(fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES)}
+                </span>
+              </GluuText>
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addObjectClass}
+                disabled={!canAddObjectClass}
+              >
+                <Add fontSize="small" />
+                {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
+              </GluuButton>
+            </div>
+            <div className={classes.propsBody}>
+              {personCustomObjectClassList.map((item, index) => (
+                <div key={index} className={classes.propsRow}>
+                  <Input
+                    value={item || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeObjectClass(index, e.target.value)
+                    }
+                    placeholder={t('placeholders.value')}
+                    className={classes.propsInput}
+                  />
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeObjectClass(index)}
+                  >
+                    <DeleteIcon className={classes.propsActionIcon} />
+                    {t('actions.remove')}
+                  </GluuButton>
+                </div>
+              ))}
+              {showObjectClassError && (
+                <div className={classes.propsError}>{t(objectClassError as string)}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>

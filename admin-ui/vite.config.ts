@@ -1,13 +1,19 @@
 import { existsSync, readFileSync } from 'fs'
 import path from 'path'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react'
 import wasm from 'vite-plugin-wasm'
+import { SondaVitePlugin } from 'sonda'
 import {
   REGEX_BACKSLASH,
+  REGEX_CODE_BUILD_ASSET,
+  REGEX_DATE_FNS_BARE_SPECIFIER,
+  REGEX_DATE_FNS_SUBPATH_SPECIFIER,
   REGEX_FORWARD_SLASH,
+  REGEX_NODE_MODULES_PREFIX,
   REGEX_NODE_MODULES_SEGMENT,
   REGEX_STYLE_IMPORT_TILDE_PREFIX,
+  REGEX_VIRTUAL_MODULE_NULL_PREFIX,
 } from './app/utils/regex'
 import type { HmrContext } from 'vite'
 
@@ -21,6 +27,27 @@ const timingPlugin = () => {
       } else {
         console.log(`\n🔄 HMR update   ${ctx.file}`)
       }
+    },
+  }
+}
+
+const DATE_FNS_PACKAGE_DIR = path.resolve(process.cwd(), 'node_modules/date-fns')
+
+const dateFnsEsmResolverPlugin = () => {
+  return {
+    name: 'admin-ui:date-fns-esm',
+    enforce: 'pre' as const,
+    resolveId(source: string): string | null {
+      let mjsPath: string | null = null
+      if (REGEX_DATE_FNS_BARE_SPECIFIER.test(source)) {
+        mjsPath = path.join(DATE_FNS_PACKAGE_DIR, 'index.mjs')
+      } else {
+        const subpath = REGEX_DATE_FNS_SUBPATH_SPECIFIER.exec(source)?.[1]
+        if (subpath) {
+          mjsPath = path.join(DATE_FNS_PACKAGE_DIR, `${subpath}.mjs`)
+        }
+      }
+      return mjsPath && existsSync(mjsPath) ? mjsPath : null
     },
   }
 }
@@ -72,24 +99,22 @@ const getPolicyStoreConfig = (mode: string): string => {
   }
 }
 
-const CHUNK_GROUPS: Array<{ name: string; packages: string[] }> = [
-  {
-    name: 'vendor-react',
-    packages: [
-      'react',
-      'react-dom',
-      'react-router',
-      'react-router-dom',
-      'react-redux',
-      'react-i18next',
-      'react-error-boundary',
-      'react-responsive',
-      'react-idle-timer',
-    ],
-  },
-  {
-    name: 'vendor-mui-core',
-    packages: [
+const REACT_RUNTIME_PACKAGES = new Set<string>([
+  'react',
+  'react-dom',
+  'react-router',
+  'react-router-dom',
+  'react-redux',
+  'react-i18next',
+  'react-error-boundary',
+  'react-responsive',
+  'react-idle-timer',
+])
+
+const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly string[]]> = [
+  [
+    'vendor-mui-core',
+    [
       '@mui/material',
       '@mui/system',
       '@mui/base',
@@ -102,35 +127,21 @@ const CHUNK_GROUPS: Array<{ name: string; packages: string[] }> = [
       '@emotion/is-prop-valid',
       'tss-react',
     ],
-  },
-  {
-    name: 'vendor-mui-icons',
-    packages: ['@mui/icons-material'],
-  },
-  {
-    name: 'vendor-mui-pickers',
-    packages: ['@mui/x-date-pickers'],
-  },
-  {
-    name: 'vendor-state',
-    packages: ['@reduxjs/toolkit', 'redux-saga', 'redux-persist', '@tanstack/react-query'],
-  },
-  {
-    name: 'vendor-table',
-    packages: ['@material-table/core'],
-  },
-  {
-    name: 'vendor-dnd',
-    packages: ['@hello-pangea/dnd'],
-  },
-  {
-    name: 'vendor-editor',
-    packages: ['react-ace', 'ace-builds'],
-  },
-  {
-    name: 'vendor-charts',
-    packages: [
+  ],
+  ['vendor-mui-icons', ['@mui/icons-material']],
+  ['vendor-mui-pickers', ['@mui/x-date-pickers']],
+  ['vendor-state', ['@reduxjs/toolkit', 'redux-saga', 'redux-persist', '@tanstack/react-query']],
+  ['vendor-table', ['@material-table/core']],
+  ['vendor-dnd', ['@hello-pangea/dnd']],
+  ['vendor-editor', ['react-ace', 'ace-builds']],
+  [
+    'vendor-charts',
+    [
       'recharts',
+      'victory-vendor',
+      'es-toolkit',
+      'decimal.js-light',
+      'eventemitter3',
       'd3-array',
       'd3-color',
       'd3-format',
@@ -138,52 +149,95 @@ const CHUNK_GROUPS: Array<{ name: string; packages: string[] }> = [
       'd3-path',
       'd3-scale',
       'd3-shape',
+      'd3-time',
+      'd3-time-format',
+      'internmap',
     ],
-  },
-  {
-    name: 'vendor-bootstrap',
-    packages: ['bootstrap', 'reactstrap', 'react-toggle', 'react-bootstrap-typeahead'],
-  },
-  {
-    name: 'vendor-data',
-    packages: ['axios', 'dayjs', 'formik', 'yup', 'lodash', 'query-string', 'jszip'],
-  },
-  {
-    name: 'vendor-date',
-    packages: ['date-fns'],
-  },
-  {
-    name: 'vendor-feedback',
-    packages: ['react-toastify', 'react-tooltip'],
-  },
+  ],
+  [
+    'vendor-bootstrap',
+    [
+      'bootstrap',
+      'react-toggle',
+      'react-bootstrap-typeahead',
+      '@restart/hooks',
+      '@restart/ui',
+      'compute-scroll-into-view',
+      'scroll-into-view-if-needed',
+      'lodash.debounce',
+      'fast-deep-equal',
+      'warning',
+      'invariant',
+    ],
+  ],
+  [
+    'vendor-floating-ui',
+    ['@floating-ui/react-dom', '@floating-ui/dom', '@floating-ui/core', '@floating-ui/utils'],
+  ],
+  ['vendor-data', ['axios', 'dayjs', 'lodash', 'query-string', 'jszip']],
+  ['vendor-forms', ['formik', 'yup']],
+  ['vendor-date', ['date-fns']],
+  ['vendor-feedback', ['react-toastify', 'react-tooltip']],
 ]
 
-const getManualChunkName = (id: string): string | undefined => {
+const getVendorPackageName = (id: string): string | null => {
   if (!id.includes('node_modules') || id.includes('.css')) {
-    return undefined
+    return null
   }
-
   const normalizedId = id.replace(REGEX_BACKSLASH, '/')
   const nodeModulesSegment = normalizedId.split(REGEX_NODE_MODULES_SEGMENT).pop()
   if (!nodeModulesSegment) {
-    return undefined
+    return null
   }
-
   const [firstPart, secondPart] = nodeModulesSegment.split('/')
   const packageName =
     firstPart?.startsWith('@') && secondPart ? `${firstPart}/${secondPart}` : firstPart
+  return packageName || null
+}
 
-  if (!packageName) {
-    return undefined
+const isVendorPackageIn =
+  (packages: ReadonlySet<string>) =>
+  (id: string): boolean => {
+    const pkg = getVendorPackageName(id)
+    return pkg !== null && packages.has(pkg)
   }
 
-  for (const group of CHUNK_GROUPS) {
-    if (group.packages.some((pkg) => packageName === pkg || packageName.startsWith(`${pkg}/`))) {
-      return group.name
-    }
-  }
+const isVendorModule = (id: string): boolean => getVendorPackageName(id) !== null
 
-  return `vendor-${packageName.replace('@', '').replace(REGEX_FORWARD_SLASH, '-')}`
+const getVendorFallbackChunkName = (id: string): string | null => {
+  const pkg = getVendorPackageName(id)
+  return pkg === null ? null : `vendor-${pkg.replace('@', '').replace(REGEX_FORWARD_SLASH, '-')}`
+}
+
+type VendorChunkGroup = {
+  name: string | ((id: string) => string | null)
+  test: (id: string) => boolean
+}
+
+const VENDOR_CHUNK_GROUPS: VendorChunkGroup[] = [
+  { name: 'vendor-react', test: isVendorPackageIn(REACT_RUNTIME_PACKAGES) },
+  ...FEATURE_GROUPS.map(
+    ([name, packages]): VendorChunkGroup => ({
+      name,
+      test: isVendorPackageIn(new Set(packages)),
+    }),
+  ),
+  { name: getVendorFallbackChunkName, test: isVendorModule },
+]
+
+const normalizeReportSourcePath = (sourcePath: string, sourceRoot: string): string => {
+  const withoutPrefix = sourcePath.replace(REGEX_VIRTUAL_MODULE_NULL_PREFIX, '')
+  const withoutQuery = withoutPrefix.split('?')[0] ?? withoutPrefix
+  const absolutePath = path.isAbsolute(withoutQuery)
+    ? withoutQuery
+    : path.resolve(sourceRoot || process.cwd(), withoutQuery)
+  const posixPath = absolutePath.replace(REGEX_BACKSLASH, '/')
+  const collapsedDependency = posixPath.replace(REGEX_NODE_MODULES_PREFIX, 'node_modules/')
+  if (collapsedDependency !== posixPath) {
+    return collapsedDependency
+  }
+  const cwd = process.cwd().replace(REGEX_BACKSLASH, '/')
+  return posixPath.startsWith(`${cwd}/`) ? posixPath.slice(cwd.length + 1) : posixPath
 }
 
 export default defineConfig(({ mode }) => {
@@ -191,6 +245,26 @@ export default defineConfig(({ mode }) => {
   const base = normalizeBasePath(env.BASE_PATH)
   const muiIconOptimizeDeps = getMuiIconOptimizeDeps()
   const nodeEnv = mode === 'production' ? 'production' : 'development'
+
+  if (mode === 'production') {
+    process.env.NODE_ENV = 'production'
+  }
+  const analyze = process.env.ANALYZE === 'true'
+  const sondaOptions = {
+    outputDir: 'dist',
+    filename: 'sonda-report',
+    format: ['html', 'json'] as Array<'html' | 'json'>,
+    open: false,
+    gzip: true,
+    brotli: true,
+    deep: true,
+    sources: true,
+    include: [REGEX_CODE_BUILD_ASSET],
+    sourcesPathNormalizer: normalizeReportSourcePath,
+  }
+  const analyzePlugins: PluginOption[] = analyze
+    ? [SondaVitePlugin(sondaOptions) as PluginOption]
+    : []
   const processEnv = {
     NODE_ENV: nodeEnv,
     BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
@@ -207,11 +281,13 @@ export default defineConfig(({ mode }) => {
     base,
     publicDir: 'public',
     plugins: [
+      dateFnsEsmResolverPlugin(),
       timingPlugin(),
       wasm(),
       react({
         exclude: [/node_modules/, /jans_config_api_orval/],
       }),
+      ...analyzePlugins,
     ],
     resolve: {
       dedupe: ['react', 'react-dom'],
@@ -225,6 +301,7 @@ export default defineConfig(({ mode }) => {
           find: 'JansConfigApi',
           replacement: path.resolve(process.cwd(), 'jans_config_api_orval/src/JansConfigApi.ts'),
         },
+        { find: 'Orval', replacement: path.resolve(process.cwd(), 'orval') },
         { find: 'Plugins', replacement: path.resolve(process.cwd(), 'plugins') },
         { find: 'Redux', replacement: path.resolve(process.cwd(), 'app/redux') },
         { find: 'Routes', replacement: path.resolve(process.cwd(), 'app/routes') },
@@ -234,6 +311,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       'process.env': JSON.stringify(processEnv),
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
     },
     css: {
       devSourcemap: true,
@@ -257,12 +335,14 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
-      sourcemap: mode !== 'production',
+      sourcemap: mode !== 'production' || analyze,
       emptyOutDir: true,
       chunkSizeWarningLimit: 900,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: getManualChunkName,
+          codeSplitting: {
+            groups: VENDOR_CHUNK_GROUPS,
+          },
         },
       },
     },

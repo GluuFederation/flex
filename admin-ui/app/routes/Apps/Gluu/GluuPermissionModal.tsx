@@ -1,45 +1,43 @@
 import customColors from '@/customColors'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import MuiButton from '@mui/material/Button'
 import type { GluuPermissionModalProps } from './types/GluuPermissionModal.types'
+import { useStyles } from './styles/GluuPermissionModal.style'
 
 const GluuPermissionModal = ({ handler, isOpen }: GluuPermissionModalProps) => {
   const { t } = useTranslation()
+  const { classes } = useStyles()
 
   return (
     <div>
-      <Modal
-        centered
-        isOpen={isOpen}
-        style={{ minWidth: '45vw' }}
-        toggle={handler}
-        className="modal-outline-primary"
-        backdrop="static"
+      <Dialog
+        open={isOpen}
+        onClose={handler}
+        disableEscapeKeyDown
+        PaperProps={{
+          className: 'modal-outline-primary',
+          style: { minWidth: '45vw', background: customColors.black },
+        }}
       >
-        <ModalHeader>
+        <DialogTitle>
           <i className="bi bi-shield-lock" /> {t('dashboard.access_denied')}
-        </ModalHeader>
-        <ModalBody className="text-center">
-          <p className="text-muted">
+        </DialogTitle>
+        <DialogContent className={classes.modalBody}>
+          <p className={classes.mutedText}>
             🚫 <strong>{t('dashboard.access_denied_message')}</strong>
           </p>
           <p>{t('dashboard.access_contact_admin')}</p>
-        </ModalBody>
-        <ModalFooter>
-          <Button className="d-flex align-items-center" onClick={handler}>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={handler} variant="contained">
             {t('menus.signout')}
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      {/* Scoped CSS inside the component */}
-      <style>
-        {`
-          .modal {
-            background: ${customColors.black} !important;
-          }
-        `}
-      </style>
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

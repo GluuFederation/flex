@@ -7,6 +7,7 @@ import GluuTooltip from './GluuTooltip'
 import customColors from '@/customColors'
 import { isDevelopment } from '@/utils/env'
 import { devLogger } from '@/utils/devLogger'
+import { useStyles } from './styles/GluuProperties.style'
 import type {
   Property,
   KeyValueProperty,
@@ -101,6 +102,7 @@ const GluuProperties = ({
 }: GluuPropertiesProps) => {
   const [properties, setProperties] = useState(options)
   const { t, i18n } = useTranslation()
+  const { classes } = useStyles()
 
   const formikRef = useRef(formik)
   formikRef.current = formik
@@ -146,7 +148,7 @@ const GluuProperties = ({
   const TooltipHeader = () => {
     return (
       <AccordionHeader>
-        <h5 className="d-flex" aria-label={label}>
+        <h5 className={classes.headerRow} aria-label={label}>
           {t(label)}
 
           {tooltip && i18n.exists(tooltip) && (
@@ -166,7 +168,7 @@ const GluuProperties = ({
   }
 
   return (
-    <Accordion className="mb-2 b-primary" initialOpen>
+    <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
       {tooltip ? <TooltipHeader /> : <AccordionHeader>{t(label).toUpperCase()}</AccordionHeader>}
       <AccordionBody>
         {isAddButton && (
@@ -181,7 +183,7 @@ const GluuProperties = ({
             onClick={addProperty}
             disabled={disabled}
           >
-            <Add fontSize="small" className="me-2" />
+            <Add fontSize="small" className={classes.addButtonIcon} />
             {buttonText ? t(buttonText) : t('actions.add_property')}
           </Button>
         )}

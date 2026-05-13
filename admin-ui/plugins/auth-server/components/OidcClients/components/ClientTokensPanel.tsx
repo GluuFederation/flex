@@ -318,7 +318,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
     <div className={classes.root}>
       <div className={gridClass}>
         {orderedFieldKeys.map((fieldKey) => (
-          <div key={fieldKey}>{fieldMap[fieldKey]}</div>
+          <React.Fragment key={fieldKey}>{fieldMap[fieldKey]}</React.Fragment>
         ))}
       </div>
     </div>

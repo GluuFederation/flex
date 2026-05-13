@@ -49,7 +49,7 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
   const hasData = summary.totalTokens > 0
 
   return (
-    <Card className={`${classes.trendCard} h-100`}>
+    <Card className={classes.trendCard}>
       <CardBody>
         <GluuText variant="div" className={classes.trendTitle}>
           {t('titles.token_distribution')}
@@ -107,7 +107,7 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="d-flex align-items-center justify-content-center" style={{ height: 250 }}>
+          <div className={classes.emptyState} style={{ height: 250 }}>
             <GluuText variant="span" secondary>
               {t('messages.no_mau_data')}
             </GluuText>

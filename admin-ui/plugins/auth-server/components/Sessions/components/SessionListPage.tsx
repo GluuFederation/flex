@@ -570,6 +570,7 @@ const SessionListPage: React.FC = () => {
                     outlined
                     className={classes.toolbarButton}
                     onClick={handleFilterToggle}
+                    onMouseDown={(e) => e.stopPropagation()}
                     textColor={filterButtonColors.textColor}
                     borderColor={filterButtonColors.borderColor}
                     minHeight={52}

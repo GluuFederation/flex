@@ -2,7 +2,6 @@
 @import "~pretty-checkbox/src/pretty-checkbox.scss";
 @import "./custom/navbar.scss";
 @import "./custom/sidebar.scss";
-@import "./custom/spacing.scss";
 
 html.theme-dark {
     --theme-input-bg: var(--custom-dark-input-bg);
@@ -516,6 +515,11 @@ html.theme-dark .MuiTableCell-head .MuiTableSortLabel-root:hover {
 }
 //* Overrider bootstrap styles
 
+label.col-form-label {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
 nav .container-fluid {
     width: 100% !important;
     padding: 0 30px;
@@ -536,14 +540,6 @@ nav .container-fluid .container {
     color: var(--custom-dark-gray) !important;
 }
 
-.sidebar-submenu__entry__link {
-    text-decoration: none;
-}
-
-.sidebar-menu__entry--nested a,
-.sidebar-menu__entry a {
-    text-decoration: none;
-}
 .dropdown-toggle::after {
     color: var(--custom-white) !important;
 }

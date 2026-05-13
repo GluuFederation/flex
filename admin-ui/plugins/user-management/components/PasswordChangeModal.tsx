@@ -10,7 +10,6 @@ import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { Divider } from '@mui/material'
 import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -34,7 +33,7 @@ import {
   getErrorMessage,
   triggerUserWebhook,
 } from '../helper'
-import { AXIOS_INSTANCE } from '../../../api-client'
+import { AXIOS_INSTANCE } from 'Orval'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { usePasswordModalStyles } from './PasswordChangeModal.style'
 
@@ -358,8 +357,7 @@ const PasswordChangeModal = ({
               </div>
             </div>
 
-            <Divider sx={{ mt: 2 }} />
-            <div style={{ paddingTop: 16, paddingBottom: 8 }}>
+            <div className={formClasses.formFooter}>
               <GluuButton
                 type="submit"
                 disabled={isApplyDisabled || isLoading}

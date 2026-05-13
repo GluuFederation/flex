@@ -14,6 +14,10 @@
     .sidebar-menu {
         padding-top: 34px;
         padding-bottom: 34px;
+        height: 87vh;
+        overflow-y: scroll;
+        margin-bottom: 0;
+        margin-top: 0;
     }
 
     .sidebar-menu__entry__link {
@@ -38,6 +42,10 @@
     }
 }
 
+.sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
+    color: var(--theme-menu-text-color-active, var(--theme-menu-text-color, var(--custom-dark-gray))) !important;
+}
+
 .menu-icon {
     height: 28px;
     width: 28px;
@@ -56,6 +64,10 @@
 }
 
 .custom-sidebar-container .sidebar-menu__entry {
+    &.sidebar-menu__entry--with-icon {
+        margin-bottom: 20px;
+    }
+
     &:not(.open) > .sidebar-submenu {
         pointer-events: none;
     }
@@ -109,6 +121,8 @@
 
 .sidebar-menu__entry__link,
 .sidebar-submenu__entry__link {
+    text-decoration: none;
+
     &:focus,
     &:focus-visible {
         outline: none;
@@ -125,4 +139,9 @@
         margin-left: 0;
         margin-right: auto;
     }
+}
+
+.sidebar-menu__entry--nested a,
+.sidebar-menu__entry a {
+    text-decoration: none;
 }

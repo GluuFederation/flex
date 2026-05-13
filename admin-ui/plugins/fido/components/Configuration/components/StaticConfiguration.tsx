@@ -317,7 +317,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             />
           </div>
 
-          <div className={classes.fieldItemFullWidth}>
+          <div className={classes.fieldItem}>
             <GluuSelectRow
               label={fidoConstants.LABELS.ATTESTATION_MODE}
               name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
@@ -367,199 +367,202 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
-        </div>
-
-        <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
-        >
           <div
-            className={`${classes.propsHeader} ${!requestedParties.length ? classes.propsHeaderEmpty : ''}`.trim()}
+            className={`${classes.fieldItemFullWidth} ${classes.propsBox} ${!requestedParties.length ? classes.propsBoxEmpty : ''}`.trim()}
           >
-            <GluuText variant="h5" disableThemeColor>
-              <span className={classes.propsTitle}>
-                {t(fidoConstants.LABELS.REQUESTED_PARTIES_ID)}
-              </span>
-            </GluuText>
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.settings.addPropertyButton.bg}
-              textColor={themeColors.settings.addPropertyButton.text}
-              useOpacityOnHover
-              className={classes.propsActionBtn}
-              onClick={addRequestedParty}
-              disabled={!canAddParty}
+            <div
+              className={`${classes.propsHeader} ${!requestedParties.length ? classes.propsHeaderEmpty : ''}`.trim()}
             >
-              <Add fontSize="small" />
-              {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
-            </GluuButton>
+              <GluuText variant="h5" disableThemeColor>
+                <span className={classes.propsTitle}>
+                  {t(fidoConstants.LABELS.REQUESTED_PARTIES_ID)}
+                </span>
+              </GluuText>
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addRequestedParty}
+                disabled={!canAddParty}
+              >
+                <Add fontSize="small" />
+                {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
+              </GluuButton>
+            </div>
+            <div className={classes.propsBody}>
+              {requestedParties.map((item, index) => (
+                <div key={index} className={classes.propsRow}>
+                  <Input
+                    value={item.key || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeRequestedParty(index, 'key', e.target.value)
+                    }
+                    placeholder={t('placeholders.name')}
+                    className={classes.propsInput}
+                  />
+                  <Input
+                    value={item.value || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeRequestedParty(index, 'value', e.target.value)
+                    }
+                    placeholder={t('placeholders.value')}
+                    className={classes.propsInput}
+                  />
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeRequestedParty(index)}
+                  >
+                    <DeleteIcon className={classes.propsActionIcon} />
+                    {t('actions.remove')}
+                  </GluuButton>
+                </div>
+              ))}
+              {showPartiesError && (
+                <div className={classes.propsError}>{t(partiesError as string)}</div>
+              )}
+            </div>
           </div>
-          <div className={classes.propsBody}>
-            {requestedParties.map((item, index) => (
-              <div key={index} className={classes.propsRow}>
-                <Input
-                  value={item.key || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeRequestedParty(index, 'key', e.target.value)
-                  }
-                  placeholder={t('placeholders.name')}
-                  className={classes.propsInput}
-                />
-                <Input
-                  value={item.value || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeRequestedParty(index, 'value', e.target.value)
-                  }
-                  placeholder={t('placeholders.value')}
-                  className={classes.propsInput}
-                />
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.removeButton.bg}
-                  textColor={themeColors.settings.removeButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={() => removeRequestedParty(index)}
-                >
-                  <DeleteIcon className={classes.propsActionIcon} />
-                  {t('actions.remove')}
-                </GluuButton>
-              </div>
-            ))}
-            {showPartiesError && (
-              <div className={classes.propsError}>{t(partiesError as string)}</div>
-            )}
-          </div>
-        </div>
 
-        <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
-        >
           <div
-            className={`${classes.propsHeader} ${!enabledFidoAlgorithms.length ? classes.propsHeaderEmpty : ''}`.trim()}
+            className={`${classes.fieldItemFullWidth} ${classes.propsBox} ${!enabledFidoAlgorithms.length ? classes.propsBoxEmpty : ''}`.trim()}
           >
-            <GluuText variant="h5" disableThemeColor>
-              <span className={classes.propsTitle}>
-                {t(fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS)}
-              </span>
-            </GluuText>
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.settings.addPropertyButton.bg}
-              textColor={themeColors.settings.addPropertyButton.text}
-              useOpacityOnHover
-              className={classes.propsActionBtn}
-              onClick={addAlgorithm}
-              disabled={!canAddAlgorithm}
+            <div
+              className={`${classes.propsHeader} ${!enabledFidoAlgorithms.length ? classes.propsHeaderEmpty : ''}`.trim()}
             >
-              <Add fontSize="small" />
-              {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
-            </GluuButton>
+              <GluuText variant="h5" disableThemeColor>
+                <span className={classes.propsTitle}>
+                  {t(fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS)}
+                </span>
+              </GluuText>
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addAlgorithm}
+                disabled={!canAddAlgorithm}
+              >
+                <Add fontSize="small" />
+                {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
+              </GluuButton>
+            </div>
+            <div className={classes.propsBody}>
+              {enabledFidoAlgorithms.map((item, index) => (
+                <div key={index} className={classes.propsRow}>
+                  <Input
+                    value={item || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeAlgorithm(index, e.target.value)
+                    }
+                    placeholder={t('placeholders.value')}
+                    className={classes.propsInput}
+                  />
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeAlgorithm(index)}
+                  >
+                    <DeleteIcon className={classes.propsActionIcon} />
+                    {t('actions.remove')}
+                  </GluuButton>
+                </div>
+              ))}
+              {showAlgorithmsError && (
+                <div className={classes.propsError}>{t(algorithmsError as string)}</div>
+              )}
+            </div>
           </div>
-          <div className={classes.propsBody}>
-            {enabledFidoAlgorithms.map((item, index) => (
-              <div key={index} className={classes.propsRow}>
-                <Input
-                  value={item || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeAlgorithm(index, e.target.value)
-                  }
-                  placeholder={t('placeholders.value')}
-                  className={classes.propsInput}
-                />
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.removeButton.bg}
-                  textColor={themeColors.settings.removeButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={() => removeAlgorithm(index)}
-                >
-                  <DeleteIcon className={classes.propsActionIcon} />
-                  {t('actions.remove')}
-                </GluuButton>
-              </div>
-            ))}
-            {showAlgorithmsError && (
-              <div className={classes.propsError}>{t(algorithmsError as string)}</div>
-            )}
-          </div>
-        </div>
 
-        <div
-          className={`${classes.propsBox} ${classes.propsBoxWithMargin} mb-3 ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
-        >
           <div
-            className={`${classes.propsHeader} ${!metadataServers.length ? classes.propsHeaderEmpty : ''}`.trim()}
+            className={`${classes.fieldItemFullWidth} ${classes.propsBox} ${!metadataServers.length ? classes.propsBoxEmpty : ''}`.trim()}
           >
-            <GluuText variant="h5" disableThemeColor>
-              <span className={classes.propsTitle}>{t(fidoConstants.LABELS.METADATA_SERVERS)}</span>
-            </GluuText>
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.settings.addPropertyButton.bg}
-              textColor={themeColors.settings.addPropertyButton.text}
-              useOpacityOnHover
-              className={classes.propsActionBtn}
-              onClick={addMetadataServer}
-              disabled={!canAddServer}
+            <div
+              className={`${classes.propsHeader} ${!metadataServers.length ? classes.propsHeaderEmpty : ''}`.trim()}
             >
-              <Add fontSize="small" />
-              {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
-            </GluuButton>
+              <GluuText variant="h5" disableThemeColor>
+                <span className={classes.propsTitle}>
+                  {t(fidoConstants.LABELS.METADATA_SERVERS)}
+                </span>
+              </GluuText>
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addMetadataServer}
+                disabled={!canAddServer}
+              >
+                <Add fontSize="small" />
+                {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
+              </GluuButton>
+            </div>
+            <div className={classes.propsBody}>
+              {metadataServers.map((server, index) => (
+                <div key={index} className={classes.propsRow}>
+                  <Input
+                    value={server.url || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeMetadataServer(index, 'url', e.target.value)
+                    }
+                    placeholder={t('placeholders.enter_url')}
+                    className={classes.propsInput}
+                  />
+                  <Input
+                    value={server.rootCert || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      changeMetadataServer(index, 'rootCert', e.target.value)
+                    }
+                    placeholder={t('placeholders.enter_root_certificate')}
+                    className={classes.propsInput}
+                  />
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeMetadataServer(index)}
+                  >
+                    <DeleteIcon className={classes.propsActionIcon} />
+                    {t('actions.remove')}
+                  </GluuButton>
+                </div>
+              ))}
+              {showServersError && (
+                <div className={classes.propsError}>{t(serversError as string)}</div>
+              )}
+            </div>
           </div>
-          <div className={classes.propsBody}>
-            {metadataServers.map((server, index) => (
-              <div key={index} className={classes.propsRow}>
-                <Input
-                  value={server.url || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeMetadataServer(index, 'url', e.target.value)
-                  }
-                  placeholder={t('placeholders.enter_url')}
-                  className={classes.propsInput}
-                />
-                <Input
-                  value={server.rootCert || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    changeMetadataServer(index, 'rootCert', e.target.value)
-                  }
-                  placeholder={t('placeholders.enter_root_certificate')}
-                  className={classes.propsInput}
-                />
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.removeButton.bg}
-                  textColor={themeColors.settings.removeButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={() => removeMetadataServer(index)}
-                >
-                  <DeleteIcon className={classes.propsActionIcon} />
-                  {t('actions.remove')}
-                </GluuButton>
-              </div>
-            ))}
-            {showServersError && (
-              <div className={classes.propsError}>{t(serversError as string)}</div>
-            )}
-          </div>
-        </div>
 
-        <div className={`${classes.formLabels} ${classes.formWithInputs} ${classes.hintsSection}`}>
-          <GluuMultiSelectRow
-            label={fidoConstants.LABELS.HINTS}
-            name={fidoConstants.FORM_FIELDS.HINTS}
-            value={formik.values.hints || []}
-            formik={formik}
-            options={HINT_OPTIONS}
-            lsize={LABEL_SIZE}
-            rsize={INPUT_SIZE}
-            required
-            showError={!!formik.errors.hints}
-            errorMessage={formik.errors.hints as string}
-            doc_category={fidoConstants.DOC_CATEGORY}
-            helperText={t('messages.multi_select_hint')}
-          />
+          <div
+            className={`${classes.fieldItemFullWidth} ${classes.formLabels} ${classes.formWithInputs} ${classes.hintsSection}`}
+          >
+            <GluuMultiSelectRow
+              label={fidoConstants.LABELS.HINTS}
+              name={fidoConstants.FORM_FIELDS.HINTS}
+              value={formik.values.hints || []}
+              formik={formik}
+              options={HINT_OPTIONS}
+              lsize={LABEL_SIZE}
+              rsize={INPUT_SIZE}
+              required
+              showError={!!formik.errors.hints}
+              errorMessage={formik.errors.hints as string}
+              doc_category={fidoConstants.DOC_CATEGORY}
+              helperText={t('messages.multi_select_hint')}
+            />
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 
 type Primitive = string | number | boolean | null | undefined
 

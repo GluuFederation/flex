@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import { AXIOS_INSTANCE } from '../../../../../api-client'
+import { AXIOS_INSTANCE } from 'Orval'
 import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 import type { ServiceHealth, ServiceStatusValue } from '../types'
 

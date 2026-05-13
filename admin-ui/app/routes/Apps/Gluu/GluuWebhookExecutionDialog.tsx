@@ -126,7 +126,11 @@ const GluuWebhookExecutionDialog = () => {
         </button>
         <div className={`${commitClasses.contentArea} ${classes.contentArea}`}>
           <GluuText variant="h2" className={classes.title} id="webhook-execution-dialog-title">
-            <InfoOutlined style={{ color: customColors.logo }} className="me-2" aria-hidden />
+            <InfoOutlined
+              style={{ color: customColors.logo }}
+              className={classes.titleIcon}
+              aria-hidden
+            />
             {t('messages.webhook_execution_information')}
           </GluuText>
           {(webhookTriggerResults?.length ?? 0) > 0 && (
@@ -184,7 +188,7 @@ const GluuWebhookExecutionDialog = () => {
               useOpacityOnHover
               className={commitClasses.yesButton}
             >
-              <Check fontSize="small" className="me-2" aria-hidden />
+              <Check fontSize="small" className={classes.actionIcon} aria-hidden />
               {t('actions.ok')}
             </GluuButton>
           </div>

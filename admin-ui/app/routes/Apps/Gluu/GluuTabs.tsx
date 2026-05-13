@@ -17,7 +17,7 @@ const a11yProps = (index: number) => {
 }
 
 const TabPanel = memo((props: TabPanelProps) => {
-  const { children, value, px, py, index, ...other } = props
+  const { children, value, px, pt, index, ...other } = props
   return (
     <div
       role="tabpanel"
@@ -27,7 +27,7 @@ const TabPanel = memo((props: TabPanelProps) => {
       {...other}
     >
       {value === index && (
-        <Box px={px} py={py}>
+        <Box px={px} pt={pt}>
           {children}
         </Box>
       )}
@@ -40,11 +40,11 @@ TabPanel.displayName = 'TabPanel'
 const isNavigationTab = (tab: TabItem | null): tab is NavigationTab => {
   return Boolean(
     tab &&
-      typeof tab === 'object' &&
-      'name' in tab &&
-      'path' in tab &&
-      typeof tab.path === 'string' &&
-      tab.path.trim().length > 0,
+    typeof tab === 'object' &&
+    'name' in tab &&
+    'path' in tab &&
+    typeof tab.path === 'string' &&
+    tab.path.trim().length > 0,
   )
 }
 
@@ -60,6 +60,8 @@ const GluuTabs = ({
   defaultTab = 0,
   rightAction,
   onTabChange,
+  panelPx = 0,
+  panelPt = 2,
 }: GluuTabsProps) => {
   const path = useLocation()
   const { navigateToRoute } = useAppNavigation()
@@ -160,11 +162,11 @@ const GluuTabs = ({
   const tabPanels = useMemo(
     () =>
       tabLabels.map((label, index) => (
-        <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={0} py={2}>
+        <TabPanel value={value} key={`tabpanel-${index}`} index={index} px={panelPx} pt={panelPt}>
           {tabToShow(tabIds[index] ?? label)}
         </TabPanel>
       )),
-    [tabLabels, tabIds, value, tabToShow],
+    [tabLabels, tabIds, value, tabToShow, panelPx, panelPt],
   )
 
   return (

@@ -2,11 +2,11 @@ import { configureStore, combineReducers, Tuple } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
-import { persistStore, persistReducer } from 'redux-persist'
+import { persistStore, persistReducer, type PersistedState } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
+import { installInterceptors } from 'Orval'
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ReducerMap, RootState } from '../types'
 import { hmrAccept } from '@/utils/hmr'
@@ -25,18 +25,24 @@ const middlewares = new Tuple(sagaMiddleware)
 const persistConfig = {
   key: 'root',
   storage,
-  stateReconciler: hardSet,
+  blacklist: ['cedarPermissions', 'toastReducer', 'logoutAuditReducer', 'initReducer'],
+  version: 1,
+  migrate: (state: PersistedState) => Promise.resolve(state),
 }
-// Preserve initial state for not-yet-loaded reducers
+
+const persistMetaPassthrough = ((s = {}) => s) as LooseReducerMap[string]
+
 const combine = (reducersObjects: ReducerMap) => {
-  const loose = reducersObjects as LooseReducerMap
-  const reducerNames = Object.keys(loose)
-  Object.keys(appReducers).forEach((item) => {
-    if (reducerNames.indexOf(item) === -1) {
-      loose[item] = ((s = {}) => s) as LooseReducerMap[string]
+  const merged: LooseReducerMap = { ...(reducersObjects as LooseReducerMap) }
+  for (const item of Object.keys(appReducers)) {
+    if (!(item in merged)) {
+      merged[item] = ((s = {}) => s) as LooseReducerMap[string]
     }
-  })
-  return combineReducers(loose)
+  }
+  if (!('_persist' in merged)) {
+    merged._persist = persistMetaPassthrough
+  }
+  return combineReducers(merged)
 }
 const reducers = combine(reducerRegistry.getReducers())
 process()
@@ -47,14 +53,19 @@ const store = configureStore({
   reducer: persistedReducer,
 })
 
+installInterceptors(() => store.getState() as object as RootState)
+
 sagaMiddleware.run(RootSaga)
 
 export const configStore = () => {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
+    const nextRootReducer = persistReducer(persistConfig, combine(reds))
     store.replaceReducer(
-      combine(reds) as Reducer<object, UnknownAction> as Parameters<typeof store.replaceReducer>[0],
+      nextRootReducer as Reducer<object, UnknownAction> as Parameters<
+        typeof store.replaceReducer
+      >[0],
     )
   })
   hmrAccept('../reducers/index', () => {

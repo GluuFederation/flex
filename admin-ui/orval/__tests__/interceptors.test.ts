@@ -1,26 +1,24 @@
 import { AxiosHeaders } from 'axios'
 import type { InternalAxiosRequestConfig } from 'axios'
+import type { RootState } from '@/redux/types'
 
-const mockGetRootState = jest.fn()
 const mockFetchApiTokenWithDefaultScopes = jest.fn()
 const mockDeleteAdminUiSession = jest.fn()
+const mockCreateAdminUiSession = jest.fn()
 
-jest.mock('../app/redux/hooks', () => ({
-  getRootState: () => mockGetRootState(),
-}))
-
-jest.mock('../app/redux/api/backend-api', () => ({
+jest.mock('@/redux/api/backend-api', () => ({
   fetchApiTokenWithDefaultScopes: mockFetchApiTokenWithDefaultScopes,
   deleteAdminUiSession: mockDeleteAdminUiSession,
+  createAdminUiSession: mockCreateAdminUiSession,
 }))
 
-jest.mock('../app/utils/devLogger', () => ({
+jest.mock('@/utils/devLogger', () => ({
   devLogger: {
     error: jest.fn(),
   },
 }))
 
-describe('orval-mutator request interceptor', () => {
+describe('orval interceptors', () => {
   type RequestInterceptorManager = {
     handlers: Array<{
       fulfilled: (value: InternalAxiosRequestConfig) => InternalAxiosRequestConfig
@@ -29,21 +27,25 @@ describe('orval-mutator request interceptor', () => {
 
   beforeEach(() => {
     jest.resetModules()
-    mockGetRootState.mockReset()
     mockFetchApiTokenWithDefaultScopes.mockReset()
     mockDeleteAdminUiSession.mockReset()
+    mockCreateAdminUiSession.mockReset()
   })
 
   it('attaches session credentials and standard headers when a session exists', async () => {
-    mockGetRootState.mockReturnValue({
-      authReducer: {
-        hasSession: true,
-        issuer: 'https://issuer.example.com',
-        userInum: '12345',
-      },
-    })
+    const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
 
-    const { AXIOS_INSTANCE } = await import('../orval-mutator')
+    installInterceptors(
+      () =>
+        ({
+          authReducer: {
+            hasSession: true,
+            issuer: 'https://issuer.example.com',
+            userInum: '12345',
+          },
+        }) as object as RootState,
+    )
+
     const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
       .handlers[0]?.fulfilled
 
@@ -59,15 +61,19 @@ describe('orval-mutator request interceptor', () => {
   })
 
   it('disables session credentials when no Admin UI session exists', async () => {
-    mockGetRootState.mockReturnValue({
-      authReducer: {
-        hasSession: false,
-        issuer: null,
-        userInum: '',
-      },
-    })
+    const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
 
-    const { AXIOS_INSTANCE } = await import('../orval-mutator')
+    installInterceptors(
+      () =>
+        ({
+          authReducer: {
+            hasSession: false,
+            issuer: null,
+            userInum: '',
+          },
+        }) as object as RootState,
+    )
+
     const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
       .handlers[0]?.fulfilled
 

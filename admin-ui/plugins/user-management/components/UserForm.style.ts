@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
@@ -35,10 +35,13 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'display': 'flex',
       'alignItems': 'stretch',
       'flexWrap': 'wrap' as const,
+      'width': '100%',
+      'margin': '0 !important',
 
       '& > [class*="col-"]': {
         display: 'flex',
         flexDirection: 'column',
+        minWidth: 0,
       },
 
       ...createFormLabelStyles(themeColors.fontColor),
@@ -58,7 +61,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         createFormInputFocusStyles(inputColors),
 
       '& input:disabled, & select:disabled, & textarea:disabled, & .custom-select:disabled': {
-        opacity: 1,
+        opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
 
@@ -81,8 +84,25 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'boxSizing': 'border-box',
       'display': 'flex',
       'flexDirection': 'column',
-      'gap': SPACING.CARD_CONTENT_GAP,
+      'gap': SPACING.SECTION_GAP,
       ...formGroupNoErrors,
+      '& .form-group > label': {
+        ...formGroupNoErrors['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+      },
+      '& .form-group > label h5, & .form-group > label h5 span': {
+        fontSize: `${fontSizes.base} !important`,
+        fontWeight: `${fontWeights.semiBold} !important`,
+        lineHeight: `${lineHeights.normal} !important`,
+      },
       '& > .form-group [data-field-error]': {
         display: 'none !important',
       },
@@ -91,17 +111,30 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       'display': 'grid',
       'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
       'columnGap': SPACING.SECTION_GAP,
-      'rowGap': 0,
+      'rowGap': SPACING.CARD_CONTENT_GAP,
+      'alignItems': 'start',
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
       ...formGroupWithErrors,
       '& .form-group': {
         ...formGroupWithErrors['& .form-group'],
-        paddingBottom: SPACING.CARD_CONTENT_GAP,
+      },
+      '& .form-group > label': {
+        ...formGroupWithErrors['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+        paddingBottom: '0 !important',
       },
       '& > div:not(.form-group)': {
-        paddingBottom: SPACING.CARD_CONTENT_GAP,
+        minWidth: 0,
       },
     },
     fullRow: {
@@ -110,6 +143,10 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     claimsPanelWrap: {
       flex: 1,
       minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    claimsPanelLayout: {
       display: 'flex',
       flexDirection: 'column',
     },
@@ -130,6 +167,19 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
       '& .form-group': {
         ...formGroupWithErrors['& .form-group'],
         paddingBottom: 0,
+      },
+      '& .form-group > label': {
+        ...formGroupWithErrors['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '4px !important',
+      },
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static',
+        paddingBottom: '0 !important',
       },
     },
     changePasswordButton: {

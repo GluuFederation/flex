@@ -77,6 +77,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       background: 'transparent',
       marginTop: 0,
     },
+    dashboardCardCentered: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    mobileTopSpacing: {
+      marginTop: 20,
+    },
     slider: {
       border: `5px solid ${customColors.white} `,
       borderRadius: BORDER_RADIUS.LARGE,
@@ -396,10 +403,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     desktopChartStyle: {
       width: '100%',
-      height: '380px',
+      height: '250px',
       position: 'relative',
-      flex: 1,
-      minHeight: 0,
+      flexShrink: 0,
       marginLeft: 0,
     },
     chartLegend: {

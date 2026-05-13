@@ -38,10 +38,16 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       color: fontColor,
       fontSize: fontSizes.lg,
       fontWeight: fontWeights.bold,
-      marginBottom: SPACING.CARD_CONTENT_GAP * 2,
+      marginBottom: 0,
+    },
+    list: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: SPACING.SECTION_GAP,
+      marginTop: SPACING.SECTION_GAP,
     },
     accordionWrapper: {
-      marginBottom: SPACING.CARD_CONTENT_GAP,
+      marginBottom: 0,
     },
     accordionHeader: {
       'display': 'flex',
@@ -73,16 +79,15 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       borderBottomRightRadius: 0,
       borderBottom: 'none',
     },
-    accordionIcon: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 32,
-      height: 32,
-      borderRadius: BORDER_RADIUS.CIRCLE,
-      backgroundColor: themeColors.infoAlert.background,
+    chevronIcon: {
+      width: 18,
+      height: 18,
       color: fontColor,
       flexShrink: 0,
+      transition: 'transform 0.3s ease',
+    },
+    chevronIconOpen: {
+      transform: 'rotate(180deg)',
     },
     accordionBody: {
       'padding': `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px ${SPACING.CARD_CONTENT_GAP}px`,
@@ -112,7 +117,8 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
-      gap: SPACING.CARD_CONTENT_GAP * 2,
+      columnGap: SPACING.SECTION_GAP,
+      rowGap: SPACING.CARD_CONTENT_GAP,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
       },

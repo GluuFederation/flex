@@ -1,22 +1,45 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Input as RSCustomInput } from 'reactstrap'
+import type { CustomInputProps } from './types'
 
-type CustomInputProps = React.ComponentProps<typeof RSCustomInput>
-
-const CustomInput: React.FC<CustomInputProps> = (props) => {
-  const { className, label, name, ...otherProps } = props
-  const inputClass = classNames(className, {
+const CustomInput: React.FC<CustomInputProps> = ({
+  className,
+  label,
+  name,
+  type,
+  children,
+  onChange,
+  onBlur,
+  ...otherProps
+}) => {
+  const inputClass = classNames('form-control', className, {
     'custom-control-empty': !label,
   })
 
+  if (type === 'select') {
+    return (
+      <select
+        data-testid={name}
+        className={inputClass}
+        name={name}
+        onChange={onChange as React.ChangeEventHandler<HTMLSelectElement>}
+        onBlur={onBlur as React.FocusEventHandler<HTMLSelectElement>}
+        {...(otherProps as React.SelectHTMLAttributes<HTMLSelectElement>)}
+      >
+        {children}
+      </select>
+    )
+  }
+
   return (
-    <RSCustomInput
+    <input
       data-testid={name}
       className={inputClass}
-      label={label}
       name={name}
-      {...otherProps}
+      type={type}
+      onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
+      onBlur={onBlur as React.FocusEventHandler<HTMLInputElement>}
+      {...(otherProps as React.InputHTMLAttributes<HTMLInputElement>)}
     />
   )
 }

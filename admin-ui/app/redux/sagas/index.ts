@@ -14,7 +14,6 @@ import process from 'Plugins/PluginSagasResolver'
 import profileDetails from './ProfileDetailsSaga'
 import lockSaga from './LockSaga'
 import sessionSaga from './SessionSaga'
-import appInitSaga from './AppInitSaga'
 
 export default function* rootSaga() {
   const pluginSagaArr = process()
@@ -27,7 +26,6 @@ export default function* rootSaga() {
     profileDetails(),
     lockSaga(),
     sessionSaga(),
-    appInitSaga(),
   ]
   yield all([...coreSagas, ...pluginSagaArr] as SagaIterator[])
 }
