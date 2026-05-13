@@ -96,6 +96,15 @@ export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 export const REGEX_PRETTIER_TIMESTAMP = /\d+ms/
 /** Extracts the file path from a Prettier --write output line (e.g. "src/foo.ts 5ms (unchanged)" → capture group [1] = "src/foo.ts"). */
 export const REGEX_PRETTIER_FILE_PATH = /^(.+?)\s+\d+ms/
+/** Matches a top-level `export const <name> = (` declaration in the orval-generated JansConfigApi.ts; used to identify each operation function as the verify-orval-mutations script walks the file. Capture group [1] is the function name. */
+export const REGEX_ORVAL_EXPORT_CONST_FN = /^export const ([a-zA-Z0-9_]+) = \(/
+/** Matches the `method: '<VERB>'` line for write-method endpoints (DELETE/POST/PUT/PATCH) in the orval-generated JansConfigApi.ts. Capture group [1] is the HTTP verb. */
+export const REGEX_ORVAL_WRITE_METHOD_LINE = /method:\s*'(DELETE|POST|PUT|PATCH)'/
+/** Matches an empty closing brace line (`}` or `})`); used by the verify-orval-mutations script to detect the end of an operation function declaration. */
+export const REGEX_CLOSING_BRACE_LINE = /^}\)?$/
+/** Matches a `useMutation` symbol within ~500 chars of a `from '@tanstack/react-query'` import; used by verify-orval-mutations as an early sanity check that catches the orval 8.10.0 regression where the generated file drops useMutation entirely. */
+export const REGEX_ORVAL_HAS_USE_MUTATION_IMPORT =
+  /useMutation[\s\S]{0,500}from '@tanstack\/react-query'/
 /** Matches a hostname starting with 100.x. for carrier-grade NAT range detection (100.64.0.0/10, RFC 6598). Capture group [1] is the second octet. */
 export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
 /** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */
@@ -118,4 +127,20 @@ const escapeRegexSpecialChars = (s: string): string => {
 /** Builds a RegExp that matches a single braced placeholder for the given key (e.g. key="name" -> /\{name\}/g). Key is escaped so metacharacters match literally. */
 export const regexForBracedKey = (key: string): RegExp => {
   return new RegExp(`\\{${escapeRegexSpecialChars(key)}\\}`, 'g')
+}
+/** Builds a RegExp that matches an `export const|function <hookName>` declaration followed (within ~4000 chars) by a `useMutation(` call in the orval-generated client. Used by verify-orval-mutations to confirm write-method hooks are wired to mutations. */
+export const regexForOrvalMutationHook = (hookName: string): RegExp => {
+  return new RegExp(
+    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b[\\s\\S]{0,4000}?useMutation\\(`,
+  )
+}
+/** Builds a RegExp that matches an `export const|function <hookName>` declaration followed (within ~4000 chars) by a `useQuery(` call in the orval-generated client. Used by verify-orval-mutations to detect write-method hooks mis-wired as queries (regression seen in orval 8.10.0). */
+export const regexForOrvalQueryHook = (hookName: string): RegExp => {
+  return new RegExp(
+    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b[\\s\\S]{0,4000}?useQuery\\(`,
+  )
+}
+/** Builds a RegExp that matches just the `export const|function <hookName>` declaration (no following body), used to confirm the hook exists at all before classifying it. */
+export const regexForOrvalHookDecl = (hookName: string): RegExp => {
+  return new RegExp(`export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b`)
 }
