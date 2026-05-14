@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { useLocation } from 'react-router-dom'
 import filter from 'lodash/filter'
 import forOwn from 'lodash/forOwn'
@@ -216,7 +216,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
     [sidebar, ...navbars, content],
     'type',
   )
-  const layoutClass = classNames('layout', 'layout--animations-enabled')
+  const layoutClass = clsx('layout', 'layout--animations-enabled')
 
   return (
     <PageConfigContext.Provider
@@ -231,7 +231,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
     >
       <ThemeClass>
         {(themeClass) => (
-          <div className={classNames(layoutClass, themeClass)} ref={containerRef}>
+          <div className={clsx(layoutClass, themeClass)} ref={containerRef}>
             {!state.sidebarHidden &&
               sidebar &&
               React.cloneElement(sidebar, {

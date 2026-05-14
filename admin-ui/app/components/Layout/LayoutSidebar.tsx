@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import type { LayoutSidebarProps } from './types'
 
 const LayoutSidebar: React.FC<LayoutSidebarProps> & { layoutPartName: string } = (props) => {
-  const sidebarClass = classNames('layout__sidebar', {
+  const sidebarClass = clsx('layout__sidebar', {
     'layout__sidebar--slim': props.sidebarSlim,
     'layout__sidebar--collapsed': props.sidebarCollapsed,
   })
