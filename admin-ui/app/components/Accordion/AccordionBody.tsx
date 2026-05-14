@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import Collapse from '@mui/material/Collapse'
 
 import { Consumer } from './context'
@@ -9,7 +9,7 @@ export const AccordionBody: React.FC<AccordionBodyProps> = ({ children, classNam
   <Consumer>
     {({ isOpen }) => (
       <Collapse in={isOpen}>
-        <div className={classNames('card-body', className, 'pt-0')}>{children}</div>
+        <div className={clsx('card-body', className, 'pt-0')}>{children}</div>
       </Collapse>
     )}
   </Consumer>

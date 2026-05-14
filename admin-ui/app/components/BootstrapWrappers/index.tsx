@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import MuiButton from '@mui/material/Button'
 import MuiAlert from '@mui/material/Alert'
 import type {
@@ -29,7 +29,7 @@ export const Col: React.FC<ColProps> = ({
   children,
   ...props
 }) => {
-  const colClass = classNames(
+  const colClass = clsx(
     xs != null && `col-${xs}`,
     sm != null && `col-sm-${sm}`,
     md != null && `col-md-${md}`,
@@ -47,19 +47,19 @@ export const Col: React.FC<ColProps> = ({
 }
 
 export const Row: React.FC<RowProps> = ({ className, children, ...props }) => (
-  <div className={classNames('row', className)} {...props}>
+  <div className={clsx('row', className)} {...props}>
     {children}
   </div>
 )
 
 export const Container: React.FC<ContainerProps> = ({ className, children, ...props }) => (
-  <div className={classNames('container', className)} {...props}>
+  <div className={clsx('container', className)} {...props}>
     {children}
   </div>
 )
 
 export const FormGroup: React.FC<FormGroupProps> = ({ row, className, children, ...props }) => (
-  <div className={classNames('form-group', row && 'row', className)} {...props}>
+  <div className={clsx('form-group', row && 'row', className)} {...props}>
     {children}
   </div>
 )
@@ -79,7 +79,7 @@ export const Label: React.FC<LabelProps> = ({
 }) => (
   <label
     htmlFor={htmlForProp}
-    className={classNames(sm != null && `col-sm-${sm}`, 'col-form-label', className)}
+    className={clsx(sm != null && `col-sm-${sm}`, 'col-form-label', className)}
     {...props}
   >
     {children}
@@ -87,13 +87,13 @@ export const Label: React.FC<LabelProps> = ({
 )
 
 export const InputGroup: React.FC<InputGroupProps> = ({ className, children, ...props }) => (
-  <div className={classNames('input-group', className)} {...props}>
+  <div className={clsx('input-group', className)} {...props}>
     {children}
   </div>
 )
 
 export const CardBody: React.FC<CardBodyProps> = ({ className, children, ...props }) => (
-  <div className={classNames('card-body', className)} {...props}>
+  <div className={clsx('card-body', className)} {...props}>
     {children}
   </div>
 )
@@ -106,7 +106,7 @@ export const CardTitle: React.FC<CardTitleProps> = ({
 }) => {
   const TagComponent = Tag as React.ElementType
   return (
-    <TagComponent className={classNames('card-title', className)} {...props}>
+    <TagComponent className={clsx('card-title', className)} {...props}>
       {children}
     </TagComponent>
   )
@@ -114,7 +114,7 @@ export const CardTitle: React.FC<CardTitleProps> = ({
 
 export const Badge: React.FC<BadgeProps> = ({ pill, color, className, children, ...props }) => (
   <span
-    className={classNames('badge', color && `text-bg-${color}`, pill && 'rounded-pill', className)}
+    className={clsx('badge', color && `text-bg-${color}`, pill && 'rounded-pill', className)}
     {...props}
   >
     {children}
@@ -157,7 +157,7 @@ export const Input = React.forwardRef<
     return (
       <select
         ref={ref as React.Ref<HTMLSelectElement>}
-        className={classNames('form-control', className)}
+        className={clsx('form-control', className)}
         {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
       >
         {children}
@@ -169,7 +169,7 @@ export const Input = React.forwardRef<
     return (
       <textarea
         ref={ref as React.Ref<HTMLTextAreaElement>}
-        className={classNames('form-control', className)}
+        className={clsx('form-control', className)}
         {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
       >
         {children}
@@ -181,7 +181,7 @@ export const Input = React.forwardRef<
     <input
       ref={ref as React.Ref<HTMLInputElement>}
       type={type}
-      className={classNames('form-control', className)}
+      className={clsx('form-control', className)}
       {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
     />
   )
