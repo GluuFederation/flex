@@ -25,7 +25,6 @@
     left: 0;
     bottom: 0;
     z-index: 1031;
-
     display: flex;
     width: $sidebar-default-width;
     flex-direction: column;
@@ -40,7 +39,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
 
-            @include sidebar-scrollbar();
+            @include sidebar-scrollbar;
         }
 
         &--cover {
@@ -100,11 +99,11 @@
         @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            @include sidebar-scrollbar();
+
+            @include sidebar-scrollbar;
 
             .sidebar__section--fluid {
                 flex: 1 0 auto;
-
                 overflow-y: initial;
                 -webkit-overflow-scrolling: unset;
             }
@@ -136,6 +135,7 @@
             }
         }
     }
+
     .sidebar:not(.sidebar--slim) {
         &.sidebar--collapsed {
             display: none;
@@ -153,7 +153,6 @@
         right: auto;
         touch-action: none;
         transform: translateZ(0);
-
         transition: transform $sidebar-overlay-transition;
 
         &--collapsed {

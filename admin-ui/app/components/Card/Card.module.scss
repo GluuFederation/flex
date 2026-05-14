@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import "../../styles/miltonbo/scss/variables";
 
 .custom-card {
     &--border-dash,
@@ -46,7 +46,7 @@
     }
 
     &--shadow {
-        box-shadow: 0 1px 2px 0 rgba(var(--custom-black-rgb), 0.07);
+        box-shadow: 0 1px 2px 0 rgb(var(--custom-black-rgb), 0.07);
     }
 
     &--none {
