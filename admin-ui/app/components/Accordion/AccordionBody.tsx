@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import Collapse from '@mui/material/Collapse'
 
 import { Consumer } from './context'
-import type { AccordionBodyProps } from './Accordion.d'
+import type { AccordionBodyProps } from './types'
 
 export const AccordionBody: React.FC<AccordionBodyProps> = ({ children, className }) => (
   <Consumer>

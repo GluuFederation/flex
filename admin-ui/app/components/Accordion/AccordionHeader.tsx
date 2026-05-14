@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import CardHeader from './../CardHeader'
 import { Consumer } from './context'
 import classes from './AccordionHeader.module.scss'
-import { AccordionHeaderProps } from './Accordion.d'
+import { AccordionHeaderProps } from './types'
 
 interface AccordionContext {
   onToggle: () => void
