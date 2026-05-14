@@ -131,13 +131,13 @@ export const regexForBracedKey = (key: string): RegExp => {
 /** Builds a RegExp that matches an `export const|function <hookName>` declaration followed (within ~4000 chars) by a `useMutation(` call in the orval-generated client. Used by verify-orval-mutations to confirm write-method hooks are wired to mutations. */
 export const regexForOrvalMutationHook = (hookName: string): RegExp => {
   return new RegExp(
-    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b[\\s\\S]{0,4000}?useMutation\\(`,
+    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b(?:(?!export\\s+(?:const|function))[\\s\\S]){0,4000}?useMutation\\(`,
   )
 }
 /** Builds a RegExp that matches an `export const|function <hookName>` declaration followed (within ~4000 chars) by a `useQuery(` call in the orval-generated client. Used by verify-orval-mutations to detect write-method hooks mis-wired as queries (regression seen in orval 8.10.0). */
 export const regexForOrvalQueryHook = (hookName: string): RegExp => {
   return new RegExp(
-    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b[\\s\\S]{0,4000}?useQuery\\(`,
+    `export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b(?:(?!export\\s+(?:const|function))[\\s\\S]){0,4000}?useQuery\\(`,
   )
 }
 /** Builds a RegExp that matches just the `export const|function <hookName>` declaration (no following body), used to confirm the hook exists at all before classifying it. */

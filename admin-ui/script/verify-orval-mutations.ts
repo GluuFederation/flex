@@ -13,7 +13,9 @@ import {
 const rootDir = process.cwd()
 const filePath = path.join(rootDir, 'jans_config_api_orval', 'src', 'JansConfigApi.ts')
 if (!fs.existsSync(filePath)) {
-  process.exit(0)
+  console.error(`\n✗ Orval verification FAILED — generated client not found at ${filePath}.`)
+  console.error(`Run \`npm run api:orval\` first to generate the client.\n`)
+  process.exit(1)
 }
 
 const content = fs.readFileSync(filePath, 'utf8')
