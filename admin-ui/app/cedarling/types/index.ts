@@ -1,30 +1,11 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export type CedarlingConstants = {
-  readonly ACTION_TYPE: string
-  readonly RESOURCE_TYPE: string
-}
-
-export type IPermissionWithTags = {
-  permission: string
-  tag: string
-  defaultPermissionInToken?: boolean
-}
-
-export type IPrincipal = {
-  id: string
-  role: string | null
-  scopes: string[]
-  sub: string | null
-  type: string
-}
-
 export type ITokenEntry = {
   mapping: string
   payload: string
 }
 
-export type ICedarEntityMappingResource = {
+type ICedarEntityMappingResource = {
   cedar_entity_mapping: {
     entity_type: string
     id: string
@@ -90,82 +71,6 @@ export type UseCedarlingReturn = {
   hasCedarDeletePermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
   isLoading: boolean
   error: string | null
-}
-
-export type ApiPermission = {
-  permission: string
-  tag: string
-  inum?: string
-  defaultPermissionInToken?: boolean
-  description?: string
-}
-
-export type AuthReducerState = {
-  userinfo_jwt?: string
-  idToken?: string
-  jwtToken?: string
-  token?: {
-    scopes: string[]
-  }
-  permissions?: string[]
-  userinfo?: {
-    jansAdminUIRole: string
-    sub: string
-  }
-}
-
-export type RootState = {
-  authReducer: AuthReducerState
-  cedarPermissions: CedarPermissionsState
-}
-
-export type Permission = {
-  name: string
-  tag: string
-}
-
-export type RolePermissionEntry = {
-  role: string
-  permissions: Permission[]
-}
-
-export type RolePermissionMapping = RolePermissionEntry[]
-
-export type RuntimePolicyStore = {
-  policies: Record<
-    string,
-    {
-      description: string
-      creation_date: string
-      policy_content: string
-    }
-  >
-}
-
-export type RuntimePolicyStoreConfig = {
-  policy_stores: Record<string, RuntimePolicyStore>
-}
-
-export type TrustedIssuer = {
-  name?: string
-  description?: string
-  openid_configuration_endpoint: string
-  token_metadata?: Record<string, JsonValue>
-  [key: string]: JsonValue | undefined
-}
-
-export type ExtendedPolicyStore = RuntimePolicyStore & {
-  trusted_issuers?: Record<string, TrustedIssuer>
-  name?: string
-  description?: string
-  schema?: string
-  [key: string]: JsonValue | Record<string, TrustedIssuer> | undefined
-}
-
-export type ExtendedPolicyStoreConfig = {
-  policy_stores: Record<string, ExtendedPolicyStore>
-  cedar_version?: string
-  [key: string]: JsonValue | Record<string, ExtendedPolicyStore> | undefined
 }
 
 export type AdminUiFeatureResource =

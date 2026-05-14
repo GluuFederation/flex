@@ -1,5 +1,4 @@
 @import "./miltonbo/scss/style.scss";
-@import "~pretty-checkbox/src/pretty-checkbox.scss";
 @import "./custom/sidebar.scss";
 
 html.theme-dark {
@@ -68,9 +67,6 @@ html {
 .token-graph {
     margin-top: 100px;
     margin-bottom: 30px;
-}
-.pretty {
-    margin: 5px;
 }
 
 .month-picker {
