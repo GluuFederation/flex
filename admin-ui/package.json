@@ -23,7 +23,6 @@
   "engines": {
     "node": "^24"
   },
-  "main": "index.js",
   "scripts": {
     "test": "jest --forceExit",
     "test:all": "jest --forceExit --runInBand --watchman=false",
