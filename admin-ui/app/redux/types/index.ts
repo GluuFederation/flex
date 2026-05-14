@@ -1,6 +1,7 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { CedarPermissionsState } from '@/cedarling/types'
 import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
 type BackendStatus = {
@@ -169,17 +170,6 @@ export type UpdateToastPayload = {
 type ProfileDetailsState = {
   profileDetails: ProfileDetails | null
   loading: boolean
-}
-
-// Cedar Permissions State
-type CedarPermissionsState = {
-  permissions: Record<string, boolean>
-  loading: boolean
-  error: string | null
-  initialized: boolean | null
-  isInitializing: boolean
-  cedarFailedStatusAfterMaxTries: boolean | null
-  policyStoreBytes: string
 }
 
 // Session State (logout audit)

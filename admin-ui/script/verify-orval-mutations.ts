@@ -66,6 +66,9 @@ for (const op of writeOps) {
     )
   } else if (!mutationPattern.test(content)) {
     if (!regexForOrvalHookDecl(hookName).test(content)) {
+      failures.push(
+        `  ✗ ${hookName} (${op.method} from line ${op.line}) — no write hook declaration found; orval did not emit a hook for this write endpoint`,
+      )
       continue
     }
     failures.push(
