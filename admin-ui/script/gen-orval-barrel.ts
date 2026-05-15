@@ -32,8 +32,6 @@ const extractExports = (content: string): Exports => {
     }
   }
   for (const m of content.matchAll(REGEX_ORVAL_EXPORT_LIST)) {
-    const isTypeList = content.slice(Math.max(0, m.index! - 20), m.index!).includes('export type')
-    if (isTypeList) continue
     for (const part of m[1].split(',')) {
       const trimmed = part.trim()
       if (!trimmed) continue
