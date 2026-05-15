@@ -5,5 +5,5 @@ export {
   useSsaJwtQuery,
   SSA_QUERY_KEYS,
 } from './useSsaApi'
-export { useRevokeSsaWithAudit, type MutationCallbacks } from './useSsaMutations'
+export { useRevokeSsaWithAudit } from './useSsaMutations'
 export { useSsaValidationState } from './useSsaValidationState'

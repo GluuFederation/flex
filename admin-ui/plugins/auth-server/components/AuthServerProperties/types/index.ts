@@ -1,9 +1,7 @@
 import type { JsonPatch } from 'JansConfigApi'
-import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { Accordion } from 'Components'
 import type React from 'react'
 import type { GenericItem } from '@/redux/types'
-import type { UserAction, ActionData } from 'Utils/PermChecker'
 import type { FormikErrors, FormikTouched } from 'formik'
 import { MultiSelectOption } from '@/routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 
@@ -16,16 +14,6 @@ export interface SchemaProperty {
   items?: {
     type?: string
     enum?: string[]
-  }
-}
-
-export interface SpecSchema {
-  components: {
-    schemas: {
-      AppConfiguration: {
-        properties: Record<string, SchemaProperty>
-      }
-    }
   }
 }
 
@@ -70,11 +58,10 @@ export interface JsonPropertyBuilderProps {
   isRenamedKey?: boolean
   errors?: FormikErrors<AppConfiguration>
   touched?: FormikTouched<AppConfiguration>
-  /** Bumps when Auth Server Properties form cancels; remounts leaf inputs that keep local state. */
   formResetKey?: number
 }
 
-export interface DefaultAcrInputOption {
+interface DefaultAcrInputOption {
   value: string
   label: string
 }
@@ -105,10 +92,6 @@ export interface Script extends GenericItem {
   enabled: boolean
 }
 
-export interface AcrResponse {
-  defaultAcr?: string
-}
-
 export interface SimpleFieldModel {
   propKey: string
   label: string
@@ -123,16 +106,4 @@ export type AccordionWithSubComponents = typeof Accordion & {
   Body: React.ComponentType<React.PropsWithChildren>
 }
 
-export interface EditAcrsPayload {
-  data: {
-    authenticationMethod?: {
-      defaultAcr?: string
-    }
-  }
-}
-
-export interface JsonPatchRequestBody {
-  requestBody: JsonPatch[]
-}
-
-export type { JsonPatch, GluuCommitDialogOperation, JsonValue, UserAction, ActionData }
+export type { JsonPatch }

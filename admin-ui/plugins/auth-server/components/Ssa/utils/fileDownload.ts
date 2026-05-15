@@ -23,27 +23,3 @@ export const downloadJwtFile = (jwtString: string, softwareId: string): void => 
   document.body.removeChild(link)
   URL.revokeObjectURL(objectUrl)
 }
-
-export const downloadJSONFile = (data: object, filename: string = 'ssa.json'): void => {
-  let jsonData: string
-  try {
-    jsonData = JSON.stringify(data, null, 2)
-  } catch (error) {
-    throw new Error(
-      `Failed to serialize data to JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      { cause: error },
-    )
-  }
-
-  const blob = new Blob([jsonData], { type: 'application/json' })
-  const link = document.createElement('a')
-  const url = URL.createObjectURL(blob)
-
-  link.href = url
-  link.download = filename
-  document.body.appendChild(link)
-  link.click()
-
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
-}

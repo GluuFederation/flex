@@ -90,6 +90,9 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       transform: 'rotate(180deg)',
     },
     accordionBody: {
+      'display': 'flex',
+      'flexDirection': 'column',
+      'gap': SPACING.CARD_CONTENT_GAP,
       'padding': `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px ${SPACING.CARD_CONTENT_GAP}px`,
       'border': `1px solid ${inputBorderColor}`,
       'borderTop': 'none',
