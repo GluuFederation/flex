@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -349,7 +349,6 @@ const ScopeListPage: React.FC = () => {
         key: 'description',
         label: t('fields.description'),
         sortable: true,
-        width: '35%',
         render: (_value, row) => {
           const desc = row.description ?? EMPTY_PLACEHOLDER
           return (
@@ -368,6 +367,7 @@ const ScopeListPage: React.FC = () => {
         key: 'scopeType',
         label: t('fields.scope_type'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => {
           const style = getScopeTypeBadgeStyle(badgeStyles.scopeTypeBadge, row.scopeType)
           return (

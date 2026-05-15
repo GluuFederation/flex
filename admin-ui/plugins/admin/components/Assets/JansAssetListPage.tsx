@@ -20,7 +20,7 @@ import { useDeleteAssetWithAudit } from './hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import customColors from '@/customColors'
@@ -217,7 +217,6 @@ const JansAssetListPage: React.FC = () => {
       {
         key: 'description',
         label: t(T_KEYS.FIELD_DESCRIPTION),
-        width: '35%',
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellDescription}>
@@ -239,6 +238,7 @@ const JansAssetListPage: React.FC = () => {
         key: 'enabled',
         label: t(T_KEYS.FIELD_ENABLED),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isEnabled = row.enabled === true
           const style = isEnabled ? badgeStyles.statusBadgeEnabled : badgeStyles.statusBadgeDisabled

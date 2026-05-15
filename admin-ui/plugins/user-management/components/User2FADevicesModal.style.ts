@@ -26,10 +26,11 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
 
   return {
     modal2FA: {
-      '& .modal-content': {
+      '&.MuiPaper-root, & .modal-content': {
         ...modalCardBorderStyle,
         borderRadius: BORDER_RADIUS.DEFAULT,
         backgroundColor: modalBg,
+        backgroundImage: 'none',
         overflow: 'visible',
       },
     },

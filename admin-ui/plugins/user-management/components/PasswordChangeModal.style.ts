@@ -32,7 +32,6 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
   return {
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed' as const,
       backgroundColor: modalBg,
     },
     fieldsRow: {

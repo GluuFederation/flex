@@ -3,7 +3,7 @@ import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icon
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -279,7 +279,6 @@ const CustomScriptListPage: React.FC = () => {
         key: 'description',
         label: t('fields.description'),
         sortable: true,
-        width: '35%',
         render: (_value, row) => {
           const desc = row.description ?? EMPTY_DESCRIPTION_PLACEHOLDER
           return (
@@ -298,6 +297,7 @@ const CustomScriptListPage: React.FC = () => {
         key: 'scriptType',
         label: t('fields.script_type'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => (
           <GluuBadge
             size="md"
@@ -314,6 +314,7 @@ const CustomScriptListPage: React.FC = () => {
         key: 'enabled',
         label: t('options.enabled'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isEnabled = row.enabled === true
           const style = isEnabled ? badgeStyles.enabledBadge : badgeStyles.disabledBadge

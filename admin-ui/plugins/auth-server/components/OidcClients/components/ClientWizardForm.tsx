@@ -545,6 +545,7 @@ const ClientWizardForm = ({
                           content={t(step.tooltipKey)}
                           place={index === 0 ? 'bottom-start' : 'bottom'}
                           positionStrategy="fixed"
+                          offset={20}
                         >
                           <WizardStep
                             data-testid={step.id}

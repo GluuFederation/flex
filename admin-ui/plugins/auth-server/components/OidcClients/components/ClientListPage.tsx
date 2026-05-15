@@ -40,7 +40,12 @@ import {
   SCOPE_INUM_PARAM,
 } from '../constants'
 import type { ClientRow, ScopeItem } from '../types'
-import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
+import {
+  COLUMN_WIDTHS,
+  type ColumnDef,
+  type ActionDef,
+  type PaginationConfig,
+} from '@/components/GluuTable'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const clientResourceId = ADMIN_UI_RESOURCES.Clients
@@ -322,6 +327,7 @@ const ClientListPage: React.FC = () => {
         key: 'grantTypes',
         label: t('fields.grant_types'),
         sortable: false,
+        width: COLUMN_WIDTHS.PILL_LIST,
         render: (_value, row) =>
           row.grantTypes?.length ? (
             <div className={classes.badgeList}>
@@ -362,6 +368,7 @@ const ClientListPage: React.FC = () => {
         label: t('fields.is_trusted_client'),
         align: 'center',
         sortable: false,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const trusted = row.trustedClient === true
           const style = trusted ? badgeStyles.trueBadge : badgeStyles.falseBadge

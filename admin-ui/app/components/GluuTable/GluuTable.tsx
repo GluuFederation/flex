@@ -8,7 +8,7 @@ import { ICON_SIZE } from '@/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { useStyles } from './GluuTable.style'
+import { useStyles, TABLE_RESPONSIVE_BREAKPOINT } from './GluuTable.style'
 import { T_KEYS } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
@@ -22,6 +22,27 @@ const MIN_COL_WIDTH = 60
 const EMPTY_TABLE_ESTIMATE = 15
 const COLUMN_MIN_PCT = 10
 const COLUMN_MAX_PCT = 30
+const AUTO_COL_MIN_PX = 100
+const AUTO_COL_MAX_PX = 520
+const AUTO_COL_CHAR_PX = 8
+const AUTO_COL_PADDING_PX = 32
+
+const useIsBelowResponsiveBreakpoint = (): boolean => {
+  const query = `(max-width: ${TABLE_RESPONSIVE_BREAKPOINT - 1}px)`
+  const [isBelow, setIsBelow] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia(query).matches
+  })
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mql = window.matchMedia(query)
+    const onChange = (e: MediaQueryListEvent) => setIsBelow(e.matches)
+    setIsBelow(mql.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [query])
+  return isBelow
+}
 
 const parseMinWidth = (col: { minWidth?: string | number }): string | number | undefined => {
   const mw = col.minWidth
@@ -92,6 +113,31 @@ const computeContentBasedWidths = <T,>(
   return Object.fromEntries(columns.map((col, i) => [colId(col), `${pcts[i].toFixed(1)}%`]))
 }
 
+const computeContentBasedPixelWidths = <T,>(
+  columns: { key: ColumnKey<T>; id?: string; label: string }[],
+  data: T[],
+): Record<string, number> => {
+  if (columns.length === 0) return {}
+  return Object.fromEntries(
+    columns.map((col) => {
+      let maxLen = col.label.length
+      for (const row of data) {
+        const rawVal = row[col.key]
+        const len = estimateContentLength(
+          Array.isArray(rawVal) ? (rawVal as CellValue[]) : (rawVal as CellValue),
+        )
+        if (len > maxLen) maxLen = len
+      }
+      if (data.length === 0) {
+        maxLen = Math.max(maxLen, EMPTY_TABLE_ESTIMATE)
+      }
+      const px = Math.round(maxLen * AUTO_COL_CHAR_PX + AUTO_COL_PADDING_PX)
+      const clamped = Math.max(AUTO_COL_MIN_PX, Math.min(AUTO_COL_MAX_PX, px))
+      return [colId(col), clamped]
+    }),
+  )
+}
+
 const compareValues = (a: CellValue, b: CellValue, direction: 'asc' | 'desc'): number => {
   const emptyA = a == null || a === ''
   const emptyB = b == null || b === ''
@@ -151,19 +197,42 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     return indexed.map(({ item }) => item)
   }, [data, sortState, columns])
 
+  const isBelowResponsiveBreakpoint = useIsBelowResponsiveBreakpoint()
   const computedWidths = useMemo(() => computeContentBasedWidths(columns, data), [columns, data])
+  const computedPixelWidths = useMemo(
+    () => computeContentBasedPixelWidths(columns, data),
+    [columns, data],
+  )
   const effectiveWidths = useMemo(() => {
     const out: Record<string, string> = {}
     for (const col of columns) {
       const id = colId(col)
       const parentWidth = parseColumnWidth(col)
       const resized = resizedColumnWidths[id]
-      out[id] =
-        parentWidth ??
-        (resized != null ? `${resized}%` : (computedWidths[id] ?? `${100 / columns.length}%`))
+      if (parentWidth != null) {
+        out[id] = parentWidth
+        continue
+      }
+      if (resized != null) {
+        out[id] = `${resized}%`
+        continue
+      }
+      if (isBelowResponsiveBreakpoint) {
+        const autoPx = computedPixelWidths[id]
+        out[id] =
+          autoPx != null ? `${autoPx}px` : (computedWidths[id] ?? `${100 / columns.length}%`)
+      } else {
+        out[id] = computedWidths[id] ?? `${100 / columns.length}%`
+      }
     }
     return out
-  }, [columns, resizedColumnWidths, computedWidths])
+  }, [
+    columns,
+    resizedColumnWidths,
+    computedWidths,
+    computedPixelWidths,
+    isBelowResponsiveBreakpoint,
+  ])
 
   const { classes } = useStyles({ isDark, themeColors, stickyHeader })
 
@@ -280,6 +349,34 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const totalCols = (expandable ? 1 : 0) + columns.length + (actions?.length ? 1 : 0)
   const defaultEmptyMessage = useMemo(() => t(T_KEYS.MESSAGES_NO_DATA), [t])
 
+  const naturalMinWidth = useMemo(() => {
+    if (columns.length === 0) return undefined
+    let sum = 0
+    for (const col of columns) {
+      if (typeof col.width === 'number') {
+        sum += col.width
+      } else if (isBelowResponsiveBreakpoint) {
+        sum += computedPixelWidths[colId(col)] ?? AUTO_COL_MIN_PX
+      } else {
+        sum += AUTO_COL_MIN_PX
+      }
+    }
+    if (expandable) {
+      sum += typeof expandColumnWidth === 'number' ? expandColumnWidth : 72
+    }
+    if (actions?.length) {
+      sum += Math.max(100, actions.length * 40 + 16)
+    }
+    return sum
+  }, [
+    columns,
+    expandable,
+    expandColumnWidth,
+    actions,
+    computedPixelWidths,
+    isBelowResponsiveBreakpoint,
+  ])
+
   const toggleRow = useCallback((key: string | number) => {
     setExpandedRows((prev) => {
       const next = new Set(prev)
@@ -366,6 +463,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
           <table
             ref={tableRef}
             className={[classes.table, tableClassName].filter(Boolean).join(' ')}
+            style={naturalMinWidth != null ? { minWidth: naturalMinWidth } : undefined}
           >
             <colgroup>
               {expandable && <col style={{ width: expandColumnWidth ?? 72 }} />}

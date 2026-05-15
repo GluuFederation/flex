@@ -257,129 +257,137 @@ const PasswordChangeModal = ({
         aria-label={t('actions.close')}
       />
       <div
-        className={`${commitClasses.modalContainer} ${formClasses.modalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="password-modal-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handleCancel()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handleCancel}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          className={`${commitClasses.modalContainer} ${formClasses.modalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="password-modal-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={commitClasses.title} id="password-modal-title">
-            {t('actions.change_password')}
-          </GluuText>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText variant="h2" className={commitClasses.title} id="password-modal-title">
+              {t('actions.change_password')}
+            </GluuText>
 
-          <form onSubmit={handleFormSubmit}>
-            <div className={formClasses.fieldsRow}>
-              <div className={formClasses.fieldGroup}>
-                <label className={formClasses.fieldLabel} htmlFor="userPassword">
-                  {t('fields.password')}:<span className={formClasses.fieldRequired}> *</span>
-                </label>
-                <div className={formClasses.inputWrapper}>
-                  <input
-                    id="userPassword"
-                    name="userPassword"
-                    type={showPassword ? 'text' : 'password'}
-                    className={formClasses.fieldInput}
-                    value={passwordFormik.values.userPassword}
-                    onChange={passwordFormik.handleChange}
-                    onBlur={passwordFormik.handleBlur}
-                    placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
-                    autoComplete="new-password"
-                    style={{ paddingRight: 44 }}
-                  />
-                  <button
-                    type="button"
-                    className={formClasses.toggleButton}
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? t('password.hide') : t('password.show')}
-                  >
-                    {showPassword ? (
-                      <VisibilityOffOutlined fontSize="small" />
-                    ) : (
-                      <VisibilityOutlined fontSize="small" />
-                    )}
-                  </button>
+            <form onSubmit={handleFormSubmit}>
+              <div className={formClasses.fieldsRow}>
+                <div className={formClasses.fieldGroup}>
+                  <label className={formClasses.fieldLabel} htmlFor="userPassword">
+                    {t('fields.password')}:<span className={formClasses.fieldRequired}> *</span>
+                  </label>
+                  <div className={formClasses.inputWrapper}>
+                    <input
+                      id="userPassword"
+                      name="userPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      className={formClasses.fieldInput}
+                      value={passwordFormik.values.userPassword}
+                      onChange={passwordFormik.handleChange}
+                      onBlur={passwordFormik.handleBlur}
+                      placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
+                      autoComplete="new-password"
+                      style={{ paddingRight: 44 }}
+                    />
+                    <button
+                      type="button"
+                      className={formClasses.toggleButton}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      aria-label={showPassword ? t('password.hide') : t('password.show')}
+                    >
+                      {showPassword ? (
+                        <VisibilityOffOutlined fontSize="small" />
+                      ) : (
+                        <VisibilityOutlined fontSize="small" />
+                      )}
+                    </button>
+                  </div>
+                  <div className={formClasses.errorText}>
+                    {passwordFormik.touched.userPassword && passwordFormik.errors.userPassword
+                      ? passwordFormik.errors.userPassword
+                      : '\u00A0'}
+                  </div>
                 </div>
-                <div className={formClasses.errorText}>
-                  {passwordFormik.touched.userPassword && passwordFormik.errors.userPassword
-                    ? passwordFormik.errors.userPassword
-                    : '\u00A0'}
+
+                <div className={formClasses.fieldGroup}>
+                  <label className={formClasses.fieldLabel} htmlFor="userConfirmPassword">
+                    {t('fields.confirm_password')}:
+                    <span className={formClasses.fieldRequired}> *</span>
+                  </label>
+                  <div className={formClasses.inputWrapper}>
+                    <input
+                      id="userConfirmPassword"
+                      name="userConfirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      className={formClasses.fieldInput}
+                      value={passwordFormik.values.userConfirmPassword}
+                      onChange={passwordFormik.handleChange}
+                      onBlur={passwordFormik.handleBlur}
+                      placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
+                      autoComplete="new-password"
+                      style={{ paddingRight: 44 }}
+                    />
+                    <button
+                      type="button"
+                      className={formClasses.toggleButton}
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      aria-label={showConfirmPassword ? t('password.hide') : t('password.show')}
+                    >
+                      {showConfirmPassword ? (
+                        <VisibilityOffOutlined fontSize="small" />
+                      ) : (
+                        <VisibilityOutlined fontSize="small" />
+                      )}
+                    </button>
+                  </div>
+                  <div className={formClasses.errorText}>
+                    {passwordFormik.touched.userConfirmPassword &&
+                    passwordFormik.errors.userConfirmPassword
+                      ? passwordFormik.errors.userConfirmPassword
+                      : '\u00A0'}
+                  </div>
                 </div>
               </div>
 
-              <div className={formClasses.fieldGroup}>
-                <label className={formClasses.fieldLabel} htmlFor="userConfirmPassword">
-                  {t('fields.confirm_password')}:
-                  <span className={formClasses.fieldRequired}> *</span>
-                </label>
-                <div className={formClasses.inputWrapper}>
-                  <input
-                    id="userConfirmPassword"
-                    name="userConfirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    className={formClasses.fieldInput}
-                    value={passwordFormik.values.userConfirmPassword}
-                    onChange={passwordFormik.handleChange}
-                    onBlur={passwordFormik.handleBlur}
-                    placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
-                    autoComplete="new-password"
-                    style={{ paddingRight: 44 }}
-                  />
-                  <button
-                    type="button"
-                    className={formClasses.toggleButton}
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    aria-label={showConfirmPassword ? t('password.hide') : t('password.show')}
-                  >
-                    {showConfirmPassword ? (
-                      <VisibilityOffOutlined fontSize="small" />
-                    ) : (
-                      <VisibilityOutlined fontSize="small" />
-                    )}
-                  </button>
-                </div>
-                <div className={formClasses.errorText}>
-                  {passwordFormik.touched.userConfirmPassword &&
-                  passwordFormik.errors.userConfirmPassword
-                    ? passwordFormik.errors.userConfirmPassword
-                    : '\u00A0'}
-                </div>
+              <div className={formClasses.formFooter}>
+                <GluuButton
+                  type="submit"
+                  disabled={isApplyDisabled || isLoading}
+                  loading={isLoading}
+                  backgroundColor={themeColors.formFooter.back.backgroundColor}
+                  textColor={themeColors.formFooter.back.textColor}
+                  borderColor={themeColors.formFooter.back.borderColor}
+                  useOpacityOnHover
+                  hoverOpacity={0.85}
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
+                  }}
+                >
+                  {t('actions.change_password')}
+                </GluuButton>
               </div>
-            </div>
-
-            <div className={formClasses.formFooter}>
-              <GluuButton
-                type="submit"
-                disabled={isApplyDisabled || isLoading}
-                loading={isLoading}
-                backgroundColor={themeColors.formFooter.back.backgroundColor}
-                textColor={themeColors.formFooter.back.textColor}
-                borderColor={themeColors.formFooter.back.borderColor}
-                useOpacityOnHover
-                hoverOpacity={0.85}
-                style={{
-                  minHeight: BUTTON_STYLES.height,
-                  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                  borderRadius: BUTTON_STYLES.borderRadius,
-                  fontSize: BUTTON_STYLES.fontSize,
-                  fontWeight: BUTTON_STYLES.fontWeight,
-                  letterSpacing: BUTTON_STYLES.letterSpacing,
-                }}
-              >
-                {t('actions.change_password')}
-              </GluuButton>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </GluuLoader>

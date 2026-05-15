@@ -143,14 +143,12 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       {
         key: 'level',
         label: t('fields.level'),
-        width: 80,
       },
       {
         key: 'acrName',
         id: 'default',
         label: t('options.default'),
         align: 'center',
-        width: 110,
         sortable: false,
         render: (_value, row) => (
           <span className={classes.defaultIconCircle}>

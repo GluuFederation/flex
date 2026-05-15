@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import isEmpty from 'lodash/isEmpty'
 import { DeleteOutlined, FilterListIcon, GetAppIcon } from '@/components/icons'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { FilterOption } from '@/components/GluuSearchToolbar'
@@ -445,6 +445,7 @@ const SessionListPage: React.FC = () => {
         key: 'state',
         label: t('fields.state'),
         sortable: false,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => {
           const isAuth = row.state === AUTHENTICATED_SESSION_STATE
           const style = isAuth ? badgeStyles.authenticatedBadge : badgeStyles.unauthenticatedBadge

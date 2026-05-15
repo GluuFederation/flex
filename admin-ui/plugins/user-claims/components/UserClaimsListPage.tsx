@@ -3,7 +3,7 @@ import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icon
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -296,6 +296,7 @@ const UserClaimsListPage: React.FC = () => {
         key: 'status',
         label: t('fields.status'),
         sortable: false,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isActive = row.status?.toLowerCase() === 'active'
           const style = isActive ? badgeStyles.statusEnabledBadge : badgeStyles.statusDisabledBadge
