@@ -1,16 +1,9 @@
-import type { CSSProperties } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
-import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-
-export const errorTextStyle: CSSProperties = {
-  color: customColors.accentRed,
-  marginTop: -12,
-}
 
 type AcrsFormStylesParams = {
   isDark: boolean

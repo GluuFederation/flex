@@ -46,19 +46,6 @@ export type AgamaJsonPatchRequestBody = {
   requestBody: AgamaJsonPatch[]
 }
 
-export type ProjectDetailsState = {
-  isLoading: boolean
-  data: {
-    statusCode?: number
-    tableOptions?: FlowError[]
-  } & Deployment
-}
-
-export type ConfigDetailsState = {
-  isLoading: boolean
-  data: JsonObject
-}
-
 export type AgamaTableRow = AgamaProject & {
   tableData?: {
     id: number
@@ -69,6 +56,6 @@ export type ModifiedFields = {
   [key: string]: JsonValue
 }
 
-export type { JsonValue, JsonObject }
+export type { JsonObject }
 
 export type ApiError = Error | { message?: string; status?: number; statusText?: string }
