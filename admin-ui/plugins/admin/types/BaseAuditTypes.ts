@@ -1,16 +1,6 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CREATE, UPDATE, DELETION, FETCH } from '@/audit/UserActionType'
 
-export type BaseAuditAuthState = {
-  config: { clientId: string }
-  location: { IPv4: string }
-  userinfo: { name: string; inum: string } | null
-}
-
-export type BaseAuditRootState = {
-  authReducer: BaseAuditAuthState
-}
-
 export type BaseAuditActionType = typeof CREATE | typeof UPDATE | typeof DELETION | typeof FETCH
 
 export type BaseAuditInit = {

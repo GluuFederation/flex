@@ -3,7 +3,7 @@ import type { MauStatEntry, RawStatEntry } from '../types'
 
 export const formatDateForApi = (date: Dayjs): string => date.format('YYYYMM')
 
-export const generateMonthRange = (startDate: Dayjs, endDate: Dayjs): number[] => {
+const generateMonthRange = (startDate: Dayjs, endDate: Dayjs): number[] => {
   const months: number[] = []
   let current = startDate.startOf('month')
   const end = endDate.startOf('month')
@@ -26,7 +26,7 @@ export const transformRawStatEntry = (raw: RawStatEntry): MauStatEntry => ({
   authz_code_idtoken_count: raw.token_count_per_granttype?.authorization_code?.id_token ?? 0,
 })
 
-export const createEmptyStatEntry = (month: number): MauStatEntry => ({
+const createEmptyStatEntry = (month: number): MauStatEntry => ({
   month,
   mau: 0,
   client_credentials_access_token_count: 0,

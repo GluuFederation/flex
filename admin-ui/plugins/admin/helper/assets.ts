@@ -1,6 +1,6 @@
 import type { AssetFormValues, Document } from '../components/Assets/types'
 
-export const getServiceFromAsset = (
+const getServiceFromAsset = (
   asset:
     | Document
     | Record<string, string | number | boolean | object | null | undefined>

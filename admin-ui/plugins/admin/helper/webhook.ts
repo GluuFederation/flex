@@ -48,7 +48,7 @@ export const isLastHeaderComplete = (
   return Boolean((last.key ?? '').trim() && (last.value ?? '').trim())
 }
 
-export const sanitizeWebhookHeaders = (headers?: WebhookHeader[] | null) => {
+const sanitizeWebhookHeaders = (headers?: WebhookHeader[] | null) => {
   if (!headers || !Array.isArray(headers)) {
     return []
   }

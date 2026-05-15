@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
-import { createSuccessAuditInit, useAuditContext, CREATE, UPDATE, DELETION, FETCH } from '@/audit'
+import { createSuccessAuditInit, useAuditContext } from '@/audit'
 import { devLogger } from '@/utils/devLogger'
 import type {
   WebhookAuditActionData,
@@ -46,5 +46,3 @@ export const useWebhookAudit = () => {
 
   return { initAudit, logAction }
 }
-
-export { CREATE, UPDATE, DELETION, FETCH }

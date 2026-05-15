@@ -24,7 +24,7 @@ const sharedMauColors = {
   totalTokens: customColors.textSecondary,
 } as const
 
-export const CHART_COLORS_BY_THEME = {
+const CHART_COLORS_BY_THEME = {
   [THEME_LIGHT]: {
     mau: customColors.logo,
     ...sharedMauColors,

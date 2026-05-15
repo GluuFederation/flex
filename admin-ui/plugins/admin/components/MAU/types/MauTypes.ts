@@ -36,22 +36,9 @@ export interface MauSummary {
   tokenChange: number
 }
 
-export type MauSummaryCardProps = {
-  title: string
-  value: number
-  change?: number
-  color: string
-}
-
 export interface DateRangePreset {
   labelKey: string
   months: number
-}
-
-export interface TokenDistributionData {
-  name: string
-  value: number
-  color: string
 }
 
 export interface MauChartProps {

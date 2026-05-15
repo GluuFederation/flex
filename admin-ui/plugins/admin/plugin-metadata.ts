@@ -1,7 +1,7 @@
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
 
-import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
+import { reducer as webhookReducer } from 'Plugins/admin/redux/features/WebhookSlice'
 import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
 
 import {

@@ -10,7 +10,7 @@ export interface HttpErrorLike {
   status?: number
 }
 
-export const isSagaError = (error: Error | SagaErrorShape): error is SagaErrorShape =>
+const isSagaError = (error: Error | SagaErrorShape): error is SagaErrorShape =>
   typeof error === 'object' && error !== null && ('response' in error || 'message' in error)
 
 export const isHttpLikeError = (
