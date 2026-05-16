@@ -13,7 +13,11 @@ const rootDir = process.cwd()
 const orvalDir = path.join(rootDir, 'jans_config_api_orval', 'src')
 
 if (!fs.existsSync(orvalDir)) {
-  process.exit(0)
+  console.error(
+    `\n✗ Orval barrel generation FAILED — generated client dir not found at ${orvalDir}.`,
+  )
+  console.error(`Run \`npm run api:orval\` first to generate the client.\n`)
+  process.exit(1)
 }
 
 type Exports = { values: string[]; types: string[] }
