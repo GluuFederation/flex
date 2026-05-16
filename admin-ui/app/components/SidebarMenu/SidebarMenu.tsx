@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { SidebarMenuEntry } from './types'
 import { REGEX_TRAILING_SLASH } from '@/utils/regex'
@@ -140,7 +140,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
     (pageConfig?.sidebarSlim &&
       pageConfig?.sidebarCollapsed &&
       (pageConfig?.screenSize === 'lg' || pageConfig?.screenSize === 'xl'))
-  const sidebarMenuClass = classNames('sidebar-menu', {
+  const sidebarMenuClass = clsx('sidebar-menu', {
     'sidebar-menu--slim': isSlim,
     'sidebar-menu--disabled': disabled,
   })

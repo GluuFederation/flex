@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import classes from './Card.module.scss'
 
@@ -11,7 +11,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Card = ({ children, type = 'border', color, className, ...otherProps }: CardProps) => {
-  const cardClass = classNames(
+  const cardClass = clsx(
     'card',
     className,
     classes['custom-card'],

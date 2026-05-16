@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import { withPageConfig } from '../Layout'
 import type { SidebarProps } from './types'
@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
     }
   }, [animationsEnabled])
 
-  const sidebarClass = classNames(
+  const sidebarClass = clsx(
     'sidebar custom-sidebar-container',
     animationsEnabled && 'sidebar--animations-enabled',
     {

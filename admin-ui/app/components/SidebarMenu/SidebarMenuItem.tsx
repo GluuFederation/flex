@@ -1,6 +1,6 @@
 import React, { CSSProperties, MouseEvent, useEffect, useId, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { MenuContext } from './MenuContext'
 import customColors from '@/customColors'
 import { ThemeContext } from '@/context/theme/themeContext'
@@ -117,7 +117,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   const sidebarMenuActive =
     entry && entry.active && sidebarMenuActiveClass ? sidebarMenuActiveClass : ''
   const classBase = isSubNode ? 'sidebar-submenu' : `sidebar-menu`
-  const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
+  const itemClass = clsx(`${classBase}__entry cursor-pointer`, {
     [`${classBase}__entry--nested`]: !!children,
     open: entry && entry.open,
     active: entry && entry.active,
@@ -156,7 +156,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   return (
     <li
       style={getStyle(itemClass)}
-      className={classNames(itemClass, {
+      className={clsx(itemClass, {
         'sidebar-menu__entry--no-caret': noCaret,
         'sidebar-menu__entry--with-icon': !!icon,
       })}
@@ -173,7 +173,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
         >
           {icon &&
             React.cloneElement(icon, {
-              className: classNames(icon.props.className, `${classBase}__entry__icon`),
+              className: clsx(icon.props.className, `${classBase}__entry__icon`),
               fill: iconFillColor,
             })}
           {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { Check } from '@/components/icons'
 
 export interface WizardStepProps {
@@ -27,7 +27,7 @@ const WizardStep: React.FC<WizardStepProps> = ({
   children,
   'data-testid': dataTestId,
 }) => {
-  const stepClass = classNames(
+  const stepClass = clsx(
     {
       'wizard-step--active': active,
       'wizard-step--complete': complete,
