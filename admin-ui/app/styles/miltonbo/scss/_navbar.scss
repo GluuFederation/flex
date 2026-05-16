@@ -30,7 +30,7 @@
             $next: breakpoint-next($breakpoint, $grid-breakpoints);
             $infix: breakpoint-infix($next, $grid-breakpoints);
 
-            @if ($infix != "") {
+            @if $infix != "" {
                 &#{$infix} {
                     .navbar-collapse {
                         align-self: stretch;
@@ -40,6 +40,7 @@
                         .navbar-collapse-wrap {
                             display: flex;
                         }
+
                         .navbar-collapse {
                             order: 999;
                         }
@@ -55,20 +56,17 @@
 */
 .navbar-nav.nav-accent {
     align-self: stretch;
-
     margin-top: -0.5rem;
     margin-bottom: -0.5rem;
 
     .nav-item {
         display: flex;
-
         align-self: stretch;
 
         .nav-link {
             display: flex;
             align-self: stretch;
             align-items: center;
-
             margin-left: 1px;
             margin-right: 1px;
             padding: 1rem;
@@ -131,9 +129,11 @@
                         color: $nav-pills-link-active-color;
                     }
                 }
+
                 .nav-item .nav-link:hover {
                     box-shadow: none;
                 }
+
                 .dropdown.show > .nav-link {
                     color: $navbar-light-hover-color;
                 }
@@ -152,9 +152,11 @@
                         box-shadow: none;
                     }
                 }
+
                 .nav-item .nav-link:hover {
                     box-shadow: none;
                 }
+
                 .dropdown.show > .nav-link {
                     color: $navbar-dark-hover-color;
                 }
@@ -254,6 +256,7 @@
                             background: none;
                         }
                     }
+
                     .nested-dropdown__submenu-item--open > .dropdown-item,
                     .dropdown.show > .nav-link {
                         background: none;
@@ -267,6 +270,7 @@
                         .dropdown.show > .nav-link {
                             color: $navbar-light-hover-color;
                         }
+
                         .dropdown-item {
                             color: $navbar-light-color;
 
@@ -284,6 +288,7 @@
                         .dropdown.show > .nav-link {
                             color: $navbar-dark-hover-color;
                         }
+
                         .dropdown-item {
                             color: $navbar-dark-color;
 

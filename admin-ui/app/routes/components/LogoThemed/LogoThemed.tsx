@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
@@ -33,7 +33,7 @@ const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...ot
         {...otherProps}
         style={logoStyle}
         src={logoImage}
-        className={classNames('d-block', className)}
+        className={clsx('d-block', className)}
         alt="Jans Admin UI Logo"
       />
     </div>

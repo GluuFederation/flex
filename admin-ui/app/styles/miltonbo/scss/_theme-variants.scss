@@ -356,13 +356,6 @@ $color-alternatives: (
 
         @include theme-color-navbar($color, $white);
 
-        // Override Layout Navbar Badges
-        .layout__navbar .navbar-themed {
-            .icon-with-badge .icon-with-badge__badge {
-                background-color: change-color($color, $lightness: 70%) !important;
-            }
-        }
-
         // Override Layout Sidebar Badges
         .layout__sidebar .sidebar {
             .badge {
@@ -388,14 +381,6 @@ $color-alternatives: (
         );
 
         @include theme-color-navbar($color, $white);
-
-        // Override Badges
-        &.navbar,
-        .navbar.navbar-themed {
-            .icon-with-badge .icon-with-badge__badge {
-                background-color: change-color($color, $lightness: 70%) !important;
-            }
-        }
     }
 
     // Sidebar theme

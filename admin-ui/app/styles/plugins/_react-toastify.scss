@@ -1,5 +1,5 @@
 @import "react-toastify/dist/ReactToastify.css";
-@import "../variables.scss";
+@import "../miltonbo/scss/variables";
 
 :root {
     --toastify-color-progress-light: #{$success};
@@ -14,9 +14,11 @@
     border-right: 1px solid $gray-300;
     font-family: inherit;
 }
+
 .Toastify__toast p {
     color: $body-color;
 }
+
 .Toastify__toast h6 {
     color: $black;
     font-weight: 500;

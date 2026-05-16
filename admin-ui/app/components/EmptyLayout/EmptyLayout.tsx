@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import isNumber from 'lodash/isNumber'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { withPageConfig } from 'Components/Layout'
 import type { EmptyLayoutProps, SectionProps } from './types'
 
@@ -22,12 +22,12 @@ const EmptyLayoutBase = ({ pageConfig, children, className }: EmptyLayoutProps) 
     }
   }, [])
 
-  const emptyLayoutClass = classNames('fullscreen', className)
+  const emptyLayoutClass = clsx('fullscreen', className)
   return <div className={emptyLayoutClass}>{children}</div>
 }
 
 const Section = ({ className, children, center, width = '420px' }: SectionProps) => {
-  const sectionClass = classNames(className, 'fullscreen__section', {
+  const sectionClass = clsx(className, 'fullscreen__section', {
     'fullscreen__section--center': center,
   })
   const maxWidth = isNumber(width) ? `${width}px` : width
