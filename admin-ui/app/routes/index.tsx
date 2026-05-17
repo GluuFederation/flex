@@ -1,5 +1,5 @@
 import { Suspense, useState, useEffect } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ROUTES } from '@/helpers/navigation'
 import { devLogger } from '@/utils/devLogger'
 import { useAppSelector } from '@/redux/hooks'
@@ -35,6 +35,7 @@ export const RoutedContent = () => {
     loadPlugins()
   }, [])
 
+  const location = useLocation()
   const { userinfo, config } = useAppSelector((state) => state.authReducer)
   const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
     (state) => state.cedarPermissions,
@@ -60,7 +61,7 @@ export const RoutedContent = () => {
   }
 
   return (
-    <Suspense fallback={<GluuLoader blocking />}>
+    <Suspense key={location.pathname} fallback={<GluuLoader blocking />}>
       <Routes>
         <Route
           path={ROUTES.HOME_DASHBOARD}
