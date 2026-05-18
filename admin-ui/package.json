@@ -14,12 +14,8 @@
     "url": "https://github.com/GluuFederation/gluu-admin-ui/issues",
     "email": "team@gluu.org"
   },
-  "licenses": [
-    {
-      "type": "Apache-2.0",
-      "url": "https://opensource.org/licenses/apache2.0.php"
-    }
-  ],
+  "author": "gluu inc.",
+  "license": "Apache-2.0",
   "engines": {
     "node": "^24"
   },
@@ -48,8 +44,6 @@
     "plugin:remove": "ts-node --files --project script/tsconfig.json ./build/plugin-cli.ts --removePlugin",
     "prepare": "cd .. && node admin-ui/node_modules/husky/bin.js admin-ui/.husky"
   },
-  "author": "gluu inc.",
-  "license": "Apache",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
@@ -89,6 +83,7 @@
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
     "mkdirp": "^3.0.0",
+    "openapi-merge-cli": "^1.0.0",
     "orval": "8.9.1",
     "prettier": "^3.0.0",
     "redux-saga-test-plan": "^4.0.0",

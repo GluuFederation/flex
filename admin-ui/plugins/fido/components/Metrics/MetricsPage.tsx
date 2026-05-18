@@ -24,7 +24,7 @@ import {
 import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
 import type { MetricsDateRange } from './types'
 
-const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.MAU
+const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.Metrics
 const METRICS_SCOPES = CEDAR_RESOURCE_SCOPES[METRICS_RESOURCE_ID]
 
 const MetricsPage: React.FC = () => {
