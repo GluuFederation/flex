@@ -1,4 +1,3 @@
-import React, { Suspense, lazy } from 'react'
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import {
@@ -17,7 +16,6 @@ import {
 } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
 const SessionListPage = createLazyRoute(() =>
@@ -50,14 +48,9 @@ const SsaListPage = createLazyRoute(() => import('./components/Ssa/components/Ss
 const SsaAddPage = createLazyRoute(() => import('./components/Ssa/components/SsaAddPage'))
 const ConfigApiPage = createLazyRoute(() => import('./components/ConfigApiProperties'))
 
-const AgamaFlows = lazy(() => import('./components/Authentication/AgamaFlows/AgamaFlows'))
-const AgamaListPageWrapper = () => {
-  return (
-    <Suspense fallback={<GluuLoader blocking />}>
-      <AgamaFlows />
-    </Suspense>
-  )
-}
+const AgamaListPageWrapper = createLazyRoute(
+  () => import('./components/Authentication/AgamaFlows/AgamaFlows'),
+)
 
 const pluginMetadata = {
   menus: [

@@ -524,7 +524,6 @@ const ClientWizardForm = ({
                 <CardBody
                   className={[
                     classes.wizardSection,
-                    currentStep === WIZARD_STEP_IDS.LOGOUT ? classes.wizardSectionTight : '',
                     currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
                       ? classes.wizardSectionCompact
                       : '',
@@ -581,7 +580,6 @@ const ClientWizardForm = ({
                 <CardBody
                   className={[
                     classes.contentSection,
-                    currentStep === WIZARD_STEP_IDS.LOGOUT ? classes.contentSectionTight : '',
                     currentStep === WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS
                       ? classes.contentSectionCompact
                       : '',
