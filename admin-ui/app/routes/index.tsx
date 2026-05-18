@@ -8,6 +8,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 // ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
+import type { PluginRoute } from 'Plugins/internal'
 
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
@@ -15,6 +16,19 @@ import { LazyRoutes } from 'Utils/RouteLoader'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 
 //------ Route Definitions --------
+
+const schedulePreload = (pluginRoutes: PluginRoute[]) => {
+  if (typeof window === 'undefined') return
+  const run = () => {
+    Object.values(LazyRoutes).forEach((r) => r.preload())
+    pluginRoutes.forEach((r) => r.component.preload?.())
+  }
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(run)
+  } else {
+    window.setTimeout(run, 1500)
+  }
+}
 
 export const RoutedContent = () => {
   const [pluginMenus, setPluginMenus] = useState<
@@ -26,9 +40,12 @@ export const RoutedContent = () => {
       try {
         const routes = await processRoutes()
         setPluginMenus(routes)
+        schedulePreload(routes)
       } catch (error) {
         devLogger.error('Failed to load plugins:', error instanceof Error ? error : String(error))
-        setPluginMenus(processRoutesSync())
+        const fallback = processRoutesSync()
+        setPluginMenus(fallback)
+        schedulePreload(fallback)
       }
     }
 

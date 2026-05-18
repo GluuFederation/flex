@@ -11,9 +11,13 @@ export type PluginMenu = {
   children?: PluginMenu[]
 }
 
+export type PluginRouteComponent = ComponentType & {
+  preload?: () => Promise<{ default: ComponentType }>
+}
+
 export type PluginRoute = {
   path: string
-  component: ComponentType
+  component: PluginRouteComponent
 }
 
 export type PluginReducer = {
