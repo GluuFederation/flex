@@ -20,7 +20,6 @@ type ClientBasicPanelStyleParams = {
 }
 
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
 
 export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
@@ -72,8 +71,6 @@ export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
         },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input):focus, & input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input):focus-visible, & input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input):active, & select:focus, & select:focus-visible, & select:active, & .form-control:not(.gluu-dynamic-list-input):focus, & .input-group:focus-within':
         {
