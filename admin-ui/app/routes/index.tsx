@@ -5,28 +5,47 @@ import { devLogger } from '@/utils/devLogger'
 import { useAppSelector } from '@/redux/hooks'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-
-// ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 import type { PluginRoute } from 'Plugins/internal'
-
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 
-//------ Route Definitions --------
+const ALWAYS_MOUNTED_LAZY_ROUTES: ReadonlySet<keyof typeof LazyRoutes> = new Set([
+  'GluuToast',
+  'DefaultSidebar',
+  'GluuNavBar',
+  'GluuWebhookExecutionDialog',
+])
 
 const schedulePreload = (pluginRoutes: PluginRoute[]) => {
   if (typeof window === 'undefined') return
-  const run = () => {
-    Object.values(LazyRoutes).forEach((r) => r.preload())
-    pluginRoutes.forEach((r) => r.component.preload?.())
+  const queue: Array<() => Promise<{ default: React.ComponentType }>> = [
+    ...Object.entries(LazyRoutes)
+      .filter(([key]) => !ALWAYS_MOUNTED_LAZY_ROUTES.has(key as keyof typeof LazyRoutes))
+      .map(
+        ([, r]) =>
+          () =>
+            r.preload(),
+      ),
+    ...pluginRoutes.flatMap((r) => (r.component.preload ? [r.component.preload] : [])),
+  ]
+  const idle =
+    typeof window.requestIdleCallback === 'function'
+      ? (cb: () => void) => window.requestIdleCallback(cb)
+      : (cb: () => void) => window.setTimeout(cb, 200)
+  const next = () => {
+    if (queue.length === 0) return
+    idle(() => {
+      queue.shift()?.()
+      next()
+    })
   }
-  if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(run)
+  if (document.readyState === 'complete') {
+    idle(next)
   } else {
-    window.setTimeout(run, 1500)
+    window.addEventListener('load', () => idle(next), { once: true })
   }
 }
 
