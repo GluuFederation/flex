@@ -222,6 +222,10 @@ const VENDOR_CHUNK_GROUPS: VendorChunkGroup[] = [
       test: isVendorPackageIn(new Set(packages)),
     }),
   ),
+  {
+    name: 'vendor-orval-jans',
+    test: (id: string) => id.replace(REGEX_BACKSLASH, '/').includes('/jans_config_api_orval/src/'),
+  },
   { name: getVendorFallbackChunkName, test: isVendorModule },
 ]
 
@@ -299,7 +303,7 @@ export default defineConfig(({ mode }) => {
         { find: 'Images', replacement: path.resolve(process.cwd(), 'app/images') },
         {
           find: 'JansConfigApi',
-          replacement: path.resolve(process.cwd(), 'jans_config_api_orval/src/JansConfigApi.ts'),
+          replacement: path.resolve(process.cwd(), 'jans_config_api_orval/src/index.ts'),
         },
         { find: 'Orval', replacement: path.resolve(process.cwd(), 'orval') },
         { find: 'Plugins', replacement: path.resolve(process.cwd(), 'plugins') },

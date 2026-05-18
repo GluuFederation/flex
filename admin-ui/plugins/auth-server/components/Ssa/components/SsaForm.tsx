@@ -303,55 +303,59 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     )}
                   </div>
 
-                  <div className={classes.fullRow}>
-                    <GluuInputRow
-                      label="fields.description"
-                      name="description"
+                  <GluuInputRow
+                    label="fields.description"
+                    name="description"
+                    formik={formik}
+                    lsize={12}
+                    rsize={12}
+                    required
+                    value={formik.values.description}
+                    placeholder={enterHerePlaceholder}
+                    showError={validationState.descriptionError}
+                    errorMessage={validationState.descriptionErrorMessage}
+                    handleChange={handleChange}
+                    doc_category={SSA}
+                  />
+
+                  <div className={classes.toggleCell}>
+                    <GluuToggleRow
+                      name="one_time_use"
                       formik={formik}
+                      label="fields.one_time_use"
                       lsize={12}
                       rsize={12}
-                      required
-                      value={formik.values.description}
-                      placeholder={enterHerePlaceholder}
-                      showError={validationState.descriptionError}
-                      errorMessage={validationState.descriptionErrorMessage}
-                      handleChange={handleChange}
+                      value={formik.values.one_time_use}
+                      isDark={isDark}
                       doc_category={SSA}
                     />
                   </div>
 
-                  <GluuToggleRow
-                    name="one_time_use"
-                    formik={formik}
-                    label="fields.one_time_use"
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.one_time_use}
-                    isDark={isDark}
-                    doc_category={SSA}
-                  />
+                  <div className={classes.toggleCell}>
+                    <GluuToggleRow
+                      name="rotate_ssa"
+                      formik={formik}
+                      label="fields.rotate_ssa"
+                      lsize={12}
+                      rsize={12}
+                      value={formik.values.rotate_ssa}
+                      isDark={isDark}
+                      doc_category={SSA}
+                    />
+                  </div>
 
-                  <GluuToggleRow
-                    name="rotate_ssa"
-                    formik={formik}
-                    label="fields.rotate_ssa"
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.rotate_ssa}
-                    isDark={isDark}
-                    doc_category={SSA}
-                  />
-
-                  <GluuToggleRow
-                    name="is_expirable"
-                    formik={formik}
-                    label="fields.is_expirable"
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.is_expirable}
-                    isDark={isDark}
-                    doc_category={SSA}
-                  />
+                  <div className={classes.toggleCell}>
+                    <GluuToggleRow
+                      name="is_expirable"
+                      formik={formik}
+                      label="fields.is_expirable"
+                      lsize={12}
+                      rsize={12}
+                      value={formik.values.is_expirable}
+                      isDark={isDark}
+                      doc_category={SSA}
+                    />
+                  </div>
 
                   {formik.values.is_expirable && (
                     <div className={classes.datePickerCell}>

@@ -105,6 +105,20 @@ export const REGEX_CLOSING_BRACE_LINE = /^}\)?$/
 /** Matches a `useMutation` symbol within ~500 chars of a `from '@tanstack/react-query'` import; used by verify-orval-mutations as an early sanity check that catches the orval 8.10.0 regression where the generated file drops useMutation entirely. */
 export const REGEX_ORVAL_HAS_USE_MUTATION_IMPORT =
   /useMutation[\s\S]{0,500}from '@tanstack\/react-query'/
+/** Matches a top-level value-export declaration (const/let/var/function/class/enum) in an orval-generated tag file; used by gen-orval-barrel to extract value exports for the named-export barrel. Capture group [1] is the identifier. */
+export const REGEX_ORVAL_VALUE_DECL =
+  /^export\s+(?:declare\s+)?(?:async\s+)?(?:const|let|var|function|class|enum)\s+([A-Za-z_$][\w$]*)/gm
+/** Matches a top-level type-export declaration (type/interface) in an orval-generated tag file; used by gen-orval-barrel to extract type exports for the named-export barrel. Capture group [1] is the identifier. */
+export const REGEX_ORVAL_TYPE_DECL =
+  /^export\s+(?:declare\s+)?(?:type|interface)\s+([A-Za-z_$][\w$]*)/gm
+/** Matches an `export { … }` list at the start of a line (no `type` keyword); used by gen-orval-barrel to scan grouped exports. Capture group [1] is the brace-enclosed content. */
+export const REGEX_ORVAL_EXPORT_LIST = /^export\s*\{\s*([^}]+)\s*\}/gm
+/** Matches an `export type { … }` list at the start of a line; used by gen-orval-barrel to scan grouped type-only exports. Capture group [1] is the brace-enclosed content. */
+export const REGEX_ORVAL_EXPORT_TYPE_LIST = /^export\s+type\s*\{\s*([^}]+)\s*\}/gm
+/** Matches an inline `type X` prefix on a named export specifier (e.g. `type Foo` inside an export list); used by gen-orval-barrel to classify mixed exports. */
+export const REGEX_ORVAL_INLINE_TYPE_PREFIX = /^type\s+/
+/** Splits an export specifier into [original, alias] around the `as` keyword (e.g. `Foo as Bar`); used by gen-orval-barrel to resolve the externally visible name. */
+export const REGEX_ORVAL_AS_SEPARATOR = /\s+as\s+/
 /** Matches a hostname starting with 100.x. for carrier-grade NAT range detection (100.64.0.0/10, RFC 6598). Capture group [1] is the second octet. */
 export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
 /** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */
