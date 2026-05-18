@@ -39,7 +39,7 @@ version: 6.1.0
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 6.1.0
+      version: 2.1.0
 
     - name: config-api
       condition: global.config-api.enabled

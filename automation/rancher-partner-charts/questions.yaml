@@ -872,7 +872,7 @@ questions:
 - variable: persistence.image.repository
   required: true
   type: string
-  default: "janssenproject/persistence-loader"
+  default: "ghcr.io/gluufederation/flex/persistence-loader"
   description: "The Persistence Image repository"
   label: Persistence image repo
   group: "Images"
@@ -892,7 +892,7 @@ questions:
 - variable: persistence.image.tag
   required: true
   type: string
-  default: "2.1.0-1"
+  default: "6.1.0-1"
   description: "The Persistence Image tag"
   label: Persistence image tag
   group: "Images"
