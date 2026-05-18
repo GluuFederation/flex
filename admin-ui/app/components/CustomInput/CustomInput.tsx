@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import type { CustomInputProps } from './types'
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -12,7 +12,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const inputClass = classNames('form-control', className, {
+  const inputClass = clsx('form-control', className, {
     'custom-control-empty': !label,
   })
 

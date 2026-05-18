@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { Add, Remove } from '@/components/icons'
 
 import { Consumer } from './context'
@@ -19,10 +19,10 @@ export const AccordionIndicator: React.FC<AccordionIndicatorProps> = ({
     {({ isOpen }) =>
       isOpen
         ? React.cloneElement(open as React.ReactElement, {
-            className: classNames(className, (open as React.ReactElement).props.className),
+            className: clsx(className, (open as React.ReactElement).props.className),
           })
         : React.cloneElement(closed as React.ReactElement, {
-            className: classNames(className, (closed as React.ReactElement).props.className),
+            className: clsx(className, (closed as React.ReactElement).props.className),
           })
     }
   </Consumer>

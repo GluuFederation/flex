@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import classes from './CardHeader.module.scss'
 
@@ -13,7 +13,7 @@ type CardHeaderProps = {
 
 const CardHeader: React.FC<CardHeaderProps> = (props) => {
   const { type, color, className, children, style, ...otherProps } = props
-  const cardHeaderClass = classNames(
+  const cardHeaderClass = clsx(
     'card-header',
     className,
     classes['custom-card-header'],

@@ -26,7 +26,6 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
     textMuted: themeColors.textMuted,
   }
 
-  const formGroupWithErrors = createFormGroupOverrides({ columnPaddingBottom: 16 })
   const formGroupNoErrors = createFormGroupOverrides()
 
   return {
@@ -47,7 +46,7 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
         color: `${themeColors.textMuted} !important`,
       },
 
-      '& input:not(.MuiOutlinedInput-input), & select, & textarea, & .custom-select':
+      '& input:not(.MuiOutlinedInput-input):not(.react-toggle-screenreader-only), & select, & textarea, & .custom-select':
         createFormInputStyles(inputColors),
 
       '& select, & .custom-select': {
@@ -98,21 +97,42 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       'display': 'grid',
       'gridTemplateColumns': 'repeat(2, minmax(0, 1fr))',
       'columnGap': SPACING.SECTION_GAP,
-      'rowGap': 0,
+      'rowGap': SPACING.SECTION_GAP,
+      'alignItems': 'start' as const,
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
       },
-      ...formGroupWithErrors,
-      '& .form-group': {
-        ...formGroupWithErrors['& .form-group'],
-        paddingBottom: SPACING.CARD_CONTENT_GAP,
+      ...formGroupNoErrors,
+      '& .form-group > label': {
+        ...formGroupNoErrors['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '4px !important',
       },
-      '& > div:not(.form-group)': {
-        paddingBottom: SPACING.CARD_CONTENT_GAP,
+      '& .form-group > label[class*="col"]': {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        flexShrink: 0,
+        position: 'static' as const,
+        paddingBottom: '0 !important',
       },
     },
     fullRow: {
       gridColumn: '1 / -1',
+    },
+    toggleCell: {
+      'minWidth': 0,
+      'boxSizing': 'border-box' as const,
+      ...createFormGroupOverrides(),
+      '& .form-group > label': {
+        ...createFormGroupOverrides()['& .form-group > label'],
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: '2px !important',
+      },
+      '& .form-group [class*="col"]': {
+        boxSizing: 'border-box' as const,
+      },
     },
     autocompleteFieldWrap: {
       display: 'flex',
@@ -120,8 +140,24 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       minWidth: 0,
     },
     autocompleteCardWrap: {
+      'width': '100%',
       '& > div': {
-        paddingBottom: SPACING.SECTION_GAP,
+        padding: '12px !important',
+        width: '100%',
+        boxSizing: 'border-box' as const,
+      },
+      '& > div > div:first-child': {
+        marginBottom: '4px !important',
+      },
+      '& > div > div:nth-of-type(2)': {
+        display: 'block !important',
+        width: '100%',
+      },
+      '& > div > div:nth-of-type(2) > div': {
+        width: '100%',
+      },
+      '& .MuiAutocomplete-root, & .MuiFormControl-root, & .MuiOutlinedInput-root': {
+        width: '100% !important',
       },
       '& .MuiOutlinedInput-root [role="combobox"]': {
         backgroundColor: 'transparent !important',
@@ -153,9 +189,9 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       '& > *': {
         paddingBottom: SPACING.CARD_CONTENT_GAP,
       },
-      ...formGroupWithErrors,
+      ...formGroupNoErrors,
       '& .form-group': {
-        ...formGroupWithErrors['& .form-group'],
+        ...formGroupNoErrors['& .form-group'],
         paddingBottom: 0,
       },
     },

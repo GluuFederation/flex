@@ -1,17 +1,16 @@
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { CedarPermissionsState } from '@/cedarling/types'
 import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
 
-export type CancellablePromise<T> = Promise<T> & { cancel?: () => void }
-
-export type BackendStatus = {
+type BackendStatus = {
   active: boolean
   errorMessage: string | null
   statusCode: number | null
 }
 
-export type UserInfo = {
+type UserInfo = {
   inum?: string
   user_name?: string
   name?: string
@@ -27,12 +26,12 @@ export type AuthConfig = {
   [key: string]: string | number | boolean | undefined
 }
 
-export type AuthLocation = {
+type AuthLocation = {
   IPv4?: string
   [key: string]: string | number | boolean | undefined
 }
 
-export type AuthState = {
+type AuthState = {
   isAuthenticated: boolean
   userinfo: UserInfo | null
   userinfo_jwt: string | null
@@ -63,7 +62,7 @@ export type PagedResult = {
   totalEntriesCount?: number
 }
 
-export type InitState = {
+type InitState = {
   scripts: GenericItem[]
   clients: GenericItem[]
   scopes: GenericItem[]
@@ -74,10 +73,10 @@ export type InitState = {
 }
 
 // Logout State (stateless)
-export type LogoutState = Record<string, never>
+type LogoutState = Record<string, never>
 
 // License State
-export type LicenseState = {
+type LicenseState = {
   isLicenseValid: boolean
   islicenseCheckResultLoaded: boolean
   isLicenseActivationResultLoaded: boolean
@@ -95,7 +94,7 @@ export type LicenseState = {
 // OIDC Discovery State
 export type OidcDiscoveryConfig = Record<string, string>
 
-export type OidcDiscoveryState = {
+type OidcDiscoveryState = {
   configuration: OidcDiscoveryConfig
   loading: boolean
 }
@@ -105,13 +104,13 @@ export type MauEntry = {
 }
 
 // MAU State
-export type MauStatItem = {
+type MauStatItem = {
   month?: string
   mau?: number
   [key: string]: string | number | boolean | null | undefined
 }
 
-export type MauState = {
+type MauState = {
   stat: MauStatItem[]
   loading: boolean
   startMonth: string
@@ -119,9 +118,9 @@ export type MauState = {
 }
 
 // Health State
-export type HealthStatus = 'Running' | 'Not present' | 'Down'
+type HealthStatus = 'Running' | 'Not present' | 'Down'
 
-export type HealthServiceKey =
+type HealthServiceKey =
   | 'jans-lock'
   | 'jans-auth'
   | 'jans-config-api'
@@ -131,11 +130,11 @@ export type HealthServiceKey =
   | 'jans-link'
   | 'keycloak'
 
-export type HealthStatusResponse = Partial<Record<HealthServiceKey, HealthStatus>> & {
+type HealthStatusResponse = Partial<Record<HealthServiceKey, HealthStatus>> & {
   [serviceName: string]: HealthStatus
 }
 
-export type HealthState = {
+type HealthState = {
   serverStatus: HealthStatus | null
   dbStatus: HealthStatus | null
   health: HealthStatusResponse
@@ -144,7 +143,7 @@ export type HealthState = {
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
-export type ToastMessageExtras = Record<string, string | number | boolean | null>
+type ToastMessageExtras = Record<string, string | number | boolean | null>
 
 export type ToastMessage =
   | string
@@ -168,30 +167,19 @@ export type UpdateToastPayload = {
 }
 
 // Profile Details State
-export type ProfileDetailsState = {
+type ProfileDetailsState = {
   profileDetails: ProfileDetails | null
   loading: boolean
 }
 
-// Cedar Permissions State
-export type CedarPermissionsState = {
-  permissions: Record<string, boolean>
-  loading: boolean
-  error: string | null
-  initialized: boolean | null
-  isInitializing: boolean
-  cedarFailedStatusAfterMaxTries: boolean | null
-  policyStoreBytes: string
-}
-
 // Session State (logout audit)
-export type SessionState = {
+type SessionState = {
   logoutAuditInFlight: boolean
   logoutAuditSucceeded: boolean | null
 }
 
 // Lock State
-export type LockState = {
+type LockState = {
   lockDetail: Record<string, JsonValue>
   loading: boolean
 }
@@ -199,7 +187,7 @@ export type LockState = {
 // Admin plugin state types
 
 // Webhook State
-export type WebhookEntry = {
+type WebhookEntry = {
   inum?: string
   displayName?: string
   url?: string
@@ -210,19 +198,12 @@ export type WebhookEntry = {
   [key: string]: JsonValue | Record<string, string> | undefined
 }
 
-export type AuiFeature = {
-  inum?: string
-  displayName?: string
-  description?: string
-  [key: string]: JsonValue | undefined
-}
-
-export type StoredTriggerPayload = {
+type StoredTriggerPayload = {
   feature: string | null
   payload: JsonValue
 }
 
-export type WebhookState = {
+type WebhookState = {
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
@@ -234,7 +215,7 @@ export type WebhookState = {
 }
 
 // Asset State
-export type AssetDocument = {
+type AssetDocument = {
   inum?: string
   displayName?: string
   description?: string
@@ -244,7 +225,7 @@ export type AssetDocument = {
   [key: string]: JsonValue | undefined
 }
 
-export type AssetState = {
+type AssetState = {
   assets: AssetDocument[]
   services: string[]
   fileTypes: string[]
@@ -269,13 +250,13 @@ export type OidcClientItem = {
   [key: string]: JsonValue | undefined
 }
 
-export type OidcTokensState = {
+type OidcTokensState = {
   items: JsonValue[]
   totalItems: number
   entriesCount: number
 }
 
-export type OidcState = {
+type OidcState = {
   items: OidcClientItem[]
   item: OidcClientItem
   view: boolean
@@ -298,7 +279,7 @@ export type ScopeItem = {
   [key: string]: JsonValue | undefined
 }
 
-export type ScopeState = {
+type ScopeState = {
   items: ScopeItem[]
   item: ScopeItem
   loading: boolean
@@ -313,20 +294,20 @@ export type ScopeState = {
 }
 
 // UMA Resource State
-export type UmaResourceItem = {
+type UmaResourceItem = {
   inum?: string
   name?: string
   [key: string]: JsonValue | undefined
 }
 
-export type UmaResourceState = {
+type UmaResourceState = {
   items: UmaResourceItem[]
   item: UmaResourceItem
   loading: boolean
 }
 
 // Message State
-export type MessageState = {
+type MessageState = {
   messages: JsonValue[]
   loading: boolean
   error: string | null
@@ -334,7 +315,7 @@ export type MessageState = {
 
 // Root state: core reducers (always present)
 
-export type CoreAppState = {
+type CoreAppState = {
   authReducer: AuthState
   initReducer: InitState
   logoutReducer: LogoutState
@@ -349,14 +330,14 @@ export type CoreAppState = {
 }
 
 // Admin plugin reducers
-export type AdminPluginState = {
+type AdminPluginState = {
   mauReducer: MauState
   webhookReducer: WebhookState
   assetReducer: AssetState
 }
 
 // Auth server plugin reducers
-export type AuthServerPluginState = {
+type AuthServerPluginState = {
   oidcReducer: OidcState
   scopeReducer: ScopeState
   UMAResourceReducer: UmaResourceState
@@ -370,6 +351,3 @@ export type ReducerMap = {
 }
 
 export type ReducerChangeListener = (reducers: ReducerMap) => void
-
-export type { AuthState as AuthReducerState }
-export type SliceState<K extends keyof RootState> = NonNullable<RootState[K]>

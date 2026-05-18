@@ -7,8 +7,9 @@ export default defineConfig({
       unsafeDisableValidation: true,
     },
     output: {
-      mode: 'single',
+      mode: 'tags-split',
       target: './jans_config_api_orval/src/JansConfigApi.ts',
+      schemas: './jans_config_api_orval/src/schemas',
       client: 'react-query',
       httpClient: 'axios',
       mock: false,

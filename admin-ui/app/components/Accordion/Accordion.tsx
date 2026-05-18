@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { AccordionProps } from './Accordion.d'
+import { AccordionProps } from './types'
 import Card from './../Card'
 import { Provider } from './context'
 

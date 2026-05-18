@@ -1,0 +1,21 @@
+{
+  "entry": [
+    "index.html",
+    "plugins/*/plugin-metadata.{ts,tsx}",
+    "plugins/PluginMenuResolver.ts",
+    "plugins/PluginReducersResolver.ts",
+    "plugins/PluginSagasResolver.ts",
+    "build/plugin-cli.ts",
+    "build/cli-tools.ts",
+    "script/*.ts",
+    "orval.config.ts"
+  ],
+  "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
+  "ignore": ["**/__tests__/**"],
+  "ignoreDependencies": ["babel-preset-jest"],
+  "ignoreBinaries": ["printf"],
+  "rules": {
+    "enumMembers": "off",
+    "duplicates": "off"
+  }
+}

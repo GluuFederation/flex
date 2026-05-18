@@ -14,5 +14,3 @@ export type { ModifiedFields, SsaAuditLogPayload, SsaTableRowData } from './SsaF
 export type { SsaFormProps, CustomAttributesPanelProps } from './ComponentTypes'
 
 export type { CaughtError, ApiErrorLike } from './ErrorTypes'
-
-export type { SsaAuthState, SsaAuditRootState, SsaAuditParams } from './ssaAuditTypes'
