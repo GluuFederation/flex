@@ -8,7 +8,7 @@ import { ICON_SIZE } from '@/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { useStyles, TABLE_RESPONSIVE_BREAKPOINT } from './GluuTable.style'
+import { useStyles, TABLE_MIN_WIDTH, TABLE_RESPONSIVE_BREAKPOINT } from './GluuTable.style'
 import { T_KEYS } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
@@ -26,21 +26,21 @@ const AUTO_COL_MIN_PX = 100
 const AUTO_COL_MAX_PX = 520
 const AUTO_COL_CHAR_PX = 8
 const AUTO_COL_PADDING_PX = 32
+const TABLE_RESPONSIVE_QUERY = `(max-width: ${TABLE_RESPONSIVE_BREAKPOINT - 1}px)`
 
 const useIsBelowResponsiveBreakpoint = (): boolean => {
-  const query = `(max-width: ${TABLE_RESPONSIVE_BREAKPOINT - 1}px)`
   const [isBelow, setIsBelow] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
-    return window.matchMedia(query).matches
+    return window.matchMedia(TABLE_RESPONSIVE_QUERY).matches
   })
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const mql = window.matchMedia(query)
+    const mql = window.matchMedia(TABLE_RESPONSIVE_QUERY)
     const onChange = (e: MediaQueryListEvent) => setIsBelow(e.matches)
     setIsBelow(mql.matches)
     mql.addEventListener('change', onChange)
     return () => mql.removeEventListener('change', onChange)
-  }, [query])
+  }, [])
   return isBelow
 }
 
@@ -367,7 +367,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     if (actions?.length) {
       sum += Math.max(100, actions.length * 40 + 16)
     }
-    return sum
+    return isBelowResponsiveBreakpoint ? Math.max(sum, TABLE_MIN_WIDTH) : sum
   }, [
     columns,
     expandable,

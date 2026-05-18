@@ -54,22 +54,22 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       boxSizing: 'border-box',
     },
     summaryText: {
-      'fontFamily': fontFamily,
-      'fontWeight': fontWeights.medium,
-      'fontSize': fontSizes.md,
-      'lineHeight': lineHeights.tight,
-      'color': themeColors.text,
-      '@media (max-width: 1199.98px)': {
+      fontFamily: fontFamily,
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.md,
+      lineHeight: lineHeights.tight,
+      color: themeColors.text,
+      [theme.breakpoints.down('lg')]: {
         fontSize: fontSizes.sm,
       },
     },
     summaryValue: {
-      'fontFamily': fontFamily,
-      'color': themeColors.text,
-      'fontWeight': fontWeights.semiBold,
-      'fontSize': fontSizes['3xl'],
-      'lineHeight': lineHeights.tight,
-      '@media (max-width: 1199.98px)': {
+      fontFamily: fontFamily,
+      color: themeColors.text,
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes['3xl'],
+      lineHeight: lineHeights.tight,
+      [theme.breakpoints.down('lg')]: {
         fontSize: fontSizes.xl,
       },
     },
