@@ -1,7 +1,6 @@
-import { Suspense, lazy, type ComponentType, type FunctionComponent } from 'react'
-import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 
-type LazyRouteWrapper = FunctionComponent & {
+type LazyRouteWrapper = LazyExoticComponent<ComponentType> & {
   preload: () => Promise<{ default: ComponentType }>
 }
 
@@ -10,13 +9,7 @@ export const createLazyRoute = (
 ): LazyRouteWrapper => {
   const LazyComponent = lazy(importFn)
 
-  const Wrapper = () => (
-    <Suspense fallback={<GluuLoader blocking />}>
-      <LazyComponent />
-    </Suspense>
-  )
-
-  return Object.assign(Wrapper, { preload: importFn })
+  return Object.assign(LazyComponent, { preload: importFn })
 }
 
 export const LazyRoutes = {

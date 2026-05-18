@@ -28,7 +28,7 @@
       "Orval/*": ["./orval/*"],
       "Redux/*": ["./app/redux/*"],
       "Images/*": ["./app/images/*"],
-      "JansConfigApi": ["./jans_config_api_orval/src/JansConfigApi"]
+      "JansConfigApi": ["./jans_config_api_orval/src/index"]
     },
     "outDir": "./dist",
     "rootDir": ".",
