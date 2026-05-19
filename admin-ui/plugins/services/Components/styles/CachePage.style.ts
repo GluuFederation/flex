@@ -16,7 +16,6 @@ const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const LABEL_MARGIN_BOTTOM = 2
 const ERROR_SPACE = 12
 const SECTION_BOX_TOP_PADDING = 12
@@ -152,8 +151,6 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:focus, & input:focus-visible, & input:active, & select:focus, & select:focus-visible, & select:active, & .form-control:focus, & .input-group:focus-within':
         {

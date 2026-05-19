@@ -12,7 +12,7 @@ export const useStyles = makeStyles<GluuPageContentStyleParams>()(
     root: {
       maxWidth: '100vw',
       width: '100%',
-      padding: withVerticalPadding ? `${SPACING.PAGE}px` : `0 ${SPACING.PAGE}px`,
+      padding: withVerticalPadding ? `${SPACING.PAGE}px 0` : 0,
       boxSizing: 'border-box',
       backgroundColor: background,
     },

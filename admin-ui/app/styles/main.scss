@@ -1,6 +1,49 @@
 @import "./miltonbo/scss/style.scss";
 @import "./custom/sidebar.scss";
 
+@keyframes admin-ui-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes admin-ui-fade-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: both;
+}
+::view-transition-old(root) {
+    animation-name: admin-ui-fade-out;
+}
+::view-transition-new(root) {
+    animation-name: admin-ui-fade-in;
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-name: none;
+        animation-duration: 0s;
+    }
+}
+body.view-transition-active [data-loader-overlay] {
+    display: none !important;
+}
+
 html.theme-dark {
     --theme-input-bg: var(--custom-dark-input-bg);
     --theme-input-color: var(--custom-white);

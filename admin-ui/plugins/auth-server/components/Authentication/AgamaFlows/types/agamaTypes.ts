@@ -25,6 +25,7 @@ export type AcrMapping = {
 }
 
 export type FlowError = {
+  id: string
   flow: string
   error: string
 }

@@ -23,7 +23,7 @@ const pluginMetadata = {
           title: 'menus.metrics',
           path: ROUTES.FIDO_METRICS,
           permission: FIDO_ADMIN,
-          resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
+          resourceKey: ADMIN_UI_RESOURCES.Metrics,
         },
       ],
     },
@@ -39,7 +39,7 @@ const pluginMetadata = {
       component: MetricsPage,
       path: ROUTES.FIDO_METRICS,
       permission: FIDO_ADMIN,
-      resourceKey: ADMIN_UI_RESOURCES.MAU, // TODO: restore to ADMIN_UI_RESOURCES.Metrics
+      resourceKey: ADMIN_UI_RESOURCES.Metrics,
     },
   ],
   reducers: [],

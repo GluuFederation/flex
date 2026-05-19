@@ -1,16 +1,15 @@
-import React, { Suspense, lazy } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
 import { Sidebar } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
+import GluuAppSidebar from 'Routes/Apps/Gluu/GluuAppSidebar'
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/helpers/navigation'
 import { useStyles } from './DefaultSidebar.style'
-
-const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
@@ -43,19 +42,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
 
       <div className="sidebar__mobile-fluid">
         <div className="sidebar__section sidebar__section--fluid sidebar__section--cover">
-          {initialized ? (
-            <Suspense
-              fallback={
-                <div className={classes.sidebarLoaderRoot}>
-                  <GluuSuspenseLoader />
-                </div>
-              }
-            >
-              <GluuAppSidebar />
-            </Suspense>
-          ) : (
-            cedarConditionalLoader()
-          )}
+          {initialized ? <GluuAppSidebar /> : cedarConditionalLoader()}
         </div>
       </div>
     </Sidebar>
