@@ -12,7 +12,6 @@ type JansLockFormPageStylesParams = {
 }
 
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
@@ -191,8 +190,6 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:focus, & input:active, & select:focus, & select:active': {
         backgroundColor: `${formInputBg} !important`,

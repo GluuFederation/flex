@@ -18,7 +18,6 @@ type ScimFormPageStylesParams = {
 }
 
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const ERROR_SPACE = 20
 
 const formGroupBase = createFormGroupOverrides()
@@ -124,8 +123,6 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:focus, & input:focus-visible, & input:active, & select:focus, & select:focus-visible, & select:active':
         {

@@ -19,7 +19,6 @@ const FLEX_DIRECTION_COLUMN = 'column'
 const MARGIN_ZERO = 0
 const OUTLINE_NONE = 'none'
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
@@ -135,8 +134,6 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active':
         {

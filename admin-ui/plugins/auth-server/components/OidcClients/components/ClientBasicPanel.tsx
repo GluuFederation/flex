@@ -75,30 +75,43 @@ const ClientBasicPanel = ({
     const clientEntries = (clientScopesData?.entries ?? []).map((item) => ({
       dn: item.dn as string | undefined,
       name: item.id as string | undefined,
+      scopeType: item.scopeType as string | undefined,
     }))
     const searchEntries = (searchScopesData?.entries ?? []).map((item) => ({
       dn: item.dn as string | undefined,
       name: item.id as string | undefined,
+      scopeType: item.scopeType as string | undefined,
     }))
     const combined = [...clientEntries, ...searchEntries]
-    const seen = new Set<string>()
-    return combined.filter((s) => {
-      if (!s.dn) return true
-      if (seen.has(s.dn)) return false
-      seen.add(s.dn)
+    const seenDn = new Set<string>()
+    const deduped = combined.filter((s) => {
+      if (!s.dn || !s.name) return false
+      if (seenDn.has(s.dn)) return false
+      seenDn.add(s.dn)
       return true
     })
+    const nameCounts = new Map<string, number>()
+    for (const s of deduped) {
+      if (s.name) nameCounts.set(s.name, (nameCounts.get(s.name) ?? 0) + 1)
+    }
+    return deduped.map((s) => ({
+      ...s,
+      displayName:
+        s.name && (nameCounts.get(s.name) ?? 0) > 1 && s.scopeType
+          ? `${s.name} (${s.scopeType})`
+          : (s.name ?? ''),
+    }))
   }, [clientScopesData, searchScopesData])
 
   const scopeNameOptions = useMemo(
-    () => allScopeOptions.map((s) => s.name).filter((n): n is string => Boolean(n)),
+    () => allScopeOptions.map((s) => s.displayName).filter((n): n is string => Boolean(n)),
     [allScopeOptions],
   )
 
   const selectedScopeNames = useMemo(() => {
     const selectedDns = (formik.values.scopes as string[] | undefined) ?? []
     return selectedDns
-      .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.name)
+      .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.displayName)
       .filter((n): n is string => Boolean(n))
   }, [formik.values.scopes, allScopeOptions])
 
@@ -115,14 +128,16 @@ const ClientBasicPanel = ({
   const isRedirectUriSyncingRef = useRef(false)
 
   const handleScopeChange = useCallback(
-    (selectedNames: string[]) => {
-      const dns = selectedNames
-        .map((name) => allScopeOptions.find((s) => s.name === name)?.dn)
-        .filter((dn): dn is string => Boolean(dn))
+    (selectedDisplayNames: string[]) => {
+      const selectedOptions = selectedDisplayNames
+        .map((displayName) => allScopeOptions.find((s) => s.displayName === displayName))
+        .filter((s): s is (typeof allScopeOptions)[number] => Boolean(s?.dn))
+      const dns = selectedOptions.map((s) => s.dn as string)
+      const names = selectedOptions.map((s) => s.name ?? '').filter(Boolean)
       formik.setFieldValue('scopes', dns)
       setModifiedFields((prev) => ({
         ...prev,
-        [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: selectedNames,
+        [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: names,
       }))
     },
     [allScopeOptions, formik, setModifiedFields],

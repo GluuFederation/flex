@@ -18,16 +18,6 @@
         }
     }
 
-    &.sidebar--animate-entry-complete {
-        .sidebar__section {
-            opacity: 1;
-        }
-    }
-
-    .sidebar__section {
-        opacity: 0;
-    }
-
     .sidebar-menu__entry {
         &__link::after {
             transition: opacity 200ms ease-in;

@@ -100,6 +100,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   const flowErrors = useMemo<FlowError[]>(() => {
     if (!projectDetailsData?.details?.flowsError) return []
     return Object.entries(projectDetailsData.details.flowsError).map(([flow, error]) => ({
+      id: flow,
       flow,
       error,
     }))
@@ -392,6 +393,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                           height="300px"
                           defaultValue={JSON.stringify(projectConfigs, null, 2)}
                           editorProps={{ $blockScrolling: true }}
+                          setOptions={{ useWorker: false }}
                         />
                       </Box>
                     ) : null}

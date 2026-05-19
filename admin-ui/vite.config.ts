@@ -52,6 +52,36 @@ const dateFnsEsmResolverPlugin = () => {
   }
 }
 
+const REGEX_WASM_ASSET = /\.wasm$/
+
+const wasmPreloadPlugin = (base: string) => {
+  return {
+    name: 'admin-ui:wasm-preload',
+    enforce: 'post' as const,
+    transformIndexHtml: {
+      order: 'post' as const,
+      handler(_html: string, ctx: { bundle?: Record<string, { type: string }> }) {
+        if (!ctx.bundle) return
+        const wasmFiles = Object.keys(ctx.bundle).filter(
+          (fileName) => REGEX_WASM_ASSET.test(fileName) && ctx.bundle?.[fileName].type === 'asset',
+        )
+        if (wasmFiles.length === 0) return
+        return wasmFiles.map((fileName) => ({
+          tag: 'link',
+          attrs: {
+            rel: 'preload',
+            as: 'fetch',
+            type: 'application/wasm',
+            crossorigin: '',
+            href: `${base}${fileName}`,
+          },
+          injectTo: 'head' as const,
+        }))
+      },
+    },
+  }
+}
+
 const MUI_ICON_REGISTRY_PATH = path.resolve(process.cwd(), 'app/components/icons/index.ts')
 const REGEX_MUI_ICON_EXPORT = /from\s+['"](@mui\/icons-material\/[^'"]+)['"]/g
 
@@ -227,6 +257,17 @@ const VENDOR_CHUNK_GROUPS: VendorChunkGroup[] = [
     test: (id: string) => id.replace(REGEX_BACKSLASH, '/').includes('/jans_config_api_orval/src/'),
   },
   { name: getVendorFallbackChunkName, test: isVendorModule },
+  {
+    name: 'app-shared',
+    test: (id: string) => {
+      const norm = id.replace(REGEX_BACKSLASH, '/')
+      return (
+        !norm.includes('/node_modules/') &&
+        !norm.includes('/jans_config_api_orval/') &&
+        (norm.includes('/app/') || norm.includes('/plugins/'))
+      )
+    },
+  },
 ]
 
 const normalizeReportSourcePath = (sourcePath: string, sourceRoot: string): string => {
@@ -288,6 +329,7 @@ export default defineConfig(({ mode }) => {
       dateFnsEsmResolverPlugin(),
       timingPlugin(),
       wasm(),
+      wasmPreloadPlugin(base),
       react({
         exclude: [/node_modules/, /jans_config_api_orval/],
       }),
@@ -346,6 +388,8 @@ export default defineConfig(({ mode }) => {
         output: {
           codeSplitting: {
             groups: VENDOR_CHUNK_GROUPS,
+            minSize: 10 * 1024,
+            minShareCount: 3,
           },
         },
       },

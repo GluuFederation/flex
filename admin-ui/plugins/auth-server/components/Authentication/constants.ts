@@ -34,7 +34,7 @@ export const TAB_IDS = {
   AGAMA_FLOWS: 'agama_flows',
 } as const
 
-export const TAB_ORDER = [
+const TAB_ORDER = [
   TAB_IDS.DEFAULT_ACR,
   TAB_IDS.BUILT_IN,
   TAB_IDS.ACRS,

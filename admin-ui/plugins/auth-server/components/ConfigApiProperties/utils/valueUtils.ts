@@ -5,9 +5,7 @@ import type { PropertyValue } from '../../AuthServerProperties/types'
 
 type TraversableValue = PropertyValue | PropertyValue[]
 
-export const extractObjectArray = (
-  value: PropertyValue,
-): Record<string, PropertyValue>[] | null => {
+const extractObjectArray = (value: PropertyValue): Record<string, PropertyValue>[] | null => {
   if (!Array.isArray(value) || value.length === 0) {
     return null
   }
@@ -17,7 +15,7 @@ export const extractObjectArray = (
   return value as PropertyValue[] as Record<string, PropertyValue>[]
 }
 
-export const extractRecord = (value: PropertyValue): Record<string, PropertyValue> | null => {
+const extractRecord = (value: PropertyValue): Record<string, PropertyValue> | null => {
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     return value as Record<string, PropertyValue>
   }
@@ -116,45 +114,6 @@ const getNestedValue = (obj: ApiAppConfiguration, path: string[]): TraversableVa
     }
   }
   return current as TraversableValue
-}
-
-export const applyPatchToValues = (values: ApiAppConfiguration, patch: JsonPatch): void => {
-  if (!patch.path || patch.op !== 'replace') return
-
-  try {
-    const pathStr = typeof patch.path === 'string' ? patch.path : ''
-    const cleaned = pathStr.replace(REGEX_LEADING_SLASH, '').trim()
-    if (cleaned === '') return
-    const pathParts = cleaned.split('/')
-    if (pathParts.length === 0 || pathParts.some((segment) => segment === '')) {
-      devLogger.warn('[applyPatchToValues] Rejecting malformed patch path:', pathStr)
-      return
-    }
-
-    const target = getNestedValue(values, pathParts)
-    if (target === null) {
-      return
-    }
-
-    const lastPart = pathParts[pathParts.length - 1]
-    const lastIndex = parseInt(lastPart, 10)
-
-    if (!isNaN(lastIndex) && lastPart === String(lastIndex) && Number.isInteger(lastIndex)) {
-      if (Array.isArray(target)) {
-        if (lastIndex >= 0 && lastIndex < target.length) {
-          target[lastIndex] = patch.value as PropertyValue
-        }
-      }
-    } else if (typeof target === 'object' && target !== null && !Array.isArray(target)) {
-      const objTarget = target as Record<string, PropertyValue>
-      objTarget[lastPart] = patch.value as PropertyValue
-    }
-  } catch (error) {
-    devLogger.error(
-      '[applyPatchToValues] Error applying replace patch:',
-      error instanceof Error ? error : String(error),
-    )
-  }
 }
 
 export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: JsonPatch): void => {

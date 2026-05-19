@@ -22,6 +22,16 @@ const ReactQueryDevtools = import.meta.env.PROD
       })),
     )
 
+if (typeof document !== 'undefined' && typeof document.startViewTransition === 'function') {
+  const originalStartViewTransition = document.startViewTransition.bind(document)
+  document.startViewTransition = (callback) => {
+    document.body.classList.add('view-transition-active')
+    const transition = originalStartViewTransition(callback)
+    transition.finished.finally(() => document.body.classList.remove('view-transition-active'))
+    return transition
+  }
+}
+
 const { store, persistor } = configStore()
 
 const queryClient = new QueryClient({

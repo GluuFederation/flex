@@ -20,7 +20,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
   const animationsEnabled = !(animationsDisabled || pageConfig?.animationsDisabled)
 
   useEffect(() => {
-    if (!animationsEnabled) {
+    if (!animationsEnabled || (typeof document !== 'undefined' && document.hidden)) {
       setEntryAnimationFinished(true)
       return () => {}
     }

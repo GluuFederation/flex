@@ -1,20 +1,54 @@
 import { Suspense, useState, useEffect } from 'react'
-import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import { ROUTES } from '@/helpers/navigation'
 import { devLogger } from '@/utils/devLogger'
 import { useAppSelector } from '@/redux/hooks'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-
-// ----------- Layout Imports ---------------
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
-
+import type { PluginRoute } from 'Plugins/internal'
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 
-//------ Route Definitions --------
+const ALWAYS_MOUNTED_LAZY_ROUTES: ReadonlySet<keyof typeof LazyRoutes> = new Set([
+  'GluuToast',
+  'DefaultSidebar',
+  'GluuNavBar',
+  'GluuWebhookExecutionDialog',
+])
+
+const schedulePreload = (pluginRoutes: PluginRoute[]) => {
+  if (typeof window === 'undefined') return
+  const queue: Array<() => Promise<{ default: React.ComponentType }>> = [
+    ...Object.entries(LazyRoutes)
+      .filter(([key]) => !ALWAYS_MOUNTED_LAZY_ROUTES.has(key as keyof typeof LazyRoutes))
+      .map(
+        ([, r]) =>
+          () =>
+            r.preload(),
+      ),
+    ...pluginRoutes.flatMap((r) => (r.component.preload ? [r.component.preload] : [])),
+  ]
+  const idle =
+    typeof window.requestIdleCallback === 'function'
+      ? (cb: () => void) => window.requestIdleCallback(cb)
+      : (cb: () => void) => window.setTimeout(cb, 200)
+  const next = () => {
+    if (queue.length === 0) return
+    idle(() => {
+      const fn = queue.shift()
+      fn?.()?.catch((err) => devLogger.warn('Chunk preload failed:', err))
+      next()
+    })
+  }
+  if (document.readyState === 'complete') {
+    idle(next)
+  } else {
+    window.addEventListener('load', () => idle(next), { once: true })
+  }
+}
 
 export const RoutedContent = () => {
   const [pluginMenus, setPluginMenus] = useState<
@@ -26,16 +60,18 @@ export const RoutedContent = () => {
       try {
         const routes = await processRoutes()
         setPluginMenus(routes)
+        schedulePreload(routes)
       } catch (error) {
         devLogger.error('Failed to load plugins:', error instanceof Error ? error : String(error))
-        setPluginMenus(processRoutesSync())
+        const fallback = processRoutesSync()
+        setPluginMenus(fallback)
+        schedulePreload(fallback)
       }
     }
 
     loadPlugins()
   }, [])
 
-  const location = useLocation()
   const { userinfo, config } = useAppSelector((state) => state.authReducer)
   const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
     (state) => state.cedarPermissions,
@@ -61,7 +97,7 @@ export const RoutedContent = () => {
   }
 
   return (
-    <Suspense key={location.pathname} fallback={<GluuLoader blocking />}>
+    <Suspense fallback={<GluuLoader blocking />}>
       <Routes>
         <Route
           path={ROUTES.HOME_DASHBOARD}

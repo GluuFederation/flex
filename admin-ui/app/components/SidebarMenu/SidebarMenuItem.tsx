@@ -23,6 +23,7 @@ const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
         to={props.to as string}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
+        viewTransition
       >
         {props.children}
       </Link>
