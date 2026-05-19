@@ -1,3 +1,10 @@
+/* ============================================================
+ * App-runtime regexes
+ * Imported by app/ and plugins/ source — used by the running SPA
+ * for validation, parsing, casing, CSV escaping, IP detection,
+ * chunk-load recovery, etc.
+ * ============================================================ */
+
 /** Trailing period at end of string - used to strip trailing dots from status messages etc. */
 export const REGEX_TRAILING_PERIOD = /\.$/
 /** Matches a single trailing forward slash; use to normalize URL/path strings. */
@@ -6,26 +13,16 @@ export const REGEX_TRAILING_SLASH = /\/$/
 export const REGEX_LEADING_SLASH = /^\//
 /** Matches all forward slashes; use with replace to convert paths to dot-notation or other delimiters. */
 export const REGEX_FORWARD_SLASH = /\//g
-/** Matches all backslashes; use to normalize Windows-style paths to forward slashes. */
-export const REGEX_BACKSLASH = /\\/g
+/** Leading colon only (e.g. strip leading colon from IDs). */
+export const REGEX_LEADING_COLON = /^:/
+/** Leading or trailing double-quote only; used to strip surrounding quotes from strings (e.g. license fields). */
+export const REGEX_SURROUNDING_QUOTES = /^"|"$/g
 /** Matches any character that is not alphanumeric, underscore, or hyphen — i.e. not valid in a slug or HTML id. */
 export const REGEX_NON_SLUG_CHARS = /[^a-zA-Z0-9_-]/g
 /** Matches one or more consecutive hyphens; use with replace('-') to collapse runs into a single hyphen. */
 export const REGEX_CONSECUTIVE_HYPHENS = /-+/g
 /** Matches one or more leading or trailing hyphens; use with replace('') to trim. */
 export const REGEX_LEADING_TRAILING_HYPHENS = /^-+|-+$/g
-/** Leading colon only (e.g. strip leading colon from IDs). */
-export const REGEX_LEADING_COLON = /^:/
-/** Leading or trailing double-quote only; used to strip surrounding quotes from strings (e.g. license fields). */
-export const REGEX_SURROUNDING_QUOTES = /^"|"$/g
-/** Audit log line: optional timestamp (DD-MM-YYYY HH:mm:ss.mmm) then content. Capture groups: [1] timestamp, [2] rest. */
-export const REGEX_AUDIT_LIST_TIMESTAMP = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})\s+(.+)$/
-/** Matches braced placeholders like {key} or {some.key}; use with .match() for finding all placeholders in a string. */
-export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
-/** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
-export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
-/** Matches Python/Jinja-style %(key)s placeholders; used to detect un-substituted server-side templates (e.g. in index.html). */
-export const REGEX_PYTHON_PLACEHOLDER = /%\([^)]+\)s/
 /** Boundary between lower/number and upper case characters; used for camelCase to snake_case transforms. */
 export const REGEX_CAMEL_TO_SNAKE_BOUNDARY = /([a-z0-9])([A-Z])/g
 /** Boundary between a lowercase letter and an uppercase letter; used for camelCase to kebab-case transforms. */
@@ -40,6 +37,18 @@ export const REGEX_NON_ALPHANUMERIC_SEQUENCE = /[^a-zA-Z0-9]+/g
 export const REGEX_CONSECUTIVE_WHITESPACE = /\s+/g
 /** One or more underscore or hyphen separator characters; use with split to tokenize service/variable names. */
 export const REGEX_SEPARATOR_CHARS = /[_-]+/
+/** Matches a single whitespace character (global); use with replace('_') to convert spaces in filenames. */
+export const REGEX_WHITESPACE_CHAR = /\s/g
+/** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
+export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
+/** Matches any character that is not a lowercase ASCII letter; use with replace('') after lowercasing to normalize keys for comparisons. */
+export const REGEX_NON_LOWERCASE_ALPHA = /[^a-z]/g
+/** Matches braced placeholders like {key} or {some.key}; use with .match() for finding all placeholders in a string. */
+export const REGEX_BRACED_PLACEHOLDER = /\{([^{}]+?)\}/g
+/** Matches URL/shortcode placeholders like ${inum} or ${name}; use with .replace() to normalize URLs before validation. */
+export const REGEX_URL_PLACEHOLDER = /\$\{[^}]*\}/g
+/** Matches Python/Jinja-style %(key)s placeholders; used to detect un-substituted server-side templates (e.g. in index.html / configApiBaseUrl). */
+export const REGEX_PYTHON_PLACEHOLDER = /%\([^)]+\)s/
 /** No whitespace characters (allows empty); use in Yup .matches() alongside .required() for no-spaces validation. */
 export const REGEX_NO_WHITESPACE = /^\S*$/
 /** No whitespace characters, non-empty required; use in Yup .matches() when field must also be non-empty. */
@@ -50,8 +59,6 @@ export const REGEX_IDENTIFIER = /^[a-zA-Z0-9_]+$/
 export const REGEX_HAS_UPPERCASE = /[A-Z]/
 /** Password strength — at least one lowercase letter. */
 export const REGEX_HAS_LOWERCASE = /[a-z]/
-/** Matches any character that is not a lowercase ASCII letter; use with replace('') after lowercasing to normalize keys for comparisons. */
-export const REGEX_NON_LOWERCASE_ALPHA = /[^a-z]/g
 /** Password strength — at least one digit. */
 export const REGEX_HAS_DIGIT = /[0-9]/
 /** Password strength — at least one special character. */
@@ -70,12 +77,46 @@ export const REGEX_CSV_SPECIAL_CHARS = /[",\n\r]/
 export const REGEX_DOUBLE_QUOTE = /"/g
 /** Matches date/time separator characters (slash, colon, comma); use to normalize datetime strings for filenames. */
 export const REGEX_DATE_SEPARATOR_CHARS = /[/:,]/g
-/** Matches a single whitespace character (global); use with replace('_') to convert spaces in filenames. */
-export const REGEX_WHITESPACE_CHAR = /\s/g
-/** Matches KeyOps enum values in the orval-generated JansConfigApi.ts that need the backslash escape fixed. Capture groups: [1] opening quote+prefix, [2] raw value, [3] closing quote. */
-export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
-/** Strips a script file extension (.ts, .tsx, .js, .jsx) from a path; used to normalize module keys. */
-export const REGEX_SCRIPT_EXTENSION = /\.(?:tsx?|jsx?)$/
+/** Audit log line: optional timestamp (DD-MM-YYYY HH:mm:ss.mmm) then content. Capture groups: [1] timestamp, [2] rest. */
+export const REGEX_AUDIT_LIST_TIMESTAMP = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})\s+(.+)$/
+/** Matches an hourly aggregation period of the form YYYY-MM-DD-H (e.g. "2026-05-11-9"). Capture groups: [1] date, [2] hour. */
+export const REGEX_HOURLY_AGGREGATION_PERIOD = /^(\d{4}-\d{2}-\d{2})-(\d{1,2})$/
+/** Matches an ISO week period of the form YYYY-Www (e.g. "2026-W19"). Capture groups: [1] year, [2] week. */
+export const REGEX_ISO_WEEK_PERIOD = /^(\d{4})-W(\d{1,2})$/
+/** Matches any character that is not a digit or comma; use with replace('') to keep only the numeric components of an "rgb(r, g, b)" string. */
+export const REGEX_NON_DIGIT_COMMA = /[^\d,]/g
+/** Validates an email address (RFC 5321-compatible surface check). */
+export const REGEX_EMAIL = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+/** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain, IPv4, or IPv6. Port: 1–5 digits (0–65535). */
+export const REGEX_WEBHOOK_URL =
+  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
+/** Matches a hostname starting with 100.x. for carrier-grade NAT range detection (100.64.0.0/10, RFC 6598). Capture group [1] is the second octet. */
+export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
+/** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */
+export const REGEX_PRIVATE_172_IP_PREFIX = /^172\.(\d+)\./
+/** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
+export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
+
+/** Escapes regex-special characters in a string so it can be used literally in a RegExp. Shared helper for the factories below. */
+const escapeRegexSpecialChars = (s: string): string => {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+/** Builds a RegExp that matches a single braced placeholder for the given key (e.g. key="name" -> /\{name\}/g). Key is escaped so metacharacters match literally. */
+export const regexForBracedKey = (key: string): RegExp => {
+  return new RegExp(`\\{${escapeRegexSpecialChars(key)}\\}`, 'g')
+}
+
+/* ============================================================
+ * Build-tooling regexes
+ * Imported by vite.config.ts, orval mutator, and script/* —
+ * used at build / tooling time only (chunking, bundle reports,
+ * date-fns ESM resolver, orval enum patcher, orval barrel
+ * generator, write-method verifier, prettier output parser).
+ * Not imported by app runtime code.
+ * ============================================================ */
+
+/** Matches all backslashes; use to normalize Windows-style paths to forward slashes in vite plugins and chunk-id matchers. */
+export const REGEX_BACKSLASH = /\\/g
 /** Matches a leading tilde in Sass/CSS imports so bundlers can normalize legacy webpack-style `~package/path` imports. */
 export const REGEX_STYLE_IMPORT_TILDE_PREFIX = /^~(?=.)/
 /** Matches the `/node_modules/` path segment so package subpaths can be extracted from resolved file ids. */
@@ -90,12 +131,12 @@ export const REGEX_CODE_BUILD_ASSET = /\.(?:m?js|css|wasm)$/
 export const REGEX_DATE_FNS_BARE_SPECIFIER = /^date-fns$/
 /** Matches a `date-fns/<subpath>` import specifier (excluding `package.json`); capture group [1] is the subpath, used to alias the import to the corresponding ESM `.mjs` file so a single date-fns build ends up in the bundle. */
 export const REGEX_DATE_FNS_SUBPATH_SPECIFIER = /^date-fns\/(?!package\.json)(.+)$/
-/** Captures the plugin name from a metadata file path; e.g. './auth-server/plugin-metadata' → capture group [1] = 'auth-server'. */
-export const REGEX_PLUGIN_NAME_FROM_PATH = /\.\/([^/]+)\/plugin-metadata/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */
 export const REGEX_PRETTIER_TIMESTAMP = /\d+ms/
 /** Extracts the file path from a Prettier --write output line (e.g. "src/foo.ts 5ms (unchanged)" → capture group [1] = "src/foo.ts"). */
 export const REGEX_PRETTIER_FILE_PATH = /^(.+?)\s+\d+ms/
+/** Matches KeyOps enum values in the orval-generated JansConfigApi.ts that need the backslash escape fixed. Capture groups: [1] opening quote+prefix, [2] raw value, [3] closing quote. */
+export const REGEX_ORVAL_KEYOPS_ENUM = /('KeyOps\{value=\\')([^'\\]+)(')/g
 /** Matches a top-level `export const <name> = (` declaration in the orval-generated JansConfigApi.ts; used to identify each operation function as the verify-orval-mutations script walks the file. Capture group [1] is the function name. */
 export const REGEX_ORVAL_EXPORT_CONST_FN = /^export const ([a-zA-Z0-9_]+) = \(/
 /** Matches the `method: '<VERB>'` line for write-method endpoints (DELETE/POST/PUT/PATCH) in the orval-generated JansConfigApi.ts. Capture group [1] is the HTTP verb. */
@@ -119,29 +160,6 @@ export const REGEX_ORVAL_EXPORT_TYPE_LIST = /^export\s+type\s*\{\s*([^}]+)\s*\}/
 export const REGEX_ORVAL_INLINE_TYPE_PREFIX = /^type\s+/
 /** Splits an export specifier into [original, alias] around the `as` keyword (e.g. `Foo as Bar`); used by gen-orval-barrel to resolve the externally visible name. */
 export const REGEX_ORVAL_AS_SEPARATOR = /\s+as\s+/
-/** Matches a hostname starting with 100.x. for carrier-grade NAT range detection (100.64.0.0/10, RFC 6598). Capture group [1] is the second octet. */
-export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
-/** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */
-export const REGEX_PRIVATE_172_IP_PREFIX = /^172\.(\d+)\./
-/** Validates normalized webhook URL format: https://host[:port][/path][?query][#hash]. Host: domain, IPv4, or IPv6. Port: 1–5 digits (0–65535). */
-export const REGEX_WEBHOOK_URL =
-  /^https:\/\/(([\w-]+\.)+[\w-]+|\[[\da-fA-F:]+\])(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/i
-/** Validates an email address (RFC 5321-compatible surface check). */
-export const REGEX_EMAIL = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-/** Matches an hourly aggregation period of the form YYYY-MM-DD-H (e.g. "2026-05-11-9"). Capture groups: [1] date, [2] hour. */
-export const REGEX_HOURLY_AGGREGATION_PERIOD = /^(\d{4}-\d{2}-\d{2})-(\d{1,2})$/
-/** Matches an ISO week period of the form YYYY-Www (e.g. "2026-W19"). Capture groups: [1] year, [2] week. */
-export const REGEX_ISO_WEEK_PERIOD = /^(\d{4})-W(\d{1,2})$/
-/** Matches any character that is not a digit or comma; use with replace('') to keep only the numeric components of an "rgb(r, g, b)" string. */
-export const REGEX_NON_DIGIT_COMMA = /[^\d,]/g
-/** Escapes regex-special characters in a string so it can be used literally in a RegExp. */
-const escapeRegexSpecialChars = (s: string): string => {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-/** Builds a RegExp that matches a single braced placeholder for the given key (e.g. key="name" -> /\{name\}/g). Key is escaped so metacharacters match literally. */
-export const regexForBracedKey = (key: string): RegExp => {
-  return new RegExp(`\\{${escapeRegexSpecialChars(key)}\\}`, 'g')
-}
 /** Builds a RegExp that matches an `export const|function <hookName>` declaration followed (within ~4000 chars) by a `useMutation(` call in the orval-generated client. Used by verify-orval-mutations to confirm write-method hooks are wired to mutations. */
 export const regexForOrvalMutationHook = (hookName: string): RegExp => {
   return new RegExp(
