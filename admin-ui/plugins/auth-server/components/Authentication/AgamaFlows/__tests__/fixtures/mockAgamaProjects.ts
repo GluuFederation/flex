@@ -26,7 +26,7 @@ export const mockDeployments: Deployment[] = [
       projectMetadata: {
         projectName: 'pending-agama-project',
         author: 'Another Author',
-        version: '2.0.0',
+        version: '2.1.0',
         description: 'A pending Agama project',
         type: 'agama',
       },

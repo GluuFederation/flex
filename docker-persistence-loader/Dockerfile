@@ -4,7 +4,7 @@ FROM ghcr.io/janssenproject/jans/persistence-loader:0.0.0-nightly
 # Assets sync
 # ===========
 
-ENV FLEX_SOURCE_VERSION=1fe9ebcdb927327ac2aa03cfcafad7388c32c844
+ENV FLEX_SOURCE_VERSION=fb97e1d4b6e0bd272fc99996e413bee52c1edc72
 
 USER 0
 
