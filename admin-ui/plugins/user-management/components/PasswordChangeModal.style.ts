@@ -1,6 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
@@ -17,11 +16,9 @@ type StylesParams = {
 
 export const usePasswordModalStyles = makeStyles<StylesParams>()((
   _theme,
-  { isDark, themeColors },
+  { isDark: _isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
-  const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const inputColors = {
     inputBg: themeColors.inputBackground,
     inputBorderColor,
@@ -30,10 +27,6 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
   }
 
   return {
-    modalContainer: {
-      ...cardBorderStyle,
-      backgroundColor: modalBg,
-    },
     fieldsRow: {
       'display': 'grid',
       'gridTemplateColumns': '1fr 1fr',

@@ -264,7 +264,7 @@ const PasswordChangeModal = ({
         role="presentation"
       >
         <div
-          className={`${commitClasses.modalContainer} ${formClasses.modalContainer}`}
+          className={commitClasses.modalContainer}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={handleModalKeyDown}
           role="dialog"
