@@ -74,7 +74,7 @@ export const MODAL = {
 
 export const SPACING = {
   PAGE: 24,
-  CONTENT_PADDING: 40,
+  CONTENT_PADDING: 20,
   SECTION_GAP: 24,
   CARD_GAP: 24,
   CARD_PADDING: 24,

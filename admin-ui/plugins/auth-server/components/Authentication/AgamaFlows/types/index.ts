@@ -4,25 +4,13 @@ export type {
   AgamaRepositoriesResponse,
   AcrMapping,
   FlowError,
-  ProjectDetailsState,
-  ConfigDetailsState,
   AgamaTableRow,
   ModifiedFields,
   JsonObject,
   ApiError,
   AcrMappingTableRow,
-  AgamaJsonPatch,
-  AgamaJsonPatchRequestBody,
 } from './agamaTypes'
 
-export type {
-  AgamaAliasListPageProps,
-  AgamaListPageProps,
-  AgamaProjectConfigModalProps,
-} from './componentTypes'
+export type { AgamaProjectConfigModalProps } from './componentTypes'
 
-export type {
-  AcrMappingFormValues,
-  AgamaUploadFormValues,
-  RepositoryDownloadFormValues,
-} from './formTypes'
+export type { AcrMappingFormValues } from './formTypes'

@@ -20,7 +20,6 @@ const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const LABEL_MARGIN_BOTTOM = 2
 const MOBILE_BREAKPOINT = 768
 
@@ -195,8 +194,6 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:not([type="checkbox"]):focus, & input:not([type="checkbox"]):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & textarea:focus, & textarea:active':
         {

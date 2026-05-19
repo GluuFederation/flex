@@ -30,7 +30,6 @@ const ERROR_SPACE = 20
 const LABEL_MARGIN_BOTTOM = 6
 const CONTENT_GAP = 0
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
@@ -321,8 +320,6 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:focus, & input:active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .input-group:focus-within':
         {

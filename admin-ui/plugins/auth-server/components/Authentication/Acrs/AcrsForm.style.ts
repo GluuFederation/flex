@@ -1,16 +1,10 @@
-import type { CSSProperties } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
-import customColors from '@/customColors'
+import { createFormGroupOverrides } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
-
-export const errorTextStyle: CSSProperties = {
-  color: customColors.accentRed,
-  marginTop: -12,
-}
 
 type AcrsFormStylesParams = {
   isDark: boolean
@@ -18,7 +12,6 @@ type AcrsFormStylesParams = {
 }
 
 const SELECT_ARROW_SPACE = 44
-const SELECT_NUDGE = -2
 const MOBILE_BREAKPOINT = 768
 
 const PROPS_HEADER_MB = 16
@@ -74,36 +67,17 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
-      '& .form-group': {
-        display: 'flex',
-        flexDirection: 'column' as const,
-        margin: 0,
-        padding: 0,
-      },
-      '& .form-group.row': {
-        marginLeft: 0,
-        marginRight: 0,
-      },
+      ...createFormGroupOverrides({ columnPaddingBottom: 20 }),
       '& .form-group > label': {
         flex: '0 0 auto',
+        display: 'block',
         width: '100%',
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        marginBottom: 6,
-      },
-      '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
-        position: 'relative',
-        paddingBottom: 20,
-      },
-      '& [data-field-error]': {
-        position: 'absolute',
-        fontSize: `${fontSizes.sm} !important`,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: 2,
       },
       '& .input-group': {
         margin: 0,
@@ -121,31 +95,17 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
-      '& .form-group': {
-        display: 'flex',
-        flexDirection: 'column' as const,
-        margin: 0,
-        padding: 0,
-        width: '100%',
-      },
-      '& .form-group.row': {
-        marginLeft: 0,
-        marginRight: 0,
-      },
+      ...createFormGroupOverrides(),
       '& .form-group > label': {
         flex: '0 0 auto',
+        display: 'block',
         width: '100%',
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        marginBottom: 6,
-      },
-      '& .form-group [class*="col"]': {
-        flex: '0 0 100%',
-        width: '100%',
-        maxWidth: '100%',
-        paddingLeft: 0,
-        paddingRight: 0,
+        paddingTop: '0 !important',
+        paddingBottom: '0 !important',
+        marginBottom: 2,
       },
       '& .react-toggle--disabled': {
         opacity: `${OPACITY.DISABLED} !important`,
@@ -160,6 +120,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         fontStyle: 'normal !important',
         fontWeight: `${fontWeights.semiBold} !important`,
         lineHeight: `${lineHeights.normal} !important`,
+        margin: '0 !important',
       },
     },
     propsBox: { ...dl.listBox, marginTop: PROPS_HEADER_MB },
@@ -189,8 +150,6 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
-        marginTop: SELECT_NUDGE,
-        marginBottom: SELECT_NUDGE,
       },
       '& input:not([type="checkbox"]):focus, & input:not([type="checkbox"]):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & textarea:focus, & textarea:active':
         {
