@@ -33,6 +33,13 @@
 ::view-transition-new(root) {
     animation-name: admin-ui-fade-in;
 }
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-name: none;
+        animation-duration: 0s;
+    }
+}
 body.view-transition-active [data-loader-overlay] {
     display: none !important;
 }

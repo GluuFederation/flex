@@ -38,7 +38,8 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
   const next = () => {
     if (queue.length === 0) return
     idle(() => {
-      queue.shift()?.()
+      const fn = queue.shift()
+      fn?.()?.catch((err) => devLogger.warn('Chunk preload failed:', err))
       next()
     })
   }
