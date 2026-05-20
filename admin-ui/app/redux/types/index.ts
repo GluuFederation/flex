@@ -236,8 +236,6 @@ type AssetState = {
   entriesCount: number
   selectedAsset: AssetDocument | Record<string, never>
   loadingAssets: boolean
-  assetModal: boolean
-  showErrorModal: boolean
 }
 
 // Auth server plugin state types

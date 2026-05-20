@@ -29,8 +29,6 @@ const assetReducerState = {
     enabled: true,
   },
   loadingAssets: false,
-  assetModal: false,
-  showErrorModal: false,
 }
 
 describe('JansAssetEditPage', () => {

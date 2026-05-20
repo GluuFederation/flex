@@ -19,8 +19,6 @@ export interface AssetState {
   entriesCount: number
   selectedAsset: Document | Record<string, never>
   loadingAssets: boolean
-  assetModal: boolean
-  showErrorModal: boolean
 }
 
 export interface AssetResponsePayload {

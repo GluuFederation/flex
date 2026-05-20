@@ -60,7 +60,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       boxSizing: BOX_SIZING_BORDER,
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: 32,
+      gap: SPACING.SECTION_GAP,
       [theme.breakpoints.down('sm')]: {
         padding: SPACING.PAGE,
       },

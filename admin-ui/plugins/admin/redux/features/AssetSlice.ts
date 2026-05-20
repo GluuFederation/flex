@@ -19,8 +19,6 @@ const initialState: AssetState = {
   entriesCount: 0,
   selectedAsset: {},
   loadingAssets: false,
-  assetModal: false,
-  showErrorModal: false,
 }
 
 const assetSlice = createSlice({

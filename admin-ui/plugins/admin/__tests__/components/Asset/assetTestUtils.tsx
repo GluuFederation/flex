@@ -58,8 +58,6 @@ const defaultAssetReducerState = {
   entriesCount: 0,
   selectedAsset: {},
   loadingAssets: false,
-  assetModal: false,
-  showErrorModal: false,
 }
 
 const defaultWebhookReducerState = {

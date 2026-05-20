@@ -76,8 +76,6 @@ const store = configureStore({
         entriesCount: 0,
         selectedAsset: {},
         loadingAssets: false,
-        assetModal: false,
-        showErrorModal: false,
       },
     ) => state,
     webhookReducer: (
