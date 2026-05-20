@@ -43,7 +43,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
 import type { Config } from '@/redux/features/types/authTypes'
-import { logAudit } from '@/utils/AuditLogger'
+import { logAuditUserAction } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from '@/utils/errorHandler'
@@ -167,7 +167,7 @@ const SettingsPage: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
         dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
 
-        await logAudit({
+        await logAuditUserAction({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_SETTINGS,

@@ -1,6 +1,4 @@
 export type {
-  HealthStatus,
-  Status,
   ServiceStatusValue,
   ServiceHealth,
   ServiceStatusCardProps,

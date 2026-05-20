@@ -35,9 +35,7 @@ import type {
   WebhookTriggerResponseItem,
 } from './types/webhook'
 
-export function* getWebhooksByFeatureIdSaga({
-  payload,
-}: PayloadAction<string>): SagaIterator<void> {
+function* getWebhooksByFeatureIdSaga({ payload }: PayloadAction<string>): SagaIterator<void> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${payload}`, {})
@@ -59,7 +57,7 @@ export function* getWebhooksByFeatureIdSaga({
   }
 }
 
-export function* triggerWebhookSaga({
+function* triggerWebhookSaga({
   payload,
 }: PayloadAction<TriggerWebhookSagaPayload>): SagaIterator<void> {
   const audit = yield* initAudit()
@@ -165,11 +163,11 @@ export function* triggerWebhookSaga({
   }
 }
 
-export function* watchGetWebhooksByFeatureId(): SagaIterator<void> {
+function* watchGetWebhooksByFeatureId(): SagaIterator<void> {
   yield takeLatest(getWebhooksByFeatureIdAction.type, getWebhooksByFeatureIdSaga)
 }
 
-export function* watchGetTriggerWebhook(): SagaIterator<void> {
+function* watchGetTriggerWebhook(): SagaIterator<void> {
   yield takeLatest(triggerWebhookAction.type, triggerWebhookSaga)
 }
 

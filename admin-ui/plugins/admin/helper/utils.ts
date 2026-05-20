@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
-import { type Dayjs, isValidDate as isValidDateUtil, isAfterDate } from '@/utils/dayjsUtils'
+import { type Dayjs } from '@/utils/dayjsUtils'
 import {
   REGEX_AUDIT_LIST_TIMESTAMP,
   REGEX_BRACED_PLACEHOLDER,
@@ -27,16 +27,8 @@ const getNestedValue = (obj: Record<string, JsonValue>, path: string): JsonValue
   }, obj as JsonValue)
 }
 
-export const hasValue = <T>(value: T): value is NonNullable<T> =>
-  value !== null && value !== undefined
-
 export const hasBothDates = (startDate: DateLike, endDate: DateLike): boolean =>
   !!startDate && !!endDate
-
-export const isValidDate = (date: DateLike): boolean => isValidDateUtil(date)
-
-export const isStartAfterEnd = (startDate: DateLike, endDate: DateLike): boolean =>
-  !!startDate && !!endDate && isAfterDate(startDate, endDate)
 
 export const auditListTimestampRegex = REGEX_AUDIT_LIST_TIMESTAMP
 

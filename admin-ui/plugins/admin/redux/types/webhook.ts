@@ -14,12 +14,12 @@ export type WebhookTriggerResponseItem = {
   }
 }
 
-export type WebhookSliceTriggerPayload = {
+type WebhookSliceTriggerPayload = {
   feature: string | null
   payload: JsonValue
 }
 
-export type TriggerPayloadValue =
+type TriggerPayloadValue =
   | string
   | number
   | boolean
@@ -32,7 +32,7 @@ export type TriggerPayloadActionPayload = {
   payload?: TriggerPayloadValue
 }
 
-export type TriggerWebhookActionPayload = {
+type TriggerWebhookActionPayload = {
   createdFeatureValue?: Record<string, JsonValue>
   feature?: string
 }

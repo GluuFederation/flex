@@ -1,14 +1,6 @@
-import type {
-  BaseAuditAuthState,
-  BaseAuditRootState,
-  BaseAuditActionType,
-  BaseAuditInit,
-  BaseAuditActionData,
-} from '../../../types'
+import type { BaseAuditActionType, BaseAuditInit, BaseAuditActionData } from '../../../types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export type AssetAuditAuthState = BaseAuditAuthState
-export type AssetAuditRootState = BaseAuditRootState
 export type AssetAuditActionType = BaseAuditActionType
 export type AssetAuditInit = BaseAuditInit
 export type AssetAuditActionData = BaseAuditActionData

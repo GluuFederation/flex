@@ -3,9 +3,7 @@ export type {
   RawStatEntry,
   MauDateRange,
   MauSummary,
-  MauSummaryCardProps,
   DateRangePreset,
-  TokenDistributionData,
   MauChartProps,
   DateRangeSelectorProps,
 } from './MauTypes'

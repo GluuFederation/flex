@@ -111,5 +111,3 @@ export const isValid = (url: string | undefined | null): boolean => {
   }
   return REGEX_WEBHOOK_URL.test(normalized)
 }
-
-export { isAllowed }
