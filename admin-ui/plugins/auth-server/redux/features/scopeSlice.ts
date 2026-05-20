@@ -2,11 +2,11 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import type { ScopeItem } from 'Redux/types'
 
-export type ScopeSliceState = {
+type ScopeSliceState = {
   selectedClientScopes: ScopeItem[]
 }
 
-export const initialState: ScopeSliceState = {
+const initialState: ScopeSliceState = {
   selectedClientScopes: [],
 }
 
@@ -22,5 +22,5 @@ const scopeSlice = createSlice({
 
 export const { setClientSelectedScopes } = scopeSlice.actions
 
-export const { actions, reducer } = scopeSlice
+export const { reducer } = scopeSlice
 reducerRegistry.register('scopeReducer', reducer)

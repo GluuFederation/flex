@@ -1,7 +1,5 @@
-import type { HealthStatus, Status } from 'JansConfigApi'
 import type { ServiceStatusValue } from '@/constants'
 
-export type { HealthStatus, Status }
 export type { ServiceStatusValue }
 
 export interface ServiceHealth {

@@ -28,8 +28,3 @@ export const calculatePercentChange = (current: number, previous: number): numbe
   }
   return ((current - previous) / previous) * 100
 }
-
-export const formatPercentChange = (change: number): string => {
-  const sign = change >= 0 ? '+' : ''
-  return `${sign}${change.toFixed(1)}%`
-}

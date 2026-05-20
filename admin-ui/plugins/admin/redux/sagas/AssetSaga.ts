@@ -32,7 +32,7 @@ import {
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { devLogger } from '@/utils/devLogger'
 
-export function* createJansAsset({
+function* createJansAsset({
   payload,
 }: PayloadAction<CreateAssetSagaPayload['payload']>): SagaIterator<Document | Error | undefined> {
   const audit = yield* initAudit()
@@ -67,7 +67,7 @@ export function* createJansAsset({
   }
 }
 
-export function* updateJansAsset({
+function* updateJansAsset({
   payload,
 }: PayloadAction<UpdateAssetSagaPayload['payload']>): SagaIterator<Document | Error | undefined> {
   const audit = yield* initAudit()
@@ -106,11 +106,11 @@ function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'error', errMsg))
 }
 
-export function* watchCreateJansAsset(): SagaIterator<void> {
+function* watchCreateJansAsset(): SagaIterator<void> {
   yield takeLatest(createJansAssetAction.type, createJansAsset)
 }
 
-export function* watchUpdateJansAsset(): SagaIterator<void> {
+function* watchUpdateJansAsset(): SagaIterator<void> {
   yield takeLatest(updateJansAssetAction.type, updateJansAsset)
 }
 

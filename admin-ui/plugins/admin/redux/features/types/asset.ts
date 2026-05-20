@@ -1,13 +1,6 @@
-// Type definitions for Asset functionality
 import type { AdditionalPayload } from 'Utils/TokenController'
-import {
-  Document,
-  DocumentPagedResult,
-  AssetDirMapping,
-  AssetFormData,
-} from '../../../components/Assets/types/AssetApiTypes'
+import { Document, AssetFormData } from '../../../components/Assets/types/AssetApiTypes'
 
-/** Payload for asset audit logging - types action_data as AssetFormData */
 export interface AssetAuditPayload extends AdditionalPayload {
   action?: {
     action_data?: AssetFormData
@@ -15,7 +8,6 @@ export interface AssetAuditPayload extends AdditionalPayload {
   }
 }
 
-// Redux state interface for assets
 export interface AssetState {
   assets: Document[]
   services: string[]
@@ -27,32 +19,12 @@ export interface AssetState {
   entriesCount: number
   selectedAsset: Document | Record<string, never>
   loadingAssets: boolean
-  assetModal: boolean
-  showErrorModal: boolean
-}
-
-// Action payload interfaces
-export interface AssetActionPayload {
-  action?: {
-    action_data?: AssetFormData
-    [key: string]: string | number | boolean | object | AssetFormData | undefined
-  }
-  [key: string]: string | number | boolean | object | AssetFormData | undefined
 }
 
 export interface AssetResponsePayload {
-  data?: DocumentPagedResult | Document[] | string[] | Document | null
+  data?: Document | null
 }
 
-export interface SetSelectedAssetPayload {
-  payload: Document | Record<string, never>
-}
-
-export interface SetModalPayload {
-  payload: boolean
-}
-
-// Saga specific types
 export interface CreateAssetSagaPayload {
   payload: {
     action: {
@@ -67,7 +39,6 @@ export interface CreateAssetSagaPayload {
   }
 }
 
-// Action payload types (for Redux action creators)
 export interface CreateAssetActionPayload {
   action: {
     action_data: Document & {
@@ -106,18 +77,4 @@ export interface UpdateAssetActionPayload {
       inum: string
     }
   }
-}
-
-// Service and types response interfaces
-export interface AssetServicesResponse {
-  data?: string[]
-}
-
-export interface AssetTypesResponse {
-  data?: string[]
-}
-
-// Asset directory mapping response
-export interface AssetDirMappingResponse {
-  data?: AssetDirMapping[]
 }

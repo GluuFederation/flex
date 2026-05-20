@@ -23,5 +23,5 @@ const oidcSlice = createSlice({
 
 export const { setCurrentItem, viewOnly } = oidcSlice.actions
 
-export const { actions, reducer } = oidcSlice
+export const { reducer } = oidcSlice
 reducerRegistry.register('oidcReducer', reducer)

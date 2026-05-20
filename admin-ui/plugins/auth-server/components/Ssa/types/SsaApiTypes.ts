@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 
-export interface SsaDetails {
+interface SsaDetails {
   [key: string]: string | string[] | boolean
   software_id: string
   software_roles: string[]
@@ -41,27 +41,4 @@ export interface SsaFormValues {
 
 export interface SsaCreatePayload extends SsaFormValues {
   expiration?: number
-}
-
-export interface CustomAttributesListProps {
-  availableAttributes: string[]
-  selectedAttributes: string[]
-  onAttributeSelect: (attribute: string) => void
-  searchQuery: string
-  searchInputValue: string
-  onSearchChange: (value: string) => void
-}
-
-export interface SsaDetailPageProps {
-  row: SsaData
-}
-
-type ModifiedFieldValue = string | string[] | boolean
-
-export type ModifiedFields = Record<string, ModifiedFieldValue>
-
-export interface SsaAuditLogPayload {
-  jti?: string
-  org_id?: string
-  software_id?: string
 }

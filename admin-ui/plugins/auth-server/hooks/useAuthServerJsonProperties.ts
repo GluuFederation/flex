@@ -11,10 +11,6 @@ import {
 
 export const authServerJsonPropertiesQueryKey = ['authServer', 'jsonProperties'] as const
 
-export const getAuthServerJsonPropertiesQueryKey = () => {
-  return authServerJsonPropertiesQueryKey
-}
-
 export const useAuthServerJsonPropertiesQuery = (
   options?: Omit<
     UseQueryOptions<

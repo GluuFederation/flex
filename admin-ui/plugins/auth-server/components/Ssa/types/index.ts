@@ -1,16 +1,13 @@
 export type {
-  SsaDetails,
   SsaData,
   SsaJwtResponse,
   SsaFormValues,
   SsaCreatePayload,
   ExpirationDate,
-  CustomAttributesListProps,
-  SsaDetailPageProps,
 } from './SsaApiTypes'
 
-export type { ModifiedFields, SsaAuditLogPayload, SsaTableRowData } from './SsaFormTypes'
+export type { ModifiedFields, SsaAuditLogPayload } from './SsaFormTypes'
 
-export type { SsaFormProps, CustomAttributesPanelProps } from './ComponentTypes'
+export type { CustomAttributesPanelProps } from './ComponentTypes'
 
-export type { CaughtError, ApiErrorLike } from './ErrorTypes'
+export type { CaughtError } from './ErrorTypes'

@@ -1,8 +1,6 @@
 export const OIDC = '/openid/clients'
 export const SCOPE = 'scope'
-export const UMA = 'uma'
 export const SESSION = 'session'
 export const JSON_CONFIG = 'json-configuration'
 export const SSA = 'ssa'
 export const AGAMA_PROJECT = 'agama-project'
-export const JWK = 'jwk'

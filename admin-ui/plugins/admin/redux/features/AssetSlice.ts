@@ -19,8 +19,6 @@ const initialState: AssetState = {
   entriesCount: 0,
   selectedAsset: {},
   loadingAssets: false,
-  assetModal: false,
-  showErrorModal: false,
 }
 
 const assetSlice = createSlice({
@@ -62,12 +60,6 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    setAssetModal: (state, action: PayloadAction<boolean>) => {
-      state.assetModal = action.payload
-    },
-    setShowErrorModal: (state, action: PayloadAction<boolean>) => {
-      state.showErrorModal = action.payload
-    },
   },
 })
 
@@ -78,10 +70,7 @@ export const {
   updateJansAsset,
   updateJansAssetResponse,
   resetFlags,
-  setAssetModal,
-  setShowErrorModal,
 } = assetSlice.actions
 
-export const { actions, reducer } = assetSlice
-export default reducer
+export const { reducer } = assetSlice
 reducerRegistry.register('assetReducer', reducer)

@@ -12,7 +12,7 @@ import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
-import { logAudit } from '@/utils/AuditLogger'
+import { logAuditUserAction } from '@/utils/AuditLogger'
 import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
@@ -118,7 +118,7 @@ const CedarlingConfigPage: React.FC = () => {
       await uploadPolicyStore(selectedFile)
 
       try {
-        await logAudit({
+        await logAuditUserAction({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_CEDARLING_CONFIG,
@@ -136,7 +136,7 @@ const CedarlingConfigPage: React.FC = () => {
       await syncRoleToScopesMappingsMutation.mutateAsync()
 
       try {
-        await logAudit({
+        await logAuditUserAction({
           userinfo: userinfo ?? undefined,
           action: UPDATE,
           resource: ADMIN_UI_CEDARLING_CONFIG,

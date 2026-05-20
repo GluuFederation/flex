@@ -4,13 +4,12 @@ import type { WebhookEntry } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookSliceState,
-  WebhookSliceTriggerPayload,
   WebhookTriggerResponseItem,
   TriggerPayloadActionPayload,
   TriggerWebhookReducerPayload,
 } from '../types'
 
-export type { WebhookSliceState, WebhookSliceTriggerPayload }
+export type { WebhookSliceState }
 
 const initialState: WebhookSliceState = {
   loadingWebhooks: false,
@@ -76,7 +75,6 @@ export const {
   setShowWebhookExecutionDialog,
 } = webhookSlice.actions
 
-export const { actions, reducer } = webhookSlice
-export default reducer
+export const { reducer } = webhookSlice
 
 reducerRegistry.register('webhookReducer', reducer)

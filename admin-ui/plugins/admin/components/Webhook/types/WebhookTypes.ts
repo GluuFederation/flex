@@ -1,9 +1,7 @@
-import type { CSSProperties, ReactNode } from 'react'
-import type { FormikProps } from 'formik'
-import type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair } from 'JansConfigApi'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { CSSProperties } from 'react'
+import type { WebhookEntry, AuiFeature } from 'JansConfigApi'
 
-export type { WebhookEntry, AuiFeature, GetAllWebhooksParams, KeyValuePair }
+export type { WebhookEntry, AuiFeature }
 
 export type MutationCallbacks = {
   onSuccess?: () => void
@@ -27,13 +25,7 @@ export interface HttpHeader {
   destination?: string
 }
 
-export interface WebhookFormProps {
-  webhook?: WebhookEntry | null
-  webhookFeatures?: AuiFeature[]
-  isEdit?: boolean
-}
-
-export interface ShortcodeField {
+interface ShortcodeField {
   key: string
   label: string
   description?: string
@@ -54,61 +46,15 @@ export interface ShortcodeLabelProps {
   classes: Record<string, string>
 }
 
-export interface WebhookListState {
-  pageNumber: number
-  limit: number
-  pattern: string
-}
-
-export interface DeleteModalState {
-  isOpen: boolean
-  webhook: WebhookEntry | null
-}
-
 export interface CursorPosition {
   url: number
   httpRequestBody: number
-}
-
-export interface TriggerPayload {
-  feature?: string | null
-  payload?: JsonValue
-  createdFeatureValue?: JsonValue
-}
-
-export interface WebhookActionPayload {
-  action?: {
-    action_message?: string
-    action_data?: WebhookEntry | { inum: string }
-    limit?: number
-    pattern?: string
-    startIndex?: number
-  }
 }
 
 export interface PagedWebhookResult {
   entries?: WebhookEntry[]
   totalEntriesCount?: number
   entriesCount?: number
-}
-
-export interface TableAction {
-  icon: string | (() => ReactNode)
-  tooltip: string
-  iconProps?: Record<string, string | number | boolean>
-  isFreeAction?: boolean
-  onClick: (event: React.MouseEvent, rowData?: WebhookEntry | WebhookEntry[]) => void
-  disabled?: boolean
-}
-
-export type WebhookFormikInstance = FormikProps<WebhookFormValues>
-
-export interface SearchEvent {
-  target: {
-    name: string
-    value: string | number
-  }
-  keyCode?: number
 }
 
 export interface ShortCodesConfig {

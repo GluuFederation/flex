@@ -26,12 +26,3 @@ export const renamedFieldFromObject = (
     [renamedLabel]: discoveryDenyKeys ?? [],
   }
 }
-
-export const getMissingProperties = (
-  properties: string[],
-  apiConfigurations: string[],
-): string[] => {
-  return properties.filter(
-    (property) => !apiConfigurations.some((configuration) => configuration === property),
-  )
-}

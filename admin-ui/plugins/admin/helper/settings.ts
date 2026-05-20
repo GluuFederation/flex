@@ -2,9 +2,9 @@ import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import type { AppConfigResponse, KeyValuePair } from 'JansConfigApi'
 import type { SettingsFormValues } from './types'
 
-export type { SettingsConfigData, AdditionalParameterFormItem, SettingsFormValues } from './types'
+export type { AdditionalParameterFormItem, SettingsFormValues } from './types'
 
-export const sanitizeAdditionalParameters = (params?: KeyValuePair[] | null): KeyValuePair[] => {
+const sanitizeAdditionalParameters = (params?: KeyValuePair[] | null): KeyValuePair[] => {
   if (!params || !params.length) {
     return []
   }
