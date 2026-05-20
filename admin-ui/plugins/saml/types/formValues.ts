@@ -16,7 +16,7 @@ export type FormValues = Record<string, FormValue>
 export type ConfigFields = Record<string, FormValue>
 export type RootFields = Record<string, FormValue>
 
-export type NestedRecord = Record<string, string | number | boolean | null | undefined | string[]>
+type NestedRecord = Record<string, string | number | boolean | null | undefined | string[]>
 export type CleanableValue =
   | string
   | number

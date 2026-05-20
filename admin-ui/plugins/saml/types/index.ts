@@ -5,7 +5,6 @@ export type {
   FormValues,
   ConfigFields,
   RootFields,
-  NestedRecord,
   CleanableValue,
   WebsiteSsoIdentityProviderFormValues,
   FileLikeObject,
@@ -14,10 +13,6 @@ export type {
 
 export type {
   SamlConfiguration,
-  SamlIdentity,
-  SamlIdentityConfig,
-  WebsiteSsoServiceProvider,
-  GetSamlIdentityProviderPayload,
   IdentityProviderPayload,
   WebsiteSsoServiceProviderPayload,
 } from './payloads'
@@ -26,8 +21,6 @@ export { TrustRelationshipSpMetaDataSourceType } from './samlApi'
 
 export type {
   SamlAppConfiguration,
-  OrvalIdentityProvider,
-  OrvalTrustRelationship,
   IdentityProvider,
   TrustRelationship,
   BrokerIdentityProviderForm,

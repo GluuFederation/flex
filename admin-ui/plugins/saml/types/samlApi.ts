@@ -14,7 +14,7 @@ export type SamlAppConfiguration = {
   applicationName?: string
 }
 
-export type OrvalIdentityProvider = {
+type OrvalIdentityProvider = {
   inum?: string
   name?: string
   displayName?: string
@@ -42,7 +42,7 @@ export type OrvalIdentityProvider = {
   validateSignature?: string
 }
 
-export type OrvalTrustRelationship = {
+type OrvalTrustRelationship = {
   inum?: string
   name?: string
   displayName?: string
