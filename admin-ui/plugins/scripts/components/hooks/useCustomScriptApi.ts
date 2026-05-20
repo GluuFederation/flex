@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import type { UseMutationResult } from '@tanstack/react-query'
 import {
-  useGetConfigScripts,
   useGetConfigScriptsByInum,
   useGetConfigScriptsByType,
   usePostConfigScripts,
@@ -14,7 +13,6 @@ import {
   getGetConfigScriptsByTypeQueryKey,
   getGetConfigScriptsByInumQueryKey,
   type CustomScript,
-  type GetConfigScriptsParams,
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
@@ -61,19 +59,6 @@ const useWebhookTrigger = () => {
     },
     [dispatch],
   )
-}
-
-export const useCustomScripts = (params?: GetConfigScriptsParams) => {
-  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
-
-  return useGetConfigScripts(params, {
-    query: {
-      enabled: hasSession === true,
-      staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
-      gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
-      retry: false,
-    },
-  })
 }
 
 export const useCustomScriptsByType = (
@@ -276,19 +261,4 @@ export const useCustomScriptTypes = () => {
       gcTime: SCRIPT_CACHE_CONFIG.SCRIPT_TYPES_GC_TIME,
     },
   })
-}
-
-export const useCustomScriptOperations = () => {
-  const createMutation = useCreateCustomScript()
-  const updateMutation = useUpdateCustomScript()
-  const deleteMutation = useDeleteCustomScript()
-  const scriptTypesQuery = useCustomScriptTypes()
-
-  return {
-    createScript: createMutation,
-    updateScript: updateMutation,
-    deleteScript: deleteMutation,
-    scriptTypes: scriptTypesQuery.data || [],
-    scriptTypesLoading: scriptTypesQuery.isLoading,
-  }
 }

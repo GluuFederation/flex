@@ -20,7 +20,3 @@ export interface FormValues {
   enabled?: boolean | string[]
   action_message?: string
 }
-
-export type PropertyOptionMap = (
-  properties: Array<ModuleProperty | ConfigurationProperty> | undefined,
-) => Array<{ key: string; value: string }>

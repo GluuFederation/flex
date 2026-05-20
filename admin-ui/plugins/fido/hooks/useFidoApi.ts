@@ -9,7 +9,7 @@ import {
   usePutPropertiesFido2,
   getGetPropertiesFido2QueryKey,
 } from 'JansConfigApi'
-import { logAudit } from 'Utils/AuditLogger'
+import { logAuditUserAction } from 'Utils/AuditLogger'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -90,7 +90,7 @@ export const useUpdateFidoConfig = () => {
             data as Record<string, JsonValue>,
             adminUiFeatures.fido_configuration_write,
           )
-          logAudit({
+          logAuditUserAction({
             userinfo,
             action: 'UPDATE',
             resource: 'FIDO',

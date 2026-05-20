@@ -13,7 +13,7 @@ import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from '
 import { createJsonPatchFromDifferences, AUDIT_RESOURCE, triggerScimWebhook } from '../helper'
 import { setWebhookModal } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { ScimFormValues, ApiErrorResponse, MutationContext, AppConfiguration3 } from '../types'
-import { logAudit } from 'Utils/AuditLogger'
+import { logAuditUserAction } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -103,7 +103,7 @@ const ScimPage: React.FC = () => {
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
         triggerScimWebhook(data)
         const userMessage: string = userMessageRef.current || t('messages.success_in_saving')
-        await logAudit({
+        await logAuditUserAction({
           userinfo: userinfo ?? undefined,
           action: PATCH,
           resource: AUDIT_RESOURCE,

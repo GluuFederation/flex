@@ -4,7 +4,6 @@ export const DEFAULT_SCRIPT_TYPE = 'person_authentication'
 
 export const QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE = '/api/v1/config/scripts/type/'
 export const QUERY_KEY_PREFIX_SCRIPTS = '/api/v1/config/scripts/'
-export const QUERY_KEY_GET_CONFIG_SCRIPTS_BY_TYPE = 'getConfigScriptsByType'
 
 export const SCRIPT_CACHE_CONFIG = {
   STALE_TIME: DEFAULT_STALE_TIME,

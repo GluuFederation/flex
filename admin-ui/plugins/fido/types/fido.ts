@@ -40,7 +40,7 @@ export type StaticConfigFormValues = {
 
 export type FidoFormValues = DynamicConfigFormValues | StaticConfigFormValues
 
-export type FidoConfigurationProps<T extends FidoFormValues> = {
+type FidoConfigurationProps<T extends FidoFormValues> = {
   fidoConfiguration: AppConfiguration1 | undefined
   handleSubmit: (data: T, userMessage?: string) => void
   isSubmitting: boolean

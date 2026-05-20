@@ -59,34 +59,11 @@ export type MetricsDateRange = {
   endDate: Dayjs
 }
 
-export type PasskeyAuthData = {
-  name: string
-  value: number
-  color: string
-}
-
-export type PasskeyAdoptionData = {
-  name: string
-  newUsers: number
-  totalUsers: number
-}
-
 export type OnboardingTimeEntry = {
   category: string
   minDuration: number
   avgDuration: number
   maxDuration: number
-}
-
-export type MetricsData = {
-  passkeyAuth: PasskeyAuthData[]
-  adoption: {
-    newRegisteredUsers: number
-    totalRegisteredUsers: number
-    adoptionPasskeyRate: number
-    chartData: PasskeyAdoptionData[]
-  }
-  onboardingTime: OnboardingTimeEntry[]
 }
 
 export type AggregationTypeParam = 'Hourly' | 'Daily' | 'Weekly' | 'Monthly'
@@ -133,7 +110,7 @@ export type AggregationResponse = {
   entries?: AggregationEntry[] | null
 }
 
-export type MetricsDateRangeParams = {
+type MetricsDateRangeParams = {
   start_date: string
   end_date: string
 }
