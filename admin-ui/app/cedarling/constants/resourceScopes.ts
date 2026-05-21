@@ -7,6 +7,7 @@ import {
   CACHE_DELETE,
   CACHE_READ,
   CACHE_WRITE,
+  FIDO_ADMIN,
   FIDO_DELETE,
   FIDO_READ,
   FIDO_WRITE,
@@ -202,8 +203,7 @@ export const CEDAR_RESOURCE_SCOPES: Record<AdminUiFeatureResource, ResourceScope
     { permission: LOGGING_READ, resourceId: ADMIN_UI_RESOURCES.AuditLogs },
   ],
   [ADMIN_UI_RESOURCES.Metrics]: [
-    { permission: STAT_READ, resourceId: ADMIN_UI_RESOURCES.Metrics },
-    { permission: STAT_JANS_READ, resourceId: ADMIN_UI_RESOURCES.Metrics },
+    { permission: FIDO_ADMIN, resourceId: ADMIN_UI_RESOURCES.Metrics },
   ],
 } as const satisfies Record<AdminUiFeatureResource, ResourceScopeEntry[]>
 
