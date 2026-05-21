@@ -69,7 +69,7 @@ const wasmPreloadPlugin = (base: string) => {
         return wasmFiles.map((fileName) => ({
           tag: 'link',
           attrs: {
-            rel: 'preload',
+            rel: 'prefetch',
             as: 'fetch',
             type: 'application/wasm',
             crossorigin: '',

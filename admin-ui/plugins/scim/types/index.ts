@@ -26,7 +26,7 @@ export type ScimFormValues = {
   action_message?: string
 }
 
-export type ScimFormClasses = {
+type ScimFormClasses = {
   formSection: string
   fieldsGrid: string
   formLabels: string
@@ -57,7 +57,7 @@ export type ScimConfigurationProps = {
 
 export type { AppConfiguration3 }
 
-export type FieldType = 'text' | 'number' | 'select' | 'toggle'
+type FieldType = 'text' | 'number' | 'select' | 'toggle'
 
 export type FieldConfig = {
   name: keyof ScimFormValues

@@ -1,6 +1,6 @@
 export type CaughtError = Error | ApiErrorLike | string
 
-export interface ApiErrorLike {
+interface ApiErrorLike {
   message?: string
   response?: {
     status?: number

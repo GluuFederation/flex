@@ -60,22 +60,6 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
   return pluginRoutes
 }
 
-export const processMenusSync = (): PluginMenu[] => {
-  let pluginMenus: PluginMenu[] = []
-  plugins.forEach((item) => {
-    try {
-      pluginMenus.push(...(loadPluginMetadata(item.metadataFile).default?.menus || []))
-    } catch (error) {
-      devLogger.warn(
-        `Failed to load plugin menus: ${item.metadataFile}`,
-        error instanceof Error ? error : String(error),
-      )
-    }
-  })
-  pluginMenus = sortParentMenu(pluginMenus)
-  return pluginMenus
-}
-
 export const processRoutesSync = (): PluginRoute[] => {
   const pluginRoutes: PluginRoute[] = []
   plugins.forEach((item) => {

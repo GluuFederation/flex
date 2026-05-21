@@ -172,13 +172,6 @@ const trimStringValue = (value: FormValue): FormValue => {
   return value
 }
 
-export const trimStringFields = (values: FormValues): FormValues => {
-  return Object.entries(values).reduce((acc, [key, value]) => {
-    acc[key] = trimStringValue(value)
-    return acc
-  }, {} as FormValues)
-}
-
 export const separateConfigFields = (
   values: FormValues,
 ): { rootFields: RootFields; configData: ConfigFields } => {

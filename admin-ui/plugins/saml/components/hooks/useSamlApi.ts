@@ -31,8 +31,6 @@ import type {
 export { TrustRelationshipSpMetaDataSourceType } from '../../types'
 export type {
   SamlAppConfiguration,
-  OrvalIdentityProvider,
-  OrvalTrustRelationship,
   IdentityProvider,
   TrustRelationship,
   BrokerIdentityProviderForm,
@@ -52,12 +50,6 @@ const SAML_CACHE_CONFIG = {
   STALE_TIME: 5 * 60 * 1000,
   GC_TIME: 10 * 60 * 1000,
 }
-
-export const SAML_QUERY_KEYS = {
-  configuration: getGetSamlPropertiesQueryKey,
-  identityProviders: getGetSamlIdentityProviderQueryKey,
-  trustRelationships: getGetTrustRelationshipsQueryKey,
-} as const
 
 const createIdentityProviderFormData = (data: BrokerIdentityProviderForm): FormData => {
   const formData = new FormData()

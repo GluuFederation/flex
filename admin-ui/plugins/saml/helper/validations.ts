@@ -8,11 +8,6 @@ import type {
   WebsiteSsoServiceProviderFormValues,
 } from '../types'
 
-export type {
-  WebsiteSsoIdentityProviderFormValues,
-  FileLikeObject,
-  WebsiteSsoServiceProviderFormValues,
-} from '../types'
 export const samlConfigurationValidationSchema: Yup.ObjectSchema<SamlConfigurationFormValues> =
   Yup.object({
     enabled: Yup.boolean().required('Enabled field is required.'),
@@ -204,5 +199,3 @@ export const websiteSsoServiceProviderValidationSchema = (
       ).concat(urlValidation(t, 'fields.jans_assertion_consumer_service_post_url')),
     }),
   }) as Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues>
-
-export default samlConfigurationValidationSchema

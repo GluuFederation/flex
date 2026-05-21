@@ -36,12 +36,6 @@ const getGetErrorsAnalyticsQueryKey = (params: ErrorsAnalyticsParams) =>
 const getGetPerformanceAnalyticsQueryKey = (params: PerformanceAnalyticsParams) =>
   ['fido2', 'metrics', 'analytics', 'performance', params] as const
 
-export const METRICS_QUERY_KEYS = {
-  adoption: getGetAdoptionMetricsQueryKey,
-  errors: getGetErrorsAnalyticsQueryKey,
-  performance: getGetPerformanceAnalyticsQueryKey,
-} as const
-
 const metricsApi = {
   getAdoption: async (params: AdoptionMetricsParams): Promise<AdoptionMetricsResponse> => {
     const { data } = await AXIOS_INSTANCE.get<AdoptionMetricsResponse>(

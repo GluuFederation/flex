@@ -2,7 +2,7 @@ import type { FormikProps } from 'formik'
 import type { SmtpConfiguration, SmtpTest } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
+type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
 
 // Form values for SMTP Configuration
 export interface SmtpFormValues {

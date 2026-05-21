@@ -1,16 +1,14 @@
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { createSuccessAuditInit, getCurrentAuditContext, DELETION, UPDATE, CREATE } from '@/audit'
+import { getCurrentAuditContext, DELETION, UPDATE, CREATE } from '@/audit'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures, type AdminUiFeatureKey } from 'Plugins/admin/helper/utils'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { AuditLog, AuditPayload, CaughtError } from '../types'
+import type { AuditPayload, CaughtError } from '../types'
 import { API_USERS } from '../../../app/audit/Resources'
 import { CustomUser } from '../types'
 import { USER_PASSWORD_ATTR } from '../common'
 import { devLogger } from '@/utils/devLogger'
-
-export type { AuditLog, AuditPayload }
 
 const SENSITIVE_CUSTOM_ATTRS: string[] = [USER_PASSWORD_ATTR]
 
@@ -45,13 +43,6 @@ const redactSensitiveData = (payload: AuditPayload): void => {
       return attr
     }) as CustomUser['customAttributes']
   }
-}
-
-export const initAudit = (): AuditLog => {
-  const context = getCurrentAuditContext()
-  return createSuccessAuditInit(context, {
-    userId: (context.userinfo?.name ?? context.userinfo?.user_name) || '-',
-  }) as AuditLog
 }
 
 export const logUserCreation = async (_data: CustomUser, payload: CustomUser): Promise<void> => {
@@ -156,8 +147,6 @@ export const logPasswordChange = async (
     )
   }
 }
-
-export type { ErrorResponse } from '../types'
 
 export const getErrorMessage = (error: CaughtError): string => {
   return resolveApiErrorMessage(error, {

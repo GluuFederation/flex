@@ -1,12 +1,4 @@
-import type { JansAttribute } from 'JansConfigApi'
-import type { CedarPermissionsState } from '@/cedarling/types'
-
-// Component state for cedarPermissions selector
-export interface AttributeListPageState {
-  cedarPermissions: CedarPermissionsState
-}
-
-export type ModifiedFieldValue =
+type ModifiedFieldValue =
   | string
   | number
   | boolean
@@ -19,46 +11,13 @@ export interface ModifiedFields {
   [key: string]: ModifiedFieldValue
 }
 
-// Define the form submission data interface
 export interface SubmitData {
   data: AttributeItem
   userMessage?: string
   modifiedFields?: ModifiedFields
 }
 
-export interface ThemeState {
-  theme: string
-}
-
-export interface ThemeContextType {
-  state: ThemeState
-}
-
-// Define the component props interface
-export interface AttributeDetailPageProps {
-  row: JansAttribute
-}
-
-// Define the theme context interface
-export interface DetailThemeContextType {
-  state: {
-    theme: string
-  }
-}
-
-export interface OptionsChangeEvent {
-  target: {
-    name: string
-    value: string
-  }
-  keyCode?: number
-}
-
-export interface StyledBadgeProps {
-  status: string
-}
-
-export interface AttributeValidation {
+type AttributeValidation = {
   regexp?: string | null
   minLength?: number | null
   maxLength?: number | null

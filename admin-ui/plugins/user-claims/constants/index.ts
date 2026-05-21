@@ -12,8 +12,6 @@ export const REQUIRED_ATTRIBUTE_FIELDS = [
   'viewType',
 ] as const
 
-export type RequiredAttributeField = (typeof REQUIRED_ATTRIBUTE_FIELDS)[number]
-
 export const QUERY_KEY_PREFIX_ATTRIBUTES = '/api/v1/attributes/'
 
 export const ATTRIBUTE_CACHE_CONFIG = {

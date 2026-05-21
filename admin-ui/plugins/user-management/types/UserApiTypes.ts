@@ -42,7 +42,7 @@ export type FidoRegistrationEntry = {
 
 export type AttributeValue = string | boolean
 
-export type UserData = {
+type UserData = {
   displayName?: string
   givenName?: string
   userId?: string
