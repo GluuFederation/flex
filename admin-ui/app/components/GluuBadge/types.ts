@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 
-export type BadgeSize = 'sm' | 'md' | 'lg'
-export type BadgeTheme = 'light' | 'dark'
+type BadgeSize = 'sm' | 'md' | 'lg'
+type BadgeTheme = 'light' | 'dark'
 
 export type GluuBadgeProps = {
   children: ReactNode

@@ -191,4 +191,3 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
 }
 
 export const GluuDynamicList = React.memo(GluuDynamicListBase)
-export default GluuDynamicList

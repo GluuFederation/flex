@@ -1,6 +1,6 @@
 import type { Scope, ExtendedScopeAttributes } from './scopeTypes'
 
-export interface ScopeFormValues {
+export type ScopeFormValues = {
   id?: string
   displayName?: string
   description?: string
@@ -18,7 +18,7 @@ export type ModifiedFields = {
   [key: string]: string | boolean | string[] | null
 }
 
-export interface ScopeFormSubmitData {
+export type ScopeFormSubmitData = {
   scope: Scope
   modifiedFields?: ModifiedFields
 }

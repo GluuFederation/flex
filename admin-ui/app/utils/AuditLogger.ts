@@ -51,5 +51,3 @@ export const logAuditUserAction = async ({
   addAdditionalData(audit, action, resource, payloadWrapper)
   await postUserAction(audit as UserActionPayload)
 }
-
-export const logAudit = logAuditUserAction

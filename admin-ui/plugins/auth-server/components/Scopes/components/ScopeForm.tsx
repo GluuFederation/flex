@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppSelector } from '@/redux/hooks'
 import {
   Col,
   Form,
@@ -10,7 +10,6 @@ import {
   AccordionBody,
   Badge,
 } from 'Components'
-import { viewOnly, setCurrentItem } from 'Plugins/auth-server/redux/features/oidcSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -73,7 +72,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
     [themeColors.background],
   )
   const { navigateBack, navigateToRoute } = useAppNavigation()
-  const dispatch = useAppDispatch()
   const client = scope.clients || []
 
   const authReducer = useAppSelector((state) => state.authReducer)
@@ -160,8 +158,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const goToClientViewPage = (clientId: string, clientData?: ScopeClient) => {
     if (!clientData) return
-    dispatch(viewOnly({ view: true }))
-    dispatch(setCurrentItem({ item: clientData }))
     return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(clientId))
   }
 

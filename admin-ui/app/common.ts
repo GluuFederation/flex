@@ -1,13 +1,3 @@
-import {
-  SideMenuAnimate,
-  SidebarEntryAnimate,
-  SlimSidebarAnimate,
-  SlimMenuAnimate,
-} from './components/dashboard-style-airframe'
+import { SideMenuAnimate } from './components/dashboard-style-airframe'
 
-export {
-  SideMenuAnimate,
-  SidebarEntryAnimate,
-  SlimSidebarAnimate as createSlimSidebarAnimate,
-  SlimMenuAnimate,
-}
+export { SideMenuAnimate }

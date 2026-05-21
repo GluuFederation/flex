@@ -24,4 +24,3 @@ const FooterText = ({ year, name }: FooterTextProps) => {
 }
 
 export { FooterText }
-export type { FooterTextProps }

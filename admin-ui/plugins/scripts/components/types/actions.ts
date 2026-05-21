@@ -1,5 +1,5 @@
 import { CustomScriptItem } from './customScript'
 
-export interface SubmitData {
+export type SubmitData = {
   customScript: CustomScriptItem
 }

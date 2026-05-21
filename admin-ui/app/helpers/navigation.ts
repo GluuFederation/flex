@@ -178,4 +178,4 @@ export const useAppNavigation = () => {
   )
 }
 
-export { ROUTES, PLUGIN_BASE_PATHS }
+export { ROUTES }

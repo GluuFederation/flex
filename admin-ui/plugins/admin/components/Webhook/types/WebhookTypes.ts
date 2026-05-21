@@ -8,7 +8,7 @@ export type MutationCallbacks = {
   onError?: (error: Error) => void
 }
 
-export interface WebhookFormValues {
+export type WebhookFormValues = {
   displayName: string
   url: string
   httpMethod: string
@@ -18,20 +18,20 @@ export interface WebhookFormValues {
   jansEnabled: boolean
 }
 
-export interface HttpHeader {
+export type HttpHeader = {
   key?: string
   value?: string
   source?: string
   destination?: string
 }
 
-interface ShortcodeField {
+type ShortcodeField = {
   key: string
   label: string
   description?: string
 }
 
-export interface ShortcodePopoverProps {
+export type ShortcodePopoverProps = {
   codes: ShortcodeField[]
   buttonWrapperStyles?: CSSProperties
   buttonWrapperClassName?: string
@@ -39,25 +39,25 @@ export interface ShortcodePopoverProps {
   disabled?: boolean
 }
 
-export interface ShortcodeLabelProps {
+export type ShortcodeLabelProps = {
   doc_category?: string
   doc_entry: string
   label: string
   classes: Record<string, string>
 }
 
-export interface CursorPosition {
+export type CursorPosition = {
   url: number
   httpRequestBody: number
 }
 
-export interface PagedWebhookResult {
+export type PagedWebhookResult = {
   entries?: WebhookEntry[]
   totalEntriesCount?: number
   entriesCount?: number
 }
 
-export interface ShortCodesConfig {
+export type ShortCodesConfig = {
   [featureId: string]: {
     fields: ShortcodeField[]
   }

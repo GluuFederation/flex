@@ -1,11 +1,11 @@
-export interface SamlConfiguration {
+export type SamlConfiguration = {
   enabled: boolean
   selectedIdp: string
   ignoreValidation: boolean
   applicationName: string
 }
 
-export interface IdentityProviderPayload {
+export type IdentityProviderPayload = {
   spMetaDataLocation: string
   enabled: boolean
   validateSignature: string
@@ -41,7 +41,7 @@ export interface IdentityProviderPayload {
   singleSignOnServiceUrl: string
 }
 
-export interface WebsiteSsoServiceProviderPayload {
+export type WebsiteSsoServiceProviderPayload = {
   enabled: boolean
   spMetaDataSourceType: string
   clientAuthenticatorType: string

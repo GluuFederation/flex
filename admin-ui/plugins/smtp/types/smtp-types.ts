@@ -5,7 +5,7 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
 
 // Form values for SMTP Configuration
-export interface SmtpFormValues {
+export type SmtpFormValues = {
   host: string
   port: number | string
   connect_protection: ConnectProtection
@@ -21,7 +21,7 @@ export interface SmtpFormValues {
   signing_algorithm: string
 }
 
-export interface ApiError {
+export type ApiError = {
   response?: {
     data?: {
       message?: string
@@ -32,7 +32,7 @@ export interface ApiError {
 export type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: JsonValue }
 
 // Props for SmtpForm component
-export interface SmtpFormProps {
+export type SmtpFormProps = {
   item: SmtpConfiguration | undefined
   handleSubmit: (data: SmtpConfiguration, userMessage: string) => void
   allowSmtpKeystoreEdit: boolean

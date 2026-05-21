@@ -18,7 +18,7 @@ export const getClientScopeByInum = (str: string): string => {
   return value
 }
 
-export const getMonth = (aDate: Date): string => {
+const getMonth = (aDate: Date): string => {
   const value = String(aDate.getMonth() + 1)
   if (value.length > 1) {
     return value

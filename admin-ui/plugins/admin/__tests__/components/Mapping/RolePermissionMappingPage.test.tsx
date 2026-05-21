@@ -19,7 +19,7 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { security: [] },
 }))
 
-jest.mock('Plugins/admin/components/Mapping/hooks', () => ({
+jest.mock('Plugins/admin/components/Mapping/hooks/useMappingApi', () => ({
   useMappingData: jest.fn(() => ({
     mapping: [
       {

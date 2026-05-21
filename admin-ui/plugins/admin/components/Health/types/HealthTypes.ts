@@ -2,18 +2,18 @@ import type { ServiceStatusValue } from '@/constants'
 
 export type { ServiceStatusValue }
 
-export interface ServiceHealth {
+export type ServiceHealth = {
   name: string
   status: ServiceStatusValue
   error?: string
   lastChecked?: Date
 }
 
-export interface ServiceStatusCardProps {
+export type ServiceStatusCardProps = {
   service: ServiceHealth
   isDark: boolean
 }
 
-export interface ServiceStatusResponse {
+export type ServiceStatusResponse = {
   [serviceName: string]: string
 }

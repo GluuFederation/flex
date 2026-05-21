@@ -6,10 +6,8 @@ import type {
   PolicyStoreApiResponse,
   PutServerConfigPayload,
   UserActionPayload,
-  UserIpAndLocationResponse,
 } from './types/BackendApi'
 import axios from '../api/axios'
-import axios_instance from 'axios'
 import { devLogger } from '@/utils/devLogger'
 
 export type {
@@ -18,7 +16,6 @@ export type {
   FetchUserInfoResult,
   PutServerConfigPayload,
   UserActionPayload,
-  UserIpAndLocationResponse,
 } from './types/BackendApi'
 
 const ENDPOINTS = {
@@ -27,7 +24,6 @@ const ENDPOINTS = {
   API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
   POLICY_STORE: '/admin-ui/security/policyStore',
   SESSION: '/app/admin-ui/oauth2/session',
-  GEOLOCATION_DB_JSON: 'https://geolocation-db.com/json/',
 } as const
 
 export const SESSION_ENDPOINT = ENDPOINTS.SESSION
@@ -64,21 +60,6 @@ export const putServerConfiguration = async (
       error instanceof Error ? error : String(error),
     )
     throw error
-  }
-}
-
-export const getUserIpAndLocation = async (): Promise<UserIpAndLocationResponse | -1> => {
-  try {
-    const response = await axios_instance.get<UserIpAndLocationResponse>(
-      ENDPOINTS.GEOLOCATION_DB_JSON,
-    )
-    return response.data
-  } catch (error) {
-    devLogger.error(
-      'Error fetching user location and ip address',
-      error instanceof Error ? error : String(error),
-    )
-    return -1
   }
 }
 

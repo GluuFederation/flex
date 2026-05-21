@@ -1,5 +1,3 @@
-import customColors from '@/customColors'
-
 export const UNKNOWN_STATUS = 'unknown' as const
 
 export type ServiceStatusValue = 'up' | 'down' | typeof UNKNOWN_STATUS | 'degraded'
@@ -20,20 +18,6 @@ export const STATUS_LABEL_KEYS: Record<ServiceStatusValue, string> = {
   down: 'messages.status_inactive',
   degraded: 'messages.status_degraded',
   [UNKNOWN_STATUS]: 'messages.status_inactive',
-} as const
-
-export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
-  up: customColors.statusActive,
-  down: customColors.statusInactive,
-  degraded: customColors.orange,
-  [UNKNOWN_STATUS]: customColors.orange,
-} as const
-
-export const STATUS_BADGE_COLOR: Record<ServiceStatusValue, string> = {
-  up: 'success',
-  down: 'danger',
-  degraded: 'warning',
-  [UNKNOWN_STATUS]: 'warning',
 } as const
 
 export const STATUS_DETAILS = [

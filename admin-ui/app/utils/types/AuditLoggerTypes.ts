@@ -4,7 +4,7 @@ export type BasicUserInfo = {
   inum?: string
   name?: string
 }
-export type AuditFieldsLike = Record<string, JsonValue | object | null>
+type AuditFieldsLike = Record<string, JsonValue | object | null>
 
 export type LogAuditParams = {
   userinfo?: BasicUserInfo | null

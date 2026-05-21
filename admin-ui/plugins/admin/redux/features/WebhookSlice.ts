@@ -1,11 +1,9 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { WebhookEntry } from 'JansConfigApi'
-import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type {
   WebhookSliceState,
   WebhookTriggerResponseItem,
-  TriggerPayloadActionPayload,
   TriggerWebhookReducerPayload,
 } from '../types'
 
@@ -17,10 +15,6 @@ const initialState: WebhookSliceState = {
   webhookModal: false,
   triggerWebhookInProgress: false,
   webhookTriggerResults: [],
-  triggerPayload: {
-    feature: null,
-    payload: null as JsonValue,
-  },
   featureToTrigger: '',
   showWebhookExecutionDialog: false,
 }
@@ -29,9 +23,6 @@ const webhookSlice = createSlice({
   name: 'webhook',
   initialState,
   reducers: {
-    getWebhooksByFeatureId: (state, _action: PayloadAction<string>) => {
-      state.loadingWebhooks = true
-    },
     getWebhooksByFeatureIdResponse: (state, action: PayloadAction<WebhookEntry[]>) => {
       state.featureWebhooks = action.payload
       state.loadingWebhooks = false
@@ -39,15 +30,8 @@ const webhookSlice = createSlice({
     setWebhookModal: (state, action: PayloadAction<boolean>) => {
       state.webhookModal = action.payload
     },
-    triggerWebhook: (state, action: PayloadAction<TriggerWebhookReducerPayload>) => {
+    triggerWebhook: (state, _action: PayloadAction<TriggerWebhookReducerPayload>) => {
       state.triggerWebhookInProgress = true
-      const p = action.payload as TriggerPayloadActionPayload
-      if ('feature' in p || 'payload' in p) {
-        Object.assign(state.triggerPayload, {
-          feature: p?.feature ?? null,
-          payload: (p?.payload ?? null) as JsonValue,
-        })
-      }
     },
     completeTriggerWebhook: (state) => {
       state.triggerWebhookInProgress = false
@@ -65,7 +49,6 @@ const webhookSlice = createSlice({
 })
 
 export const {
-  getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,

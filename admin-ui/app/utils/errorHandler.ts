@@ -29,10 +29,6 @@ export const getErrorMessage = (
   return resolveErrorMessage(error, () => t(fallbackKey))
 }
 
-export const extractErrorMessage = (error: CaughtError, fallback: string): string => {
-  return resolveErrorMessage(error, () => fallback)
-}
-
 export const getQueryErrorMessage = (
   error: Error | ApiError | object | string | void | null | undefined,
   fallback: string,

@@ -96,6 +96,7 @@ jest.mock('Plugins/admin/components/Health/hooks', () => ({
     error: null,
     refetch: jest.fn(),
   }),
+  useFido2HealthStatus: () => ({ data: undefined }),
 }))
 
 jest.mock('Plugins/PluginMenuResolver', () => ({

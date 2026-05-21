@@ -37,14 +37,3 @@ export type PolicyStoreApiResponse =
   | { success: true; responseBytes: string; responseMessage?: string; responseCode?: number }
   | { success: false; responseMessage?: string; responseCode?: number }
   | { success?: undefined; responseMessage?: string; responseCode?: number }
-
-export type UserIpAndLocationResponse = {
-  IPv4?: string
-  city?: string
-  country_code?: string
-  country_name?: string
-  latitude?: number
-  longitude?: number
-  postal?: string
-  state?: string
-}

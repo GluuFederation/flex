@@ -3,13 +3,13 @@ import { devLogger } from '@/utils/devLogger'
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50] as const
 
-export const DEFAULT_PAGING_SIZE = 10
+const DEFAULT_PAGING_SIZE = 10
 
 const STORAGE_KEY = 'gluu.pagingSize'
 
 export const PAGING_SIZE_CHANGED_EVENT = 'gluu:pagingSizeChanged'
 
-export const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number => {
+const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number => {
   if (typeof window === 'undefined' || !window.localStorage) {
     return defaultSize
   }

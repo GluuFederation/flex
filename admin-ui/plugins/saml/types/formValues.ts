@@ -1,11 +1,11 @@
-export interface SamlConfigurationFormValues {
+export type SamlConfigurationFormValues = {
   enabled: boolean
   selectedIdp: string
   ignoreValidation: boolean
   applicationName: string
 }
 
-export interface LocationState<T> {
+export type LocationState<T> = {
   rowData?: T
   viewOnly?: boolean
 }

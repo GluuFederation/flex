@@ -1,32 +1,25 @@
 import { all, call, fork, put, select } from 'redux-saga/effects'
-import type { Location as AppLocation } from '../features/types/authTypes'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { takeEvery, takeLatest } from './effects'
 import {
   getOAuth2Config,
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
-  getUserLocationResponse,
   setBackendStatus,
   putConfigWorkerResponse,
 } from '../features/authSlice'
 
 import {
   fetchServerConfiguration,
-  getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
   createAdminUiSession as createAdminUiSessionApi,
-  deleteAdminUiSession as deleteAdminUiSessionApi,
 } from '../api/backend-api'
 import { updateToast } from 'Redux/features/toastSlice'
 import {
   createAdminUiSession,
   createAdminUiSessionResponse,
-  deleteAdminUiSession,
-  deleteAdminUiSessionResponse,
   getAPIAccessToken,
-  getUserLocation,
   putConfigWorker as putConfigWorkerAction,
 } from 'Redux/features/authSlice'
 import { isFourZeroThreeError } from 'Utils/TokenController'
@@ -192,21 +185,6 @@ function* getAPIAccessTokenWorker(action: { type: string; payload?: string }): G
   }
 }
 
-function* getLocationWorker(_action: { type: string }): Generator {
-  try {
-    const response = (yield call(getUserIpAndLocation)) as Awaited<
-      ReturnType<typeof getUserIpAndLocation>
-    >
-    if (response && response !== -1) {
-      yield put(getUserLocationResponse({ location: response as AppLocation }))
-      return
-    }
-  } catch (error) {
-    const err = asApiError(error as Throwable)
-    devLogger.error('Problem getting user location.', err?.response?.data ?? err.message)
-  }
-}
-
 function* createAdminUiSessionWorker({
   payload,
 }: {
@@ -230,45 +208,24 @@ function* createAdminUiSessionWorker({
   }
 }
 
-function* deleteAdminUiSessionWorker(_action: { type: string }): Generator {
-  try {
-    yield call(deleteAdminUiSessionApi)
-  } catch (error) {
-    const err = asApiError(error as Throwable)
-    devLogger.error('Problems deleting Admin UI session.', err?.response?.data ?? err.message)
-  } finally {
-    setApiToken(null)
-    yield put(deleteAdminUiSessionResponse())
-  }
-}
-
-export function* getApiTokenWatcher(): Generator {
+function* getApiTokenWatcher(): Generator {
   yield takeEvery(getAPIAccessToken.type, getAPIAccessTokenWorker)
 }
 
-export function* getOAuth2ConfigWatcher(): Generator {
+function* getOAuth2ConfigWatcher(): Generator {
   yield takeEvery(getOAuth2Config.type, getOAuth2ConfigWorker)
 }
-export function* getLocationWatcher(): Generator {
-  yield takeEvery(getUserLocation.type, getLocationWorker)
-}
-export function* putConfigWorkerWatcher(): Generator {
+function* putConfigWorkerWatcher(): Generator {
   yield takeEvery(putConfigWorkerAction.type, putConfigWorker)
 }
-export function* createAdminUiSessionWatcher(): Generator {
+function* createAdminUiSessionWatcher(): Generator {
   yield takeLatest(createAdminUiSession.type, createAdminUiSessionWorker)
 }
-export function* deleteAdminUiSessionWatcher(): Generator {
-  yield takeEvery(deleteAdminUiSession.type, deleteAdminUiSessionWorker)
-}
-
 export default function* rootSaga(): Generator {
   yield all([
     fork(getOAuth2ConfigWatcher),
     fork(getApiTokenWatcher),
-    fork(getLocationWatcher),
     fork(putConfigWorkerWatcher),
     fork(createAdminUiSessionWatcher),
-    fork(deleteAdminUiSessionWatcher),
   ])
 }

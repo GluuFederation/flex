@@ -1,6 +1,6 @@
 import { REGEX_HEX_COLOR, REGEX_CAMEL_CASE_WORD_BOUNDARY } from '@/utils/regex'
 
-export const customColors = {
+const customColors = {
   // Base
   white: '#ffffff',
   black: '#000000',
@@ -118,8 +118,6 @@ export const hexToRgb = (hex: string, fallback: string = '0, 0, 0'): string => {
 
 export const getLoadingOverlayRgba = (hexColor: string, opacity: number): string =>
   `rgba(${hexToRgb(hexColor)}, ${opacity})`
-
-export type CustomColorKeys = keyof typeof customColors
 
 /** Convert camelCase to kebab-case for CSS variable names */
 const toKebabCase = (str: string): string =>

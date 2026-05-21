@@ -28,10 +28,6 @@ export type InputGroupProps = React.HTMLAttributes<HTMLDivElement>
 
 export type CardBodyProps = React.HTMLAttributes<HTMLDivElement>
 
-export type CardTitleProps = React.HTMLAttributes<HTMLElement> & {
-  tag?: string
-}
-
 export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
   pill?: boolean
   color?: string

@@ -1,7 +1,7 @@
 import type { CSSProperties, MouseEvent, ReactNode } from 'react'
 
-export type ButtonSize = 'sm' | 'md' | 'lg'
-export type ButtonTheme = 'light' | 'dark'
+type ButtonSize = 'sm' | 'md' | 'lg'
+type ButtonTheme = 'light' | 'dark'
 
 export type GluuButtonProps = {
   'children': ReactNode

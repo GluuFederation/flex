@@ -17,18 +17,18 @@ export type {
   GetOauthScopesParams,
 }
 
-export interface ExtendedScopeAttributes extends ScopeAttributes {
+export type ExtendedScopeAttributes = ScopeAttributes & {
   spontaneousClientId?: string | null | undefined
 }
 
-export interface ScopeClient {
+export type ScopeClient = {
   inum: string
   displayName?: string
   dn?: string
   [key: string]: JsonValue | undefined
 }
 
-export interface ExtendedScope extends Scope {
+export type ExtendedScope = Scope & {
   clients?: ScopeClient[]
   attributes?: ExtendedScopeAttributes
   spontaneousClientScopes?: string[]
@@ -36,7 +36,7 @@ export interface ExtendedScope extends Scope {
 
 export type ScopeWithClients = ExtendedScope
 
-export interface ScopeScript {
+export type ScopeScript = {
   dn: string
   name: string
   inum?: string
@@ -44,7 +44,7 @@ export interface ScopeScript {
   enabled?: boolean
 }
 
-export interface ScopeClaim {
+export type ScopeClaim = {
   dn: string
   name: string
   key?: string
@@ -52,14 +52,14 @@ export interface ScopeClaim {
   displayName?: string
 }
 
-export interface ScopeListOptions extends GetOauthScopesParams {
+export type ScopeListOptions = GetOauthScopesParams & {
   startIndex?: number
   limit?: number
   pattern?: string
   withAssociatedClients?: boolean
 }
 
-export interface ScopeFormData extends Omit<Scope, 'attributes'> {
+export type ScopeFormData = Omit<Scope, 'attributes'> & {
   attributes: Required<ScopeAttributes>
 }
 

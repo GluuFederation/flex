@@ -4,8 +4,6 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const initialState = {
   isLicenseValid: false,
   islicenseCheckResultLoaded: false,
-  isLicenseActivationResultLoaded: false,
-  isLicenceAPIkeyValid: false,
   isLoading: false,
   isConfigValid: null,
   error: '',
@@ -22,14 +20,6 @@ const licenseSlice = createSlice({
   reducers: {
     checkLicensePresent: (state, _action) => {
       state.islicenseCheckResultLoaded = false
-    },
-    checkUserApi: (state, _action) => {
-      state.isLoading = true
-      state.error = ''
-    },
-    checkUserLicenceKey: (state, _action) => {
-      state.isLoading = true
-      state.error = ''
     },
     checkUserLicenseKeyResponse: (state, action) => {
       if (action.payload?.success) {
@@ -65,9 +55,6 @@ const licenseSlice = createSlice({
     generateTrialLicenseResponse: (state, _action) => {
       state.generatingTrialKey = false
     },
-    retrieveLicenseKey: (state, _action) => {
-      state.isLoading = true
-    },
     retrieveLicenseKeyResponse: (state, action) => {
       state.isLoading = false
       state.isNoValidLicenseKeyFound = action.payload.isNoValidLicenseKeyFound
@@ -87,8 +74,6 @@ const licenseSlice = createSlice({
 
 export const {
   checkLicensePresent,
-  checkUserApi,
-  checkUserLicenceKey,
   checkUserLicenseKeyResponse,
   checkLicensePresentResponse,
   checkLicenseConfigValid,
@@ -97,7 +82,6 @@ export const {
   uploadNewSsaTokenResponse,
   generateTrialLicense,
   generateTrialLicenseResponse,
-  retrieveLicenseKey,
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setValidatingFlow,

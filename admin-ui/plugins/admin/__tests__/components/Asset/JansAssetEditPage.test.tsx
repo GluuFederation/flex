@@ -13,14 +13,9 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const assetReducerState = {
-  assets: [],
-  services: [],
-  fileTypes: [],
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
-  totalItems: 0,
-  entriesCount: 0,
   selectedAsset: {
     inum: 'test-inum-123',
     fileName: 'test-asset',
@@ -28,7 +23,6 @@ const assetReducerState = {
     service: 'test-service',
     enabled: true,
   },
-  loadingAssets: false,
 }
 
 describe('JansAssetEditPage', () => {

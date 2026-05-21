@@ -3,7 +3,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_LIGHT } from '@/context/theme/constants'
 
 export const DEFAULT_Z_INDEX = 101
-export const TOOLTIP_MAX_WIDTH = '45vw'
+const TOOLTIP_MAX_WIDTH = '45vw'
 
 export const getLabelTooltipStyle = (
   isDarkTheme: boolean,
