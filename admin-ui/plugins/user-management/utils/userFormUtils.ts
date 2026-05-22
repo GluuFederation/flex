@@ -6,7 +6,17 @@ import {
 } from '@/utils/regex'
 import { JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
-import { USER_PASSWORD_ATTR } from '../common'
+import {
+  USER_PASSWORD_ATTR,
+  USER_ID_ATTR,
+  DISPLAY_NAME_ATTR,
+  MAIL_ATTR,
+  STATUS_ATTR,
+  GIVEN_NAME_ATTR,
+  MIDDLE_NAME_ATTR,
+  SN_ATTR,
+  EMAIL_VERIFIED_ATTR,
+} from '../common'
 import { PersonAttribute, ExtendedCustomUser } from '../types'
 
 export const validatePassword = (password: string): boolean => {
@@ -37,14 +47,14 @@ export const setupCustomAttributes = (
   if (!userDetails?.customAttributes) return
 
   const usedClaims = new Set([
-    'userId',
-    'displayName',
-    'mail',
-    'status',
+    USER_ID_ATTR,
+    DISPLAY_NAME_ATTR,
+    MAIL_ATTR,
+    STATUS_ATTR,
     USER_PASSWORD_ATTR,
-    'givenName',
-    'middleName',
-    'sn',
+    GIVEN_NAME_ATTR,
+    MIDDLE_NAME_ATTR,
+    SN_ATTR,
   ])
 
   const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
@@ -74,7 +84,7 @@ export const setupCustomAttributes = (
           } else {
             boolValue = Boolean(firstValue)
           }
-          if (customAttr.name === 'emailVerified' && boolValue === false) {
+          if (customAttr.name === EMAIL_VERIFIED_ATTR && boolValue === false) {
             continue
           }
         }

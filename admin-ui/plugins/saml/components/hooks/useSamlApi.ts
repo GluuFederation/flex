@@ -9,7 +9,7 @@ import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import type {
   SamlAppConfiguration,
   IdentityProvider,

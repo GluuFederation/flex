@@ -23,12 +23,12 @@ import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuDetailGrid } from '@/components/GluuDetailGrid'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
 import { useStyles } from './styles/CustomScriptListPage.style'
+import { SORT_ORDER, BORDER_RADIUS } from '@/constants'
 import { SCRIPT } from 'Utils/ApiResources'
 import type { CustomScript } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError, DisplayValue } from './types/customScript'
-import { BORDER_RADIUS } from '@/constants'
 import {
   DEFAULT_SCRIPT_TYPE,
   SORT_COLUMNS,
@@ -101,7 +101,7 @@ const CustomScriptListPage: React.FC = () => {
   } = useCustomScriptsByType(scriptType, {
     pattern: pattern || undefined,
     sortBy: sortBy || undefined,
-    sortOrder: sortBy ? 'ascending' : undefined,
+    sortOrder: sortBy ? SORT_ORDER.ASCENDING : undefined,
     limit,
     startIndex: pageNumber * limit,
   })

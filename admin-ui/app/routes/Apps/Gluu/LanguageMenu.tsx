@@ -7,6 +7,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
 import { ensureLocaleLoaded } from '@/i18n'
+import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 import { useStyles } from './styles/LanguageMenu.style'
 import type { LanguageMenuProps } from './types'
 
@@ -15,11 +16,9 @@ interface UserConfig {
   theme?: Record<string, string>
 }
 
-const DEFAULT_LANG = 'en'
-
 const safeParseUserConfig = (): UserConfig => {
   try {
-    return JSON.parse(localStorage.getItem('userConfig') || '{}') || {}
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}') || {}
   } catch (error) {
     devLogger.warn('Failed to parse userConfig:', error instanceof Error ? error : String(error))
     return {}
@@ -27,7 +26,7 @@ const safeParseUserConfig = (): UserConfig => {
 }
 
 const getInitialLang = (inum?: string): string => {
-  const initLang = localStorage.getItem('initLang') || DEFAULT_LANG
+  const initLang = localStorage.getItem(STORAGE_KEYS.INIT_LANG) || DEFAULT_LANG
   const config = safeParseUserConfig()
   return config?.lang?.[inum || ''] || initLang
 }
@@ -72,17 +71,17 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
         langConfig[inum] = code
       }
       const newConfig = { ...config, lang: langConfig }
-      localStorage.setItem('userConfig', JSON.stringify(newConfig))
+      localStorage.setItem(STORAGE_KEYS.USER_CONFIG, JSON.stringify(newConfig))
     },
     [i18n, inum],
   )
 
   const options: GluuDropdownOption<string>[] = useMemo(
     () => [
-      { value: 'en', label: t('languages.english') },
-      { value: 'fr', label: t('languages.french') },
-      { value: 'pt', label: t('languages.portuguese') },
-      { value: 'es', label: t('languages.spanish') },
+      { value: LANG_CODES.EN, label: t('languages.english') },
+      { value: LANG_CODES.FR, label: t('languages.french') },
+      { value: LANG_CODES.PT, label: t('languages.portuguese') },
+      { value: LANG_CODES.ES, label: t('languages.spanish') },
     ],
     [t],
   )

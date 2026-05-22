@@ -23,6 +23,7 @@ import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
 import { toWebhookEntries } from 'Plugins/admin/helper/webhook'
+import { SORT_ORDER } from '@/constants'
 import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 
@@ -81,7 +82,7 @@ const WebhookListPage: React.FC = () => {
       pattern: pattern || undefined,
       startIndex: pageNumber * limit,
       sortBy: serverSort.column,
-      sortOrder: serverSort.desc ? 'descending' : 'ascending',
+      sortOrder: serverSort.desc ? SORT_ORDER.DESCENDING : SORT_ORDER.ASCENDING,
     },
     {
       query: {

@@ -37,9 +37,10 @@ import {
   buildCustomAttributesFromValues,
   updateCustomAttributesWithModifiedFields,
   getStandardFieldValues,
+  isPersistenceInfo,
 } from '../utils'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { isPersistenceInfo } from 'Plugins/services/helper/utils'
+import { USER_ID_ATTR, MAIL_ATTR, DISPLAY_NAME_ATTR, STATUS_ATTR, GIVEN_NAME_ATTR } from '../common'
+import { adminUiFeatures } from '@/constants'
 import { AXIOS_INSTANCE } from 'Orval'
 import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
 import { devLogger } from '@/utils/devLogger'
@@ -153,7 +154,7 @@ const UserEditPage = () => {
   const isSubmitting = updateUserMutation.isPending
 
   const standardFields = useMemo(
-    () => ['userId', 'mail', 'displayName', 'status', 'givenName'] as const,
+    () => [USER_ID_ATTR, MAIL_ATTR, DISPLAY_NAME_ATTR, STATUS_ATTR, GIVEN_NAME_ATTR] as const,
     [],
   )
 

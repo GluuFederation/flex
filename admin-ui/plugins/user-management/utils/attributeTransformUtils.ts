@@ -1,4 +1,4 @@
-import { parseDateStrict } from '@/utils/dayjsUtils'
+import { parseDateStrict, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { REGEX_DATE_YYYY_MM_DD } from '@/utils/regex'
 import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common'
 import {
@@ -48,8 +48,8 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
     if (!REGEX_DATE_YYYY_MM_DD.test(normalized)) {
       return ''
     }
-    const parsed = parseDateStrict(normalized, 'YYYY-MM-DD')
-    return parsed ? parsed.format('YYYY-MM-DD') : ''
+    const parsed = parseDateStrict(normalized, DATE_FORMATS.DATE_ONLY)
+    return parsed ? parsed.format(DATE_FORMATS.DATE_ONLY) : ''
   }
   return normalized
 }

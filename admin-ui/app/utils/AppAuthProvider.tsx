@@ -39,6 +39,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
+import { STORAGE_KEYS } from '@/constants'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -244,7 +245,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 const state = uuidv4()
                 const sessionEndpoint = buildSafeLogoutUrl(
                   authConfigs?.endSessionEndpoint || null,
-                  localStorage.getItem('postLogoutRedirectUri'),
+                  localStorage.getItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI),
                   state,
                 )
                 dispatch(

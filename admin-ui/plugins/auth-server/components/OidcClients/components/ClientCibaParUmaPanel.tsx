@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
-import { formatDate } from '@/utils/dayjsUtils'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
 import {
   Accordion,
@@ -29,7 +29,7 @@ import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -604,7 +604,7 @@ const ClientCibaParUmaPanel = ({
                 <GluuLabel label={t('fields.creationTime')} size={3} />
                 <Col sm={9} className="top-5">
                   {selectedUMA?.creationDate
-                    ? formatDate(selectedUMA.creationDate as string, 'ddd, MMM DD, YYYY h:mm:ss A')
+                    ? formatDate(selectedUMA.creationDate as string, DATE_FORMATS.DATETIME_LONG)
                     : ''}
                 </Col>
               </FormGroup>

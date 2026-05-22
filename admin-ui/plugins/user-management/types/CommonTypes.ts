@@ -5,3 +5,13 @@ export type FormFieldValue = JsonValue | undefined
 export type UserFormValues = {
   [key: string]: string | string[] | boolean | null | undefined
 }
+
+export type PersistenceInfo = {
+  persistenceType?: string
+  databaseName?: string
+  schemaName?: string
+  productName?: string
+  productVersion?: string
+  driverName?: string
+  driverVersion?: string
+}
