@@ -1,4 +1,3 @@
-export const JANS_ADMIN_UI_ROLE_ATTR = 'jansAdminUIRole'
 export const USER_ROLE_FORM_ATTR = 'role'
 export const COUNTRY_ATTR = 'c'
 export const BIRTHDATE_ATTR = 'birthdate'

@@ -1,7 +1,6 @@
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from '@/utils/queryUtils'
-import { SCRIPT_TYPES } from '@/constants'
 
-export const DEFAULT_SCRIPT_TYPE = SCRIPT_TYPES.PERSON_AUTHENTICATION
+export const SCRIPT_AUDIT_RESOURCE = 'custom-script'
 
 export const QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE = '/api/v1/config/scripts/type/'
 export const QUERY_KEY_PREFIX_SCRIPTS = '/api/v1/config/scripts/'

@@ -16,7 +16,6 @@ import {
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
-import { SCRIPT } from 'Plugins/admin/redux/audit/Resources'
 import { devLogger } from '@/utils/devLogger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types'
@@ -27,6 +26,7 @@ import { logAuditAction } from '../helper'
 import { getApiErrorDetail } from '../helper/utils'
 import { updateToast } from '@/redux/features/toastSlice'
 import {
+  SCRIPT_AUDIT_RESOURCE,
   SCRIPT_CACHE_CONFIG,
   QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE,
   QUERY_KEY_PREFIX_SCRIPTS,
@@ -126,7 +126,7 @@ export const useCreateCustomScript = (): UseMutationResult<
       ])
 
       webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
-      await logAuditAction(CREATE, SCRIPT, {
+      await logAuditAction(CREATE, SCRIPT_AUDIT_RESOURCE, {
         action: {
           action_data: structuredClone(variables.data),
           action_message: actionMessage,
@@ -171,7 +171,7 @@ export const useUpdateCustomScript = (): UseMutationResult<
       ])
 
       webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
-      await logAuditAction(UPDATE, SCRIPT, {
+      await logAuditAction(UPDATE, SCRIPT_AUDIT_RESOURCE, {
         action: {
           action_data: structuredClone(variables.data),
           action_message: actionMessage,
@@ -215,7 +215,7 @@ export const useDeleteCustomScript = () => {
         createdFeatureValue: { inum: variables.inum },
         feature: adminUiFeatures.custom_script_delete,
       })
-      await logAuditAction(DELETION, SCRIPT, {
+      await logAuditAction(DELETION, SCRIPT_AUDIT_RESOURCE, {
         action: { action_data: { inum: variables.inum } },
         message: actionMessage,
       })

@@ -10,3 +10,5 @@ export const SCRIPT_TYPES = {
   DYNAMIC_SCOPE: 'dynamic_scope',
   UMA_RPT_POLICY: 'uma_rpt_policy',
 } as const
+
+export const DEFAULT_SCRIPT_TYPE = SCRIPT_TYPES.PERSON_AUTHENTICATION

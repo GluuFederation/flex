@@ -6,7 +6,7 @@ import type { CustomAttrWithValues } from 'Plugins/user-management/types'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserDetailViewPage.style'
-import { JANS_ADMIN_UI_ROLE_ATTR } from '../common'
+import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
