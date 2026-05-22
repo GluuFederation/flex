@@ -1,4 +1,3 @@
-import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import {
   ACR_READ,
@@ -213,10 +212,7 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.ConfigApiConfiguration,
     },
   ],
-  reducers: [
-    { name: 'scopeReducer', reducer: scopeReducer },
-    { name: 'oidcReducer', reducer: oidcReducer },
-  ],
+  reducers: [{ name: 'scopeReducer', reducer: scopeReducer }],
   sagas: [],
 }
 

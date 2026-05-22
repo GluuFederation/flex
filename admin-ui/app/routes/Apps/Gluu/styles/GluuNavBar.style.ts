@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
-export interface NavbarColors {
+interface NavbarColors {
   background: string
   border: string
   text: string

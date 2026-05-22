@@ -3,7 +3,7 @@ import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 import { devLogger } from '@/utils/devLogger'
 import type { ThemeState, ThemeAction, ThemeContextType } from './types'
 
-export type { ThemeState, ThemeAction, ThemeContextType }
+export type { ThemeContextType }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 

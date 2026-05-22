@@ -1,8 +1,8 @@
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
-export type AdditionalActionDataValue = JsonValue | object | undefined
+type AdditionalActionDataValue = JsonValue | object | undefined
 
-export type AdditionalActionData = {
+type AdditionalActionData = {
   modifiedFields?: JsonValue
   performedOn?: JsonValue
   [key: string]: AdditionalActionDataValue

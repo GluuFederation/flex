@@ -1,7 +1,5 @@
-export const SCRIPT = 'custom-script'
 export const API_USERS = 'api-users'
 export const API_LICENSE = 'api-license'
 export const API_LOGGING = 'api-logging'
 export const API_ACRS = 'api-acrs'
-export const AUTH_SERVER_CONFIGURATION = 'Authentication Server Configuration'
 export const CONFIG_API_CONFIGURATION = 'Config API configuration'

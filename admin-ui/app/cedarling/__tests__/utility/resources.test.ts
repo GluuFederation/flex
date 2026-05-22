@@ -17,6 +17,7 @@ describe('ADMIN_UI_RESOURCES', () => {
     'Dashboard',
     'License',
     'MAU',
+    'Metrics',
     'Security',
     'Settings',
     'Webhooks',

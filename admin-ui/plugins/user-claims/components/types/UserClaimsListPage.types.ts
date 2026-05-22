@@ -7,11 +7,11 @@ type ModifiedFieldValue =
   | AttributeValidation
   | null
 
-export interface ModifiedFields {
+export type ModifiedFields = {
   [key: string]: ModifiedFieldValue
 }
 
-export interface SubmitData {
+export type SubmitData = {
   data: AttributeItem
   userMessage?: string
   modifiedFields?: ModifiedFields
@@ -23,7 +23,7 @@ type AttributeValidation = {
   maxLength?: number | null
 }
 
-export interface AttributeItem {
+export type AttributeItem = {
   inum?: string
   name: string
   displayName: string
@@ -45,7 +45,7 @@ export interface AttributeItem {
   required?: boolean
 }
 
-export interface AttributeFormValues {
+export type AttributeFormValues = {
   name: string
   displayName: string
   description: string
@@ -66,13 +66,13 @@ export interface AttributeFormValues {
   regexp?: string | null
 }
 
-export interface AttributeFormProps {
+export type AttributeFormProps = {
   item: AttributeItem
   customOnSubmit: (data: SubmitData) => void
   hideButtons?: Record<string, boolean>
 }
 
-export interface HandleAttributeSubmitParams {
+export type HandleAttributeSubmitParams = {
   item: AttributeItem
   values: AttributeFormValues
   customOnSubmit: (data: SubmitData) => void

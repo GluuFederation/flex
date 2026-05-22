@@ -5,11 +5,11 @@ import type { GenericItem } from '@/redux/types'
 import type { FormikErrors, FormikTouched } from 'formik'
 import { MultiSelectOption } from '@/routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 
-export interface AppConfiguration {
+export type AppConfiguration = {
   [key: string]: string | number | boolean | string[] | AppConfiguration | null | undefined
 }
 
-export interface SchemaProperty {
+export type SchemaProperty = {
   type?: string
   items?: {
     type?: string
@@ -47,7 +47,7 @@ export type PropertyValue =
   | null
   | undefined
 
-export interface JsonPropertyBuilderProps {
+export type JsonPropertyBuilderProps = {
   propKey: string
   propValue?: PropertyValue
   lSize: number
@@ -61,12 +61,12 @@ export interface JsonPropertyBuilderProps {
   formResetKey?: number
 }
 
-interface DefaultAcrInputOption {
+type DefaultAcrInputOption = {
   value: string
   label: string
 }
 
-export interface DefaultAcrInputProps {
+export type DefaultAcrInputProps = {
   label: string
   name: string
   value?: string
@@ -80,19 +80,19 @@ export interface DefaultAcrInputProps {
   showSaveButtons?: boolean
 }
 
-export interface AcrPutOperation {
+export type AcrPutOperation = {
   path: string
   value: string
   op: 'replace'
 }
 
-export interface Script extends GenericItem {
+export type Script = GenericItem & {
   name: string
   scriptType: string
   enabled: boolean
 }
 
-export interface SimpleFieldModel {
+export type SimpleFieldModel = {
   propKey: string
   label: string
   value: string | number | boolean | string[]

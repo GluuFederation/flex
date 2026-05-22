@@ -1,6 +1,1 @@
-export {
-  ADMIN_UI_RESOURCES,
-  CEDARLING_BYPASS,
-  findPermissionByUrl,
-  buildCedarPermissionKey,
-} from './resources'
+export { ADMIN_UI_RESOURCES, CEDARLING_BYPASS, buildCedarPermissionKey } from './resources'

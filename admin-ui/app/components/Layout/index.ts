@@ -3,7 +3,6 @@ import { LayoutContent } from './LayoutContent'
 import { LayoutNavbar } from './LayoutNavbar'
 import { LayoutSidebar } from './LayoutSidebar'
 import { withPageConfig } from './withPageConfig'
-import { setupPage } from './setupPage'
 
 type LayoutWithSubcomponentsType = typeof Layout & {
   Sidebar: typeof LayoutSidebar
@@ -18,4 +17,4 @@ const LayoutWithSubcomponents: LayoutWithSubcomponentsType = Object.assign(Layou
 })
 
 export default LayoutWithSubcomponents
-export { withPageConfig, setupPage }
+export { withPageConfig }

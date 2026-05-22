@@ -18,12 +18,12 @@ export type HttpErrorLike = {
   status?: number
 }
 
-export type PerformedBy = {
+type PerformedBy = {
   user_inum: string
   userId: string
 }
 
-export type AuditLogHeaders = {
+type AuditLogHeaders = {
   Authorization?: string
   [key: string]: string | undefined
 }

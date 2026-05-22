@@ -1,30 +1,24 @@
 /**
  * App Reducers
  */
-import healthReducer from '../features/healthSlice'
 import authReducer from '../features/authSlice'
 import { reducer as initReducer } from '../features/initSlice'
 import logoutReducer from '../features/logoutSlice'
 import licenseReducer from '../features/licenseSlice'
-import oidcDiscoveryReducer from '../features/oidcDiscoverySlice'
 import toastReducer from '../features/toastSlice'
 import profileDetailsReducer from '../features/ProfileDetailsSlice'
 import cedarPermissionsReducer from '../features/cedarPermissionsSlice'
 import logoutAuditReducer from '../features/sessionSlice'
-import lockReducer from '../features/lockSlice'
 
 const appReducers = {
   authReducer,
   initReducer,
   logoutReducer,
   licenseReducer,
-  oidcDiscoveryReducer,
-  healthReducer,
   toastReducer,
   profileDetailsReducer,
   cedarPermissions: cedarPermissionsReducer,
   logoutAuditReducer,
-  lockReducer,
 }
 
 export default appReducers

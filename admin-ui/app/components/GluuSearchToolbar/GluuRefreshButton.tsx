@@ -7,8 +7,6 @@ import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './GluuRefreshButton.style'
 import type { GluuRefreshButtonProps } from './types'
 
-export type { GluuRefreshButtonProps }
-
 const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
   onClick,
   disabled = false,

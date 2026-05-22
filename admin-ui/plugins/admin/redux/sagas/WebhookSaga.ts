@@ -5,7 +5,6 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { getWebhooksByFeatureId } from 'JansConfigApi'
 import { customInstance } from 'Orval'
 import {
-  getWebhooksByFeatureId as getWebhooksByFeatureIdAction,
   getWebhooksByFeatureIdResponse,
   completeTriggerWebhook,
   setWebhookModal,
@@ -34,28 +33,6 @@ import type {
   TriggerWebhookSagaPayload,
   WebhookTriggerResponseItem,
 } from './types/webhook'
-
-function* getWebhooksByFeatureIdSaga({ payload }: PayloadAction<string>): SagaIterator<void> {
-  const audit = yield* initAudit()
-  try {
-    addAdditionalData(audit as AuditRecord, FETCH, `/webhook/${payload}`, {})
-    const data = (yield call(getWebhooksByFeatureId, payload)) as WebhookEntry[]
-    const webhooks: WebhookEntry[] = data ?? []
-    const hasEnabledWebhooks = webhooks.some((item) => item.jansEnabled)
-    if (webhooks.length && hasEnabledWebhooks) {
-      yield put(setWebhookModal(true))
-    }
-    yield put(getWebhooksByFeatureIdResponse(webhooks))
-    yield call(postUserAction, audit as UserActionPayload)
-  } catch (e) {
-    const errMsg = getErrorMessage(e as Error | SagaErrorShape)
-    yield put(updateToast(true, 'error', errMsg))
-    yield put(getWebhooksByFeatureIdResponse([]))
-    if (isHttpLikeError(e as Error | SagaErrorShape) && isFourZeroThreeError(e as HttpErrorLike)) {
-      yield* redirectToLogout()
-    }
-  }
-}
 
 function* triggerWebhookSaga({
   payload,
@@ -163,14 +140,10 @@ function* triggerWebhookSaga({
   }
 }
 
-function* watchGetWebhooksByFeatureId(): SagaIterator<void> {
-  yield takeLatest(getWebhooksByFeatureIdAction.type, getWebhooksByFeatureIdSaga)
-}
-
 function* watchGetTriggerWebhook(): SagaIterator<void> {
   yield takeLatest(triggerWebhookAction.type, triggerWebhookSaga)
 }
 
 export default function* rootSaga(): SagaIterator<void> {
-  yield all([fork(watchGetWebhooksByFeatureId), fork(watchGetTriggerWebhook)])
+  yield all([fork(watchGetTriggerWebhook)])
 }

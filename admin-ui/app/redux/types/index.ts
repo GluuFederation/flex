@@ -41,9 +41,6 @@ type AuthState = {
   permissions: string[]
   location: AuthLocation
   config: AuthConfig
-  codeChallenge: string | null
-  codeChallengeMethod: string
-  codeVerifier: string | null
   backendStatus: BackendStatus
   loadingConfig: boolean
   authState?: Record<string, string | number | boolean>
@@ -64,12 +61,7 @@ export type PagedResult = {
 
 type InitState = {
   scripts: GenericItem[]
-  clients: GenericItem[]
-  scopes: GenericItem[]
-  attributes: GenericItem[]
-  totalClientsEntries: number
   isTimeout: boolean
-  loadingScripts: boolean
 }
 
 // Logout State (stateless)
@@ -79,8 +71,6 @@ type LogoutState = Record<string, never>
 type LicenseState = {
   isLicenseValid: boolean
   islicenseCheckResultLoaded: boolean
-  isLicenseActivationResultLoaded: boolean
-  isLicenceAPIkeyValid: boolean
   isLoading: boolean
   isConfigValid: boolean | null
   error: string
@@ -89,14 +79,6 @@ type LicenseState = {
   isNoValidLicenseKeyFound: boolean
   isUnderThresholdLimit: boolean
   isValidatingFlow: boolean
-}
-
-// OIDC Discovery State
-export type OidcDiscoveryConfig = Record<string, string>
-
-type OidcDiscoveryState = {
-  configuration: OidcDiscoveryConfig
-  loading: boolean
 }
 
 export type MauEntry = {
@@ -115,30 +97,6 @@ type MauState = {
   loading: boolean
   startMonth: string
   endMonth: string
-}
-
-// Health State
-type HealthStatus = 'Running' | 'Not present' | 'Down'
-
-type HealthServiceKey =
-  | 'jans-lock'
-  | 'jans-auth'
-  | 'jans-config-api'
-  | 'jans-casa'
-  | 'jans-fido2'
-  | 'jans-scim'
-  | 'jans-link'
-  | 'keycloak'
-
-type HealthStatusResponse = Partial<Record<HealthServiceKey, HealthStatus>> & {
-  [serviceName: string]: HealthStatus
-}
-
-type HealthState = {
-  serverStatus: HealthStatus | null
-  dbStatus: HealthStatus | null
-  health: HealthStatusResponse
-  loading: boolean
 }
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
@@ -174,14 +132,7 @@ type ProfileDetailsState = {
 
 // Session State (logout audit)
 type SessionState = {
-  logoutAuditInFlight: boolean
   logoutAuditSucceeded: boolean | null
-}
-
-// Lock State
-type LockState = {
-  lockDetail: Record<string, JsonValue>
-  loading: boolean
 }
 
 // Admin plugin state types
@@ -198,18 +149,12 @@ type WebhookEntry = {
   [key: string]: JsonValue | Record<string, string> | undefined
 }
 
-type StoredTriggerPayload = {
-  feature: string | null
-  payload: JsonValue
-}
-
 type WebhookState = {
   loadingWebhooks: boolean
   featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
   webhookTriggerResults: WebhookTriggerResponseItem[]
-  triggerPayload: StoredTriggerPayload
   featureToTrigger: string
   showWebhookExecutionDialog: boolean
 }
@@ -226,46 +171,13 @@ type AssetDocument = {
 }
 
 type AssetState = {
-  assets: AssetDocument[]
-  services: string[]
-  fileTypes: string[]
   loading: boolean
   saveOperationFlag: boolean
   errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
   selectedAsset: AssetDocument | Record<string, never>
-  loadingAssets: boolean
 }
 
 // Auth server plugin state types
-
-// OIDC Client
-export type OidcClientItem = {
-  inum?: string
-  clientName?: string
-  displayName?: string
-  [key: string]: JsonValue | undefined
-}
-
-type OidcTokensState = {
-  items: JsonValue[]
-  totalItems: number
-  entriesCount: number
-}
-
-type OidcState = {
-  items: OidcClientItem[]
-  item: OidcClientItem
-  view: boolean
-  loading: boolean
-  isTokenLoading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  tokens: OidcTokensState
-}
 
 // Scope State
 export type ScopeItem = {
@@ -318,12 +230,9 @@ type CoreAppState = {
   initReducer: InitState
   logoutReducer: LogoutState
   licenseReducer: LicenseState
-  oidcDiscoveryReducer: OidcDiscoveryState
-  healthReducer: HealthState
   toastReducer: ToastState
   profileDetailsReducer: ProfileDetailsState
   cedarPermissions: CedarPermissionsState
-  lockReducer: LockState
   logoutAuditReducer: SessionState
 }
 
@@ -336,7 +245,6 @@ type AdminPluginState = {
 
 // Auth server plugin reducers
 type AuthServerPluginState = {
-  oidcReducer: OidcState
   scopeReducer: ScopeState
   UMAResourceReducer: UmaResourceState
   messageReducer: MessageState

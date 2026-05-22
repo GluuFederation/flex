@@ -1,5 +1,5 @@
 import type { RolePermissionMapping } from 'JansConfigApi'
 
-export interface RolePermissionCardProps {
+export type RolePermissionCardProps = {
   candidate: RolePermissionMapping
 }

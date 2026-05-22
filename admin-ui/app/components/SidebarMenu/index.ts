@@ -4,4 +4,3 @@ import { SidebarMenuItem } from './SidebarMenuItem'
 ;(SidebarMenu as typeof SidebarMenu & { Item: typeof SidebarMenuItem }).Item = SidebarMenuItem
 
 export { SidebarMenu, SidebarMenuItem }
-export default SidebarMenu

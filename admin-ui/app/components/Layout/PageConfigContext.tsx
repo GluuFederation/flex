@@ -11,4 +11,4 @@ const defaultPageConfig: PageConfig = {
 
 const PageConfigContext = React.createContext<PageConfig>(defaultPageConfig)
 
-export { PageConfigContext, type PageConfig }
+export { PageConfigContext }

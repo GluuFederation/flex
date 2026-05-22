@@ -66,16 +66,10 @@ const store = configureStore({
     authReducer: (state = { permissions: [] }) => state,
     assetReducer: (
       state = {
-        assets: [],
-        services: [],
-        fileTypes: [],
         loading: false,
         saveOperationFlag: false,
         errorInSaveOperationFlag: false,
-        totalItems: 0,
-        entriesCount: 0,
         selectedAsset: {},
-        loadingAssets: false,
       },
     ) => state,
     webhookReducer: (

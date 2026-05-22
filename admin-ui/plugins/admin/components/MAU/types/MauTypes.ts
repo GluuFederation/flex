@@ -1,6 +1,6 @@
 import type { Dayjs } from 'dayjs'
 
-export interface MauStatEntry {
+export type MauStatEntry = {
   month: number
   mau: number
   client_credentials_access_token_count: number
@@ -8,7 +8,7 @@ export interface MauStatEntry {
   authz_code_idtoken_count: number
 }
 
-export interface RawStatEntry {
+export type RawStatEntry = {
   month?: string | number
   monthly_active_users?: number
   token_count_per_granttype?: {
@@ -22,12 +22,12 @@ export interface RawStatEntry {
   }
 }
 
-export interface MauDateRange {
+export type MauDateRange = {
   startDate: Dayjs
   endDate: Dayjs
 }
 
-export interface MauSummary {
+export type MauSummary = {
   totalMau: number
   totalTokens: number
   clientCredentialsTokens: number
@@ -36,16 +36,16 @@ export interface MauSummary {
   tokenChange: number
 }
 
-export interface DateRangePreset {
+export type DateRangePreset = {
   labelKey: string
   months: number
 }
 
-export interface MauChartProps {
+export type MauChartProps = {
   data: MauStatEntry[]
 }
 
-export interface DateRangeSelectorProps {
+export type DateRangeSelectorProps = {
   startDate: Dayjs
   endDate: Dayjs
   selectedPreset: number | null

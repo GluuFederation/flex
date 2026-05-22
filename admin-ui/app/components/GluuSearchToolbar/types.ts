@@ -15,7 +15,7 @@ export type FilterDef = {
   width?: string | number
 }
 
-export type DateInputDef = {
+type DateInputDef = {
   key: string
   label: string
   value: string
@@ -25,7 +25,7 @@ export type DateInputDef = {
   width?: string | number
 }
 
-export type PrimaryActionDef = {
+type PrimaryActionDef = {
   label: string
   icon?: ReactNode
   onClick?: () => void

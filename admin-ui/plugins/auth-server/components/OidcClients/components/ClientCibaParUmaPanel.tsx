@@ -8,7 +8,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
-import { useAppDispatch } from '@/redux/hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import AceEditor from 'react-ace'
 import {
@@ -28,7 +27,6 @@ import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { setCurrentItem as setCurrentItemClient } from 'Plugins/auth-server/redux/features/oidcSlice'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -60,7 +58,6 @@ import {
 } from 'Plugins/auth-server/utils'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { UmaResource } from 'JansConfigApi'
-import type { OidcClientItem } from 'Redux/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ClientCibaParUmaPanelProps } from '../types'
 
@@ -74,7 +71,6 @@ const ClientCibaParUmaPanel = ({
   setModifiedFields,
 }: ClientCibaParUmaPanelProps) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
@@ -170,7 +166,6 @@ const ClientCibaParUmaPanel = ({
 
   const handleClientEdit = (inum: string | null) => {
     if (!inum) return
-    dispatch(setCurrentItemClient({ item: client as OidcClientItem }))
     setOpen(false)
     setCurrentStep(sequence[0])
     return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum))

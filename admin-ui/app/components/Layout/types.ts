@@ -1,6 +1,6 @@
 import type React from 'react'
 
-export type Breakpoint = {
+type Breakpoint = {
   min?: number
   max?: number
 }
@@ -9,7 +9,7 @@ export type ResponsiveBreakpoints = {
   [key: string]: Breakpoint
 }
 
-export type FavIconItem = {
+type FavIconItem = {
   rel?: string
   href: string
 }
@@ -68,16 +68,4 @@ export type LayoutSidebarProps = {
 
 export type LayoutContentProps = {
   children: React.ReactNode
-}
-
-/** Meta config passed to setupPage / changeMeta */
-export type PageMetaConfig = {
-  pageTitle?: string | null
-  pageDescription?: string
-  pageKeywords?: string
-  changeMeta?: (config: PageMetaConfig) => void
-}
-
-export type PageSetupWrapProps = {
-  pageConfig: PageConfig
 }

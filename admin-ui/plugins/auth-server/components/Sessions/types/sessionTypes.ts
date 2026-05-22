@@ -1,7 +1,7 @@
 export const SESSION_STATES = ['authenticated', 'unauthenticated'] as const
 export const [AUTHENTICATED_SESSION_STATE, UNAUTHENTICATED_SESSION_STATE] = SESSION_STATES
 
-export interface SessionAttributes {
+export type SessionAttributes = {
   auth_user: string
   remote_ip: string
   client_id: string
@@ -10,7 +10,7 @@ export interface SessionAttributes {
   [key: string]: string | undefined
 }
 
-export interface Session {
+export type Session = {
   id?: string
   userDn?: string
   authenticationTime: string
@@ -21,7 +21,7 @@ export interface Session {
   permissionGrantedMap?: Record<string, boolean>
 }
 
-export interface SessionDetailPageProps {
+export type SessionDetailPageProps = {
   row: Session
 }
 

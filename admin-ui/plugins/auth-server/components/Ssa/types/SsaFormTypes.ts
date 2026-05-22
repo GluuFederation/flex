@@ -4,12 +4,12 @@ type ModifiedFieldValue = string | string[] | boolean
 
 export type ModifiedFields = Record<string, ModifiedFieldValue>
 
-export interface SsaAuditLogPayload {
+export type SsaAuditLogPayload = {
   jti?: string
   org_id?: string
   software_id?: string
 }
 
-export interface SsaTableRowData extends SsaData {
+export type SsaTableRowData = SsaData & {
   id: string
 }

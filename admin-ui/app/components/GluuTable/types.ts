@@ -6,7 +6,7 @@ export type CellValue = string | number | boolean | null | undefined
 
 export type ColumnKey<T> = Extract<keyof T, string>
 
-export type ExpandContext = {
+type ExpandContext = {
   isExpanded: boolean
   rowKey: string | number
 }
@@ -42,8 +42,7 @@ export type PaginationConfig = {
   onRowsPerPageChange: (rowsPerPage: number) => void
 }
 
-/** When Settings (or another tab) changes paging size, GluuTable can notify so the parent can sync and refetch. Optional. */
-export type OnPagingSizeSync = (newSize: number) => void
+type OnPagingSizeSync = (newSize: number) => void
 
 export type GluuTableProps<T> = {
   columns: ColumnDef<T>[]

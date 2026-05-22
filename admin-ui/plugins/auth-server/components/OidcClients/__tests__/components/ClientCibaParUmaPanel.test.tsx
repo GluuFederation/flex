@@ -14,7 +14,6 @@ import type {
 } from 'Plugins/auth-server/components/OidcClients/types'
 import type { CustomScript } from 'JansConfigApi'
 import type { SetStateAction } from 'react'
-import type { SetCurrentClientPayload } from 'Plugins/auth-server/redux/features/types/oidcSlice'
 
 jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   ...jest.requireActual('Plugins/auth-server/components/OidcClients/hooks'),
@@ -40,13 +39,6 @@ jest.mock('@/redux/hooks', () => ({
   useAppSelector: jest.fn(() => ({})),
 }))
 
-jest.mock('Plugins/auth-server/redux/features/oidcSlice', () => ({
-  setCurrentItem: jest.fn((payload: SetCurrentClientPayload) => ({
-    type: 'oidc/setCurrentItem',
-    payload,
-  })),
-}))
-
 const INIT_STATE = {
   permissions: ['https://jans.io/oauth/config/openid/clients.write'],
   userinfo: { inum: 'test-user-inum' },
@@ -56,7 +48,6 @@ const INIT_STATE = {
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    oidcReducer: (state = { viewOnly: false, currentItem: {} }) => state,
     cedarPermissions: (
       state = {
         permissions: {},

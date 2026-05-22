@@ -100,10 +100,6 @@ const defaultWebhookReducerState = {
   featureWebhooks: [] as WebhookRecord[],
   webhookModal: false,
   triggerWebhookInProgress: false,
-  triggerPayload: {
-    feature: '',
-    payload: {} as WebhookRecord,
-  },
   featureToTrigger: '',
 }
 
@@ -117,9 +113,6 @@ const defaultAuthReducerState: AuthState = {
   permissions: [],
   location: { IPv4: '' },
   config: { clientId: '' },
-  codeChallenge: null,
-  codeChallengeMethod: 'S256',
-  codeVerifier: null,
   backendStatus: {
     active: true,
     errorMessage: null,

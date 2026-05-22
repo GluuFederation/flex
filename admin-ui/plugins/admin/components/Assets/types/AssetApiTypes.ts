@@ -1,4 +1,4 @@
-export interface Document {
+export type Document = {
   dn?: string
   inum?: string
   fileName?: string
@@ -13,7 +13,7 @@ export interface Document {
   baseDn?: string
 }
 
-export interface AssetFormData {
+export type AssetFormData = {
   fileName: string
   description: string
   document: string | File | Blob

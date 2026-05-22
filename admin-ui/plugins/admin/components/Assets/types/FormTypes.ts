@@ -1,7 +1,7 @@
-export interface AssetFormValues extends Record<
+export type AssetFormValues = Record<
   string,
   string | number | boolean | object | string[] | File | Blob | null | undefined
-> {
+> & {
   creationDate: string | Date
   document: string | File | Blob | null
   fileName: string
@@ -17,7 +17,7 @@ export type FileDropHandler = (files: File[]) => void
 
 export type FileClearHandler = () => void
 
-export interface AcceptFileTypes {
+export type AcceptFileTypes = {
   [mimeType: string]: string[]
 }
 
@@ -25,7 +25,7 @@ export type ToggleHandler = () => void
 
 export type SubmitFormCallback = (userMessage: string) => void
 
-export interface RouteParams {
+export type RouteParams = {
   id?: string
   [key: string]: string | undefined
 }

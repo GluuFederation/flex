@@ -10,8 +10,6 @@ import GluuText from './GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import type { SessionTimeoutDialogProps } from './types'
 
-export type { SessionTimeoutDialogProps }
-
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />
 })

@@ -1,8 +1,4 @@
-import type { LicenseRequest, SSARequest } from 'JansConfigApi'
-
-export type LicenseRequestPayload = {
-  payload: LicenseRequest
-}
+import type { SSARequest } from 'JansConfigApi'
 
 export type SSARequestPayload = {
   payload: SSARequest

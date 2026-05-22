@@ -19,7 +19,7 @@ export type Config = {
   [key: string]: ConfigValue
 }
 
-export type Location = {
+type Location = {
   [key: string]: string | number | null | undefined
 }
 
@@ -33,9 +33,6 @@ export type AuthState = {
   permissions: string[]
   location: Location
   config: Config
-  codeChallenge: string | null
-  codeChallengeMethod: string
-  codeVerifier: string | null
   backendStatus: BackendStatus
   loadingConfig: boolean
   authState?: string

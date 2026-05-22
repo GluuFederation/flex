@@ -4,7 +4,7 @@ import type { JsonObject } from './common'
 
 export type GluuTypeAheadOption = string | JsonObject
 
-export type GluuTypeAheadFormik = {
+type GluuTypeAheadFormik = {
   setFieldValue(field: string, value: GluuTypeAheadOption[], shouldValidate?: boolean): void
 }
 

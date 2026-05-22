@@ -1,9 +1,7 @@
 import type React from 'react'
-import type { HealthServiceKey, HealthStatusResponse } from 'Redux/features/healthSlice'
+import type { HealthServiceKey } from 'Redux/features/types'
 import type { ROUTES } from '@/helpers/navigation'
 import type { PageConfig } from '../Layout/types'
-
-export type { PageConfig }
 
 export type SidebarProps = {
   children?: React.ReactNode
@@ -25,13 +23,6 @@ export type MenuItem = {
 
 export type PluginMenu = MenuItem
 
-export type ThemeColors = {
-  menu: {
-    background: string
-    [key: string]: string
-  }
-}
-
 export type ThemeContextState = {
   state: {
     theme: string
@@ -48,10 +39,6 @@ export type VisibilityConditions = {
   readonly [P in HealthVisibilityPath]: HealthServiceKey
 }
 
-export type IconStyles = {
-  readonly [key: string]: React.CSSProperties
-}
-
 export type MenuIconMap = {
   readonly [key: string]: React.ReactNode
 }
@@ -63,11 +50,7 @@ export type SidebarRootState = {
     }
     permissions?: string[]
   }
-  healthReducer: {
-    health: HealthStatusResponse
-  }
   logoutAuditReducer: {
-    logoutAuditInFlight: boolean
     logoutAuditSucceeded: boolean | null
   }
 }

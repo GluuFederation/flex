@@ -11,6 +11,7 @@ import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import { updateToast } from 'Redux/features/toastSlice'
+import { setPolicyStoreBytes } from 'Redux/features/cedarPermissionsSlice'
 import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
@@ -111,10 +112,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               'responseBytes' in policyStoreResponse.data
                 ? policyStoreResponse.data.responseBytes
                 : undefined
-            dispatch({
-              type: 'cedarPermissions/setPolicyStoreBytes',
-              payload: policyStoreBytes ?? '',
-            })
+            dispatch(setPolicyStoreBytes(policyStoreBytes ?? ''))
           }
         })
         .catch((err: Error) => {

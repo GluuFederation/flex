@@ -48,16 +48,10 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 const defaultAssetReducerState = {
-  assets: [],
-  services: [],
-  fileTypes: [],
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
-  totalItems: 0,
-  entriesCount: 0,
   selectedAsset: {},
-  loadingAssets: false,
 }
 
 const defaultWebhookReducerState = {

@@ -9,16 +9,10 @@ import {
 import { Document } from '../../components/Assets/types/AssetApiTypes'
 
 const initialState: AssetState = {
-  assets: [],
-  services: [],
-  fileTypes: [],
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
-  totalItems: 0,
-  entriesCount: 0,
   selectedAsset: {},
-  loadingAssets: false,
 }
 
 const assetSlice = createSlice({

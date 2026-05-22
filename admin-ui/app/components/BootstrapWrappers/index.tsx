@@ -7,7 +7,6 @@ import type {
   BadgeProps,
   ButtonProps,
   CardBodyProps,
-  CardTitleProps,
   ColProps,
   ContainerProps,
   FormGroupProps,
@@ -97,20 +96,6 @@ export const CardBody: React.FC<CardBodyProps> = ({ className, children, ...prop
     {children}
   </div>
 )
-
-export const CardTitle: React.FC<CardTitleProps> = ({
-  tag: Tag = 'h5',
-  className,
-  children,
-  ...props
-}) => {
-  const TagComponent = Tag as React.ElementType
-  return (
-    <TagComponent className={clsx('card-title', className)} {...props}>
-      {children}
-    </TagComponent>
-  )
-}
 
 export const Badge: React.FC<BadgeProps> = ({ pill, color, className, children, ...props }) => (
   <span

@@ -5,7 +5,7 @@ export type { WebhookEntry }
 
 export type { WebhookTriggerResponseItem } from '../../types/webhook'
 
-export interface TriggerWebhookSagaPayload {
+export type TriggerWebhookSagaPayload = {
   createdFeatureValue: Record<string, JsonValue>
   feature?: string
 }

@@ -18,7 +18,7 @@ interface ApiResponse {
   status?: number
 }
 
-export function* auditLogoutLogsSaga({
+function* auditLogoutLogsSaga({
   payload,
 }: PayloadAction<{ message: string }>): SagaIterator<boolean> {
   devLogger.log('Logout audit:', payload.message)
@@ -53,7 +53,7 @@ export function* auditLogoutLogsSaga({
   }
 }
 
-export function* watchAuditLogoutLogs(): SagaIterator<void> {
+function* watchAuditLogoutLogs(): SagaIterator<void> {
   yield takeLatest(auditLogoutLogs.type, auditLogoutLogsSaga)
 }
 

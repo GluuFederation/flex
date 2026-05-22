@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export type OAuthConfigParameter = {
+type OAuthConfigParameter = {
   key?: string
   value?: string
 }

@@ -20,6 +20,14 @@ jest.mock('Plugins/admin/components/Health/hooks', () => ({
     error: null,
     refetch: mockRefetch,
   })),
+  useFido2HealthStatus: jest.fn(() => ({
+    data: undefined,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    refetch: jest.fn(),
+  })),
 }))
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (

@@ -1,7 +1,7 @@
 import type { ExtendedScope, ScopeWithClients, ScopeScript, ScopeClaim } from './scopeTypes'
 import type { ModifiedFields } from './formTypes'
 
-export interface ScopeDetailPageProps {
+export type ScopeDetailPageProps = {
   row: ScopeWithClients
 }
 
@@ -11,7 +11,7 @@ export type ScopeAddPageProps = Record<string, never>
 
 export type ScopeEditPageProps = Record<string, never>
 
-export interface ScopeFormProps {
+export type ScopeFormProps = {
   scope: ExtendedScope
   scripts: ScopeScript[]
   attributes: ScopeClaim[]
