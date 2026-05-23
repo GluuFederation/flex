@@ -14,7 +14,7 @@ Admin GUI. Requires license.
 
 ## Source Code
 
-* <https://github.com/GluuFederation/flex/tree/main/docker-admin-ui>
+* <https://github.com/GluuFederation/docker-gluu-admin-ui>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/admin-ui>
 
 ## Requirements

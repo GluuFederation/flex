@@ -10,8 +10,8 @@ keywords:
   - OpenID
 home: https://docs.gluu.org
 sources:
-  - https://github.com/JanssenProject/jans/tree/main/jans-auth-server
-  - https://github.com/JanssenProject/jans/tree/main/docker-jans-auth-server
+  - https://github.com/JanssenProject/jans-auth-server
+  - https://github.com/JanssenProject/docker-jans-auth-server
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/auth-server
 maintainers:
   - name: Mohammad Abudayyeh

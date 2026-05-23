@@ -14,8 +14,9 @@ FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging comm
 
 ## Source Code
 
-* <https://github.com/JanssenProject/jans/tree/main/jans-fido2>
-* <https://github.com/JanssenProject/jans/tree/main/docker-jans-fido2>
+* <https://gluu.org/docs/gluu-server/>
+* <https://github.com/JanssenProject/jans/jans-fido2>
+* <https://github.com/JanssenProject/jans/docker-jans-fido2>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/fido2>
 
 ## Requirements

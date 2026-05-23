@@ -14,7 +14,8 @@ Configuration parameters for setup and initial configuration secret and config l
 
 ## Source Code
 
-* <https://github.com/JanssenProject/jans/tree/main/docker-jans-configurator>
+* <https://gluu.org/docs/gluu-server/reference/container-configs/>
+* <https://github.com/JanssenProject/jans/docker-jans-configurator>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/config>
 
 ## Requirements

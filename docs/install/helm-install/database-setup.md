@@ -40,10 +40,10 @@ Add this to your `override.yaml`:
 ```yaml
 config:
   configmap:
-    cnSqlDbName: gluu
+    cnSqlDbName: jans
     cnSqlDbPort: 5432
     cnSqlDbDialect: pgsql
-    cnSqlDbHost: postgresql.gluu.svc
+    cnSqlDbHost: postgresql.jans.svc
     cnSqlDbUser: postgres
     cnSqlDbTimezone: UTC
     cnSqldbUserPassword: Test1234#  # Change for production!
@@ -67,10 +67,10 @@ Add this to your `override.yaml`:
 ```yaml
 config:
   configmap:
-    cnSqlDbName: gluu
+    cnSqlDbName: jans
     cnSqlDbPort: 3306
     cnSqlDbDialect: mysql
-    cnSqlDbHost: mysql.gluu.svc
+    cnSqlDbHost: mysql.jans.svc
     cnSqlDbUser: root
     cnSqlDbTimezone: UTC
     cnSqldbUserPassword: Test1234#  # Change for production!

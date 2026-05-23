@@ -15,8 +15,7 @@ Gluu Access and Identity Management All-in-One Chart. This chart deploys the sel
 ## Source Code
 
 * <https://docs.gluu.org>
-* <https://github.com/GluuFederation/flex/tree/main/charts/gluu-all-in-one>
-* <https://github.com/JanssenProject/jans/tree/main/charts/janssen-all-in-one>
+* <https://github.com/GluuProject/jans/charts/janssen>
 
 ## Requirements
 
