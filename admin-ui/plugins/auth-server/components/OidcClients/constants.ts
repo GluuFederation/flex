@@ -1,11 +1,14 @@
 import type { ClientFormInitialData, ClientScriptField } from './types'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 import { createClientFieldSection } from 'Plugins/auth-server/utils'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
+import { SCRIPT_TYPES } from '@/constants'
+import { DATE_FORMATS } from '@/utils/dayjsUtils'
 
 export const DOC_CATEGORY = 'openid_client'
 
 export const CLIENT_ATTRIBUTES_KEY = 'attributes'
-export const SPONTANEOUS_SCOPE_TYPE = 'spontaneous'
+export const SPONTANEOUS_SCOPE_TYPE = SCOPE_TYPES.SPONTANEOUS
 export const TOKEN_DETAIL_DOC_SECTION = 'user'
 
 export const EM_DASH_PLACEHOLDER = '—'
@@ -24,8 +27,8 @@ export const FETCH_LIMITS = {
 export const TOKEN_DEFAULT_PAGE_SIZE = 10
 export const TOKEN_FILTER_EXPIRATION_DATE = 'expirationDate'
 export const TOKEN_FILTER_CREATION_DATE = 'creationDate'
-export const TOKEN_DATE_QUERY_FORMAT = 'YYYY-MM-DD'
-export const TOKEN_DATE_DISPLAY_FORMAT = 'YYYY/DD/MM HH:mm:ss'
+export const TOKEN_DATE_QUERY_FORMAT = DATE_FORMATS.DATE_ONLY
+export const TOKEN_DATE_DISPLAY_FORMAT = DATE_FORMATS.TOKEN_DATETIME
 export const TOKEN_CSV_FILENAME = 'client-tokens.csv'
 export const TOKEN_CSV_MIME_TYPE = 'text/csv'
 
@@ -81,14 +84,14 @@ export const CLIENT_DYNAMIC_LIST_I18N = {
 } as const
 
 export const CLIENT_SCRIPT_TYPES = {
-  SPONTANEOUS_SCOPE: 'spontaneous_scope',
-  UPDATE_TOKEN: 'update_token',
-  POST_AUTHN: 'post_authn',
-  INTROSPECTION: 'introspection',
-  ROPC: 'resource_owner_password_credentials',
-  CONSENT_GATHERING: 'consent_gathering',
-  PERSON_AUTHENTICATION: 'person_authentication',
-  UMA_RPT_CLAIMS: 'uma_rpt_claims',
+  SPONTANEOUS_SCOPE: SCRIPT_TYPES.SPONTANEOUS_SCOPE,
+  UPDATE_TOKEN: SCRIPT_TYPES.UPDATE_TOKEN,
+  POST_AUTHN: SCRIPT_TYPES.POST_AUTHN,
+  INTROSPECTION: SCRIPT_TYPES.INTROSPECTION,
+  ROPC: SCRIPT_TYPES.ROPC,
+  CONSENT_GATHERING: SCRIPT_TYPES.CONSENT_GATHERING,
+  PERSON_AUTHENTICATION: SCRIPT_TYPES.PERSON_AUTHENTICATION,
+  UMA_RPT_CLAIMS: SCRIPT_TYPES.UMA_RPT_CLAIMS,
 } as const
 
 export const CLIENT_ADVANCED_MODIFIED_FIELDS = {

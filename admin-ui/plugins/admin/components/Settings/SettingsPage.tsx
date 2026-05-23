@@ -15,7 +15,7 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
+import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH } from '@/constants'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -84,7 +84,7 @@ const SettingsPage: React.FC = () => {
     isError: isScriptsError,
     error: scriptsError,
     refetch: refetchScripts,
-  } = useGetConfigScriptsByType('person_authentication', { limit: SCRIPTS_FETCH_LIMIT })
+  } = useGetConfigScriptsByType(SCRIPT_TYPES.PERSON_AUTHENTICATION, { limit: SCRIPTS_FETCH_LIMIT })
 
   const canReadSettings = useMemo(
     () => hasCedarReadPermission(settingsResourceId),

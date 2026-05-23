@@ -1,6 +1,7 @@
 import type { Scope } from 'JansConfigApi'
 import type { ExtendedScope, ExtendedScopeAttributes } from './types'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 
 export const SCOPE_SORT_COLUMNS = ['inum', 'displayName'] as const
 export const SCOPE_SORT_COLUMN_LABELS: Record<string, string> = {
@@ -11,15 +12,15 @@ export const DEFAULT_SCOPE_SORT_BY = ''
 export const FEATURE_SCOPE_DELETE = adminUiFeatures.scopes_delete
 
 export const SCOPE_TYPE_OPTIONS = [
-  { value: 'oauth', label: 'OAuth' },
-  { value: 'openid', label: 'OpenID' },
-  { value: 'dynamic', label: 'Dynamic' },
-  { value: 'uma', label: 'UMA' },
+  { value: SCOPE_TYPES.OAUTH, label: 'OAuth' },
+  { value: SCOPE_TYPES.OPENID, label: 'OpenID' },
+  { value: SCOPE_TYPES.DYNAMIC, label: 'Dynamic' },
+  { value: SCOPE_TYPES.UMA, label: 'UMA' },
 ]
 
 export const CREATOR_TYPES = ['CLIENT', 'USER'] as const
 
-export const EMPTY_PLACEHOLDER = '\u2014'
+export const EMPTY_PLACEHOLDER = '—'
 
 export const DEFAULT_ATTRIBUTES_LIMIT = 100
 

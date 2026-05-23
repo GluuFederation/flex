@@ -1,9 +1,16 @@
 import * as Yup from 'yup'
 import i18n from '@/i18n'
-import { formatDate, isValidDate } from '@/utils/dayjsUtils'
+import { formatDate, isValidDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { CustomUser, PersonAttribute, UserEditFormValues } from '../types'
 import { CustomObjectAttribute } from 'JansConfigApi'
 import { validatePassword } from '../utils'
+import {
+  FAMILY_NAME_ATTR,
+  SN_ATTR,
+  MIDDLE_NAME_ATTR,
+  JANS_STATUS_ATTR,
+  BIRTHDATE_ATTR,
+} from '../common'
 
 export const getUserValidationSchema = (userDetails: CustomUser | null) => {
   const isEdit = Boolean(userDetails)
@@ -141,7 +148,7 @@ const processBirthdateAttribute = (
 
   if (rawDate !== undefined && rawDate !== null) {
     if (isValidDate(rawDate)) {
-      initialValues[customAttr.name] = formatDate(rawDate, 'YYYY-MM-DD')
+      initialValues[customAttr.name] = formatDate(rawDate, DATE_FORMATS.DATE_ONLY)
       return
     }
   }
@@ -210,9 +217,10 @@ export const initializeCustomAttributes = (
     givenName: userDetails?.givenName || '',
     mail: userDetails?.mail || '',
     userId: userDetails?.userId || '',
-    sn: getUserProperty(userDetails, 'familyName') || getUserProperty(userDetails, 'sn') || '',
-    middleName: getUserProperty(userDetails, 'middleName') || '',
-    status: getUserProperty(userDetails, 'jansStatus') || userDetails?.status || '',
+    sn:
+      getUserProperty(userDetails, FAMILY_NAME_ATTR) || getUserProperty(userDetails, SN_ATTR) || '',
+    middleName: getUserProperty(userDetails, MIDDLE_NAME_ATTR) || '',
+    status: getUserProperty(userDetails, JANS_STATUS_ATTR) || userDetails?.status || '',
     userPassword: '',
     userConfirmPassword: '',
   }
@@ -220,7 +228,7 @@ export const initializeCustomAttributes = (
   if (userDetails?.customAttributes) {
     for (const customAttr of userDetails.customAttributes) {
       const attributeDef = personAttributes.find((e: PersonAttribute) => e.name === customAttr.name)
-      if (customAttr.name === 'birthdate') {
+      if (customAttr.name === BIRTHDATE_ATTR) {
         processBirthdateAttribute(customAttr, initialValues)
         continue
       }

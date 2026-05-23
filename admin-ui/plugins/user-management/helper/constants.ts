@@ -1,5 +1,8 @@
+import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
+import { USER_PASSWORD_ATTR, STATUS_ATTR } from '../common'
+
 export const revokeSessionWhenFieldsModifiedInUserForm = [
-  'userPassword',
-  'status',
-  'jansAdminUIRole',
+  USER_PASSWORD_ATTR,
+  STATUS_ATTR,
+  JANS_ADMIN_UI_ROLE_ATTR,
 ]

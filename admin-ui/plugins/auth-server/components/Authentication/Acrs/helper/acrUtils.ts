@@ -1,4 +1,4 @@
-import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
+import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import type { Deployment } from 'JansConfigApi'
 import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
 import type { AuthNItem, ConfigurationProperty } from '../../types'

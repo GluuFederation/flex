@@ -1,7 +1,8 @@
 import { type Dayjs } from 'dayjs'
 import type { MauStatEntry, RawStatEntry } from '../types'
+import { DATE_FORMATS } from '@/utils/dayjsUtils'
 
-export const formatDateForApi = (date: Dayjs): string => date.format('YYYYMM')
+export const formatDateForApi = (date: Dayjs): string => date.format(DATE_FORMATS.MONTH_KEY)
 
 const generateMonthRange = (startDate: Dayjs, endDate: Dayjs): number[] => {
   const months: number[] = []
@@ -9,7 +10,7 @@ const generateMonthRange = (startDate: Dayjs, endDate: Dayjs): number[] => {
   const end = endDate.startOf('month')
 
   while (current.isBefore(end) || current.isSame(end, 'month')) {
-    months.push(Number.parseInt(current.format('YYYYMM'), 10))
+    months.push(Number.parseInt(current.format(DATE_FORMATS.MONTH_KEY), 10))
     current = current.add(1, 'month')
   }
 

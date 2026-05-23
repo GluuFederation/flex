@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, SCRIPT_TYPES } from '@/constants'
 import customColors from '@/customColors'
 import type { ScopeFormProps, ScopeFormValues, ScopeClient, ExtendedScope } from '../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
@@ -37,6 +37,7 @@ import {
   buildScopeChangedFieldOperations,
 } from '../helper/utils'
 import { getScopeValidationSchema } from '../helper/validations'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import { Link } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -79,7 +80,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const dynamicScopeScripts = useMemo(
     () =>
       (scripts ?? [])
-        .filter((item) => item.scriptType === 'dynamic_scope' && item.enabled)
+        .filter((item) => item.scriptType === SCRIPT_TYPES.DYNAMIC_SCOPE && item.enabled)
         .map((item) => ({ dn: item.dn, name: item.name })),
     [scripts],
   )
@@ -87,7 +88,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const umaAuthorizationPolicies = useMemo(
     () =>
       (scripts ?? [])
-        .filter((item) => item.scriptType === 'uma_rpt_policy')
+        .filter((item) => item.scriptType === SCRIPT_TYPES.UMA_RPT_POLICY)
         .map((item) => ({ dn: item.dn, name: item.name })),
     [scripts],
   )
@@ -108,12 +109,18 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
   const [pendingScope, setPendingScope] = useState<Partial<ExtendedScope>>()
 
-  const [showClaimsPanel, handleClaimsPanel] = useState(initialFormValues.scopeType === 'openid')
-  const [showDynamicPanel, handleDynamicPanel] = useState(initialFormValues.scopeType === 'dynamic')
-  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    initialFormValues.scopeType === 'spontaneous',
+  const [showClaimsPanel, handleClaimsPanel] = useState(
+    initialFormValues.scopeType === SCOPE_TYPES.OPENID,
   )
-  const [showUmaPanel, handleShowUmaPanel] = useState(initialFormValues.scopeType === 'uma')
+  const [showDynamicPanel, handleDynamicPanel] = useState(
+    initialFormValues.scopeType === SCOPE_TYPES.DYNAMIC,
+  )
+  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
+    initialFormValues.scopeType === SCOPE_TYPES.SPONTANEOUS,
+  )
+  const [showUmaPanel, handleShowUmaPanel] = useState(
+    initialFormValues.scopeType === SCOPE_TYPES.UMA,
+  )
   const isExistingScope = Boolean(scope?.inum)
 
   const applyScopeTypeVisibility = useCallback((type?: string) => {
@@ -206,7 +213,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
         const handleScopeTypeChangeInternal = (type: string) => {
           applyScopeTypeVisibility(type)
           const updatedValues = applyScopeTypeDefaults(formikProps.values, type)
-          if (type !== 'uma') {
+          if (type !== SCOPE_TYPES.UMA) {
             updatedValues.iconUrl = ''
             updatedValues.umaAuthorizationPolicies = []
           }
@@ -216,7 +223,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
             scopeType: true,
           }
 
-          if (type === 'uma') {
+          if (type === SCOPE_TYPES.UMA) {
             if (!isExistingScope) {
               updatedTouched.umaAuthorizationPolicies = true
               updatedTouched.iconUrl = true

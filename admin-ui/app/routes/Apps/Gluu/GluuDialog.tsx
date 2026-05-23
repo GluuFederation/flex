@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import TextField from '@mui/material/TextField'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { useAppSelector } from '@/redux/hooks'
 import { useWebhookDialogAction } from 'Utils/hooks'
@@ -31,7 +31,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
-  const inverseTheme = isDark ? 'light' : 'dark'
+  const inverseTheme = isDark ? THEME_LIGHT : THEME_DARK
   const inverseColors = getThemeColor(inverseTheme)
   const { classes } = useStyles()
 

@@ -80,13 +80,3 @@ export type CacheSubComponentBaseProps = {
 export type CacheMemcachedProps = CacheSubComponentBaseProps
 
 export type CacheRedisProps = CacheSubComponentBaseProps
-
-export type PersistenceInfo = {
-  persistenceType?: string
-  databaseName?: string
-  schemaName?: string
-  productName?: string
-  productVersion?: string
-  driverName?: string
-  driverVersion?: string
-}

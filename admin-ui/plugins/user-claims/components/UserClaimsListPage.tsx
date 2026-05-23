@@ -16,7 +16,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, SORT_ORDER } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../hooks'
@@ -102,7 +102,7 @@ const UserClaimsListPage: React.FC = () => {
     startIndex,
     ...(pattern && { pattern }),
     ...(status && { status }),
-    ...(sortBy && { sortBy, sortOrder: 'ascending' }),
+    ...(sortBy && { sortBy, sortOrder: SORT_ORDER.ASCENDING }),
   })
 
   const attributes = useMemo(() => toAttributeList(attributesData?.entries), [attributesData])

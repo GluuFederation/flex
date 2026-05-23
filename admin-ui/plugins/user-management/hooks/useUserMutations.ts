@@ -7,7 +7,7 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { CaughtError } from '../types'
 import { logUserDeletion, getErrorMessage, triggerUserWebhook } from '../helper'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import type { CustomUser } from '../types'
 import { devLogger } from '@/utils/devLogger'
 
