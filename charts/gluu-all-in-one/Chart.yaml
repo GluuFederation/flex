@@ -15,7 +15,8 @@ icon: >-
 home: https://docs.gluu.org
 sources:
   - https://docs.gluu.org
-  - https://github.com/GluuProject/jans/charts/janssen
+  - https://github.com/GluuFederation/flex/tree/main/charts/gluu-all-in-one
+  - https://github.com/JanssenProject/jans/tree/main/charts/janssen-all-in-one
 maintainers:
   - name: moabu
     email: team@gluu.org
