@@ -2,6 +2,26 @@
 
 A two-layer model: an **app host** (`app/`) and **plugins** (`plugins/`) that plug into it.
 
+## System context
+
+Where admin-ui sits in the wider Janssen stack:
+
+```mermaid
+flowchart LR
+  Browser["Browser<br/>Admin UI + Cedarling (WASM)"]
+  Auth["Jans Auth Server<br/>(OIDC + PKCE)"]
+  API["Jans Config API"]
+  DB[("Persistence")]
+
+  Browser -- "OIDC login" --> Auth
+  Browser -- "ujwt + apiProtectionToken" --> API
+  Auth -. "issues tokens" .-> Browser
+  API <--> DB
+  Auth <--> DB
+```
+
+Details by piece: [auth.md](./auth.md) (login + session), [config-api.md](./config-api.md) (Config API + Orval), [cedarling.md](./cedarling.md) (in-browser access control).
+
 ## Layers
 
 ```text
