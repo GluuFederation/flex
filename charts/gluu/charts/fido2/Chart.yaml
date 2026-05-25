@@ -9,9 +9,8 @@ keywords:
   - fido2
 home: https://docs.gluu.org/
 sources:
-  - https://gluu.org/docs/gluu-server/
-  - https://github.com/JanssenProject/jans/jans-fido2
-  - https://github.com/JanssenProject/jans/docker-jans-fido2
+  - https://github.com/JanssenProject/jans/tree/main/jans-fido2
+  - https://github.com/JanssenProject/jans/tree/main/docker-jans-fido2
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/fido2
 maintainers:
   - name: Mohammad Abudayyeh

@@ -14,7 +14,6 @@ Istio Gateway
 
 ## Source Code
 
-* <https://gluu.org/docs/gluu-server/>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/cn-istio-ingress>
 
 ## Requirements
