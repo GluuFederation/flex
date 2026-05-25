@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -11,7 +10,8 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
-import { WarningAmberOutlined, Close } from '@/components/icons'
+import { GluuModalShell } from '@/components/GluuModalShell'
+import { WarningAmberOutlined } from '@/components/icons'
 import GluuText from './GluuText'
 import { useStyles } from './styles/GluuDialog.style'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
@@ -75,17 +75,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     onCloseModal()
   }, [handler, onCloseModal])
 
-  const handleModalKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        closeModal()
-      }
-      e.stopPropagation()
-    },
-    [closeModal],
-  )
-
   if (!modal) {
     return null
   }
@@ -101,80 +90,52 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
       : ''
   const titleSuffix = row.inum || row.id ? `-${row.inum || row.id}` : ''
 
-  const modalContent = (
-    <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={closeModal}
-        aria-label={t('actions.close')}
-      />
-      <div
-        className={commitClasses.modalContainer}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="gluu-dialog-title"
-      >
-        <button
-          type="button"
-          onClick={closeModal}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
-        >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={classes.title} id="gluu-dialog-title">
-            <WarningAmberOutlined
-              style={{ color: customColors.accentRed }}
-              className={classes.warningIcon}
-            />
-            {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${titleSuffix})`}
-          </GluuText>
-          <GluuText variant="p" className={classes.question}>
-            {t('messages.action_deletion_question')}
-          </GluuText>
-          <div className={commitClasses.textareaContainer}>
-            <textarea
-              id="user_action_message"
-              name="user_action_message"
-              onChange={(e) => setUserMessage(e.target.value)}
-              placeholder={t('placeholders.action_commit_message')}
-              value={userMessage}
-              className={commitClasses.textarea}
-              aria-describedby={helperText ? 'gluu-dialog-error' : undefined}
-            />
-          </div>
-          <GluuText
-            variant="span"
-            className={commitClasses.errorMessage}
-            style={{
-              color: customColors.accentRed,
-              visibility: helperText ? 'visible' : 'hidden',
-            }}
-            id="gluu-dialog-error"
-          >
-            {helperText || ' '}
-          </GluuText>
-          <div className={commitClasses.buttonRow}>
-            {active && (
-              <GluuButton theme="dark" onClick={handleAccept} className={commitClasses.yesButton}>
-                {t('actions.yes')}
-              </GluuButton>
-            )}
-            <GluuButton theme="dark" onClick={closeModal} className={commitClasses.noButton}>
-              {t('actions.no')}
-            </GluuButton>
-          </div>
-        </div>
+  return (
+    <GluuModalShell onClose={closeModal} ariaLabelledBy="gluu-dialog-title">
+      <GluuText variant="h2" className={classes.title} id="gluu-dialog-title">
+        <WarningAmberOutlined
+          style={{ color: customColors.accentRed }}
+          className={classes.warningIcon}
+        />
+        {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${titleSuffix})`}
+      </GluuText>
+      <GluuText variant="p" className={classes.question}>
+        {t('messages.action_deletion_question')}
+      </GluuText>
+      <div className={commitClasses.textareaContainer}>
+        <textarea
+          id="user_action_message"
+          name="user_action_message"
+          onChange={(e) => setUserMessage(e.target.value)}
+          placeholder={t('placeholders.action_commit_message')}
+          value={userMessage}
+          className={commitClasses.textarea}
+          aria-describedby={helperText ? 'gluu-dialog-error' : undefined}
+        />
       </div>
-    </>
+      <GluuText
+        variant="span"
+        className={commitClasses.errorMessage}
+        style={{
+          color: customColors.accentRed,
+          visibility: helperText ? 'visible' : 'hidden',
+        }}
+        id="gluu-dialog-error"
+      >
+        {helperText || ' '}
+      </GluuText>
+      <div className={commitClasses.buttonRow}>
+        {active && (
+          <GluuButton theme="dark" onClick={handleAccept} className={commitClasses.yesButton}>
+            {t('actions.yes')}
+          </GluuButton>
+        )}
+        <GluuButton theme="dark" onClick={closeModal} className={commitClasses.noButton}>
+          {t('actions.no')}
+        </GluuButton>
+      </div>
+    </GluuModalShell>
   )
-
-  return createPortal(modalContent, document.body)
 }
 
 export default GluuDialog

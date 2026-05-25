@@ -1,21 +1,20 @@
-import { useCallback, useMemo } from 'react'
-import { createPortal } from 'react-dom'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckCircleOutline, HighlightOffOutlined, Close } from '@/components/icons'
+import { CheckCircleOutline, HighlightOffOutlined } from '@/components/icons'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
+import { GluuModalShell } from '@/components/GluuModalShell'
 import { useStyles } from './styles/GluuInfo.style'
-import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 
-interface GluuInfoItem {
+type GluuInfoItem = {
   openModal: boolean
   testStatus: boolean
 }
 
-interface GluuInfoProps {
+type GluuInfoProps = {
   item: GluuInfoItem
   handler: () => void
 }
@@ -27,90 +26,47 @@ const GluuInfo = ({ item, handler }: GluuInfoProps) => {
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
-  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
-
-  const handleModalKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handler()
-      }
-      e.stopPropagation()
-    },
-    [handler],
-  )
 
   if (!item.openModal) return null
 
-  const modalContent = (
-    <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={handler}
-        aria-label={t('actions.close')}
-      />
-      <div
-        className={commitClasses.modalContainer}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="gluu-info-title"
-      >
-        <button
-          type="button"
-          onClick={handler}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
-        >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={classes.title} id="gluu-info-title">
-            {t('titles.smtp_test_result')}
-          </GluuText>
-          <div className={classes.statusRow}>
-            {item.testStatus ? (
-              <CheckCircleOutline
-                fontSize="large"
-                style={{ color: themeColors.badges.statusActive }}
-              />
-            ) : (
-              <HighlightOffOutlined
-                fontSize="large"
-                style={{ color: themeColors.settings.removeButton.bg }}
-              />
-            )}
-            <GluuText variant="p" className={classes.statusMessage}>
-              {item.testStatus ? t('actions.server_success_smtp') : t('actions.server_fails_smtp')}
-            </GluuText>
-          </div>
-          {!item.testStatus && (
-            <GluuText variant="p" className={classes.detailText}>
-              {t('actions.server_response')}: {t('actions.server_fails_smtp')}
-            </GluuText>
-          )}
-          <div>
-            <GluuButton
-              onClick={handler}
-              backgroundColor={themeColors.formFooter.back.backgroundColor}
-              textColor={themeColors.formFooter.back.textColor}
-              borderColor="transparent"
-              padding="8px 28px"
-              minHeight="40"
-              useOpacityOnHover
-            >
-              {t('actions.ok')}
-            </GluuButton>
-          </div>
-        </div>
+  return (
+    <GluuModalShell onClose={handler} ariaLabelledBy="gluu-info-title">
+      <GluuText variant="h2" className={classes.title} id="gluu-info-title">
+        {t('titles.smtp_test_result')}
+      </GluuText>
+      <div className={classes.statusRow}>
+        {item.testStatus ? (
+          <CheckCircleOutline fontSize="large" style={{ color: themeColors.badges.statusActive }} />
+        ) : (
+          <HighlightOffOutlined
+            fontSize="large"
+            style={{ color: themeColors.settings.removeButton.bg }}
+          />
+        )}
+        <GluuText variant="p" className={classes.statusMessage}>
+          {item.testStatus ? t('actions.server_success_smtp') : t('actions.server_fails_smtp')}
+        </GluuText>
       </div>
-    </>
+      {!item.testStatus && (
+        <GluuText variant="p" className={classes.detailText}>
+          {t('actions.server_response')}: {t('actions.server_fails_smtp')}
+        </GluuText>
+      )}
+      <div>
+        <GluuButton
+          onClick={handler}
+          backgroundColor={themeColors.formFooter.back.backgroundColor}
+          textColor={themeColors.formFooter.back.textColor}
+          borderColor="transparent"
+          padding="8px 28px"
+          minHeight="40"
+          useOpacityOnHover
+        >
+          {t('actions.ok')}
+        </GluuButton>
+      </div>
+    </GluuModalShell>
   )
-
-  return createPortal(modalContent, document.body)
 }
 
 export default GluuInfo
