@@ -192,88 +192,95 @@ const GluuAutocomplete = ({
                 )}
               </li>
             )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder={placeholder ?? t('placeholders.search_here')}
-                size="small"
-                fullWidth
-                inputProps={{
-                  ...params.inputProps,
-                  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (allowCustom && e.key === 'Enter') {
-                      const trimmed = inputValue.trim()
-                      if (
-                        trimmed &&
-                        !options.some((o) => o.toLowerCase().includes(trimmed.toLowerCase())) &&
-                        !selectedItems.some((s) => s.toLowerCase() === trimmed.toLowerCase())
-                      ) {
-                        e.preventDefault()
-                        onChange([...selectedItems, trimmed])
-                        setInputValue('')
-                        e.currentTarget.blur()
-                        return
-                      }
-                    }
-                    params.inputProps.onKeyDown?.(e)
-                  },
-                  style: {
-                    ...(params.inputProps?.style as React.CSSProperties),
-                    outline: 'none',
-                    outlineWidth: 0,
-                    outlineOffset: 0,
-                    boxShadow: 'none',
-                    border: 'none',
-                  },
-                }}
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {inputValue && (
-                        <button
-                          type="button"
-                          onClick={() => setInputValue('')}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            padding: 4,
-                            color: themeColors.fontColor,
-                          }}
-                          aria-label={t('actions.clear')}
-                        >
-                          <CloseIcon sx={{ fontSize: 16 }} />
-                        </button>
-                      )}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                  sx: {
-                    'outline': 'none',
-                    'boxShadow': 'none',
-                    '&.Mui-focused, &.Mui-focusVisible': {
-                      outline: 'none !important',
-                      boxShadow: 'none !important',
-                    },
-                    '& .MuiOutlinedInput-input': {
-                      'outline': 'none !important',
-                      'boxShadow': 'none !important',
-                      'border': 'none !important',
-                      '&:focus, &:focus-visible': {
-                        outline: 'none !important',
-                        boxShadow: 'none !important',
-                        border: 'none !important',
+            renderInput={(params) => {
+              const { slotProps: paramsSlotProps, ...restParams } = params
+              const paramsInputProps = paramsSlotProps.htmlInput
+              const paramsInputComponentProps = paramsSlotProps.input
+              return (
+                <TextField
+                  {...restParams}
+                  placeholder={placeholder ?? t('placeholders.search_here')}
+                  size="small"
+                  fullWidth
+                  slotProps={{
+                    htmlInput: {
+                      ...paramsInputProps,
+                      onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (allowCustom && e.key === 'Enter') {
+                          const trimmed = inputValue.trim()
+                          if (
+                            trimmed &&
+                            !options.some((o) => o.toLowerCase().includes(trimmed.toLowerCase())) &&
+                            !selectedItems.some((s) => s.toLowerCase() === trimmed.toLowerCase())
+                          ) {
+                            e.preventDefault()
+                            onChange([...selectedItems, trimmed])
+                            setInputValue('')
+                            e.currentTarget.blur()
+                            return
+                          }
+                        }
+                        paramsInputProps?.onKeyDown?.(e)
+                      },
+                      style: {
+                        ...(paramsInputProps?.style as React.CSSProperties),
+                        outline: 'none',
+                        outlineWidth: 0,
+                        outlineOffset: 0,
+                        boxShadow: 'none',
+                        border: 'none',
                       },
                     },
-                  },
-                }}
-              />
-            )}
-            renderTags={() => null}
+                    input: {
+                      ...paramsInputComponentProps,
+                      endAdornment: (
+                        <>
+                          {inputValue && (
+                            <button
+                              type="button"
+                              onClick={() => setInputValue('')}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: 4,
+                                color: themeColors.fontColor,
+                              }}
+                              aria-label={t('actions.clear')}
+                            >
+                              <CloseIcon sx={{ fontSize: 16 }} />
+                            </button>
+                          )}
+                          {paramsInputComponentProps?.endAdornment}
+                        </>
+                      ),
+                      sx: {
+                        'outline': 'none',
+                        'boxShadow': 'none',
+                        '&.Mui-focused, &.Mui-focusVisible': {
+                          outline: 'none !important',
+                          boxShadow: 'none !important',
+                        },
+                        '& .MuiOutlinedInput-input': {
+                          'outline': 'none !important',
+                          'boxShadow': 'none !important',
+                          'border': 'none !important',
+                          '&:focus, &:focus-visible': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                            border: 'none !important',
+                          },
+                        },
+                      },
+                    },
+                  }}
+                />
+              )
+            }}
+            renderValue={() => null}
           />
         </div>
       </div>

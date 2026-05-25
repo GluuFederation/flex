@@ -1,9 +1,5 @@
-import { useState, useEffect, useContext, useMemo } from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import TextField from '@mui/material/TextField'
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -15,10 +11,13 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
-import { WarningAmberOutlined } from '@/components/icons'
+import { WarningAmberOutlined, Close } from '@/components/icons'
+import GluuText from './GluuText'
 import { useStyles } from './styles/GluuDialog.style'
-
+import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import type { GluuDialogProps } from './types'
+
+const ACTION_MESSAGE_MIN_LENGTH = 10
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: GluuDialogProps) => {
   const [active, setActive] = useState(false)
@@ -31,9 +30,9 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
-  const inverseTheme = isDark ? 'light' : 'dark'
-  const inverseColors = getThemeColor(inverseTheme)
-  const { classes } = useStyles()
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
   const webhookScopes = useMemo(
@@ -57,11 +56,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   })
 
   useEffect(() => {
-    if (userMessage.length >= 10) {
-      setActive(true)
-    } else {
-      setActive(false)
-    }
+    setActive(userMessage.length >= ACTION_MESSAGE_MIN_LENGTH)
   }, [userMessage])
 
   useEffect(() => {
@@ -70,77 +65,116 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     }
   }, [modal, row])
 
-  const handleAccept = () => {
+  const handleAccept = useCallback(() => {
     onAccept(userMessage)
-  }
-  const closeModal = () => {
+  }, [onAccept, userMessage])
+
+  const closeModal = useCallback(() => {
     handler()
     setUserMessage('')
     onCloseModal()
-  }
+  }, [handler, onCloseModal])
+
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeModal()
+      }
+      e.stopPropagation()
+    },
+    [closeModal],
+  )
 
   if (!modal) {
-    return <></>
+    return null
   }
 
-  return (
+  if ((webhookModal || loadingWebhooks) && canReadWebhooks) {
+    return <>{webhookTriggerModal({ closeModal })}</>
+  }
+
+  const charsRemaining = ACTION_MESSAGE_MIN_LENGTH - userMessage.length
+  const helperText =
+    userMessage.length < ACTION_MESSAGE_MIN_LENGTH
+      ? `${charsRemaining}${userMessage.length ? ' more' : ''} characters required`
+      : ''
+  const titleSuffix = row.inum || row.id ? `-${row.inum || row.id}` : ''
+
+  const modalContent = (
     <>
-      {(webhookModal || loadingWebhooks) && canReadWebhooks ? (
-        <>{webhookTriggerModal({ closeModal })}</>
-      ) : (
-        <Dialog
-          open={modal}
-          onClose={closeModal}
-          PaperProps={{ className: 'modal-outline-primary' }}
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={closeModal}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={commitClasses.modalContainer}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby="gluu-dialog-title"
+      >
+        <button
+          type="button"
+          onClick={closeModal}
+          className={commitClasses.closeButton}
+          aria-label={t('actions.close')}
+          title={t('actions.close')}
         >
-          <DialogTitle>
+          <Close fontSize="small" aria-hidden />
+        </button>
+        <div className={commitClasses.contentArea}>
+          <GluuText variant="h2" className={classes.title} id="gluu-dialog-title">
             <WarningAmberOutlined
               style={{ color: customColors.accentRed }}
-              className={`modal-icon ${classes.warningIcon}`}
+              className={classes.warningIcon}
             />
-            {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${row.inum || row.id ? `-${row.inum || row.id}` : ''})`}
-          </DialogTitle>
-          <DialogContent>
-            <p>{t('messages.action_deletion_question')}</p>
-            <TextField
+            {`${t('messages.action_deletion_for')} ${subject} (${row.name || name || ''}${titleSuffix})`}
+          </GluuText>
+          <GluuText variant="p" className={classes.question}>
+            {t('messages.action_deletion_question')}
+          </GluuText>
+          <div className={commitClasses.textareaContainer}>
+            <textarea
               id="user_action_message"
-              multiline
-              rows={4}
               name="user_action_message"
-              fullWidth
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder={t('placeholders.action_commit_message')}
               value={userMessage}
-              sx={{
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: inverseColors.borderColor,
-                },
-                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: inverseColors.borderColor,
-                },
-              }}
-              helperText={
-                userMessage.length < 10
-                  ? `${10 - userMessage.length}${userMessage.length ? ' more' : ''} characters required`
-                  : undefined
-              }
-              FormHelperTextProps={{ style: { color: customColors.accentRed } }}
+              className={commitClasses.textarea}
+              aria-describedby={helperText ? 'gluu-dialog-error' : undefined}
             />
-          </DialogContent>
-          <DialogActions>
+          </div>
+          <GluuText
+            variant="span"
+            className={commitClasses.errorMessage}
+            style={{
+              color: customColors.accentRed,
+              visibility: helperText ? 'visible' : 'hidden',
+            }}
+            id="gluu-dialog-error"
+          >
+            {helperText || ' '}
+          </GluuText>
+          <div className={commitClasses.buttonRow}>
             {active && (
-              <GluuButton theme="dark" onClick={handleAccept}>
+              <GluuButton theme="dark" onClick={handleAccept} className={commitClasses.yesButton}>
                 {t('actions.yes')}
               </GluuButton>
             )}
-            <GluuButton theme="dark" onClick={closeModal}>
+            <GluuButton theme="dark" onClick={closeModal} className={commitClasses.noButton}>
               {t('actions.no')}
             </GluuButton>
-          </DialogActions>
-        </Dialog>
-      )}
+          </div>
+        </div>
+      </div>
     </>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default GluuDialog

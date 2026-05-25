@@ -26,12 +26,9 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
 
   return {
     modal2FA: {
-      '& .modal-content': {
-        ...modalCardBorderStyle,
-        borderRadius: BORDER_RADIUS.DEFAULT,
-        backgroundColor: modalBg,
-        overflow: 'visible',
-      },
+      ...modalCardBorderStyle,
+      borderRadius: BORDER_RADIUS.DEFAULT,
+      backgroundColor: modalBg,
     },
     modalHeader: {
       display: 'flex !important',

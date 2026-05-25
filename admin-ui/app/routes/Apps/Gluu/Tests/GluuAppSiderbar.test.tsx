@@ -23,6 +23,7 @@ jest.mock('@/cedarling', () => ({
     Dashboard: 'Dashboard',
     License: 'License',
     MAU: 'MAU',
+    Metrics: 'Metrics',
     Security: 'Security',
     Settings: 'Settings',
     Webhooks: 'Webhooks',
@@ -57,6 +58,7 @@ jest.mock('@/cedarling/utility', () => ({
     Dashboard: 'Dashboard',
     License: 'License',
     MAU: 'MAU',
+    Metrics: 'Metrics',
     Security: 'Security',
     Settings: 'Settings',
     Webhooks: 'Webhooks',
@@ -96,7 +98,14 @@ jest.mock('Plugins/admin/components/Health/hooks', () => ({
     error: null,
     refetch: jest.fn(),
   }),
-  useFido2HealthStatus: () => ({ data: undefined }),
+  useFido2HealthStatus: () => ({
+    data: undefined,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
 }))
 
 jest.mock('Plugins/PluginMenuResolver', () => ({

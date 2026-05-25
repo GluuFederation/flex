@@ -89,6 +89,7 @@ const GluuFormDetailRow = ({
             backgroundColor={badgeBackgroundColor}
             textColor={badgeTextColor}
             borderColor={badgeBackgroundColor}
+            wrap
           >
             {value}
           </GluuBadge>

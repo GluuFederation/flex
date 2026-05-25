@@ -14,9 +14,10 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
 
   return {
     dialog: {
+      ...cardBorderStyle,
       padding: theme.spacing(5),
       borderRadius: DIALOG_BORDER_RADIUS,
-      width: 550,
+      width: 'min(550px, calc(100vw - 32px))',
       minHeight: 259,
       display: 'flex',
       flexDirection: 'column',
@@ -24,9 +25,12 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
         themeColors.card?.background ?? themeColors.menu?.background ?? themeColors.background,
       backgroundImage: 'none',
       boxSizing: 'border-box',
-      position: 'relative',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 1050,
       overflow: 'visible',
-      ...cardBorderStyle,
     },
     titleWrapper: {
       paddingBottom: 0,
@@ -53,9 +57,11 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()((
       marginBottom: theme.spacing(1),
     },
     actionArea: {
+      display: 'flex',
+      alignItems: 'center',
       padding: theme.spacing(0.5, 0),
       justifyContent: 'flex-start',
-      gap: theme.spacing(1),
+      gap: theme.spacing(2),
       marginTop: 0,
     },
     button: {
