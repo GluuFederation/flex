@@ -7,6 +7,7 @@ import type {
 } from '../types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/GluuCommitDialog.types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 
 export type { ScopePanelVisibility }
 
@@ -55,10 +56,10 @@ export const derivePanelVisibility = (scopeType?: string): ScopePanelVisibility 
   const normalizedType = scopeType ?? ''
 
   return {
-    showClaimsPanel: normalizedType === 'openid',
-    showDynamicPanel: normalizedType === 'dynamic',
-    showSpontaneousPanel: normalizedType === 'spontaneous',
-    showUmaPanel: normalizedType === 'uma',
+    showClaimsPanel: normalizedType === SCOPE_TYPES.OPENID,
+    showDynamicPanel: normalizedType === SCOPE_TYPES.DYNAMIC,
+    showSpontaneousPanel: normalizedType === SCOPE_TYPES.SPONTANEOUS,
+    showUmaPanel: normalizedType === SCOPE_TYPES.UMA,
   }
 }
 

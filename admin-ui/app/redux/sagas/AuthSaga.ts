@@ -27,6 +27,7 @@ import { redirectToLogout } from 'Redux/sagas/SagaUtils'
 import type { ApiErrorLike } from './types'
 import { devLogger } from '@/utils/devLogger'
 import { setApiToken } from 'Orval'
+import { STORAGE_KEYS } from '@/constants'
 
 type Throwable = Error | ApiErrorLike | string | number | boolean | object | null | undefined
 
@@ -89,7 +90,7 @@ function* getOAuth2ConfigWorker({
       | { postLogoutRedirectUri?: string }
       | undefined
     if (response?.postLogoutRedirectUri) {
-      localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
+      localStorage.setItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI, response.postLogoutRedirectUri)
       yield put(getOAuth2ConfigResponse({ config: response }))
       return
     }

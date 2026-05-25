@@ -10,7 +10,7 @@ import {
 import type { Scope } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import { useTranslation } from 'react-i18next'
 import { useScopeActions } from './useScopeActions'
 import type { ModifiedFields } from '../types'

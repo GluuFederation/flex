@@ -2,6 +2,7 @@ import { BasicQueryStringUtils, type LocationLike } from '@openid/appauth'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AuditRecord } from 'Redux/sagas/types'
 import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } from './types'
+import { STORAGE_KEYS } from '@/constants'
 
 export type { AdditionalPayload }
 
@@ -13,11 +14,11 @@ export const isFourZeroThreeError = (error?: HttpError | Error): boolean => {
 }
 
 export const saveIssuer = (issuer: string): void => {
-  localStorage.setItem('issuer', issuer)
+  localStorage.setItem(STORAGE_KEYS.ISSUER, issuer)
 }
 
 export const getIssuer = (): string | null => {
-  return localStorage.getItem('issuer')
+  return localStorage.getItem(STORAGE_KEYS.ISSUER)
 }
 
 export const addAdditionalData = (

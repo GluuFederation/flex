@@ -17,7 +17,7 @@ import { setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansConfigApi'
 import { useDeleteAssetWithAudit } from './hooks'
-import { formatDate } from '@/utils/dayjsUtils'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable } from '@/components/GluuTable'
@@ -231,7 +231,7 @@ const JansAssetListPage: React.FC = () => {
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellDate}>
-            {row.creationDate ? formatDate(row.creationDate, 'YYYY-MM-DD') : ''}
+            {row.creationDate ? formatDate(row.creationDate, DATE_FORMATS.DATE_ONLY) : ''}
           </GluuText>
         ),
       },

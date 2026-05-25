@@ -1,5 +1,6 @@
 import { PublicKeyCredentialHints, AttestationMode } from '../types'
 import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import { LOGGING_LEVELS } from '@/constants'
 
 export const LABEL_SIZE = 12
 export const INPUT_SIZE = 12
@@ -21,7 +22,7 @@ export const fidoConstants = {
   DYNAMIC: 'dynamic',
   STATIC: 'static',
 
-  LOGGING_LEVELS: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'],
+  LOGGING_LEVELS,
 
   BUTTON_TEXT: {
     ADD_CLASSES: 'actions.add_properties',

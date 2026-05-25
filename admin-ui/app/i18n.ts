@@ -6,11 +6,12 @@ import { isDevelopment } from './utils/env'
 import { devLogger } from './utils/devLogger'
 import { hmrAccept } from '@/utils/hmr'
 import { toast } from 'react-toastify'
+import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 
 const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof translationEn }>> = {
-  es: () => import('./locales/es/translation.json'),
-  fr: () => import('./locales/fr/translation.json'),
-  pt: () => import('./locales/pt/translation.json'),
+  [LANG_CODES.ES]: () => import('./locales/es/translation.json'),
+  [LANG_CODES.FR]: () => import('./locales/fr/translation.json'),
+  [LANG_CODES.PT]: () => import('./locales/pt/translation.json'),
 }
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
@@ -29,9 +30,9 @@ const handleMissingKey = (key: string, defaultValue?: string): string => {
 
 const getSavedLanguage = (): string => {
   try {
-    const initLang = localStorage.getItem('initLang')
+    const initLang = localStorage.getItem(STORAGE_KEYS.INIT_LANG)
     if (initLang) return initLang
-    const config = JSON.parse(localStorage.getItem('userConfig') || '{}')
+    const config = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}')
     const langs = config?.lang
     if (langs && typeof langs === 'object') {
       const values = Object.values(langs) as string[]
@@ -43,12 +44,12 @@ const getSavedLanguage = (): string => {
       error instanceof Error ? error : String(error),
     )
   }
-  return 'en'
+  return DEFAULT_LANG
 }
 
 export const ensureLocaleLoaded = async (lng: string): Promise<void> => {
   const base = (lng || '').split('-')[0]
-  if (!base || base === 'en' || i18n.hasResourceBundle(base, 'translation')) return
+  if (!base || base === LANG_CODES.EN || i18n.hasResourceBundle(base, 'translation')) return
   const loader = LAZY_LOCALE_LOADERS[base]
   if (!loader) return
   try {
@@ -71,7 +72,7 @@ const i18nConfig: InitOptions = {
     },
   },
   lng: savedLanguage,
-  fallbackLng: 'en',
+  fallbackLng: DEFAULT_LANG,
   debug: false,
   ns: ['translation'],
   defaultNS: 'translation',
@@ -94,7 +95,7 @@ i18n.on('languageChanged', (lng: string) => {
 void ensureLocaleLoaded(savedLanguage)
 
 hmrAccept<{ default: typeof translationEn }>('./locales/en/translation.json', (m) => {
-  if (m) i18n.addResourceBundle('en', 'translation', m.default, true, true)
+  if (m) i18n.addResourceBundle(LANG_CODES.EN, 'translation', m.default, true, true)
 })
 
 export default i18n

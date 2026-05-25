@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 
 const stringArraySchema = () =>
   Yup.array().of(Yup.string().trim().required('errors.required')).ensure()
@@ -21,17 +22,18 @@ export const getScopeValidationSchema = ({
       .min(5, 'errors.scope_display_name_min_length'),
     scopeType: Yup.string().trim().required('errors.scope_type_required'),
     dynamicScopeScripts: stringArraySchema().when('scopeType', {
-      is: (scopeType: string) => scopeType === 'dynamic',
+      is: (scopeType: string) => scopeType === SCOPE_TYPES.DYNAMIC,
       then: (schema) => schema.min(1, 'errors.scope_dynamic_scripts_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     claims: stringArraySchema().when('scopeType', {
-      is: (scopeType: string) => scopeType === 'openid' || scopeType === 'dynamic',
+      is: (scopeType: string) =>
+        scopeType === SCOPE_TYPES.OPENID || scopeType === SCOPE_TYPES.DYNAMIC,
       then: (schema) => schema.min(1, 'errors.scope_claims_required'),
       otherwise: (schema) => schema.notRequired(),
     }),
     umaAuthorizationPolicies: stringArraySchema().when('scopeType', {
-      is: (scopeType: string) => scopeType === 'uma',
+      is: (scopeType: string) => scopeType === SCOPE_TYPES.UMA,
       then: (schema) =>
         isExistingScope
           ? schema.notRequired()
@@ -41,7 +43,7 @@ export const getScopeValidationSchema = ({
     iconUrl: Yup.string()
       .trim()
       .when('scopeType', {
-        is: (scopeType: string) => scopeType === 'uma',
+        is: (scopeType: string) => scopeType === SCOPE_TYPES.UMA,
         then: (schema) =>
           isExistingScope
             ? schema.notRequired()

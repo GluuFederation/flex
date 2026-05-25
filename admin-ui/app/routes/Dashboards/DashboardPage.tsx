@@ -21,7 +21,7 @@ import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
-import { DEFAULT_STATUS } from '@/constants'
+import { DEFAULT_STATUS, JANS_SERVICES } from '@/constants'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
@@ -126,7 +126,7 @@ const DashboardPage = () => {
   const { allServices, isLoading: healthLoading } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
-    const lockService = allServices.find((s) => s.name === 'jans-lock')
+    const lockService = allServices.find((s) => s.name === JANS_SERVICES.LOCK)
     return lockService?.status === 'up'
   }, [allServices])
 

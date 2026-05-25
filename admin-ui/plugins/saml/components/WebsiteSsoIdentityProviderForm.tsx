@@ -23,7 +23,7 @@ import {
 } from '../helper'
 import type { WebsiteSsoIdentityProviderFormValues } from '../types'
 import SetTitle from 'Utils/SetTitle'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { updateToast } from 'Redux/features/toastSlice'
 import {

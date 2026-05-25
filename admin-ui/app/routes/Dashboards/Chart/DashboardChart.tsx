@@ -7,6 +7,7 @@ import {
   addDate,
   isAfterDate,
   isSameOrBeforeDate,
+  DATE_FORMATS,
 } from '@/utils/dayjsUtils'
 import {
   XAxis,
@@ -42,8 +43,8 @@ const DashboardChart = memo(
         return []
       }
 
-      const dateStart = createDate(startMonth, 'YYYYMM')
-      const dateEnd = createDate(endMonth, 'YYYYMM')
+      const dateStart = createDate(startMonth, DATE_FORMATS.MONTH_KEY)
+      const dateEnd = createDate(endMonth, DATE_FORMATS.MONTH_KEY)
 
       if (isAfterDate(dateStart, dateEnd, 'month')) {
         return []
@@ -55,7 +56,7 @@ const DashboardChart = memo(
       const prepareStat: Array<MauStatEntry & { monthLabel: string }> = []
 
       while (isSameOrBeforeDate(current, dateEnd, 'month')) {
-        const monthNum = parseInt(formatDate(current, 'YYYYMM'), 10)
+        const monthNum = parseInt(formatDate(current, DATE_FORMATS.MONTH_KEY), 10)
         const available = byMonth.get(monthNum)
 
         if (available) {

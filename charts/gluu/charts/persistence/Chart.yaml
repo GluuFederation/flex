@@ -9,7 +9,7 @@ keywords:
   - persistence prep
 home: https://docs.gluu.org
 sources:
-  - https://github.com/JanssenProject/jans/docker-jans-persistence-loader
+  - https://github.com/JanssenProject/jans/tree/main/docker-jans-persistence-loader
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/persistence
 maintainers:
   - name: Mohammad Abudayyeh

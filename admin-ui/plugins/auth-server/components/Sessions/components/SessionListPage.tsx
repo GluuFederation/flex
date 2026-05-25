@@ -19,7 +19,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { formatDate } from '@/utils/dayjsUtils'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import {
@@ -257,7 +257,7 @@ const SessionListPage: React.FC = () => {
     const trimmedText = filterTextValue.trim()
     if (isDateFilterField(filterSearchField) && filterDateValue) {
       setSearchParams({
-        fieldValuePair: `${filterSearchField}=${formatDate(filterDateValue, 'YYYY-MM-DD')}`,
+        fieldValuePair: `${filterSearchField}=${formatDate(filterDateValue, DATE_FORMATS.DATE_ONLY)}`,
         limit: 100,
       })
     } else if (!isDateFilterField(filterSearchField) && trimmedText) {
@@ -355,7 +355,9 @@ const SessionListPage: React.FC = () => {
         row.sessionAttributes.auth_user,
         row.sessionAttributes.remote_ip,
         row.sessionAttributes.client_id,
-        row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
+        row.authenticationTime
+          ? formatDate(row.authenticationTime, DATE_FORMATS.DATETIME_AMPM)
+          : '',
         row.sessionAttributes.acr_values,
         row.state,
       ]
@@ -425,7 +427,7 @@ const SessionListPage: React.FC = () => {
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellText}>
             {row.authenticationTime
-              ? formatDate(row.authenticationTime, 'ddd, MMM DD, YYYY h:mm:ss A')
+              ? formatDate(row.authenticationTime, DATE_FORMATS.DATETIME_LONG)
               : '—'}
           </GluuText>
         ),

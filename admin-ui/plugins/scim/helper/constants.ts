@@ -1,4 +1,4 @@
-export const LOGGING_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']
+export { LOGGING_LEVELS } from '@/constants'
 
 export const PROTECTION_MODES = ['OAUTH', 'BYPASS'] as const
 

@@ -3,7 +3,7 @@ import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
-import { THEME_DARK } from '@/context/theme/constants'
+import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
 import { DEFAULT_Z_INDEX, getLabelTooltipStyle } from './styles/GluuTooltip.style'
 import type { GluuTooltipProps } from './types'
 
@@ -41,7 +41,7 @@ const GluuTooltip = ({
   const tooltipElement = (
     <ReactTooltip
       id={doc_entry}
-      className={`type-${selectedTheme ?? 'light'}`}
+      className={`type-${selectedTheme ?? THEME_LIGHT}`}
       data-testid={doc_entry}
       place={place}
       role="tooltip"
