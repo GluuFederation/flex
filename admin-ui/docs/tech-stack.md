@@ -2,7 +2,7 @@
 
 | Concern             | Library                                                                                   |
 | ------------------- | ----------------------------------------------------------------------------------------- |
-| Language            | TypeScript 5 (strict)                                                                     |
+| Language            | TypeScript 6 (strict)                                                                     |
 | Framework           | React 18                                                                                  |
 | Build               | Vite 8 (Rolldown bundler)                                                                 |
 | Bundle analysis     | Sonda                                                                                     |
@@ -12,11 +12,11 @@
 | Forms               | Formik + Yup                                                                              |
 | UI                  | MUI (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`) + Emotion + tss-react |
 | Legacy UI           | reactstrap / bootstrap (being phased out)                                                 |
-| Routing             | React Router 7                                                                            |
+| Routing             | React Router 6                                                                            |
 | I18n                | i18next + react-i18next (locales loaded lazily)                                           |
 | Charts              | Recharts                                                                                  |
 | Code editor         | react-ace                                                                                 |
-| Drag-and-drop       | @hello-pangea/dnd                                                                         |
+| File uploads        | react-dropzone                                                                            |
 | Auth                | OpenID AppAuth (`@openid/appauth`) + Cedarling (Jans authz)                               |
 | Testing             | Jest + Testing Library                                                                    |
 | Lint / format       | ESLint 9 + Prettier                                                                       |
@@ -63,7 +63,7 @@ Each entry: **what it is** → **where it's wired up** → **when you reach for 
 - **dayjs** — light date library (Moment-compatible API, much smaller). Use the wrappers in `app/utils/dayjsUtils.ts`; never inline `new Date()` formatting.
 - **Recharts** — composable React charts. Used in dashboard/metrics components under `plugins/admin/`.
 - **react-ace** — Ace code editor as a React component. Used in script-editing components (e.g. `plugins/scripts/`).
-- **@hello-pangea/dnd** — drag-and-drop list reordering (maintained fork of `react-beautiful-dnd`). Used for reorderable lists (e.g. scripts ordering).
+- **react-dropzone** — drag-and-drop file upload zones via `useDropzone`. Used in `app/utils/UploadSSA.tsx` and `app/routes/Apps/Gluu/GluuUploadFile.tsx` for SSA upload and generic file pickers.
 - **@openid/appauth** — OIDC PKCE client library (AppAuth-JS). Drives sign-in and token refresh from the auth slice/saga in `app/redux/`.
 - **Cedarling (`@janssenproject/cedarling_wasm`)** — Jans-provided Cedar policy engine compiled to WASM. Used for every permission check via `app/cedarling/` and `useCedarling()` ([cedarling.md](./cedarling.md)).
 

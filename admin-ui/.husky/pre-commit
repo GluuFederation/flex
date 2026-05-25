@@ -8,7 +8,7 @@ esac
 
 # All staged files matching prettier-supported extensions that still exist on disk
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM \
-  | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx|json|css|scss|md)$' \
+  | grep -E '^(admin-ui/)?.*\.(js|jsx|ts|tsx|json|css|scss|md)$' \
   | sed 's|^admin-ui/||' \
   | while read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done)
 
