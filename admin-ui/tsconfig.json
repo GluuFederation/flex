@@ -37,8 +37,6 @@
   },
   "include": [
     "app/**/*",
-    "build/**/*",
-    "config.ts",
     "plugins/**/*",
     "app/types/**/*",
     "__mocks__/**/*",

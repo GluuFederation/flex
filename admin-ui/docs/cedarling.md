@@ -2,6 +2,46 @@
 
 Cedarling is the Jans-provided Cedar policy engine embedded in the Admin UI. It decides who can see and edit what — UI permissions are not hard-coded.
 
+## How it gates access (end-to-end)
+
+```text
+component mounts
+   │
+   ▼
+useCedarling() reads tokens (id_token, access_token, userinfo) from authReducer
+   │
+   ▼
+authorizeHelper(scopes) is called once in a useEffect on the page
+   │   ├── dedupes by (resourceId, actionLabel)
+   │   ├── one Promise per unique pair
+   │   ▼
+   │   cedarlingClient.token_authorize(request)
+   │   (WASM — no network call; the policy store is bundled into the build)
+   │
+   ▼
+each decision is dispatched to cedarPermissionsSlice
+   key = buildCedarPermissionKey(resourceId, action)
+   value = isAuthorized | { isAuthorized, error }
+   │
+   ▼
+hasCedarReadPermission(resourceId)   ──► cache[buildCedarPermissionKey(id, 'read')]
+hasCedarWritePermission(resourceId)  ──► cache[buildCedarPermissionKey(id, 'write')]
+hasCedarDeletePermission(resourceId) ──► cache[buildCedarPermissionKey(id, 'delete')]
+   │
+   ▼
+component renders / hides UI based on the booleans
+```
+
+The action label is derived from the URL/permission string:
+
+- `…/write` or any URL in the `executeUrls` set (`SSA_ADMIN`, `SSA_DEVELOPER`, `SCIM_BULK`, `REVOKE_SESSION`, `OPENID`) → `write`
+- `…/delete` → `delete`
+- anything else → `read`
+
+This means a permission check has **zero runtime cost** once cached: subsequent renders just read the Redux slice. The first evaluation on page mount goes through WASM, gets cached, and every later button/section on the same page reuses it.
+
+A 403 from the Config API is still possible if the policy store and the backend disagree — Cedarling is the **early gate**, not the only gate. The backend always re-validates.
+
 ## Where it lives
 
 ```text

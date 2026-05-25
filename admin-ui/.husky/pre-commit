@@ -155,11 +155,7 @@ fi
 
 if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
   echo ""
-  echo "💥 Commit blocked. Fix the errors above, then:"
-  echo "   Formatting : npm run format"
-  echo "   Lint       : npm run lint"
-  echo "   Types      : npm run type-check"
-  echo "   Markdown   : npm run lint:md:fix"
+  echo "💥 Commit blocked. Fix the errors above and try again."
   exit 1
 fi
 

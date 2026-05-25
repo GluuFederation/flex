@@ -56,8 +56,8 @@ When adding a translation key, update **all four** locale files: `en`, `es`, `fr
 ## Lint / type-check / format
 
 - Don't suppress: no `eslint-disable`, no `// @ts-ignore`, no `// @ts-expect-error`. Fix the cause.
-- `npm run check:all` runs lint + type-check together — use this before committing if you skipped the hook for any reason.
-- `npm run format` formats; `npm run format:check` only verifies.
+- `npm run check:all` runs ESLint + markdownlint + `tsc` together — use this before committing if you skipped the hook for any reason.
+- `npm run format` runs Prettier (covers `.md` too).
 
 ## Commits
 
@@ -67,7 +67,7 @@ When adding a translation key, update **all four** locale files: `en`, `es`, `fr
 
 ## Pre-commit hook
 
-Husky runs Prettier + ESLint + `tsc` on commit (across the staged JS/TS/JSON/CSS/SCSS subset). If it fails: fix locally, re-stage, commit again. Don't bypass with `--no-verify` unless explicitly approved.
+Husky runs Prettier + ESLint + `tsc` + markdownlint on commit (across the staged JS/TS/JSON/CSS/SCSS/MD subset). If it fails: fix locally, re-stage, commit again. Don't bypass with `--no-verify` unless explicitly approved.
 
 ## Don't introduce comments
 

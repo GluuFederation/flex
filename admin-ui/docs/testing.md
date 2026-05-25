@@ -9,7 +9,7 @@ Jest + Testing Library + jsdom. Unit and component tests live next to the code t
 ├── jest.config.ts               # Jest config (TS) — see below
 ├── __tests__/
 │   ├── setup-tests.ts           # runs before module imports (Jest `setupFiles`)
-│   └── setup.ts                 # runs after env, before each test (`setupFilesAfterEach`)
+│   └── setup.ts                 # runs after the test env is set up (`setupFilesAfterEnv`)
 ├── __mocks__/                   # shared mocks (cedarling, hmr, file/style stubs, …)
 └── app/ + plugins/              # tests live in __tests__/ siblings of the code
 ```

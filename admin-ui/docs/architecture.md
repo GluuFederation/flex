@@ -67,15 +67,26 @@ Each plugin's `plugin-metadata.ts` exports the menu items, routes, reducers, and
 
 A deliberate split:
 
-- **Server state → React Query** (`@tanstack/react-query`) — anything fetched from the Config API.
-- **Client / auth state → Redux** — sessions, theme, layout, sidebars, webhook UI, audit. Redux is retained on purpose; do not propose removing it.
+- **Server state → React Query** (`@tanstack/react-query`, via Orval-generated hooks). Anything fetched from the Jans Config API: OIDC clients, scopes, sessions, ACRs / auth methods, custom scripts, attributes, users, FIDO/SCIM/SMTP/SAML/Cache/Persistence config, properties, JSON-configuration, SSA, assets, stats / MAU / health, audit logs, agama projects, webhook execution, etc. If it's in the Config API, it goes through a `useGet<Op>` / `usePut<Op>` hook — never a hand-rolled fetch.
+- **Client / auth state → Redux** (`@reduxjs/toolkit` + sagas + `redux-persist`). Pure client-side state that multiple components observe:
+
+  | Slice                                                          | What it holds                                               |
+  | -------------------------------------------------------------- | ----------------------------------------------------------- |
+  | `authSlice`                                                    | OIDC config, tokens, `userinfo`, backend reachability flag  |
+  | `sessionSlice`                                                 | Admin UI session creation state (`createAdminUiSession`)    |
+  | `licenseSlice`                                                 | License validity, trial state, SSA upload, threshold checks |
+  | `cedarPermissionsSlice`                                        | Cached Cedarling authorize decisions + policy-store bytes   |
+  | `logoutSlice`                                                  | Logout / audit-on-logout state                              |
+  | `initSlice`                                                    | Boot-time init flags                                        |
+  | `toastSlice`                                                   | Toast notifications shown across the app                    |
+  | `ProfileDetailsSlice`                                          | Current user's profile-page state                           |
+  | _plugin-local_ (`AssetSlice`, `WebhookSlice`, `scopeSlice`, …) | UI/workflow state for that plugin                           |
+
+  Redux is retained on purpose; do not propose collapsing it into React Query.
 
 ## Adding a new plugin
 
-1. `npm run plugin:add` — scaffolds the directory and registers it with the loader.
-2. Implement components/hooks/types under `plugins/<name>/`.
-3. Keep cross-plugin imports out — if your plugin needs something another plugin owns, the right answer is usually to hoist that thing to `app/` (see [conventions.md](./conventions.md#imports)).
-4. To remove a plugin: `npm run plugin:remove`.
+Create `plugins/<name>/` following an existing plugin as a template (e.g. `plugins/scim/`) and add a `{ order, key, metadataFile }` entry to `plugins.config.json` so the resolvers pick it up. Keep cross-plugin imports out — hoist shared things to `app/` instead (see [conventions.md](./conventions.md#imports)).
 
 ## Adding a new constant
 

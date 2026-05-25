@@ -70,7 +70,7 @@ Each entry: **what it is** → **where it's wired up** → **when you reach for 
 ### Build / quality / dev-only
 
 - **Sonda** — bundle analyzer (treemap + used/unused-export report). Enabled by `ANALYZE=true npm run build:prod`; emits `dist/sonda-report.{html,json}`.
-- **knip** — finds unused files, exports, dependencies. Run via `npm run knip` or surfaced by `preview:prod:analyze`. Watch out for magic-string Redux dispatches (knip can't see them).
+- **knip** — finds unused files, exports, dependencies. Surfaced by `npm run preview:prod:analyze` (the only script that runs it). Watch out for magic-string Redux dispatches (knip can't see them).
 - **Jest + Testing Library** — unit / component tests. `__tests__/` siblings throughout `app/` and `plugins/`.
 - **ESLint + Prettier** — lint + formatter. Config in `eslint.config.cjs` (Prettier uses defaults). Enforced via `.husky/pre-commit`. Never disable rules to silence failures.
 - **Husky** — git-hook runner. `.husky/pre-commit` is the **only** place lint/type-check enforcement runs; CI is just an artifact builder ([build-deploy.md](./build-deploy.md#ci--jenkins)).

@@ -43,23 +43,11 @@ Short, opinionated walkthroughs for tasks that come up every week. Each one poin
 
 ## Add a new plugin
 
-Don't hand-edit the loader files (`plugins/PluginMenuResolver.ts` / `…ReducersResolver.ts` / `…SagasResolver.ts`) — they're runtime-sensitive.
+Copy the layout of an existing plugin (e.g. `plugins/scim/`), create your own `plugins/<name>/` (`components/`, `plugin-metadata.ts`, etc.), and add a `{ order, key, metadataFile }` entry to `plugins.config.json`. That's all the resolvers need.
 
-```bash
-npm run plugin:add
-```
+Don't hand-edit the loader files (`plugins/PluginMenuResolver.ts` / `…ReducersResolver.ts` / `…SagasResolver.ts`) — they're runtime-sensitive. After wiring up the new plugin, verify the route resolves and the sidebar entry appears for a user with the relevant Cedarling scope.
 
-That scaffolds:
-
-- `plugins/<name>/` with the standard subfolders
-- a `plugin-metadata.ts` skeleton
-- registers the plugin in `plugins.config.json`
-
-Implement under the plugin folder, then check that the route resolves and the sidebar entry appears for a user with the relevant Cedarling scope.
-
-To remove: `npm run plugin:remove`.
-
-See [architecture.md](./architecture.md#-plugin-loader) for what the resolvers do at runtime.
+See [architecture.md](./architecture.md#plugin-loader) for what the resolvers do at runtime.
 
 ---
 

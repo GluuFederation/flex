@@ -46,7 +46,6 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | ------------------------------ | ------------------------------------------------------------- |
 | `npm start`                    | start the Vite dev server (alias for `start:dev`)             |
 | `npm run start:dev`            | Vite dev server in `development` mode                         |
-| `npm run preview`              | preview the last build over `vite preview`                    |
 | `npm run preview:prod`         | build prod, patch runtime config, preview                     |
 | `npm run preview:prod:analyze` | full prod build + Sonda + knip + preview, prints report links |
 
@@ -56,20 +55,14 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | --------------------------------- | --------------------------------------------------- |
 | `npm run build:dev`               | build with `development` mode (sourcemaps, dev env) |
 | `npm run build:prod`              | build with `production` mode (minified)             |
-| `npm run build:adminuitest`       | build with the `adminuitest` mode                   |
 | `ANALYZE=true npm run build:prod` | prod build + `dist/sonda-report.html` + `.json`     |
 
 ### Quality checks
 
-| Command                | What it does                   |
-| ---------------------- | ------------------------------ |
-| `npm run check:all`    | run lint + type-check together |
-| `npm run lint`         | ESLint with autofix            |
-| `npm run lint:check`   | ESLint, no fix (CI-style)      |
-| `npm run type-check`   | `tsc --noEmit`                 |
-| `npm run format`       | Prettier write                 |
-| `npm run format:check` | Prettier check, no write       |
-| `npm run knip`         | unused files / exports / deps  |
+| Command             | What it does                                          |
+| ------------------- | ----------------------------------------------------- |
+| `npm run check:all` | run ESLint + markdownlint + `tsc` together (parallel) |
+| `npm run format`    | Prettier write (covers `.md` too)                     |
 
 ### Tests
 
@@ -84,30 +77,19 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | ------------------- | ---------------------------------------------------------------- |
 | `npm run api:orval` | regenerate the Jans Config API TS client from the merged OpenAPI |
 
-### Plugins
-
-| Command                 | What it does                       |
-| ----------------------- | ---------------------------------- |
-| `npm run plugin:add`    | scaffold and register a new plugin |
-| `npm run plugin:remove` | unregister and delete a plugin     |
-
 ### Housekeeping
 
-| Command                          | What it does                           |
-| -------------------------------- | -------------------------------------- |
-| `npm run clean`                  | wipe `dist/`, Vite cache, ESLint cache |
-| `npm run clean:paths -- <path…>` | wipe specific paths                    |
-| `npm run cache:terminal:clean`   | clear npm cache + the terminal         |
+| Command                          | What it does                                                                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `npm run clean`                  | wipe `dist/`, Vite cache, ESLint cache                                                                           |
+| `npm run clean:all`              | full wipe: `node_modules/`, `package-lock.json`, generated Orval client, coverage, npm cache — fresh-clone state |
+| `npm run reset`                  | `clean:all` → `npm install` → `npm run api:orval` — the one-shot recovery when your install is broken            |
+| `npm run clean:paths -- <path…>` | wipe specific paths                                                                                              |
+| `npm run cache:terminal:clean`   | clear npm cache + the terminal                                                                                   |
 
 ## Pre-commit hook
 
-Husky runs Prettier, ESLint, and `tsc` on commit (against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss` files). If it blocks:
-
-```bash
-npm run format
-npm run lint
-npm run type-check
-```
+Husky runs Prettier, ESLint, `tsc`, and markdownlint on commit (against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md` files). If it blocks, read the output and fix the issues. Only `npm run format` can auto-fix (Prettier); the other tools report — fix the cause yourself.
 
 Don't bypass with `--no-verify`; fix the cause. Lint/type-check enforcement lives **only** in the pre-commit hook — CI is just a build step (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
 

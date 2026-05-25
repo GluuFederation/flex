@@ -49,7 +49,6 @@ Vite loads `.env`, `.env.<mode>`, and `.env.<mode>.local` (in that order — lat
 | ----------------------- | ------------------ | -------------------------------------------- |
 | `development` (default) | `.env.development` | `npm start`, `npm run build:dev`             |
 | `production`            | `.env.production`  | `npm run build:prod`, `npm run preview:prod` |
-| `adminuitest`           | `.env.adminuitest` | `npm run build:adminuitest`                  |
 
 `.env.*.local` files are for per-machine overrides — keep them out of git. Never commit secrets to any `.env*` file.
 

@@ -2,11 +2,10 @@
 
 ## Modes
 
-| Script                      | Mode        | Notes                       |
-| --------------------------- | ----------- | --------------------------- |
-| `npm run build:dev`         | development | source maps, dev env        |
-| `npm run build:prod`        | production  | minified, the real artifact |
-| `npm run build:adminuitest` | adminuitest | the test environment        |
+| Script               | Mode        | Notes                       |
+| -------------------- | ----------- | --------------------------- |
+| `npm run build:dev`  | development | source maps, dev env        |
+| `npm run build:prod` | production  | minified, the real artifact |
 
 Output is always `dist/`. `npm run clean` wipes `dist/`, the Vite cache, and the ESLint cache.
 
@@ -18,7 +17,6 @@ Vite loads `.env`, `.env.<mode>`, and `.env.<mode>.local` (later wins). Each bui
 | ------------- | ------------------ | -------------------------------------------- |
 | `development` | `.env.development` | `npm start`, `npm run build:dev`             |
 | `production`  | `.env.production`  | `npm run build:prod`, `npm run preview:prod` |
-| `adminuitest` | `.env.adminuitest` | `npm run build:adminuitest`                  |
 
 See [onboarding.md](./onboarding.md#variables) for what each variable does.
 
@@ -28,7 +26,6 @@ See [onboarding.md](./onboarding.md#variables) for what each variable does.
 
 | Script                         | What it does                                                                                    |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `npm run preview`              | preview whatever is currently in `dist/` (no rebuild)                                           |
 | `npm run preview:prod`         | `build:prod` → patch runtime config into `dist/` → `vite preview --host 0.0.0.0`                |
 | `npm run preview:prod:analyze` | same as `preview:prod` + Sonda + `knip --reporter json`; prints `file://` links to both reports |
 
@@ -97,12 +94,3 @@ The flex Jenkins pipeline runs **only** `npm run build:$ENV_NAME` (no preview, n
 4. Publishes `dist/`
 
 Anything that needs to pass before merge belongs in the **husky pre-commit hook**, not in CI. CI is purely an artifact builder.
-
-## Plugin management
-
-| Script                  | Purpose                                               |
-| ----------------------- | ----------------------------------------------------- |
-| `npm run plugin:add`    | scaffold a new plugin and register it with the loader |
-| `npm run plugin:remove` | unregister and delete a plugin                        |
-
-These touch `plugins/PluginMenuResolver.ts`, `plugins/PluginReducersResolver.ts`, and `plugins/PluginSagasResolver.ts` — runtime-sensitive files. Use the scripts; don't hand-edit.
