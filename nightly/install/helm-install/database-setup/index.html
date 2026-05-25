@@ -2989,17 +2989,17 @@
 <h2 id="option-1-postgresql-recommended">Option 1: PostgreSQL (Recommended)<a class="headerlink" href="#option-1-postgresql-recommended" title="Permanent link">#</a></h2>
 <h3 id="testingdevelopment-setup">Testing/Development Setup<a class="headerlink" href="#testingdevelopment-setup" title="Permanent link">#</a></h3>
 <p>Deploy PostgreSQL on your cluster for testing:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/pgsql.yaml
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/pgsql.yaml
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pgsql.yaml
 </code></pre></div>
 <h3 id="postgresql-configuration">PostgreSQL Configuration<a class="headerlink" href="#postgresql-configuration" title="Permanent link">#</a></h3>
 <p>Add this to your <code>override.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">config</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">configmap</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jans</span>
+<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span>
 <span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
 <span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pgsql</span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql.jans.svc</span>
+<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql.gluu.svc</span>
 <span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
 <span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span>
 <span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w">  </span><span class="c1"># Change for production!</span>
@@ -3007,17 +3007,17 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <h2 id="option-2-mysql">Option 2: MySQL<a class="headerlink" href="#option-2-mysql" title="Permanent link">#</a></h2>
 <h3 id="testingdevelopment-setup_1">Testing/Development Setup<a class="headerlink" href="#testingdevelopment-setup_1" title="Permanent link">#</a></h3>
 <p>Deploy MySQL on your cluster for testing:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/mysql.yaml
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/mysql.yaml
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>mysql.yaml
 </code></pre></div>
 <h3 id="mysql-configuration">MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permanent link">#</a></h3>
 <p>Add this to your <code>override.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">config</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">configmap</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jans</span>
+<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span>
 <span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span>
 <span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql.jans.svc</span>
+<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql.gluu.svc</span>
 <span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
 <span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span>
 <span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w">  </span><span class="c1"># Change for production!</span>
@@ -3058,7 +3058,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 8, 2026 12:15:37 UTC"><span class="timeago" datetime="2026-05-08T12:15:37+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 8, 2026 12:15:37 UTC">2026-05-08</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 25, 2026 07:01:46 UTC"><span class="timeago" datetime="2026-05-25T07:01:46+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 25, 2026 07:01:46 UTC">2026-05-25</span>
   </span>
 
     
