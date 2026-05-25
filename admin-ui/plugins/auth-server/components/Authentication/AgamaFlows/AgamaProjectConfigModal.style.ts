@@ -15,10 +15,6 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
   return {
     configModalContainer: {
       ...getCardBorderStyle({ isDark }),
-      position: 'fixed' as const,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
       backgroundColor: cardBg,
       minWidth: '45vw',
     },

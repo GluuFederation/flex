@@ -23,7 +23,6 @@ const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
 const TEXTAREA_HEIGHT = 161
-const CARD_HEIGHT = 520
 const CLOSE_BUTTON_SIZE = 32
 const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
@@ -53,17 +52,15 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     modalContainer: {
       ...cardBorderStyle,
       position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      inset: 0,
+      margin: 'auto',
       zIndex: 1050,
       backgroundColor: modalBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
       maxWidth: `${MODAL.WIDTH}px`,
-      minHeight: `${CARD_HEIGHT}px`,
-      maxHeight: MODAL.MAX_VH,
-      height: 'auto',
+      maxHeight: `calc(100vh - ${SCROLL_VIEWPORT_PADDING * 2}px)`,
+      height: 'fit-content',
       flexShrink: 0,
       display: 'flex',
       flexDirection: 'column',
@@ -75,8 +72,10 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       display: 'flex',
       flexDirection: 'column',
       flex: 1,
+      minHeight: 0,
       padding: `${CONTENT_BUTTONS_PADDING}px`,
       gap: CONTENT_GAP,
+      overflowY: 'auto',
     },
     overlay: {
       position: 'fixed',
