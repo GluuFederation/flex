@@ -8,12 +8,15 @@ esac
 
 # All staged files matching prettier-supported extensions that still exist on disk
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM \
-  | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx|json|css|scss)$' \
+  | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx|json|css|scss|md)$' \
   | sed 's|^admin-ui/||' \
   | while read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done)
 
-# JS/TS subset for ESLint (json/css/scss are not lintable)
+# JS/TS subset for ESLint (json/css/scss/md are not lintable)
 STAGED_SCRIPT_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)
+
+# Markdown subset for markdownlint
+STAGED_MD_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.md$' || true)
 
 if [ -z "$STAGED_FILES" ] && [ -z "$STAGED_SCRIPT_FILES" ]; then
   echo "✅ No checkable files staged."
@@ -23,10 +26,12 @@ fi
 CPUS=$(nproc 2>/dev/null || sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
 FILE_COUNT=$(printf '%s\n' "$STAGED_FILES" | grep -c . || true)
 SCRIPT_COUNT=$(printf '%s\n' "$STAGED_SCRIPT_FILES" | grep -c . || true)
+MD_COUNT=$(printf '%s\n' "$STAGED_MD_FILES" | grep -c . || true)
 FILE_COUNT=${FILE_COUNT:-0}
 SCRIPT_COUNT=${SCRIPT_COUNT:-0}
+MD_COUNT=${MD_COUNT:-0}
 
-echo "🔍 Running prettier / eslint / tsc in parallel across $CPUS workers..."
+echo "🔍 Running prettier / eslint / tsc / markdownlint in parallel across $CPUS workers..."
 
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -34,6 +39,7 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 PRETTIER_OUT="$TMP_DIR/prettier.txt"
 ESLINT_OUT="$TMP_DIR/eslint.txt"
 TSC_OUT="$TMP_DIR/tsc.txt"
+MDLINT_OUT="$TMP_DIR/mdlint.txt"
 PRETTIER_STATUS="$TMP_DIR/prettier-status.txt"
 ESLINT_STATUS="$TMP_DIR/eslint-status.txt"
 
@@ -96,14 +102,24 @@ run_tsc() {
   npx tsc --noEmit > "$TSC_OUT" 2>&1
 }
 
-# Launch all three simultaneously
+# --- markdownlint-cli2: run on staged .md files only ---
+run_mdlint() {
+  if [ "$MD_COUNT" -eq 0 ]; then return 0; fi
+  printf '%s\n' "$STAGED_MD_FILES" | tr '\n' '\0' | \
+    xargs -0 npx markdownlint-cli2 > "$MDLINT_OUT" 2>&1
+  return $?
+}
+
+# Launch all four simultaneously
 run_prettier & PID_PRETTIER=$!
 run_eslint   & PID_ESLINT=$!
 run_tsc      & PID_TSC=$!
+run_mdlint   & PID_MDLINT=$!
 
 wait $PID_PRETTIER; EXIT_PRETTIER=$? || true
 wait $PID_ESLINT;   EXIT_ESLINT=$? || true
 wait $PID_TSC;      EXIT_TSC=$? || true
+wait $PID_MDLINT;   EXIT_MDLINT=$? || true
 
 echo ""
 
@@ -128,12 +144,22 @@ else
   cat "$TSC_OUT"
 fi
 
-if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ]; then
+if [ "$MD_COUNT" -eq 0 ]; then
+  echo "✅ Markdown   : no .md files staged"
+elif [ $EXIT_MDLINT -eq 0 ]; then
+  echo "✅ Markdown   : no markdownlint errors"
+else
+  echo "❌ Markdown   : markdownlint errors found"
+  cat "$MDLINT_OUT"
+fi
+
+if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
   echo ""
   echo "💥 Commit blocked. Fix the errors above, then:"
   echo "   Formatting : npm run format"
   echo "   Lint       : npm run lint"
   echo "   Types      : npm run type-check"
+  echo "   Markdown   : npm run lint:md:fix"
   exit 1
 fi
 
