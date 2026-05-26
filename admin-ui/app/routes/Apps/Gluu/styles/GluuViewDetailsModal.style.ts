@@ -4,7 +4,7 @@ import { BORDER_RADIUS, MODAL } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -18,16 +18,14 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
   return {
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      position: 'relative',
+      margin: 'auto',
       backgroundColor: modalBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: `min(${VIEW_MODAL_WIDTH}, ${MODAL.MAX_VW})`,
       maxWidth: VIEW_MODAL_WIDTH,
-      maxHeight: MODAL.MAX_VH,
-      zIndex: 1050,
+      height: 'auto',
+      flexShrink: 0,
       boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',

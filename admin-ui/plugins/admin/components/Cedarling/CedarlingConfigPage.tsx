@@ -17,6 +17,7 @@ import { devLogger } from '@/utils/devLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import { Close, InfoOutlined } from '@/components/icons'
+import { ModalLayer } from '@/components/ModalLayer'
 import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
@@ -223,16 +224,6 @@ const CedarlingConfigPage: React.FC = () => {
     navigateBack(ROUTES.HOME_DASHBOARD)
   }, [navigateBack])
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handleConfirmCancel()
-      }
-    },
-    [handleConfirmCancel],
-  )
-
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Escape') {
@@ -246,14 +237,7 @@ const CedarlingConfigPage: React.FC = () => {
 
   const confirmModal = showConfirm
     ? createPortal(
-        <>
-          <button
-            type="button"
-            className={commitClasses.overlay}
-            onClick={handleConfirmCancel}
-            onKeyDown={handleOverlayKeyDown}
-            aria-label={t('actions.close')}
-          />
+        <ModalLayer onClose={handleConfirmCancel}>
           <div
             ref={dialogRef}
             className={commitClasses.modalContainer}
@@ -292,7 +276,7 @@ const CedarlingConfigPage: React.FC = () => {
               />
             </div>
           </div>
-        </>,
+        </ModalLayer>,
         document.body,
       )
     : null

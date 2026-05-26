@@ -7,6 +7,7 @@ import {
   setWebhookTriggerResults,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { Check, Close, InfoOutlined } from '@/components/icons'
+import { ModalLayer } from '@/components/ModalLayer'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -71,16 +72,6 @@ const GluuWebhookExecutionDialog = () => {
     dispatch(setWebhookTriggerResults([]))
   }, [dispatch])
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        closeModal()
-      }
-    },
-    [closeModal],
-  )
-
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -99,14 +90,7 @@ const GluuWebhookExecutionDialog = () => {
   }
 
   const modalContent = (
-    <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={closeModal}
-        onKeyDown={handleOverlayKeyDown}
-        aria-label={t('actions.close')}
-      />
+    <ModalLayer onClose={closeModal}>
       <div
         className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
@@ -194,7 +178,7 @@ const GluuWebhookExecutionDialog = () => {
           </div>
         </div>
       </div>
-    </>
+    </ModalLayer>
   )
 
   return createPortal(modalContent, document.body)

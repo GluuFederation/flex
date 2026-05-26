@@ -141,48 +141,56 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
         aria-label={t('actions.close')}
       />
       <div
-        ref={dialogRef}
-        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        aria-modal="true"
-        tabIndex={-1}
-        aria-labelledby="json-viewer-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handleClose()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handleClose}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          ref={dialogRef}
+          className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
+          aria-labelledby="json-viewer-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={commitClasses.title} id="json-viewer-title">
-            {title}
-          </GluuText>
-          <div className={classes.viewerBody}>
-            {data !== undefined ? (
-              <JsonViewer
-                data={data}
-                theme={selectedTheme}
-                expanded={expanded}
-                backgroundColor={themeColors.card.background}
-              />
-            ) : (
-              <div className={classes.viewerPlaceholder} aria-hidden="true" />
-            )}
+          <button
+            type="button"
+            onClick={handleClose}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText variant="h2" className={commitClasses.title} id="json-viewer-title">
+              {title}
+            </GluuText>
+            <div className={classes.viewerBody}>
+              {data !== undefined ? (
+                <JsonViewer
+                  data={data}
+                  theme={selectedTheme}
+                  expanded={expanded}
+                  backgroundColor={themeColors.card.background}
+                />
+              ) : (
+                <div className={classes.viewerPlaceholder} aria-hidden="true" />
+              )}
+            </div>
+            <GluuThemeFormFooter
+              showApply
+              applyButtonType="button"
+              applyButtonLabel={copyLabel}
+              onApply={copyToClipboard}
+              disableApply={isCopied || data === undefined || isLoading}
+              className={classes.footer}
+            />
           </div>
-          <GluuThemeFormFooter
-            showApply
-            applyButtonType="button"
-            applyButtonLabel={copyLabel}
-            onApply={copyToClipboard}
-            disableApply={isCopied || data === undefined || isLoading}
-            className={classes.footer}
-          />
         </div>
       </div>
     </>

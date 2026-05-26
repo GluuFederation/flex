@@ -47,23 +47,31 @@ const GluuModalShell = ({
     <>
       {overlay}
       <div
-        className={commitClasses.modalContainer}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby={ariaLabelledBy}
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (closeOnOverlayClick && e.target === e.currentTarget) onClose()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          className={commitClasses.modalContainer}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby={ariaLabelledBy}
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>{children}</div>
+          <button
+            type="button"
+            onClick={onClose}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>{children}</div>
+        </div>
       </div>
     </>,
     document.body,
