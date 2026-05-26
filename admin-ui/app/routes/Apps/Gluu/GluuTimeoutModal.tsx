@@ -7,6 +7,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { Close } from '@/components/icons'
+import { ModalLayer } from '@/components/ModalLayer'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
@@ -38,16 +39,6 @@ const GluuTimeoutModal = () => {
     dispatch(handleApiTimeout({ isTimeout: false }))
   }, [dispatch])
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handler()
-      }
-    },
-    [handler],
-  )
-
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -62,14 +53,7 @@ const GluuTimeoutModal = () => {
   if (!isTimeout) return null
 
   const modalContent = (
-    <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={handler}
-        onKeyDown={handleOverlayKeyDown}
-        aria-label={t('actions.close')}
-      />
+    <ModalLayer onClose={handler}>
       <div
         className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
@@ -102,7 +86,7 @@ const GluuTimeoutModal = () => {
           />
         </div>
       </div>
-    </>
+    </ModalLayer>
   )
 
   return createPortal(modalContent, document.body)

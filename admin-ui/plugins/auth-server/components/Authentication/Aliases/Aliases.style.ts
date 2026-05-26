@@ -52,10 +52,6 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     deleteIcon: { fontSize: ICON_SIZE.SM },
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed' as const,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
       backgroundColor: cardBg,
       width: 'min(900px, 90vw)',
       maxWidth: '900px',

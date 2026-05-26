@@ -1,3 +1,9 @@
+export const COLUMN_WIDTHS = {
+  PILL_SINGLE_SHORT: 140,
+  PILL_SINGLE: 180,
+  PILL_LIST: 280,
+} as const
+
 export const T_KEYS = {
   FIELDS_ACTIONS: 'fields.actions',
   FIELDS_OF: 'fields.of',

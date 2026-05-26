@@ -8,7 +8,7 @@ const WEBHOOK_MODAL_Z_INDEX = 10050
 const WEBHOOK_TABLE_MIN_WIDTH = 650
 const CHECKBOX_LABEL_EXTRA_GAP = 3
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -27,7 +27,6 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     },
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed',
       zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
       backgroundColor: cardBg,
       outline: 'none',
