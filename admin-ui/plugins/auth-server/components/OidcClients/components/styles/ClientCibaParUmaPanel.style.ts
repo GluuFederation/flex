@@ -65,7 +65,7 @@ const getAccordionStyles = (
       padding: `${SPACING.SECTION_GAP}px ${SPACING.CARD_PADDING}px !important`,
       borderRadius: `0 0 ${BORDER_RADIUS.ACCORDION}px ${BORDER_RADIUS.ACCORDION}px`,
     },
-    '& .card.b-primary .form-control, & .card.b-primary input, & .card.b-primary select, & .card.b-primary textarea':
+    '& .card.b-primary .form-control:not(.MuiInputBase-input), & .card.b-primary input:not(.MuiInputBase-input), & .card.b-primary select, & .card.b-primary textarea':
       {
         backgroundColor: `${formInputBg} !important`,
       },

@@ -342,10 +342,9 @@ const DashboardPage = () => {
   return (
     <GluuLoader blocking={isBlocking}>
       {showModal}
-
       <GluuPageContent>
         <Grid container className={classes.topGridNoMargin}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <div className={classes.statusSection}>
               <div className={classes.statusContainer}>
                 <GluuText variant="span" className={classes.statusTitle}>
@@ -366,17 +365,24 @@ const DashboardPage = () => {
         </Grid>
 
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container spacing={2}>
               {summaryData.slice(0, 3).map((data) => (
-                <Grid item xs={12} sm={6} md={4} key={data.text}>
+                <Grid
+                  key={data.text}
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    md: 4,
+                  }}
+                >
                   <SummaryCard text={data.text} value={data.value} classes={classes} />
                 </Grid>
               ))}
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <div className={classes.userInfoChartRow}>
               <div className={classes.userInfoChartCol}>
                 <Paper
@@ -384,7 +390,7 @@ const DashboardPage = () => {
                   elevation={0}
                 >
                   <Grid className={classes.flex} container>
-                    <Grid item xs={12} className={isMobile ? classes.mobileTopSpacing : ''}>
+                    <Grid className={isMobile ? classes.mobileTopSpacing : ''} size={12}>
                       <div className={classes.userInfo}>
                         <GluuText variant="div" className={classes.userInfoTitle}>
                           {t('dashboard.user_info')}

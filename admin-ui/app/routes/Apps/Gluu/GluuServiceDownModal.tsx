@@ -48,7 +48,6 @@ const GluuServiceDownModal = ({ message = '', statusCode }: GluuServiceDownModal
           }}
         />
       </Box>
-
       <div
         style={{
           position: 'absolute',
@@ -76,11 +75,13 @@ const GluuServiceDownModal = ({ message = '', statusCode }: GluuServiceDownModal
           }}
         />
         <Box
-          display="flex"
-          alignItems="start"
-          flexDirection="column"
-          gap={2}
-          maxWidth={{ sm: '100%', md: '70%' }}
+          sx={{
+            display: 'flex',
+            alignItems: 'start',
+            flexDirection: 'column',
+            gap: 2,
+            maxWidth: { sm: '100%', md: '70%' },
+          }}
         >
           {statusCode ? (
             <h2 style={{ color: customColors.white, fontWeight: 'bolder' }}>

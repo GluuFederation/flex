@@ -20,4 +20,5 @@ export type GluuBadgeProps = {
   className?: string
   onClick?: () => void
   title?: string
+  wrap?: boolean
 }

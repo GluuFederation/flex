@@ -291,11 +291,10 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         handleClose={onClose}
         hideFooter
         modalClassName={classes.modal2FA}
-        modalStyle={{ minWidth: 700, maxWidth: '80vw' }}
+        modalStyle={{ width: 'min(1007px, 95vw)', maxWidth: '95vw' }}
         contentClassName={classes.modalContent}
-        contentStyle={{ overflowX: 'visible' }}
         customHeader={
-          <div className={`modal-header ${classes.modalHeader}`}>
+          <div className={classes.modalHeader}>
             <div className={classes.headerTopRow}>
               <button
                 type="button"
