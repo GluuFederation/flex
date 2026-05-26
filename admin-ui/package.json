@@ -88,14 +88,22 @@
     "vite": "^8.0.0",
     "vite-plugin-wasm": "^3.0.0"
   },
+  "overrides": {
+    "@material-table/core": {
+      "@mui/icons-material": "^7.0.0",
+      "@mui/material": "$@mui/material",
+      "@mui/system": "$@mui/material"
+    },
+    "react-is": "$react"
+  },
   "dependencies": {
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@janssenproject/cedarling_wasm": "0.0.338",
     "@material-table/core": "6.4.4",
-    "@mui/icons-material": "^5.0.0",
-    "@mui/material": "^5.0.0",
-    "@mui/x-date-pickers": "^7.0.0",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "@mui/x-date-pickers": "^9.0.0",
     "@openid/appauth": "^1.0.0",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.0.0",

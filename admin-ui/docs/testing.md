@@ -7,7 +7,7 @@ Jest + Testing Library + jsdom. Unit and component tests live next to the code t
 ```text
 <rootDir>/
 ├── jest.config.ts               # Jest config (TS) — see below
-├── __tests__/
+├── jest/
 │   ├── setup-tests.ts           # runs before module imports (Jest `setupFiles`)
 │   └── setup.ts                 # runs after the test env is set up (`setupFilesAfterEnv`)
 ├── __mocks__/                   # shared mocks (cedarling, hmr, file/style stubs, …)
@@ -38,8 +38,8 @@ plugins/scim/
 
 - `testEnvironment: 'jsdom'` — DOM available in tests; `window`, `document` etc. work.
 - `testEnvironmentOptions.url` is `https://admin-ui-test.gluu.org/` — drives `window.location` in tests.
-- `__tests__/setup-tests.ts` loads `.env.test` via `dotenv` before any module imports.
-- `__tests__/setup.ts` initializes i18next and silences expected console noise (`console.log`/`warn` are spied; specific `console.error` messages are filtered).
+- `jest/setup-tests.ts` loads `.env.production` via `dotenv` before any module imports.
+- `jest/setup.ts` initializes i18next and silences expected console noise (`console.log`/`warn` are spied; specific `console.error` messages are filtered).
 
 ## Path aliases in tests
 

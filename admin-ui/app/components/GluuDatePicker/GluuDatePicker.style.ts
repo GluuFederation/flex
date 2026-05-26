@@ -26,6 +26,7 @@ const buildPickerThemeColors = (
     borderColor,
     popupBg: themeConfig.dashboard.supportCard,
     popupBorderColor: getLoadingOverlayRgba(themeConfig.fontColor, getDividerOpacity(isDark)),
+    popupOuterBorderColor: getLoadingOverlayRgba(themeConfig.fontColor, isDark ? 0.55 : 0.35),
     selectedBg: themeConfig.fontColor,
     selectedText: themeConfig.background,
     hoverBg,
@@ -93,34 +94,50 @@ const buildTextFieldSx = (
   'maxWidth': '100%',
   'boxSizing': 'border-box',
   ...(common as SxProps<Theme>),
-  '& .MuiInputBase-root': {
+  '& .MuiInputBase-root, & .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
     ...(inputHeight != null ? { height: inputHeight, minHeight: inputHeight } : {}),
   },
-  '& .MuiInputBase-input': {
-    fontFamily,
-    'fontSize': fontSizes.base,
-    'color': tc.inputTextColor,
-    '&::placeholder': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
+  '& .MuiInputBase-input, & .MuiPickersInputBase-sectionContent, & .MuiPickersSectionList-sectionContent':
+    {
+      fontFamily,
+      'fontSize': fontSizes.base,
+      'color': tc.inputTextColor,
+      '&::placeholder': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
+    },
+  '& .MuiPickersInputBase-root': {
+    color: tc.inputTextColor,
   },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': { borderColor: tc.borderColor },
-    '&:hover fieldset': { borderColor: tc.borderColor },
-    '&.Mui-focused fieldset': { borderColor: tc.borderColor },
+  '& .MuiOutlinedInput-root, & .MuiPickersOutlinedInput-root': {
+    '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': { borderColor: tc.borderColor },
+    '&:hover fieldset, &:hover .MuiPickersOutlinedInput-notchedOutline': {
+      borderColor: tc.borderColor,
+    },
+    '&.Mui-focused fieldset, &.Mui-focused .MuiPickersOutlinedInput-notchedOutline': {
+      borderColor: tc.borderColor,
+    },
   },
 })
+
+const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 
 const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,
     'borderRadius': `${BORDER_RADIUS.SMALL}px`,
-    'boxShadow': 'none',
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': { borderColor: tc.borderColor },
-      '&:hover fieldset': { borderColor: tc.borderColor },
-      '&.Mui-focused fieldset': { borderColor: tc.borderColor },
+    'border': `1px solid ${tc.popupOuterBorderColor}`,
+    'boxShadow': POPUP_BOX_SHADOW,
+    'overflow': 'hidden',
+    '& .MuiOutlinedInput-root, & .MuiPickersOutlinedInput-root': {
+      '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': { borderColor: tc.borderColor },
+      '&:hover fieldset, &:hover .MuiPickersOutlinedInput-notchedOutline': {
+        borderColor: tc.borderColor,
+      },
+      '&.Mui-focused fieldset, &.Mui-focused .MuiPickersOutlinedInput-notchedOutline': {
+        borderColor: tc.borderColor,
+      },
     },
     // Calendar header
     '& .MuiPickersCalendarHeader-root': {
@@ -129,10 +146,10 @@ const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
       '& .MuiPickersCalendarHeader-switchViewIcon': { color: tc.inputTextColor },
     },
     // Day cells
-    '& .MuiPickersDay-root': {
+    '& .MuiPickerDay-root, & .MuiPickersDay-root': {
       'backgroundColor': 'transparent',
       'color': tc.inputTextColor,
-      '&.MuiPickersDay-today': {
+      '&.MuiPickerDay-today, &.MuiPickersDay-today': {
         'borderColor': tc.inputTextColor,
         '&.Mui-selected': { borderColor: 'transparent' },
       },
@@ -297,11 +314,15 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
     const paperSx: SxProps<Theme> = {
       backgroundColor: pickerTheme.popupBg,
       color: pickerTheme.inputTextColor,
+      border: `1px solid ${pickerTheme.popupOuterBorderColor}`,
+      borderRadius: `${BORDER_RADIUS.SMALL}px`,
+      boxShadow: POPUP_BOX_SHADOW,
+      overflow: 'hidden',
     }
     const slotProps = {
       textField: {
         size: TEXT_FIELD_SIZE,
-        InputLabelProps: { shrink: labelShrink },
+        slotProps: { inputLabel: { shrink: labelShrink } },
         sx: textFieldSx,
       },
       popper: { sx: popperSx },
