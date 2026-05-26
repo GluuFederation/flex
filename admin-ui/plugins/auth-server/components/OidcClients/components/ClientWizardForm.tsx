@@ -156,9 +156,7 @@ const ClientWizardForm = ({
     () =>
       isEdit
         ? CLIENT_WIZARD_SEQUENCE
-        : CLIENT_WIZARD_SEQUENCE.filter(
-            (stepId) => stepId !== WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS,
-          ),
+        : CLIENT_WIZARD_SEQUENCE.filter((stepId) => stepId !== 'ClientActiveTokens'),
     [isEdit],
   )
   const visibleSteps = useMemo(
@@ -546,6 +544,7 @@ const ClientWizardForm = ({
                           content={t(step.tooltipKey)}
                           place={index === 0 ? 'bottom-start' : 'bottom'}
                           positionStrategy="fixed"
+                          offset={20}
                         >
                           <WizardStep
                             data-testid={step.id}

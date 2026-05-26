@@ -68,7 +68,9 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     wizardNav: {
       'overflowX': 'auto',
       '& .wizard': {
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
+        gap: 24,
+        flexWrap: 'nowrap',
       },
       '& .wizard > div': {
         flex: '0 0 auto',
@@ -78,7 +80,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       '& .wizard-step': {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 0,
+        gap: 8,
         marginLeft: '0 !important',
       },
       '& .wizard-step__icon': {

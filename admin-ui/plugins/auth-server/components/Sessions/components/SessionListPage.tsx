@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import isEmpty from 'lodash/isEmpty'
 import { DeleteOutlined, FilterListIcon, GetAppIcon } from '@/components/icons'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { FilterOption } from '@/components/GluuSearchToolbar'
@@ -19,7 +19,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { formatDate } from '@/utils/dayjsUtils'
 import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import {
@@ -257,7 +257,7 @@ const SessionListPage: React.FC = () => {
     const trimmedText = filterTextValue.trim()
     if (isDateFilterField(filterSearchField) && filterDateValue) {
       setSearchParams({
-        fieldValuePair: `${filterSearchField}=${formatDate(filterDateValue, DATE_FORMATS.DATE_ONLY)}`,
+        fieldValuePair: `${filterSearchField}=${formatDate(filterDateValue, 'YYYY-MM-DD')}`,
         limit: 100,
       })
     } else if (!isDateFilterField(filterSearchField) && trimmedText) {
@@ -355,9 +355,7 @@ const SessionListPage: React.FC = () => {
         row.sessionAttributes.auth_user,
         row.sessionAttributes.remote_ip,
         row.sessionAttributes.client_id,
-        row.authenticationTime
-          ? formatDate(row.authenticationTime, DATE_FORMATS.DATETIME_AMPM)
-          : '',
+        row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
         row.sessionAttributes.acr_values,
         row.state,
       ]
@@ -427,7 +425,7 @@ const SessionListPage: React.FC = () => {
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellText}>
             {row.authenticationTime
-              ? formatDate(row.authenticationTime, DATE_FORMATS.DATETIME_LONG)
+              ? formatDate(row.authenticationTime, 'ddd, MMM DD, YYYY h:mm:ss A')
               : '—'}
           </GluuText>
         ),
@@ -447,6 +445,7 @@ const SessionListPage: React.FC = () => {
         key: 'state',
         label: t('fields.state'),
         sortable: false,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => {
           const isAuth = row.state === AUTHENTICATED_SESSION_STATE
           const style = isAuth ? badgeStyles.authenticatedBadge : badgeStyles.unauthenticatedBadge

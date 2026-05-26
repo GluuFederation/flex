@@ -362,6 +362,12 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       '&&': {
         backgroundColor: `${cardBg} !important`,
       },
+      '&&:disabled, &&[disabled]': {
+        backgroundColor: `${cardBg} !important`,
+        border: `1px solid ${headersBorderColor} !important`,
+        color: `${themeColors.fontColor} !important`,
+        opacity: OPACITY.FULL,
+      },
     },
     propsActionBtn: dl.listActionBtn,
     editorTheme: {

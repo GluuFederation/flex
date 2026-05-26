@@ -280,171 +280,164 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         aria-label={t('actions.close')}
       />
       <div
-        className={`${commitClasses.modalContainer} ${classes.configModalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="agama-config-modal-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handler()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handler}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          className={`${commitClasses.modalContainer} ${classes.configModalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="agama-config-modal-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText
-            variant="h2"
-            className={`${commitClasses.title} ${classes.modalTitle}`}
-            id="agama-config-modal-title"
+          <button
+            type="button"
+            onClick={handler}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
           >
-            {manageConfig
-              ? t('titles.agama_manage_config_title', { name })
-              : t('titles.agama_project_details_title', { name })}
-          </GluuText>
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText
+              variant="h2"
+              className={`${commitClasses.title} ${classes.modalTitle}`}
+              id="agama-config-modal-title"
+            >
+              {manageConfig
+                ? t('titles.agama_manage_config_title', { name })
+                : t('titles.agama_project_details_title', { name })}
+            </GluuText>
 
-          <div className={classes.modalBody}>
-            {!projectDetailsFetching && !projectDetailsData && isOpen && (
-              <p>{t('messages.agama_project_deploying', { name })}</p>
-            )}
+            <div className={classes.modalBody}>
+              {!projectDetailsFetching && !projectDetailsData && isOpen && (
+                <p>{t('messages.agama_project_deploying', { name })}</p>
+              )}
 
-            {!!projectDetailsData && (
-              <>
-                {manageConfig ? (
-                  <div className={classes.buttonGroup}>
-                    <GluuButton
-                      type="button"
-                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
-                      textColor={themeColors.formFooter.apply.textColor}
-                      borderColor={themeColors.formFooter.apply.borderColor}
-                      useOpacityOnHover
-                      style={buttonStyle}
-                      onClick={handleExportSampleConfig}
-                    >
-                      {t('fields.export_sample_config')}
-                    </GluuButton>
-                    <GluuButton
-                      type="button"
-                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
-                      textColor={themeColors.formFooter.apply.textColor}
-                      borderColor={themeColors.formFooter.apply.borderColor}
-                      useOpacityOnHover
-                      style={buttonStyle}
-                      onClick={handleExportCurrentConfig}
-                    >
-                      {t('fields.export_current_config')}
-                    </GluuButton>
-                    <GluuButton
-                      type="button"
-                      backgroundColor={themeColors.formFooter.apply.backgroundColor}
-                      textColor={themeColors.formFooter.apply.textColor}
-                      borderColor={themeColors.formFooter.apply.borderColor}
-                      useOpacityOnHover
-                      style={buttonStyle}
-                      onClick={handleImportConfig}
-                    >
-                      {t('fields.import_configuration')}
-                    </GluuButton>
-                  </div>
-                ) : (
-                  <>
-                    <Box className={classes.detailText}>
-                      {t('fields.version')}:{' '}
-                      {projectDetailsData?.details?.projectMetadata?.version ?? '-'}
-                    </Box>
-                    <Box className={classes.detailText}>
-                      {t('fields.description')}:{' '}
-                      {projectDetailsData?.details?.projectMetadata?.description ?? '-'}
-                    </Box>
-                    <Box className={classes.detailText}>
-                      {t('fields.deployed_started_on')}: {projectDetailsData?.createdAt ?? '-'}
-                    </Box>
-                    <Box className={classes.detailText}>
-                      {t('fields.deployed_finished_on')}: {projectDetailsData?.finishedAt ?? '-'}
-                    </Box>
-                    <Box className={classes.detailText}>
-                      {t('fields.errors')}: {projectDetailsData?.details?.error ?? 'No'}
-                    </Box>
-                    <Box
-                      className={classes.tableWrapper}
-                      sx={{
-                        mt: 2,
-                      }}
-                    >
-                      <MaterialTable
-                        components={tableComponents}
-                        columns={tableColumns}
-                        data={flowErrors}
-                        isLoading={projectDetailsFetching}
-                        title=""
-                        options={tableOptions}
-                      />
-                    </Box>
-                    {projectConfigs ? (
-                      <Box
-                        sx={{
-                          mt: 2,
-                        }}
+              {!!projectDetailsData && (
+                <>
+                  {manageConfig ? (
+                    <div className={classes.buttonGroup}>
+                      <GluuButton
+                        type="button"
+                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                        textColor={themeColors.formFooter.apply.textColor}
+                        borderColor={themeColors.formFooter.apply.borderColor}
+                        useOpacityOnHover
+                        style={buttonStyle}
+                        onClick={handleExportSampleConfig}
                       >
-                        <Box
-                          className={classes.detailText}
-                          sx={{
-                            fontSize: 16,
-                            mb: 1,
-                          }}
-                        >
-                          {t('titles.project_configuration')}
-                        </Box>
-                        <AceEditor
-                          mode={'json'}
-                          readOnly={true}
-                          theme={aceTheme}
-                          fontSize={14}
-                          width="100%"
-                          height="300px"
-                          defaultValue={JSON.stringify(projectConfigs, null, 2)}
-                          editorProps={{ $blockScrolling: true }}
-                          setOptions={{ useWorker: false }}
+                        {t('fields.export_sample_config')}
+                      </GluuButton>
+                      <GluuButton
+                        type="button"
+                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                        textColor={themeColors.formFooter.apply.textColor}
+                        borderColor={themeColors.formFooter.apply.borderColor}
+                        useOpacityOnHover
+                        style={buttonStyle}
+                        onClick={handleExportCurrentConfig}
+                      >
+                        {t('fields.export_current_config')}
+                      </GluuButton>
+                      <GluuButton
+                        type="button"
+                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                        textColor={themeColors.formFooter.apply.textColor}
+                        borderColor={themeColors.formFooter.apply.borderColor}
+                        useOpacityOnHover
+                        style={buttonStyle}
+                        onClick={handleImportConfig}
+                      >
+                        {t('fields.import_configuration')}
+                      </GluuButton>
+                    </div>
+                  ) : (
+                    <>
+                      <Box className={classes.detailText}>
+                        {t('fields.version')}:{' '}
+                        {projectDetailsData?.details?.projectMetadata?.version ?? '-'}
+                      </Box>
+                      <Box className={classes.detailText}>
+                        {t('fields.description')}:{' '}
+                        {projectDetailsData?.details?.projectMetadata?.description ?? '-'}
+                      </Box>
+                      <Box className={classes.detailText}>
+                        {t('fields.deployed_started_on')}: {projectDetailsData?.createdAt ?? '-'}
+                      </Box>
+                      <Box className={classes.detailText}>
+                        {t('fields.deployed_finished_on')}: {projectDetailsData?.finishedAt ?? '-'}
+                      </Box>
+                      <Box className={classes.detailText}>
+                        {t('fields.errors')}: {projectDetailsData?.details?.error ?? 'No'}
+                      </Box>
+                      <Box className={classes.tableWrapper} sx={{ mt: 2 }}>
+                        <MaterialTable
+                          components={tableComponents}
+                          columns={tableColumns}
+                          data={flowErrors}
+                          isLoading={projectDetailsFetching}
+                          title=""
+                          options={tableOptions}
                         />
                       </Box>
-                    ) : null}
-                  </>
-                )}
-              </>
-            )}
-          </div>
+                      {projectConfigs ? (
+                        <Box sx={{ mt: 2 }}>
+                          <Box className={classes.detailText} sx={{ fontSize: 16, mb: 1 }}>
+                            {t('titles.project_configuration')}
+                          </Box>
+                          <AceEditor
+                            mode={'json'}
+                            readOnly={true}
+                            theme={aceTheme}
+                            fontSize={14}
+                            width="100%"
+                            height="300px"
+                            defaultValue={JSON.stringify(projectConfigs, null, 2)}
+                            editorProps={{ $blockScrolling: true }}
+                            setOptions={{ useWorker: false }}
+                          />
+                        </Box>
+                      ) : null}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
 
-          <Divider sx={{ mt: 2 }} />
+            <Divider sx={{ mt: 2 }} />
 
-          <div className={classes.modalFooter}>
-            {!isEmpty(projectConfigs) && (
+            <div className={classes.modalFooter}>
+              {!isEmpty(projectConfigs) && (
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                  textColor={themeColors.formFooter.apply.textColor}
+                  borderColor={themeColors.formFooter.apply.borderColor}
+                  useOpacityOnHover
+                  style={buttonStyle}
+                  onClick={() => !isCopied && copyToClipboard()}
+                >
+                  {isCopied ? t('actions.configuration_copied') : t('actions.copy_configuration')}
+                </GluuButton>
+              )}
               <GluuButton
                 type="button"
-                backgroundColor={themeColors.formFooter.apply.backgroundColor}
-                textColor={themeColors.formFooter.apply.textColor}
-                borderColor={themeColors.formFooter.apply.borderColor}
+                backgroundColor={themeColors.formFooter.cancel.backgroundColor}
+                textColor={themeColors.formFooter.cancel.textColor}
+                borderColor={themeColors.formFooter.cancel.borderColor}
                 useOpacityOnHover
                 style={buttonStyle}
-                onClick={() => !isCopied && copyToClipboard()}
+                onClick={handler}
               >
-                {isCopied ? t('actions.configuration_copied') : t('actions.copy_configuration')}
+                {t('actions.close')}
               </GluuButton>
-            )}
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.formFooter.cancel.backgroundColor}
-              textColor={themeColors.formFooter.cancel.textColor}
-              borderColor={themeColors.formFooter.cancel.borderColor}
-              useOpacityOnHover
-              style={buttonStyle}
-              onClick={handler}
-            >
-              {t('actions.close')}
-            </GluuButton>
+            </div>
           </div>
         </div>
       </div>

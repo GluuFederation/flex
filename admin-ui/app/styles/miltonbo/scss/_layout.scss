@@ -73,6 +73,7 @@
     &__wrap {
         flex: 1 1 auto;
         width: 100%;
+        min-width: 0;
     }
 
     &--only-navbar .layout__navbar {

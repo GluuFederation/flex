@@ -23,11 +23,13 @@ const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
 const TEXTAREA_HEIGHT = 161
-const OPERATIONS_MAX_HEIGHT = 240
+const CARD_HEIGHT = 520
 const CLOSE_BUTTON_SIZE = 32
 const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
 const BUTTON_PADDING = '8px 28px'
+
+const SCROLL_VIEWPORT_PADDING = 24
 
 const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
 const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
@@ -39,18 +41,28 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
   const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
+    modalScroll: {
+      position: 'fixed',
+      inset: 0,
+      zIndex: 1050,
+      display: 'flex',
+      padding: `${SCROLL_VIEWPORT_PADDING}px 0`,
+      overflowY: 'auto',
+      boxSizing: 'border-box',
+    },
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      position: 'relative',
+      margin: 'auto',
       backgroundColor: modalBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
       maxWidth: `${MODAL.WIDTH}px`,
-      maxHeight: MODAL.MAX_VH,
-      zIndex: 1050,
+      minHeight: `${CARD_HEIGHT}px`,
+      height: 'auto',
+      flexShrink: 0,
+      display: 'flex',
+      flexDirection: 'column',
       padding: 0,
       boxSizing: 'border-box',
       overflow: 'visible',
@@ -58,14 +70,16 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     contentArea: {
       display: 'flex',
       flexDirection: 'column',
+      flex: 1,
       padding: `${CONTENT_BUTTONS_PADDING}px`,
       gap: CONTENT_GAP,
-      overflowY: 'auto',
     },
     overlay: {
       position: 'fixed',
       inset: 0,
       backgroundColor: isDark ? OVERLAY_BG_DARK : OVERLAY_BG_LIGHT,
+      backdropFilter: 'blur(4px)',
+      WebkitBackdropFilter: 'blur(4px)',
       zIndex: 1040,
       cursor: 'pointer',
       border: 'none',
@@ -159,8 +173,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       display: 'flex',
       flexDirection: 'column',
       gap: CHECKBOX_LABEL_GAP_ADJUST,
-      maxHeight: OPERATIONS_MAX_HEIGHT,
-      overflowY: 'auto',
       overflowX: 'hidden',
       width: '80%',
       alignSelf: 'flex-start',

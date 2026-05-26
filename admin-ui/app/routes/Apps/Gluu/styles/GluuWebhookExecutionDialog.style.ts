@@ -5,11 +5,10 @@ import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getScrollbarStyles, MODAL, SPACING } from '@/constants'
 
-const WEBHOOK_RESULT_MODAL_MAX_HEIGHT = '76vh'
 const WEBHOOK_RESULT_LIST_MAX_HEIGHT = 'min(42vh, 340px)'
 const WEBHOOK_RESULT_GAP = SPACING.SECTION_GAP + 2
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -21,16 +20,10 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
   return {
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
       width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
       maxWidth: `${MODAL.WIDTH}px`,
-      maxHeight: WEBHOOK_RESULT_MODAL_MAX_HEIGHT,
       backgroundColor: modalBg,
       outline: 'none',
-      zIndex: 1050,
     },
     contentArea: {
       position: 'relative',
@@ -38,9 +31,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       display: 'flex',
       flexDirection: 'column',
       gap: SPACING.CONTENT_PADDING,
-      maxHeight: WEBHOOK_RESULT_MODAL_MAX_HEIGHT,
       padding: SPACING.CONTENT_PADDING,
-      overflow: 'hidden',
       overflowX: 'hidden',
       boxSizing: 'border-box',
     },

@@ -1,2 +1,10 @@
 export { default as GluuTable } from './GluuTable'
-export type { ColumnDef, ActionDef, PaginationConfig } from './types'
+export { COLUMN_WIDTHS } from './constants'
+export type {
+  ColumnDef,
+  ActionDef,
+  PaginationConfig,
+  SortDirection,
+  GluuTableProps,
+  ExpandContext,
+} from './types'

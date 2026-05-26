@@ -105,40 +105,48 @@ const ClientShowSpontaneousScopes = ({
         aria-label={t('actions.close')}
       />
       <div
-        ref={dialogRef}
-        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        aria-modal="true"
-        tabIndex={-1}
-        aria-labelledby="spontaneous-scopes-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handler()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handler}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          ref={dialogRef}
+          className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
+          aria-labelledby="spontaneous-scopes-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={commitClasses.title} id="spontaneous-scopes-title">
-            {t('fields.spontaneousScopes')}
-          </GluuText>
-          <div className={classes.scopeList}>
-            {printableScopes.length > 0 ? (
-              printableScopes.map((scope, key) => (
-                <div key={scope.inum ?? `spontaneous-${key}`}>
-                  <Badge className={classes.badge}>{scope?.id}</Badge>
-                </div>
-              ))
-            ) : (
-              <GluuText variant="p" className={commitClasses.description} disableThemeColor>
-                {t('messages.no_scope_in_spontaneous_client')}
-              </GluuText>
-            )}
+          <button
+            type="button"
+            onClick={handler}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText variant="h2" className={commitClasses.title} id="spontaneous-scopes-title">
+              {t('fields.spontaneousScopes')}
+            </GluuText>
+            <div className={classes.scopeList}>
+              {printableScopes.length > 0 ? (
+                printableScopes.map((scope, key) => (
+                  <div key={scope.inum ?? `spontaneous-${key}`}>
+                    <Badge className={classes.badge}>{scope?.id}</Badge>
+                  </div>
+                ))
+              ) : (
+                <GluuText variant="p" className={commitClasses.description} disableThemeColor>
+                  {t('messages.no_scope_in_spontaneous_client')}
+                </GluuText>
+              )}
+            </div>
           </div>
         </div>
       </div>
