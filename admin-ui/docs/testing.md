@@ -45,17 +45,17 @@ This pattern keeps tests discoverable (open the plugin, scan its `__tests__/`), 
 
 Two scripts are available, each tuned for a different use case:
 
-| Command            | What it does                                                               |
-| ------------------ | -------------------------------------------------------------------------- |
-| `npm test`         | Jest with `--forceExit` — good for watch-friendly local work               |
-| `npm run test:all` | Jest `--forceExit --runInBand --watchman=false` — used in CI / single-pass |
+| Command            | What it does                                                                   |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `npm test`         | Plain `jest` — parallel workers + Watchman, good for watch-friendly local work |
+| `npm run test:all` | `jest --runInBand --watchman=false` — single process, used for full runs       |
 
 The differences:
 
 - **`npm test`** runs Jest with its default parallel worker pool and Watchman-backed file scanning. Fast on developer machines.
 - **`npm run test:all`** runs everything in a single process (`--runInBand`) with Watchman disabled. Slower but more deterministic — no parallel-worker race conditions, no environment assumptions about Watchman being installed. Use it when you suspect flakiness or are attaching a debugger.
 
-Both pass `--forceExit` because some setup in the production code (idle timers, license polling) leaves open handles after tests finish. Without `--forceExit` Jest would hang waiting for those — the warning _"A worker process has failed to exit gracefully"_ is the symptom, not a real failure.
+After a full run, Jest will sometimes log _"Force exiting Jest: Have you considered using `--detectOpenHandles`..."_ This is Jest auto-force-exiting because some production code under test (idle timers, license polling) leaves open handles. The tests themselves passed — the warning is about the cleanup, not the result. If you want to track down which handle is leaking, add `--detectOpenHandles` to the command for a one-off run; don't leave it on by default because it makes the suite much slower.
 
 ## Test discovery
 
@@ -70,7 +70,7 @@ Always place new tests in a `__tests__/` sibling of the source file. The second 
 
 Each test file runs in a fresh jsdom instance. Two pieces of setup happen before any test code:
 
-1. **`jest/setup-tests.ts`** (`setupFiles`) loads `.env.production` via `dotenv` before any module imports. This puts the env values into `process.env` so production code that reads them during module load gets the expected values.
+1. **`jest/setup-tests.ts`** (`setupFiles`) loads `.env.development` via `dotenv` before any module imports. Tests are part of the dev workflow, so they use the same env file as `npm start` — only `npm run build:prod` and `npm run preview:prod` touch `.env.production`. The setup also polyfills `TextEncoder` / `TextDecoder` from Node's `util` because jsdom doesn't provide them and react-router references them at module load.
 2. **`jest/setup.ts`** (`setupFilesAfterEnv`) runs after the test framework is installed. It initializes i18next so the `t()` hook works inside components, and silences expected console noise — `console.log` and `console.warn` are spied (so you can assert on them), and specific known `console.error` patterns are filtered.
 
 `testEnvironmentOptions.url` is `https://admin-ui-test.gluu.org/`. That URL drives `window.location` in tests, which matters for code that reads the current pathname, host, or query string. If your code branches on `window.location`, expect that URL to be the value.

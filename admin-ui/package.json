@@ -20,8 +20,8 @@
     "node": "^24"
   },
   "scripts": {
-    "test": "jest --forceExit",
-    "test:all": "jest --forceExit --runInBand --watchman=false",
+    "test": "jest",
+    "test:all": "jest --runInBand --watchman=false",
     "start": "npm run cache:terminal:clean && npm run start:dev",
     "start:dev": "npm run cache:terminal:clean && vite --mode development",
     "build:dev": "npm run cache:terminal:clean && vite build --mode development",
