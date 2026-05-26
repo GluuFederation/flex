@@ -29,6 +29,7 @@ const GluuBadge: React.FC<GluuBadgeProps> = (props) => {
     className,
     onClick,
     title,
+    wrap = false,
   } = props
 
   const { state } = useTheme()
@@ -55,7 +56,10 @@ const GluuBadge: React.FC<GluuBadgeProps> = (props) => {
       backgroundColor: outlined ? 'transparent' : bg,
       color: outlined ? bg : text,
       border: outlined ? `1px solid ${bg}` : `1px solid ${border}`,
-      whiteSpace: 'nowrap',
+      whiteSpace: wrap ? 'normal' : 'nowrap',
+      ...(wrap
+        ? { maxWidth: '100%', overflowWrap: 'anywhere' as const, wordBreak: 'break-word' as const }
+        : {}),
       cursor: onClick ? 'pointer' : 'default',
       ...style,
     }
@@ -73,6 +77,7 @@ const GluuBadge: React.FC<GluuBadgeProps> = (props) => {
     fontWeight,
     padding,
     onClick,
+    wrap,
     style,
   ])
 

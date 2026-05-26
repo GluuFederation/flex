@@ -112,7 +112,6 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
         isBadge: clientScopes.length > 0,
         badgeBackgroundColor: themeColors.badges.filledBadgeBg,
         badgeTextColor: themeColors.badges.filledBadgeText,
-        fullWidth: true,
       },
       {
         label: LABELS.GRANT_TYPES,
@@ -122,7 +121,6 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
         isBadge: (row.grantTypes?.length ?? 0) > 0,
         badgeBackgroundColor: themeColors.badges.filledBadgeBg,
         badgeTextColor: themeColors.badges.filledBadgeText,
-        fullWidth: true,
       },
       {
         label: LABELS.LOGIN_URIS,
@@ -132,7 +130,6 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
         isBadge: (row.redirectUris?.length ?? 0) > 0,
         badgeBackgroundColor: themeColors.badges.filledBadgeBg,
         badgeTextColor: themeColors.badges.filledBadgeText,
-        fullWidth: true,
       },
       {
         label: LABELS.AUTHENTICATION_METHOD,
