@@ -10,6 +10,7 @@ export type PickerThemeColors = {
   labelColor: string
   borderColor: string
   popupBorderColor: string
+  popupOuterBorderColor: string
   popupBg: string
   selectedBg: string
   selectedText: string
@@ -71,7 +72,11 @@ export const isGluuDatePickerRangeProps = (
 export type GluuDatePickerRangeInternalProps = GluuDatePickerRangeProps & {
   displayFormat: string
   slotProps: {
-    textField: { size: 'small'; InputLabelProps: { shrink: boolean }; sx: SxProps<Theme> }
+    textField: {
+      size: 'small'
+      slotProps: { inputLabel: { shrink: boolean } }
+      sx: SxProps<Theme>
+    }
     popper: { sx: SxProps<Theme> }
     desktopPaper: { sx: SxProps<Theme> }
     paper: { sx: SxProps<Theme> }

@@ -216,7 +216,12 @@ const GluuDatePickerRange = memo(
 
     const gridLayout = (
       <Grid container spacing={2} className={classes.rangeGridContainer}>
-        <Grid item xs={12} sm={6}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
+        >
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabelGrid}>
               {startLabel}:
@@ -224,7 +229,12 @@ const GluuDatePickerRange = memo(
           )}
           {renderPicker('start')}
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
+        >
           {labelAsTitle && (
             <Box component="span" className={classes.titleLabelGrid}>
               {endLabel}:

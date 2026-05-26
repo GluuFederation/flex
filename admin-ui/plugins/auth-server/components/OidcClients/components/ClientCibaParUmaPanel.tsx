@@ -2,10 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { Button } from 'Components'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
@@ -26,6 +22,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
 import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { setCurrentItem as setCurrentItemClient } from 'Plugins/auth-server/redux/features/oidcSlice'
@@ -457,8 +454,16 @@ const ClientCibaParUmaPanel = ({
                     <Col sm={9}>
                       {umaResources.map((uma) => (
                         <Box key={uma.id as string} className={classes.dynamicListItem}>
-                          <Box display="flex">
-                            <Box width="40%">
+                          <Box
+                            sx={{
+                              display: 'flex',
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: '40%',
+                              }}
+                            >
                               <Link
                                 className={classes.clickableLink}
                                 onClick={() => handleUMADetail(uma)}
@@ -466,10 +471,19 @@ const ClientCibaParUmaPanel = ({
                                 {uma.id as string}
                               </Link>
                             </Box>
-                            <Box width="50%" className="text-dark">
+                            <Box
+                              className="text-dark"
+                              sx={{
+                                width: '50%',
+                              }}
+                            >
                               {uma.name as string}
                             </Box>
-                            <Box width="10%">
+                            <Box
+                              sx={{
+                                width: '10%',
+                              }}
+                            >
                               <Button color="danger" size="sm" onClick={() => handleDeleteUMA(uma)}>
                                 <span className="fw-bold">X</span>
                               </Button>
@@ -485,15 +499,13 @@ const ClientCibaParUmaPanel = ({
           </AccordionBody>
         </Accordion>
 
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          maxWidth="lg"
-          fullWidth
-          PaperProps={{ className: 'modal-outline-primary modal-lg-900' }}
+        <GluuViewDetailModal
+          isOpen={open}
+          handleClose={() => setOpen(false)}
+          title={t('titles.uma_resource_detail')}
+          hideFooter
         >
-          <DialogTitle>{t('titles.uma_resource_detail')}</DialogTitle>
-          <DialogContent>
+          <>
             <Card style={applicationStyle.mainCard}>
               <FormGroup row>
                 <GluuLabel label={t('fields.resourceId')} size={3} />
@@ -553,7 +565,11 @@ const ClientCibaParUmaPanel = ({
                     <>
                       {scopeInums.map((inum, key) => (
                         <Box key={key}>
-                          <Box display="flex">
+                          <Box
+                            sx={{
+                              display: 'flex',
+                            }}
+                          >
                             <Link
                               onClick={() => handleScopeNavigate(inum)}
                               className={classes.clickableLink}
@@ -592,7 +608,11 @@ const ClientCibaParUmaPanel = ({
                       const inum = extractDnInum(clientDn)
                       return (
                         <Box key={key}>
-                          <Box display="flex">
+                          <Box
+                            sx={{
+                              display: 'flex',
+                            }}
+                          >
                             <Link
                               onClick={() => handleClientEdit(inum)}
                               className={classes.clickableLink}
@@ -614,13 +634,13 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
             </Card>
-          </DialogContent>
-          <DialogActions>
-            <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
-              {t('actions.delete')}
-            </Button>
-          </DialogActions>
-        </Dialog>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+              <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
+                {t('actions.delete')}
+              </Button>
+            </Box>
+          </>
+        </GluuViewDetailModal>
 
         {selectedUMA && (
           <GluuDialog

@@ -27,7 +27,12 @@ const TabPanel = memo((props: TabPanelProps) => {
       {...other}
     >
       {value === index && (
-        <Box px={px} pt={pt}>
+        <Box
+          sx={{
+            px: px,
+            pt: pt,
+          }}
+        >
           {children}
         </Box>
       )}
