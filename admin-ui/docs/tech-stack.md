@@ -32,7 +32,7 @@ Each entry: **what it is** → **where it's wired up** → **when you reach for 
 
 - **React + React DOM** — the UI runtime; component model, hooks, rendering. Bootstrapped in `app/index.tsx`. You touch it every time you write a component.
 - **React Router** — declarative client-side routing; URL ↔ component tree. Routes live in `app/routes/`. Reach for it when adding/removing a route or auth gate.
-- **Vite (Rolldown bundler)** — dev server + production bundler; replaces webpack. Configured in `vite.config.ts` — chunking and the dev env-config plugin live there. Don't switch to a `manualChunks` callback ([build-deploy.md](./build-deploy.md#-do-not-use-the-manualchunks-function-form)).
+- **Vite (Rolldown bundler)** — dev server + production bundler. Configured in `vite.config.ts` — chunking and the dev env-config plugin live there. Don't switch to a `manualChunks` callback ([build-deploy.md](./build-deploy.md#-do-not-use-the-manualchunks-function-form)).
 
 ### State
 
@@ -55,7 +55,7 @@ Each entry: **what it is** → **where it's wired up** → **when you reach for 
 
 - **MUI (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers`)** — Material design components, icons, date pickers. The default UI library.
 - **Emotion + tss-react** — CSS-in-JS engine MUI rides on; `tss-react` is a `makeStyles`-style helper that plays nicely with strict React/MUI v5. Use for component-scoped styles.
-- **reactstrap / bootstrap** — legacy Bootstrap-based UI from earlier in the project's life. **Phasing out — don't add new usages.**
+- **reactstrap / bootstrap** — legacy Bootstrap-based UI. **Phasing out — don't add new usages.**
 
 ### Domain libraries
 

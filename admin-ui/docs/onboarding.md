@@ -71,7 +71,7 @@ Open the URL Vite prints (default `http://localhost:4100/admin/`). You'll be red
 
 ## What you'll see in the console
 
-A 404 on `/admin/env-config.js` used to appear in dev — it's now served by an in-dev Vite plugin, so it should be silent. If you ever see it again, see [config-api.md](./config-api.md#runtime-env-injection).
+`/admin/env-config.js` is served in dev by an in-dev Vite plugin — no 404 expected. If you see one, check [config-api.md](./config-api.md#runtime-env-injection).
 
 ## Next steps
 
