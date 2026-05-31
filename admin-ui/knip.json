@@ -5,8 +5,6 @@
     "plugins/PluginMenuResolver.ts",
     "plugins/PluginReducersResolver.ts",
     "plugins/PluginSagasResolver.ts",
-    "build/plugin-cli.ts",
-    "build/cli-tools.ts",
     "script/*.ts",
     "orval.config.ts"
   ],
