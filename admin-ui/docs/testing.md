@@ -1,106 +1,69 @@
 # Testing
 
-## Introduction
+Jest + React Testing Library + jsdom. Tests live next to the code they cover.
 
-Tests in the Admin UI exist to catch the things types alone cannot: that a button renders only when the user has the right permission, that a saga finishes a flow in the expected order, that a reducer transforms state correctly. The stack is intentionally boring — Jest + React Testing Library + jsdom — because there is no need for anything more exotic, and the unit-test surface stays predictable.
-
-A few terms appear throughout this document:
-
-- **Jest** — the test runner. It discovers, runs, and reports on test files. Configuration lives in [`admin-ui/jest.config.ts`](../jest.config.ts).
-- **React Testing Library** — a small library on top of Jest that mounts React components, queries the rendered output the way a user would (by visible text, by ARIA role), and asserts on what they see.
-- **jsdom** — a browser-like environment implemented in JavaScript. Jest runs each test file inside a fresh jsdom instance so component code can call `document.querySelector`, `window.location`, `localStorage`, etc., without a real browser.
-- **`setupFiles`** vs **`setupFilesAfterEnv`** — both run before tests, but at different points. `setupFiles` runs before any module imports (good for polyfills, dotenv); `setupFilesAfterEnv` runs after the test framework is installed (good for i18n init, console silencing).
-- **`moduleNameMapper`** — the part of Jest config that rewrites import paths. This is how `@/utils/x` resolves to `app/utils/x` in tests the same way it does in source.
-
-The remainder of this document covers where tests live, how to run them, what setup happens before they execute, and how to write the two most common kinds (component tests and saga / reducer tests).
-
-## Where tests live
-
-Two conventions matter:
+## Layout
 
 ```text
 <rootDir>/
-├── jest.config.ts               # Jest config (TS) — see below
+├── jest.config.ts
 ├── jest/
-│   ├── setup-tests.ts           # runs before module imports (Jest `setupFiles`)
-│   └── setup.ts                 # runs after the test env is set up (`setupFilesAfterEnv`)
-├── __mocks__/                   # shared mocks (cedarling, hmr, file/style stubs, …)
-└── app/ + plugins/              # tests live in __tests__/ siblings of the code
+│   ├── setup-tests.ts   # setupFiles — before module imports
+│   └── setup.ts         # setupFilesAfterEnv — after test framework
+├── __mocks__/           # shared manual mocks
+└── app/ + plugins/      # tests in __tests__/ siblings
 ```
 
-Test files live **alongside** the code they cover, under a `__tests__/` folder. The repo-wide convention is mirror-the-folder-structure inside `__tests__/`:
+Mirror the source structure inside `__tests__/`:
 
 ```text
 plugins/scim/
-├── components/
-│   └── ScimPage.tsx
-└── __tests__/
-    └── components/
-        └── ScimPage.test.tsx
+├── components/ScimPage.tsx
+└── __tests__/components/ScimPage.test.tsx
 ```
 
-This pattern keeps tests discoverable (open the plugin, scan its `__tests__/`), keeps them close to the code (so a rename of the source file is an obvious signal to rename the test), and matches the Jest default discovery pattern below.
+## Running
 
-## Running tests
+| Command            | What it does                                                              |
+| ------------------ | ------------------------------------------------------------------------- |
+| `npm test`         | Plain `jest` — parallel workers + Watchman, for watch-friendly local work |
+| `npm run test:all` | `jest --runInBand --watchman=false` — single process, deterministic       |
 
-Two scripts are available, each tuned for a different use case:
-
-| Command            | What it does                                                                   |
-| ------------------ | ------------------------------------------------------------------------------ |
-| `npm test`         | Plain `jest` — parallel workers + Watchman, good for watch-friendly local work |
-| `npm run test:all` | `jest --runInBand --watchman=false` — single process, used for full runs       |
-
-The differences:
-
-- **`npm test`** runs Jest with its default parallel worker pool and Watchman-backed file scanning. Fast on developer machines.
-- **`npm run test:all`** runs everything in a single process (`--runInBand`) with Watchman disabled. Slower but more deterministic — no parallel-worker race conditions, no environment assumptions about Watchman being installed. Use it when you suspect flakiness or are attaching a debugger.
-
-After a full run, Jest will sometimes log _"Force exiting Jest: Have you considered using `--detectOpenHandles`..."_ This is Jest auto-force-exiting because some production code under test (idle timers, license polling) leaves open handles. The tests themselves passed — the warning is about the cleanup, not the result. If you want to track down which handle is leaking, add `--detectOpenHandles` to the command for a one-off run; don't leave it on by default because it makes the suite much slower.
+After a full run, Jest may log _"Force exiting Jest…"_ — production code under test (idle timers, license polling) leaves open handles. Tests passed; the warning is about cleanup. Add `--detectOpenHandles` for one-off investigation; don't leave it on (it's slow).
 
 ## Test discovery
 
-`jest.config.ts` matches two patterns:
-
-- `__tests__/**/*.test.[jt]s?(x)` — files under any `__tests__/` folder, ending in `.test.ts`, `.test.tsx`, `.test.js`, or `.test.jsx`.
-- `*.(spec|test).[jt]s?(x)` — files anywhere ending in `.spec.*` or `.test.*`.
-
-Always place new tests in a `__tests__/` sibling of the source file. The second pattern exists to accept legacy `.spec.ts` files but new tests should follow the `__tests__/` convention.
+`jest.config.ts` matches `__tests__/**/*.test.[jt]s?(x)` and `*.(spec|test).[jt]s?(x)`. New tests go in `__tests__/`; the second pattern accepts legacy `.spec.*`.
 
 ## Test environment
 
-Each test file runs in a fresh jsdom instance. Two pieces of setup happen before any test code:
+Each file runs in fresh jsdom. Setup runs before any test code:
 
-1. **`jest/setup-tests.ts`** (`setupFiles`) loads `.env.development` via `dotenv` before any module imports. Tests are part of the dev workflow, so they use the same env file as `npm start` — only `npm run build:prod` and `npm run preview:prod` touch `.env.production`. The setup also polyfills `TextEncoder` / `TextDecoder` from Node's `util` because jsdom doesn't provide them and react-router references them at module load.
-2. **`jest/setup.ts`** (`setupFilesAfterEnv`) runs after the test framework is installed. It initializes i18next so the `t()` hook works inside components, and silences expected console noise — `console.log` and `console.warn` are spied (so you can assert on them), and specific known `console.error` patterns are filtered.
+1. **`jest/setup-tests.ts`** — loads `.env.development` via `dotenv` (tests are dev workflow; only `build:prod` and `preview:prod` touch `.env.production`). Polyfills `TextEncoder` / `TextDecoder` from `node:util` — jsdom lacks them and react-router needs them at module load.
+2. **`jest/setup.ts`** — initializes i18next so `t()` works in components. Spies `console.log` / `console.warn`; filters specific known `console.error` patterns.
 
-`testEnvironmentOptions.url` is `https://admin-ui-test.gluu.org/`. That URL drives `window.location` in tests, which matters for code that reads the current pathname, host, or query string. If your code branches on `window.location`, expect that URL to be the value.
+`testEnvironmentOptions.url = 'https://admin-ui-test.gluu.org/'` — drives `window.location` in tests.
 
 ## Path aliases in tests
 
-The `moduleNameMapper` in `jest.config.ts` mirrors `tsconfig.json`. Aliases that work in source — `@/...`, `Plugins/...`, `JansConfigApi`, `Orval`, etc. — work the same way in tests. Some examples:
-
-- `@/utils/devLogger` resolves to `app/utils/devLogger.ts`
-- `Plugins/auth-server/components/Foo` resolves to `plugins/auth-server/components/Foo.tsx`
-- `JansConfigApi` resolves to `jans_config_api_orval/src/index.ts`
-
-Don't reach into relative paths in tests to dodge an alias — if a new alias is missing in `moduleNameMapper`, add it. Drift between `tsconfig.json` and `jest.config.ts` here causes obscure "module not found" errors that are easy to misdiagnose.
+`moduleNameMapper` in `jest.config.ts` mirrors `tsconfig.json`. `@/...`, `Plugins/...`, `JansConfigApi`, etc. all resolve. Don't reach for relative paths to dodge an alias — add the alias to `moduleNameMapper` if it's missing. Drift between `tsconfig.json` and `jest.config.ts` causes obscure "module not found" errors.
 
 ## Shared mocks
 
-`__mocks__/` at the repo root holds **Jest manual mocks** — stubs that automatically replace specific imports in every test. They exist because some modules can't run in jsdom or would make tests slow / flaky.
+`__mocks__/` holds Jest manual mocks wired via `moduleNameMapper` — they apply automatically.
 
 | Mock                                           | Why it's there                                                                  |
 | ---------------------------------------------- | ------------------------------------------------------------------------------- |
 | `@janssenproject/cedarling_wasm.ts`            | Replaces the WASM bundle (jsdom can't load it)                                  |
 | `cedarlingHookBridge.ts`                       | Stub for `@/cedarling/hooks/useCedarling` so components don't hit the real auth |
-| `fileMock.ts` / `styleMock.ts`                 | Inert stubs for image, font, and `.css/.scss` imports                           |
+| `fileMock.ts` / `styleMock.ts`                 | Inert stubs for image, font, `.css/.scss` imports                               |
 | `hmr.ts`, `utilities.ts`, `loadPluginMetadata` | Inert stubs for runtime-only modules that crash jsdom                           |
 
-These are wired up by `moduleNameMapper`, so they apply automatically — you don't need to do `jest.mock(...)` for them in individual tests. Don't duplicate them inside a test file either; that creates two competing definitions.
+Don't re-mock these in individual test files — creates competing definitions.
 
 ## Writing a component test
 
-The repo's standard wrapper supplies a Redux store, a React Query client, i18n, and routing. Use it instead of hand-wiring providers — it's the only way to make sure your component sees the same environment as production.
+Use the repo's standard wrapper — it provides Redux store, React Query client, i18n, routing.
 
 ```ts
 import { render } from '@testing-library/react'
@@ -117,54 +80,36 @@ jest.mock('@/cedarling', () => ({
 }))
 
 it('renders', () => {
-  const { getByText } = render(
-    <AppTestWrapper>
-      <YourPage />
-    </AppTestWrapper>,
-  )
+  const { getByText } = render(<AppTestWrapper><YourPage /></AppTestWrapper>)
   expect(getByText(/expected text/i)).toBeInTheDocument()
 })
 ```
 
-Two practical notes:
-
-- **Don't grant blanket `true` for both read and write in every test.** Flip them off in at least one test so you verify the gated UI actually disappears when permissions are absent. A test that always sees the UI is not testing the permission gate.
-- **Mock Cedarling, not the underlying tokens.** Every page guarded by `useCedarling()` needs the hook mocked or the test renders nothing — Cedarling sees no tokens, returns `undefined` for every permission, and the page hides everything.
+- Don't grant blanket `true` for both read and write in every test — flip them off in at least one to verify the gated UI actually disappears.
+- Mock `useCedarling`, not the underlying tokens — unmocked, Cedarling sees no tokens, returns `undefined`, and the page hides everything.
 
 ## Writing a saga / reducer test
 
-Reducers are pure functions, so test them directly:
+Reducers are pure — test directly:
 
 ```ts
 import reducer, { yourAction } from '@/redux/features/yourSlice'
 
 it('reduces yourAction', () => {
-  const next = reducer(initialState, yourAction(payload))
-  expect(next.field).toBe(expected)
+  expect(reducer(initialState, yourAction(payload)).field).toBe(expected)
 })
 ```
 
-For sagas, the project uses **`redux-saga-test-plan`** and its `expectSaga` helper. It steps a saga through its yielded effects and lets you assert on each one — what got `call`ed, what got `put`, what selector ran. Existing examples under `app/redux/sagas/__tests__/` are the easiest reference; pattern-match from there.
+For sagas, use `redux-saga-test-plan`'s `expectSaga`. Examples under `app/redux/sagas/__tests__/`.
 
-## Common conventions
+## Conventions
 
-A short list of rules that keep tests stable and meaningful:
-
-- **No real network calls.** Mock the Orval hook or the API helper at the import boundary. The shared axios instance is set up once globally; mocking it directly is brittle and tends to leak between tests.
-- **No real timers without `jest.useFakeTimers()`.** The idle-timer and session-timeout code uses real `setInterval` / `setTimeout`. Real timers in tests cause non-deterministic failures.
-- **Snapshot tests are discouraged** for anything beyond inert presentational output. They rot fast — a change anywhere in the rendered tree breaks them and you end up updating snapshots without thinking about what changed.
-- **Translation keys, not English strings.** When the rendered text is i18n-driven, assert on the key. The test-mode i18n init returns keys verbatim by default, so `getByText('users.addUser')` works.
-- **Mock Cedarling on any page that uses it.** Without a mock, every permission check returns `undefined` and the page renders almost nothing.
+- **No real network calls** — mock the Orval hook or API helper at the import boundary. Mocking the shared axios directly is brittle.
+- **No real timers without `jest.useFakeTimers()`** — idle-timer and session-timeout use real `setInterval` / `setTimeout`.
+- **Snapshots are discouraged** beyond inert presentational output — they rot.
+- **Translation keys, not English strings** — test-mode i18n returns keys verbatim, so `getByText('users.addUser')` works.
+- **Mock Cedarling on any guarded page** — otherwise every permission check returns `undefined` and the page renders nothing.
 
 ## Knip and tests
 
-knip looks at production imports to decide whether a module is used. A test file does not count as a production import — even if a spec exhaustively exercises a module, knip will flag the module as unused if nothing under `app/` or `plugins/` imports it for real.
-
-This means a `jest.mock(...)` block that _replaces_ a module does **not** keep the production file alive in knip's view. If knip flags a production module you know is in use, check whether the test file uses `jest.mock(...)` _instead of_ importing the module — that's the most common cause.
-
-## Where to read next
-
-- [recipes.md](./recipes.md) — concrete recipes for adding a new page, slice, saga (each comes with how to test it)
-- [conventions.md](./conventions.md) — broader code conventions tests should follow
-- [architecture.md](./architecture.md) — how the host and plugins fit together (helps when deciding what to mock)
-- [cedarling.md](./cedarling.md) — what `useCedarling` actually does, so you know what to mock and why
+knip uses production imports to decide if a module is used. Test files don't count. A `jest.mock(...)` that _replaces_ a module doesn't keep the production file alive in knip's view — if knip flags a module you know is in use, check whether the test mocks it _instead of_ importing it.

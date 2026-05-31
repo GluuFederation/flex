@@ -1,6 +1,6 @@
 # Gluu Admin UI
 
-Reactive web interface for managing Janssen Auth Server configuration — clients, scopes, scripts, sessions, attributes, SAML/SCIM/FIDO/SMTP/Cache config, and metrics.
+Reactive web interface for managing Janssen Auth Server configuration — clients, scopes, scripts, sessions, attributes, SAML/SCIM/FIDO/SMTP/Cache config, metrics.
 
 ## Quick start
 
@@ -8,7 +8,6 @@ Reactive web interface for managing Janssen Auth Server configuration — client
 git clone https://github.com/GluuFederation/flex
 cd flex/admin-ui
 
-# .env.development  (point at your Jans Server)
 cat > .env.development <<'EOF'
 BASE_PATH=/admin/
 CONFIG_API_BASE_URL=https://<jans-server-host>/jans-config-api
@@ -17,7 +16,7 @@ NPM_TOKEN=
 EOF
 
 npm install
-npm run api:orval   # generates the typed Config API client
+npm run api:orval   # generate the typed Config API client
 npm start           # http://localhost:4100/admin/
 ```
 
@@ -25,73 +24,46 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 
 ## Documentation
 
-| Doc                                      | Read it when                                           |
-| ---------------------------------------- | ------------------------------------------------------ |
-| [Onboarding](./docs/onboarding.md)       | first time setting up                                  |
-| [Architecture](./docs/architecture.md)   | understanding host + plugins, dependency rules         |
-| [Tech stack](./docs/tech-stack.md)       | what each library is, where it's wired, when to use it |
-| [Conventions](./docs/conventions.md)     | **before opening any PR**                              |
-| [Recipes](./docs/recipes.md)             | adding a page / plugin / slice / form / audit record   |
-| [Auth](./docs/auth.md)                   | OIDC + PKCE, tokens, sessions, idle timeout, logout    |
-| [Cedarling](./docs/cedarling.md)         | adding/gating an authorization check                   |
-| [Config API](./docs/config-api.md)       | calling the Janssen backend, regenerating the client   |
-| [Testing](./docs/testing.md)             | Jest setup, mocks, writing a new test                  |
-| [Build & deploy](./docs/build-deploy.md) | bundle analysis, chunking, env injection, Jenkins      |
+| Doc                                      | Read when                                            |
+| ---------------------------------------- | ---------------------------------------------------- |
+| [Onboarding](./docs/onboarding.md)       | First time setting up                                |
+| [Architecture](./docs/architecture.md)   | Host + plugins, dependency rules                     |
+| [Tech stack](./docs/tech-stack.md)       | What each library is, when to use it                 |
+| [Conventions](./docs/conventions.md)     | **Before opening any PR**                            |
+| [Recipes](./docs/recipes.md)             | Adding a page / plugin / slice / form / audit record |
+| [Auth](./docs/auth.md)                   | OIDC + PKCE, tokens, sessions, idle timeout, logout  |
+| [Cedarling](./docs/cedarling.md)         | Adding or gating an authorization check              |
+| [Config API](./docs/config-api.md)       | Calling the Janssen backend, regenerating the client |
+| [Testing](./docs/testing.md)             | Jest setup, mocks, writing a new test                |
+| [Build & deploy](./docs/build-deploy.md) | Bundle analysis, chunking, env injection, Jenkins    |
 
 ## npm scripts
 
-### Development
-
-| Command                        | What it does                                                  |
-| ------------------------------ | ------------------------------------------------------------- |
-| `npm start`                    | start the Vite dev server (alias for `start:dev`)             |
-| `npm run start:dev`            | Vite dev server in `development` mode                         |
-| `npm run preview:prod`         | build prod, patch runtime config, preview                     |
-| `npm run preview:prod:analyze` | full prod build + Sonda + knip + preview, prints report links |
-
-### Build
-
-| Command                           | What it does                                        |
-| --------------------------------- | --------------------------------------------------- |
-| `npm run build:dev`               | build with `development` mode (sourcemaps, dev env) |
-| `npm run build:prod`              | build with `production` mode (minified)             |
-| `ANALYZE=true npm run build:prod` | prod build + `dist/sonda-report.html` + `.json`     |
-
-### Quality checks
-
-| Command             | What it does                                          |
-| ------------------- | ----------------------------------------------------- |
-| `npm run check:all` | run ESLint + markdownlint + `tsc` together (parallel) |
-| `npm run format`    | Prettier write (covers `.md` too)                     |
-
-### Tests
-
-| Command            | What it does                           |
-| ------------------ | -------------------------------------- |
-| `npm test`         | Jest, watch-friendly                   |
-| `npm run test:all` | Jest single-pass, in-band, no watchman |
-
-### API client
-
-| Command             | What it does                                                     |
-| ------------------- | ---------------------------------------------------------------- |
-| `npm run api:orval` | regenerate the Jans Config API TS client from the merged OpenAPI |
-
-### Housekeeping
-
-| Command                          | What it does                                                                                                     |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `npm run clean`                  | wipe `dist/`, Vite cache, ESLint cache                                                                           |
-| `npm run clean:all`              | full wipe: `node_modules/`, `package-lock.json`, generated Orval client, coverage, npm cache — fresh-clone state |
-| `npm run reset`                  | `clean:all` → `npm install` → `npm run api:orval` — the one-shot recovery when your install is broken            |
-| `npm run clean:paths -- <path…>` | wipe specific paths                                                                                              |
-| `npm run cache:terminal:clean`   | clear npm cache + the terminal                                                                                   |
+| Command                           | What it does                                                                |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| `npm start`                       | Vite dev server (alias for `start:dev`)                                     |
+| `npm run start:dev`               | Vite dev server in `development` mode                                       |
+| `npm run build:dev`               | Build with `development` mode (sourcemaps, dev env)                         |
+| `npm run build:prod`              | Build with `production` mode (minified)                                     |
+| `ANALYZE=true npm run build:prod` | Prod build + `dist/sonda-report.html` + `.json`                             |
+| `npm run preview:prod`            | Build prod, patch runtime config, preview                                   |
+| `npm run preview:prod:analyze`    | Full prod build + Sonda + knip + preview, prints report links               |
+| `npm test`                        | Jest, watch-friendly                                                        |
+| `npm run test:all`                | Jest single-pass, in-band, no watchman                                      |
+| `npm run check:all`               | ESLint + markdownlint + `tsc` (parallel)                                    |
+| `npm run format`                  | Prettier write (covers `.md` too)                                           |
+| `npm run api:orval`               | Regenerate the Jans Config API TS client from the merged OpenAPI            |
+| `npm run clean`                   | Wipe `dist/`, Vite cache, ESLint cache                                      |
+| `npm run clean:all`               | Full wipe to fresh-clone state (node_modules, lock, Orval client, coverage) |
+| `npm run reset`                   | `clean:all` → `npm install` → `npm run api:orval` — one-shot recovery       |
+| `npm run clean:paths -- <path…>`  | Wipe specific paths                                                         |
+| `npm run cache:terminal:clean`    | Clear npm cache + terminal                                                  |
 
 ## Pre-commit hook
 
-Husky runs Prettier, ESLint, `tsc`, and markdownlint on commit (against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md` files). If it blocks, read the output and fix the issues. Only `npm run format` can auto-fix (Prettier); the other tools report — fix the cause yourself.
+Husky runs Prettier, ESLint, `tsc`, markdownlint on commit against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md`. Only `npm run format` auto-fixes (Prettier); other tools report — fix the cause yourself.
 
-Don't bypass with `--no-verify`; fix the cause. Lint/type-check enforcement lives **only** in the pre-commit hook — CI is just a build step (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
+Don't bypass with `--no-verify`. Lint/type-check enforcement lives **only** in the hook — CI is artifact-build only (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
 
 ## Issues & contributing
 
