@@ -16,7 +16,7 @@ jest.spyOn(global.console, 'warn').mockImplementation(jest.fn())
 
 jest.mock('@/cedarling', () => ({
   useCedarling: () => ({
-    authorize: jest.fn().mockResolvedValue({ isAuthorized: true }),
+    authorizeHelper: jest.fn().mockResolvedValue([{ isAuthorized: true }]),
   }),
   AdminUiFeatureResource: {},
   ADMIN_UI_RESOURCES: {

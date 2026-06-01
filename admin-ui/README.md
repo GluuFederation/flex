@@ -1,6 +1,6 @@
 # Gluu Admin UI
 
-Reactive web interface for managing Janssen Auth Server configuration — clients, scopes, scripts, sessions, attributes, SAML/SCIM/FIDO/SMTP/Cache config, metrics.
+Reactive web interface for managing Janssen Auth Server configuration (clients, scopes, scripts, sessions, attributes, SAML/SCIM/FIDO/SMTP/Cache config, metrics).
 
 ## Quick start
 
@@ -55,15 +55,15 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | `npm run api:orval`               | Regenerate the Jans Config API TS client from the merged OpenAPI            |
 | `npm run clean`                   | Wipe `dist/`, Vite cache, ESLint cache                                      |
 | `npm run clean:all`               | Full wipe to fresh-clone state (node_modules, lock, Orval client, coverage) |
-| `npm run reset`                   | `clean:all` → `npm install` → `npm run api:orval` — one-shot recovery       |
+| `npm run reset`                   | `clean:all` → `npm install` → `npm run api:orval`: one-shot recovery        |
 | `npm run clean:paths -- <path…>`  | Wipe specific paths                                                         |
 | `npm run cache:terminal:clean`    | Clear npm cache + terminal                                                  |
 
 ## Pre-commit hook
 
-Husky runs Prettier, ESLint, `tsc`, markdownlint on commit against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md`. Only `npm run format` auto-fixes (Prettier); other tools report — fix the cause yourself.
+Husky runs Prettier, ESLint, `tsc`, markdownlint on commit against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md`. Only `npm run format` auto-fixes (Prettier). Other tools report. Fix the cause yourself.
 
-Don't bypass with `--no-verify`. Lint/type-check enforcement lives **only** in the hook — CI is artifact-build only (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
+Don't bypass with `--no-verify`. Lint/type-check enforcement lives **only** in the hook. CI is artifact-build only (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
 
 ## Issues & contributing
 

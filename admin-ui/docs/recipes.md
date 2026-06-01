@@ -1,6 +1,6 @@
 # Recipes
 
-Short walkthroughs for common tasks. Each recipe names the files, the convention, and a working skeleton.
+Short walkthroughs for common Admin UI tasks: adding pages, plugins, Redux slices and sagas, forms, permission checks, audit records, constants, and translations. Each recipe names the files involved, the convention to follow, and a working skeleton you can copy. Reach for one when you're about to add a new piece that fits a pattern already used elsewhere in the codebase.
 
 ## Add a page inside an existing plugin
 
@@ -31,9 +31,9 @@ plugins/<plugin>/components/hooks/useYourPageApi.ts   # if needed
             permission: <WRITE_PERM>, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
    ```
 
-3. Gate the render with `useCedarling()` — see [Add an authorization check](#add-an-authorization-check).
+3. Gate the render with `useCedarling()`: see [Add an authorization check](#add-an-authorization-check).
 4. Add the `menus.your_page` key to **all four** `app/locales/{en,es,fr,pt}/translation.json`.
-5. Add a sibling test under `plugins/<plugin>/__tests__/components/YourPage.test.tsx` — see [testing.md](./testing.md).
+5. Add a sibling test under `plugins/<plugin>/__tests__/components/YourPage.test.tsx`: see [testing.md](./testing.md).
 
 ## Add a new plugin
 
@@ -46,7 +46,7 @@ Copy a small plugin (`plugins/scim/`) as a template, then register it in `plugin
 `order` controls sidebar position. Run `npm start` and confirm the sidebar entry resolves.
 
 > [!IMPORTANT]
-> Don't refactor `plugins/PluginMenuResolver.ts`, `PluginReducersResolver.ts`, or `PluginSagasResolver.ts` — they rely on Vite's `import.meta.glob` and break HMR if restructured.
+> Don't refactor `plugins/PluginMenuResolver.ts`, `PluginReducersResolver.ts`, `PluginSagasResolver.ts`, or `plugins/internal/loadPluginMetadata.ts`. The metadata loader uses Vite's `import.meta.glob` to enumerate every plugin's `plugin-metadata.ts` eagerly; the three resolvers feed off it. Restructuring any of them breaks HMR and / or the plugin registration order.
 
 ## Call the Config API
 
@@ -66,8 +66,8 @@ const { mutateAsync } = usePut<Op>({
 
 Rules:
 
-- Always invalidate the matching query key on success — otherwise the cache shows stale data.
-- Use `getGet<Op>QueryKey()`; hand-written keys drift.
+- Always invalidate the matching query key on success. Otherwise the cache shows stale data.
+- Use `getGet<Op>QueryKey()`. Hand-written keys drift.
 - After an upstream OpenAPI change, run `npm run api:orval`.
 
 ## Add a Redux slice and saga
@@ -109,7 +109,7 @@ export default function* yourSaga() {
 }
 ```
 
-Register the reducer and saga at the root — copy an existing slice. Test via `redux-saga-test-plan`.
+Register the reducer and saga at the root. Copy an existing slice. Test via `redux-saga-test-plan`.
 
 > [!WARNING]
 > **Always import the action creator.** Dispatching `{ type: 'your/fetchSomething' }` as a string makes knip flag the reducer as unused and delete it.
@@ -128,7 +128,7 @@ const schema = Yup.object({
 
 Rules:
 
-- Every regex literal in `app/utils/regex.ts` with `REGEX_` prefix — never inline.
+- Every regex literal in `app/utils/regex.ts` with `REGEX_` prefix. Never inline.
 - Validation messages are translation keys (`errors.invalid_format`), never English strings.
 - Disable submit on `!dirty || isSubmitting` to avoid noop and double-submit writes.
 
@@ -161,7 +161,7 @@ await mutateAsync(payload)
 const audit = createSuccessAuditInit(auditContext)
 ```
 
-Most plugins already have a `useXxxAudit` hook — reuse it instead of hand-wiring.
+Most plugins already have a `useXxxAudit` hook. Reuse it instead of hand-wiring.
 
 ## Add a constant
 
@@ -171,10 +171,18 @@ Most plugins already have a `useXxxAudit` hook — reuse it instead of hand-wiri
 | One plugin only            | Plugin's `common/Constants.ts` or `components/constants.ts` |
 | One component only         | Local `const`                                               |
 
-No inline magic strings — storage keys, language codes, audit actions, status values, attribute names, date formats, route paths all go through constants.
+No inline magic strings. Storage keys, language codes, audit actions, status values, attribute names, date formats, route paths all go through constants.
 
 ## Update translations
 
-Keys go in `app/locales/{en,es,fr,pt}/translation.json` — **every key in every file, same commit.** English-only updates silently fall back through i18n and the bug surfaces the first time a non-English user opens the page.
+Translation keys live in four locale files: `app/locales/en/translation.json` plus matching `es/`, `fr/`, and `pt/`. When you add or rename a key, add it to **all four files in the same commit**.
 
-If you don't speak the language, copy the English value and flag it in the PR; a translator replaces it later.
+If you only update English, i18n silently falls back to the English value when the key is missing in another locale. The page still renders, so nothing visibly breaks in your testing. The first sign of the problem is a Spanish, French, or Portuguese user seeing English text where their language should be, which is easy to miss in review.
+
+How to translate a key:
+
+1. Write the English value in `app/locales/en/translation.json`.
+2. Translate it to Spanish, French, and Portuguese using Google Translate (or DeepL, which tends to handle UI strings more naturally).
+3. Paste each translation into the matching file under `app/locales/{es,fr,pt}/translation.json` at the **same key path** as the English entry.
+4. Keep domain-specific terms (`SSA`, `OIDC client`, `Cedarling`, scope URLs, brand names) in English inside the translated sentence. Translating them produces awkward output that doesn't match the UI.
+5. Open all four files side by side before committing and verify the same key exists in each.
