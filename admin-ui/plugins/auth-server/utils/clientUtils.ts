@@ -1,8 +1,9 @@
 import { cloneElement, isValidElement } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
-import { REGEX_EMAIL } from '@/utils/regex'
+import { REGEX_EMAIL, REGEX_GRANT_TYPE_URN_PREFIX } from '@/utils/regex'
 import { uuidv4 } from '../../../app/utils/Util'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
+import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
 import type { SelectOption } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ClientFieldSection, DynamicListValidationOptions } from './types'
@@ -40,6 +41,21 @@ export const uriValidator = (uri: string): boolean => {
 }
 
 export const emailValidator = (email: string): boolean => REGEX_EMAIL.test(email)
+
+export const getGrantTypeLabel = (grantType: string): string =>
+  grantType.replace(REGEX_GRANT_TYPE_URN_PREFIX, '')
+
+export const buildGrantTypeOptions = (
+  supported: readonly string[] | undefined,
+  selected: string[] | undefined,
+  fallback: string[],
+): MultiSelectOption[] => {
+  const values = [...(supported?.length ? supported : fallback)]
+  for (const value of selected ?? []) {
+    if (value && !values.includes(value)) values.push(value)
+  }
+  return values.map((value) => ({ value, label: getGrantTypeLabel(value) }))
+}
 
 export const getDynamicListValidationMessage = ({
   items,

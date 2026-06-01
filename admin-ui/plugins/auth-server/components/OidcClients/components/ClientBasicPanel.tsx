@@ -28,6 +28,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
   appendDynamicListItem,
+  buildGrantTypeOptions,
   getClientSectionFields,
   mapDynamicListValues,
   uriValidator,
@@ -123,6 +124,16 @@ const ClientBasicPanel = ({
     }
     return supportedMethods
   }, [oidcConfiguration?.tokenEndpointAuthMethodsSupported, formik.values.tokenEndpointAuthMethod])
+
+  const grantTypeOptions = useMemo(
+    () =>
+      buildGrantTypeOptions(
+        oidcConfiguration?.grantTypesSupported,
+        formik.values.grantTypes as string[] | undefined,
+        GRANT_TYPE_OPTIONS.map((option) => option.value),
+      ),
+    [oidcConfiguration?.grantTypesSupported, formik.values.grantTypes],
+  )
 
   const [redirectUriItems, setRedirectUriItems] = useState<GluuDynamicListItem[]>([])
   const isRedirectUriSyncingRef = useRef(false)
@@ -431,7 +442,7 @@ const ClientBasicPanel = ({
           label="fields.grant_types"
           formik={formik}
           value={formik.values.grantTypes as string[] | undefined}
-          options={GRANT_TYPE_OPTIONS}
+          options={grantTypeOptions}
           doc_category={DOC_CATEGORY}
           lsize={12}
           rsize={12}

@@ -4,6 +4,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
+import { getGrantTypeLabel } from 'Plugins/auth-server/utils'
 import { DOC_CATEGORY, LABELS, DOC_ENTRIES } from '../constants'
 import type { DisplayValue, ClientDetailPageProps } from '../types'
 
@@ -115,7 +116,7 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
       },
       {
         label: LABELS.GRANT_TYPES,
-        value: formatBadgeList(row.grantTypes),
+        value: formatBadgeList(row.grantTypes?.map(getGrantTypeLabel)),
         doc_entry: DOC_ENTRIES.GRANT_TYPES,
         doc_category: DOC_CATEGORY,
         isBadge: (row.grantTypes?.length ?? 0) > 0,

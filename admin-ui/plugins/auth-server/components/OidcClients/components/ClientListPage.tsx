@@ -23,6 +23,7 @@ import { adminUiFeatures, BORDER_RADIUS } from '@/constants'
 import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
+import { getGrantTypeLabel } from 'Plugins/auth-server/utils'
 import { useClients, useDeleteClient } from '../hooks'
 import ClientDetailPage from './ClientDetailPage'
 import ClientShowScopes from './ClientShowScopes'
@@ -333,7 +334,7 @@ const ClientListPage: React.FC = () => {
                   borderColor={badgeStyles.filledBadge.borderColor}
                   borderRadius={BORDER_RADIUS.SMALL}
                 >
-                  {grant}
+                  {getGrantTypeLabel(grant)}
                 </GluuBadge>
               ))}
             </div>
