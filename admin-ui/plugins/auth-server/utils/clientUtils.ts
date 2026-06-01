@@ -50,10 +50,8 @@ export const buildGrantTypeOptions = (
   selected: string[] | undefined,
   fallback: string[],
 ): MultiSelectOption[] => {
-  const values = [...(supported?.length ? supported : fallback)]
-  for (const value of selected ?? []) {
-    if (value && !values.includes(value)) values.push(value)
-  }
+  const base = supported?.length ? supported : fallback
+  const values = [...new Set([...base, ...(selected ?? [])].filter(Boolean))]
   return values.map((value) => ({ value, label: getGrantTypeLabel(value) }))
 }
 
