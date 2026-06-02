@@ -83,7 +83,7 @@ const GluuAppSidebar = (): JSX.Element => {
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
-  const { authorize } = useCedarling()
+  const { authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
 
   const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
@@ -126,20 +126,20 @@ const GluuAppSidebar = (): JSX.Element => {
               devLogger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
               return null
             }
-            const { isAuthorized } = await authorize([
+            const [result] = await authorizeHelper([
               {
                 permission: item.permission,
                 resourceId: item.resourceKey as AdminUiFeatureResource,
               },
             ])
-            return isAuthorized ? item : null
+            return result?.isAuthorized ? item : null
           }
           return item
         }),
       )
       return evaluations.filter((x): x is MenuItem => !!x)
     },
-    [hasChildren, authorize],
+    [hasChildren, authorizeHelper],
   )
 
   const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {

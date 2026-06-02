@@ -37,12 +37,10 @@
   },
   "include": [
     "app/**/*",
-    "build/**/*",
-    "config.ts",
     "plugins/**/*",
     "app/types/**/*",
     "__mocks__/**/*",
-    "__tests__/**/*",
+    "jest/**/*",
     "vite.config.ts"
   ],
   "exclude": ["node_modules", "dist"]
