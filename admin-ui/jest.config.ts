@@ -3,8 +3,8 @@ import type { Config } from 'jest'
 const config: Config = {
   verbose: true,
   testEnvironment: 'jsdom',
-  setupFiles: ['<rootDir>/__tests__/setup-tests.ts'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
+  setupFiles: ['<rootDir>/jest/setup-tests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest/setup.ts'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   transform: {
     '\\.[jt]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],

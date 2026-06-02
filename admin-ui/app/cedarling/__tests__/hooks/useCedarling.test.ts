@@ -117,21 +117,21 @@ describe('useCedarling', () => {
     })
   })
 
-  describe('authorize', () => {
+  describe('authorizeHelper', () => {
     it('returns not authorized when cedarling is not initialized', async () => {
       const store = createStore({
         cedarState: { initialized: false, isInitializing: true },
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
 
-      let authResult: { isAuthorized: boolean; error?: string } = { isAuthorized: false }
+      let results: { isAuthorized: boolean; error?: string }[] = []
       await act(async () => {
-        authResult = await result.current.authorize([
+        results = await result.current.authorizeHelper([
           { permission: 'https://example.com/read', resourceId: 'Dashboard' },
         ])
       })
-      expect(authResult.isAuthorized).toBe(false)
-      expect(authResult.error).toContain('not yet initialized')
+      expect(results[0]?.isAuthorized).toBe(false)
+      expect(results[0]?.error).toContain('not yet initialized')
     })
 
     it('returns not authorized when tokens are missing', async () => {
@@ -140,45 +140,16 @@ describe('useCedarling', () => {
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
 
-      let authResult: { isAuthorized: boolean; error?: string } = { isAuthorized: false }
+      let results: { isAuthorized: boolean; error?: string }[] = []
       await act(async () => {
-        authResult = await result.current.authorize([
+        results = await result.current.authorizeHelper([
           { permission: 'https://example.com/read', resourceId: 'Dashboard' },
         ])
       })
-      expect(authResult.isAuthorized).toBe(false)
-      expect(authResult.error).toContain('tokens are missing')
+      expect(results[0]?.isAuthorized).toBe(false)
+      expect(results[0]?.error).toContain('tokens are missing')
     })
 
-    it('returns not authorized for empty scope array', async () => {
-      const store = createStore()
-      const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-
-      let authResult: { isAuthorized: boolean } = { isAuthorized: false }
-      await act(async () => {
-        authResult = await result.current.authorize([])
-      })
-      expect(authResult.isAuthorized).toBe(false)
-    })
-
-    it('returns cached decision without calling API', async () => {
-      const store = createStore({
-        cedarState: { permissions: { 'Dashboard::read': true } },
-      })
-      const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-
-      let authResult: { isAuthorized: boolean } = { isAuthorized: false }
-      await act(async () => {
-        authResult = await result.current.authorize([
-          { permission: 'https://example.com/read', resourceId: 'Dashboard' },
-        ])
-      })
-      expect(authResult.isAuthorized).toBe(true)
-      expect(tokenAuthorizeMock).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('authorizeHelper', () => {
     it('returns empty array for empty scopes', async () => {
       const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
@@ -188,6 +159,22 @@ describe('useCedarling', () => {
         results = await result.current.authorizeHelper([])
       })
       expect(results).toEqual([])
+    })
+
+    it('returns cached decision without calling API', async () => {
+      const store = createStore({
+        cedarState: { permissions: { 'Dashboard::read': true } },
+      })
+      const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
+
+      let results: { isAuthorized: boolean }[] = []
+      await act(async () => {
+        results = await result.current.authorizeHelper([
+          { permission: 'https://example.com/read', resourceId: 'Dashboard' },
+        ])
+      })
+      expect(results[0]?.isAuthorized).toBe(true)
+      expect(tokenAuthorizeMock).not.toHaveBeenCalled()
     })
 
     it('deduplicates entries with same resourceId and action', async () => {
@@ -214,7 +201,6 @@ describe('useCedarling', () => {
       const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
 
-      expect(typeof result.current.authorize).toBe('function')
       expect(typeof result.current.authorizeHelper).toBe('function')
       expect(typeof result.current.hasCedarReadPermission).toBe('function')
       expect(typeof result.current.hasCedarWritePermission).toBe('function')

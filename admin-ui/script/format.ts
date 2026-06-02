@@ -16,7 +16,7 @@ const prettierCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 
 const proc: ChildProcess = spawn(
   prettierCommand,
-  ['prettier', '--write', '**/*.{js,jsx,ts,tsx,json,css,scss}'],
+  ['prettier', '--write', '**/*.{js,jsx,ts,tsx,json,css,scss,md}'],
   {
     shell: false,
     stdio: ['inherit', 'pipe', 'pipe'],
