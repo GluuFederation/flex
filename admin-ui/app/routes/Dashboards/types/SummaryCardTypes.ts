@@ -1,4 +1,4 @@
-export type SummaryCardClasses = {
+type SummaryCardClasses = {
   summary: string
   summaryText: string
   summaryValue: string

@@ -14,11 +14,6 @@ export type WebhookTriggerResponseItem = {
   }
 }
 
-type WebhookSliceTriggerPayload = {
-  feature: string | null
-  payload: JsonValue
-}
-
 type TriggerPayloadValue =
   | string
   | number
@@ -27,7 +22,7 @@ type TriggerPayloadValue =
   | Record<string, string | number | boolean | null>
   | Array<string | number | boolean | null>
 
-export type TriggerPayloadActionPayload = {
+type TriggerPayloadActionPayload = {
   feature?: string | null
   payload?: TriggerPayloadValue
 }
@@ -45,7 +40,6 @@ export type WebhookSliceState = {
   webhookModal: boolean
   triggerWebhookInProgress: boolean
   webhookTriggerResults: WebhookTriggerResponseItem[]
-  triggerPayload: WebhookSliceTriggerPayload
   featureToTrigger: string
   showWebhookExecutionDialog: boolean
 }

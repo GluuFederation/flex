@@ -1,31 +1,25 @@
 import type { AdditionalPayload } from 'Utils/TokenController'
 import { Document, AssetFormData } from '../../../components/Assets/types/AssetApiTypes'
 
-export interface AssetAuditPayload extends AdditionalPayload {
+export type AssetAuditPayload = AdditionalPayload & {
   action?: {
     action_data?: AssetFormData
     action_message?: string
   }
 }
 
-export interface AssetState {
-  assets: Document[]
-  services: string[]
-  fileTypes: string[]
+export type AssetState = {
   loading: boolean
   saveOperationFlag: boolean
   errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
   selectedAsset: Document | Record<string, never>
-  loadingAssets: boolean
 }
 
-export interface AssetResponsePayload {
+export type AssetResponsePayload = {
   data?: Document | null
 }
 
-export interface CreateAssetSagaPayload {
+export type CreateAssetSagaPayload = {
   payload: {
     action: {
       action_data: Document & {
@@ -39,7 +33,7 @@ export interface CreateAssetSagaPayload {
   }
 }
 
-export interface CreateAssetActionPayload {
+export type CreateAssetActionPayload = {
   action: {
     action_data: Document & {
       fileName: string
@@ -51,7 +45,7 @@ export interface CreateAssetActionPayload {
   }
 }
 
-export interface UpdateAssetSagaPayload {
+export type UpdateAssetSagaPayload = {
   payload: {
     action: {
       action_data: Document & {
@@ -66,7 +60,7 @@ export interface UpdateAssetSagaPayload {
   }
 }
 
-export interface UpdateAssetActionPayload {
+export type UpdateAssetActionPayload = {
   action: {
     action_data: Document & {
       fileName: string

@@ -1,5 +1,3 @@
-import type { UserInfo } from 'Redux/features/types/authTypes'
-
 type ProfileDetailsValue = string | number | boolean | null | object | undefined
 
 export type CustomAttribute = {
@@ -17,28 +15,6 @@ export type ProfileDetails = {
   surname?: string
   customAttributes?: CustomAttribute[]
   [key: string]: ProfileDetailsValue | CustomAttribute[]
-}
-
-export type ProfileDetailsState = {
-  loading: boolean
-  profileDetails: ProfileDetails | null
-}
-
-export type AuthToken = {
-  access_token?: string
-  [key: string]: ProfileDetailsValue
-}
-
-export type AuthState = {
-  userinfo?: UserInfo
-  token?: AuthToken | null
-  issuer?: string | null
-  userInum?: string | null
-}
-
-export type ProfileRootState = {
-  profileDetailsReducer: ProfileDetailsState
-  authReducer: AuthState
 }
 
 export type InfoRowProps = {

@@ -19,7 +19,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, BORDER_RADIUS } from '@/constants'
 import { devLogger } from '@/utils/devLogger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
@@ -28,7 +28,6 @@ import ClientDetailPage from './ClientDetailPage'
 import ClientShowScopes from './ClientShowScopes'
 import { findAndFilterScopeClients } from './ClientScopeUtils'
 import { useStyles } from './styles/ClientListPage.style'
-import { BORDER_RADIUS } from '@/constants'
 import {
   CLIENT_ACTION_IDS,
   FETCH_LIMITS,

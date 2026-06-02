@@ -69,7 +69,7 @@ const wasmPreloadPlugin = (base: string) => {
         return wasmFiles.map((fileName) => ({
           tag: 'link',
           attrs: {
-            rel: 'preload',
+            rel: 'prefetch',
             as: 'fetch',
             type: 'application/wasm',
             crossorigin: '',
@@ -370,6 +370,24 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0',
       port: 4100,
+      watch: {
+        ignored: [
+          '**/*.md',
+          '**/docs/**',
+          '**/__tests__/**',
+          '**/__mocks__/**',
+          '**/*.test.*',
+          '**/*.spec.*',
+          '**/jest/**',
+          '**/script/**',
+          '**/coverage/**',
+          '**/dist/**',
+          '**/.check-all-out/**',
+          '**/.husky/**',
+          '**/.vscode/**',
+          '**/.claude/**',
+        ],
+      },
     },
     preview: {
       host: '0.0.0.0',

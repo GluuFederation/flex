@@ -1,19 +1,7 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import clsx from 'clsx'
 import { Check } from '@/components/icons'
-
-export interface WizardStepProps {
-  'active'?: boolean
-  'complete'?: boolean
-  'disabled'?: boolean
-  'className'?: string
-  'id': string
-  'onClick': () => void
-  'icon'?: ReactNode
-  'successIcon'?: ReactNode
-  'children'?: ReactNode
-  'data-testid'?: string
-}
+import type { WizardStepProps } from './types'
 
 const WizardStep: React.FC<WizardStepProps> = ({
   active,

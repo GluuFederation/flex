@@ -1,39 +1,16 @@
 import * as Yup from 'yup'
 import { PublicKeyCredentialHints, AttestationMode } from '../types'
 
-export const isEveryKeyValueComplete = (
-  items: Array<{ key?: string; value?: string }>,
-): boolean => {
-  if (items.length === 0) return true
-  return items.every(
-    (item) => Boolean((item.key ?? '').trim()) && Boolean((item.value ?? '').trim()),
-  )
-}
-
 export const isLastKeyValueComplete = (items: Array<{ key?: string; value?: string }>): boolean => {
   if (items.length === 0) return true
   const last = items[items.length - 1]
   return Boolean((last.key ?? '').trim()) && Boolean((last.value ?? '').trim())
 }
 
-export const isEveryStringEntryComplete = (items: string[]): boolean => {
-  if (items.length === 0) return true
-  return items.every((item) => Boolean((item ?? '').trim()))
-}
-
 export const isLastStringEntryComplete = (items: string[]): boolean => {
   if (items.length === 0) return true
   const last = items[items.length - 1]
   return Boolean((last ?? '').trim())
-}
-
-export const isEveryMetadataServerComplete = (
-  items: Array<{ url?: string; rootCert?: string }>,
-): boolean => {
-  if (items.length === 0) return true
-  return items.every(
-    (item) => Boolean((item.url ?? '').trim()) && Boolean((item.rootCert ?? '').trim()),
-  )
 }
 
 export const isLastMetadataServerComplete = (

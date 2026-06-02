@@ -22,10 +22,8 @@ import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from 'Utils/PermChecker'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
-import {
-  SIMPLE_PASSWORD_AUTH,
-  FETCHING_JSON_PROPERTIES,
-} from 'Plugins/auth-server/common/Constants'
+import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
+import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import { useGetAcrs, usePutAcrs, getGetAcrsQueryKey } from 'JansConfigApi'
 import {
   useAuthServerJsonPropertiesQuery,
@@ -38,7 +36,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -46,6 +44,7 @@ import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { buildKeyCandidates } from '@/utils/stringUtils'
 import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
+import { SCRIPT_TYPES } from '@/constants'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
 import { useAcrAudit } from '../../Authentication/Acrs/hooks'
 import {
@@ -100,7 +99,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
-      themeColors: getThemeColor(themeState?.theme ?? 'light'),
+      themeColors: getThemeColor(themeState?.theme ?? THEME_LIGHT),
       isDark: themeState?.theme === THEME_DARK,
     }),
     [themeState?.theme],
@@ -378,7 +377,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   }, [getPropertyLabel, isSimplePropertyValue, simpleEntriesByKey])
   const authScripts = useMemo(() => {
     const filteredScripts = scripts
-      .filter((item) => item.scriptType === 'person_authentication')
+      .filter((item) => item.scriptType === SCRIPT_TYPES.PERSON_AUTHENTICATION)
       .filter((item) => item.enabled)
       .map((item) => item.name)
     filteredScripts.push(SIMPLE_PASSWORD_AUTH)

@@ -101,7 +101,7 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
       if (!popoverRef.current) return
       const target = event.target as Node
       if (popoverRef.current.contains(target)) return
-      const muiPopper = document.querySelector('.MuiPickersPopper-root')
+      const muiPopper = document.querySelector('.MuiPickerPopper-root, .MuiPickersPopper-root')
       if (muiPopper?.contains(target)) return
       onCancel()
     }

@@ -33,7 +33,7 @@ export const getModuleProperty = (
         ?.value2
     : undefined
 
-export const normalizeProperty = (p: PropertyInput): ConfigurationProperty | ModuleProperty => {
+const normalizeProperty = (p: PropertyInput): ConfigurationProperty | ModuleProperty => {
   const q = p as PropertyLike
   const base: Record<string, string | boolean> = {
     value1: (q.key ?? q.value1 ?? '').toString().trim(),

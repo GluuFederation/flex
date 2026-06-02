@@ -1,14 +1,23 @@
-import { formatDate, isValidDate } from '@/utils/dayjsUtils'
 import {
   REGEX_HAS_UPPERCASE,
   REGEX_HAS_LOWERCASE,
   REGEX_HAS_DIGIT,
   REGEX_HAS_SPECIAL_CHAR,
 } from '@/utils/regex'
-import { CustomObjectAttribute, JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
+import { JansAttribute, PagedResultEntriesItem } from 'JansConfigApi'
 
-import { BIRTHDATE_ATTR, USER_PASSWORD_ATTR } from '../common'
-import { UserEditFormValues, PersonAttribute, ExtendedCustomUser } from '../types'
+import {
+  USER_PASSWORD_ATTR,
+  USER_ID_ATTR,
+  DISPLAY_NAME_ATTR,
+  MAIL_ATTR,
+  STATUS_ATTR,
+  GIVEN_NAME_ATTR,
+  MIDDLE_NAME_ATTR,
+  SN_ATTR,
+  EMAIL_VERIFIED_ATTR,
+} from '../common'
+import { PersonAttribute, ExtendedCustomUser } from '../types'
 
 export const validatePassword = (password: string): boolean => {
   if (!password || password.length < 8) return false
@@ -29,98 +38,6 @@ export const getStringValue = (value: string | string[] | boolean | null | undef
   return ''
 }
 
-const toDateLike = (v: object): string | number | Date | null => {
-  if (typeof v === 'string' || typeof v === 'number' || v instanceof Date) return v
-  if (v && typeof v === 'object' && 'value' in v) return toDateLike((v as { value: object }).value)
-  return null
-}
-
-const processBirthdateAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  const rawDate =
-    attrValues.length > 0
-      ? toDateLike(attrValues[0] as object)
-      : attrSingleValue != null
-        ? toDateLike(attrSingleValue as object)
-        : null
-
-  if (rawDate !== undefined && rawDate !== null && customAttr.name) {
-    initialValues[customAttr.name] = isValidDate(rawDate) ? formatDate(rawDate, 'YYYY-MM-DD') : ''
-  }
-}
-
-const processMultiValuedAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  if (attrValues.length > 0) {
-    initialValues[customAttr.name || ''] = attrValues.map((v) =>
-      typeof v === 'string' ? v : JSON.stringify(v),
-    )
-  } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] = [
-      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue),
-    ]
-  }
-}
-
-const processSingleValuedAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  if (attrValues.length > 0) {
-    const value = attrValues[0]
-    initialValues[customAttr.name || ''] = typeof value === 'string' ? value : JSON.stringify(value)
-  } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] =
-      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue)
-  }
-}
-
-export const initializeCustomAttributes = (
-  userDetails: ExtendedCustomUser | null,
-  personAttributes: PersonAttribute[],
-) => {
-  const initialValues: UserEditFormValues = {
-    displayName: userDetails?.displayName || '',
-    givenName: userDetails?.givenName || '',
-    mail: userDetails?.mail || '',
-    userId: userDetails?.userId || '',
-    sn: userDetails?.familyName || '',
-    middleName: userDetails?.middleName || '',
-    status: userDetails?.jansStatus || userDetails?.status || '',
-  }
-
-  if (userDetails?.customAttributes) {
-    const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
-    for (const customAttr of userDetails.customAttributes) {
-      if (customAttr.name === BIRTHDATE_ATTR) {
-        processBirthdateAttribute(customAttr, initialValues)
-        continue
-      }
-      if (!customAttr.name) {
-        continue
-      }
-      const attributeDef = attributeMap.get(customAttr.name)
-      if (attributeDef?.oxMultiValuedAttribute) {
-        processMultiValuedAttribute(customAttr, initialValues)
-      } else {
-        processSingleValuedAttribute(customAttr, initialValues)
-      }
-    }
-  }
-
-  return initialValues
-}
-
 export const setupCustomAttributes = (
   userDetails: ExtendedCustomUser | null,
   personAttributes: PersonAttribute[],
@@ -130,14 +47,14 @@ export const setupCustomAttributes = (
   if (!userDetails?.customAttributes) return
 
   const usedClaims = new Set([
-    'userId',
-    'displayName',
-    'mail',
-    'status',
+    USER_ID_ATTR,
+    DISPLAY_NAME_ATTR,
+    MAIL_ATTR,
+    STATUS_ATTR,
     USER_PASSWORD_ATTR,
-    'givenName',
-    'middleName',
-    'sn',
+    GIVEN_NAME_ATTR,
+    MIDDLE_NAME_ATTR,
+    SN_ATTR,
   ])
 
   const attributeMap = new Map(personAttributes.map((attr) => [attr.name, attr]))
@@ -167,7 +84,7 @@ export const setupCustomAttributes = (
           } else {
             boolValue = Boolean(firstValue)
           }
-          if (customAttr.name === 'emailVerified' && boolValue === false) {
+          if (customAttr.name === EMAIL_VERIFIED_ATTR && boolValue === false) {
             continue
           }
         }

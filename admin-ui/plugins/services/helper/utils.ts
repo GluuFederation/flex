@@ -8,7 +8,6 @@ import type {
   MemcachedCacheFormValues,
   RedisCacheFormValues,
   NativePersistenceCacheFormValues,
-  PersistenceInfo,
 } from '../Components/types'
 
 export const isInMemoryCache = (
@@ -33,15 +32,6 @@ export const isNativePersistenceCache = (
   values: CacheFormValues | CacheFormValuesUnion,
 ): values is NativePersistenceCacheFormValues => {
   return values.cacheProviderType === 'NATIVE_PERSISTENCE'
-}
-
-export const isPersistenceInfo = (
-  data: Partial<PersistenceInfo> | null | undefined,
-): data is PersistenceInfo => {
-  if (data === null || data === undefined || Array.isArray(data)) {
-    return false
-  }
-  return typeof data.persistenceType === 'string'
 }
 
 export const buildCacheChangedFieldOperations = (

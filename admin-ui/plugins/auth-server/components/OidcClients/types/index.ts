@@ -7,7 +7,7 @@ import type { JsonObject, JsonValue } from '@/routes/Apps/Gluu/types/common'
 
 export type UmaResourceApiError = string | { message?: string }
 
-export interface ClientDetailPageProps {
+export type ClientDetailPageProps = {
   row: ClientRow
   scopes: ScopeItem[]
 }

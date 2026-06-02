@@ -19,10 +19,11 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures, SORT_ORDER } from '@/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
+import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import type { ScopeTableRow } from '../types'
 import { devLogger } from '@/utils/devLogger'
 import { useScopes, useScopeActions, invalidateScopeQueries } from '../hooks'
@@ -126,7 +127,7 @@ const ScopeListPage: React.FC = () => {
       startIndex,
       ...(debouncedPattern && { pattern: debouncedPattern }),
       ...(scopeType && { type: scopeType }),
-      ...(sortBy && { sortBy, sortOrder: 'ascending' as const }),
+      ...(sortBy && { sortBy, sortOrder: SORT_ORDER.ASCENDING }),
       withAssociatedClients: true as const,
     }),
     [limit, startIndex, debouncedPattern, scopeType, sortBy],
@@ -261,7 +262,7 @@ const ScopeListPage: React.FC = () => {
     () => [
       { value: '', label: t('options.all') },
       ...SCOPE_TYPE_OPTIONS,
-      { value: 'spontaneous', label: 'Spontaneous' },
+      { value: SCOPE_TYPES.SPONTANEOUS, label: 'Spontaneous' },
     ],
     [t],
   )

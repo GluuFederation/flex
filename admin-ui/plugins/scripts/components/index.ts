@@ -1,8 +1,3 @@
-export { default as CustomScriptAddPage } from './CustomScriptAddPage'
-export { default as CustomScriptEditPage } from './CustomScriptEditPage'
-export { default as CustomScriptForm } from './CustomScriptForm'
-export { default as CustomScriptListPage } from './CustomScriptListPage'
-export { PersonAuthenticationFields } from './PersonAuthenticationFields'
 export * from './constants'
 export * from './hooks'
 export * from './types'

@@ -3,8 +3,8 @@ import type { Config } from 'jest'
 const config: Config = {
   verbose: true,
   testEnvironment: 'jsdom',
-  setupFiles: ['<rootDir>/__tests__/setup-tests.ts'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
+  setupFiles: ['<rootDir>/jest/setup-tests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest/setup.ts'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   transform: {
     '\\.[jt]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],
@@ -30,7 +30,7 @@ const config: Config = {
     '^Orval$': '<rootDir>/orval/index.ts',
     '^Orval/(.*)$': '<rootDir>/orval/$1',
     '^Utils(.*)$': '<rootDir>/app/utils$1',
-    '^JansConfigApi$': '<rootDir>/jans_config_api_orval/src/JansConfigApi.ts',
+    '^JansConfigApi$': '<rootDir>/jans_config_api_orval/src/index.ts',
     'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],

@@ -1,5 +1,4 @@
 export { nameIDPolicyFormat } from './constants'
-export type { NameIdPolicyFormatOption } from './constants'
 export {
   samlConfigurationValidationSchema,
   websiteSsoIdentityProviderValidationSchema,
@@ -19,4 +18,3 @@ export {
   getIdentityProviderTableCols,
   getServiceProviderTableCols,
 } from './tableUtils'
-export type { TableColumn } from './tableUtils'

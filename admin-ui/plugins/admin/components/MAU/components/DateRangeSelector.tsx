@@ -44,8 +44,15 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const presetButtonBorder = themeColors.borderColor
 
   return (
-    <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-      <Grid item>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Grid>
         <GluuText
           variant="h5"
           style={{
@@ -59,9 +66,15 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
           {t('titles.usage_token_analytics')}
         </GluuText>
       </Grid>
-      <Grid item>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item>
+      <Grid>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
+          <Grid>
             <Box sx={{ display: 'flex', gap: 0 }}>
               {DATE_PRESETS.map((preset, index) => {
                 const isSelected = selectedPreset === preset.months
@@ -89,7 +102,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               })}
             </Box>
           </Grid>
-          <Grid item>
+          <Grid>
             <GluuDatePicker
               mode="range"
               layout="row"
@@ -100,7 +113,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               onEndDateChange={onEndDateChange}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <GluuButton
               backgroundColor={customColors.statusActive}
               textColor={customColors.white}

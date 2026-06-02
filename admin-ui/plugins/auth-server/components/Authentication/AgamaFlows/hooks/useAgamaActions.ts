@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { CREATE, UPDATE, DELETION } from '../../../../../../app/audit/UserActionType'
+import { JSON_PATCH_PATHS } from '../../constants'
 import { AGAMA_PROJECT } from '../../../../redux/audit/Resources'
 import type { Deployment } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -67,7 +68,7 @@ export const useAgamaActions = () => {
         resource: 'json-configuration',
         message,
         modifiedFields,
-        performedOn: '/acrMappings',
+        performedOn: JSON_PATCH_PATHS.ACR_MAPPINGS,
         client_id,
       })
     },

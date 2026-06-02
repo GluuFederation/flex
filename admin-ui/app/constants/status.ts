@@ -1,4 +1,4 @@
-import customColors from '@/customColors'
+import { JANS_SERVICES } from './jansServices'
 
 export const UNKNOWN_STATUS = 'unknown' as const
 
@@ -22,26 +22,12 @@ export const STATUS_LABEL_KEYS: Record<ServiceStatusValue, string> = {
   [UNKNOWN_STATUS]: 'messages.status_inactive',
 } as const
 
-export const STATUS_COLORS: Record<ServiceStatusValue, string> = {
-  up: customColors.statusActive,
-  down: customColors.statusInactive,
-  degraded: customColors.orange,
-  [UNKNOWN_STATUS]: customColors.orange,
-} as const
-
-export const STATUS_BADGE_COLOR: Record<ServiceStatusValue, string> = {
-  up: 'success',
-  down: 'danger',
-  degraded: 'warning',
-  [UNKNOWN_STATUS]: 'warning',
-} as const
-
 export const STATUS_DETAILS = [
-  { label: 'menus.oauthserver', key: 'jans-auth' },
-  { label: 'dashboard.config_api', key: 'jans-config-api' },
-  { label: 'menus.fido', key: 'jans-fido2' },
-  { label: 'dashboard.casa', key: 'jans-casa' },
-  { label: 'dashboard.key_cloak', key: 'keycloak' },
-  { label: 'menus.scim', key: 'jans-scim' },
-  { label: 'dashboard.jans_lock', key: 'jans-lock' },
+  { label: 'menus.oauthserver', key: JANS_SERVICES.AUTH },
+  { label: 'dashboard.config_api', key: JANS_SERVICES.CONFIG_API },
+  { label: 'menus.fido', key: JANS_SERVICES.FIDO2 },
+  { label: 'dashboard.casa', key: JANS_SERVICES.CASA },
+  { label: 'dashboard.key_cloak', key: JANS_SERVICES.KEYCLOAK },
+  { label: 'menus.scim', key: JANS_SERVICES.SCIM },
+  { label: 'dashboard.jans_lock', key: JANS_SERVICES.LOCK },
 ] as const

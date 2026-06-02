@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import type { UseMutationResult } from '@tanstack/react-query'
 import {
-  useGetConfigScripts,
   useGetConfigScriptsByInum,
   useGetConfigScriptsByType,
   usePostConfigScripts,
@@ -14,21 +13,20 @@ import {
   getGetConfigScriptsByTypeQueryKey,
   getGetConfigScriptsByInumQueryKey,
   type CustomScript,
-  type GetConfigScriptsParams,
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
-import { SCRIPT } from 'Plugins/admin/redux/audit/Resources'
 import { devLogger } from '@/utils/devLogger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import type { AdditionalPayload } from 'Utils/TokenController'
 import { logAuditAction } from '../helper'
 import { getApiErrorDetail } from '../helper/utils'
 import { updateToast } from '@/redux/features/toastSlice'
 import {
+  SCRIPT_AUDIT_RESOURCE,
   SCRIPT_CACHE_CONFIG,
   QUERY_KEY_PREFIX_SCRIPTS_BY_TYPE,
   QUERY_KEY_PREFIX_SCRIPTS,
@@ -61,19 +59,6 @@ const useWebhookTrigger = () => {
     },
     [dispatch],
   )
-}
-
-export const useCustomScripts = (params?: GetConfigScriptsParams) => {
-  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
-
-  return useGetConfigScripts(params, {
-    query: {
-      enabled: hasSession === true,
-      staleTime: SCRIPT_CACHE_CONFIG.STALE_TIME,
-      gcTime: SCRIPT_CACHE_CONFIG.GC_TIME,
-      retry: false,
-    },
-  })
 }
 
 export const useCustomScriptsByType = (
@@ -141,7 +126,7 @@ export const useCreateCustomScript = (): UseMutationResult<
       ])
 
       webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
-      await logAuditAction(CREATE, SCRIPT, {
+      await logAuditAction(CREATE, SCRIPT_AUDIT_RESOURCE, {
         action: {
           action_data: structuredClone(variables.data),
           action_message: actionMessage,
@@ -186,7 +171,7 @@ export const useUpdateCustomScript = (): UseMutationResult<
       ])
 
       webhookTrigger({ createdFeatureValue: result, feature: adminUiFeatures.custom_script_write })
-      await logAuditAction(UPDATE, SCRIPT, {
+      await logAuditAction(UPDATE, SCRIPT_AUDIT_RESOURCE, {
         action: {
           action_data: structuredClone(variables.data),
           action_message: actionMessage,
@@ -230,7 +215,7 @@ export const useDeleteCustomScript = () => {
         createdFeatureValue: { inum: variables.inum },
         feature: adminUiFeatures.custom_script_delete,
       })
-      await logAuditAction(DELETION, SCRIPT, {
+      await logAuditAction(DELETION, SCRIPT_AUDIT_RESOURCE, {
         action: { action_data: { inum: variables.inum } },
         message: actionMessage,
       })
@@ -276,19 +261,4 @@ export const useCustomScriptTypes = () => {
       gcTime: SCRIPT_CACHE_CONFIG.SCRIPT_TYPES_GC_TIME,
     },
   })
-}
-
-export const useCustomScriptOperations = () => {
-  const createMutation = useCreateCustomScript()
-  const updateMutation = useUpdateCustomScript()
-  const deleteMutation = useDeleteCustomScript()
-  const scriptTypesQuery = useCustomScriptTypes()
-
-  return {
-    createScript: createMutation,
-    updateScript: updateMutation,
-    deleteScript: deleteMutation,
-    scriptTypes: scriptTypesQuery.data || [],
-    scriptTypesLoading: scriptTypesQuery.isLoading,
-  }
 }

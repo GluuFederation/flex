@@ -14,7 +14,7 @@ Job to generate data and initial config for Gluu Server persistence layer.
 
 ## Source Code
 
-* <https://github.com/JanssenProject/jans/docker-jans-persistence-loader>
+* <https://github.com/JanssenProject/jans/tree/main/docker-jans-persistence-loader>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/persistence>
 
 ## Requirements

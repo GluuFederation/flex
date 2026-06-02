@@ -175,7 +175,6 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
     },
     [
-      permissionsByResourceId,
       buildAuthorizationRequest,
       dispatch,
       access_token,
@@ -183,6 +182,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       userinfo_token,
       cedarlingInitialized,
       isInitializing,
+      getActionLabelFromUrl,
     ],
   )
 
@@ -192,8 +192,6 @@ export const useCedarling = (): UseCedarlingReturn => {
         return []
       }
 
-      // Deduplicate by (resourceId, action) to avoid redundant API calls
-      // Map structure: key -> { entry, indices[] }
       const uniqueMap = new Map<string, { entry: ResourceScopeEntry; indices: number[] }>()
 
       resourceScopes.forEach((entry, index) => {
@@ -260,7 +258,6 @@ export const useCedarling = (): UseCedarlingReturn => {
   )
 
   return {
-    authorize,
     authorizeHelper,
     hasCedarReadPermission,
     hasCedarWritePermission,

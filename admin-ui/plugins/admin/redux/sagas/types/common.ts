@@ -1,11 +1,11 @@
 export type { AuditRecord } from 'Redux/sagas/types'
 
-export interface SagaErrorShape {
+export type SagaErrorShape = {
   response?: { body?: { responseMessage?: string }; status?: number }
   message?: string
 }
 
-export interface HttpErrorLike {
+export type HttpErrorLike = {
   response?: { status?: number }
   status?: number
 }

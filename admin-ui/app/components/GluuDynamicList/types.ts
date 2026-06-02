@@ -1,6 +1,6 @@
 import type React from 'react'
 
-export type GluuDynamicListField = 'key' | 'value'
+type GluuDynamicListField = 'key' | 'value'
 
 export type GluuDynamicListMode = 'single' | 'pair'
 

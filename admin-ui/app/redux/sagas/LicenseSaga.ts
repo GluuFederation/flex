@@ -14,13 +14,11 @@ import {
   setLicenseError,
   setBackendStatus,
   checkLicensePresent,
-  checkUserLicenceKey,
   checkLicenseConfigValid,
   uploadNewSsaToken as uploadNewSsaTokenAction,
   generateTrialLicense,
-  retrieveLicenseKey as retrieveLicenseKeyAction,
 } from '../actions'
-import type { LicenseRequestPayload, SSARequestPayload } from 'Redux/api/types/LicenseApi'
+import type { SSARequestPayload } from 'Redux/api/types/LicenseApi'
 import type { ApiTokenResponse } from 'Redux/api/types/BackendApi'
 import { fetchApiTokenWithDefaultScopes } from 'Redux/api/backend-api'
 import type { MauEntry } from 'Redux/types'
@@ -49,7 +47,7 @@ const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
   return { active: false as const, errorMessage, statusCode }
 }
 
-export function* getAccessToken() {
+function* getAccessToken() {
   try {
     const token = (yield call(fetchApiTokenWithDefaultScopes)) as ApiTokenResponse
     yield put(setApiDefaultToken(token))
@@ -209,17 +207,6 @@ function* generateTrailLicenseKey(_action?: { type: string }): SagaIterator {
   }
 }
 
-function* activateCheckUserLicenseKey(action: { payload: LicenseRequestPayload }): SagaIterator {
-  const { payload } = action
-  try {
-    yield* setupApiToken()
-    const response = (yield call(activateAdminuiLicense, payload.payload)) as GenericResponse | null
-    yield put(checkUserLicenseKeyResponse(response))
-  } catch (err) {
-    devLogger.log(err instanceof Error ? err : String(err))
-  }
-}
-
 function* uploadNewSsaToken(action: { type: string; payload: SSARequestPayload }) {
   const { payload } = action
   try {
@@ -253,13 +240,11 @@ function* checkAdminuiLicenseConfigWorker(_action?: { type: string }) {
   }
 }
 
-export function* checkLicensePresentWatcher(): SagaIterator {
+function* checkLicensePresentWatcher(): SagaIterator {
   yield takeEvery(checkLicensePresent, checkLicensePresentWorker)
-  yield takeEvery(checkUserLicenceKey, activateCheckUserLicenseKey)
   yield takeEvery(checkLicenseConfigValid, checkAdminuiLicenseConfigWorker)
   yield takeEvery(uploadNewSsaTokenAction, uploadNewSsaToken)
   yield takeEvery(generateTrialLicense, generateTrailLicenseKey)
-  yield takeEvery(retrieveLicenseKeyAction, retrieveLicenseKey)
 }
 
 export default function* rootSaga() {

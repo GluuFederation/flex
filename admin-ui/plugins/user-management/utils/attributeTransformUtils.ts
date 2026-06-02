@@ -1,6 +1,7 @@
-import { parseDateStrict } from '@/utils/dayjsUtils'
+import { parseDateStrict, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { REGEX_DATE_YYYY_MM_DD } from '@/utils/regex'
-import { BIRTHDATE_ATTR, JANS_ADMIN_UI_ROLE_ATTR, USER_ROLE_FORM_ATTR } from '../common'
+import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
+import { BIRTHDATE_ATTR, USER_ROLE_FORM_ATTR } from '../common'
 import {
   UserEditFormValues,
   FormValueEntry,
@@ -48,8 +49,8 @@ export const normalizeSingleValue = (value: FormValueEntry, attributeName: strin
     if (!REGEX_DATE_YYYY_MM_DD.test(normalized)) {
       return ''
     }
-    const parsed = parseDateStrict(normalized, 'YYYY-MM-DD')
-    return parsed ? parsed.format('YYYY-MM-DD') : ''
+    const parsed = parseDateStrict(normalized, DATE_FORMATS.DATE_ONLY)
+    return parsed ? parsed.format(DATE_FORMATS.DATE_ONLY) : ''
   }
   return normalized
 }
@@ -64,7 +65,7 @@ export const normalizeBooleanValue = (rawValue: FormValueEntry | boolean): boole
   return Boolean(rawValue)
 }
 
-export const normalizeFieldValue = (value: FormValueEntry): string => {
+const normalizeFieldValue = (value: FormValueEntry): string => {
   if (Array.isArray(value)) {
     const first = value[0]
     return first != null ? String(first) : ''
@@ -103,7 +104,7 @@ export const isMultiValuedAttribute = (attributeDef?: PersonAttribute): boolean 
   return Boolean(attributeDef?.oxMultiValuedAttribute)
 }
 
-export const hadOriginalValue = (originalAttr?: CustomAttribute): boolean => {
+const hadOriginalValue = (originalAttr?: CustomAttribute): boolean => {
   if (!originalAttr) return false
   return Boolean(
     (originalAttr.values && originalAttr.values.length > 0) ||
@@ -135,9 +136,7 @@ export const processSingleValuedField = (
   return Array.isArray(modifiedValue) ? String(modifiedValue[0] || '') : String(modifiedValue || '')
 }
 
-export const createAttributeMap = (
-  personAttributes: PersonAttribute[],
-): Map<string, PersonAttribute> => {
+const createAttributeMap = (personAttributes: PersonAttribute[]): Map<string, PersonAttribute> => {
   return new Map(personAttributes.map((attr) => [attr.name, attr]))
 }
 

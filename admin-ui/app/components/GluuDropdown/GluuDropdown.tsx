@@ -302,5 +302,3 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
 }
 
 GluuDropdown.displayName = 'GluuDropdown'
-
-export default GluuDropdown

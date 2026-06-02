@@ -2,12 +2,12 @@ import type { FormikProps } from 'formik'
 
 export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
 
-export interface InMemoryCacheFormValues {
+export type InMemoryCacheFormValues = {
   cacheProviderType: 'IN_MEMORY'
   memoryDefaultPutExpiration?: number
 }
 
-export interface MemcachedCacheFormValues {
+export type MemcachedCacheFormValues = {
   cacheProviderType: 'MEMCACHED'
   memCacheServers?: string
   maxOperationQueueLength?: number
@@ -16,7 +16,7 @@ export interface MemcachedCacheFormValues {
   connectionFactoryType?: string
 }
 
-export interface RedisCacheFormValues {
+export type RedisCacheFormValues = {
   cacheProviderType: 'REDIS'
   redisProviderType?: string
   servers?: string
@@ -32,7 +32,7 @@ export interface RedisCacheFormValues {
   maxRetryAttempts?: number
 }
 
-export interface NativePersistenceCacheFormValues {
+export type NativePersistenceCacheFormValues = {
   cacheProviderType: 'NATIVE_PERSISTENCE'
   nativeDefaultPutExpiration?: number
   defaultCleanupBatchSize?: number
@@ -45,7 +45,7 @@ export type CacheFormValuesUnion =
   | RedisCacheFormValues
   | NativePersistenceCacheFormValues
 
-export interface CacheFormValues {
+export type CacheFormValues = {
   cacheProviderType: CacheProviderType
   memoryDefaultPutExpiration?: number
   memCacheServers?: string
@@ -70,7 +70,7 @@ export interface CacheFormValues {
   deleteExpiredOnGetRequest?: boolean
 }
 
-export interface CacheSubComponentBaseProps {
+export type CacheSubComponentBaseProps = {
   formik: FormikProps<CacheFormValues>
   classes: Record<string, string>
   isDark: boolean
@@ -80,13 +80,3 @@ export interface CacheSubComponentBaseProps {
 export type CacheMemcachedProps = CacheSubComponentBaseProps
 
 export type CacheRedisProps = CacheSubComponentBaseProps
-
-export interface PersistenceInfo {
-  persistenceType?: string
-  databaseName?: string
-  schemaName?: string
-  productName?: string
-  productVersion?: string
-  driverName?: string
-  driverVersion?: string
-}

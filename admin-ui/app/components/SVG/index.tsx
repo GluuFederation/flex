@@ -11,7 +11,6 @@ import FidoIcon from './menu/Fido'
 import SmtpZoneIcon from './menu/Smtp'
 import ScriptsIcon from './menu/Scripts'
 import LockIcon from './menu/Lock'
-import ArrowIcon from './Arrow'
 import { ChevronIcon } from './Chevron'
 
 export {
@@ -28,6 +27,5 @@ export {
   SmtpZoneIcon,
   ScriptsIcon,
   LockIcon,
-  ArrowIcon,
   ChevronIcon,
 }

@@ -1,13 +1,13 @@
 import { CustomScriptItem, ModuleProperty, ConfigurationProperty } from './customScript'
 import type { CustomScript } from 'JansConfigApi'
 
-export interface CustomScriptFormProps {
+export type CustomScriptFormProps = {
   item: CustomScriptItem | CustomScript
   handleSubmit: (data: { customScript: CustomScriptItem }) => void | Promise<void>
   viewOnly?: boolean
 }
 
-export interface FormValues {
+export type FormValues = {
   name: string
   description: string
   scriptType: string
@@ -20,7 +20,3 @@ export interface FormValues {
   enabled?: boolean | string[]
   action_message?: string
 }
-
-export type PropertyOptionMap = (
-  properties: Array<ModuleProperty | ConfigurationProperty> | undefined,
-) => Array<{ key: string; value: string }>

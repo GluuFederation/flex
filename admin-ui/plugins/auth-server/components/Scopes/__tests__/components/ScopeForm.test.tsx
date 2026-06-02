@@ -86,7 +86,6 @@ const INIT_STATE = {
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    oidcReducer: (state = { viewOnly: false, currentItem: {} }) => state,
     cedarPermissions: (
       state = {
         permissions: {},

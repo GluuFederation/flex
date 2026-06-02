@@ -43,7 +43,7 @@ function* getProfileDetailsWorker({
   }
 }
 
-export function* getProfileDetailsWatcher(): SagaIterator {
+function* getProfileDetailsWatcher(): SagaIterator {
   yield takeLatest(getProfileDetails, getProfileDetailsWorker)
 }
 

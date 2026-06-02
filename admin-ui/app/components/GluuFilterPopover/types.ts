@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import type { ThemeConfig } from '@/context/theme/config'
 
-export type FilterFieldOption = {
+type FilterFieldOption = {
   value: string
   label: string
 }

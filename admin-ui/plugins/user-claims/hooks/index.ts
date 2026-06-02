@@ -7,6 +7,4 @@ export {
   toAttributeList,
 } from './useAttributeApi'
 
-export { useSchemaAuditLogger } from './useSchemaAuditLogger'
-export { useSchemaWebhook } from './useSchemaWebhook'
 export { useMutationEffects } from './useMutationEffects'

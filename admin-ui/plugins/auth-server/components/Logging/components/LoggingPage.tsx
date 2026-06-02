@@ -30,7 +30,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
 import { useStyles } from './styles/LoggingPage.style'
 import { devLogger } from '@/utils/devLogger'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -68,7 +68,7 @@ const LoggingPage = (): React.ReactElement => {
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
-      themeColors: getThemeColor(themeState?.theme ?? 'light'),
+      themeColors: getThemeColor(themeState?.theme ?? THEME_LIGHT),
       isDark: themeState?.theme === THEME_DARK,
     }),
     [themeState?.theme],

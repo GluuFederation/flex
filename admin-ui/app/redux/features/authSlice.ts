@@ -1,6 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { BackendStatus, UserInfo, Config, Location, AuthState } from './types/authTypes'
+import type { BackendStatus, UserInfo, Config, AuthState } from './types/authTypes'
 import type { ApiTokenPayload, PutConfigMeta } from './types'
 
 const initialState: AuthState = {
@@ -11,9 +11,6 @@ const initialState: AuthState = {
   permissions: [],
   location: {},
   config: {},
-  codeChallenge: null,
-  codeChallengeMethod: 'S256',
-  codeVerifier: null,
   backendStatus: {
     active: true,
     errorMessage: null,
@@ -42,13 +39,9 @@ const authSlice = createSlice({
         state.config = { ...state.config, ...action.payload.config }
       }
     },
-    setOAuthState: (state, action: PayloadAction<{ authState: string | null }>) => {
-      state.authState = action.payload?.authState ?? undefined
-    },
     setAuthState: (state, action: PayloadAction<{ state: boolean }>) => {
       state.isAuthenticated = action.payload?.state
     },
-    getUserInfo: (_state, _action: PayloadAction<void>) => {},
     getUserInfoResponse: (
       state,
       action: PayloadAction<{
@@ -84,12 +77,6 @@ const authSlice = createSlice({
       }
       state.isAuthenticated = true
     },
-    getUserLocation: (_state, _action: PayloadAction<void>) => {},
-    getUserLocationResponse: (state, action: PayloadAction<{ location?: Location }>) => {
-      if (action.payload?.location) {
-        state.location = action.payload.location
-      }
-    },
     setApiDefaultToken: (state, action: PayloadAction<ApiTokenPayload>) => {
       if (action.payload?.issuer) {
         state.issuer = action.payload.issuer
@@ -113,30 +100,22 @@ const authSlice = createSlice({
         state.hasSession = true
       }
     },
-    deleteAdminUiSession: (_state) => {},
-    deleteAdminUiSessionResponse: () => initialState,
   },
 })
 
 export const {
   getOAuth2Config,
   getOAuth2ConfigResponse,
-  setOAuthState,
   setAuthState,
-  getUserInfo,
   getUserInfoResponse,
   getAPIAccessToken,
   getAPIAccessTokenResponse,
-  getUserLocation,
-  getUserLocationResponse,
   setApiDefaultToken,
   setBackendStatus,
   putConfigWorker,
   putConfigWorkerResponse,
   createAdminUiSession,
   createAdminUiSessionResponse,
-  deleteAdminUiSession,
-  deleteAdminUiSessionResponse,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

@@ -1,4 +1,4 @@
-export const scopes = [
+const scopes = [
   {
     name: 'givenName',
     inum: 'B4B0',

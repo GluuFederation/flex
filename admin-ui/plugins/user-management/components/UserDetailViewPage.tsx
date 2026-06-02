@@ -6,6 +6,7 @@ import type { CustomAttrWithValues } from 'Plugins/user-management/types'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserDetailViewPage.style'
+import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
@@ -17,7 +18,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   const roleValue = useMemo(() => {
     const attrs = (rowData as { customAttributes?: CustomAttrWithValues[] })?.customAttributes
     if (!Array.isArray(attrs)) return ''
-    const roleAttr = attrs.find((a) => a?.name === 'jansAdminUIRole') as
+    const roleAttr = attrs.find((a) => a?.name === JANS_ADMIN_UI_ROLE_ATTR) as
       | CustomAttrWithValues
       | undefined
     if (!roleAttr) return ''

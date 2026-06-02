@@ -1,11 +1,11 @@
-export interface SamlConfigurationFormValues {
+export type SamlConfigurationFormValues = {
   enabled: boolean
   selectedIdp: string
   ignoreValidation: boolean
   applicationName: string
 }
 
-export interface LocationState<T> {
+export type LocationState<T> = {
   rowData?: T
   viewOnly?: boolean
 }
@@ -16,7 +16,7 @@ export type FormValues = Record<string, FormValue>
 export type ConfigFields = Record<string, FormValue>
 export type RootFields = Record<string, FormValue>
 
-export type NestedRecord = Record<string, string | number | boolean | null | undefined | string[]>
+type NestedRecord = Record<string, string | number | boolean | null | undefined | string[]>
 export type CleanableValue =
   | string
   | number

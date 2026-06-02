@@ -1,14 +1,9 @@
 import { select, put, call } from 'redux-saga/effects'
-import type { Action } from 'redux'
-import type { AuditLog, AuthState, RootState, SagaError } from './types'
+import type { AuditLog, AuthState, RootState } from './types'
 import type { ApiTokenResponse } from '../api/types/BackendApi'
-import { isFourZeroThreeError } from '../../utils/TokenController'
 import { devLogger } from '@/utils/devLogger'
-import { updateToast } from '../features/toastSlice'
 import { auditLogoutLogs } from '../features/sessionSlice'
 import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '../api/backend-api'
-
-type HttpErrorLike = { response?: { status?: number }; status?: number }
 
 export function* initAudit() {
   const auditlog: AuditLog = {}
@@ -38,25 +33,4 @@ export function* redirectToLogout(message = 'Session expired') {
   } finally {
     window.location.href = '/admin/logout'
   }
-}
-
-export function* handleResponseError(
-  error: Error | SagaError,
-  options: {
-    showToast?: boolean
-    clearDataAction?: () => Action
-  } = {},
-) {
-  const { showToast = true, clearDataAction } = options
-  if (showToast) {
-    yield put(updateToast(true, 'error'))
-  }
-  if (clearDataAction) {
-    yield put(clearDataAction())
-  }
-  if (isFourZeroThreeError(error as HttpErrorLike)) {
-    yield* redirectToLogout()
-    return error
-  }
-  return error
 }

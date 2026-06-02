@@ -1,16 +1,14 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo } from 'react'
 import type { FormikErrors } from 'formik'
 import { REQUIRED_ATTRIBUTE_FIELDS } from '../constants'
 import type {
   AttributeItem,
   AttributeFormValues,
-  SubmitData,
   HandleAttributeSubmitParams,
   ModifiedFields,
 } from '../components/types'
 
-// Shared constant for form-level attributeValidation default (uses null for form values)
-export const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {
+const DEFAULT_FORM_ATTRIBUTE_VALIDATION = {
   maxLength: null,
   regexp: null,
   minLength: null,
@@ -47,16 +45,6 @@ const buildInitialAttributeValues = (item: AttributeItem): AttributeFormValues =
 
 export const useInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
   return useMemo(() => buildInitialAttributeValues(item), [item])
-}
-
-export const useComputeModifiedFields = (
-  initialValues: AttributeFormValues,
-  updatedValues: AttributeFormValues,
-): ModifiedFields => {
-  return useMemo(
-    () => computeModifiedFields(initialValues, updatedValues),
-    [initialValues, updatedValues],
-  )
 }
 
 export const transformFormValuesToAttribute = (
@@ -155,28 +143,6 @@ export const handleAttributeSubmit = ({
     userMessage,
     modifiedFields,
   })
-}
-
-export const useHandleAttributeSubmit = (
-  item: AttributeItem,
-  customOnSubmit: (data: SubmitData) => void,
-  validationEnabled: boolean,
-) => {
-  const initialValues = useInitialAttributeValues(item)
-
-  return useCallback(
-    (values: AttributeFormValues, userMessage?: string) => {
-      const result = transformFormValuesToAttribute(item, values, validationEnabled)
-      const modifiedFields = computeModifiedFields(initialValues, values)
-
-      customOnSubmit({
-        data: result,
-        userMessage,
-        modifiedFields,
-      })
-    },
-    [item, customOnSubmit, validationEnabled, initialValues],
-  )
 }
 
 export const getInitialValidationState = (item: AttributeItem): boolean => {

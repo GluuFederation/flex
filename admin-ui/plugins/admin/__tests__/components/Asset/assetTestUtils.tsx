@@ -17,7 +17,6 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
-    authorize: jest.fn(),
     isLoading: false,
     error: null,
   })),
@@ -48,16 +47,10 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 const defaultAssetReducerState = {
-  assets: [],
-  services: [],
-  fileTypes: [],
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
-  totalItems: 0,
-  entriesCount: 0,
   selectedAsset: {},
-  loadingAssets: false,
 }
 
 const defaultWebhookReducerState = {

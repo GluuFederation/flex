@@ -36,7 +36,8 @@ import {
   getModuleProperty,
   buildChangedFieldOperations,
 } from './helper'
-import { PROGRAMMING_LANGUAGES, LOCATION_TYPE_DB, DEFAULT_SCRIPT_TYPE } from './constants'
+import { DEFAULT_SCRIPT_TYPE } from '@/constants'
+import { PROGRAMMING_LANGUAGES, LOCATION_TYPE_DB } from './constants'
 import { PersonAuthenticationFields } from './PersonAuthenticationFields'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import GluuScriptErrorModal from 'Routes/Apps/Gluu/GluuScriptErrorModal'

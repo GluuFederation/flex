@@ -11,6 +11,7 @@ import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import { updateToast } from 'Redux/features/toastSlice'
+import { setPolicyStoreBytes } from 'Redux/features/cedarPermissionsSlice'
 import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
@@ -38,6 +39,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
+import { STORAGE_KEYS } from '@/constants'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -111,10 +113,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               'responseBytes' in policyStoreResponse.data
                 ? policyStoreResponse.data.responseBytes
                 : undefined
-            dispatch({
-              type: 'cedarPermissions/setPolicyStoreBytes',
-              payload: policyStoreBytes ?? '',
-            })
+            dispatch(setPolicyStoreBytes(policyStoreBytes ?? ''))
           }
         })
         .catch((err: Error) => {
@@ -246,7 +245,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 const state = uuidv4()
                 const sessionEndpoint = buildSafeLogoutUrl(
                   authConfigs?.endSessionEndpoint || null,
-                  localStorage.getItem('postLogoutRedirectUri'),
+                  localStorage.getItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI),
                   state,
                 )
                 dispatch(

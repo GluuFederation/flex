@@ -22,7 +22,6 @@ const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlin
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn().mockResolvedValue([]),
-    authorize: jest.fn().mockResolvedValue({ decision: 'ALLOW', person_id: '' }),
     isLoading: false,
     error: null,
     ...overrides,

@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 
-interface SsaDetails {
+type SsaDetails = {
   [key: string]: string | string[] | boolean
   software_id: string
   software_roles: string[]
@@ -13,20 +13,20 @@ interface SsaDetails {
   jti: string
 }
 
-export interface SsaData {
+export type SsaData = {
   ssa: SsaDetails
   status: string
   expiration: number
   name?: string
 }
 
-export interface SsaJwtResponse extends JsonObject {
+export type SsaJwtResponse = JsonObject & {
   ssa: string
 }
 
 export type ExpirationDate = Dayjs | null
 
-export interface SsaFormValues {
+export type SsaFormValues = {
   [key: string]: string | number | boolean | string[] | Dayjs | null | undefined
   software_id: string
   one_time_use: boolean
@@ -39,6 +39,6 @@ export interface SsaFormValues {
   expirationDate: ExpirationDate
 }
 
-export interface SsaCreatePayload extends SsaFormValues {
+export type SsaCreatePayload = SsaFormValues & {
   expiration?: number
 }

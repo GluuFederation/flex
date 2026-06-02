@@ -10,8 +10,7 @@ keywords:
   - secrets
 home: https://docs.gluu.org
 sources:
-  - https://gluu.org/docs/gluu-server/reference/container-configs/
-  - https://github.com/JanssenProject/jans/docker-jans-configurator
+  - https://github.com/JanssenProject/jans/tree/main/docker-jans-configurator
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/config
 maintainers:
   - name: Mohammad Abudayyeh

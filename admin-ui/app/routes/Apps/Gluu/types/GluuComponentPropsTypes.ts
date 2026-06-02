@@ -3,7 +3,7 @@ import type { AlertProps } from '@mui/material/Alert'
 import type { FormikProps } from 'formik'
 import type { Accept } from 'react-dropzone'
 import type { JsonPatch } from 'JansConfigApi'
-import type { JsonValue, JsonObject } from './common'
+import type { JsonValue } from './common'
 
 export type GluuAlertProps = {
   severity?: AlertProps['severity']
@@ -276,5 +276,3 @@ export type GluuViewDetailModalProps = {
   modalStyle?: CSSProperties
   customHeader?: ReactNode
 }
-
-export type { JsonObject }

@@ -11,7 +11,7 @@ export type PluginMenu = {
   children?: PluginMenu[]
 }
 
-export type PluginRouteComponent = ComponentType & {
+type PluginRouteComponent = ComponentType & {
   preload?: () => Promise<{ default: ComponentType }>
 }
 

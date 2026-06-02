@@ -31,6 +31,7 @@ import type { AdminUiFeatureResource } from '@/cedarling/types'
 import { devLogger } from '@/utils/devLogger'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { JANS_SERVICES } from '@/constants'
 import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
 import type {
   MenuItem,
@@ -42,10 +43,10 @@ import type {
 } from '../../../components/Sidebar'
 
 const VISIBILITY_CONDITIONS: VisibilityConditions = {
-  [ROUTES.JANS_LOCK_BASE]: 'jans-lock',
-  [ROUTES.FIDO_BASE]: 'jans-fido2',
-  [ROUTES.SCIM_BASE]: 'jans-scim',
-  [ROUTES.SAML_BASE]: 'keycloak',
+  [ROUTES.JANS_LOCK_BASE]: JANS_SERVICES.LOCK,
+  [ROUTES.FIDO_BASE]: JANS_SERVICES.FIDO2,
+  [ROUTES.SCIM_BASE]: JANS_SERVICES.SCIM,
+  [ROUTES.SAML_BASE]: JANS_SERVICES.KEYCLOAK,
 } as const
 
 const MENU_ICON_MAP: MenuIconMap = {
@@ -82,7 +83,7 @@ const GluuAppSidebar = (): JSX.Element => {
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
-  const { authorize } = useCedarling()
+  const { authorizeHelper } = useCedarling()
   const { navigateToRoute } = useAppNavigation()
 
   const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
@@ -125,20 +126,20 @@ const GluuAppSidebar = (): JSX.Element => {
               devLogger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
               return null
             }
-            const { isAuthorized } = await authorize([
+            const [result] = await authorizeHelper([
               {
                 permission: item.permission,
                 resourceId: item.resourceKey as AdminUiFeatureResource,
               },
             ])
-            return isAuthorized ? item : null
+            return result?.isAuthorized ? item : null
           }
           return item
         }),
       )
       return evaluations.filter((x): x is MenuItem => !!x)
     },
-    [hasChildren, authorize],
+    [hasChildren, authorizeHelper],
   )
 
   const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {

@@ -22,7 +22,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { JANS_ADMIN_UI_ROLE_ATTR } from 'Plugins/user-management/common/Constants'
+import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
@@ -172,14 +172,23 @@ const ProfileDetails: React.FC = () => {
                 <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
               </Box>
 
-              <Box textAlign="center">
+              <Box
+                sx={{
+                  textAlign: 'center',
+                }}
+              >
                 <GluuText variant="h5" className={classes.nameText}>
                   {displayName}
                 </GluuText>
                 <GluuText variant="div" className={classes.emailText} disableThemeColor>
                   {displayMail}
                 </GluuText>
-                <Box className={classes.profileHeaderStatusWrap} width="100%">
+                <Box
+                  className={classes.profileHeaderStatusWrap}
+                  sx={{
+                    width: '100%',
+                  }}
+                >
                   <Box className={classes.statusRow}>
                     <div
                       className={`${classes.statusDot} ${
@@ -219,7 +228,11 @@ const ProfileDetails: React.FC = () => {
                 </Box>
               </Box>
 
-              <Box width="100%">
+              <Box
+                sx={{
+                  width: '100%',
+                }}
+              >
                 <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
                   {t('titles.personal_information', { defaultValue: 'Personal Information' })}
                 </GluuText>
@@ -245,7 +258,11 @@ const ProfileDetails: React.FC = () => {
                 </Box>
               </Box>
 
-              <Box width="100%">
+              <Box
+                sx={{
+                  width: '100%',
+                }}
+              >
                 <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
                   {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
                 </GluuText>
@@ -264,7 +281,11 @@ const ProfileDetails: React.FC = () => {
                 </Box>
               </Box>
 
-              <Box width="100%">
+              <Box
+                sx={{
+                  width: '100%',
+                }}
+              >
                 <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
                   {t('titles.account_status', { defaultValue: 'Account Status' })}
                 </GluuText>

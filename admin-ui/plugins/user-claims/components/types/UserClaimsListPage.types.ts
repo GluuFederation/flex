@@ -1,12 +1,4 @@
-import type { JansAttribute } from 'JansConfigApi'
-import type { CedarPermissionsState } from '@/cedarling/types'
-
-// Component state for cedarPermissions selector
-export interface AttributeListPageState {
-  cedarPermissions: CedarPermissionsState
-}
-
-export type ModifiedFieldValue =
+type ModifiedFieldValue =
   | string
   | number
   | boolean
@@ -15,56 +7,23 @@ export type ModifiedFieldValue =
   | AttributeValidation
   | null
 
-export interface ModifiedFields {
+export type ModifiedFields = {
   [key: string]: ModifiedFieldValue
 }
 
-// Define the form submission data interface
-export interface SubmitData {
+export type SubmitData = {
   data: AttributeItem
   userMessage?: string
   modifiedFields?: ModifiedFields
 }
 
-export interface ThemeState {
-  theme: string
-}
-
-export interface ThemeContextType {
-  state: ThemeState
-}
-
-// Define the component props interface
-export interface AttributeDetailPageProps {
-  row: JansAttribute
-}
-
-// Define the theme context interface
-export interface DetailThemeContextType {
-  state: {
-    theme: string
-  }
-}
-
-export interface OptionsChangeEvent {
-  target: {
-    name: string
-    value: string
-  }
-  keyCode?: number
-}
-
-export interface StyledBadgeProps {
-  status: string
-}
-
-export interface AttributeValidation {
+type AttributeValidation = {
   regexp?: string | null
   minLength?: number | null
   maxLength?: number | null
 }
 
-export interface AttributeItem {
+export type AttributeItem = {
   inum?: string
   name: string
   displayName: string
@@ -86,7 +45,7 @@ export interface AttributeItem {
   required?: boolean
 }
 
-export interface AttributeFormValues {
+export type AttributeFormValues = {
   name: string
   displayName: string
   description: string
@@ -107,13 +66,13 @@ export interface AttributeFormValues {
   regexp?: string | null
 }
 
-export interface AttributeFormProps {
+export type AttributeFormProps = {
   item: AttributeItem
   customOnSubmit: (data: SubmitData) => void
   hideButtons?: Record<string, boolean>
 }
 
-export interface HandleAttributeSubmitParams {
+export type HandleAttributeSubmitParams = {
   item: AttributeItem
   values: AttributeFormValues
   customOnSubmit: (data: SubmitData) => void

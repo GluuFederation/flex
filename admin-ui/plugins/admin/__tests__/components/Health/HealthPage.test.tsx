@@ -20,6 +20,14 @@ jest.mock('Plugins/admin/components/Health/hooks', () => ({
     error: null,
     refetch: mockRefetch,
   })),
+  useFido2HealthStatus: jest.fn(() => ({
+    data: { name: 'fido2-metrics', status: 'up' as const, lastChecked: new Date() },
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    refetch: jest.fn(),
+  })),
 }))
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -36,6 +44,6 @@ describe('HealthPage', () => {
   it('shows active status badges', () => {
     render(<HealthPage />, { wrapper: Wrapper })
     const badges = screen.getAllByText('Active')
-    expect(badges).toHaveLength(2)
+    expect(badges).toHaveLength(3)
   })
 })

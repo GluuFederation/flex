@@ -1,4 +1,4 @@
-export interface AuditRow {
+export type AuditRow = {
   id: number
   serial: number
   log: string

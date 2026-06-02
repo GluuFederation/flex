@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppDispatch } from '@/redux/hooks'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { adminUiFeatures } from '@/constants'
 import { devLogger } from '@/utils/devLogger'
 import type { JansAttribute } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'

@@ -1,11 +1,13 @@
+import { useCallback, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import MuiButton from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import { Close } from '@/components/icons'
+import { useTheme } from 'Context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { GluuButton } from '@/components'
+import { useStyles } from './styles/GluuViewDetailsModal.style'
+import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import type { GluuViewDetailModalProps } from './types'
 
 const GluuViewDetailModal = ({
@@ -23,43 +25,84 @@ const GluuViewDetailModal = ({
   customHeader,
 }: GluuViewDetailModalProps) => {
   const { t } = useTranslation()
-  const displayTitle = title ?? t('messages.details')
-  return (
-    <Dialog
-      open={isOpen}
-      onClose={handleClose}
-      PaperProps={{
-        className: `modal-outline-primary ${modalClassName}`.trim(),
-        style: { minWidth: '70vw', ...modalStyle },
-      }}
-    >
-      {customHeader ?? (
-        <DialogTitle className={headerClassName} style={headerStyle} sx={{ pr: 6 }}>
-          {displayTitle}
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{ position: 'absolute', right: 8, top: 8, color: 'inherit' }}
-            size="small"
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </DialogTitle>
-      )}
-      <DialogContent
-        className={contentClassName}
-        style={{ overflowX: 'auto', maxHeight: '60vh', ...contentStyle }}
-      >
-        {children}
-      </DialogContent>
-      {!hideFooter && (
-        <DialogActions>
-          <MuiButton onClick={handleClose} variant="contained">
-            {t('actions.close')}
-          </MuiButton>
-        </DialogActions>
-      )}
-    </Dialog>
+  const { state: themeState } = useTheme()
+  const selectedTheme = themeState?.theme ?? DEFAULT_THEME
+  const isDark = selectedTheme === THEME_DARK
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const { classes } = useStyles({ isDark, themeColors })
+  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
+
+  const handleModalKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleClose()
+      }
+      e.stopPropagation()
+    },
+    [handleClose],
   )
+
+  if (!isOpen) return null
+
+  const displayTitle = title ?? t('messages.details')
+
+  const modalContent = (
+    <>
+      <button
+        type="button"
+        className={commitClasses.overlay}
+        onClick={handleClose}
+        aria-label={t('actions.close')}
+      />
+      <div
+        className={`${classes.modalContainer} ${modalClassName}`.trim()}
+        style={modalStyle}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleModalKeyDown}
+        role="dialog"
+        tabIndex={-1}
+        aria-label={typeof displayTitle === 'string' ? displayTitle : undefined}
+      >
+        {customHeader ?? (
+          <>
+            <button
+              type="button"
+              onClick={handleClose}
+              className={commitClasses.closeButton}
+              aria-label={t('actions.close')}
+              title={t('actions.close')}
+            >
+              <Close fontSize="small" aria-hidden />
+            </button>
+            <div className={`${classes.header} ${headerClassName}`.trim()} style={headerStyle}>
+              {displayTitle}
+            </div>
+          </>
+        )}
+        <div className={`${classes.content} ${contentClassName}`.trim()} style={contentStyle}>
+          {children}
+        </div>
+        {!hideFooter && (
+          <div className={classes.footer}>
+            <GluuButton
+              onClick={handleClose}
+              backgroundColor={themeColors.formFooter.back.backgroundColor}
+              textColor={themeColors.formFooter.back.textColor}
+              borderColor="transparent"
+              padding="8px 28px"
+              minHeight="40"
+              useOpacityOnHover
+            >
+              {t('actions.close')}
+            </GluuButton>
+          </div>
+        )}
+      </div>
+    </>
+  )
+
+  return createPortal(modalContent, document.body)
 }
+
 export default GluuViewDetailModal

@@ -1,4 +1,4 @@
-export type UserInfoItemClasses = Record<string, string>
+type UserInfoItemClasses = Record<string, string>
 
 export type UserInfoItemProps = {
   item: { text: string; value: string | undefined }

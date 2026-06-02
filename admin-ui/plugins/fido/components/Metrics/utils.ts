@@ -5,14 +5,14 @@ import { HEATMAP_COLOR_STOPS, HOURS_OF_DAY } from './constants'
 import type { AggregationType } from './constants'
 import type { ActivityDataPoint, AggregationEntry, HeatmapData, MetricsDateRange } from './types'
 
-export const hexToRgb = (hex: string): [number, number, number] => {
+const hexToRgb = (hex: string): [number, number, number] => {
   const r = parseInt(hex.slice(1, 3), 16)
   const g = parseInt(hex.slice(3, 5), 16)
   const b = parseInt(hex.slice(5, 7), 16)
   return [r, g, b]
 }
 
-export const lerpColor = (hexA: string, hexB: string, t: number): string => {
+const lerpColor = (hexA: string, hexB: string, t: number): string => {
   const [r1, g1, b1] = hexToRgb(hexA)
   const [r2, g2, b2] = hexToRgb(hexB)
   const r = Math.round(r1 + (r2 - r1) * t)
@@ -74,7 +74,7 @@ export const formatNonZeroChartValue = (
   return Number(n.toFixed(2)).toString()
 }
 
-export const isoWeekToMonday = (year: number, week: number): Dayjs => {
+const isoWeekToMonday = (year: number, week: number): Dayjs => {
   const jan4 = new Date(year, 0, 4)
   const dow = jan4.getDay() || 7
   const week1Mon = new Date(jan4)
@@ -89,17 +89,15 @@ const formatIsoWith = (iso: string, format: string): string => {
   return d.isValid() ? d.format(format) : iso
 }
 
-export const formatDashDate = (iso: string): string => formatIsoWith(iso, 'MMM-DD')
+const formatDashDate = (iso: string): string => formatIsoWith(iso, 'MMM-DD')
 
-export const formatSpaceDate = (iso: string): string => formatIsoWith(iso, 'MMM DD')
+const formatSpaceDate = (iso: string): string => formatIsoWith(iso, 'MMM DD')
 
-export const formatMonthYear = (iso: string): string => formatIsoWith(iso, 'MMM-YYYY')
+const formatMonthYear = (iso: string): string => formatIsoWith(iso, 'MMM-YYYY')
 
-export const formatShortDate = (isoDate: string): string => formatIsoWith(isoDate, 'MMM-DD')
+const formatShortDate = (isoDate: string): string => formatIsoWith(isoDate, 'MMM-DD')
 
-export const parseHourlyPeriod = (
-  entry: AggregationEntry,
-): { date: string; hour: number } | null => {
+const parseHourlyPeriod = (entry: AggregationEntry): { date: string; hour: number } | null => {
   const period = entry.period
   if (period) {
     const match = period.match(REGEX_HOURLY_AGGREGATION_PERIOD)
@@ -115,7 +113,7 @@ export const parseHourlyPeriod = (
   return null
 }
 
-export const formatPeriodLabel = (entry: AggregationEntry, aggType?: AggregationType): string => {
+const formatPeriodLabel = (entry: AggregationEntry, aggType?: AggregationType): string => {
   const raw =
     entry.period ?? (entry.startTime ? entry.startTime.slice(0, 10) : null) ?? entry.id ?? ''
   if (!raw) return ''
@@ -134,7 +132,7 @@ export const formatPeriodLabel = (entry: AggregationEntry, aggType?: Aggregation
   return raw
 }
 
-export const formatHourlyActivityLabel = (entry: AggregationEntry): string => {
+const formatHourlyActivityLabel = (entry: AggregationEntry): string => {
   const parsed = parseHourlyPeriod(entry)
   if (!parsed) return formatPeriodLabel(entry)
   return `${formatShortDate(parsed.date)} H${String(parsed.hour).padStart(2, '0')}`

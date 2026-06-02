@@ -1,6 +1,6 @@
 import type { JsonPatch } from 'JansConfigApi'
 
-export interface CorsConfigurationFilter {
+export type CorsConfigurationFilter = {
   filterName?: string | null
   corsEnabled?: boolean | null
   corsAllowedOrigins?: string | null
@@ -11,17 +11,17 @@ export interface CorsConfigurationFilter {
   corsRequestDecorate?: boolean | null
 }
 
-export interface AgamaConfiguration {
+export type AgamaConfiguration = {
   mandatoryAttributes?: string[] | null
   optionalAttributes?: string[] | null
 }
 
-export interface AuditLogIgnoreObjectMapping {
+export type AuditLogIgnoreObjectMapping = {
   name: string
   text?: string[]
 }
 
-export interface AuditLogConf {
+export type AuditLogConf = {
   enabled?: boolean | null
   logData?: boolean | null
   ignoreHttpMethod?: string[] | null
@@ -33,25 +33,25 @@ export interface AuditLogConf {
   auditLogDateFormat?: string | null
 }
 
-export interface DataFormatConversionConf {
+export type DataFormatConversionConf = {
   enabled?: boolean | null
   ignoreHttpMethod?: string[] | null
 }
 
-export interface Plugin {
+export type Plugin = {
   name?: string | null
   description?: string | null
   className?: string | null
 }
 
-export interface AssetDirMapping {
+export type AssetDirMapping = {
   directory?: string | null
   type?: string[] | null
   description?: string | null
   jansServiceModule?: string[] | null
 }
 
-export interface AssetMgtConfiguration {
+export type AssetMgtConfiguration = {
   assetMgtEnabled?: boolean | null
   assetServerUploadEnabled?: boolean | null
   fileExtensionValidationEnabled?: boolean | null
@@ -59,7 +59,7 @@ export interface AssetMgtConfiguration {
   assetDirMapping?: AssetDirMapping[] | null
 }
 
-export interface ApiAppConfiguration {
+export type ApiAppConfiguration = {
   serviceName?: string | null
   configOauthEnabled?: boolean | null
   disableLoggerTimer?: boolean | null
@@ -99,7 +99,7 @@ export type { JsonPatch }
 
 export type PatchConfigApiPropertiesData = JsonPatch[]
 
-export interface ConfigApiAuditPayload {
+export type ConfigApiAuditPayload = {
   requestBody: JsonPatch[]
 }
 
@@ -115,6 +115,6 @@ export type ModifiedFieldsValue =
   | Record<string, string | number | boolean | string[] | number[] | boolean[] | null>
   | { requestBody: JsonPatch[] }
 
-export interface ModifiedFields {
+export type ModifiedFields = {
   [key: string]: ModifiedFieldsValue
 }

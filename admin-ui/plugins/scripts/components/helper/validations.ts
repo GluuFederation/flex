@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { REGEX_IDENTIFIER } from '@/utils/regex'
 import type { TFunction } from 'i18next'
-import { DEFAULT_SCRIPT_TYPE } from '../constants'
+import { DEFAULT_SCRIPT_TYPE } from '@/constants'
 
 export const getCustomScriptValidationSchema = (t: TFunction) =>
   Yup.object({

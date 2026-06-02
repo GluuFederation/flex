@@ -18,7 +18,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import { formatDate } from '@/utils/dayjsUtils'
+import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   DeviceData,
@@ -136,7 +136,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
           modality: item?.soft
             ? 'Soft token - time based (totp)'
             : 'Hard token - time based (totp)',
-          dateAdded: formatDate((item.addedOn || 0) * 1000, 'YYYY-MM-DD HH:mm:ss'),
+          dateAdded: formatDate((item.addedOn || 0) * 1000, DATE_FORMATS.DATETIME_SECONDS),
           type: 'OTP',
         }
       }) || []
@@ -159,7 +159,9 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         id: item.id,
         nickName: displayName,
         modality: modality,
-        dateAdded: item.creationDate ? formatDate(item.creationDate, 'YYYY-MM-DD HH:mm:ss') : '-',
+        dateAdded: item.creationDate
+          ? formatDate(item.creationDate, DATE_FORMATS.DATETIME_SECONDS)
+          : '-',
         type: deviceType,
         registrationData: item.registrationData,
         deviceData: item.deviceData,
@@ -289,11 +291,10 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
         handleClose={onClose}
         hideFooter
         modalClassName={classes.modal2FA}
-        modalStyle={{ minWidth: 700, maxWidth: '80vw' }}
+        modalStyle={{ width: 'min(1007px, 95vw)', maxWidth: '95vw' }}
         contentClassName={classes.modalContent}
-        contentStyle={{ overflowX: 'visible' }}
         customHeader={
-          <div className={`modal-header ${classes.modalHeader}`}>
+          <div className={classes.modalHeader}>
             <div className={classes.headerTopRow}>
               <button
                 type="button"

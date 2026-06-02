@@ -64,7 +64,6 @@ export type ResourceScopeEntry = {
 }
 
 export type UseCedarlingReturn = {
-  authorize: (resourceScope: ResourceScopeEntry[]) => Promise<AuthorizationResult>
   authorizeHelper: (resourceScopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
   hasCedarReadPermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
   hasCedarWritePermission: (resourceId: AdminUiFeatureResource) => boolean | undefined
