@@ -61,7 +61,7 @@ COPY --from=flex-persistence-loader-src /app/schema/flex_schema.json /app/schema
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
-COPY --from=flex-admin-ui-src /app/templates/nginx/admin-ui-location.conf /app/templates/nginx/admin-ui-location.conf
+COPY --from=flex-admin-ui-src /etc/nginx/admin-ui-location.conf /app/templates/nginx/admin-ui-location.conf
 COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
 COPY --from=flex-admin-ui-src /app/scripts /app/flex_aio/admin_ui
 RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
