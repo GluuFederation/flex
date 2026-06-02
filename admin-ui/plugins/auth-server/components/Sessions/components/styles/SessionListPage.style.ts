@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, SPACING, ICON_SIZE, TOOLBAR } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 
 const CARD_INNER_PADDING = SPACING.CARD_CONTENT_GAP * 2 + 4
@@ -22,18 +23,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   return {
     page: { fontFamily, paddingTop: SPACING.PAGE },
 
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
-      marginBottom: `${CARD_INNER_PADDING}px`,
-      position: 'relative',
-      zIndex: 5,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

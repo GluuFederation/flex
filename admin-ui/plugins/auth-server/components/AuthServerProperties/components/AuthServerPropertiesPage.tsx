@@ -9,12 +9,9 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import type {
-  MultiSelectOption,
-  GluuMultiSelectRowFormik,
-} from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import type { GluuSelectRowFormik } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
@@ -490,22 +487,8 @@ const AuthServerPropertiesPage: React.FC = () => {
     },
     [patches, put, acrs, patchJsonPropertiesMutation, putAcrsMutation, logAcrUpdate, t],
   )
-  const arrayFormikAdapters = useMemo(() => {
-    const adapters: Record<string, GluuMultiSelectRowFormik> = {}
-    for (const [propKey, model] of Object.entries(simpleFieldModels)) {
-      if (!model?.isArray) continue
-      adapters[propKey] = {
-        setFieldValue: (_field: string, newValues: string[]) => {
-          patchHandler({ op: 'replace', path: `/${propKey}`, value: newValues })
-        },
-        setFieldTouched: () => {},
-      }
-    }
-    return adapters
-  }, [simpleFieldModels, patchHandler])
-
   const arrayMultiSelectOptions = useMemo(() => {
-    const optionsMap: Record<string, MultiSelectOption[]> = {}
+    const optionsMap: Record<string, AutocompleteOption[]> = {}
     for (const [propKey, model] of Object.entries(simpleFieldModels)) {
       if (!model?.isArray || !model.options) continue
       const unique = [...new Set(model.options)]
@@ -537,15 +520,13 @@ const AuthServerPropertiesPage: React.FC = () => {
 
       if (model.isArray) {
         return (
-          <GluuMultiSelectRow
+          <GluuAutocomplete
             key={`${model.propKey}-${resetKey}`}
-            label={model.label}
+            label={t(model.label)}
             name={model.propKey}
-            value={model.value as string[]}
-            formik={arrayFormikAdapters[propKey]}
+            value={(model.value as string[]) ?? []}
+            onChange={(vals) => patchHandler({ op: 'replace', path: `/${propKey}`, value: vals })}
             options={arrayMultiSelectOptions[propKey] || []}
-            lsize={12}
-            rsize={12}
           />
         )
       }
@@ -604,7 +585,6 @@ const AuthServerPropertiesPage: React.FC = () => {
     [
       patchHandler,
       simpleFieldModels,
-      arrayFormikAdapters,
       arrayMultiSelectOptions,
       loggingLevelFormikAdapters,
       resetKey,

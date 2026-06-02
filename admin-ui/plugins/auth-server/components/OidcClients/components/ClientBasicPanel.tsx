@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Col, FormGroup, Input, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
@@ -418,40 +417,50 @@ const ClientBasicPanel = ({
     ),
     responseTypes: (
       <div className={classes.fieldItem}>
-        <GluuMultiSelectRow
-          name="responseTypes"
-          label="fields.response_types"
-          formik={formik}
-          value={formik.values.responseTypes as string[] | undefined}
-          options={RESPONSE_TYPE_OPTIONS}
-          doc_category={DOC_CATEGORY}
-          lsize={12}
-          rsize={12}
-          disabled={viewOnly}
-          placeholder={getFieldPlaceholder(t, 'fields.response_types')}
-          showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
-          errorMessage={getFieldError('responseTypes')}
-          helperText={isFieldTouched('responseTypes') ? t('messages.multi_select_hint') : undefined}
-        />
+        <div className={classes.outerLabel}>{t('fields.response_types')}:</div>
+        <div className={classes.scopeCard}>
+          <GluuAutocomplete
+            name="responseTypes"
+            label={t('fields.response_types')}
+            value={(formik.values.responseTypes as string[] | undefined) ?? []}
+            options={RESPONSE_TYPE_OPTIONS.map((option) => option.value)}
+            onChange={(vals) => formik.setFieldValue('responseTypes', vals)}
+            onBlur={() => formik.setFieldTouched?.('responseTypes', true, false)}
+            disabled={viewOnly}
+            placeholder={getFieldPlaceholder(t, 'fields.response_types')}
+            showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
+            errorMessage={getFieldError('responseTypes')}
+            doc_category={DOC_CATEGORY}
+            inputBackgroundColor={themeColors.settings?.cardBackground}
+            cardBackgroundColor={themeColors.settings?.cardBackground}
+            withWrapper={false}
+            hideLabel
+          />
+        </div>
       </div>
     ),
     grantTypes: (
       <div className={classes.fieldItem}>
-        <GluuMultiSelectRow
-          name="grantTypes"
-          label="fields.grant_types"
-          formik={formik}
-          value={formik.values.grantTypes as string[] | undefined}
-          options={grantTypeOptions}
-          doc_category={DOC_CATEGORY}
-          lsize={12}
-          rsize={12}
-          disabled={viewOnly}
-          placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
-          showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
-          errorMessage={getFieldError('grantTypes')}
-          helperText={isFieldTouched('grantTypes') ? t('messages.multi_select_hint') : undefined}
-        />
+        <div className={classes.outerLabel}>{t('fields.grant_types')}:</div>
+        <div className={classes.scopeCard}>
+          <GluuAutocomplete
+            name="grantTypes"
+            label={t('fields.grant_types')}
+            value={(formik.values.grantTypes as string[] | undefined) ?? []}
+            options={grantTypeOptions.map((option) => option.value)}
+            onChange={(vals) => formik.setFieldValue('grantTypes', vals)}
+            onBlur={() => formik.setFieldTouched?.('grantTypes', true, false)}
+            disabled={viewOnly}
+            placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+            showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
+            errorMessage={getFieldError('grantTypes')}
+            doc_category={DOC_CATEGORY}
+            inputBackgroundColor={themeColors.settings?.cardBackground}
+            cardBackgroundColor={themeColors.settings?.cardBackground}
+            withWrapper={false}
+            hideLabel
+          />
+        </div>
       </div>
     ),
     isActive: (

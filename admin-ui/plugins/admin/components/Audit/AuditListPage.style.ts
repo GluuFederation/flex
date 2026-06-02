@@ -8,6 +8,7 @@ import {
   ICON_SIZE,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -24,18 +25,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
     page: {
       fontFamily,
     },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.CARD_PADDING}px 20px`,
-      marginBottom: `${SPACING.CARD_GAP}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

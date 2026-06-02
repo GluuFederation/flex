@@ -5,7 +5,7 @@ import { GluuButton } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import customColors from '@/customColors'
 import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, SPACING } from '@/constants'
@@ -14,10 +14,7 @@ import { getIn } from 'formik'
 import { buildKeyCandidates } from '@/utils/stringUtils'
 import { REGEX_LEADING_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import type {
-  MultiSelectOption,
-  GluuMultiSelectRowFormik,
-} from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import { useStyles } from '../../../common/JsonPropertyBuilder.style'
 import type {
   JsonPropertyBuilderProps,
@@ -59,26 +56,14 @@ const toPairs = <T,>(items: T[]): Array<[T, T | null]> => {
 
 const ArrayItemSelect = React.memo(
   ({ index, values, options, label, path, handler, formResetKey }: ArrayItemSelectProps) => {
-    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-      () => ({
-        setFieldValue: (_field: string, newValues: string[]) => {
-          handler({ op: 'replace', path, value: newValues })
-        },
-        setFieldTouched: () => {},
-      }),
-      [handler, path],
-    )
-
     return (
-      <GluuMultiSelectRow
+      <GluuAutocomplete
         key={`${path}-${formResetKey}`}
         label={label}
         name={String(index)}
         value={values}
-        formik={formikAdapter}
+        onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
-        lsize={12}
-        rsize={12}
       />
     )
   },
@@ -137,36 +122,15 @@ export const NumberField = React.memo(
 )
 
 const StringArrayField = React.memo(
-  ({
-    propKey,
-    label,
-    values,
-    options,
-    path,
-    handler,
-    lSize,
-    formResetKey,
-  }: StringArrayFieldProps) => {
-    const formikAdapter = useMemo<GluuMultiSelectRowFormik>(
-      () => ({
-        setFieldValue: (_field: string, newValues: string[]) => {
-          handler({ op: 'replace', path, value: newValues })
-        },
-        setFieldTouched: () => {},
-      }),
-      [handler, path],
-    )
-
+  ({ propKey, label, values, options, path, handler, formResetKey }: StringArrayFieldProps) => {
     return (
-      <GluuMultiSelectRow
+      <GluuAutocomplete
         key={`${path}-${formResetKey}`}
         label={label}
         name={propKey}
         value={values}
-        formik={formikAdapter}
+        onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
-        lsize={lSize}
-        rsize={lSize}
       />
     )
   },
@@ -380,7 +344,7 @@ const JsonPropertyBuilder = ({
   if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
     const arrayValues = (propValue as string[]) || []
     const enumOptions = [...new Set(schema?.items?.enum || arrayValues)]
-    const selectOptions: MultiSelectOption[] = enumOptions.map((v: string) => ({
+    const selectOptions: AutocompleteOption[] = enumOptions.map((v: string) => ({
       value: v,
       label: v,
     }))
@@ -388,12 +352,11 @@ const JsonPropertyBuilder = ({
       <>
         <StringArrayField
           propKey={propKey}
-          label={getLocalizedLabelKey(propKey)}
+          label={t(getLocalizedLabelKey(propKey))}
           values={arrayValues}
           options={selectOptions}
           path={path}
           handler={handler}
-          lSize={lSize}
           formResetKey={formResetKey}
         />
         {renderError()}
@@ -413,7 +376,7 @@ const JsonPropertyBuilder = ({
           if (item != null) allValues.add(item)
         }
       }
-      const multiSelectOptions: MultiSelectOption[] = Array.from(allValues).map((v) => ({
+      const multiSelectOptions: AutocompleteOption[] = Array.from(allValues).map((v) => ({
         value: v,
         label: v,
       }))
@@ -433,7 +396,7 @@ const JsonPropertyBuilder = ({
                     index={leftItem.index}
                     values={leftItem.nestedValue}
                     options={multiSelectOptions}
-                    label={getLocalizedLabelKey(String(leftItem.index))}
+                    label={t(getLocalizedLabelKey(String(leftItem.index)))}
                     path={`${path}/${leftItem.index}`}
                     handler={handler}
                     formResetKey={formResetKey}
@@ -445,7 +408,7 @@ const JsonPropertyBuilder = ({
                       index={rightItem.index}
                       values={rightItem.nestedValue}
                       options={multiSelectOptions}
-                      label={getLocalizedLabelKey(String(rightItem.index))}
+                      label={t(getLocalizedLabelKey(String(rightItem.index)))}
                       path={`${path}/${rightItem.index}`}
                       handler={handler}
                       formResetKey={formResetKey}

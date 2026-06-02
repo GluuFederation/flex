@@ -8,7 +8,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 
 export const errorTextStyle: CSSProperties = {
   color: customColors.accentRed,
-  marginTop: -12,
+  marginTop: 6,
 }
 
 interface ScopeFormPageStylesParams {

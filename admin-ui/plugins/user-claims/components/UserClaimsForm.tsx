@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Formik, FormikProps } from 'formik'
 import { Form } from 'Components'
-import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
@@ -9,7 +9,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -31,12 +31,12 @@ import {
 } from '../utils'
 import type { AttributeFormProps, AttributeFormValues } from './types'
 
-const EDIT_VIEW_OPTIONS: MultiSelectOption[] = [
+const EDIT_VIEW_OPTIONS: AutocompleteOption[] = [
   { value: 'admin', label: 'Admin' },
   { value: 'user', label: 'User' },
 ]
 
-const USAGE_TYPE_OPTIONS: MultiSelectOption[] = [{ value: 'openid', label: 'OpenID' }]
+const USAGE_TYPE_OPTIONS: AutocompleteOption[] = [{ value: 'openid', label: 'OpenID' }]
 
 const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
@@ -293,13 +293,12 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                 </div>
 
                 <div className={classes.fieldItem}>
-                  <GluuMultiSelectRow
-                    label="fields.edit_type"
+                  <GluuAutocomplete
+                    label={t('fields.edit_type')}
                     name="editType"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.editType}
+                    onChange={(vals) => formik.setFieldValue('editType', vals)}
+                    onBlur={() => formik.setFieldTouched('editType', true)}
+                    value={formik.values.editType ?? []}
                     options={EDIT_VIEW_OPTIONS}
                     required
                     doc_category={ATTRIBUTE}
@@ -314,13 +313,12 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={classes.fieldItem}>
-                  <GluuMultiSelectRow
-                    label="fields.view_type"
+                  <GluuAutocomplete
+                    label={t('fields.view_type')}
                     name="viewType"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.viewType}
+                    onChange={(vals) => formik.setFieldValue('viewType', vals)}
+                    onBlur={() => formik.setFieldTouched('viewType', true)}
+                    value={formik.values.viewType ?? []}
                     options={EDIT_VIEW_OPTIONS}
                     required
                     doc_category={ATTRIBUTE}
@@ -335,13 +333,12 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
                 <div className={`${classes.fieldItem} ${classes.formGridFullSpan}`}>
-                  <GluuMultiSelectRow
-                    label="fields.usage_type"
+                  <GluuAutocomplete
+                    label={t('fields.usage_type')}
                     name="usageType"
-                    formik={formik}
-                    lsize={12}
-                    rsize={12}
-                    value={formik.values.usageType}
+                    onChange={(vals) => formik.setFieldValue('usageType', vals)}
+                    onBlur={() => formik.setFieldTouched('usageType', true)}
+                    value={formik.values.usageType ?? []}
                     options={USAGE_TYPE_OPTIONS}
                     doc_category={ATTRIBUTE}
                     doc_entry="usageType"

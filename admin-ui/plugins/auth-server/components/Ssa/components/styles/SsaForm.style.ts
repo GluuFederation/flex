@@ -64,7 +64,6 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
         createFormInputAutofillStyles(inputColors),
 
-      // Align GluuMultiSelectRow trigger bg with other form inputs
       '& [role="combobox"]': {
         backgroundColor: `${inputBg} !important`,
       },

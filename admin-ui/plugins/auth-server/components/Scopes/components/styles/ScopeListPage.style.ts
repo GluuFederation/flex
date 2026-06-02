@@ -4,6 +4,7 @@ import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily, fontWeights, lineHeights } from '@/styles/fonts'
 const SCOPE_TYPE_MIN_WIDTH = 90
 const CARD_INNER_PADDING = 20
@@ -34,18 +35,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     editIcon: { fontSize: ICON_SIZE.SM },
     deleteIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
-      marginBottom: `${CARD_INNER_PADDING}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

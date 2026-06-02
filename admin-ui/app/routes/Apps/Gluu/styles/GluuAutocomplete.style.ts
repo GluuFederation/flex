@@ -11,11 +11,19 @@ interface GluuAutocompleteStyleParams {
   inputBackgroundColor?: string
   cardBackgroundColor?: string
   withWrapper?: boolean
+  compactSelectionSpacing?: boolean
 }
 
 export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, inputBackgroundColor, cardBackgroundColor, withWrapper = true },
+  {
+    themeColors,
+    allowCustom,
+    inputBackgroundColor,
+    cardBackgroundColor,
+    withWrapper = true,
+    compactSelectionSpacing = false,
+  },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
@@ -78,6 +86,8 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
         'backgroundColor': `${inputBg} !important`,
         'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
         'height': 'auto',
+        'paddingTop': 0,
+        'paddingBottom': 0,
         'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
         'overflow': 'hidden',
         'color': fontColor,
@@ -103,6 +113,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           'boxShadow': 'none !important',
           'border': 'none !important',
           'backgroundColor': 'transparent',
+          'minHeight': 0,
           'paddingTop': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
           'paddingBottom': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
           'paddingLeft': CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
@@ -350,9 +361,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       },
     },
     tags: {
-      marginTop: 12,
+      marginTop: compactSelectionSpacing ? 6 : 12,
       display: 'flex',
-      gap: 10,
+      gap: compactSelectionSpacing ? 8 : 10,
       flexWrap: 'wrap',
     },
     tag: {
@@ -411,7 +422,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
     },
     helperText: {
       display: 'block',
-      color: themeColors.textMuted,
+      color: fontColor,
       marginTop: 8,
       fontSize: fontSizes.sm,
     },

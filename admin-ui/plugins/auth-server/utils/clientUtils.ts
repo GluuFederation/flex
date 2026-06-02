@@ -3,7 +3,7 @@ import type { ChangeEvent, ReactNode } from 'react'
 import { REGEX_EMAIL, REGEX_GRANT_TYPE_URN_PREFIX } from '@/utils/regex'
 import { uuidv4 } from '../../../app/utils/Util'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
-import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import type { SelectOption } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { ClientFieldSection, DynamicListValidationOptions } from './types'
@@ -49,7 +49,7 @@ export const buildGrantTypeOptions = (
   supported: readonly string[] | undefined,
   selected: string[] | undefined,
   fallback: string[],
-): MultiSelectOption[] => {
+): AutocompleteOption[] => {
   const base = supported?.length ? supported : fallback
   const values = [...new Set([...base, ...(selected ?? [])].filter(Boolean))]
   return values.map((value) => ({ value, label: getGrantTypeLabel(value) }))

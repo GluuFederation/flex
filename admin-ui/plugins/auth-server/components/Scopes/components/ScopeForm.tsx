@@ -14,7 +14,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -429,16 +429,16 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
                 {showClaimsPanel && !showDynamicPanel && (
                   <div className={classes.fieldItem}>
-                    <GluuMultiSelectRow
+                    <GluuAutocomplete
                       name="claims"
-                      label="fields.claims"
-                      formik={formikProps}
+                      label={t('fields.claims')}
+                      onChange={(vals) => formikProps.setFieldValue('claims', vals)}
+                      onBlur={() => formikProps.setFieldTouched('claims', true)}
                       required
-                      lsize={12}
-                      rsize={12}
                       value={(formikProps.values.claims as string[]) ?? []}
                       options={claims.map((c) => ({ value: c.dn, label: c.name ?? c.dn }))}
                       doc_category={SCOPE}
+                      doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
@@ -450,19 +450,19 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
                 {showDynamicPanel && (
                   <div className={classes.fieldItem}>
-                    <GluuMultiSelectRow
+                    <GluuAutocomplete
                       name="dynamicScopeScripts"
-                      label="fields.dynamic_scope_scripts"
-                      formik={formikProps}
+                      label={t('fields.dynamic_scope_scripts')}
+                      onChange={(vals) => formikProps.setFieldValue('dynamicScopeScripts', vals)}
+                      onBlur={() => formikProps.setFieldTouched('dynamicScopeScripts', true)}
                       required
-                      lsize={12}
-                      rsize={12}
                       value={(formikProps.values.dynamicScopeScripts as string[]) ?? []}
                       options={dynamicScopeScripts.map((s) => ({
                         value: s.dn,
                         label: s.name ?? s.dn,
                       }))}
                       doc_category={SCOPE}
+                      doc_entry="dynamicScopeScripts"
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
                     {formikProps.errors.dynamicScopeScripts &&
@@ -476,16 +476,16 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
                 {showDynamicPanel && (
                   <div className={classes.fieldItem}>
-                    <GluuMultiSelectRow
+                    <GluuAutocomplete
                       name="claims"
-                      label="fields.claims"
-                      formik={formikProps}
+                      label={t('fields.claims')}
+                      onChange={(vals) => formikProps.setFieldValue('claims', vals)}
+                      onBlur={() => formikProps.setFieldTouched('claims', true)}
                       required
-                      lsize={12}
-                      rsize={12}
                       value={(formikProps.values.claims as string[]) ?? []}
                       options={claims.map((c) => ({ value: c.dn, label: c.name ?? c.dn }))}
                       doc_category={SCOPE}
+                      doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
                     />
@@ -526,19 +526,21 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     </div>
 
                     <div className={classes.fieldItem}>
-                      <GluuMultiSelectRow
+                      <GluuAutocomplete
                         name="umaAuthorizationPolicies"
-                        label="fields.umaAuthorizationPolicies"
-                        formik={formikProps}
+                        label={t('fields.umaAuthorizationPolicies')}
+                        onChange={(vals) =>
+                          formikProps.setFieldValue('umaAuthorizationPolicies', vals)
+                        }
+                        onBlur={() => formikProps.setFieldTouched('umaAuthorizationPolicies', true)}
                         required={!isExistingScope}
-                        lsize={12}
-                        rsize={12}
                         value={(formikProps.values.umaAuthorizationPolicies as string[]) ?? []}
                         options={umaAuthorizationPolicies.map((p) => ({
                           value: p.dn,
                           label: p.name ?? p.dn,
                         }))}
                         doc_category={SCOPE}
+                        doc_entry="umaAuthorizationPolicies"
                         helperText={t('placeholders.typeahead_holder_message')}
                         disabled={scope.inum ? true : false}
                       />

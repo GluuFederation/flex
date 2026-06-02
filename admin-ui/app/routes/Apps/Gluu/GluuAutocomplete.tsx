@@ -2,8 +2,9 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
-import { Close as CloseIcon } from '@/components/icons'
+import { Close as CloseIcon, HelpOutline } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
+import GluuTooltip from './GluuTooltip'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -33,7 +34,8 @@ const GluuAutocomplete = ({
   onSearch,
   isLoading = false,
   onRemoveField,
-  doc_category: _doc_category,
+  doc_category,
+  doc_entry,
   inputBackgroundColor,
   cardBackgroundColor,
   withWrapper = true,
@@ -42,6 +44,8 @@ const GluuAutocomplete = ({
   showError = false,
   errorMessage,
   helperText,
+  hideHelperWhenSelected = false,
+  compactSelectionSpacing = false,
 }: GluuAutocompleteProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -55,7 +59,29 @@ const GluuAutocomplete = ({
     inputBackgroundColor,
     cardBackgroundColor,
     withWrapper,
+    compactSelectionSpacing,
   })
+
+  const resolvedHelperText = helperText ?? t('messages.multi_select_hint')
+
+  const optionValues = React.useMemo(
+    () => options.map((o) => (typeof o === 'string' ? o : o.value)),
+    [options],
+  )
+  const labelByValue = React.useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const o of options) {
+      if (typeof o !== 'string') map[o.value] = o.label
+    }
+    return map
+  }, [options])
+  const getDisplayLabel = useCallback(
+    (val: string) =>
+      val.startsWith(NEW_SELECTION_PREFIX)
+        ? val.slice(NEW_SELECTION_PREFIX.length)
+        : (labelByValue[val] ?? val),
+    [labelByValue],
+  )
 
   const selectedItems = Array.isArray(value)
     ? value.filter((v): v is string => typeof v === 'string')
@@ -75,16 +101,15 @@ const GluuAutocomplete = ({
         .filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
       onChange(normalized)
       setInputValue('')
-      onBlur?.()
     },
-    [onChange, onBlur],
+    [onChange],
   )
 
   const filterOptions = useCallback(
     (opts: string[], state: { inputValue: string }) => {
       const query = state.inputValue.trim().toLowerCase()
       const filtered = opts.filter(
-        (o) => o.toLowerCase().includes(query) && !selectedItems.includes(o),
+        (o) => getDisplayLabel(o).toLowerCase().includes(query) && !selectedItems.includes(o),
       )
       if (
         allowCustom &&
@@ -96,7 +121,7 @@ const GluuAutocomplete = ({
       }
       return filtered
     },
-    [allowCustom, selectedItems],
+    [allowCustom, selectedItems, getDisplayLabel],
   )
 
   const content = (
@@ -104,6 +129,22 @@ const GluuAutocomplete = ({
       {!hideLabel && (
         <div className={classes.header}>
           {label}:{required && <span className={classes.requiredMark}>*</span>}
+          {doc_category && doc_entry && (
+            <>
+              <GluuTooltip
+                tooltipOnly
+                doc_entry={doc_entry}
+                doc_category={doc_category}
+                place="right"
+              />
+              <HelpOutline
+                tabIndex={-1}
+                style={{ width: 18, height: 18, marginLeft: 4, color: themeColors.fontColor }}
+                data-tooltip-id={doc_entry}
+                data-for={doc_entry}
+              />
+            </>
+          )}
         </div>
       )}
       <div className={classes.controls}>
@@ -125,8 +166,8 @@ const GluuAutocomplete = ({
             }}
             options={
               allowCustom
-                ? [...options, ...selectedItems.filter((s) => !options.includes(s))]
-                : options
+                ? [...optionValues, ...selectedItems.filter((s) => !optionValues.includes(s))]
+                : optionValues
             }
             value={selectedItems}
             isOptionEqualToValue={(option, val) => option === val}
@@ -162,11 +203,7 @@ const GluuAutocomplete = ({
             forcePopupIcon
             popupIcon={<ChevronIcon width={20} height={20} direction="down" />}
             filterOptions={filterOptions}
-            getOptionLabel={(option) =>
-              typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX)
-                ? option.slice(NEW_SELECTION_PREFIX.length)
-                : option
-            }
+            getOptionLabel={(option) => getDisplayLabel(option)}
             renderOption={(props, option) => (
               <li
                 {...props}
@@ -188,7 +225,7 @@ const GluuAutocomplete = ({
                     </GluuText>
                   </>
                 ) : (
-                  option
+                  getDisplayLabel(option)
                 )}
               </li>
             )}
@@ -210,7 +247,9 @@ const GluuAutocomplete = ({
                           const trimmed = inputValue.trim()
                           if (
                             trimmed &&
-                            !options.some((o) => o.toLowerCase().includes(trimmed.toLowerCase())) &&
+                            !optionValues.some((o) =>
+                              o.toLowerCase().includes(trimmed.toLowerCase()),
+                            ) &&
                             !selectedItems.some((s) => s.toLowerCase() === trimmed.toLowerCase())
                           ) {
                             e.preventDefault()
@@ -284,12 +323,19 @@ const GluuAutocomplete = ({
           />
         </div>
       </div>
+      {resolvedHelperText &&
+        !showError &&
+        !(hideHelperWhenSelected && selectedItems.length > 0) && (
+          <GluuText disableThemeColor className={classes.helperText}>
+            {resolvedHelperText}
+          </GluuText>
+        )}
       {selectedItems.length > 0 && (
         <div className={classes.tags}>
           {selectedItems.map((item) => (
-            <span key={item} className={classes.tag} title={item}>
+            <span key={item} className={classes.tag} title={getDisplayLabel(item)}>
               <GluuText disableThemeColor className={classes.tagLabel}>
-                {item}
+                {getDisplayLabel(item)}
               </GluuText>
               <button
                 type="button"
@@ -307,15 +353,11 @@ const GluuAutocomplete = ({
           ))}
         </div>
       )}
-      {showError && errorMessage ? (
+      {showError && errorMessage && (
         <GluuText disableThemeColor className={classes.error}>
           {errorMessage}
         </GluuText>
-      ) : helperText ? (
-        <GluuText disableThemeColor className={classes.helperText}>
-          {helperText}
-        </GluuText>
-      ) : null}
+      )}
     </div>
   )
 

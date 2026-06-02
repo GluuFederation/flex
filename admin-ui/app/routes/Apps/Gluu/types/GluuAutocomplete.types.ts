@@ -1,8 +1,13 @@
+export type AutocompleteOption = {
+  value: string
+  label: string
+}
+
 export type GluuAutocompleteProps = {
   label: string
   name: string
   value: string[]
-  options: readonly string[]
+  options: readonly (string | AutocompleteOption)[]
   onChange: (value: string[]) => void
   onBlur?: () => void
   disabled?: boolean
@@ -15,6 +20,7 @@ export type GluuAutocompleteProps = {
   isLoading?: boolean
   onRemoveField?: () => void
   doc_category?: string
+  doc_entry?: string
   inputBackgroundColor?: string
   cardBackgroundColor?: string
   withWrapper?: boolean
@@ -23,4 +29,6 @@ export type GluuAutocompleteProps = {
   showError?: boolean
   errorMessage?: string
   helperText?: string
+  hideHelperWhenSelected?: boolean
+  compactSelectionSpacing?: boolean
 }

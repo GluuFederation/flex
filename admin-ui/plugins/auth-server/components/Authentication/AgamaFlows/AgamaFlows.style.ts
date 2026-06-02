@@ -4,6 +4,7 @@ import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, SPACING } from '@/constants'
 import customColors from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import {
   createFormInputStyles,
   createFormInputFocusStyles,
@@ -31,18 +32,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
 
   return {
     page: { fontFamily, paddingTop: SPACING.CARD_CONTENT_GAP },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
-      marginBottom: `${CARD_INNER_PADDING}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box' as const,
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,
