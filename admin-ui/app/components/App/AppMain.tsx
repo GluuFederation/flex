@@ -5,7 +5,7 @@ const basePath = process.env.BASE_PATH ?? '/admin'
 
 const AppMain = () => {
   return (
-    <Router basename={basePath} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <Router basename={basePath}>
       <AuthenticatedRouteSelector />
     </Router>
   )

@@ -21,7 +21,12 @@ const Label: React.FC<ShortcodeLabelProps> = ({ doc_category, doc_entry, label, 
   const { t, i18n } = useTranslation()
 
   return (
-    <Box display="flex" gap={0.5}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 0.5,
+      }}
+    >
       <GluuText variant="span" disableThemeColor className={classes.labelText}>
         {t(label)}
       </GluuText>
@@ -120,9 +125,17 @@ const ShortcodePopover: React.FC<ShortcodePopoverProps> = ({
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        PaperProps={{ className: classes.paper }}
+        slotProps={{
+          paper: { className: classes.paper },
+        }}
       >
-        <Box display="flex" flexDirection="column" className={classes.content}>
+        <Box
+          className={classes.content}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           {codes?.length ? (
             <List className={classes.list}>
               {codes.map((code, index) => (

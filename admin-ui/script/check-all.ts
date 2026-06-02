@@ -1,4 +1,5 @@
 import { spawn, ChildProcess } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 
 type TaskResult = {
   label: string
@@ -40,15 +41,28 @@ const red = (s: string): string => `${ESC}[31m${s}${ESC}[0m`
 const formatStatus = (exitCode: number): string =>
   exitCode === 0 ? green('PASS') : red(`FAIL (${exitCode})`)
 
-void (async () => {
-  console.log(cyan('▶ Running lint and type-check in parallel...') + '\n')
+const rootJsonFiles = readdirSync('.', { withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+  .map((entry) => entry.name)
 
-  const [lint, typeCheck] = await Promise.all([
-    runTask('Lint check (eslint)', 'npm', ['run', 'lint:check', '--silent']),
-    runTask('Type check (tsc)', 'npm', ['run', 'type-check', '--silent']),
+void (async () => {
+  console.log(cyan('▶ Running lint, markdown lint, and type-check in parallel...') + '\n')
+
+  const [lint, mdLint, typeCheck] = await Promise.all([
+    runTask('Lint check (eslint)', 'npx', [
+      'eslint',
+      'app/',
+      'plugins/',
+      ...rootJsonFiles,
+      '--ext',
+      '.js,.jsx,.ts,.tsx,.json,.jsonc',
+      '--no-warn-ignored',
+    ]),
+    runTask('Markdown lint (markdownlint)', 'npx', ['markdownlint-cli2']),
+    runTask('Type check (tsc)', 'npx', ['tsc', '--noEmit']),
   ])
 
-  for (const result of [lint, typeCheck]) {
+  for (const result of [lint, mdLint, typeCheck]) {
     console.log(cyan(`▶ ${result.label}`))
     if (result.output.trim()) {
       console.log(result.output.trimEnd())
@@ -57,8 +71,9 @@ void (async () => {
   }
 
   console.log(cyan('▶ Summary'))
-  console.log(`  Lint:       ${formatStatus(lint.exitCode)}`)
-  console.log(`  Type check: ${formatStatus(typeCheck.exitCode)}`)
+  console.log(`  Lint:          ${formatStatus(lint.exitCode)}`)
+  console.log(`  Markdown lint: ${formatStatus(mdLint.exitCode)}`)
+  console.log(`  Type check:    ${formatStatus(typeCheck.exitCode)}`)
 
-  process.exit(lint.exitCode || typeCheck.exitCode)
+  process.exit(lint.exitCode || mdLint.exitCode || typeCheck.exitCode)
 })()

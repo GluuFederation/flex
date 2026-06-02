@@ -369,7 +369,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                     <Box className={classes.detailText}>
                       {t('fields.errors')}: {projectDetailsData?.details?.error ?? 'No'}
                     </Box>
-                    <Box mt={2} className={classes.tableWrapper}>
+                    <Box
+                      className={classes.tableWrapper}
+                      sx={{
+                        mt: 2,
+                      }}
+                    >
                       <MaterialTable
                         components={tableComponents}
                         columns={tableColumns}
@@ -380,8 +385,18 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                       />
                     </Box>
                     {projectConfigs ? (
-                      <Box mt={2}>
-                        <Box fontSize={16} mb={1} className={classes.detailText}>
+                      <Box
+                        sx={{
+                          mt: 2,
+                        }}
+                      >
+                        <Box
+                          className={classes.detailText}
+                          sx={{
+                            fontSize: 16,
+                            mb: 1,
+                          }}
+                        >
                           {t('titles.project_configuration')}
                         </Box>
                         <AceEditor

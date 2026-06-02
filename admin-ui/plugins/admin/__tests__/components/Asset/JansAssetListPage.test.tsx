@@ -18,7 +18,6 @@ jest.mock('@/cedarling', () => {
       hasCedarWritePermission: jest.fn(() => true),
       hasCedarDeletePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
-      authorize: jest.fn(),
       isLoading: false,
       error: null,
     })),
@@ -113,7 +112,6 @@ describe('JansAssetListPage', () => {
       hasCedarWritePermission: jest.fn(() => false),
       hasCedarDeletePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
-      authorize: jest.fn(),
       isLoading: false,
       error: null,
     })
@@ -127,7 +125,6 @@ describe('JansAssetListPage', () => {
       hasCedarWritePermission: jest.fn(() => true),
       hasCedarDeletePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
-      authorize: jest.fn(),
       isLoading: false,
       error: null,
     }))
