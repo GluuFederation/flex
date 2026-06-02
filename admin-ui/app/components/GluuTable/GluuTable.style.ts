@@ -10,8 +10,9 @@ import {
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
-const EXPAND_BUTTON_SIZE = 32
-const TABLE_MIN_WIDTH = 1280
+export const EXPAND_BUTTON_SIZE = 32
+export const TABLE_MIN_WIDTH = 1024
+export const TABLE_RESPONSIVE_BREAKPOINT = 1200
 
 interface GluuTableStyleParams {
   isDark: boolean
@@ -40,6 +41,9 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
   return {
     root: {
       position: 'relative',
+      width: '100%',
+      maxWidth: '100%',
+      minWidth: 0,
     },
     borderWrapper: {
       width: '100%',
@@ -77,12 +81,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     table: {
       width: '100%',
-      [`@media (max-width: ${TABLE_MIN_WIDTH - 1}px)`]: {
-        minWidth: TABLE_MIN_WIDTH,
-      },
       tableLayout: 'fixed',
       borderCollapse: 'collapse',
       fontSize: fontSizes.base,
+      [`@media (max-width: ${TABLE_RESPONSIVE_BREAKPOINT - 1}px)`]: {
+        minWidth: TABLE_MIN_WIDTH,
+      },
     },
     headerCell: {
       'backgroundColor': headerBg,

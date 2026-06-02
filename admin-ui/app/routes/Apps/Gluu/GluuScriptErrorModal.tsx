@@ -2,6 +2,7 @@ import { memo, useContext, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close } from '@/components/icons'
+import { ModalLayer } from '@/components/ModalLayer'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
 import GluuText from './GluuText'
 import { useStyles } from './styles/GluuScriptErrorModal.style'
@@ -45,16 +46,6 @@ const GluuScriptErrorModal = ({
     }
   }, [error, isCopied])
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handleClose()
-      }
-    },
-    [handleClose],
-  )
-
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -71,14 +62,7 @@ const GluuScriptErrorModal = ({
   const copyLabel = isCopied ? t('messages.copied') : t('actions.copy_to_clipboard')
 
   const modalContent = (
-    <>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={handleClose}
-        onKeyDown={handleOverlayKeyDown}
-        aria-label={t('actions.close')}
-      />
+    <ModalLayer onClose={handleClose}>
       <div
         className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
         onClick={(e) => e.stopPropagation()}
@@ -114,7 +98,7 @@ const GluuScriptErrorModal = ({
           />
         </div>
       </div>
-    </>
+    </ModalLayer>
   )
 
   return createPortal(modalContent, document.body)

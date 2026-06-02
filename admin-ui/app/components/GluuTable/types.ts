@@ -6,7 +6,7 @@ export type CellValue = string | number | boolean | null | undefined
 
 export type ColumnKey<T> = Extract<keyof T, string>
 
-type ExpandContext = {
+export type ExpandContext = {
   isExpanded: boolean
   rowKey: string | number
 }

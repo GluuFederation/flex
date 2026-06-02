@@ -173,87 +173,97 @@ const GluuCommitDialog = ({
           aria-label={t('actions.close')}
         />
         <div
-          className={classes.modalContainer}
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={handleModalKeyDown}
-          role="dialog"
-          tabIndex={-1}
-          aria-labelledby="commit-dialog-title"
+          className={classes.modalScroll}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal()
+          }}
+          role="presentation"
         >
-          <button
-            type="button"
-            onClick={closeModal}
-            className={classes.closeButton}
-            aria-label={t('actions.close')}
-            title={t('actions.close')}
+          <div
+            className={classes.modalContainer}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={handleModalKeyDown}
+            role="dialog"
+            tabIndex={-1}
+            aria-labelledby="commit-dialog-title"
           >
-            <Close fontSize="small" aria-hidden />
-          </button>
-          <div className={classes.contentArea}>
-            {alertMessage && (
-              <Alert severity={alertSeverity} sx={{ mb: 1 }}>
-                {alertMessage}
-              </Alert>
-            )}
-            <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
-              {titleText}
-            </GluuText>
-            {hasOperations && (
-              <div className={classes.operationsList}>
-                <GluuText variant="h5" className={classes.operationsTitle}>
-                  {t('messages.list_of_changes')}
-                </GluuText>
-                {operations.map((operation, index) => (
-                  <div key={`${operation.path}-${index}`} className={classes.operationRow}>
-                    <span className={classes.operationLabel}>{t('set')}</span>
-                    <span className={classes.operationBadge}>{operation.path}</span>
-                    <span className={classes.operationLabel}>{t('to')}</span>
-                    <span className={classes.operationBadge}>
-                      {operation.value === null || operation.value === ''
-                        ? '""'
-                        : String(operation.value)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className={classes.textareaContainer}>
-              <textarea
-                id={USER_MESSAGE}
-                name={USER_MESSAGE}
-                onChange={handleInputChange}
-                placeholder={placeholderText}
-                value={userMessage}
-                className={classes.textarea}
-                aria-invalid={!!errorMessageText}
-                aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
-              />
-            </div>
-            <GluuText
-              variant="span"
-              className={classes.errorMessage}
-              style={{
-                color: themeColors.settings.removeButton.bg,
-                visibility: errorMessageText ? 'visible' : 'hidden',
-              }}
-              id={`${USER_MESSAGE}-error`}
+            <button
+              type="button"
+              onClick={closeModal}
+              className={classes.closeButton}
+              aria-label={t('actions.close')}
+              title={t('actions.close')}
             >
-              {errorMessageText || '\u00A0'}
-            </GluuText>
-            <div className={classes.buttonRow}>
-              <GluuButton
-                onClick={handleAccept}
-                disabled={!isValid || isSubmitting}
-                backgroundColor={themeColors.formFooter.back.backgroundColor}
-                textColor={themeColors.formFooter.back.textColor}
-                borderColor="transparent"
-                padding="8px 28px"
-                minHeight="40"
-                useOpacityOnHover
-                className={classes.yesButton}
+              <Close fontSize="small" aria-hidden />
+            </button>
+            <div className={classes.contentArea}>
+              {alertMessage && (
+                <Alert severity={alertSeverity} sx={{ mb: 1 }}>
+                  {alertMessage}
+                </Alert>
+              )}
+              <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
+                {titleText}
+              </GluuText>
+              {hasOperations && (
+                <div className={classes.operationsList}>
+                  <GluuText variant="h5" className={classes.operationsTitle}>
+                    {t('messages.list_of_changes')}
+                  </GluuText>
+                  <div className={classes.operationsScroll}>
+                    {operations.map((operation, index) => (
+                      <div key={`${operation.path}-${index}`} className={classes.operationRow}>
+                        <span className={classes.operationLabel}>{t('set')}</span>
+                        <span className={classes.operationBadge}>{operation.path}</span>
+                        <span className={classes.operationLabel}>{t('to')}</span>
+                        <span className={classes.operationBadge}>
+                          {operation.value === null || operation.value === ''
+                            ? '""'
+                            : String(operation.value)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className={classes.textareaContainer}>
+                <textarea
+                  id={USER_MESSAGE}
+                  name={USER_MESSAGE}
+                  onChange={handleInputChange}
+                  placeholder={placeholderText}
+                  value={userMessage}
+                  className={classes.textarea}
+                  aria-invalid={!!errorMessageText}
+                  aria-describedby={errorMessageText ? `${USER_MESSAGE}-error` : undefined}
+                />
+              </div>
+              <GluuText
+                variant="span"
+                className={classes.errorMessage}
+                style={{
+                  color: themeColors.settings.removeButton.bg,
+                  visibility: errorMessageText ? 'visible' : 'hidden',
+                }}
+                id={`${USER_MESSAGE}-error`}
               >
-                {t('actions.yes')}
-              </GluuButton>
+                {errorMessageText || '\u00A0'}
+              </GluuText>
+              <div className={classes.buttonRow}>
+                <GluuButton
+                  onClick={handleAccept}
+                  disabled={!isValid || isSubmitting}
+                  backgroundColor={themeColors.formFooter.back.backgroundColor}
+                  textColor={themeColors.formFooter.back.textColor}
+                  borderColor="transparent"
+                  padding="8px 28px"
+                  minHeight="40"
+                  useOpacityOnHover
+                  className={classes.yesButton}
+                >
+                  {t('actions.yes')}
+                </GluuButton>
+              </div>
             </div>
           </div>
         </div>

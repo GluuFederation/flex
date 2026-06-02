@@ -12,8 +12,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuTable, type ColumnDef, type ActionDef } from '@/components/GluuTable'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { AUTHN } from 'Utils/ApiResources'
-import { useCustomScriptsByType } from 'Plugins/scripts/components'
-import { DEFAULT_SCRIPT_TYPE } from '@/constants'
+import { DEFAULT_SCRIPT_TYPE, useCustomScriptsByType } from 'Plugins/scripts/components'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 import type { AuthNItem } from '../types'
 import {
@@ -22,7 +21,6 @@ import {
   AUTH_SCOPES,
   PAGE_SIZE,
   AUTH_METHOD_NAMES,
-  SCRIPT_TYPES,
 } from '../constants'
 import { useStyles } from './Acrs.style'
 import { displayOrDash } from './helper/acrUtils'
@@ -115,7 +113,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       .filter((item: AuthNItem) => item.enabled === true)
       .map((item: AuthNItem) => ({
         ...item,
-        name: item.scriptType || SCRIPT_TYPES.PERSON_AUTHENTICATION,
+        name: item.scriptType || DEFAULT_SCRIPT_TYPE,
         acrName: item.name,
         isCustomScript: true,
       }))
@@ -144,14 +142,12 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       {
         key: 'level',
         label: t('fields.level'),
-        width: 80,
       },
       {
         key: 'acrName',
         id: 'default',
         label: t('options.default'),
         align: 'center',
-        width: 110,
         sortable: false,
         render: (_value, row) => (
           <span className={classes.defaultIconCircle}>
