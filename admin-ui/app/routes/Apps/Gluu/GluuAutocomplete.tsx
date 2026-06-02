@@ -114,8 +114,8 @@ const GluuAutocomplete = ({
       if (
         allowCustom &&
         query &&
-        !opts.some((o) => o.toLowerCase() === query) &&
-        !selectedItems.some((s) => s.toLowerCase() === query)
+        !opts.some((o) => getDisplayLabel(o).toLowerCase() === query) &&
+        !selectedItems.some((s) => getDisplayLabel(s).toLowerCase() === query)
       ) {
         filtered.push(`${NEW_SELECTION_PREFIX}${state.inputValue.trim()}`)
       }
@@ -248,9 +248,11 @@ const GluuAutocomplete = ({
                           if (
                             trimmed &&
                             !optionValues.some((o) =>
-                              o.toLowerCase().includes(trimmed.toLowerCase()),
+                              getDisplayLabel(o).toLowerCase().includes(trimmed.toLowerCase()),
                             ) &&
-                            !selectedItems.some((s) => s.toLowerCase() === trimmed.toLowerCase())
+                            !selectedItems.some(
+                              (s) => getDisplayLabel(s).toLowerCase() === trimmed.toLowerCase(),
+                            )
                           ) {
                             e.preventDefault()
                             onChange([...selectedItems, trimmed])
@@ -278,16 +280,7 @@ const GluuAutocomplete = ({
                             <button
                               type="button"
                               onClick={() => setInputValue('')}
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                background: 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                                padding: 4,
-                                color: themeColors.fontColor,
-                              }}
+                              className={classes.endIconButton}
                               aria-label={t('actions.clear')}
                             >
                               <CloseIcon sx={{ fontSize: 16 }} />

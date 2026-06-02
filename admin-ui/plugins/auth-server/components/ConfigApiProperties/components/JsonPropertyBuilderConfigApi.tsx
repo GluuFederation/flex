@@ -330,6 +330,7 @@ const JsonPropertyBuilderConfigApi = ({
             handler({ op: 'replace', path, value: newValues })
           }}
           options={selectOptions}
+          allowCustom={!schema?.items?.enum}
           disabled={disabled}
         />
         {renderError()}

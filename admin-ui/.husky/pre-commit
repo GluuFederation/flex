@@ -8,12 +8,15 @@ esac
 
 # All staged files matching prettier-supported extensions that still exist on disk
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM \
-  | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx|json|css|scss)$' \
+  | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx|json|css|scss|md)$' \
   | sed 's|^admin-ui/||' \
   | while read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done)
 
-# JS/TS subset for ESLint (json/css/scss are not lintable)
+# JS/TS subset for ESLint (json/css/scss/md are not lintable)
 STAGED_SCRIPT_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)
+
+# Markdown subset for markdownlint
+STAGED_MD_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.md$' || true)
 
 if [ -z "$STAGED_FILES" ] && [ -z "$STAGED_SCRIPT_FILES" ]; then
   echo "✅ No checkable files staged."
@@ -23,10 +26,12 @@ fi
 CPUS=$(nproc 2>/dev/null || sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
 FILE_COUNT=$(printf '%s\n' "$STAGED_FILES" | grep -c . || true)
 SCRIPT_COUNT=$(printf '%s\n' "$STAGED_SCRIPT_FILES" | grep -c . || true)
+MD_COUNT=$(printf '%s\n' "$STAGED_MD_FILES" | grep -c . || true)
 FILE_COUNT=${FILE_COUNT:-0}
 SCRIPT_COUNT=${SCRIPT_COUNT:-0}
+MD_COUNT=${MD_COUNT:-0}
 
-echo "🔍 Running prettier / eslint / tsc in parallel across $CPUS workers..."
+echo "🔍 Running prettier / eslint / tsc / markdownlint in parallel across $CPUS workers..."
 
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -34,10 +39,10 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 PRETTIER_OUT="$TMP_DIR/prettier.txt"
 ESLINT_OUT="$TMP_DIR/eslint.txt"
 TSC_OUT="$TMP_DIR/tsc.txt"
-PRETTIER_STATUS="$TMP_DIR/prettier-status.txt"
-ESLINT_STATUS="$TMP_DIR/eslint-status.txt"
+MDLINT_OUT="$TMP_DIR/mdlint.txt"
 
 # --- Prettier: fan staged files across $CPUS parallel processes ---
+# Writes one line per offending file: "<file>\t<hunk-count>"
 run_prettier() {
   if [ "$FILE_COUNT" -eq 0 ]; then return 0; fi
   BATCH=$(( (FILE_COUNT + CPUS - 1) / CPUS ))
@@ -51,24 +56,19 @@ run_prettier() {
       : > "$OUT_FILE"
       for file in "$@"; do
         TMP_FORMATTED=$(mktemp)
-        TMP_PRETTIER_ERR=$(mktemp)
-        if ! npx prettier "$file" > "$TMP_FORMATTED" 2> "$TMP_PRETTIER_ERR"; then
-          echo "FILE: $file" >> "$OUT_FILE"
-          echo "  Prettier failed to parse or format this file." >> "$OUT_FILE"
-          cat "$TMP_PRETTIER_ERR" >> "$OUT_FILE"
+        if ! npx prettier "$file" > "$TMP_FORMATTED" 2>/dev/null; then
+          printf "%s\t1\n" "$file" >> "$OUT_FILE"
           EXIT_CODE=1
-          rm -f "$TMP_FORMATTED" "$TMP_PRETTIER_ERR"
+          rm -f "$TMP_FORMATTED"
           continue
         fi
-
         if ! cmp -s "$file" "$TMP_FORMATTED"; then
-          echo "FILE: $file" >> "$OUT_FILE"
-          diff -u "$file" "$TMP_FORMATTED" >> "$OUT_FILE" 2>/dev/null || true
-          echo "" >> "$OUT_FILE"
+          HUNKS=$(diff "$file" "$TMP_FORMATTED" 2>/dev/null | grep -cE "^[0-9]+(,[0-9]+)?[acd][0-9]+" || true)
+          [ -z "$HUNKS" ] || [ "$HUNKS" -eq 0 ] && HUNKS=1
+          printf "%s\t%s\n" "$file" "$HUNKS" >> "$OUT_FILE"
           EXIT_CODE=1
         fi
-
-        rm -f "$TMP_FORMATTED" "$TMP_PRETTIER_ERR"
+        rm -f "$TMP_FORMATTED"
       done
       exit $EXIT_CODE
       ' _
@@ -96,44 +96,134 @@ run_tsc() {
   npx tsc --noEmit > "$TSC_OUT" 2>&1
 }
 
-# Launch all three simultaneously
+# --- markdownlint-cli2: run on staged .md files only ---
+run_mdlint() {
+  if [ "$MD_COUNT" -eq 0 ]; then return 0; fi
+  printf '%s\n' "$STAGED_MD_FILES" | tr '\n' '\0' | \
+    xargs -0 npx markdownlint-cli2 > "$MDLINT_OUT" 2>&1
+  return $?
+}
+
+# Launch all four simultaneously
 run_prettier & PID_PRETTIER=$!
 run_eslint   & PID_ESLINT=$!
 run_tsc      & PID_TSC=$!
+run_mdlint   & PID_MDLINT=$!
 
 wait $PID_PRETTIER; EXIT_PRETTIER=$? || true
 wait $PID_ESLINT;   EXIT_ESLINT=$? || true
 wait $PID_TSC;      EXIT_TSC=$? || true
+wait $PID_MDLINT;   EXIT_MDLINT=$? || true
+
+# --- Format per-tool output ---
+
+# Prettier — input file is already "<file>\t<count>"
+print_prettier_failures() {
+  if [ ! -s "$PRETTIER_OUT" ]; then return; fi
+  while IFS="	" read -r f count; do
+    [ -z "$f" ] && continue
+    printf "  %s (%s)\n" "$f" "$count"
+  done < "$PRETTIER_OUT"
+  echo ""
+  echo "❌ Prettier — formatting issues"
+}
+
+# ESLint default (stylish) format:
+#   /abs/path/file.ts
+#     1:7  error  message  rule
+#     2:1  error  message  rule
+#   <blank>
+print_eslint_failures() {
+  if [ ! -s "$ESLINT_OUT" ]; then return; fi
+  REPO_ROOT=$(pwd)
+  awk -v root="$REPO_ROOT/" '
+    /^\// && /\.(js|jsx|ts|tsx)$/ {
+      file = $0
+      sub("^" root, "", file)
+      counts[file] = 0
+      order[++n] = file
+      next
+    }
+    /^[[:space:]]+[0-9]+:[0-9]+/ {
+      if (file != "") counts[file]++
+      next
+    }
+    /^$/ { file = "" }
+    END {
+      for (i = 1; i <= n; i++) {
+        f = order[i]
+        if (counts[f] > 0) printf "  %s (%d)\n", f, counts[f]
+      }
+    }
+  ' "$ESLINT_OUT"
+  echo ""
+  echo "❌ ESLint — lint errors"
+}
+
+# tsc output: "<file>(line,col): error TSnnnn: message"
+print_tsc_failures() {
+  if [ ! -s "$TSC_OUT" ]; then return; fi
+  awk -F'[(]' '
+    /\([0-9]+,[0-9]+\): error/ { counts[$1]++ }
+    END {
+      for (f in counts) printf "  %s (%d)\n", f, counts[f]
+    }
+  ' "$TSC_OUT" | sort
+  echo ""
+  echo "❌ TypeScript — type errors"
+}
+
+# markdownlint-cli2 output: "<file>:line[:col] MDxxxx/rule message"
+print_mdlint_failures() {
+  if [ ! -s "$MDLINT_OUT" ]; then return; fi
+  awk -F: '
+    /:[0-9]+:[0-9]+ MD[0-9]+\// { counts[$1]++; next }
+    /:[0-9]+ MD[0-9]+\// { counts[$1]++ }
+    END {
+      for (f in counts) printf "  %s (%d)\n", f, counts[f]
+    }
+  ' "$MDLINT_OUT" | sort
+  echo ""
+  echo "❌ Markdown — markdownlint errors"
+}
 
 echo ""
 
 if [ $EXIT_PRETTIER -eq 0 ]; then
-  echo "✅ Prettier   : all files formatted"
+  echo "✅ Prettier   : no formatting errors"
 else
-  echo "❌ Prettier   : formatting issues found"
-  cat "$PRETTIER_OUT"
+  print_prettier_failures
 fi
+
+echo ""
 
 if [ $EXIT_ESLINT -eq 0 ]; then
   echo "✅ ESLint     : no lint errors or warnings"
 else
-  echo "❌ ESLint     : lint warnings/errors found"
-  cat "$ESLINT_OUT"
+  print_eslint_failures
 fi
+
+echo ""
 
 if [ $EXIT_TSC -eq 0 ]; then
   echo "✅ TypeScript : no type errors"
 else
-  echo "❌ TypeScript : type errors found"
-  cat "$TSC_OUT"
+  print_tsc_failures
 fi
 
-if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ]; then
+echo ""
+
+if [ "$MD_COUNT" -eq 0 ]; then
+  echo "✅ Markdown   : no .md files staged"
+elif [ $EXIT_MDLINT -eq 0 ]; then
+  echo "✅ Markdown   : no markdownlint errors"
+else
+  print_mdlint_failures
+fi
+
+if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
   echo ""
-  echo "💥 Commit blocked. Fix the errors above, then:"
-  echo "   Formatting : npm run format"
-  echo "   Lint       : npm run lint"
-  echo "   Types      : npm run type-check"
+  echo "💥 Commit blocked. Fix the errors above and try again."
   exit 1
 fi
 

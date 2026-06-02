@@ -25,6 +25,7 @@ export type StringArrayFieldProps = {
   path: string
   handler: (patch: JsonPatch) => void
   formResetKey: number
+  allowCustom?: boolean
 }
 
 export type ArrayItemSelectProps = {
@@ -35,6 +36,7 @@ export type ArrayItemSelectProps = {
   path: string
   handler: (patch: JsonPatch) => void
   formResetKey: number
+  allowCustom?: boolean
 }
 
 export type PropertyValue =

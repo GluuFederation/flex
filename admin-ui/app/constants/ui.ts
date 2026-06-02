@@ -117,6 +117,8 @@ export const ICON_SIZE = {
   LG: 24,
 } as const
 
+export const ICON_BUTTON_SIZE = 32
+
 export const TOOLBAR = {
   MIN_WIDTH: 130,
   SEARCH_MIN_WIDTH: 220,

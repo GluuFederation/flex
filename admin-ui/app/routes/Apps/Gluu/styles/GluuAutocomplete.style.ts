@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, ICON_BUTTON_SIZE, MAPPING_SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
 
@@ -69,6 +69,31 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       minWidth: 0,
       flex: 1,
       display: 'flex',
+    },
+    endIconButton: {
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'boxSizing': 'border-box',
+      'lineHeight': 0,
+      'width': ICON_BUTTON_SIZE,
+      'height': ICON_BUTTON_SIZE,
+      'padding': 0,
+      'border': 'none',
+      'background': 'transparent',
+      'borderRadius': '50%',
+      'cursor': 'pointer',
+      'color': fontColor,
+      'transition': 'background-color 0.18s ease',
+      '& svg': {
+        display: 'block',
+      },
+      '&:hover': {
+        backgroundColor: optionHoverBg,
+      },
+      '&:active': {
+        backgroundColor: optionHoverBg,
+      },
     },
     newSelectionPrefix: {
       flexShrink: 0,
@@ -155,39 +180,29 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           },
           '& .MuiIconButton-root': {
             'color': fontColor,
+            'display': 'inline-flex',
+            'alignItems': 'center',
+            'justifyContent': 'center',
+            'boxSizing': 'border-box',
+            'lineHeight': 0,
             'padding': 6,
-            'minWidth': 32,
-            'width': 32,
-            'height': 32,
+            'minWidth': ICON_BUTTON_SIZE,
+            'width': ICON_BUTTON_SIZE,
+            'height': ICON_BUTTON_SIZE,
             'border': 'none',
             'background': 'transparent',
             'boxShadow': 'none',
             'outline': 'none',
-            'borderRadius': 4,
-            'position': 'relative',
-            'overflow': 'hidden',
-            'isolation': 'isolate',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              inset: 0,
-              borderRadius: 'inherit',
-              backgroundColor: 'currentColor',
-              opacity: 0,
-              transform: 'scale(0.7)',
-              transition: 'opacity 0.18s ease, transform 0.18s ease',
-              pointerEvents: 'none',
-              zIndex: 0,
-            },
-            '& > *': {
-              position: 'relative',
-              zIndex: 1,
+            'borderRadius': '50%',
+            'transition': 'background-color 0.18s ease',
+            '& svg': {
+              display: 'block',
             },
             '& .MuiTouchRipple-root': {
               color: 'inherit',
             },
             '&:hover': {
-              backgroundColor: 'transparent',
+              backgroundColor: optionHoverBg,
               border: 'none',
               boxShadow: 'none',
             },
@@ -195,15 +210,10 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
               outline: 'none',
               boxShadow: 'none',
               border: 'none',
-              backgroundColor: 'transparent',
+              backgroundColor: optionHoverBg,
             },
-            '&:hover::after, &:focus::after, &:focus-visible::after': {
-              opacity: 0.12,
-              transform: 'scale(1)',
-            },
-            '&:active::after': {
-              opacity: 0.16,
-              transform: 'scale(1.06)',
+            '&:active': {
+              backgroundColor: optionHoverBg,
             },
             '&:not(:last-of-type)': { marginRight: 2 },
           },

@@ -1,0 +1,8 @@
+dist/
+node_modules/
+coverage/
+jans_config_api_orval/
+package-lock.json
+.husky/_/
+*.min.js
+*.min.css

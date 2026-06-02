@@ -447,7 +447,7 @@ const ClientBasicPanel = ({
             name="grantTypes"
             label={t('fields.grant_types')}
             value={(formik.values.grantTypes as string[] | undefined) ?? []}
-            options={grantTypeOptions.map((option) => option.value)}
+            options={grantTypeOptions}
             onChange={(vals) => formik.setFieldValue('grantTypes', vals)}
             onBlur={() => formik.setFieldTouched?.('grantTypes', true, false)}
             disabled={viewOnly}

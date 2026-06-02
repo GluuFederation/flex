@@ -12,7 +12,6 @@ jest.mock('@/cedarling', () => ({
     hasCedarWritePermission: jest.fn(() => true),
     hasCedarDeletePermission: jest.fn(() => true),
     authorizeHelper: jest.fn(),
-    authorize: jest.fn(),
     isLoading: false,
     error: null,
   })),

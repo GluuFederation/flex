@@ -527,6 +527,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             value={(model.value as string[]) ?? []}
             onChange={(vals) => patchHandler({ op: 'replace', path: `/${propKey}`, value: vals })}
             options={arrayMultiSelectOptions[propKey] || []}
+            allowCustom
           />
         )
       }

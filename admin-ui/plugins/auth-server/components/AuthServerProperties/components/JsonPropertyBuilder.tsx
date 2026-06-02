@@ -55,7 +55,16 @@ const toPairs = <T,>(items: T[]): Array<[T, T | null]> => {
 }
 
 const ArrayItemSelect = React.memo(
-  ({ index, values, options, label, path, handler, formResetKey }: ArrayItemSelectProps) => {
+  ({
+    index,
+    values,
+    options,
+    label,
+    path,
+    handler,
+    formResetKey,
+    allowCustom,
+  }: ArrayItemSelectProps) => {
     return (
       <GluuAutocomplete
         key={`${path}-${formResetKey}`}
@@ -64,6 +73,7 @@ const ArrayItemSelect = React.memo(
         value={values}
         onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
+        allowCustom={allowCustom}
       />
     )
   },
@@ -122,7 +132,16 @@ export const NumberField = React.memo(
 )
 
 const StringArrayField = React.memo(
-  ({ propKey, label, values, options, path, handler, formResetKey }: StringArrayFieldProps) => {
+  ({
+    propKey,
+    label,
+    values,
+    options,
+    path,
+    handler,
+    formResetKey,
+    allowCustom,
+  }: StringArrayFieldProps) => {
     return (
       <GluuAutocomplete
         key={`${path}-${formResetKey}`}
@@ -131,6 +150,7 @@ const StringArrayField = React.memo(
         value={values}
         onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
+        allowCustom={allowCustom}
       />
     )
   },
@@ -358,6 +378,7 @@ const JsonPropertyBuilder = ({
           path={path}
           handler={handler}
           formResetKey={formResetKey}
+          allowCustom={!schema?.items?.enum}
         />
         {renderError()}
       </>
@@ -400,6 +421,7 @@ const JsonPropertyBuilder = ({
                     path={`${path}/${leftItem.index}`}
                     handler={handler}
                     formResetKey={formResetKey}
+                    allowCustom={!schema?.items?.enum}
                   />
                 </Col>
                 <Col sm={6}>
@@ -412,6 +434,7 @@ const JsonPropertyBuilder = ({
                       path={`${path}/${rightItem.index}`}
                       handler={handler}
                       formResetKey={formResetKey}
+                      allowCustom={!schema?.items?.enum}
                     />
                   )}
                 </Col>
