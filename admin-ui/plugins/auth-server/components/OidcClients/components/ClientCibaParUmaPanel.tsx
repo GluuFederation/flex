@@ -374,72 +374,77 @@ const ClientCibaParUmaPanel = ({
         <Accordion className={cx(classes.accordionSpacing, 'b-primary')} initialOpen>
           <AccordionHeader>{t('titles.UMA')}</AccordionHeader>
           <AccordionBody>
-            <div className={gridClass}>
-              <div className={classes.fieldItem}>
-                <GluuSelectRow
-                  name="rptAsJwt"
-                  label="fields.rptAsJwt"
-                  formik={passiveSelectFormik}
-                  value={toBooleanSelectValue(formik.values.rptAsJwt)}
-                  values={rptTokenTypeOptions}
-                  doc_category={DOC_CATEGORY}
-                  lsize={12}
-                  rsize={12}
-                  disabled={viewOnly}
-                  handleChange={(event) => {
-                    const val = fromBooleanSelectValue(event.target.value)
-                    formik.setFieldValue('rptAsJwt', val)
-                    setModifiedFields((prev) => ({
-                      ...prev,
-                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
-                    }))
-                  }}
-                />
+            <div className={cx(classes.splitColumns, classes.formLabels, classes.formWithInputs)}>
+              <div className={classes.splitColumn}>
+                <div className={classes.fieldItem}>
+                  <GluuSelectRow
+                    name="rptAsJwt"
+                    label="fields.rptAsJwt"
+                    formik={passiveSelectFormik}
+                    value={toBooleanSelectValue(formik.values.rptAsJwt)}
+                    values={rptTokenTypeOptions}
+                    doc_category={DOC_CATEGORY}
+                    lsize={12}
+                    rsize={12}
+                    disabled={viewOnly}
+                    handleChange={(event) => {
+                      const val = fromBooleanSelectValue(event.target.value)
+                      formik.setFieldValue('rptAsJwt', val)
+                      setModifiedFields((prev) => ({
+                        ...prev,
+                        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_AS_JWT]: val,
+                      }))
+                    }}
+                  />
+                </div>
+                <div className={classes.fieldItem}>
+                  <GluuDynamicList
+                    label={`${t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}:`}
+                    title={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}
+                    items={claimRedirectUriItems}
+                    mode="single"
+                    valuePlaceholder={t(
+                      CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.placeholderKey,
+                    )}
+                    addButtonLabel={t('actions.add')}
+                    removeButtonLabel={t('actions.remove')}
+                    validateItem={(item) => uriValidator(item.value ?? '')}
+                    showError={!viewOnly && Boolean(claimRedirectUriError)}
+                    errorMessage={claimRedirectUriError}
+                    disabled={viewOnly}
+                    onAdd={handleAddClaimRedirectUri}
+                    onChange={handleChangeClaimRedirectUri}
+                    onRemove={handleRemoveClaimRedirectUri}
+                  />
+                </div>
               </div>
-              <div className={cx(classes.fieldItem, classes.cardFieldSpacing)}>
-                <GluuAutocomplete
-                  label={t('fields.rpt_scripts')}
-                  name="attributes.rptClaimsScripts"
-                  value={selectedRptScriptNames}
-                  options={rptScriptNameOptions}
-                  disabled={viewOnly}
-                  withWrapper={false}
-                  placeholder={t('placeholders.search_here')}
-                  cardBackgroundColor={
-                    themeColors.settings?.cardBackground ?? themeColors.card.background
-                  }
-                  inputBackgroundColor={themeColors.inputBackground}
-                  onChange={(selectedNames) => {
-                    const dns = selectedNames
-                      .map((name) => rptScripts.find((s) => s.name === name)?.dn)
-                      .filter((dn): dn is string => Boolean(dn))
-                    formik.setFieldValue('attributes.rptClaimsScripts', dns)
-                    setModifiedFields((prev) => ({
-                      ...prev,
-                      [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
-                    }))
-                  }}
-                />
+              <div className={classes.splitColumn}>
+                <div className={classes.fieldItem}>
+                  <GluuAutocomplete
+                    label={t('fields.rpt_scripts')}
+                    name="attributes.rptClaimsScripts"
+                    value={selectedRptScriptNames}
+                    options={rptScriptNameOptions}
+                    disabled={viewOnly}
+                    withWrapper={false}
+                    placeholder={t('placeholders.search_here')}
+                    cardBackgroundColor={
+                      themeColors.settings?.cardBackground ?? themeColors.card.background
+                    }
+                    inputBackgroundColor={themeColors.inputBackground}
+                    onChange={(selectedNames) => {
+                      const dns = selectedNames
+                        .map((name) => rptScripts.find((s) => s.name === name)?.dn)
+                        .filter((dn): dn is string => Boolean(dn))
+                      formik.setFieldValue('attributes.rptClaimsScripts', dns)
+                      setModifiedFields((prev) => ({
+                        ...prev,
+                        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
+                      }))
+                    }}
+                  />
+                </div>
               </div>
-              <div className={classes.fieldItem}>
-                <GluuDynamicList
-                  label={`${t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}:`}
-                  title={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.fieldKey)}
-                  items={claimRedirectUriItems}
-                  mode="single"
-                  valuePlaceholder={t(CLIENT_DYNAMIC_LIST_I18N.CLAIM_REDIRECT_URIS.placeholderKey)}
-                  addButtonLabel={t('actions.add')}
-                  removeButtonLabel={t('actions.remove')}
-                  validateItem={(item) => uriValidator(item.value ?? '')}
-                  showError={!viewOnly && Boolean(claimRedirectUriError)}
-                  errorMessage={claimRedirectUriError}
-                  disabled={viewOnly}
-                  onAdd={handleAddClaimRedirectUri}
-                  onChange={handleChangeClaimRedirectUri}
-                  onRemove={handleRemoveClaimRedirectUri}
-                />
-              </div>
-              <div className={classes.fieldItem} />
             </div>
             {!isEmpty(umaResources) && (
               <div className={gridClass}>

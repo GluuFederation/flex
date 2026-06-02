@@ -377,7 +377,7 @@ const ClientAdvancedPanel = ({
       </div>
     ),
     authorizedAcrValues: (
-      <div className={cx(classes.fieldItem, classes.cardFieldSpacing)}>
+      <div className={cx(classes.fieldItemFullWidth, classes.cardFieldSpacing)}>
         <GluuDynamicList
           label={`${t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}:`}
           title={t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}
