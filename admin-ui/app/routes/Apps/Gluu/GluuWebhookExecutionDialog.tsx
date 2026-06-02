@@ -1,6 +1,11 @@
 import { useMemo, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
   setShowWebhookExecutionDialog,
@@ -109,57 +114,72 @@ const GluuWebhookExecutionDialog = () => {
           <Close fontSize="small" aria-hidden />
         </button>
         <div className={`${commitClasses.contentArea} ${classes.contentArea}`}>
-          <GluuText variant="h2" className={classes.title} id="webhook-execution-dialog-title">
-            <InfoOutlined
-              style={{ color: customColors.logo }}
-              className={classes.titleIcon}
-              aria-hidden
-            />
-            {t('messages.webhook_execution_information')}
-          </GluuText>
+          <div className={classes.titleWithDescription}>
+            <GluuText variant="h2" className={classes.title} id="webhook-execution-dialog-title">
+              <InfoOutlined
+                style={{ color: customColors.logo }}
+                className={classes.titleIcon}
+                aria-hidden
+              />
+              {t('messages.webhook_execution_information')}
+            </GluuText>
+            <GluuText variant="p" className={classes.description}>
+              {t('messages.webhook_execution_dialog_dec')}
+            </GluuText>
+          </div>
           {(webhookTriggerResults?.length ?? 0) > 0 && (
-            <ul className={classes.resultList}>
-              {(webhookTriggerResults ?? []).map((item: WebhookTriggerResponseItem, index) => {
-                const isSuccess = isWebhookSuccess(item)
-                return (
-                  <li
-                    key={`${item.responseObject?.webhookId ?? ''}-${getWebhookName(item)}-${index}`}
-                    className={classes.resultItem}
-                  >
-                    <span>
-                      <span className={classes.resultLabel}>{t('fields.webhook_name')}:</span>{' '}
-                      <span className={classes.resultValue}>{getWebhookName(item)}</span>
-                    </span>
-                    <span>
-                      <span className={classes.resultLabel}>{t('fields.status')}:</span>{' '}
-                      <span className={isSuccess ? classes.successValue : classes.failedValue}>
-                        {isSuccess ? t('messages.success') : t('messages.error')}
-                      </span>
-                    </span>
-                    {!isSuccess && (
-                      <>
-                        <span>
-                          <span className={classes.resultLabel}>{t('fields.webhook_id')}:</span>{' '}
-                          <span className={classes.resultValue}>
-                            {item.responseObject?.webhookId}
+            <div className={classes.tableScrollContainer}>
+              <Table
+                className={classes.tableWrapper}
+                aria-label="webhook execution table"
+                sx={{
+                  '& .MuiTableCell-root': {
+                    color: themeColors.fontColor,
+                    borderColor: themeColors.borderColor,
+                  },
+                  '& .MuiTableHead-root .MuiTableCell-root': {
+                    fontWeight: 600,
+                    fontSize: 16,
+                  },
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">{t('fields.webhook_name')}</TableCell>
+                    <TableCell align="left">{t('fields.webhook_id')}</TableCell>
+                    <TableCell align="left">{t('fields.status')}</TableCell>
+                    <TableCell align="left">{t('fields.response_code')}</TableCell>
+                    <TableCell align="left">{t('messages.error_message')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(webhookTriggerResults ?? []).map((item: WebhookTriggerResponseItem, index) => {
+                    const isSuccess = isWebhookSuccess(item)
+                    return (
+                      <TableRow
+                        key={`${item.responseObject?.webhookId ?? ''}-${getWebhookName(item)}-${index}`}
+                      >
+                        <TableCell component="th" scope="row" align="left">
+                          {getWebhookName(item)}
+                        </TableCell>
+                        <TableCell align="left">{item.responseObject?.webhookId ?? '-'}</TableCell>
+                        <TableCell align="left">
+                          <span className={isSuccess ? classes.successValue : classes.failedValue}>
+                            {isSuccess ? t('messages.success') : t('messages.error')}
                           </span>
-                        </span>
-                        <span>
-                          <span className={classes.resultLabel}>{t('fields.response_code')}:</span>{' '}
-                          <span className={classes.resultValue}>{item.responseCode}</span>
-                        </span>
-                        <span>
-                          <span className={classes.resultLabel}>
-                            {t('messages.error_message')}:
-                          </span>{' '}
-                          <span className={classes.resultValue}>{item.responseMessage}</span>
-                        </span>
-                      </>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
+                        </TableCell>
+                        <TableCell align="left">
+                          {isSuccess ? '-' : (item.responseCode ?? '-')}
+                        </TableCell>
+                        <TableCell align="left">
+                          {isSuccess ? '-' : (item.responseMessage ?? '-')}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           )}
           <div className={classes.buttonRow}>
             <GluuButton

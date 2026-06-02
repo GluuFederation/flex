@@ -936,6 +936,7 @@
     "delete_identity_provider": "Supprimer le fournisseur d'identité",
     "webhook_dialog_note": "NOTE : L'exécution du webhook a échoué, et vous ne pourrez pas continuer pour le moment.",
     "webhook_dialog_dec": "Dans le cadre du processus de soumission, le système déclenchera automatiquement les webhooks associés suivants pour effectuer des tâches de traitement supplémentaires.",
+    "webhook_execution_dialog_dec": "Les webhooks associés ont été déclenchés dans le cadre du processus de soumission. Les résultats d'exécution de chaque webhook sont affichés ci-dessous.",
     "add_idp": "Ajouter un IDP SAML",
     "request_body_error": "Le corps de la requête est requis pour la méthode HTTP sélectionnée.",
     "http_headers_required": "Au moins un en-tête HTTP est requis pour les requêtes POST, PUT ou PATCH.",

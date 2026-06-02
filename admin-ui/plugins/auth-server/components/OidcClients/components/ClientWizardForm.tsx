@@ -243,14 +243,10 @@ const ClientWizardForm = ({
     [availableSteps, currentStep],
   )
 
-  const submitForm = useCallback(
-    (message: string) => {
-      commitMessageRef.current = message
-      toggle()
-      void formRef.current?.submitForm()
-    },
-    [toggle],
-  )
+  const submitForm = useCallback((message: string) => {
+    commitMessageRef.current = message
+    void formRef.current?.submitForm()
+  }, [])
 
   useEffect(() => {
     return () => {

@@ -5,6 +5,7 @@ import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
+  getScrollbarStyles,
   MAPPING_SPACING,
   MODAL,
   OPACITY,
@@ -35,6 +36,11 @@ const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
 const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
 const BORDER_RADIUS_SMALL_ADJUST = BORDER_RADIUS.SMALL - 2
 const CHECKBOX_LABEL_GAP_PLUS = MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3
+const OPERATIONS_VISIBLE_ROWS = 5
+const OPERATIONS_ROW_HEIGHT = 36
+const OPERATIONS_SCROLL_MAX_HEIGHT =
+  OPERATIONS_ROW_HEIGHT * OPERATIONS_VISIBLE_ROWS +
+  (MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1) * (OPERATIONS_VISIBLE_ROWS - 1)
 
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
@@ -184,6 +190,16 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
       margin: `0 0 ${CHECKBOX_LABEL_GAP_ADJUST}px 0`,
+    },
+    operationsScroll: {
+      ...getScrollbarStyles(themeColors),
+      display: 'flex',
+      flexDirection: 'column',
+      gap: CHECKBOX_LABEL_GAP_ADJUST,
+      maxHeight: OPERATIONS_SCROLL_MAX_HEIGHT,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      paddingRight: CHECKBOX_LABEL_GAP_ADJUST,
     },
     operationRow: {
       display: 'grid',

@@ -210,18 +210,20 @@ const GluuCommitDialog = ({
                   <GluuText variant="h5" className={classes.operationsTitle}>
                     {t('messages.list_of_changes')}
                   </GluuText>
-                  {operations.map((operation, index) => (
-                    <div key={`${operation.path}-${index}`} className={classes.operationRow}>
-                      <span className={classes.operationLabel}>{t('set')}</span>
-                      <span className={classes.operationBadge}>{operation.path}</span>
-                      <span className={classes.operationLabel}>{t('to')}</span>
-                      <span className={classes.operationBadge}>
-                        {operation.value === null || operation.value === ''
-                          ? '""'
-                          : String(operation.value)}
-                      </span>
-                    </div>
-                  ))}
+                  <div className={classes.operationsScroll}>
+                    {operations.map((operation, index) => (
+                      <div key={`${operation.path}-${index}`} className={classes.operationRow}>
+                        <span className={classes.operationLabel}>{t('set')}</span>
+                        <span className={classes.operationBadge}>{operation.path}</span>
+                        <span className={classes.operationLabel}>{t('to')}</span>
+                        <span className={classes.operationBadge}>
+                          {operation.value === null || operation.value === ''
+                            ? '""'
+                            : String(operation.value)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               <div className={classes.textareaContainer}>
