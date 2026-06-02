@@ -36,7 +36,7 @@ sequenceDiagram
     else miss or stale
         Hook->>Mutator: customInstance(config)
         Mutator->>Axios: AXIOS_INSTANCE.request(...)
-        Axios->>API: HTTP request<br/>(Authorization: Bearer <token>,<br/>withCredentials: true)
+        Axios->>API: HTTP request<br/>(admin-ui-session cookie)
         API-->>Axios: response
         Axios-->>Mutator: { data }
         Mutator-->>Hook: data
@@ -50,11 +50,9 @@ sequenceDiagram
 1. A component calls a generated hook. For example `useGetClients({ limit: 10 })`.
 2. The hook asks **React Query** for the cached entry for this `queryKey`. If the entry exists and is still considered fresh (within the configured `staleTime`), React Query returns it immediately and no network request happens. This is what makes the same hook safe to call from three different components on the same page. They all see one shared response.
 3. On a cache miss, the hook calls **Orval's mutator function `customInstance`**, defined in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts). The mutator wraps every request with a cancel token so React Query can abort in-flight calls if the component unmounts before the response arrives.
-4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)) and the bearer-token header was set earlier by `AuthSaga` via `setApiToken(...)`.
-5. **The HTTP request reaches the Config API.** Two things authenticate it:
-   - `Authorization: Bearer <token>`: the Config API access token obtained from `fetchApiTokenWithDefaultScopes` (see [auth.md](./auth.md#admin-ui-session)).
-   - The admin-UI session cookie, sent automatically because `withCredentials: true` is configured on the axios instance.
-6. **The Config API responds.** Errors with status `401` route through AppAuth's refresh / re-auth logic (the token is missing or expired). `403` is treated as a permission denial and surfaced as a toast. The user is still signed in, they just can't do this specific action (see [auth.md](./auth.md#401-vs-403)).
+4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)).
+5. **The HTTP request reaches the Config API.** The browser attaches the `admin-ui-session` cookie automatically (set by `POST /session` during the auth bootstrap, see [auth.md](./auth.md#admin-ui-session)). The Config API authenticates the caller off that cookie.
+6. **The Config API responds.** Errors with status `401` mean the session is missing or expired and the saga routes to re-auth. `403` is treated as a permission denial and surfaced as a toast: the user is still signed in, they just can't do this specific action (see [auth.md](./auth.md#401-vs-403)).
 7. **The data is written to the React Query cache** under its `queryKey` and returned to the component. The next call to the same hook anywhere in the app reuses this cache entry.
 
 Mutations (`usePutXxx`, `usePostXxx`, etc.) follow the same path but skip the cache read and explicitly invalidate query keys on success. See [React Query conventions](#react-query-conventions).
@@ -187,4 +185,4 @@ const mutation = usePutClient({
 })
 ```
 
-**Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the bearer-token / session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
+**Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
