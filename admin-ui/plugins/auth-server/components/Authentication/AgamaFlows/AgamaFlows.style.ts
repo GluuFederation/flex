@@ -145,7 +145,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
       color: themeColors.errorColor,
-      margin: 0,
+      margin: '1px 2px',
       minHeight: 18,
     },
     fieldGroup: {

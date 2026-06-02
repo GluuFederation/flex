@@ -73,8 +73,8 @@ const ClientCibaParUmaPanel = ({
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useStyles({ isDark, themeColors })
-  const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const { classes, cx } = useStyles({ isDark, themeColors })
+  const gridClass = cx(classes.fieldsGrid, classes.formLabels, classes.formWithInputs)
   const formErrors = formik.errors as Record<string, string | undefined> & {
     attributes?: Record<string, string | undefined>
   }
@@ -240,7 +240,7 @@ const ClientCibaParUmaPanel = ({
     <GluuLoader blocking={isLoading}>
       <div className={classes.root}>
         {/* CIBA */}
-        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+        <Accordion className={cx(classes.accordionSpacing, 'b-primary')} initialOpen>
           <AccordionHeader>{t('titles.CIBA')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -315,7 +315,7 @@ const ClientCibaParUmaPanel = ({
         </Accordion>
 
         {/* PAR */}
-        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+        <Accordion className={cx(classes.accordionSpacing, 'b-primary')} initialOpen>
           <AccordionHeader>{t('titles.PAR')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -371,7 +371,7 @@ const ClientCibaParUmaPanel = ({
         </Accordion>
 
         {/* UMA */}
-        <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+        <Accordion className={cx(classes.accordionSpacing, 'b-primary')} initialOpen>
           <AccordionHeader>{t('titles.UMA')}</AccordionHeader>
           <AccordionBody>
             <div className={gridClass}>
@@ -396,7 +396,7 @@ const ClientCibaParUmaPanel = ({
                   }}
                 />
               </div>
-              <div className={classes.fieldItem}>
+              <div className={cx(classes.fieldItem, classes.cardFieldSpacing)}>
                 <GluuAutocomplete
                   label={t('fields.rpt_scripts')}
                   name="attributes.rptClaimsScripts"

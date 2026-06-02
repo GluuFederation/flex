@@ -52,6 +52,9 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
     formGridFullSpan: {
       gridColumn: '1 / -1',
     },
+    autocompleteField: {
+      marginBottom: 20,
+    },
     fieldItem: {
       'width': '100%',
       'minWidth': 0,

@@ -118,8 +118,8 @@ export const useStyles = makeStyles<ClientBasicPanelStyleParams>()((
       borderRadius: BORDER_RADIUS.SMALL,
       border: `1px solid ${panelBorderColor}`,
       padding: `${SPACING.CARD_PADDING}px`,
+      marginBottom: ERROR_SPACE,
       width: '100%',
-      height: '100%',
       boxSizing: 'border-box' as const,
     },
     dynamicListPadding: {

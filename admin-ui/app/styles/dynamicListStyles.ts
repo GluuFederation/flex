@@ -107,6 +107,6 @@ export const getDynamicListStyles = (colors: DynamicListColorOptions) => ({
   listError: {
     color: colors.errorColor,
     fontSize: fontSizes.sm,
-    marginTop: 4,
+    margin: '1px 2px',
   },
 })

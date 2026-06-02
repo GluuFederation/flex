@@ -37,6 +37,9 @@ export const useStyles = makeStyles<ClientAdvancedPanelStyleParams>()((
 
   return {
     ...layoutStyles,
+    cardFieldSpacing: {
+      marginBottom: ERROR_SPACE,
+    },
     datePickerField: {
       'display': 'flex',
       'flexDirection': 'column',

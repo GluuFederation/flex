@@ -69,12 +69,11 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
       flexDirection: 'column' as const,
       flex: '1 1 auto',
       minWidth: 0,
-      gap: 4,
+      gap: 0,
     },
     itemError: {
       ...dl.listError,
       fontSize: '12px',
-      marginTop: 0,
     },
     actionBtn: {
       ...dl.listActionBtn,

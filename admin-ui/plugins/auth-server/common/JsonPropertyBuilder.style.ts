@@ -55,8 +55,7 @@ export const useStyles = makeStyles()(() => ({
     paddingBottom: 0,
   },
   errorText: {
-    marginTop: 0,
-    marginBottom: 0,
+    margin: '1px 2px',
     lineHeight: '1.2',
     paddingTop: `${MAPPING_SPACING.CHECKBOX_BORDER_WIDTH}px`,
     fontSize: '12px',

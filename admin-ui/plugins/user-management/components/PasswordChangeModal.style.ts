@@ -102,8 +102,7 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.sm,
       color: themeColors.errorColor,
-      margin: 0,
-      marginTop: -3,
+      margin: '1px 2px',
       minHeight: 18,
     },
     formFooter: {

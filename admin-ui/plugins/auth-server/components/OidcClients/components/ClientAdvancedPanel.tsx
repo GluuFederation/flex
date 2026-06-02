@@ -42,8 +42,8 @@ const ClientAdvancedPanel = ({
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useStyles({ isDark, themeColors })
-  const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const { classes, cx } = useStyles({ isDark, themeColors })
+  const gridClass = cx(classes.fieldsGrid, classes.formLabels, classes.formWithInputs)
   const formErrors = formik.errors as Record<string, string | undefined> & {
     attributes?: Record<string, string | undefined>
   }
@@ -333,7 +333,7 @@ const ClientAdvancedPanel = ({
       </div>
     ),
     requestUris: (
-      <div className={classes.fieldItemFullWidth}>
+      <div className={cx(classes.fieldItemFullWidth, classes.cardFieldSpacing)}>
         <GluuDynamicList
           label={`${t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}:`}
           title={t(CLIENT_DYNAMIC_LIST_I18N.REQUEST_URIS.fieldKey)}
@@ -377,7 +377,7 @@ const ClientAdvancedPanel = ({
       </div>
     ),
     authorizedAcrValues: (
-      <div className={classes.fieldItem}>
+      <div className={cx(classes.fieldItem, classes.cardFieldSpacing)}>
         <GluuDynamicList
           label={`${t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}:`}
           title={t(CLIENT_DYNAMIC_LIST_I18N.AUTHORIZED_ACR_VALUES.fieldKey)}
@@ -450,7 +450,7 @@ const ClientAdvancedPanel = ({
       </div>
     ),
     expirationDate: formik.values.expirable ? (
-      <div className={`${classes.fieldItem} ${classes.datePickerField}`}>
+      <div className={cx(classes.fieldItem, classes.datePickerField)}>
         <GluuLabel label="fields.expiration_date" size={12} />
         <GluuDatePicker
           value={expirationDate ?? null}

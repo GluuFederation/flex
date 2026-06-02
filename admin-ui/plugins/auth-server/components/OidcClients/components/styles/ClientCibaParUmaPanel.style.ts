@@ -116,6 +116,9 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
     fieldsGrid: layoutStyles.fieldsGrid,
     fieldItem: layoutStyles.fieldItem,
     fieldItemFullWidth: layoutStyles.fieldItemFullWidth,
+    cardFieldSpacing: {
+      marginBottom: ERROR_SPACE,
+    },
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },

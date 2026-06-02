@@ -421,7 +421,7 @@ const ClientWizardForm = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           validateOnBlur
-          validateOnChange={false}
+          validateOnChange
           validateOnMount={isEdit}
           enableReinitialize
           onSubmit={(values) => {

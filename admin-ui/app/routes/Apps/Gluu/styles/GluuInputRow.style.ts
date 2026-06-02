@@ -63,7 +63,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
       display: 'block',
       color: errorColor,
       fontSize: 12,
-      marginTop: 1,
+      margin: '1px 2px',
     },
 
     numberWrapper: {

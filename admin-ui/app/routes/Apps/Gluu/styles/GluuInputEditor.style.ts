@@ -7,5 +7,6 @@ export const useStyles = makeStyles()(() => ({
   },
   error: {
     color: customColors.accentRed,
+    margin: '1px 2px',
   },
 }))

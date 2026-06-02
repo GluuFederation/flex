@@ -54,7 +54,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
     }
   }, [theme.state.theme])
 
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
   const userClaimsMultiSelectBg = themeColors.inputBackground
 
   // Memoized initial values
@@ -162,10 +162,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
 
         return (
           <Form onSubmit={formik.handleSubmit}>
-            <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
+            <div className={cx(classes.formLabels, classes.formWithInputs)}>
               <div className={classes.formGrid}>
                 {item.inum && (
-                  <div className={`${classes.fieldItem} ${classes.inumFullWidth}`}>
+                  <div className={cx(classes.fieldItem, classes.inumFullWidth)}>
                     <GluuInumInput
                       label="fields.inum"
                       name="inum"
@@ -292,7 +292,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                <div className={classes.fieldItem}>
+                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                   <GluuAutocomplete
                     label={t('fields.edit_type')}
                     name="editType"
@@ -312,7 +312,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={classes.fieldItem}>
+                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                   <GluuAutocomplete
                     label={t('fields.view_type')}
                     name="viewType"
@@ -332,7 +332,13 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={`${classes.fieldItem} ${classes.formGridFullSpan}`}>
+                <div
+                  className={cx(
+                    classes.fieldItem,
+                    classes.formGridFullSpan,
+                    classes.autocompleteField,
+                  )}
+                >
                   <GluuAutocomplete
                     label={t('fields.usage_type')}
                     name="usageType"

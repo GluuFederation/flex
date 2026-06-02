@@ -181,7 +181,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     initialValues: configuration || {},
     validate,
     enableReinitialize: true,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: true,
     validateOnMount: false,
     onSubmit: () => {},

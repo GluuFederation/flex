@@ -16,8 +16,7 @@ export const ERROR_COL_STYLE: CSSProperties = {
 }
 
 export const ERROR_TEXT_STYLE: CSSProperties = {
-  marginTop: 0,
-  marginBottom: 0,
+  margin: '1px 2px',
   lineHeight: '1.2',
   paddingTop: '2px',
 }

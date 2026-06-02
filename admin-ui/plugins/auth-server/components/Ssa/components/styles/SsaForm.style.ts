@@ -166,7 +166,7 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       display: 'block',
       color: themeColors.errorColor,
       fontSize: fontSizes.sm,
-      marginTop: SPACING.CARD_CONTENT_GAP / 2,
+      margin: '1px 2px',
     },
     datePickerCell: {
       'display': 'flex',

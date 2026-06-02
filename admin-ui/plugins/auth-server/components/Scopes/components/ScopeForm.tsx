@@ -63,7 +63,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
     }
   }, [theme.state.theme])
 
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
 
   const badgeStyle = useMemo(
     () => ({
@@ -252,10 +252,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
         return (
           <Form onSubmit={formikProps.handleSubmit}>
-            <div className={`${classes.formLabels} ${classes.formWithInputs}`}>
+            <div className={cx(classes.formLabels, classes.formWithInputs)}>
               <div className={classes.formGrid}>
                 {scope.inum && (
-                  <div className={`${classes.fieldItem} ${classes.inumFullWidth}`}>
+                  <div className={cx(classes.fieldItem, classes.inumFullWidth)}>
                     <GluuInumInput
                       label="fields.inum"
                       name="inum"
@@ -428,7 +428,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 {showSpontaneousPanel && <div />}
 
                 {showClaimsPanel && !showDynamicPanel && (
-                  <div className={classes.fieldItem}>
+                  <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                     <GluuAutocomplete
                       name="claims"
                       label={t('fields.claims')}
@@ -449,7 +449,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 )}
 
                 {showDynamicPanel && (
-                  <div className={classes.fieldItem}>
+                  <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                     <GluuAutocomplete
                       name="dynamicScopeScripts"
                       label={t('fields.dynamic_scope_scripts')}
@@ -475,7 +475,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 )}
 
                 {showDynamicPanel && (
-                  <div className={classes.fieldItem}>
+                  <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                     <GluuAutocomplete
                       name="claims"
                       label={t('fields.claims')}
@@ -525,7 +525,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       />
                     </div>
 
-                    <div className={classes.fieldItem}>
+                    <div className={cx(classes.fieldItem, classes.autocompleteField)}>
                       <GluuAutocomplete
                         name="umaAuthorizationPolicies"
                         label={t('fields.umaAuthorizationPolicies')}
@@ -610,7 +610,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               )}
 
               {showSpontaneousPanel && (
-                <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+                <Accordion className={cx(classes.accordionSpacing, 'b-primary')} initialOpen>
                   <AccordionHeader className="text-primary">
                     {t('fields.spontaneous_scopes').toUpperCase()}
                   </AccordionHeader>

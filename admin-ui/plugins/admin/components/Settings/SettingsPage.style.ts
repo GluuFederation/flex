@@ -149,14 +149,8 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
-        position: 'relative',
-        paddingBottom: 12,
         minWidth: 0,
         boxSizing: 'border-box',
-      },
-      '& [data-field-error]': {
-        position: 'absolute',
-        fontSize: `${fontSizes.sm} !important`,
       },
       '& .input-group': {
         margin: 0,
