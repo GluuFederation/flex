@@ -156,7 +156,9 @@ const ClientWizardForm = ({
     () =>
       isEdit
         ? CLIENT_WIZARD_SEQUENCE
-        : CLIENT_WIZARD_SEQUENCE.filter((stepId) => stepId !== 'ClientActiveTokens'),
+        : CLIENT_WIZARD_SEQUENCE.filter(
+            (stepId) => stepId !== WIZARD_STEP_IDS.CLIENT_ACTIVE_TOKENS,
+          ),
     [isEdit],
   )
   const visibleSteps = useMemo(
