@@ -17,10 +17,10 @@ import { setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansConfigApi'
 import { useDeleteAssetWithAudit } from './hooks'
-import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { formatDate } from '@/utils/dayjsUtils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import customColors from '@/customColors'
@@ -217,7 +217,6 @@ const JansAssetListPage: React.FC = () => {
       {
         key: 'description',
         label: t(T_KEYS.FIELD_DESCRIPTION),
-        width: '35%',
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellDescription}>
@@ -231,7 +230,7 @@ const JansAssetListPage: React.FC = () => {
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellDate}>
-            {row.creationDate ? formatDate(row.creationDate, DATE_FORMATS.DATE_ONLY) : ''}
+            {row.creationDate ? formatDate(row.creationDate, 'YYYY-MM-DD') : ''}
           </GluuText>
         ),
       },
@@ -239,6 +238,7 @@ const JansAssetListPage: React.FC = () => {
         key: 'enabled',
         label: t(T_KEYS.FIELD_ENABLED),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isEnabled = row.enabled === true
           const style = isEnabled ? badgeStyles.statusBadgeEnabled : badgeStyles.statusBadgeDisabled

@@ -915,6 +915,7 @@
     "delete_identity_provider": "Excluir Provedor de Identidade",
     "webhook_dialog_note": "NOTA: A execução do webhook falhou, e você não poderá continuar no momento.",
     "webhook_dialog_dec": "Como parte do processo de envio, o sistema acionará automaticamente os seguintes webhooks associados para realizar tarefas adicionais de processamento.",
+    "webhook_execution_dialog_dec": "Os webhooks associados foram acionados como parte do processo de envio. Os resultados de execução de cada webhook são exibidos abaixo.",
     "edit_idp": "Editar IDP SAML",
     "delete_idp": "Excluir IDP SAML",
     "import_metadata_file": "Por favor, importe o arquivo de metadados.",

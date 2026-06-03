@@ -1,92 +1,73 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { getScrollbarStyles, MODAL, SPACING } from '@/constants'
+import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
+import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
 
-const WEBHOOK_RESULT_MODAL_MAX_HEIGHT = '76vh'
-const WEBHOOK_RESULT_LIST_MAX_HEIGHT = 'min(42vh, 340px)'
-const WEBHOOK_RESULT_GAP = SPACING.SECTION_GAP + 2
+const WEBHOOK_TABLE_MIN_WIDTH = 650
+const WEBHOOK_TABLE_VISIBLE_ROWS = 5
+const WEBHOOK_TABLE_ROW_HEIGHT = 53
+const WEBHOOK_TABLE_MAX_HEIGHT = WEBHOOK_TABLE_ROW_HEIGHT * (WEBHOOK_TABLE_VISIBLE_ROWS + 1)
+const CHECKBOX_LABEL_EXTRA_GAP = 3
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
 
-export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
-  const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const cardBorderStyle = getCardBorderStyle({ isDark })
+export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => {
+  const borderColor = themeColors.borderColor
 
   return {
     modalContainer: {
-      ...cardBorderStyle,
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
-      maxWidth: `${MODAL.WIDTH}px`,
-      maxHeight: WEBHOOK_RESULT_MODAL_MAX_HEIGHT,
-      backgroundColor: modalBg,
       outline: 'none',
-      zIndex: 1050,
     },
     contentArea: {
-      position: 'relative',
-      zIndex: 1,
+      gap: 0,
+    },
+    titleWithDescription: {
       display: 'flex',
       flexDirection: 'column',
-      gap: SPACING.CONTENT_PADDING,
-      maxHeight: WEBHOOK_RESULT_MODAL_MAX_HEIGHT,
-      padding: SPACING.CONTENT_PADDING,
-      overflow: 'hidden',
-      overflowX: 'hidden',
-      boxSizing: 'border-box',
+      gap: 0,
     },
     title: {
       fontFamily,
       fontWeight: fontWeights.bold,
-      fontSize: fontSizes['2xl'],
-      lineHeight: lineHeights.tight,
+      fontSize: fontSizes['3xl'],
+      lineHeight: 'normal',
       color: themeColors.fontColor,
       margin: 0,
-      paddingRight: SPACING.CONTENT_PADDING,
-      wordBreak: 'break-word',
+      paddingBottom: 0,
       display: 'flex',
       alignItems: 'center',
     },
     titleIcon: {
-      marginRight: SPACING.CARD_CONTENT_GAP,
+      marginRight: MAPPING_SPACING.CHECKBOX_LABEL_GAP,
       flexShrink: 0,
     },
-    resultList: {
-      ...getScrollbarStyles(themeColors),
-      display: 'flex',
-      flexDirection: 'column',
-      gap: WEBHOOK_RESULT_GAP,
-      listStyle: 'none',
-      paddingLeft: 0,
-      paddingRight: SPACING.CARD_CONTENT_GAP,
+    description: {
+      fontFamily,
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes.base,
+      lineHeight: 'normal',
+      color: themeColors.fontColor,
       margin: 0,
-      maxHeight: WEBHOOK_RESULT_LIST_MAX_HEIGHT,
+      paddingTop: MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL,
+    },
+    tableScrollContainer: {
+      marginTop: CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
+      maxHeight: WEBHOOK_TABLE_MAX_HEIGHT,
       overflowY: 'auto',
-      overflowX: 'hidden',
+      overflowX: 'auto',
+      width: '100%',
     },
-    resultItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      marginBottom: 0,
-      fontSize: fontSizes.md,
-      gap: SPACING.CARD_CONTENT_GAP / 2,
-    },
-    resultLabel: {
-      color: themeColors.fontColor,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.md,
-    },
-    resultValue: {
-      color: themeColors.fontColor,
+    tableWrapper: {
+      'minWidth': WEBHOOK_TABLE_MIN_WIDTH,
+      '& .MuiTableCell-root': {
+        borderBottom: `1px solid ${borderColor}`,
+        height: WEBHOOK_TABLE_ROW_HEIGHT,
+        boxSizing: 'border-box',
+      },
     },
     successValue: {
       color: customColors.statusActive,
@@ -97,15 +78,13 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       fontWeight: fontWeights.semiBold,
     },
     buttonRow: {
-      flexShrink: 0,
-      paddingTop: 4,
-      backgroundColor: modalBg,
       display: 'flex',
-      justifyContent: 'flex-start',
-      marginTop: 0,
+      alignItems: 'center',
+      gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + CHECKBOX_LABEL_EXTRA_GAP,
+      marginTop: CEDARLING_CONFIG_SPACING.BUTTONS_MT,
     },
     actionIcon: {
-      marginRight: SPACING.CARD_CONTENT_GAP,
+      marginRight: MAPPING_SPACING.CHECKBOX_LABEL_GAP,
       flexShrink: 0,
     },
   }

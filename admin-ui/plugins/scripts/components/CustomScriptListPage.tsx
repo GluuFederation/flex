@@ -3,7 +3,7 @@ import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icon
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -23,13 +23,14 @@ import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuDetailGrid } from '@/components/GluuDetailGrid'
 import { useCustomScriptsByType, useDeleteCustomScript, useCustomScriptTypes } from './hooks'
 import { useStyles } from './styles/CustomScriptListPage.style'
-import { SORT_ORDER, BORDER_RADIUS, DEFAULT_SCRIPT_TYPE } from '@/constants'
 import { SCRIPT } from 'Utils/ApiResources'
 import type { CustomScript } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError, DisplayValue } from './types/customScript'
+import { BORDER_RADIUS } from '@/constants'
 import {
+  DEFAULT_SCRIPT_TYPE,
   SORT_COLUMNS,
   SORT_COLUMN_LABELS,
   DEFAULT_SORT_BY,
@@ -100,7 +101,7 @@ const CustomScriptListPage: React.FC = () => {
   } = useCustomScriptsByType(scriptType, {
     pattern: pattern || undefined,
     sortBy: sortBy || undefined,
-    sortOrder: sortBy ? SORT_ORDER.ASCENDING : undefined,
+    sortOrder: sortBy ? 'ascending' : undefined,
     limit,
     startIndex: pageNumber * limit,
   })
@@ -278,7 +279,6 @@ const CustomScriptListPage: React.FC = () => {
         key: 'description',
         label: t('fields.description'),
         sortable: true,
-        width: '35%',
         render: (_value, row) => {
           const desc = row.description ?? EMPTY_DESCRIPTION_PLACEHOLDER
           return (
@@ -297,6 +297,7 @@ const CustomScriptListPage: React.FC = () => {
         key: 'scriptType',
         label: t('fields.script_type'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => (
           <GluuBadge
             size="md"
@@ -313,6 +314,7 @@ const CustomScriptListPage: React.FC = () => {
         key: 'enabled',
         label: t('options.enabled'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isEnabled = row.enabled === true
           const style = isEnabled ? badgeStyles.enabledBadge : badgeStyles.disabledBadge

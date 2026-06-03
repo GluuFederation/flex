@@ -17,13 +17,12 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
 import { toWebhookEntries } from 'Plugins/admin/helper/webhook'
-import { SORT_ORDER } from '@/constants'
 import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 
@@ -82,7 +81,7 @@ const WebhookListPage: React.FC = () => {
       pattern: pattern || undefined,
       startIndex: pageNumber * limit,
       sortBy: serverSort.column,
-      sortOrder: serverSort.desc ? SORT_ORDER.DESCENDING : SORT_ORDER.ASCENDING,
+      sortOrder: serverSort.desc ? 'descending' : 'ascending',
     },
     {
       query: {
@@ -232,7 +231,6 @@ const WebhookListPage: React.FC = () => {
       {
         key: 'url',
         label: t('fields.url'),
-        width: '35%',
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellUrl}>
@@ -244,6 +242,7 @@ const WebhookListPage: React.FC = () => {
         key: 'httpMethod',
         label: t('fields.http_method'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const upper = (row.httpMethod || '').toUpperCase()
           const methodStyle = httpMethodBadgeMap[upper] ?? badgeStyles.httpMethodBadgeDefault
@@ -264,6 +263,7 @@ const WebhookListPage: React.FC = () => {
         key: 'jansEnabled',
         label: t('fields.status'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const isEnabled = row.jansEnabled === true
           const style = isEnabled ? badgeStyles.statusBadgeEnabled : badgeStyles.statusBadgeDisabled

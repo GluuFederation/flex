@@ -82,51 +82,59 @@ const ClientShowScopes = ({
     <>
       <div className={commitClasses.overlay} onClick={handler} role="presentation" />
       <div
-        ref={modalRef}
-        className={commitClasses.modalContainer}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={0}
-        aria-labelledby="client-scopes-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handler()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handler}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          ref={modalRef}
+          className={commitClasses.modalContainer}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={0}
+          aria-labelledby="client-scopes-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={commitClasses.title} id="client-scopes-title">
-            {t('fields.scopes')}
-          </GluuText>
-          <div className={classes.scopesLoaderScope}>
-            <GluuLoader blocking={loading}>
-              <div className={classes.scopesBody}>
-                {!loading && fetchedScopes.length > 0 && (
-                  <div className={classes.scopesList}>
-                    {fetchedScopes.map((scope, index) => (
-                      <GluuBadge
-                        key={scope.inum || scope.id || index}
-                        size="md"
-                        backgroundColor={themeColors.badges.filledBadgeBg}
-                        textColor={themeColors.badges.filledBadgeText}
-                        borderColor="transparent"
-                        borderRadius={6}
-                      >
-                        {scope.displayName || scope.id}
-                      </GluuBadge>
-                    ))}
-                  </div>
-                )}
-                {!loading && fetchedScopes.length === 0 && (
-                  <GluuText variant="p">{t('messages.no_scope_in_client')}</GluuText>
-                )}
-              </div>
-            </GluuLoader>
+          <button
+            type="button"
+            onClick={handler}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText variant="h2" className={commitClasses.title} id="client-scopes-title">
+              {t('fields.scopes')}
+            </GluuText>
+            <div className={classes.scopesLoaderScope}>
+              <GluuLoader blocking={loading}>
+                <div className={classes.scopesBody}>
+                  {!loading && fetchedScopes.length > 0 && (
+                    <div className={classes.scopesList}>
+                      {fetchedScopes.map((scope, index) => (
+                        <GluuBadge
+                          key={scope.inum || scope.id || index}
+                          size="md"
+                          backgroundColor={themeColors.badges.filledBadgeBg}
+                          textColor={themeColors.badges.filledBadgeText}
+                          borderColor="transparent"
+                          borderRadius={6}
+                        >
+                          {scope.displayName || scope.id}
+                        </GluuBadge>
+                      ))}
+                    </div>
+                  )}
+                  {!loading && fetchedScopes.length === 0 && (
+                    <GluuText variant="p">{t('messages.no_scope_in_client')}</GluuText>
+                  )}
+                </div>
+              </GluuLoader>
+            </div>
           </div>
         </div>
       </div>

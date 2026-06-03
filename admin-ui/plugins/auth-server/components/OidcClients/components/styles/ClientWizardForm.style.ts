@@ -83,7 +83,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       '& .wizard-step': {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 0,
+        gap: 8,
         marginLeft: '0 !important',
         minWidth: 0,
       },

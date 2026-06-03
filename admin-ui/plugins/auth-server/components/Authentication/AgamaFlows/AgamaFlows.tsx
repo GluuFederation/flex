@@ -897,31 +897,39 @@ const AgamaFlows: React.FC = () => {
         aria-label={t('actions.close')}
       />
       <div
-        className={`${commitClasses.modalContainer} ${classes.addModalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleAddModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="add-agama-modal-title"
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handleCloseAddModal()
+        }}
+        role="presentation"
       >
-        <button
-          type="button"
-          onClick={handleCloseAddModal}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+        <div
+          className={`${commitClasses.modalContainer} ${classes.addModalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleAddModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="add-agama-modal-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText
-            variant="h2"
-            className={`${commitClasses.title} ${classes.modalTitle}`}
-            id="add-agama-modal-title"
+          <button
+            type="button"
+            onClick={handleCloseAddModal}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
           >
-            {t('titles.add_new_agama_project')}
-          </GluuText>
-          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={false} />
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText
+              variant="h2"
+              className={`${commitClasses.title} ${classes.modalTitle}`}
+              id="add-agama-modal-title"
+            >
+              {t('titles.add_new_agama_project')}
+            </GluuText>
+            <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={false} />
+          </div>
         </div>
       </div>
     </GluuLoader>

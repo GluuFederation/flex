@@ -83,10 +83,6 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'boxSizing': 'border-box',
       '& table td': { verticalAlign: 'middle' },
       '& table th': { verticalAlign: 'middle' },
-      '& table': {
-        tableLayout: 'auto !important' as 'auto',
-        minWidth: '0 !important',
-      },
     },
 
     cellText: {

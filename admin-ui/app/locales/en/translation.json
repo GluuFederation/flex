@@ -884,6 +884,7 @@
     "no_spaces": "should not contain spaces",
     "webhook_execution_information": "Webhook Execution Information",
     "webhook_dialog_dec": "As part of the submission process, the system will automatically trigger the following associated webhooks to perform additional processing tasks.",
+    "webhook_execution_dialog_dec": "The associated webhooks were triggered as part of the submission process. The execution results for each webhook are shown below.",
     "add_webhook": "Add Webhook",
     "webhook_form_description": "Configure webhook to receive notifications when specific events occur.",
     "no_webhooks_found": "No webhooks found",

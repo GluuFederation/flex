@@ -188,9 +188,6 @@ export const createPropertiesPageStyles = (
       width: '100%',
     },
     stickyFooter: {
-      'position': 'sticky' as const,
-      'bottom': 0,
-      'zIndex': 10,
       'backgroundColor': cardBg,
       'paddingTop': 0,
       'paddingLeft': SPACING.CONTENT_PADDING,

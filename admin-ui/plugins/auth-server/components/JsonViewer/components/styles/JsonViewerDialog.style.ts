@@ -3,7 +3,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 
 const BODY_MAX_HEIGHT = '50vh'
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
