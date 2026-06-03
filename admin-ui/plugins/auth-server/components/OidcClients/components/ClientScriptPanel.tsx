@@ -82,12 +82,6 @@ const ClientScriptPanel = ({
               onBlur={() => formik.setFieldTouched?.(field.name, true, false)}
               disabled={viewOnly}
               doc_category={DOC_CATEGORY}
-              cardBackgroundColor={
-                themeColors.settings?.formInputBackground ?? themeColors.inputBackground
-              }
-              inputBackgroundColor={
-                themeColors.settings?.cardBackground ?? themeColors.card.background
-              }
             />
           </div>
         )

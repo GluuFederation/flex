@@ -427,10 +427,6 @@ const ClientCibaParUmaPanel = ({
                     disabled={viewOnly}
                     withWrapper={false}
                     placeholder={t('placeholders.search_here')}
-                    cardBackgroundColor={
-                      themeColors.settings?.cardBackground ?? themeColors.card.background
-                    }
-                    inputBackgroundColor={themeColors.inputBackground}
                     onChange={(selectedDns) => {
                       formik.setFieldValue('attributes.rptClaimsScripts', selectedDns)
                       setModifiedFields((prev) => ({

@@ -82,8 +82,8 @@ export const useStyles = makeStyles()(() => ({
   objectFieldsGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    columnGap: MAPPING_SPACING.INFO_ALERT_GAP,
-    rowGap: SPACING.CARD_CONTENT_GAP,
+    columnGap: SPACING.SECTION_GAP,
+    rowGap: SPACING.SECTION_GAP,
     width: '100%',
     alignItems: 'start',
     paddingTop: 0,

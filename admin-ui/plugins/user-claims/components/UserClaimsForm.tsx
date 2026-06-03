@@ -55,9 +55,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   }, [theme.state.theme])
 
   const { classes, cx } = useStyles({ isDark, themeColors })
-  const autocompleteInputBg =
-    themeColors.settings?.formInputBackground ?? themeColors.inputBackground
-  const autocompleteDropdownBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   const initialValues = useInitialAttributeValues(item)
   const defaultFormValues = useMemo(() => getDefaultFormValues(), [])
@@ -301,8 +298,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     showError={!!(formik.errors.editType && formik.touched.editType)}
                     errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
                     withWrapper={false}
-                    inputBackgroundColor={autocompleteInputBg}
-                    cardBackgroundColor={autocompleteDropdownBg}
+                    contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
@@ -323,8 +319,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
                     errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
                     withWrapper={false}
-                    inputBackgroundColor={autocompleteInputBg}
-                    cardBackgroundColor={autocompleteDropdownBg}
+                    contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
@@ -346,8 +341,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                       formik.errors.usageType ? t(formik.errors.usageType as string) : ''
                     }
                     withWrapper={false}
-                    inputBackgroundColor={autocompleteInputBg}
-                    cardBackgroundColor={autocompleteDropdownBg}
+                    contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}

@@ -8,8 +8,8 @@ interface GluuAutocompleteStyleParams {
   themeColors: ThemeConfig
   allowCustom?: boolean
   isDark?: boolean
-  inputBackgroundColor?: string
-  cardBackgroundColor?: string
+  surfaceColor?: string
+  contrastOptionHover?: boolean
   withWrapper?: boolean
   compactSelectionSpacing?: boolean
 }
@@ -19,24 +19,30 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
   {
     themeColors,
     allowCustom,
-    inputBackgroundColor,
-    cardBackgroundColor,
+    surfaceColor,
+    contrastOptionHover,
     withWrapper = true,
     compactSelectionSpacing = false,
   },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const dropdownBg =
-    cardBackgroundColor ?? themeColors.settings?.formInputBackground ?? themeColors.inputBackground
-  const inputBg =
-    inputBackgroundColor ?? themeColors.settings?.cardBackground ?? themeColors.card.background
+  const cardColor = settings?.cardBackground ?? themeColors.card.background
+  const formInputColor = settings?.formInputBackground ?? themeColors.inputBackground
+  const surface = withWrapper ? formInputColor : (surfaceColor ?? cardColor)
+  const inputBg = surface === formInputColor ? cardColor : formInputColor
+  const dropdownBg = inputBg
+  const wrapperBg = surface
   const fontColor = themeColors.fontColor
-  const optionHoverBg = themeColors.table.rowHoverBg
+  const optionHoverBg = contrastOptionHover
+    ? dropdownBg === formInputColor
+      ? cardColor
+      : formInputColor
+    : themeColors.table.rowHoverBg
 
   return {
     card: {
-      backgroundColor: dropdownBg,
+      backgroundColor: wrapperBg,
       border: `1px solid ${inputBorderColor}`,
       borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: 16,

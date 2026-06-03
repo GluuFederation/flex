@@ -430,8 +430,7 @@ const ClientBasicPanel = ({
             showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
             errorMessage={getFieldError('responseTypes')}
             doc_category={DOC_CATEGORY}
-            inputBackgroundColor={themeColors.settings?.cardBackground}
-            cardBackgroundColor={themeColors.settings?.cardBackground}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
             withWrapper={false}
             hideLabel
           />
@@ -454,8 +453,7 @@ const ClientBasicPanel = ({
             showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
             errorMessage={getFieldError('grantTypes')}
             doc_category={DOC_CATEGORY}
-            inputBackgroundColor={themeColors.settings?.cardBackground}
-            cardBackgroundColor={themeColors.settings?.cardBackground}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
             withWrapper={false}
             hideLabel
           />
@@ -550,8 +548,7 @@ const ClientBasicPanel = ({
             disabled={viewOnly}
             placeholder={t('placeholders.search_scope')}
             doc_category={DOC_CATEGORY}
-            inputBackgroundColor={themeColors.settings?.cardBackground}
-            cardBackgroundColor={themeColors.settings?.cardBackground}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
             withWrapper={false}
             hideLabel
           />

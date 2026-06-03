@@ -65,10 +65,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const { classes, cx } = useStyles({ isDark, themeColors })
 
-  const autocompleteWrapperBg =
-    themeColors.settings?.formInputBackground ?? themeColors.inputBackground
-  const autocompleteInputBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-
   const badgeStyle = useMemo(
     () => ({
       backgroundColor: themeColors.background,
@@ -445,8 +441,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
-                      cardBackgroundColor={autocompleteWrapperBg}
-                      inputBackgroundColor={autocompleteInputBg}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
@@ -470,8 +464,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_category={SCOPE}
                       doc_entry="dynamicScopeScripts"
                       helperText={t('placeholders.typeahead_holder_message')}
-                      cardBackgroundColor={autocompleteWrapperBg}
-                      inputBackgroundColor={autocompleteInputBg}
                     />
                     {formikProps.errors.dynamicScopeScripts &&
                       formikProps.touched.dynamicScopeScripts && (
@@ -496,8 +488,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
-                      cardBackgroundColor={autocompleteWrapperBg}
-                      inputBackgroundColor={autocompleteInputBg}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
@@ -552,8 +542,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         doc_category={SCOPE}
                         doc_entry="umaAuthorizationPolicies"
                         helperText={t('placeholders.typeahead_holder_message')}
-                        cardBackgroundColor={autocompleteWrapperBg}
-                        inputBackgroundColor={autocompleteInputBg}
                         disabled={scope.inum ? true : false}
                       />
                       {formikProps.errors.umaAuthorizationPolicies &&

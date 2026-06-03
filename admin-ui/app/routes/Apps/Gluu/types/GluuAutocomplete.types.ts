@@ -21,8 +21,8 @@ export type GluuAutocompleteProps = {
   onRemoveField?: () => void
   doc_category?: string
   doc_entry?: string
-  inputBackgroundColor?: string
-  cardBackgroundColor?: string
+  surfaceColor?: string
+  contrastOptionHover?: boolean
   withWrapper?: boolean
   hideLabel?: boolean
   required?: boolean
