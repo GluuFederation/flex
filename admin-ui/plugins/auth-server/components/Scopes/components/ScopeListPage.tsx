@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -19,11 +19,10 @@ import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { adminUiFeatures, SORT_ORDER } from '@/constants'
+import { adminUiFeatures } from '@/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
-import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import type { ScopeTableRow } from '../types'
 import { devLogger } from '@/utils/devLogger'
 import { useScopes, useScopeActions, invalidateScopeQueries } from '../hooks'
@@ -127,7 +126,7 @@ const ScopeListPage: React.FC = () => {
       startIndex,
       ...(debouncedPattern && { pattern: debouncedPattern }),
       ...(scopeType && { type: scopeType }),
-      ...(sortBy && { sortBy, sortOrder: SORT_ORDER.ASCENDING }),
+      ...(sortBy && { sortBy, sortOrder: 'ascending' as const }),
       withAssociatedClients: true as const,
     }),
     [limit, startIndex, debouncedPattern, scopeType, sortBy],
@@ -262,7 +261,7 @@ const ScopeListPage: React.FC = () => {
     () => [
       { value: '', label: t('options.all') },
       ...SCOPE_TYPE_OPTIONS,
-      { value: SCOPE_TYPES.SPONTANEOUS, label: 'Spontaneous' },
+      { value: 'spontaneous', label: 'Spontaneous' },
     ],
     [t],
   )
@@ -350,7 +349,6 @@ const ScopeListPage: React.FC = () => {
         key: 'description',
         label: t('fields.description'),
         sortable: true,
-        width: '35%',
         render: (_value, row) => {
           const desc = row.description ?? EMPTY_PLACEHOLDER
           return (
@@ -369,6 +367,7 @@ const ScopeListPage: React.FC = () => {
         key: 'scopeType',
         label: t('fields.scope_type'),
         sortable: true,
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => {
           const style = getScopeTypeBadgeStyle(badgeStyles.scopeTypeBadge, row.scopeType)
           return (

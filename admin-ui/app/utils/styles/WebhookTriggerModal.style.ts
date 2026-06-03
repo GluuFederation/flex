@@ -7,8 +7,11 @@ import type { ThemeConfig } from '@/context/theme/config'
 const WEBHOOK_MODAL_Z_INDEX = 10050
 const WEBHOOK_TABLE_MIN_WIDTH = 650
 const CHECKBOX_LABEL_EXTRA_GAP = 3
+const WEBHOOK_TABLE_VISIBLE_ROWS = 5
+const WEBHOOK_TABLE_ROW_HEIGHT = 53
+const WEBHOOK_TABLE_MAX_HEIGHT = WEBHOOK_TABLE_ROW_HEIGHT * (WEBHOOK_TABLE_VISIBLE_ROWS + 1)
 
-interface StylesParams {
+type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
@@ -25,9 +28,11 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     overlay: {
       zIndex: WEBHOOK_MODAL_Z_INDEX,
     },
+    modalScroll: {
+      zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
+    },
     modalContainer: {
       ...cardBorderStyle,
-      position: 'fixed',
       zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
       backgroundColor: cardBg,
       outline: 'none',
@@ -57,12 +62,10 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
     },
     contentArea: {
       gap: 0,
-      overflowY: 'auto',
-      maxHeight: 'calc(90vh - 80px)',
     },
     tableScrollContainer: {
       marginTop: CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
-      maxHeight: 300,
+      maxHeight: WEBHOOK_TABLE_MAX_HEIGHT,
       overflowY: 'auto',
       overflowX: 'auto',
       width: '100%',
@@ -71,6 +74,8 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
       'minWidth': WEBHOOK_TABLE_MIN_WIDTH,
       '& .MuiTableCell-root': {
         borderBottom: `1px solid ${borderColor}`,
+        height: WEBHOOK_TABLE_ROW_HEIGHT,
+        boxSizing: 'border-box',
       },
     },
     buttonRow: {

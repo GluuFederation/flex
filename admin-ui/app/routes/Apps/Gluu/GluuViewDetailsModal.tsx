@@ -56,48 +56,56 @@ const GluuViewDetailModal = ({
         aria-label={t('actions.close')}
       />
       <div
-        className={`${classes.modalContainer} ${modalClassName}`.trim()}
-        style={modalStyle}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-label={typeof displayTitle === 'string' ? displayTitle : undefined}
+        className={commitClasses.modalScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handleClose()
+        }}
+        role="presentation"
       >
-        {customHeader ?? (
-          <>
-            <button
-              type="button"
-              onClick={handleClose}
-              className={commitClasses.closeButton}
-              aria-label={t('actions.close')}
-              title={t('actions.close')}
-            >
-              <Close fontSize="small" aria-hidden />
-            </button>
-            <div className={`${classes.header} ${headerClassName}`.trim()} style={headerStyle}>
-              {displayTitle}
-            </div>
-          </>
-        )}
-        <div className={`${classes.content} ${contentClassName}`.trim()} style={contentStyle}>
-          {children}
-        </div>
-        {!hideFooter && (
-          <div className={classes.footer}>
-            <GluuButton
-              onClick={handleClose}
-              backgroundColor={themeColors.formFooter.back.backgroundColor}
-              textColor={themeColors.formFooter.back.textColor}
-              borderColor="transparent"
-              padding="8px 28px"
-              minHeight="40"
-              useOpacityOnHover
-            >
-              {t('actions.close')}
-            </GluuButton>
+        <div
+          className={`${classes.modalContainer} ${modalClassName}`.trim()}
+          style={modalStyle}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-label={typeof displayTitle === 'string' ? displayTitle : undefined}
+        >
+          {customHeader ?? (
+            <>
+              <button
+                type="button"
+                onClick={handleClose}
+                className={commitClasses.closeButton}
+                aria-label={t('actions.close')}
+                title={t('actions.close')}
+              >
+                <Close fontSize="small" aria-hidden />
+              </button>
+              <div className={`${classes.header} ${headerClassName}`.trim()} style={headerStyle}>
+                {displayTitle}
+              </div>
+            </>
+          )}
+          <div className={`${classes.content} ${contentClassName}`.trim()} style={contentStyle}>
+            {children}
           </div>
-        )}
+          {!hideFooter && (
+            <div className={classes.footer}>
+              <GluuButton
+                onClick={handleClose}
+                backgroundColor={themeColors.formFooter.back.backgroundColor}
+                textColor={themeColors.formFooter.back.textColor}
+                borderColor="transparent"
+                padding="8px 28px"
+                minHeight="40"
+                useOpacityOnHover
+              >
+                {t('actions.close')}
+              </GluuButton>
+            </div>
+          )}
+        </div>
       </div>
     </>
   )

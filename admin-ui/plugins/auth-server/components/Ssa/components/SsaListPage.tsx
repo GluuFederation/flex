@@ -15,7 +15,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
-import { GluuTable } from '@/components/GluuTable'
+import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
@@ -250,6 +250,7 @@ const SsaListPage: React.FC = () => {
         {
           key: 'status',
           label: t('fields.status'),
+          width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
           render: (value) => {
             const { label, badgeClassName } = getStatusMeta(String(value))
 

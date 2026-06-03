@@ -116,7 +116,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     } else if (feature && cedarDecisionMade && !canReadWebhooks) {
       dispatch(setWebhookModal(false))
       setWebhookModalDetermined(true)
-    } else if (feature && canReadWebhooks) {
+    } else if (feature && canReadWebhooks && !webhookModalDetermined) {
       const showWebhookFlow = !loadingWebhooks && (enabledFeatureWebhooks?.length ?? 0) > 0
       dispatch(setWebhookModal(showWebhookFlow))
       if (!loadingWebhooks) {
@@ -130,6 +130,7 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     cedarDecisionMade,
     loadingWebhooks,
     enabledFeatureWebhooks,
+    webhookModalDetermined,
     dispatch,
   ])
 
@@ -232,85 +233,93 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
           aria-label={t('actions.close')}
         />
         <div
-          ref={modalRef}
-          className={`${commitClasses.modalContainer} ${webhookClasses.modalContainer}`}
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={handleModalKeyDown}
-          role="dialog"
-          aria-modal="true"
-          tabIndex={-1}
-          aria-labelledby="webhook-modal-title"
+          className={`${commitClasses.modalScroll} ${webhookClasses.modalScroll}`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !loadingWebhooks) closeWebhookTriggerModal()
+          }}
+          role="presentation"
         >
-          <button
-            type="button"
-            onClick={closeWebhookTriggerModal}
-            className={commitClasses.closeButton}
-            aria-label={t('actions.close')}
-            title={t('actions.close')}
+          <div
+            ref={modalRef}
+            className={`${commitClasses.modalContainer} ${webhookClasses.modalContainer}`}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={handleModalKeyDown}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            aria-labelledby="webhook-modal-title"
           >
-            <Close fontSize="small" aria-hidden />
-          </button>
-          <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
-            <div className={webhookClasses.titleWithDescription}>
-              <GluuText variant="h2" className={webhookClasses.title} id="webhook-modal-title">
-                {t('messages.webhook_execution_information')}
-              </GluuText>
-              <GluuText variant="p" className={webhookClasses.description}>
-                {t('messages.webhook_dialog_dec')}
-              </GluuText>
-            </div>
-
-            {enabledFeatureWebhooks?.length ? (
-              <div className={webhookClasses.tableScrollContainer}>
-                <Table
-                  className={webhookClasses.tableWrapper}
-                  aria-label="webhook table"
-                  sx={{
-                    '& .MuiTableCell-root': {
-                      color: themeColors.fontColor,
-                      borderColor: themeColors.borderColor,
-                    },
-                    '& .MuiTableHead-root .MuiTableCell-root': {
-                      fontWeight: 600,
-                      fontSize: 16,
-                    },
-                  }}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left" sx={{ width: '50%' }}>
-                        {t('fields.webhook_name')}
-                      </TableCell>
-                      <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {enabledFeatureWebhooks.map((item) => (
-                      <TableRow key={item.inum}>
-                        <TableCell component="th" scope="row">
-                          {item.displayName}
-                        </TableCell>
-                        <TableCell align="left">{item.inum}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+            <button
+              type="button"
+              onClick={closeWebhookTriggerModal}
+              className={commitClasses.closeButton}
+              aria-label={t('actions.close')}
+              title={t('actions.close')}
+            >
+              <Close fontSize="small" aria-hidden />
+            </button>
+            <div className={`${commitClasses.contentArea} ${webhookClasses.contentArea}`}>
+              <div className={webhookClasses.titleWithDescription}>
+                <GluuText variant="h2" className={webhookClasses.title} id="webhook-modal-title">
+                  {t('messages.webhook_execution_information')}
+                </GluuText>
+                <GluuText variant="p" className={webhookClasses.description}>
+                  {t('messages.webhook_dialog_dec')}
+                </GluuText>
               </div>
-            ) : null}
-            <div className={webhookClasses.buttonRow}>
-              <GluuButton
-                disabled={triggerWebhookInProgress}
-                backgroundColor={themeColors.badges.statusActive}
-                textColor={themeColors.badges.filledBadgeText}
-                borderColor="transparent"
-                padding="8px 28px"
-                minHeight="40"
-                useOpacityOnHover
-                className={commitClasses.yesButton}
-                onClick={handleAcceptWebhookTrigger}
-              >
-                {t('actions.accept')}
-              </GluuButton>
+
+              {enabledFeatureWebhooks?.length ? (
+                <div className={webhookClasses.tableScrollContainer}>
+                  <Table
+                    className={webhookClasses.tableWrapper}
+                    aria-label="webhook table"
+                    sx={{
+                      '& .MuiTableCell-root': {
+                        color: themeColors.fontColor,
+                        borderColor: themeColors.borderColor,
+                      },
+                      '& .MuiTableHead-root .MuiTableCell-root': {
+                        fontWeight: 600,
+                        fontSize: 16,
+                      },
+                    }}
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left" sx={{ width: '50%' }}>
+                          {t('fields.webhook_name')}
+                        </TableCell>
+                        <TableCell sx={{ width: '50%' }}>{t('fields.webhook_id')}</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {enabledFeatureWebhooks.map((item) => (
+                        <TableRow key={item.inum}>
+                          <TableCell component="th" scope="row">
+                            {item.displayName}
+                          </TableCell>
+                          <TableCell align="left">{item.inum}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : null}
+              <div className={webhookClasses.buttonRow}>
+                <GluuButton
+                  disabled={triggerWebhookInProgress}
+                  backgroundColor={themeColors.badges.statusActive}
+                  textColor={themeColors.badges.filledBadgeText}
+                  borderColor="transparent"
+                  padding="8px 28px"
+                  minHeight="40"
+                  useOpacityOnHover
+                  className={commitClasses.yesButton}
+                  onClick={handleAcceptWebhookTrigger}
+                >
+                  {t('actions.accept')}
+                </GluuButton>
+              </div>
             </div>
           </div>
         </div>

@@ -41,10 +41,12 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       },
     },
     summary: {
-      height: 120,
+      minHeight: 120,
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
+      justifyContent: 'space-between',
+      gap: 12,
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       padding: '20px 28px',
@@ -52,19 +54,24 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       boxSizing: 'border-box',
     },
     summaryText: {
-      fontFamily,
+      fontFamily: fontFamily,
       fontWeight: fontWeights.medium,
       fontSize: fontSizes.md,
       lineHeight: lineHeights.tight,
       color: themeColors.text,
-      marginBottom: 20,
+      [theme.breakpoints.down('lg')]: {
+        fontSize: fontSizes.sm,
+      },
     },
     summaryValue: {
-      fontFamily,
+      fontFamily: fontFamily,
       color: themeColors.text,
       fontWeight: fontWeights.semiBold,
       fontSize: fontSizes['3xl'],
       lineHeight: lineHeights.tight,
+      [theme.breakpoints.down('lg')]: {
+        fontSize: fontSizes.xl,
+      },
     },
     trendCard: {
       width: '100%',

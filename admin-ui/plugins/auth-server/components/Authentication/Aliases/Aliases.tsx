@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close, DeleteOutlined, Edit } from '@/components/icons'
+import { ModalLayer } from '@/components/ModalLayer'
 import { useFormik } from 'formik'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -262,16 +263,6 @@ const Aliases = ({
     [formik],
   )
 
-  const handleOverlayKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        handleCancel()
-      }
-    },
-    [handleCancel],
-  )
-
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -289,99 +280,94 @@ const Aliases = ({
 
   const modalContent = showAddModal ? (
     <GluuLoader blocking={loading}>
-      <button
-        type="button"
-        className={commitClasses.overlay}
-        onClick={handleCancel}
-        onKeyDown={handleOverlayKeyDown}
-        aria-label={t('actions.close')}
-      />
-      <div
-        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleModalKeyDown}
-        role="dialog"
-        tabIndex={-1}
-        aria-labelledby="add-mapping-modal-title"
-      >
-        <button
-          type="button"
-          onClick={handleCancel}
-          className={commitClasses.closeButton}
-          aria-label={t('actions.close')}
-          title={t('actions.close')}
+      <ModalLayer onClose={handleCancel}>
+        <div
+          className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleModalKeyDown}
+          role="dialog"
+          tabIndex={-1}
+          aria-labelledby="add-mapping-modal-title"
         >
-          <Close fontSize="small" aria-hidden />
-        </button>
-        <div className={commitClasses.contentArea}>
-          <GluuText variant="h2" className={commitClasses.title} id="add-mapping-modal-title">
-            {modalTitle}
-          </GluuText>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className={commitClasses.closeButton}
+            aria-label={t('actions.close')}
+            title={t('actions.close')}
+          >
+            <Close fontSize="small" aria-hidden />
+          </button>
+          <div className={commitClasses.contentArea}>
+            <GluuText variant="h2" className={commitClasses.title} id="add-mapping-modal-title">
+              {modalTitle}
+            </GluuText>
 
-          <form onSubmit={handleFormSubmit}>
-            <div className={classes.fieldsColumn}>
-              <div className={classes.fieldGroup}>
-                <label className={classes.fieldLabel} htmlFor="mapping-input">
-                  {t('fields.mapping')}:
-                </label>
-                <div className={classes.inputWrapper}>
-                  <input
-                    id="mapping-input"
-                    name="mapping"
-                    type="text"
-                    className={classes.fieldInput}
-                    value={formik.values.mapping}
-                    onChange={formik.handleChange}
-                    placeholder={getFieldPlaceholder(t, 'fields.mapping')}
-                    autoComplete="off"
-                  />
+            <form onSubmit={handleFormSubmit}>
+              <div className={classes.fieldsColumn}>
+                <div className={classes.fieldGroup}>
+                  <label className={classes.fieldLabel} htmlFor="mapping-input">
+                    {t('fields.mapping')}:
+                  </label>
+                  <div className={classes.inputWrapper}>
+                    <input
+                      id="mapping-input"
+                      name="mapping"
+                      type="text"
+                      className={classes.fieldInput}
+                      value={formik.values.mapping}
+                      onChange={formik.handleChange}
+                      placeholder={getFieldPlaceholder(t, 'fields.mapping')}
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+
+                <div className={classes.fieldGroup}>
+                  <label className={classes.fieldLabel} htmlFor="source-input">
+                    {t('fields.source')}:
+                  </label>
+                  <div className={classes.inputWrapper}>
+                    <input
+                      id="source-input"
+                      name="source"
+                      type="text"
+                      className={classes.fieldInput}
+                      value={formik.values.source}
+                      onChange={formik.handleChange}
+                      placeholder={getFieldPlaceholder(t, 'fields.source')}
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className={classes.fieldGroup}>
-                <label className={classes.fieldLabel} htmlFor="source-input">
-                  {t('fields.source')}:
-                </label>
-                <div className={classes.inputWrapper}>
-                  <input
-                    id="source-input"
-                    name="source"
-                    type="text"
-                    className={classes.fieldInput}
-                    value={formik.values.source}
-                    onChange={formik.handleChange}
-                    placeholder={getFieldPlaceholder(t, 'fields.source')}
-                    autoComplete="off"
-                  />
-                </div>
+              <div className={classes.formFooter}>
+                <GluuButton
+                  type="submit"
+                  disabled={isApplyDisabled}
+                  loading={loading}
+                  backgroundColor={themeColors.formFooter.back.backgroundColor}
+                  textColor={themeColors.formFooter.back.textColor}
+                  borderColor={themeColors.formFooter.back.borderColor}
+                  useOpacityOnHover
+                  hoverOpacity={0.85}
+                  style={{
+                    minHeight: BUTTON_STYLES.height,
+                    padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
+                    borderRadius: BUTTON_STYLES.borderRadius,
+                    fontSize: BUTTON_STYLES.fontSize,
+                    fontWeight: BUTTON_STYLES.fontWeight,
+                    letterSpacing: BUTTON_STYLES.letterSpacing,
+                  }}
+                >
+                  {applyButtonLabel}
+                </GluuButton>
               </div>
-            </div>
-
-            <div className={classes.formFooter}>
-              <GluuButton
-                type="submit"
-                disabled={isApplyDisabled}
-                loading={loading}
-                backgroundColor={themeColors.formFooter.back.backgroundColor}
-                textColor={themeColors.formFooter.back.textColor}
-                borderColor={themeColors.formFooter.back.borderColor}
-                useOpacityOnHover
-                hoverOpacity={0.85}
-                style={{
-                  minHeight: BUTTON_STYLES.height,
-                  padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,
-                  borderRadius: BUTTON_STYLES.borderRadius,
-                  fontSize: BUTTON_STYLES.fontSize,
-                  fontWeight: BUTTON_STYLES.fontWeight,
-                  letterSpacing: BUTTON_STYLES.letterSpacing,
-                }}
-              >
-                {applyButtonLabel}
-              </GluuButton>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      </ModalLayer>
     </GluuLoader>
   ) : null
 
