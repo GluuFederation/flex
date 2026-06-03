@@ -1,4 +1,5 @@
 import customColors from '@/customColors'
+import { OPACITY } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -386,7 +387,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       left: '40px',
       right: '30px',
       bottom: '40px',
-      opacity: 0.05,
+      opacity: OPACITY.HOVER_LIGHT,
       pointerEvents: 'none',
       backgroundImage: `
         linear-gradient(${themeColors.text} 1px, transparent 1px),

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
-import { Close as CloseIcon, HelpOutline } from '@/components/icons'
+import { Check as CheckIcon, Close as CloseIcon, HelpOutline } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
 import GluuTooltip from './GluuTooltip'
 import { useTheme } from '@/context/theme/themeContext'
@@ -10,7 +10,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/GluuAutocomplete.style'
 import GluuText from './GluuText'
-import type { ModifierArguments, Obj } from '@popperjs/core'
+import type { ModifierArguments, Obj, Placement } from '@popperjs/core'
 import type { GluuAutocompleteProps } from './types/GluuAutocomplete.types'
 
 const NEW_SELECTION_PREFIX = 'new-selection:'
@@ -86,10 +86,10 @@ const GluuAutocomplete = ({
     : []
 
   const [inputValue, setInputValue] = React.useState('')
+  const lockedPlacementRef = React.useRef<Placement | null>(null)
 
   const handleChange = useCallback(
-    (_event: React.SyntheticEvent, newValue: string[], reason: string) => {
-      if (reason === 'removeOption') return
+    (_event: React.SyntheticEvent, newValue: string[]) => {
       const normalized = newValue
         .map((v) =>
           typeof v === 'string' && v.startsWith(NEW_SELECTION_PREFIX)
@@ -106,9 +106,7 @@ const GluuAutocomplete = ({
   const filterOptions = useCallback(
     (opts: string[], state: { inputValue: string }) => {
       const query = state.inputValue.trim().toLowerCase()
-      const filtered = opts.filter(
-        (o) => getDisplayLabel(o).toLowerCase().includes(query) && !selectedItems.includes(o),
-      )
+      const filtered = opts.filter((o) => getDisplayLabel(o).toLowerCase().includes(query))
       if (
         allowCustom &&
         query &&
@@ -137,7 +135,7 @@ const GluuAutocomplete = ({
               />
               <HelpOutline
                 tabIndex={-1}
-                style={{ width: 18, height: 18, marginLeft: 4, color: themeColors.fontColor }}
+                className={classes.helpIcon}
                 data-tooltip-id={doc_entry}
                 data-for={doc_entry}
               />
@@ -172,29 +170,45 @@ const GluuAutocomplete = ({
             isOptionEqualToValue={(option, val) => option === val}
             onChange={handleChange}
             onBlur={onBlur}
+            onClose={() => {
+              lockedPlacementRef.current = null
+            }}
             disabled={disabled}
             disableClearable
+            disableCloseOnSelect
             disablePortal
             className={classes.autocompleteRoot}
             slotProps={{
               paper: {
                 className: classes.dropdownPaper,
-                sx: {
-                  border: 'none',
-                  boxShadow: 'none',
-                  width: '100%',
-                  minWidth: '100%',
-                  maxWidth: '100%',
-                  boxSizing: 'border-box',
-                },
               },
               popper: {
+                placement: 'bottom-start' as const,
+                className: classes.popperRoot,
                 modifiers: [
+                  {
+                    name: 'computeStyles',
+                    options: { adaptive: false, gpuAcceleration: false },
+                  },
                   {
                     name: 'sameWidth',
                     enabled: true,
                     phase: 'afterWrite' as const,
                     fn: sameWidthModifier,
+                  },
+                  {
+                    name: 'lockPlacement',
+                    enabled: true,
+                    phase: 'main' as const,
+                    requires: ['flip'],
+                    fn: ({ state }: ModifierArguments<Obj>) => {
+                      if (lockedPlacementRef.current == null) {
+                        lockedPlacementRef.current = state.placement
+                      } else if (state.placement !== lockedPlacementRef.current) {
+                        state.placement = lockedPlacementRef.current
+                        state.reset = true
+                      }
+                    },
                   },
                 ],
               },
@@ -203,31 +217,39 @@ const GluuAutocomplete = ({
             popupIcon={<ChevronIcon width={20} height={20} direction="down" />}
             filterOptions={filterOptions}
             getOptionLabel={(option) => getDisplayLabel(option)}
-            renderOption={(props, option) => (
-              <li
-                {...props}
-                key={option}
-                style={{
-                  ...props.style,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX) ? (
-                  <>
-                    <GluuText disableThemeColor className={classes.newSelectionPrefix}>
-                      {t('placeholders.new_selection')}:&nbsp;
-                    </GluuText>
-                    <GluuText disableThemeColor className={classes.newSelectionValue}>
-                      {option.slice(NEW_SELECTION_PREFIX.length)}
-                    </GluuText>
-                  </>
-                ) : (
-                  getDisplayLabel(option)
-                )}
-              </li>
-            )}
+            renderOption={(props, option) => {
+              const isNewSelection =
+                typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX)
+              const selected = selectedItems.includes(option)
+              return (
+                <li {...props} key={option}>
+                  {!isNewSelection && (
+                    <span
+                      aria-hidden
+                      className={
+                        selected
+                          ? `${classes.optionCheckbox} ${classes.optionCheckboxChecked}`
+                          : classes.optionCheckbox
+                      }
+                    >
+                      {selected && <CheckIcon />}
+                    </span>
+                  )}
+                  {isNewSelection ? (
+                    <>
+                      <GluuText disableThemeColor className={classes.newSelectionPrefix}>
+                        {t('placeholders.new_selection')}:&nbsp;
+                      </GluuText>
+                      <GluuText disableThemeColor className={classes.newSelectionValue}>
+                        {option.slice(NEW_SELECTION_PREFIX.length)}
+                      </GluuText>
+                    </>
+                  ) : (
+                    <span className={classes.optionLabel}>{getDisplayLabel(option)}</span>
+                  )}
+                </li>
+              )
+            }}
             renderInput={(params) => {
               const { slotProps: paramsSlotProps, ...restParams } = params
               const paramsInputProps = paramsSlotProps.htmlInput
@@ -262,14 +284,6 @@ const GluuAutocomplete = ({
                         }
                         paramsInputProps?.onKeyDown?.(e)
                       },
-                      style: {
-                        ...(paramsInputProps?.style as React.CSSProperties),
-                        outline: 'none',
-                        outlineWidth: 0,
-                        outlineOffset: 0,
-                        boxShadow: 'none',
-                        border: 'none',
-                      },
                     },
                     input: {
                       ...paramsInputComponentProps,
@@ -282,30 +296,12 @@ const GluuAutocomplete = ({
                               className={classes.endIconButton}
                               aria-label={t('actions.clear')}
                             >
-                              <CloseIcon sx={{ fontSize: 16 }} />
+                              <CloseIcon />
                             </button>
                           )}
                           {paramsInputComponentProps?.endAdornment}
                         </>
                       ),
-                      sx: {
-                        'outline': 'none',
-                        'boxShadow': 'none',
-                        '&.Mui-focused, &.Mui-focusVisible': {
-                          outline: 'none !important',
-                          boxShadow: 'none !important',
-                        },
-                        '& .MuiOutlinedInput-input': {
-                          'outline': 'none !important',
-                          'boxShadow': 'none !important',
-                          'border': 'none !important',
-                          '&:focus, &:focus-visible': {
-                            outline: 'none !important',
-                            boxShadow: 'none !important',
-                            border: 'none !important',
-                          },
-                        },
-                      },
                     },
                   }}
                 />
@@ -339,7 +335,7 @@ const GluuAutocomplete = ({
                 }}
                 aria-label={t('actions.remove')}
               >
-                <CloseIcon sx={{ fontSize: 14 }} />
+                <CloseIcon />
               </button>
             </span>
           ))}
@@ -363,7 +359,7 @@ const GluuAutocomplete = ({
           onClick={onRemoveField}
           aria-label={t('actions.remove')}
         >
-          <CloseIcon sx={{ fontSize: 16, color: themeColors.fontColor }} />
+          <CloseIcon />
         </button>
       </div>
     )

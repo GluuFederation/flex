@@ -17,7 +17,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toast } from 'react-toastify'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, OPACITY } from '@/constants'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp/types'
 import { trimObjectStrings } from 'Utils/Util'
@@ -534,7 +534,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 borderColor={buttonColors.cancel.borderColor}
                 outlined
                 useOpacityOnHover
-                hoverOpacity={0.85}
+                hoverOpacity={OPACITY.OVERLAY}
                 style={footerButtonStyle}
               >
                 {t('actions.test')}

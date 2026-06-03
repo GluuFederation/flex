@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import { SPACING } from '@/constants'
+import { OPACITY, SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   createFormInputStyles,
@@ -84,9 +84,9 @@ export const usePasswordModalStyles = makeStyles<StylesParams>()((
       'alignItems': 'center',
       'justifyContent': 'center',
       'color': themeColors.fontColor,
-      'opacity': 0.7,
+      'opacity': OPACITY.OVERLAY,
       '&:hover': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     errorText: {

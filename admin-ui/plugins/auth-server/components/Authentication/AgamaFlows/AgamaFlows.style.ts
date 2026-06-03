@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, OPACITY, SPACING } from '@/constants'
 import customColors from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
@@ -108,7 +108,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       border: `1.5px dashed ${themeColors.infoAlert.border}`,
       borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       cursor: 'pointer',
-      opacity: 0.85,
+      opacity: OPACITY.OVERLAY,
     },
     dropzoneText: {
       fontFamily,

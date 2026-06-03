@@ -103,7 +103,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'lineHeight': '28px',
       'verticalAlign': 'middle',
       '&:hover [data-sort-icon]': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     headerCellResizable: {
@@ -128,14 +128,14 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         minHeight: 20,
         backgroundColor: rowBorder,
         borderRadius: 1,
-        opacity: 0.6,
+        opacity: OPACITY.PLACEHOLDER,
         transition: 'opacity 0.15s ease',
       },
       '&:hover::after': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
       '&:active::after': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     headerCellExpand: {
@@ -164,12 +164,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'color': headerColor,
       'textAlign': 'inherit',
       '&:hover [data-sort-icon]': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     sortableHeaderActive: {
       '& [data-sort-icon]': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     sortIconWrap: {
@@ -177,7 +177,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       flexShrink: 0,
       display: 'inline-flex',
       alignItems: 'center',
-      opacity: 0,
+      opacity: OPACITY.NONE,
       transition: 'opacity 0.15s ease',
     },
     cell: {
@@ -278,7 +278,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'justifyContent': 'center',
       'color': themeColors.fontColor,
       'transition': 'opacity 0.15s ease',
-      '&:hover': { opacity: 1 - getHoverOpacity(isDark) },
+      '&:hover': { opacity: OPACITY.FULL - getHoverOpacity(isDark) },
       '&:focus': { outline: 'none' },
       '&:focus-visible': {
         outline: 'none',

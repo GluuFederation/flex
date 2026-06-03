@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 
 interface AvailableCustomAttributesPanelStylesParams {
@@ -90,7 +90,7 @@ export const useStyles = makeStyles<AvailableCustomAttributesPanelStylesParams>(
       'color': themeColors.fontColor,
       'fontSize': fontSizes.md,
       '&:hover': {
-        opacity: 0.8,
+        opacity: OPACITY.OVERLAY,
       },
     },
     list: {

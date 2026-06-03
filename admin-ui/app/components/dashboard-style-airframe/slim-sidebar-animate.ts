@@ -1,5 +1,6 @@
 import { createTimeline, stagger } from 'animejs'
 import type { Timeline } from 'animejs'
+import { OPACITY } from '@/constants'
 import type { SlimSidebarAnimateInstance, SlimSidebarAnimateOptions } from './types'
 
 const DEFAULT_CONFIG: Required<SlimSidebarAnimateOptions> = {
@@ -131,17 +132,21 @@ const createSlimSidebarAnimate = (
 
     timelineStage1 = buildTimeline(onBeginStage1)
       .add(sidebarElement, { translateX: -(config.sidebarWidth - config.sidebarSlimWidth) })
-      .add(Array.from(sidebarLabels), { opacity: 0, onComplete: onCompleteLabels }, 0)
-      .add(Array.from(sidebarHideSlim), { opacity: 0 }, 0)
+      .add(Array.from(sidebarLabels), { opacity: OPACITY.NONE, onComplete: onCompleteLabels }, 0)
+      .add(Array.from(sidebarHideSlim), { opacity: OPACITY.NONE }, 0)
 
     timelineStage2 = buildTimeline(onBeginStage2)
       .add(Array.from(sidebarIcons), {
-        opacity: [0, 1],
+        opacity: [OPACITY.NONE, OPACITY.FULL],
         translateX: [-config.sidebarSlimWidth, 0],
         delay: stagger(config.animationStaggerDelay),
         onComplete: onCompleteIcons,
       })
-      .add(Array.from(sidebarShowSlim), { opacity: [0, 1], onComplete: onCompleteShowSlim }, 0)
+      .add(
+        Array.from(sidebarShowSlim),
+        { opacity: [OPACITY.NONE, OPACITY.FULL], onComplete: onCompleteShowSlim },
+        0,
+      )
 
     timelineStage1.then(onStage1Finished)
     timelineStage2.then(onStage2Finished)
@@ -167,7 +172,7 @@ const createSlimSidebarAnimate = (
       sidebarIcons.forEach(removeStyle)
       sidebarShowSlim.forEach(removeStyle)
       sidebarLabels.forEach((label: HTMLElement) => {
-        label.style.opacity = '0'
+        label.style.opacity = String(OPACITY.NONE)
       })
       sidebarElement.classList.remove('sidebar--collapsed')
       sidebarMenu?.classList.remove('sidebar-menu--slim')
@@ -203,9 +208,13 @@ const createSlimSidebarAnimate = (
         translateX: -config.sidebarSlimWidth,
         duration: animationHalfTime,
         delay: stagger(config.animationStaggerDelay),
-        opacity: 0,
+        opacity: OPACITY.NONE,
       })
-      .add(Array.from(sidebarShowSlim), { duration: animationHalfTime, opacity: [1, 0] }, 0)
+      .add(
+        Array.from(sidebarShowSlim),
+        { duration: animationHalfTime, opacity: [OPACITY.FULL, OPACITY.NONE] },
+        0,
+      )
 
     timelineStage2 = buildTimeline()
       .add(sidebarElement, {
@@ -222,7 +231,7 @@ const createSlimSidebarAnimate = (
         Array.from(sidebarLabels),
         {
           duration: animationHalfTime,
-          opacity: [0, 1],
+          opacity: [OPACITY.NONE, OPACITY.FULL],
           onComplete: onCompleteLabels,
         },
         0,
@@ -231,7 +240,7 @@ const createSlimSidebarAnimate = (
         Array.from(sidebarHideSlim),
         {
           duration: animationHalfTime,
-          opacity: [0, 1],
+          opacity: [OPACITY.NONE, OPACITY.FULL],
           onComplete: onCompleteHideSlim,
         },
         0,

@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
-import { ICON_SIZE } from '@/constants'
+import { ICON_SIZE, OPACITY } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import { fontSizes, fontWeights, lineHeights, letterSpacing, fontFamily } from '@/styles/fonts'
@@ -104,11 +104,11 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
       'whiteSpace': 'nowrap' as const,
       'transition': 'opacity 0.15s ease-in-out',
       '&:disabled': {
-        opacity: 0.4,
+        opacity: OPACITY.STRONG,
         cursor: 'not-allowed' as const,
       },
       '&:hover:not(:disabled)': {
-        opacity: 0.85,
+        opacity: OPACITY.OVERLAY,
       },
       '&:focus, &:focus-visible, &:active': {
         outline: 'none !important',

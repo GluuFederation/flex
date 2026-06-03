@@ -14,6 +14,7 @@ const INPUT_HEIGHT = 52
 const INPUT_PADDING_VERTICAL = 14
 const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
+const ERROR_SPACE = 20
 export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
   _,
   { isDark, themeColors },
@@ -51,6 +52,27 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
     },
     formGridFullSpan: {
       gridColumn: '1 / -1',
+    },
+    autocompleteField: {
+      marginBottom: ERROR_SPACE,
+    },
+    outerLabel: {
+      'display': 'flex',
+      'alignItems': 'center',
+      'gap': 6,
+      'marginBottom': 4,
+      'color': `${themeColors.fontColor} !important`,
+      'fontFamily': `${fontFamily} !important`,
+      'fontWeight': `${fontWeights.semiBold} !important`,
+      'fontSize': `${fontSizes.base} !important`,
+      'lineHeight': `${lineHeights.normal} !important`,
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: themeColors.fontColor,
+      },
+    },
+    outerLabelStar: {
+      color: themeColors.fontColor,
     },
     fieldItem: {
       'width': '100%',

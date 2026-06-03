@@ -10,6 +10,8 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { HelpOutline } from '@/components/icons'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -55,6 +57,16 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   }, [theme.state.theme])
 
   const { classes, cx } = useStyles({ isDark, themeColors })
+
+  const renderAutocompleteLabel = (labelKey: string, docEntry: string, required = false) => (
+    <div className={classes.outerLabel}>
+      <span>
+        {t(labelKey)}:{required && <span className={classes.outerLabelStar}>&nbsp;*</span>}
+      </span>
+      <GluuTooltip tooltipOnly doc_entry={docEntry} doc_category={ATTRIBUTE} place="right" />
+      <HelpOutline tabIndex={-1} data-tooltip-id={docEntry} data-for={docEntry} />
+    </div>
+  )
 
   const initialValues = useInitialAttributeValues(item)
   const defaultFormValues = useMemo(() => getDefaultFormValues(), [])
@@ -283,7 +295,8 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                <div className={classes.fieldItem}>
+                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
+                  {renderAutocompleteLabel('fields.edit_type', 'editType', true)}
                   <GluuAutocomplete
                     label={t('fields.edit_type')}
                     name="editType"
@@ -297,14 +310,16 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.editType && formik.touched.editType)}
                     errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
-                    withWrapper={false}
+                    withWrapper
+                    hideLabel
                     contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={classes.fieldItem}>
+                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
+                  {renderAutocompleteLabel('fields.view_type', 'viewType', true)}
                   <GluuAutocomplete
                     label={t('fields.view_type')}
                     name="viewType"
@@ -318,14 +333,22 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
                     errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
-                    withWrapper={false}
+                    withWrapper
+                    hideLabel
                     contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={cx(classes.fieldItem, classes.formGridFullSpan)}>
+                <div
+                  className={cx(
+                    classes.fieldItem,
+                    classes.formGridFullSpan,
+                    classes.autocompleteField,
+                  )}
+                >
+                  {renderAutocompleteLabel('fields.usage_type', 'usageType')}
                   <GluuAutocomplete
                     label={t('fields.usage_type')}
                     name="usageType"
@@ -340,7 +363,8 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     errorMessage={
                       formik.errors.usageType ? t(formik.errors.usageType as string) : ''
                     }
-                    withWrapper={false}
+                    withWrapper
+                    hideLabel
                     contrastOptionHover
                     hideHelperWhenSelected
                     compactSelectionSpacing

@@ -1,4 +1,5 @@
 import { createTimeline } from 'animejs'
+import { OPACITY } from '@/constants'
 
 const ANIMATION_DURATION = 150
 const ANIMATION_STEP_OFFSET = 0.1
@@ -22,7 +23,7 @@ export default class SlimMenuAnimate {
           },
         })
           .add(subMenuElement, {
-            opacity: [0, 1],
+            opacity: [OPACITY.NONE, OPACITY.FULL],
             ease: 'easeOutCubic',
           })
           .add(

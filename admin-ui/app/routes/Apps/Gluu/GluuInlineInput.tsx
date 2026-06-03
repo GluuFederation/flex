@@ -1,5 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { Check, Close } from '@/components/icons'
+import { OPACITY } from '@/constants'
 import GluuLabel from './GluuLabel'
 import GluuToggle from './GluuToggle'
 import { Typeahead } from 'react-bootstrap-typeahead'
@@ -127,7 +128,7 @@ const GluuInlineInput = ({
   }, [])
 
   const disabledStyle = useMemo(
-    () => (disabled ? { cursor: 'not-allowed', opacity: 0.6 } : {}),
+    () => (disabled ? { cursor: 'not-allowed', opacity: OPACITY.PLACEHOLDER } : {}),
     [disabled],
   )
 

@@ -135,7 +135,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       'borderRadius': '50%',
       'color': themeColors.fontColor,
       '&:hover': {
-        opacity: 1 - OPACITY.DISABLED,
+        opacity: OPACITY.FULL - OPACITY.DISABLED,
       },
     },
     heatmapModalBody: {
