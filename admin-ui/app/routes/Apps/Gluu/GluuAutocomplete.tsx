@@ -7,7 +7,7 @@ import { ChevronIcon } from '@/components/SVG'
 import GluuTooltip from './GluuTooltip'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import { DEFAULT_THEME } from '@/context/theme/constants'
 import { useStyles } from './styles/GluuAutocomplete.style'
 import GluuText from './GluuText'
 import type { ModifierArguments, Obj } from '@popperjs/core'
@@ -51,11 +51,9 @@ const GluuAutocomplete = ({
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
-  const isDark = selectedTheme === THEME_DARK
   const { classes } = useStyles({
     themeColors,
     allowCustom,
-    isDark,
     surfaceColor,
     contrastOptionHover,
     withWrapper,
@@ -157,6 +155,7 @@ const GluuAutocomplete = ({
             clearText={t('actions.clear')}
             closeText={t('actions.close')}
             openText={t('actions.choose')}
+            openOnFocus
             inputValue={inputValue}
             onInputChange={(_e, val, reason) => {
               if (reason !== 'reset') {

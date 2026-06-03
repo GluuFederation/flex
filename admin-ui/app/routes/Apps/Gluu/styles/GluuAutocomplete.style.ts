@@ -7,7 +7,6 @@ import applicationStyle from './applicationStyle'
 interface GluuAutocompleteStyleParams {
   themeColors: ThemeConfig
   allowCustom?: boolean
-  isDark?: boolean
   surfaceColor?: string
   contrastOptionHover?: boolean
   withWrapper?: boolean
@@ -130,9 +129,11 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           display: 'none',
         },
         '&:hover': {
+          backgroundColor: `${inputBg} !important`,
           borderColor: inputBorderColor,
         },
         '&.Mui-focused, &.Mui-focusVisible': {
+          backgroundColor: `${inputBg} !important`,
           outline: 'none !important',
           boxShadow: 'none !important',
           borderColor: inputBorderColor,
@@ -153,6 +154,13 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           'boxSizing': 'border-box',
           'color': `${fontColor} !important`,
           'caretColor': fontColor,
+          '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
+            {
+              WebkitBoxShadow: `0 0 0 1000px ${inputBg} inset !important`,
+              WebkitTextFillColor: `${fontColor} !important`,
+              caretColor: `${fontColor} !important`,
+              transition: 'background-color 5000s ease-in-out 0s',
+            },
           '&:focus, &:focus-visible': {
             outline: 'none !important',
             outlineWidth: 0,
