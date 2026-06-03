@@ -103,17 +103,18 @@ const ClientBasicPanel = ({
     }))
   }, [clientScopesData, searchScopesData])
 
-  const scopeNameOptions = useMemo(
-    () => allScopeOptions.map((s) => s.displayName).filter((n): n is string => Boolean(n)),
+  const scopeOptions = useMemo(
+    () =>
+      allScopeOptions
+        .filter((s) => Boolean(s.dn))
+        .map((s) => ({ value: s.dn as string, label: s.displayName ?? (s.dn as string) })),
     [allScopeOptions],
   )
 
-  const selectedScopeNames = useMemo(() => {
-    const selectedDns = (formik.values.scopes as string[] | undefined) ?? []
-    return selectedDns
-      .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.displayName)
-      .filter((n): n is string => Boolean(n))
-  }, [formik.values.scopes, allScopeOptions])
+  const selectedScopeDns = useMemo(
+    () => (formik.values.scopes as string[] | undefined) ?? [],
+    [formik.values.scopes],
+  )
 
   const tokenEndpointAuthMethod = useMemo(() => {
     const supportedMethods = oidcConfiguration?.tokenEndpointAuthMethodsSupported ?? []
@@ -138,13 +139,11 @@ const ClientBasicPanel = ({
   const isRedirectUriSyncingRef = useRef(false)
 
   const handleScopeChange = useCallback(
-    (selectedDisplayNames: string[]) => {
-      const selectedOptions = selectedDisplayNames
-        .map((displayName) => allScopeOptions.find((s) => s.displayName === displayName))
-        .filter((s): s is (typeof allScopeOptions)[number] => Boolean(s?.dn))
-      const dns = selectedOptions.map((s) => s.dn as string)
-      const names = selectedOptions.map((s) => s.name ?? '').filter(Boolean)
-      formik.setFieldValue('scopes', dns)
+    (selectedDns: string[]) => {
+      const names = selectedDns
+        .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.name ?? '')
+        .filter(Boolean)
+      formik.setFieldValue('scopes', selectedDns)
       setModifiedFields((prev) => ({
         ...prev,
         [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: names,
@@ -542,8 +541,8 @@ const ClientBasicPanel = ({
           <GluuAutocomplete
             name="scopes"
             label={t('fields.scopes')}
-            value={selectedScopeNames}
-            options={scopeNameOptions}
+            value={selectedScopeDns}
+            options={scopeOptions}
             onChange={handleScopeChange}
             onBlur={() => formik.setFieldTouched?.('scopes', true, false)}
             onSearch={setScopeSearchQuery}

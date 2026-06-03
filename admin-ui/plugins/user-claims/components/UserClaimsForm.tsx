@@ -55,27 +55,22 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   }, [theme.state.theme])
 
   const { classes, cx } = useStyles({ isDark, themeColors })
-  const userClaimsMultiSelectBg = themeColors.inputBackground
+  const autocompleteInputBg =
+    themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const autocompleteDropdownBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
-  // Memoized initial values
   const initialValues = useInitialAttributeValues(item)
-
-  // Memoized default empty values for create mode
   const defaultFormValues = useMemo(() => getDefaultFormValues(), [])
 
-  // Determine if we're in create mode (no inum) or edit mode (has inum)
   const isCreateMode = useMemo(() => !item.inum, [item.inum])
 
-  // Memoized initial validation state
   const initialValidationState = useMemo(() => getInitialValidationState(item), [item])
   const [validation, setValidation] = useState<boolean>(initialValidationState)
 
-  // Memoized validation schema - conditionally validates based on validation toggle
   const validationSchema = useAttributeValidationSchema(validation)
 
   const isViewMode = useMemo(() => hideButtons?.save === true, [hideButtons])
 
-  // Memoized handlers
   const toggleModal = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
@@ -84,7 +79,6 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
     setValidation((prev) => {
       const newValue = !prev
       if (!newValue) {
-        // Clear validation fields when validation is disabled
         formik.setFieldValue('regexp', null)
         formik.setFieldValue('maxLength', null)
         formik.setFieldValue('minLength', null)
@@ -292,7 +286,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                   />
                 </div>
 
-                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
+                <div className={classes.fieldItem}>
                   <GluuAutocomplete
                     label={t('fields.edit_type')}
                     name="editType"
@@ -306,13 +300,15 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.editType && formik.touched.editType)}
                     errorMessage={formik.errors.editType ? t(formik.errors.editType as string) : ''}
-                    inputBackgroundColor={userClaimsMultiSelectBg}
+                    withWrapper={false}
+                    inputBackgroundColor={autocompleteInputBg}
+                    cardBackgroundColor={autocompleteDropdownBg}
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
-                <div className={cx(classes.fieldItem, classes.autocompleteField)}>
+                <div className={classes.fieldItem}>
                   <GluuAutocomplete
                     label={t('fields.view_type')}
                     name="viewType"
@@ -326,19 +322,15 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     helperText={t('messages.multi_select_hint')}
                     showError={!!(formik.errors.viewType && formik.touched.viewType)}
                     errorMessage={formik.errors.viewType ? t(formik.errors.viewType as string) : ''}
-                    inputBackgroundColor={userClaimsMultiSelectBg}
+                    withWrapper={false}
+                    inputBackgroundColor={autocompleteInputBg}
+                    cardBackgroundColor={autocompleteDropdownBg}
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}
                   />
                 </div>
-                <div
-                  className={cx(
-                    classes.fieldItem,
-                    classes.formGridFullSpan,
-                    classes.autocompleteField,
-                  )}
-                >
+                <div className={cx(classes.fieldItem, classes.formGridFullSpan)}>
                   <GluuAutocomplete
                     label={t('fields.usage_type')}
                     name="usageType"
@@ -353,7 +345,9 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     errorMessage={
                       formik.errors.usageType ? t(formik.errors.usageType as string) : ''
                     }
-                    inputBackgroundColor={userClaimsMultiSelectBg}
+                    withWrapper={false}
+                    inputBackgroundColor={autocompleteInputBg}
+                    cardBackgroundColor={autocompleteDropdownBg}
                     hideHelperWhenSelected
                     compactSelectionSpacing
                     disabled={isViewMode}

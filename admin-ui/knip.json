@@ -10,7 +10,7 @@
   ],
   "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
   "ignore": ["**/__tests__/**"],
-  "ignoreDependencies": ["babel-preset-jest"],
+  "ignoreDependencies": ["babel-preset-jest", "markdownlint-cli2"],
   "ignoreBinaries": ["printf"],
   "rules": {
     "enumMembers": "off",

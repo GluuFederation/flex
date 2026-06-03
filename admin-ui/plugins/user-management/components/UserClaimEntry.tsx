@@ -99,7 +99,8 @@ const UserClaimEntry = ({
                 : t('messages.failed_load_roles')
               : t('placeholders.search_here')
           }
-          inputBackgroundColor={userManagementMultiSelectBg}
+          cardBackgroundColor={userManagementMultiSelectBg}
+          inputBackgroundColor={themeColors.settings?.cardBackground ?? themeColors.card.background}
           allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
           doc_category={data.description}
           onRemoveField={doHandle}

@@ -1628,6 +1628,9 @@
     "reference": "Referencia"
   },
   "documentation": {
+    "fido": {
+      "hints": "Tipos de autenticador preferidos que guían al navegador durante el registro y la autenticación FIDO2."
+    },
     "asset": {
       "jansService": "Servicios Relacionados"
     },

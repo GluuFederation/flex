@@ -28,8 +28,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const dropdownBg =
-    cardBackgroundColor ?? themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputBg = inputBackgroundColor ?? themeColors.inputBackground
+    cardBackgroundColor ?? themeColors.settings?.formInputBackground ?? themeColors.inputBackground
+  const inputBg =
+    inputBackgroundColor ?? themeColors.settings?.cardBackground ?? themeColors.card.background
   const fontColor = themeColors.fontColor
   const optionHoverBg = themeColors.table.rowHoverBg
 
@@ -137,7 +138,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           'outlineStyle': 'none',
           'boxShadow': 'none !important',
           'border': 'none !important',
-          'backgroundColor': 'transparent',
+          'backgroundColor': 'transparent !important',
           'minHeight': 0,
           'paddingTop': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
           'paddingBottom': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,

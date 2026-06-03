@@ -130,10 +130,9 @@ const ClientCibaParUmaPanel = ({
   )
   const rptTokenTypeOptions = useMemo(() => mapTranslatedOptions(RPT_TOKEN_TYPE_OPTIONS, t), [t])
 
-  const rptScriptNameOptions = rptScripts.map((s) => s.name)
-  const selectedRptScriptNames = (
+  const rptScriptOptions = rptScripts.map((s) => ({ value: s.dn, label: s.name }))
+  const selectedRptScriptDns =
     (formik.values.attributes?.rptClaimsScripts as string[] | undefined) ?? []
-  ).map((dn) => rptScripts.find((s) => s.dn === dn)?.name ?? dn)
 
   const handleUMADetail = (uma: UmaResource) => {
     if (!isEmpty(uma)) {
@@ -423,8 +422,8 @@ const ClientCibaParUmaPanel = ({
                   <GluuAutocomplete
                     label={t('fields.rpt_scripts')}
                     name="attributes.rptClaimsScripts"
-                    value={selectedRptScriptNames}
-                    options={rptScriptNameOptions}
+                    value={selectedRptScriptDns}
+                    options={rptScriptOptions}
                     disabled={viewOnly}
                     withWrapper={false}
                     placeholder={t('placeholders.search_here')}
@@ -432,14 +431,11 @@ const ClientCibaParUmaPanel = ({
                       themeColors.settings?.cardBackground ?? themeColors.card.background
                     }
                     inputBackgroundColor={themeColors.inputBackground}
-                    onChange={(selectedNames) => {
-                      const dns = selectedNames
-                        .map((name) => rptScripts.find((s) => s.name === name)?.dn)
-                        .filter((dn): dn is string => Boolean(dn))
-                      formik.setFieldValue('attributes.rptClaimsScripts', dns)
+                    onChange={(selectedDns) => {
+                      formik.setFieldValue('attributes.rptClaimsScripts', selectedDns)
                       setModifiedFields((prev) => ({
                         ...prev,
-                        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: dns,
+                        [CLIENT_CIBA_PAR_UMA_MODIFIED_FIELDS.RPT_CLAIMS_SCRIPTS]: selectedDns,
                       }))
                     }}
                   />

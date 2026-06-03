@@ -52,9 +52,6 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
     formGridFullSpan: {
       gridColumn: '1 / -1',
     },
-    autocompleteField: {
-      marginBottom: 20,
-    },
     fieldItem: {
       'width': '100%',
       'minWidth': 0,
@@ -69,6 +66,8 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       '& .form-group [class*="col"]': {
         position: 'relative',
         paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
       },
       '& .form-group [class*="col"]:has([data-field-error])': {
         paddingBottom: 20,
@@ -90,6 +89,8 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       'gridColumn': '1 / -1',
       '& .form-group [class*="col"]': {
         paddingBottom: 12,
+        paddingLeft: 0,
+        paddingRight: 0,
       },
       '& input, & input:disabled': {
         backgroundColor: 'var(--theme-input-bg) !important',
@@ -111,6 +112,8 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       },
       '& .form-group [class*="col"]': {
         boxSizing: 'border-box' as const,
+        paddingLeft: 0,
+        paddingRight: 0,
       },
       '& .react-toggle--disabled': {
         opacity: `${OPACITY.DISABLED} !important`,

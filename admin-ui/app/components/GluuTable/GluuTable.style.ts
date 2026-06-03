@@ -10,7 +10,7 @@ import {
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
-export const EXPAND_BUTTON_SIZE = 32
+const EXPAND_BUTTON_SIZE = 32
 export const TABLE_MIN_WIDTH = 1024
 export const TABLE_RESPONSIVE_BREAKPOINT = 1200
 
