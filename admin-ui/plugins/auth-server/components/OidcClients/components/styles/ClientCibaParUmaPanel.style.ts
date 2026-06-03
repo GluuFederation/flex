@@ -43,7 +43,7 @@ const getAccordionStyles = (
     },
     '& .card.b-primary > .card-header': {
       backgroundColor: `${accordionHeaderBg} !important`,
-      borderBottom: `1px solid ${accordionBorderColor} !important`,
+      borderBottom: 'none !important',
       borderTop: 'none !important',
       borderRadius: `${BORDER_RADIUS.ACCORDION}px ${BORDER_RADIUS.ACCORDION}px 0 0`,
       padding: '12px 20px',
@@ -52,7 +52,7 @@ const getAccordionStyles = (
       color: `${fontColor} !important`,
       cursor: 'pointer',
     },
-    '& .card.b-primary:has(> .collapse:not(.show)) > .card-header': {
+    '& .card.b-primary:has(> .MuiCollapse-hidden) > .card-header': {
       borderBottom: 'none !important',
       borderRadius: BORDER_RADIUS.ACCORDION,
     },
@@ -116,6 +116,23 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
     fieldsGrid: layoutStyles.fieldsGrid,
     fieldItem: layoutStyles.fieldItem,
     fieldItemFullWidth: layoutStyles.fieldItemFullWidth,
+    splitColumns: {
+      display: 'flex',
+      gap: SPACING.SECTION_GAP,
+      width: '100%',
+      alignItems: 'flex-start',
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+      },
+    },
+    splitColumn: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: SPACING.CARD_CONTENT_GAP,
+      marginBottom: ERROR_SPACE,
+      flex: 1,
+      minWidth: 0,
+    },
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },

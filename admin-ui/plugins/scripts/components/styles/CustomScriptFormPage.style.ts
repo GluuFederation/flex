@@ -208,12 +208,12 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'padding': BTN_PADDING,
       'cursor': 'pointer',
       '&:hover': {
-        opacity: 0.85,
+        opacity: OPACITY.OVERLAY,
         backgroundColor: themeColors.errorColor,
         color: customColors.white,
       },
       '&:focus, &:active': {
-        opacity: 1,
+        opacity: OPACITY.FULL,
         backgroundColor: themeColors.errorColor,
         color: customColors.white,
         outline: OUTLINE_NONE,
@@ -234,7 +234,7 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'display': 'flex',
       'alignItems': 'center',
       '&:hover': {
-        opacity: 1 - hoverOpacity,
+        opacity: OPACITY.FULL - hoverOpacity,
       },
       '& .MuiAlert-message': {
         flex: 1,

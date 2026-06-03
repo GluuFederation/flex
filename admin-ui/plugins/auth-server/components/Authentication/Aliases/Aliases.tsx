@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close, DeleteOutlined, Edit } from '@/components/icons'
 import { ModalLayer } from '@/components/ModalLayer'
+import { OPACITY } from '@/constants'
 import { useFormik } from 'formik'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -351,7 +352,7 @@ const Aliases = ({
                   textColor={themeColors.formFooter.back.textColor}
                   borderColor={themeColors.formFooter.back.borderColor}
                   useOpacityOnHover
-                  hoverOpacity={0.85}
+                  hoverOpacity={OPACITY.OVERLAY}
                   style={{
                     minHeight: BUTTON_STYLES.height,
                     padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,

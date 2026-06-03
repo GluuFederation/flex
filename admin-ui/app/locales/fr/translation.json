@@ -1561,7 +1561,7 @@
     "log_out": "Logout",
     "software_info": "Software Info",
     "CIBA_PAR_UMA": "CIBA / PAR / UMA",
-    "encryption_signing": "Encription / Signing",
+    "encryption_signing": "Cryptage / Signature",
     "CIBA": "CIBA",
     "PAR": "PAR",
     "UMA": "UMA",
@@ -1633,6 +1633,9 @@
     "reference": "Référence"
   },
   "documentation": {
+    "fido": {
+      "hints": "Types d'authentificateurs préférés qui guident le navigateur lors de l'enregistrement et de l'authentification FIDO2."
+    },
     "asset": {
       "jansService": "Jans Module Properties"
     },

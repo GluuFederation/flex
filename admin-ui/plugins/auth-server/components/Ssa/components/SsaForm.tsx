@@ -261,10 +261,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
                         placeholder={softwareRolesPlaceholder}
                         showError={false}
                         doc_category={SSA}
-                        cardBackgroundColor={themeColors.inputBackground}
-                        inputBackgroundColor={
-                          themeColors.settings?.cardBackground ?? themeColors.card.background
-                        }
                       />
                     </div>
                     {validationState.softwareRolesError && (
@@ -290,10 +286,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
                         placeholder={grantTypesPlaceholder}
                         showError={false}
                         doc_category={SSA}
-                        cardBackgroundColor={themeColors.inputBackground}
-                        inputBackgroundColor={
-                          themeColors.settings?.cardBackground ?? themeColors.card.background
-                        }
                       />
                     </div>
                     {validationState.grantTypesError && (

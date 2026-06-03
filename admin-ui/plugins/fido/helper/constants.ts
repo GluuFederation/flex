@@ -1,11 +1,11 @@
 import { PublicKeyCredentialHints, AttestationMode } from '../types'
-import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import { LOGGING_LEVELS } from '@/constants'
 
 export const LABEL_SIZE = 12
 export const INPUT_SIZE = 12
 
-export const HINT_OPTIONS: MultiSelectOption[] = Object.values(PublicKeyCredentialHints).map(
+export const HINT_OPTIONS: AutocompleteOption[] = Object.values(PublicKeyCredentialHints).map(
   (hint) => ({
     value: hint,
     label: hint.charAt(0).toUpperCase() + hint.slice(1),

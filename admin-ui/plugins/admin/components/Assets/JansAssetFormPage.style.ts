@@ -253,7 +253,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       display: 'block',
       color: themeColors.errorColor,
       fontSize: 12,
-      marginTop: 4,
+      margin: '1px 2px',
     },
     uploadBox: {
       'marginTop': 0,

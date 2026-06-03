@@ -1,4 +1,5 @@
 import customColors from '@/customColors'
+import { OPACITY } from '@/constants'
 
 export { BORDER_RADIUS, STATUS_DETAILS } from '@/constants'
 
@@ -11,7 +12,7 @@ export const CHART_CONSTANTS = {
   TICK_INTERVAL: 300,
   DOT_RADIUS: 3.5,
   ACTIVE_DOT_RADIUS: 5,
-  FILL_OPACITY: 0.6,
+  FILL_OPACITY: OPACITY.PLACEHOLDER,
   MARGIN: { top: 10, right: 30, left: -20, bottom: 20 },
 } as const
 

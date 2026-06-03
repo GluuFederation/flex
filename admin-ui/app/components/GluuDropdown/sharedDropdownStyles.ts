@@ -1,4 +1,5 @@
 import customColors from '@/customColors'
+import { OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
 import type { BaseOptionStylesParams, TriggerStylesParams } from './types'
 
@@ -63,7 +64,7 @@ export const createBaseOptionStyles = ({
       color: isDark ? customColors.white : customColors.textSecondary,
     },
     '&.disabled': {
-      'opacity': 0.5,
+      'opacity': OPACITY.DISABLED,
       'cursor': 'not-allowed',
       '&:hover': {
         backgroundColor: 'transparent',
@@ -98,7 +99,7 @@ export const createTriggerStyles = ({
   'color': isDark ? customColors.white : customColors.textSecondary,
   ...NO_TEXT_SELECT,
   '&:hover': {
-    opacity: 0.8,
+    opacity: OPACITY.OVERLAY,
   },
 })
 

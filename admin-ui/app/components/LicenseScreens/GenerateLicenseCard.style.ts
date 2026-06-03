@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { MAPPING_SPACING } from '@/constants/ui'
+import { MAPPING_SPACING, OPACITY } from '@/constants/ui'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 
 const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColors }) => ({
@@ -54,7 +54,7 @@ const useStyles = makeStyles<{ themeColors: ThemeConfig }>()((theme, { themeColo
     'fontWeight': fontWeights.bold,
     'cursor': 'pointer',
     '&:disabled': {
-      opacity: 0.7,
+      opacity: OPACITY.DISABLED,
       cursor: 'not-allowed',
     },
   },

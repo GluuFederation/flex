@@ -9,7 +9,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
@@ -548,18 +548,18 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
           <div
             className={`${classes.fieldItemFullWidth} ${classes.formLabels} ${classes.formWithInputs} ${classes.hintsSection}`}
           >
-            <GluuMultiSelectRow
-              label={fidoConstants.LABELS.HINTS}
+            <GluuAutocomplete
+              label={t(fidoConstants.LABELS.HINTS)}
               name={fidoConstants.FORM_FIELDS.HINTS}
               value={formik.values.hints || []}
-              formik={formik}
+              onChange={(vals) => formik.setFieldValue(fidoConstants.FORM_FIELDS.HINTS, vals)}
+              onBlur={() => formik.setFieldTouched(fidoConstants.FORM_FIELDS.HINTS, true)}
               options={HINT_OPTIONS}
-              lsize={LABEL_SIZE}
-              rsize={INPUT_SIZE}
               required
               showError={!!formik.errors.hints}
               errorMessage={formik.errors.hints as string}
               doc_category={fidoConstants.DOC_CATEGORY}
+              doc_entry={fidoConstants.FORM_FIELDS.HINTS}
               helperText={t('messages.multi_select_hint')}
             />
           </div>

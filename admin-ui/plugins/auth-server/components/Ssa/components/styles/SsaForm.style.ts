@@ -63,11 +63,6 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
 
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
         createFormInputAutofillStyles(inputColors),
-
-      // Align GluuMultiSelectRow trigger bg with other form inputs
-      '& [role="combobox"]': {
-        backgroundColor: `${inputBg} !important`,
-      },
     },
 
     leftStack: {
@@ -167,7 +162,7 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       display: 'block',
       color: themeColors.errorColor,
       fontSize: fontSizes.sm,
-      marginTop: SPACING.CARD_CONTENT_GAP / 2,
+      margin: '1px 2px',
     },
     datePickerCell: {
       'display': 'flex',

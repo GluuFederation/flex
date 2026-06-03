@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
 import { fontSizes, lineHeights } from '@/styles/fonts'
 
 type ClientScriptPanelStyleParams = {
@@ -36,7 +36,7 @@ export const useStyles = makeStyles<ClientScriptPanelStyleParams>()((_, { themeC
   emptyStateIcon: {
     fontSize: '2rem',
     color: themeColors.textMuted,
-    opacity: 0.5,
+    opacity: OPACITY.DISABLED,
   },
   emptyStateTitle: {
     color: themeColors.fontColor,

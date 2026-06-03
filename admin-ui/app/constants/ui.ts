@@ -13,6 +13,7 @@ export const OPACITY = {
   DIVIDER_DARK: 0.25, // shared: also error-border light
   STRONG: 0.4,
   // UI states
+  NONE: 0,
   DISABLED: 0.5,
   PLACEHOLDER: 0.6, // shared: also loading overlay light
   OVERLAY: 0.8,
@@ -116,6 +117,8 @@ export const ICON_SIZE = {
   MD: 20,
   LG: 24,
 } as const
+
+export const ICON_BUTTON_SIZE = 32
 
 export const TOOLBAR = {
   MIN_WIDTH: 130,

@@ -8,7 +8,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 
 export const errorTextStyle: CSSProperties = {
   color: customColors.accentRed,
-  marginTop: -12,
+  margin: '1px 2px',
 }
 
 interface ScopeFormPageStylesParams {
@@ -115,6 +115,9 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
     },
     fieldItemFullWidth: {
       gridColumn: '1 / -1',
+    },
+    autocompleteField: {
+      marginBottom: 20,
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',

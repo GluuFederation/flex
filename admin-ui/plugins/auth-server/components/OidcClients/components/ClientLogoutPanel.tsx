@@ -29,8 +29,8 @@ const ClientLogoutPanel = ({
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
-  const { classes } = useStyles({ isDark, themeColors })
-  const gridClass = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
+  const { classes, cx } = useStyles({ isDark, themeColors })
+  const gridClass = cx(classes.fieldsGrid, classes.formLabels, classes.formWithInputs)
   const formErrors = formik.errors as Record<string, string | undefined>
   const formTouched = formik.touched as Record<string, boolean | undefined>
   const getFieldError = useCallback(
@@ -242,7 +242,7 @@ const ClientLogoutPanel = ({
             }}
           />
         </div>
-        <div className={classes.fieldItem}>
+        <div className={cx(classes.fieldItem, classes.cardFieldSpacing)}>
           <GluuDynamicList
             label={`${t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}:`}
             title={t(CLIENT_DYNAMIC_LIST_I18N.BACKCHANNEL_LOGOUT_URI.fieldKey)}

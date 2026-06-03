@@ -4,6 +4,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontWeights, lineHeights } from '@/styles/fonts'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 const NAME_GAP = 6
 const SCRIPT_TYPE_MIN_WIDTH = 90
 const ENABLED_MIN_WIDTH = 64
@@ -45,18 +46,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     deleteIcon: { fontSize: ICON_SIZE.SM },
     viewIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
-      marginBottom: `${CARD_INNER_PADDING}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

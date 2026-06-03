@@ -11,8 +11,6 @@ import GluuText from './GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import type { SessionTimeoutDialogProps } from './types'
 
-export type { SessionTimeoutDialogProps }
-
 const SessionTimeoutDialog = ({
   open,
   countdown,
@@ -30,8 +28,6 @@ const SessionTimeoutDialog = ({
 
   if (!open) return null
 
-  // No overlay-click or Escape close: a session timeout warning must force an
-  // explicit choice between logging out and continuing the session.
   const modalContent = (
     <>
       <div className={commitClasses.overlay} aria-hidden />

@@ -1,33 +1,47 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, ICON_BUTTON_SIZE, MAPPING_SPACING, OPACITY } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
 
 interface GluuAutocompleteStyleParams {
   themeColors: ThemeConfig
   allowCustom?: boolean
-  isDark?: boolean
-  inputBackgroundColor?: string
-  cardBackgroundColor?: string
+  surfaceColor?: string
+  contrastOptionHover?: boolean
   withWrapper?: boolean
+  compactSelectionSpacing?: boolean
 }
 
 export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
   _,
-  { themeColors, allowCustom, inputBackgroundColor, cardBackgroundColor, withWrapper = true },
+  {
+    themeColors,
+    allowCustom,
+    surfaceColor,
+    contrastOptionHover,
+    withWrapper = true,
+    compactSelectionSpacing = false,
+  },
 ) => {
   const settings = themeColors.settings
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
-  const dropdownBg =
-    cardBackgroundColor ?? themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputBg = inputBackgroundColor ?? themeColors.inputBackground
+  const cardColor = settings?.cardBackground ?? themeColors.card.background
+  const formInputColor = settings?.formInputBackground ?? themeColors.inputBackground
+  const surface = withWrapper ? formInputColor : (surfaceColor ?? cardColor)
+  const inputBg = surface === formInputColor ? cardColor : formInputColor
+  const dropdownBg = inputBg
+  const wrapperBg = surface
   const fontColor = themeColors.fontColor
-  const optionHoverBg = themeColors.table.rowHoverBg
+  const optionHoverBg = contrastOptionHover
+    ? dropdownBg === formInputColor
+      ? cardColor
+      : formInputColor
+    : themeColors.table.rowHoverBg
 
   return {
     card: {
-      backgroundColor: dropdownBg,
+      backgroundColor: wrapperBg,
       border: `1px solid ${inputBorderColor}`,
       borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: 16,
@@ -48,6 +62,13 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       color: fontColor,
       fontSize: 'inherit',
     },
+    helpIcon: {
+      'marginLeft': 4,
+      'color': fontColor,
+      '&.MuiSvgIcon-root': {
+        fontSize: 18,
+      },
+    },
     controls: {
       'display': 'grid',
       'gridTemplateColumns': allowCustom ? 'minmax(0, 1fr) auto' : '1fr',
@@ -61,6 +82,32 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       minWidth: 0,
       flex: 1,
       display: 'flex',
+    },
+    endIconButton: {
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'boxSizing': 'border-box',
+      'lineHeight': 0,
+      'width': ICON_BUTTON_SIZE,
+      'height': ICON_BUTTON_SIZE,
+      'padding': 0,
+      'border': 'none',
+      'background': 'transparent',
+      'borderRadius': '50%',
+      'cursor': 'pointer',
+      'color': fontColor,
+      'transition': 'background-color 0.18s ease',
+      '& svg': {
+        display: 'block',
+        fontSize: 16,
+      },
+      '&:hover': {
+        backgroundColor: optionHoverBg,
+      },
+      '&:active': {
+        backgroundColor: optionHoverBg,
+      },
     },
     newSelectionPrefix: {
       flexShrink: 0,
@@ -78,6 +125,8 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
         'backgroundColor': `${inputBg} !important`,
         'minHeight': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
         'height': 'auto',
+        'paddingTop': 0,
+        'paddingBottom': 0,
         'borderRadius': `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px !important`,
         'overflow': 'hidden',
         'color': fontColor,
@@ -88,9 +137,11 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           display: 'none',
         },
         '&:hover': {
+          backgroundColor: `${inputBg} !important`,
           borderColor: inputBorderColor,
         },
         '&.Mui-focused, &.Mui-focusVisible': {
+          backgroundColor: `${inputBg} !important`,
           outline: 'none !important',
           boxShadow: 'none !important',
           borderColor: inputBorderColor,
@@ -102,7 +153,8 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           'outlineStyle': 'none',
           'boxShadow': 'none !important',
           'border': 'none !important',
-          'backgroundColor': 'transparent',
+          'backgroundColor': 'transparent !important',
+          'minHeight': 0,
           'paddingTop': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
           'paddingBottom': CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
           'paddingLeft': CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
@@ -110,6 +162,13 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           'boxSizing': 'border-box',
           'color': `${fontColor} !important`,
           'caretColor': fontColor,
+          '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
+            {
+              WebkitBoxShadow: `0 0 0 1000px ${inputBg} inset !important`,
+              WebkitTextFillColor: `${fontColor} !important`,
+              caretColor: `${fontColor} !important`,
+              transition: 'background-color 5000s ease-in-out 0s',
+            },
           '&:focus, &:focus-visible': {
             outline: 'none !important',
             outlineWidth: 0,
@@ -144,39 +203,29 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
           },
           '& .MuiIconButton-root': {
             'color': fontColor,
+            'display': 'inline-flex',
+            'alignItems': 'center',
+            'justifyContent': 'center',
+            'boxSizing': 'border-box',
+            'lineHeight': 0,
             'padding': 6,
-            'minWidth': 32,
-            'width': 32,
-            'height': 32,
+            'minWidth': ICON_BUTTON_SIZE,
+            'width': ICON_BUTTON_SIZE,
+            'height': ICON_BUTTON_SIZE,
             'border': 'none',
             'background': 'transparent',
             'boxShadow': 'none',
             'outline': 'none',
-            'borderRadius': 4,
-            'position': 'relative',
-            'overflow': 'hidden',
-            'isolation': 'isolate',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              inset: 0,
-              borderRadius: 'inherit',
-              backgroundColor: 'currentColor',
-              opacity: 0,
-              transform: 'scale(0.7)',
-              transition: 'opacity 0.18s ease, transform 0.18s ease',
-              pointerEvents: 'none',
-              zIndex: 0,
-            },
-            '& > *': {
-              position: 'relative',
-              zIndex: 1,
+            'borderRadius': '50%',
+            'transition': 'background-color 0.18s ease',
+            '& svg': {
+              display: 'block',
             },
             '& .MuiTouchRipple-root': {
               color: 'inherit',
             },
             '&:hover': {
-              backgroundColor: 'transparent',
+              backgroundColor: optionHoverBg,
               border: 'none',
               boxShadow: 'none',
             },
@@ -184,15 +233,10 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
               outline: 'none',
               boxShadow: 'none',
               border: 'none',
-              backgroundColor: 'transparent',
+              backgroundColor: optionHoverBg,
             },
-            '&:hover::after, &:focus::after, &:focus-visible::after': {
-              opacity: 0.12,
-              transform: 'scale(1)',
-            },
-            '&:active::after': {
-              opacity: 0.16,
-              transform: 'scale(1.06)',
+            '&:active': {
+              backgroundColor: optionHoverBg,
             },
             '&:not(:last-of-type)': { marginRight: 2 },
           },
@@ -203,18 +247,24 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       },
       '& .MuiInputBase-input::placeholder': {
         color: themeColors.textMuted,
-        opacity: 1,
+        opacity: OPACITY.FULL,
+      },
+    },
+    popperRoot: {
+      '&[data-popper-placement^="bottom"] .MuiAutocomplete-paper': {
+        marginTop: 0,
+        borderRadius: `0 0 ${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px ${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
+      },
+      '&[data-popper-placement^="top"] .MuiAutocomplete-paper': {
+        marginBottom: 0,
+        borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px ${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px 0 0`,
       },
     },
     dropdownPaper: {
       'backgroundColor': `${dropdownBg} !important`,
       'color': fontColor,
-      'borderLeft': `1px solid ${inputBorderColor}`,
-      'borderRight': `1px solid ${inputBorderColor}`,
-      'borderBottom': `1px solid ${inputBorderColor}`,
+      'border': 'none',
       'boxShadow': 'none !important',
-      'borderRadius': `0 0 ${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px ${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
-      'marginTop': 0,
       'width': '100%',
       'minWidth': '100%',
       'maxWidth': '100%',
@@ -228,6 +278,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
         'backgroundColor': 'transparent',
         '& .MuiAutocomplete-option': {
           'color': fontColor,
+          'display': 'flex',
+          'alignItems': 'center',
+          'gap': 10,
           '&:hover': {
             backgroundColor: optionHoverBg,
           },
@@ -236,11 +289,11 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
             backgroundColor: optionHoverBg,
           },
           '&[aria-selected="true"]': {
-            backgroundColor: themeColors.badges.statusActiveBg,
-            color: themeColors.badges.statusActive,
+            backgroundColor: 'transparent',
+            color: fontColor,
           },
           '&[aria-selected="true"].Mui-focused': {
-            backgroundColor: themeColors.badges.statusActiveBg,
+            backgroundColor: optionHoverBg,
             outline: 'none',
           },
         },
@@ -250,6 +303,38 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
         paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
         paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
       },
+    },
+    optionCheckbox: {
+      'width': 18,
+      'height': 18,
+      'borderRadius': 4,
+      'border': `1.2px solid ${fontColor}`,
+      'backgroundColor': 'transparent',
+      'display': 'flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'flexShrink': 0,
+      'transition': 'all 0.15s ease',
+      '& svg': {
+        width: 14,
+        height: 14,
+      },
+    },
+    optionCheckboxChecked: {
+      'backgroundColor': themeColors.badges.statusActiveBg,
+      'borderColor': themeColors.badges.statusActive,
+      'color': themeColors.badges.statusActive,
+      '& svg': {
+        color: themeColors.badges.statusActive,
+        fill: themeColors.badges.statusActive,
+      },
+    },
+    optionLabel: {
+      flex: 1,
+      minWidth: 0,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
     selectWrapper: {
       position: 'relative',
@@ -278,13 +363,13 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
         color: themeColors.textMuted,
       },
       '&:disabled': {
-        opacity: 0.6,
+        opacity: OPACITY.PLACEHOLDER,
         cursor: 'not-allowed',
       },
     },
     hiddenSelect: {
       position: 'absolute',
-      opacity: 0,
+      opacity: OPACITY.NONE,
       pointerEvents: 'none',
       width: 0,
       height: 0,
@@ -302,7 +387,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'color': fontColor,
       'cursor': 'pointer',
       '&:disabled': {
-        opacity: 0.6,
+        opacity: OPACITY.PLACEHOLDER,
         cursor: 'not-allowed',
       },
     },
@@ -319,7 +404,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'color': fontColor,
       'cursor': 'pointer',
       '&:disabled': {
-        opacity: 0.6,
+        opacity: OPACITY.PLACEHOLDER,
         cursor: 'not-allowed',
       },
       '& i': {
@@ -350,9 +435,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       },
     },
     tags: {
-      marginTop: 12,
+      marginTop: compactSelectionSpacing ? 6 : 12,
       display: 'flex',
-      gap: 10,
+      gap: compactSelectionSpacing ? 8 : 10,
       flexWrap: 'wrap',
     },
     tag: {
@@ -390,8 +475,11 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'lineHeight': 1,
       'cursor': 'pointer',
       'padding': 0,
+      '& svg': {
+        fontSize: 14,
+      },
       '&:hover': {
-        opacity: 0.8,
+        opacity: OPACITY.OVERLAY,
       },
     },
     wrapper: {
@@ -406,13 +494,13 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
     error: {
       display: 'block',
       color: themeColors.errorColor,
-      marginTop: 8,
+      margin: '1px 2px',
       fontSize: fontSizes.sm,
     },
     helperText: {
       display: 'block',
-      color: themeColors.textMuted,
-      marginTop: 8,
+      color: fontColor,
+      margin: `4px 2px`,
       fontSize: fontSizes.sm,
     },
     removeFieldButton: {
@@ -420,10 +508,10 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'center',
-      'width': 32,
-      'height': 32,
-      'minWidth': 32,
-      'minHeight': 32,
+      'width': ICON_BUTTON_SIZE,
+      'height': ICON_BUTTON_SIZE,
+      'minWidth': ICON_BUTTON_SIZE,
+      'minHeight': ICON_BUTTON_SIZE,
       'padding': 6,
       'marginRight': 0,
       'background': 'transparent',
@@ -432,11 +520,14 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'flexShrink': 0,
       'color': fontColor,
       '&:hover': {
-        opacity: 0.8,
+        opacity: OPACITY.OVERLAY,
       },
       '&:focus-visible': {
         outline: `2px solid ${fontColor}`,
         outlineOffset: 2,
+      },
+      '& svg': {
+        fontSize: 16,
       },
       '& i': {
         fontSize: 16,

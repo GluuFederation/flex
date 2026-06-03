@@ -134,7 +134,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
         lineHeight: 1,
       },
       '&:hover': {
-        opacity: 1 - OPACITY.DISABLED,
+        opacity: OPACITY.FULL - OPACITY.DISABLED,
       },
     },
     textareaContainer: {
@@ -165,7 +165,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       'boxSizing': 'border-box',
       '&::placeholder': {
         color: themeColors.textMuted,
-        opacity: 1,
+        opacity: OPACITY.FULL,
       },
     },
     errorMessage: {

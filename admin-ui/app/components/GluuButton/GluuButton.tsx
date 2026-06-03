@@ -57,7 +57,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
     const border = borderColor ?? (isDark ? 'transparent' : themeColors.borderColor)
     const hoverBg = isDark ? themeColors.lightBackground : themeColors.borderColor
     const keepBgOnHover = !disableHoverStyles && useOpacityOnHover && isHovered && !isDisabled
-    const opacityOnHover = hoverOpacity ?? 1 - getHoverOpacity(isDark)
+    const opacityOnHover = hoverOpacity ?? OPACITY.FULL - getHoverOpacity(isDark)
 
     return {
       display: 'inline-flex',
@@ -83,7 +83,7 @@ const GluuButton: React.FC<GluuButtonProps> = (props) => {
       ),
       color: outlined ? (textColor ?? themeColors.fontColor) : text,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      opacity: isDisabled ? OPACITY.DISABLED : keepBgOnHover ? opacityOnHover : 1,
+      opacity: isDisabled ? OPACITY.DISABLED : keepBgOnHover ? opacityOnHover : OPACITY.FULL,
       width: block ? '100%' : 'auto',
       transition: 'background-color 0.15s ease-in-out, opacity 0.15s ease-in-out',
       ...style,

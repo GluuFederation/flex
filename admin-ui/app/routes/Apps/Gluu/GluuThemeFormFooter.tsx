@@ -2,6 +2,7 @@ import { useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { OPACITY } from '@/constants'
 import { Box } from '@mui/material'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuButton } from '@/components'
@@ -25,7 +26,7 @@ const COMMON_BUTTON_STYLE = {
 
 const SHARED_BUTTON_PROPS = {
   useOpacityOnHover: true,
-  hoverOpacity: 0.85,
+  hoverOpacity: OPACITY.OVERLAY,
   style: COMMON_BUTTON_STYLE,
 }
 
@@ -135,7 +136,7 @@ const GluuThemeFormFooter = ({
               padding="0"
               style={{ minWidth: STEP_NAV_SIZES.buttonSize }}
               useOpacityOnHover
-              hoverOpacity={0.7}
+              hoverOpacity={OPACITY.OVERLAY}
             >
               <ChevronIcon
                 width={STEP_NAV_SIZES.iconSize}
@@ -161,7 +162,7 @@ const GluuThemeFormFooter = ({
               padding="0"
               style={{ minWidth: STEP_NAV_SIZES.buttonSize }}
               useOpacityOnHover
-              hoverOpacity={0.7}
+              hoverOpacity={OPACITY.OVERLAY}
             >
               <ChevronIcon
                 width={STEP_NAV_SIZES.iconSize}

@@ -238,9 +238,7 @@ const SettingsPage: React.FC = () => {
   }, [isConfigError, isScriptsError, refetchConfig, refetchScripts])
 
   const additionalParametersError = formik.errors?.additionalParameters
-  const showAdditionalParametersError = Boolean(
-    additionalParametersError && (formik.submitCount > 0 || formik.touched?.additionalParameters),
-  )
+  const showAdditionalParametersError = Boolean(additionalParametersError)
 
   const additionalParametersErrorText = useMemo(() => {
     if (!additionalParametersError) return ''

@@ -1,9 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, OPACITY, SPACING } from '@/constants'
 import customColors from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import {
   createFormInputStyles,
   createFormInputFocusStyles,
@@ -31,18 +32,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
 
   return {
     page: { fontFamily, paddingTop: SPACING.CARD_CONTENT_GAP },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px ${CARD_INNER_PADDING}px`,
-      marginBottom: `${CARD_INNER_PADDING}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box' as const,
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,
@@ -118,7 +108,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       border: `1.5px dashed ${themeColors.infoAlert.border}`,
       borderRadius: `${MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS}px`,
       cursor: 'pointer',
-      opacity: 0.85,
+      opacity: OPACITY.OVERLAY,
     },
     dropzoneText: {
       fontFamily,
@@ -151,7 +141,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
       color: themeColors.errorColor,
-      margin: 0,
+      margin: '1px 2px',
       minHeight: 18,
     },
     fieldGroup: {

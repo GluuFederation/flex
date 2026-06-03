@@ -1,13 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
+import { OPACITY } from '@/constants'
 
 const styles = makeStyles()({
   '@keyframes fadeInUp': {
     '0%': {
-      opacity: 0,
+      opacity: OPACITY.NONE,
       transform: 'translateY(8px)',
     },
     '100%': {
-      opacity: 1,
+      opacity: OPACITY.FULL,
       transform: 'translateY(0)',
     },
   },

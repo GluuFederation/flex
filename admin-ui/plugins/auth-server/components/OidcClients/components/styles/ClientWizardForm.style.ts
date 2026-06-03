@@ -4,7 +4,7 @@ import { fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ClientWizardFormStyleParams } from 'Plugins/auth-server/components/OidcClients/types'
 
-const WIZARD_STEP_ICON_SIZE = 32
+const WIZARD_STEP_ICON_SIZE = 26
 const WIZARD_SECTION_GAP = SPACING.SECTION_GAP
 
 export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeColors, isDark }) => {
@@ -66,14 +66,17 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       flex: '0 0 auto',
     },
     wizardNav: {
-      'overflowX': 'auto',
+      'overflowX': 'visible',
+      'contain': 'inline-size',
       '& .wizard': {
-        justifyContent: 'flex-start',
-        gap: 24,
         flexWrap: 'nowrap',
+        columnGap: SPACING.CARD_CONTENT_GAP,
+        justifyContent: 'space-between',
+        overflowX: 'visible',
       },
       '& .wizard > div': {
-        flex: '0 0 auto',
+        flex: '0 1 auto',
+        minWidth: 0,
         display: 'flex',
         alignItems: 'center',
       },
@@ -82,11 +85,13 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
         alignItems: 'center',
         gap: 8,
         marginLeft: '0 !important',
+        minWidth: 0,
       },
       '& .wizard-step__icon': {
         width: WIZARD_STEP_ICON_SIZE,
         height: WIZARD_STEP_ICON_SIZE,
         flex: `0 0 ${WIZARD_STEP_ICON_SIZE}px`,
+        marginRight: SPACING.CARD_CONTENT_GAP,
         backgroundColor: mutedStepColor,
         border: `1px solid ${themeColors.borderColor}`,
       },
@@ -99,6 +104,9 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
         fontWeight: fontWeights.medium,
         lineHeight: lineHeights.tight,
         whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        minWidth: 0,
       },
       '& .wizard-step--active .wizard-step__icon': {
         backgroundColor: activeStepColor,
@@ -123,7 +131,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
     contentSection: {
       'flex': '0 0 auto',
       'color': themeColors.fontColor,
-      'padding': `0 ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
+      'padding': `0 ${SPACING.CARD_PADDING}px 0`,
       'paddingTop': '0 !important',
       '& label, & label h5, & label span, & h5, & h4, & .MuiSvgIcon-root, & .fa': {
         color: `${themeColors.fontColor} !important`,

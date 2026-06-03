@@ -3,6 +3,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, lineHeights } from '@/styles/fonts'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 
 type SsaListPageStylesParams = {
   isDark: boolean
@@ -21,18 +22,7 @@ export const useStyles = makeStyles<SsaListPageStylesParams>()((_, { isDark, the
       fontFamily,
       paddingTop: SPACING.PAGE,
     },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.CARD_PADDING}px 20px`,
-      marginBottom: `${SPACING.CARD_GAP}px`,
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,
