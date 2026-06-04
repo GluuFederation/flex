@@ -69,7 +69,7 @@ export const JWKS_WRITE = BASE_URL + '/config/jwks.write'
 export const FIDO_READ = BASE_URL + '/config/fido2.readonly'
 export const FIDO_WRITE = BASE_URL + '/config/fido2.write'
 export const FIDO_DELETE = BASE_URL + '/config/fido2.delete'
-export const FIDO_ADMIN = BASE_URL + '/config/fido2.admin'
+export const FIDO_METRICS_READ = BASE_URL + '/config/fido2-metrics.readonly'
 
 export const JANS_LOCK_READ = BASE_URL + '/lock-config.readonly'
 export const JANS_LOCK_WRITE = BASE_URL + '/lock-config.write'

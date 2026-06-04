@@ -11,11 +11,7 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { MAU: 'mau' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: { mau: [] },
+  ADMIN_UI_RESOURCES: { FIDO: 'FIDO' },
 }))
 
 jest.mock('Plugins/fido/components/Metrics/hooks', () => ({

@@ -9,7 +9,7 @@ import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { GluuButton } from '@/components/GluuButton'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { FIDO_METRICS_READ } from '@/utils/PermChecker'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -24,8 +24,8 @@ import {
 import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
 import type { MetricsDateRange } from './types'
 
-const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.Metrics
-const METRICS_SCOPES = CEDAR_RESOURCE_SCOPES[METRICS_RESOURCE_ID]
+const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
+const METRICS_SCOPES = [{ permission: FIDO_METRICS_READ, resourceId: METRICS_RESOURCE_ID }]
 
 const MetricsPage: React.FC = () => {
   const { t } = useTranslation()

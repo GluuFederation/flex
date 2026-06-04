@@ -1,4 +1,4 @@
-import { FIDO_READ, FIDO_WRITE, FIDO_ADMIN } from 'Utils/PermChecker'
+import { FIDO_READ, FIDO_WRITE, FIDO_METRICS_READ } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
@@ -22,8 +22,8 @@ const pluginMetadata = {
         {
           title: 'menus.metrics',
           path: ROUTES.FIDO_METRICS,
-          permission: FIDO_ADMIN,
-          resourceKey: ADMIN_UI_RESOURCES.Metrics,
+          permission: FIDO_METRICS_READ,
+          resourceKey: ADMIN_UI_RESOURCES.FIDO,
         },
       ],
     },
@@ -38,8 +38,8 @@ const pluginMetadata = {
     {
       component: MetricsPage,
       path: ROUTES.FIDO_METRICS,
-      permission: FIDO_ADMIN,
-      resourceKey: ADMIN_UI_RESOURCES.Metrics,
+      permission: FIDO_METRICS_READ,
+      resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },
   ],
   reducers: [],
