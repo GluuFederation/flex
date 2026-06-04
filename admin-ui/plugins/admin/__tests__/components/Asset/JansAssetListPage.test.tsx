@@ -8,7 +8,7 @@ import JansAssetListPage from 'Plugins/admin/components/Assets/JansAssetListPage
 import { useCedarling } from '@/cedarling'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
-jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
+jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
 jest.mock('@/cedarling', () => {
   const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
@@ -65,9 +65,6 @@ const store = configureStore({
     authReducer: (state = { permissions: [] }) => state,
     assetReducer: (
       state = {
-        loading: false,
-        saveOperationFlag: false,
-        errorInSaveOperationFlag: false,
         selectedAsset: {},
       },
     ) => state,

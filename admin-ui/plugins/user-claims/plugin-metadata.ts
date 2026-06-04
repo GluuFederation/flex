@@ -45,7 +45,6 @@ const pluginMetadata = {
     },
   ],
   reducers: [],
-  sagas: [],
 }
 
 export default pluginMetadata

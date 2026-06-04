@@ -3,6 +3,6 @@ export const loadPluginMetadata = () => ({
     menus: [],
     routes: [],
     reducers: [],
-    sagas: [],
+    listeners: [],
   },
 })

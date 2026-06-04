@@ -10,18 +10,10 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import Toggle from 'react-toggle'
 import { useTranslation } from 'react-i18next'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useQueryClient } from '@tanstack/react-query'
-import { getGetAllAssetsQueryKey } from 'JansConfigApi'
-import { invalidateQueriesByKey } from '@/utils/queryUtils'
-import { useAssetServices } from './hooks'
+import { useAppSelector } from '@/redux/hooks'
+import { useAssetServices, useCreateAssetWithAudit, useUpdateAssetWithAudit } from './hooks'
 import { useParams } from 'react-router'
-import {
-  createJansAsset,
-  updateJansAsset,
-  resetFlags,
-} from 'Plugins/admin/redux/features/AssetSlice'
-import { buildPayload, type UserAction, type ActionData } from 'Utils/PermChecker'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ASSET } from 'Utils/ApiResources'
 import {
   AssetFormValues,
@@ -33,10 +25,6 @@ import {
   SubmitFormCallback,
 } from './types/FormTypes'
 import { AssetFormData } from './types/AssetApiTypes'
-import {
-  CreateAssetActionPayload,
-  UpdateAssetActionPayload,
-} from '../../redux/features/types/asset'
 import { getAssetValidationSchema } from 'Plugins/admin/helper/validations/assetValidation'
 import { buildAssetInitialValues } from 'Plugins/admin/helper/assets'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -48,21 +36,17 @@ import { T_KEYS } from './constants'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<RouteParams>()
-  interface AssetUserAction {
-    action_message?: string
-    action_data?: AssetFormData
-    [key: string]: AssetFormData | string | undefined
-  }
-  const userAction: AssetUserAction = {}
-  const { selectedAsset, saveOperationFlag, errorInSaveOperationFlag } = useAppSelector(
-    (state) => state.assetReducer!,
-  )
+  const { selectedAsset } = useAppSelector((state) => state.assetReducer!)
   const { data: servicesData } = useAssetServices()
   const services = servicesData ?? []
   const { t, i18n } = useTranslation()
-  const dispatch = useAppDispatch()
-  const queryClient = useQueryClient()
   const { navigateBack } = useAppNavigation()
+  const { createAsset, isLoading: isCreating } = useCreateAssetWithAudit({
+    onSuccess: () => navigateBack(ROUTES.ASSETS_LIST),
+  })
+  const { updateAsset, isLoading: isUpdating } = useUpdateAssetWithAudit({
+    onSuccess: () => navigateBack(ROUTES.ASSETS_LIST),
+  })
   const [showCommitDialog, setShowCommitDialog] = useState<boolean>(false)
 
   const { state: themeState } = useTheme()
@@ -152,30 +136,13 @@ const AssetForm: React.FC = () => {
         payload['inum'] = asset?.inum
         payload['dn'] = asset?.dn
         payload['baseDn'] = asset?.baseDn
-        buildPayload(userAction as UserAction, userMessage, payload as ActionData)
-        dispatch(updateJansAsset({ action: userAction } as UpdateAssetActionPayload))
+        void updateAsset(payload, userMessage).catch(() => {})
       } else {
-        buildPayload(userAction as UserAction, userMessage, payload as ActionData)
-        dispatch(createJansAsset({ action: userAction } as CreateAssetActionPayload))
+        void createAsset(payload, userMessage).catch(() => {})
       }
     },
-    [closeCommitDialog, formik, id, selectedAsset, userAction, dispatch],
+    [closeCommitDialog, formik, id, selectedAsset, createAsset, updateAsset],
   )
-
-  useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) {
-      invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
-      navigateBack(ROUTES.ASSETS_LIST)
-      dispatch(resetFlags())
-    }
-  }, [
-    saveOperationFlag,
-    errorInSaveOperationFlag,
-    queryClient,
-    navigateBack,
-    dispatch,
-    getGetAllAssetsQueryKey,
-  ])
 
   const handleCancel = useCallback(() => {
     formik.resetForm({ values: initialValues })
@@ -187,7 +154,7 @@ const AssetForm: React.FC = () => {
   }, [navigateBack])
 
   return (
-    <>
+    <GluuLoader blocking={isCreating || isUpdating}>
       <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
         <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
           <div
@@ -317,7 +284,7 @@ const AssetForm: React.FC = () => {
         modal={showCommitDialog}
         onAccept={submitForm}
       />
-    </>
+    </GluuLoader>
   )
 }
 

@@ -2,7 +2,7 @@ import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ProfileDetails } from 'Routes/Apps/Profile/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { CedarPermissionsState } from '@/cedarling/types'
-import type { WebhookTriggerResponseItem } from 'Plugins/admin/redux/types'
+import type { WebhookSliceState } from 'Plugins/admin/redux/types'
 
 type BackendStatus = {
   active: boolean
@@ -137,28 +137,6 @@ type SessionState = {
 
 // Admin plugin state types
 
-// Webhook State
-type WebhookEntry = {
-  inum?: string
-  displayName?: string
-  url?: string
-  httpMethod?: string
-  httpHeaders?: Record<string, string>
-  httpRequestBody?: string
-  jansEnabled?: boolean
-  [key: string]: JsonValue | Record<string, string> | undefined
-}
-
-type WebhookState = {
-  loadingWebhooks: boolean
-  featureWebhooks: WebhookEntry[]
-  webhookModal: boolean
-  triggerWebhookInProgress: boolean
-  webhookTriggerResults: WebhookTriggerResponseItem[]
-  featureToTrigger: string
-  showWebhookExecutionDialog: boolean
-}
-
 // Asset State
 type AssetDocument = {
   inum?: string
@@ -171,9 +149,6 @@ type AssetDocument = {
 }
 
 type AssetState = {
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
   selectedAsset: AssetDocument | Record<string, never>
 }
 
@@ -239,7 +214,7 @@ type CoreAppState = {
 // Admin plugin reducers
 type AdminPluginState = {
   mauReducer: MauState
-  webhookReducer: WebhookState
+  webhookReducer: WebhookSliceState
   assetReducer: AssetState
 }
 

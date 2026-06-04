@@ -9,7 +9,7 @@ import { SHARED_CEDAR_CONSTANTS as mockSHARED_CEDAR_CONSTANTS } from './assetCed
 export { SHARED_CEDAR_CONSTANTS } from './assetCedarTestConstants'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
-jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
+jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -34,6 +34,8 @@ jest.mock('@/cedarling/constants/resourceScopes', () => ({
 
 jest.mock('Plugins/admin/components/Assets/hooks', () => ({
   useAssetServices: jest.fn(() => ({ data: ['service1', 'service2'], isLoading: false })),
+  useCreateAssetWithAudit: jest.fn(() => ({ createAsset: jest.fn(), isLoading: false })),
+  useUpdateAssetWithAudit: jest.fn(() => ({ updateAsset: jest.fn(), isLoading: false })),
 }))
 
 jest.mock('JansConfigApi', () => ({
@@ -47,9 +49,6 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 const defaultAssetReducerState = {
-  loading: false,
-  saveOperationFlag: false,
-  errorInSaveOperationFlag: false,
   selectedAsset: {},
 }
 
