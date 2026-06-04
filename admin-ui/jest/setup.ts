@@ -30,7 +30,8 @@ jest
       msg.includes('Problems posting user action audit log') ||
       msg.includes('suspended resource finished loading') ||
       (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade')) ||
-      msg.includes('not wrapped in act')
+      msg.includes('not wrapped in act') ||
+      msg.includes('Not implemented: navigation')
 
     if (shouldSuppress) return
     originalError(...args)

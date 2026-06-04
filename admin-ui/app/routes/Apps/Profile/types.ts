@@ -17,6 +17,13 @@ export type ProfileDetails = {
   [key: string]: ProfileDetailsValue | CustomAttribute[]
 }
 
+export type UseProfileDetailsResult = {
+  profileDetails: ProfileDetails | undefined
+  loading: boolean
+  surname?: string
+  roles: string
+}
+
 export type InfoRowProps = {
   label: string
   value?: string
