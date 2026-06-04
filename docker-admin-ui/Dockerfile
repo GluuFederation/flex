@@ -175,7 +175,8 @@ RUN chmod +x /app/scripts/entrypoint.sh
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN cp /app/templates/admin-ui/nginx-default.conf /etc/nginx/http.d/default.conf \
+RUN cp /app/templates/nginx/default.conf /etc/nginx/http.d/default.conf \
+    && cp /app/templates/nginx/admin-ui-location.conf /etc/nginx/admin-ui-location.conf \
     && touch /run/nginx/nginx.pid
 
 
@@ -192,6 +193,7 @@ RUN adduser -s /bin/sh -h /home/1000 -D -G root -u 1000 1000
 RUN chown -R 1000:0 /var/lib/nginx \
     && chown 1000:0 /run/nginx/nginx.pid \
     && chown 1000:0 /etc/nginx/http.d/default.conf \
+    && chown 1000:0 /etc/nginx/admin-ui-location.conf \
     && chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /var/log/nginx \
     && chown -R 1000:0 /etc/jans \
