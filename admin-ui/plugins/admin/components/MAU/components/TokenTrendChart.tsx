@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
+import { OPACITY } from '@/constants'
 import {
   XAxis,
   YAxis,
@@ -76,7 +77,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               stackId="1"
               stroke={chartColors.trendClientCredentials}
               fill={chartColors.trendClientCredentials}
-              fillOpacity={0.6}
+              fillOpacity={OPACITY.PLACEHOLDER}
             />
             <Area
               type="monotone"
@@ -85,7 +86,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               stackId="1"
               stroke={chartColors.trendAuthCodeAccess}
               fill={chartColors.trendAuthCodeAccess}
-              fillOpacity={0.6}
+              fillOpacity={OPACITY.PLACEHOLDER}
             />
             <Area
               type="monotone"
@@ -94,7 +95,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
               stackId="1"
               stroke={chartColors.trendAuthCodeId}
               fill={chartColors.trendAuthCodeId}
-              fillOpacity={0.6}
+              fillOpacity={OPACITY.PLACEHOLDER}
             />
           </AreaChart>
         </ResponsiveContainer>

@@ -1,5 +1,5 @@
 import type { ClientFormInitialData, ClientScriptField } from './types'
-import type { MultiSelectOption } from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import { createClientFieldSection } from 'Plugins/auth-server/utils'
 import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import { SCRIPT_TYPES } from '@/constants'
@@ -204,7 +204,7 @@ export const CIBA_DELIVERY_MODES = ['poll', 'push', 'ping']
 export const APPLICATION_TYPE_OPTIONS = ['web', 'native']
 export const SUBJECT_TYPE_OPTIONS = ['pairwise', 'public']
 
-export const GRANT_TYPE_OPTIONS: MultiSelectOption[] = [
+export const GRANT_TYPE_OPTIONS: AutocompleteOption[] = [
   { value: 'authorization_code', label: 'authorization_code' },
   { value: 'implicit', label: 'implicit' },
   { value: 'refresh_token', label: 'refresh_token' },
@@ -213,7 +213,7 @@ export const GRANT_TYPE_OPTIONS: MultiSelectOption[] = [
   { value: 'urn:ietf:params:oauth:grant-type:uma-ticket', label: 'uma-ticket' },
 ]
 
-export const RESPONSE_TYPE_OPTIONS: MultiSelectOption[] = [
+export const RESPONSE_TYPE_OPTIONS: AutocompleteOption[] = [
   { value: 'code', label: 'code' },
   { value: 'token', label: 'token' },
   { value: 'id_token', label: 'id_token' },

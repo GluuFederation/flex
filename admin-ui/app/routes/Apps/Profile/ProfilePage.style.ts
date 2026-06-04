@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, MAPPING_SPACING } from '@/constants/ui'
+import { BORDER_RADIUS, MAPPING_SPACING, OPACITY } from '@/constants/ui'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import customColors from '@/customColors'
@@ -148,7 +148,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       flexShrink: 0,
       borderWidth: '2px 0 0 0',
       borderColor: themeColors.navbar.border,
-      opacity: 0.75,
+      opacity: OPACITY.OVERLAY,
     },
     sectionTitle: {
       color: themeColors.sectionTitleColor,

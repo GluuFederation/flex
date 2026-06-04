@@ -1,5 +1,6 @@
 import { createTimeline, stagger } from 'animejs'
 import type { Timeline } from 'animejs'
+import { OPACITY } from '@/constants'
 
 interface SidebarEntryAnimateOptions {
   duration?: number
@@ -88,7 +89,7 @@ export default class SidebarEntryAnimate {
       if (sidebarSectionsPreMenu.length > 0) {
         timeline.add(sidebarSectionsPreMenu, {
           delay: stagger(staggerDelay),
-          opacity: [0, 1],
+          opacity: [OPACITY.NONE, OPACITY.FULL],
         })
       }
 
@@ -97,17 +98,17 @@ export default class SidebarEntryAnimate {
           delay: stagger(staggerDelay),
           onBegin: () => {
             if (capturedMenuSection) {
-              capturedMenuSection.style.opacity = '1'
+              capturedMenuSection.style.opacity = String(OPACITY.FULL)
             }
           },
-          opacity: [0, 1],
+          opacity: [OPACITY.NONE, OPACITY.FULL],
         })
       }
 
       if (sidebarSectionsPostMenu.length > 0) {
         timeline.add(sidebarSectionsPostMenu, {
           delay: stagger(staggerDelay),
-          opacity: [0, 1],
+          opacity: [OPACITY.NONE, OPACITY.FULL],
         })
       }
 

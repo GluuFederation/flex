@@ -37,6 +37,9 @@ export const useStyles = makeStyles<ClientLogoutPanelStyleParams>()((
 
   return {
     ...layoutStyles,
+    cardFieldSpacing: {
+      marginBottom: ERROR_SPACE,
+    },
     dynamicListPadding: {
       paddingTop: `${SPACING.CARD_PADDING}px`,
     },

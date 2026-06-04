@@ -4,7 +4,7 @@ import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTranslation } from 'react-i18next'
@@ -21,10 +21,7 @@ import {
   ERROR_COL_STYLE,
   ERROR_TEXT_STYLE,
 } from './styles'
-import type {
-  MultiSelectOption,
-  GluuMultiSelectRowFormik,
-} from 'Routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from '../types'
 import type { JsonPatch } from 'JansConfigApi'
 import {
@@ -298,22 +295,11 @@ const JsonPropertyBuilderConfigApi = ({
     [propValue, schema],
   )
 
-  const selectOptions = useMemo<MultiSelectOption[]>(() => {
+  const selectOptions = useMemo<AutocompleteOption[]>(() => {
     if (!isStringArray(propValue) && !shouldRenderAsStringArray(schema)) return []
     const enumOptions = Array.from(new Set(schema?.items?.enum || arrayValues))
     return enumOptions.map((v: string) => ({ value: v, label: v }))
   }, [propValue, schema, arrayValues])
-
-  const arrayFormikAdapter = useMemo<GluuMultiSelectRowFormik>(
-    () => ({
-      setFieldValue: (_field: string, newValues: string[]) => {
-        if (!path) return
-        handler({ op: 'replace', path, value: newValues })
-      },
-      setFieldTouched: () => {},
-    }),
-    [handler, path],
-  )
 
   const sortedObjectKeys = useMemo(() => {
     if (!isObject(propValue)) return []
@@ -335,14 +321,16 @@ const JsonPropertyBuilderConfigApi = ({
   if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (
       <>
-        <GluuMultiSelectRow
-          label={getLocalizedLabelKey(propKey)}
+        <GluuAutocomplete
+          label={t(getLocalizedLabelKey(propKey))}
           name={tooltipPropKey || propKey}
           value={arrayValues}
-          formik={arrayFormikAdapter}
+          onChange={(newValues) => {
+            if (!path) return
+            handler({ op: 'replace', path, value: newValues })
+          }}
           options={selectOptions}
-          lsize={lSize}
-          rsize={lSize}
+          allowCustom={!schema?.items?.enum}
           disabled={disabled}
         />
         {renderError()}

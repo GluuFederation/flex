@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily } from '@/styles/fonts'
 import customColors from '@/customColors'
 
@@ -29,18 +30,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     editIcon: { fontSize: ICON_SIZE.SM },
     deleteIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.PAGE}px 20px`,
-      marginBottom: '20px',
-      position: 'relative',
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box',
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

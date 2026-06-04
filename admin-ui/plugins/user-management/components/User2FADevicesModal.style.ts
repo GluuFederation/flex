@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-import { BORDER_RADIUS, ICON_SIZE } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, OPACITY } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -56,9 +56,9 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       'background': 'transparent',
       'color': themeColors.fontColor,
       'cursor': 'pointer',
-      'opacity': 1,
+      'opacity': OPACITY.FULL,
       '&:hover': {
-        opacity: 0.8,
+        opacity: OPACITY.OVERLAY,
       },
     },
     modalTitle: {

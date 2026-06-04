@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Col, FormGroup, Input, GluuDynamicList } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuMultiSelectRow from 'Routes/Apps/Gluu/GluuMultiSelectRow'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
@@ -28,6 +27,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import {
   appendDynamicListItem,
+  buildGrantTypeOptions,
   getClientSectionFields,
   mapDynamicListValues,
   uriValidator,
@@ -103,17 +103,18 @@ const ClientBasicPanel = ({
     }))
   }, [clientScopesData, searchScopesData])
 
-  const scopeNameOptions = useMemo(
-    () => allScopeOptions.map((s) => s.displayName).filter((n): n is string => Boolean(n)),
+  const scopeOptions = useMemo(
+    () =>
+      allScopeOptions
+        .filter((s) => Boolean(s.dn))
+        .map((s) => ({ value: s.dn as string, label: s.displayName ?? (s.dn as string) })),
     [allScopeOptions],
   )
 
-  const selectedScopeNames = useMemo(() => {
-    const selectedDns = (formik.values.scopes as string[] | undefined) ?? []
-    return selectedDns
-      .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.displayName)
-      .filter((n): n is string => Boolean(n))
-  }, [formik.values.scopes, allScopeOptions])
+  const selectedScopeDns = useMemo(
+    () => (formik.values.scopes as string[] | undefined) ?? [],
+    [formik.values.scopes],
+  )
 
   const tokenEndpointAuthMethod = useMemo(() => {
     const supportedMethods = oidcConfiguration?.tokenEndpointAuthMethodsSupported ?? []
@@ -124,17 +125,25 @@ const ClientBasicPanel = ({
     return supportedMethods
   }, [oidcConfiguration?.tokenEndpointAuthMethodsSupported, formik.values.tokenEndpointAuthMethod])
 
+  const grantTypeOptions = useMemo(
+    () =>
+      buildGrantTypeOptions(
+        oidcConfiguration?.grantTypesSupported,
+        formik.values.grantTypes as string[] | undefined,
+        GRANT_TYPE_OPTIONS.map((option) => option.value),
+      ),
+    [oidcConfiguration?.grantTypesSupported, formik.values.grantTypes],
+  )
+
   const [redirectUriItems, setRedirectUriItems] = useState<GluuDynamicListItem[]>([])
   const isRedirectUriSyncingRef = useRef(false)
 
   const handleScopeChange = useCallback(
-    (selectedDisplayNames: string[]) => {
-      const selectedOptions = selectedDisplayNames
-        .map((displayName) => allScopeOptions.find((s) => s.displayName === displayName))
-        .filter((s): s is (typeof allScopeOptions)[number] => Boolean(s?.dn))
-      const dns = selectedOptions.map((s) => s.dn as string)
-      const names = selectedOptions.map((s) => s.name ?? '').filter(Boolean)
-      formik.setFieldValue('scopes', dns)
+    (selectedDns: string[]) => {
+      const names = selectedDns
+        .map((dn) => allScopeOptions.find((s) => s.dn === dn)?.name ?? '')
+        .filter(Boolean)
+      formik.setFieldValue('scopes', selectedDns)
       setModifiedFields((prev) => ({
         ...prev,
         [CLIENT_BASIC_MODIFIED_FIELDS.SCOPES]: names,
@@ -407,40 +416,48 @@ const ClientBasicPanel = ({
     ),
     responseTypes: (
       <div className={classes.fieldItem}>
-        <GluuMultiSelectRow
-          name="responseTypes"
-          label="fields.response_types"
-          formik={formik}
-          value={formik.values.responseTypes as string[] | undefined}
-          options={RESPONSE_TYPE_OPTIONS}
-          doc_category={DOC_CATEGORY}
-          lsize={12}
-          rsize={12}
-          disabled={viewOnly}
-          placeholder={getFieldPlaceholder(t, 'fields.response_types')}
-          showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
-          errorMessage={getFieldError('responseTypes')}
-          helperText={isFieldTouched('responseTypes') ? t('messages.multi_select_hint') : undefined}
-        />
+        <div className={classes.outerLabel}>{t('fields.response_types')}:</div>
+        <div className={classes.scopeCard}>
+          <GluuAutocomplete
+            name="responseTypes"
+            label={t('fields.response_types')}
+            value={(formik.values.responseTypes as string[] | undefined) ?? []}
+            options={RESPONSE_TYPE_OPTIONS.map((option) => option.value)}
+            onChange={(vals) => formik.setFieldValue('responseTypes', vals)}
+            onBlur={() => formik.setFieldTouched?.('responseTypes', true, false)}
+            disabled={viewOnly}
+            placeholder={getFieldPlaceholder(t, 'fields.response_types')}
+            showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
+            errorMessage={getFieldError('responseTypes')}
+            doc_category={DOC_CATEGORY}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
+            withWrapper={false}
+            hideLabel
+          />
+        </div>
       </div>
     ),
     grantTypes: (
       <div className={classes.fieldItem}>
-        <GluuMultiSelectRow
-          name="grantTypes"
-          label="fields.grant_types"
-          formik={formik}
-          value={formik.values.grantTypes as string[] | undefined}
-          options={GRANT_TYPE_OPTIONS}
-          doc_category={DOC_CATEGORY}
-          lsize={12}
-          rsize={12}
-          disabled={viewOnly}
-          placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
-          showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
-          errorMessage={getFieldError('grantTypes')}
-          helperText={isFieldTouched('grantTypes') ? t('messages.multi_select_hint') : undefined}
-        />
+        <div className={classes.outerLabel}>{t('fields.grant_types')}:</div>
+        <div className={classes.scopeCard}>
+          <GluuAutocomplete
+            name="grantTypes"
+            label={t('fields.grant_types')}
+            value={(formik.values.grantTypes as string[] | undefined) ?? []}
+            options={grantTypeOptions}
+            onChange={(vals) => formik.setFieldValue('grantTypes', vals)}
+            onBlur={() => formik.setFieldTouched?.('grantTypes', true, false)}
+            disabled={viewOnly}
+            placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+            showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
+            errorMessage={getFieldError('grantTypes')}
+            doc_category={DOC_CATEGORY}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
+            withWrapper={false}
+            hideLabel
+          />
+        </div>
       </div>
     ),
     isActive: (
@@ -522,8 +539,8 @@ const ClientBasicPanel = ({
           <GluuAutocomplete
             name="scopes"
             label={t('fields.scopes')}
-            value={selectedScopeNames}
-            options={scopeNameOptions}
+            value={selectedScopeDns}
+            options={scopeOptions}
             onChange={handleScopeChange}
             onBlur={() => formik.setFieldTouched?.('scopes', true, false)}
             onSearch={setScopeSearchQuery}
@@ -531,8 +548,7 @@ const ClientBasicPanel = ({
             disabled={viewOnly}
             placeholder={t('placeholders.search_scope')}
             doc_category={DOC_CATEGORY}
-            inputBackgroundColor={themeColors.settings?.cardBackground}
-            cardBackgroundColor={themeColors.settings?.cardBackground}
+            surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
             withWrapper={false}
             hideLabel
           />

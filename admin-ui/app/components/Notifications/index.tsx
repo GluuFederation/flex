@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
+import { OPACITY } from '@/constants'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDropdown } from '../GluuDropdown'
@@ -49,7 +50,7 @@ const Notifications = () => {
         'alignItems': 'center',
         'justifyContent': 'center',
         '&:hover': {
-          opacity: 0.8,
+          opacity: OPACITY.OVERLAY,
         },
       }}
       onMouseDown={(e) => {

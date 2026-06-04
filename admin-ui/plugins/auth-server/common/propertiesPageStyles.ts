@@ -4,6 +4,7 @@ import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, OPACITY, SPACING } from '@/con
 import customColors, { hexToRgb } from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createFormGroupOverrides, createFormLabelStyles } from '@/styles/formStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 
 export type PropertiesStyleProps = {
   isDark: boolean
@@ -25,18 +26,7 @@ export const createPropertiesPageStyles = (
   const accordionHeaderBg = isDark ? customColors.darkInputBg : themeColors.inputBackground
 
   return {
-    searchCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.SECTION_GAP}px ${SPACING.CARD_PADDING}px`,
-      marginBottom: SPACING.CARD_GAP,
-      position: 'relative' as const,
-      zIndex: 0,
-      overflow: 'visible',
-      boxSizing: 'border-box' as const,
-    },
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative' as const,
       zIndex: 2,

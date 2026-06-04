@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuButton } from '@/components'
+import { OPACITY } from '@/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -373,7 +374,7 @@ const PasswordChangeModal = ({
                   textColor={themeColors.formFooter.back.textColor}
                   borderColor={themeColors.formFooter.back.borderColor}
                   useOpacityOnHover
-                  hoverOpacity={0.85}
+                  hoverOpacity={OPACITY.OVERLAY}
                   style={{
                     minHeight: BUTTON_STYLES.height,
                     padding: `${BUTTON_STYLES.paddingY}px ${BUTTON_STYLES.paddingX}px`,

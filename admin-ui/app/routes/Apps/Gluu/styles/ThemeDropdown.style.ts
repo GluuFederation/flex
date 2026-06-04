@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
+import { OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import {
   createChevronStyles,
@@ -26,7 +27,7 @@ export const useStyles = makeStyles<{ isDark: boolean }>()((_theme, { isDark }) 
     'color': isDark ? customColors.white : customColors.textSecondary,
     ...NO_TEXT_SELECT,
     '&:hover': {
-      opacity: 0.8,
+      opacity: OPACITY.OVERLAY,
     },
   },
   chevron: createChevronStyles(),

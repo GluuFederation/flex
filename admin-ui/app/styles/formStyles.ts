@@ -1,4 +1,4 @@
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, OPACITY } from '@/constants'
 import { fontFamily, fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 
 type InfoAlertColors = {
@@ -100,7 +100,7 @@ export const createFormInputFocusStyles = (colors: InputStyleColors) => ({
 
 export const createFormInputPlaceholderStyles = (textMuted: string) => ({
   color: `${textMuted} !important`,
-  opacity: 1,
+  opacity: OPACITY.FULL,
 })
 
 export const createFormInputAutofillStyles = (colors: InputStyleColors) => ({

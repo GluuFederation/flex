@@ -3,7 +3,7 @@ import type { Accordion } from 'Components'
 import type React from 'react'
 import type { GenericItem } from '@/redux/types'
 import type { FormikErrors, FormikTouched } from 'formik'
-import { MultiSelectOption } from '@/routes/Apps/Gluu/types/GluuMultiSelectRow.types'
+import type { AutocompleteOption } from '@/routes/Apps/Gluu/types/GluuAutocomplete.types'
 
 export type AppConfiguration = {
   [key: string]: string | number | boolean | string[] | AppConfiguration | null | undefined
@@ -21,21 +21,22 @@ export type StringArrayFieldProps = {
   propKey: string
   label: string
   values: string[]
-  options: MultiSelectOption[]
+  options: AutocompleteOption[]
   path: string
   handler: (patch: JsonPatch) => void
-  lSize: number
   formResetKey: number
+  allowCustom?: boolean
 }
 
 export type ArrayItemSelectProps = {
   index: number
   values: string[]
-  options: MultiSelectOption[]
+  options: AutocompleteOption[]
   label: string
   path: string
   handler: (patch: JsonPatch) => void
   formResetKey: number
+  allowCustom?: boolean
 }
 
 export type PropertyValue =

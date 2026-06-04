@@ -94,6 +94,8 @@ export const REGEX_WEBHOOK_URL =
 export const REGEX_CGNAT_IP_PREFIX = /^100\.(\d+)\./
 /** Matches a hostname starting with 172.x. for private IP range detection (172.16.0.0/12). Capture group [1] is the second octet. */
 export const REGEX_PRIVATE_172_IP_PREFIX = /^172\.(\d+)\./
+/** Matches the OAuth grant-type URN namespace prefix (urn:ietf:params:oauth:grant-type:); strip it to show the short grant-type name. */
+export const REGEX_GRANT_TYPE_URN_PREFIX = /^urn:ietf:params:oauth:grant-type:/
 
 /** Escapes regex-special characters in a string so it can be used literally in a RegExp. Shared helper for the factories below. */
 const escapeRegexSpecialChars = (s: string): string => {

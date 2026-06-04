@@ -2,7 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily } from '@/styles/fonts'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { getDividerOpacity, getListHoverOpacity } from '@/constants'
+import { getDividerOpacity, getListHoverOpacity, OPACITY } from '@/constants'
 
 interface AvailableClaimsPanelStylesParams {
   themeColors: ThemeConfig
@@ -91,7 +91,7 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
       'color': themeColors.fontColor,
       'fontSize': 16,
       '&:hover': {
-        opacity: 0.8,
+        opacity: OPACITY.OVERLAY,
       },
     },
     list: {

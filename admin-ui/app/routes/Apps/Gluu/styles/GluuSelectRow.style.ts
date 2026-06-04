@@ -60,7 +60,7 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
     error: {
       display: 'block',
       color: customColors.accentRed,
-      marginTop: 4,
+      margin: '1px 2px',
       fontSize: 12,
     },
     autocompleteRoot: {
