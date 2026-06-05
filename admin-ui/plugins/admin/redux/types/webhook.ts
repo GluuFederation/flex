@@ -1,4 +1,3 @@
-import type { WebhookEntry } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type WebhookTriggerResponseItem = {
@@ -35,8 +34,6 @@ type TriggerWebhookActionPayload = {
 export type TriggerWebhookReducerPayload = TriggerPayloadActionPayload | TriggerWebhookActionPayload
 
 export type WebhookSliceState = {
-  loadingWebhooks: boolean
-  featureWebhooks: WebhookEntry[]
   webhookModal: boolean
   triggerWebhookInProgress: boolean
   webhookTriggerResults: WebhookTriggerResponseItem[]

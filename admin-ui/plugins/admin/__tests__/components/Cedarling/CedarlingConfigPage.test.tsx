@@ -7,7 +7,7 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import CedarlingConfigPage from 'Plugins/admin/components/Cedarling/CedarlingConfigPage'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
-jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
+jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({

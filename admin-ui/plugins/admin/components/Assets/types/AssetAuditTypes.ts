@@ -7,7 +7,10 @@ export type AssetAuditActionData = BaseAuditActionData
 
 export type AssetAuditLogActionPayload = {
   action_message?: string
-  action_data?: Record<string, string | number | boolean | object | null>
+  action_data?: Record<
+    string,
+    string | number | boolean | object | string[] | File | Blob | null | undefined
+  >
 }
 
 export type SanitizableValue = JsonValue | File | Blob | undefined

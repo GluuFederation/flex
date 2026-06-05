@@ -5,11 +5,9 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
-import { useAppSelector } from '@/redux/hooks'
 import AssetForm from './AssetForm'
 import { useStyles } from './JansAssetFormPage.style'
 import { T_KEYS } from './constants'
@@ -31,20 +29,16 @@ const JansAssetAddPage: React.FC = () => {
     [hasCedarReadPermission],
   )
 
-  const loading = useAppSelector((state) => state.assetReducer?.loading ?? false)
-
   return (
-    <GluuLoader blocking={loading}>
-      <GluuPageContent>
-        <GluuViewWrapper canShow={canReadAssets}>
-          <div className={classes.formCard}>
-            <div className={classes.content}>
-              <AssetForm />
-            </div>
+    <GluuPageContent>
+      <GluuViewWrapper canShow={canReadAssets}>
+        <div className={classes.formCard}>
+          <div className={classes.content}>
+            <AssetForm />
           </div>
-        </GluuViewWrapper>
-      </GluuPageContent>
-    </GluuLoader>
+        </div>
+      </GluuViewWrapper>
+    </GluuPageContent>
   )
 }
 

@@ -1,2 +1,6 @@
-export { useDeleteAssetWithAudit } from './useAssetMutations'
+export {
+  useDeleteAssetWithAudit,
+  useCreateAssetWithAudit,
+  useUpdateAssetWithAudit,
+} from './useAssetMutations'
 export { useAssetServices } from './useAssetQueries'

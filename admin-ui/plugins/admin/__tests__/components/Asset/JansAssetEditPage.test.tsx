@@ -13,9 +13,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const assetReducerState = {
-  loading: false,
-  saveOperationFlag: false,
-  errorInSaveOperationFlag: false,
   selectedAsset: {
     inum: 'test-inum-123',
     fileName: 'test-asset',
