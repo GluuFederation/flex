@@ -108,16 +108,14 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
           })),
         })) as WebhookTriggerResponseItem[]
 
-        const enrichedResults = (responseItems ?? [])
-          .map((body: WebhookTriggerResponseItem) => {
-            const matchedOutput = outputObject.find(
-              (output) =>
-                output.webhookId === body?.responseObject?.webhookId ||
-                output.webhookId === body?.responseObject?.inum,
-            )
-            return matchedOutput ? { ...body, url: matchedOutput.url } : null
-          })
-          .filter((item): item is WebhookTriggerResponseItem & { url: string } => item !== null)
+        const enrichedResults = (responseItems ?? []).map((body: WebhookTriggerResponseItem) => {
+          const matchedOutput = outputObject.find(
+            (output) =>
+              output.webhookId === body?.responseObject?.webhookId ||
+              output.webhookId === body?.responseObject?.inum,
+          )
+          return { ...body, url: matchedOutput?.url ?? '(unknown)' }
+        })
 
         addAdditionalData(audit, FETCH, `/webhook/${featureToTrigger}`, {
           action: { action_data: { results: enrichedResults } },
@@ -138,6 +136,7 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
         addAdditionalData(audit, FETCH, `/webhook/${featureToTrigger || 'trigger'}`, {
           action: { action_data: { error: errMsg, success: false } },
         })
+        audit.status = 'error'
         await postUserAction(audit as UserActionPayload)
         dispatch(updateToast(true, 'error', errMsg || i18n.t('messages.webhook_trigger_failed')))
       } finally {
