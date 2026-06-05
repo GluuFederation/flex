@@ -21,7 +21,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) =>
   return {
     modalContainer: {
       outline: 'none',
-      minHeight: 'unset',
     },
     contentArea: {
       gap: 0,
