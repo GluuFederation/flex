@@ -8,7 +8,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
-jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
+jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
 jest.mock('JansConfigApi', () => ({
   useGetOauthOpenidClients: jest.fn(() => ({

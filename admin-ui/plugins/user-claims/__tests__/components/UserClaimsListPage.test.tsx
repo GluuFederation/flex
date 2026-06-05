@@ -8,7 +8,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import attributes from '../../utils/attributes'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
-jest.mock('Plugins/PluginSagasResolver', () => ({ __esModule: true, default: jest.fn(() => []) }))
+jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
 jest.mock('@/cedarling', () => {
   const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')

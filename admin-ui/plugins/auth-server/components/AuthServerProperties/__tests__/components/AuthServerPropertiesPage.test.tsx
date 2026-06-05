@@ -16,6 +16,7 @@ jest.mock('JansConfigApi', () => ({
   useGetAcrs: () => ({ data: { defaultAcr: 'simple' }, isLoading: false }),
   usePutAcrs: () => ({ mutateAsync: jest.fn(), isPending: false }),
   getGetAcrsQueryKey: () => ['acrs'],
+  useGetConfigScripts: () => ({ data: { entries: [] }, isSuccess: false }),
 }))
 
 jest.mock('Plugins/auth-server/services/jsonPropertiesService', () => {
@@ -67,8 +68,8 @@ const ACER_STATE = {
   acrReponse: {},
 }
 
-const SCRIPTS_STATE = {
-  scripts: [],
+const INIT_REDUCER_STATE = {
+  isTimeout: false,
 }
 
 const INIT_STATE = {
@@ -88,7 +89,7 @@ const store = configureStore({
     authReducer: (state = INIT_STATE) => state,
     noReducer: (state = {}) => state,
     acrReducer: (state = ACER_STATE) => state,
-    initReducer: (state = SCRIPTS_STATE) => state,
+    initReducer: (state = INIT_REDUCER_STATE) => state,
     cedarPermissions: (
       state = { permissions: {}, loading: false, error: null, initialized: true },
     ) => state,

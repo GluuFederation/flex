@@ -4,14 +4,12 @@
     "plugins/*/plugin-metadata.{ts,tsx}",
     "plugins/PluginMenuResolver.ts",
     "plugins/PluginReducersResolver.ts",
-    "plugins/PluginSagasResolver.ts",
-    "script/*.ts",
-    "orval.config.ts"
+    "plugins/PluginListenersResolver.ts",
+    "script/*.ts"
   ],
   "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
   "ignore": ["**/__tests__/**"],
   "ignoreDependencies": ["babel-preset-jest", "markdownlint-cli2"],
-  "ignoreBinaries": ["printf"],
   "rules": {
     "enumMembers": "off",
     "duplicates": "off"

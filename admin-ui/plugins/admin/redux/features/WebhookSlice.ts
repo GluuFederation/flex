@@ -6,8 +6,6 @@ import type {
   TriggerWebhookReducerPayload,
 } from '../types'
 
-export type { WebhookSliceState }
-
 const initialState: WebhookSliceState = {
   webhookModal: false,
   triggerWebhookInProgress: false,

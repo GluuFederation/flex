@@ -54,13 +54,7 @@ export type GenericItem = {
   [key: string]: string | number | boolean | string[] | number[] | boolean[] | null
 }
 
-export type PagedResult = {
-  entries?: GenericItem[]
-  totalEntriesCount?: number
-}
-
 type InitState = {
-  scripts: GenericItem[]
   isTimeout: boolean
 }
 

@@ -52,7 +52,7 @@ sequenceDiagram
 3. On a cache miss, the hook calls **Orval's mutator function `customInstance`**, defined in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts). The mutator wraps every request with a cancel token so React Query can abort in-flight calls if the component unmounts before the response arrives.
 4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)).
 5. **The HTTP request reaches the Config API.** The browser attaches the `admin-ui-session` cookie automatically (set by `POST /session` during the auth bootstrap, see [auth.md](./auth.md#admin-ui-session)). The Config API authenticates the caller off that cookie.
-6. **The Config API responds.** Errors with status `401` mean the session is missing or expired and the saga routes to re-auth. `403` is treated as a permission denial and surfaced as a toast: the user is still signed in, they just can't do this specific action (see [auth.md](./auth.md#401-vs-403)).
+6. **The Config API responds.** Errors with status `401` mean the session is missing or expired and the auth listener routes to re-auth. `403` is treated as a permission denial and surfaced as a toast: the user is still signed in, they just can't do this specific action (see [auth.md](./auth.md#401-vs-403)).
 7. **The data is written to the React Query cache** under its `queryKey` and returned to the component. The next call to the same hook anywhere in the app reuses this cache entry.
 
 Mutations (`usePutXxx`, `usePostXxx`, etc.) follow the same path but skip the cache read and explicitly invalidate query keys on success. See [React Query conventions](#react-query-conventions).
@@ -151,14 +151,14 @@ The mechanism that puts the right `window.configApiBaseUrl` in the browser is a 
 
 Every write through the Config API should produce an audit record. The Admin UI uses a small set of helpers under [`admin-ui/app/audit/`](../app/audit/) to keep audit payloads consistent across plugins:
 
-- **`useAuditContext()`** and **`getCurrentAuditContext()`**: read `client_id`, `ip_address`, and `userinfo` from the auth slice. Use the hook in components and the plain function inside sagas where you can't call hooks.
+- **`useAuditContext()`** and **`getCurrentAuditContext()`**: read `client_id`, `ip_address`, and `userinfo` from the auth slice. Use the hook in components and the plain function inside listeners and services where you can't call hooks.
 - **`createSuccessAuditInit(context, options?)`**: wraps the context into a payload tagged `status: 'success'`. Mutate it before posting to add the specific action, resource, and message.
 - **Action constants** from `@/audit/UserActionType`: `CREATE`, `UPDATE`, `DELETION`, `PATCH`, `FETCH`. Always use these constants. Never inline the string.
 - **Resource constants** are split by ownership:
   - Host-wide ones (used by code outside any single plugin) live in `@/audit`, e.g. `API_USERS`, `API_LICENSE`.
   - Plugin-specific ones live under `plugins/<name>/redux/audit/Resources`. For example, `auth-server` exports `OIDC`, `SCOPE`, `SESSION`. A plugin owns its own resource names.
 
-The audit payload is posted via `postUserAction` from the backend API helper. See [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) and look at [`app/redux/sagas/LicenseSaga.ts`](../app/redux/sagas/LicenseSaga.ts) for an end-to-end example.
+The audit payload is posted via `postUserAction` from the backend API helper. See [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) and look at [`app/redux/listeners/licenseListener.ts`](../app/redux/listeners/licenseListener.ts) for an end-to-end example.
 
 ## React Query conventions
 

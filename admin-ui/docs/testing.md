@@ -88,7 +88,7 @@ it('renders', () => {
 - Don't grant blanket `true` for both read and write in every test. Flip them off in at least one to verify the gated UI actually disappears.
 - Mock `useCedarling`, not the underlying tokens. Unmocked, Cedarling sees no tokens, returns `undefined`, and the page hides everything.
 
-## Writing a saga / reducer test
+## Writing a listener / reducer test
 
 Reducers are pure. Test directly:
 
@@ -100,7 +100,7 @@ it('reduces yourAction', () => {
 })
 ```
 
-For sagas, use `redux-saga-test-plan`'s `expectSaga`. Examples under `app/redux/sagas/__tests__/`.
+For a listener, test its effect as a plain async function: pass a `jest.fn()` as dispatch and assert the actions it dispatches. Example under `app/redux/listeners/__tests__/authListener.test.ts`.
 
 ## Conventions
 
