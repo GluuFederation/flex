@@ -5,16 +5,19 @@ import {
   deleteAdminUiSession,
   createAdminUiSession,
 } from '@/redux/api/backend-api'
+import { auditLogoutLogs } from '@/redux/features/sessionSlice'
+import { SESSION_EXPIRED } from '@/audit/messages'
 import { devLogger } from '@/utils/devLogger'
 import { ROUTES } from '@/helpers/navigation'
 import { getIssuer } from '@/utils/TokenController'
 import type { RootState } from '@/redux/types'
+import type { AppDispatch } from '@/redux/hooks'
 import type { RetriableAxiosRequestConfig } from './types'
 
 let installed = false
 let sessionRecoveryPromise: Promise<boolean> | null = null
 
-export const installInterceptors = (getState: () => RootState): void => {
+export const installInterceptors = (getState: () => RootState, dispatch: AppDispatch): void => {
   if (installed) return
   installed = true
 
@@ -105,6 +108,7 @@ export const installInterceptors = (getState: () => RootState): void => {
       }
 
       if (error.response?.status === 403) {
+        dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
         try {
           const response = await fetchApiTokenWithDefaultScopes()
           await deleteAdminUiSession(response?.access_token)

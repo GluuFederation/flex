@@ -15,7 +15,13 @@ import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
 import { devLogger } from '@/utils/devLogger'
 import { isDevelopment } from '@/utils/env'
-import { API_LICENSE, createSuccessAuditInit, selectAuditContext, DELETION } from '@/audit'
+import {
+  API_LICENSE,
+  createSuccessAuditInit,
+  selectAuditContext,
+  DELETION,
+  SESSION_EXPIRED,
+} from '@/audit'
 import type { RootState } from '@/redux/types'
 import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
@@ -92,7 +98,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
       },
       onError: (error: Error) => {
         if (isFourZeroThreeError(error as Parameters<typeof isFourZeroThreeError>[0])) {
-          dispatch(auditLogoutLogs({ message: 'Session expired' }))
+          dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
           return
         }
         const message =

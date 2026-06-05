@@ -173,7 +173,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       'justifyContent': 'space-between',
       'alignItems': 'center',
       'padding': theme.spacing(2),
-      'borderBottom': `1px solid ${themeColors.borderColor}`,
+      'borderBottom': `2px solid ${themeColors.borderColor}`,
       '&:last-child': {
         borderBottom: 'none',
       },
