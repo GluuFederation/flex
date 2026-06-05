@@ -8,13 +8,13 @@ import SetTitle from 'Utils/SetTitle'
 import styles from './ProfilePage.style'
 import { Box, Divider } from '@mui/material'
 import { EditOutlined } from '@/components/icons'
-import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import type { ThemeContextValue, CustomAttribute, InfoRowProps } from './types'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import type { ThemeContextValue, InfoRowProps } from './types'
+import { useAppSelector } from '@/redux/hooks'
+import { useProfileDetails } from './hooks/useProfileDetails'
 import GluuLoader from '../Gluu/GluuLoader'
 import GluuViewWrapper from '../Gluu/GluuViewWrapper'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
@@ -22,7 +22,6 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
 const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
@@ -43,7 +42,6 @@ InfoRow.displayName = 'InfoRow'
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const theme = useContext(ThemeContext) as ThemeContextValue
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
@@ -53,20 +51,14 @@ const ProfileDetails: React.FC = () => {
 
   SetTitle(t('titles.profile_detail'))
 
-  const { loading, profileDetails } = useAppSelector((state) => state.profileDetailsReducer)
-  const authState = useAppSelector((state) => state.authReducer)
-  const authStateWithToken = authState as typeof authState & {
-    token?: { access_token?: string } | null
-    userInum?: string | null
-    hasSession?: boolean
-  }
-  const { userinfo, token: authToken } = authStateWithToken ?? {}
-  const stateUserInum = authStateWithToken?.userInum
-  const hasSession = authStateWithToken?.hasSession ?? false
-
+  const {
+    userinfo,
+    userInum: stateUserInum,
+    hasSession,
+  } = useAppSelector((state) => state.authReducer)
   const userInum = useMemo(() => stateUserInum || userinfo?.inum, [stateUserInum, userinfo?.inum])
-  const apiAccessToken = authToken?.access_token ?? null
-  const canMakeApiCall = hasSession || !!apiAccessToken
+
+  const { profileDetails, loading, surname, roles } = useProfileDetails(userInum, hasSession)
 
   const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const canReadProfile = useMemo(
@@ -78,29 +70,7 @@ const ProfileDetails: React.FC = () => {
     [hasCedarWritePermission],
   )
 
-  const jansAdminUIRole = useMemo(
-    () =>
-      profileDetails?.customAttributes?.find(
-        (att: CustomAttribute): boolean => att?.name === JANS_ADMIN_UI_ROLE_ATTR,
-      ),
-    [profileDetails?.customAttributes],
-  )
-
-  const snValue = useMemo(
-    () =>
-      profileDetails?.customAttributes?.find((att: CustomAttribute) => att?.name === 'sn')
-        ?.values?.[0],
-    [profileDetails?.customAttributes],
-  )
-
   const avatarSrc = useMemo(() => randomAvatar(), [])
-
-  useEffect(() => {
-    if (!canMakeApiCall || !userInum) {
-      return
-    }
-    dispatch(getProfileDetails({ pattern: userInum }))
-  }, [canMakeApiCall, dispatch, userInum])
 
   useEffect(() => {
     if (USERS_SCOPES?.length) {
@@ -114,12 +84,6 @@ const ProfileDetails: React.FC = () => {
       state: { selectedUser: profileDetails },
     })
   }, [profileDetails, navigateToRoute])
-
-  const rolesValue = useMemo(() => {
-    const values = jansAdminUIRole?.values
-    if (!Array.isArray(values) || values.length === 0) return '-'
-    return values.map((role) => role.charAt(0).toUpperCase() + role.slice(1)).join(', ')
-  }, [jansAdminUIRole?.values])
 
   const adminBadgeColors = useMemo(
     () => ({
@@ -245,7 +209,7 @@ const ProfileDetails: React.FC = () => {
                   />
                   <InfoRow
                     label={t('fields.sn', { defaultValue: 'Last Name' })}
-                    value={snValue}
+                    value={surname}
                     index={1}
                     classes={classes}
                   />
@@ -276,7 +240,7 @@ const ProfileDetails: React.FC = () => {
                     textColor={adminBadgeColors.text}
                     borderColor={adminBadgeColors.bg}
                   >
-                    {rolesValue}
+                    {roles}
                   </GluuBadge>
                 </Box>
               </Box>

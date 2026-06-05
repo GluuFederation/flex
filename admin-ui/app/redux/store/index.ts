@@ -1,7 +1,12 @@
-import { configureStore, combineReducers, Tuple } from '@reduxjs/toolkit'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
-import RootSaga from '../sagas'
+import rootSaga from '../sagas'
+import { listenerMiddleware, startAppListening } from '../listeners'
+import '../listeners/sessionListener'
+import '../listeners/authListener'
+import '../listeners/licenseListener'
+import processListeners from 'Plugins/PluginListenersResolver'
 import { persistStore, persistReducer, type PersistedState } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import reducerRegistry from '../reducers/ReducerRegistry'
@@ -19,9 +24,6 @@ declare global {
   }
 }
 
-// create the saga middleware
-const sagaMiddleware = createSagaMiddleware()
-const middlewares = new Tuple(sagaMiddleware)
 const persistConfig = {
   key: 'root',
   storage,
@@ -48,14 +50,20 @@ const reducers = combine(reducerRegistry.getReducers())
 process()
 const persistedReducer = persistReducer(persistConfig, reducers)
 
+const sagaMiddleware = createSagaMiddleware()
+
 const store = configureStore({
-  middleware: () => middlewares,
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false })
+      .prepend(listenerMiddleware.middleware)
+      .concat(sagaMiddleware),
 })
 
-installInterceptors(() => store.getState() as object as RootState)
+installInterceptors(() => store.getState() as object as RootState, store.dispatch)
 
-sagaMiddleware.run(RootSaga)
+processListeners(startAppListening)
+sagaMiddleware.run(rootSaga)
 
 export const configStore = () => {
   const persistor = persistStore(store)

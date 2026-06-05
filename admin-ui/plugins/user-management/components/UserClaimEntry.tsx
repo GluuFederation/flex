@@ -3,11 +3,15 @@ import { useTranslation } from 'react-i18next'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
+import { Close as CloseIcon } from '@/components/icons'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 import { COUNTRY_ATTR } from '../common'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { useStyles } from './UserClaimEntry.style'
 import { UserClaimEntryProps } from '../types'
 const UserClaimEntry = ({
   data,
@@ -18,6 +22,9 @@ const UserClaimEntry = ({
   setModifiedFields,
 }: UserClaimEntryProps) => {
   const { t } = useTranslation()
+  const { state: themeState } = useTheme()
+  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ themeColors })
 
   const claimLabelKey = useMemo(
     () => getClaimLabelKey(t, data.name, data.displayName),
@@ -75,24 +82,36 @@ const UserClaimEntry = ({
   if (data.oxMultiValuedAttribute) {
     return (
       <div key={entry}>
-        <GluuAutocomplete
-          label={claimLabel}
-          name={data.name}
-          value={multiValue}
-          options={multiValueOptions}
-          onChange={handleMultiValueChange}
-          disabled={isRolesUnavailable}
-          placeholder={
-            isRolesUnavailable
-              ? rolesLoading
-                ? t('messages.loading_roles')
-                : t('messages.failed_load_roles')
-              : t('placeholders.search_here')
-          }
-          allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
-          doc_category={data.description}
-          onRemoveField={doHandle}
-        />
+        <div className={classes.claimRow}>
+          <div className={classes.claimCard}>
+            <GluuAutocomplete
+              label={claimLabel}
+              name={data.name}
+              value={multiValue}
+              options={multiValueOptions}
+              onChange={handleMultiValueChange}
+              disabled={isRolesUnavailable}
+              placeholder={
+                isRolesUnavailable
+                  ? rolesLoading
+                    ? t('messages.loading_roles')
+                    : t('messages.failed_load_roles')
+                  : t('placeholders.search_here')
+              }
+              allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
+              doc_category={data.description}
+              withWrapper={false}
+            />
+          </div>
+          <button
+            type="button"
+            className={classes.removeButton}
+            onClick={doHandle}
+            aria-label={t('actions.remove')}
+          >
+            <CloseIcon />
+          </button>
+        </div>
       </div>
     )
   }

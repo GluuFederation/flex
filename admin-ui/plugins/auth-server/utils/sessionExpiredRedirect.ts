@@ -2,8 +2,9 @@ import store from '@/redux/store'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '@/redux/api/backend-api'
 import { devLogger } from '@/utils/devLogger'
+import { SESSION_EXPIRED } from '@/audit/messages'
 
-export const redirectSessionExpired = async (message = 'Session expired'): Promise<void> => {
+export const redirectSessionExpired = async (message = SESSION_EXPIRED): Promise<void> => {
   store.dispatch(auditLogoutLogs({ message }))
   try {
     const response = await fetchApiTokenWithDefaultScopes()

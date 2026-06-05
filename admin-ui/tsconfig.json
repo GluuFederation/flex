@@ -38,6 +38,7 @@
   "include": [
     "app/**/*",
     "plugins/**/*",
+    "orval/**/*",
     "app/types/**/*",
     "__mocks__/**/*",
     "jest/**/*",

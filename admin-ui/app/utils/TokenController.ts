@@ -1,6 +1,6 @@
 import { BasicQueryStringUtils, type LocationLike } from '@openid/appauth'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import type { AuditRecord } from 'Redux/sagas/types'
+import type { AuditRecord } from 'Redux/types/audit'
 import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } from './types'
 import { STORAGE_KEYS } from '@/constants'
 
