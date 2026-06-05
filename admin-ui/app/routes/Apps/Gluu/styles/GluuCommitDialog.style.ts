@@ -24,7 +24,6 @@ const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
 const TITLE_BOTTOM_SPACING = 24
 const TEXTAREA_HEIGHT = 161
-const CARD_HEIGHT = 520
 const CLOSE_BUTTON_SIZE = 32
 const CLOSE_BUTTON_OFFSET = 16
 const BUTTON_MIN_HEIGHT = '40px'
@@ -64,7 +63,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       borderRadius: BORDER_RADIUS.DEFAULT,
       width: `min(${MODAL.WIDTH}px, ${MODAL.MAX_VW})`,
       maxWidth: `${MODAL.WIDTH}px`,
-      minHeight: `${CARD_HEIGHT}px`,
       height: 'auto',
       flexShrink: 0,
       display: 'flex',
