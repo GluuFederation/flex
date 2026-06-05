@@ -62,7 +62,7 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
       }
       const audit = buildAudit(listenerApi.getState())
       let featureToTrigger = ''
-      let hadFailures = false
+      let showExecutionDialog = false
 
       try {
         const webhookState = listenerApi.getState().webhookReducer
@@ -126,19 +126,10 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
 
         await postUserAction(audit as UserActionPayload)
 
-        const failedItems = enrichedResults.filter(
-          (item) => !(item.success === true || String(item.success).toLowerCase() === 'true'),
-        )
-
         if (enrichedResults.length > 0) {
-          if (failedItems.length > 0) {
-            hadFailures = true
-            dispatch(setWebhookTriggerResults(enrichedResults))
-            dispatch(setShowWebhookExecutionDialog(true))
-          } else {
-            dispatch(setWebhookTriggerResults([]))
-            dispatch(setShowWebhookExecutionDialog(false))
-          }
+          showExecutionDialog = true
+          dispatch(setWebhookTriggerResults(enrichedResults))
+          dispatch(setShowWebhookExecutionDialog(true))
         } else {
           dispatch(updateToast(true, 'error', i18n.t('messages.failed_to_trigger_webhook')))
         }
@@ -152,7 +143,7 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
       } finally {
         dispatch(setWebhookModal(false))
         dispatch(completeTriggerWebhook())
-        if (!hadFailures) {
+        if (!showExecutionDialog) {
           dispatch(setWebhookTriggerResults([]))
           dispatch(setShowWebhookExecutionDialog(false))
         }

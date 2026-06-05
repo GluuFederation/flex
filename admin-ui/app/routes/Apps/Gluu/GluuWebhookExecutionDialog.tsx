@@ -44,7 +44,7 @@ const GluuWebhookExecutionDialog = () => {
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
@@ -94,7 +94,7 @@ const GluuWebhookExecutionDialog = () => {
   const modalContent = (
     <ModalLayer onClose={closeModal}>
       <div
-        className={`${commitClasses.modalContainer} ${classes.modalContainer}`}
+        className={cx(commitClasses.modalContainer, classes.modalContainer)}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleModalKeyDown}
         role="dialog"

@@ -36,6 +36,7 @@ export const useWebhookTriggerModalStyles = makeStyles<StylesParams>()((
       zIndex: WEBHOOK_MODAL_Z_INDEX + 1,
       backgroundColor: cardBg,
       outline: 'none',
+      minHeight: 'unset',
     },
     titleWithDescription: {
       display: 'flex',
