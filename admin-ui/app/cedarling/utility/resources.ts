@@ -6,7 +6,6 @@ export const ADMIN_UI_RESOURCES = {
   Dashboard: 'Dashboard',
   License: 'License',
   MAU: 'MAU',
-  Metrics: 'Metrics',
   Security: 'Security',
   Settings: 'Settings',
   Webhooks: 'Webhooks',
