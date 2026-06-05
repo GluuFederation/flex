@@ -100,7 +100,6 @@ export type AdminUiFeatureResource =
   | 'FIDO'
   | 'SAML'
   | 'Lock'
-  | 'Metrics'
 
 export type ApiPermissionType = { permission: string; tag: string }
 
