@@ -1,6 +1,5 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { WebhookEntry } from 'JansConfigApi'
 import type {
   WebhookSliceState,
   WebhookTriggerResponseItem,
@@ -10,8 +9,6 @@ import type {
 export type { WebhookSliceState }
 
 const initialState: WebhookSliceState = {
-  loadingWebhooks: false,
-  featureWebhooks: [],
   webhookModal: false,
   triggerWebhookInProgress: false,
   webhookTriggerResults: [],
@@ -23,10 +20,6 @@ const webhookSlice = createSlice({
   name: 'webhook',
   initialState,
   reducers: {
-    getWebhooksByFeatureIdResponse: (state, action: PayloadAction<WebhookEntry[]>) => {
-      state.featureWebhooks = action.payload
-      state.loadingWebhooks = false
-    },
     setWebhookModal: (state, action: PayloadAction<boolean>) => {
       state.webhookModal = action.payload
     },
@@ -49,7 +42,6 @@ const webhookSlice = createSlice({
 })
 
 export const {
-  getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
   completeTriggerWebhook,

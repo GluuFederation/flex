@@ -135,23 +135,6 @@ type SessionState = {
   logoutAuditSucceeded: boolean | null
 }
 
-// Admin plugin state types
-
-// Asset State
-type AssetDocument = {
-  inum?: string
-  displayName?: string
-  description?: string
-  document?: string
-  creationDate?: string
-  jansEnabled?: boolean
-  [key: string]: JsonValue | undefined
-}
-
-type AssetState = {
-  selectedAsset: AssetDocument | Record<string, never>
-}
-
 // Auth server plugin state types
 
 // Scope State
@@ -215,7 +198,6 @@ type CoreAppState = {
 type AdminPluginState = {
   mauReducer: MauState
   webhookReducer: WebhookSliceState
-  assetReducer: AssetState
 }
 
 // Auth server plugin reducers

@@ -6,14 +6,12 @@ import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansConfigApi'
 import { useDeleteAssetWithAudit } from './hooks'
@@ -35,7 +33,6 @@ const ASSET_RESOURCE_ID = ADMIN_UI_RESOURCES.Assets
 const ASSET_SCOPES = CEDAR_RESOURCE_SCOPES[ASSET_RESOURCE_ID] ?? []
 
 const JansAssetListPage: React.FC = () => {
-  const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const {
@@ -128,17 +125,15 @@ const JansAssetListPage: React.FC = () => {
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const navigateToAddPage = useCallback(() => {
-    dispatch(setSelectedAsset({}))
     navigateToRoute(ROUTES.ASSET_ADD)
-  }, [dispatch, navigateToRoute])
+  }, [navigateToRoute])
 
   const navigateToEditPage = useCallback(
     (rowData: Document) => {
       if (!rowData?.inum) return
-      dispatch(setSelectedAsset(rowData))
       navigateToRoute(ROUTES.ASSET_EDIT(rowData.inum))
     },
-    [dispatch, navigateToRoute],
+    [navigateToRoute],
   )
 
   const handleSearchSubmit = useCallback(() => {

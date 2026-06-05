@@ -10,9 +10,9 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import Toggle from 'react-toggle'
 import { useTranslation } from 'react-i18next'
-import { useAppSelector } from '@/redux/hooks'
 import { useAssetServices, useCreateAssetWithAudit, useUpdateAssetWithAudit } from './hooks'
 import { useParams } from 'react-router'
+import { useGetAssetByInum } from 'JansConfigApi'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ASSET } from 'Utils/ApiResources'
 import {
@@ -24,7 +24,7 @@ import {
   ToggleHandler,
   SubmitFormCallback,
 } from './types/FormTypes'
-import { AssetFormData } from './types/AssetApiTypes'
+import { AssetFormData, Document } from './types/AssetApiTypes'
 import { getAssetValidationSchema } from 'Plugins/admin/helper/validations/assetValidation'
 import { buildAssetInitialValues } from 'Plugins/admin/helper/assets'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -36,7 +36,10 @@ import { T_KEYS } from './constants'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<RouteParams>()
-  const { selectedAsset } = useAppSelector((state) => state.assetReducer!)
+  const { data: assetPage, isLoading: isLoadingAsset } = useGetAssetByInum(id ?? '', {
+    query: { enabled: !!id },
+  })
+  const asset = assetPage?.entries?.[0] as Document | undefined
   const { data: servicesData } = useAssetServices()
   const services = servicesData ?? []
   const { t, i18n } = useTranslation()
@@ -67,7 +70,7 @@ const AssetForm: React.FC = () => {
     }
   }
 
-  const initialValues = useMemo(() => buildAssetInitialValues(selectedAsset), [selectedAsset])
+  const initialValues = useMemo(() => buildAssetInitialValues(id ? asset : undefined), [id, asset])
 
   const validationSchema = useMemo(
     () => getAssetValidationSchema(t, Boolean(id)),
@@ -132,16 +135,15 @@ const AssetForm: React.FC = () => {
         document: formik.values.document || '',
       }
       if (id) {
-        const asset = selectedAsset as { inum?: string; dn?: string; baseDn?: string }
-        payload['inum'] = asset?.inum
-        payload['dn'] = asset?.dn
-        payload['baseDn'] = asset?.baseDn
+        payload['inum'] = formik.values.inum
+        payload['dn'] = formik.values.dn
+        payload['baseDn'] = formik.values.baseDn
         void updateAsset(payload, userMessage).catch(() => {})
       } else {
         void createAsset(payload, userMessage).catch(() => {})
       }
     },
-    [closeCommitDialog, formik, id, selectedAsset, createAsset, updateAsset],
+    [closeCommitDialog, formik, id, createAsset, updateAsset],
   )
 
   const handleCancel = useCallback(() => {
@@ -154,7 +156,7 @@ const AssetForm: React.FC = () => {
   }, [navigateBack])
 
   return (
-    <GluuLoader blocking={isCreating || isUpdating}>
+    <GluuLoader blocking={isCreating || isUpdating || isLoadingAsset}>
       <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
         <div className={`${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`}>
           <div

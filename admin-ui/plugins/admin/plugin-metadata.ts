@@ -1,7 +1,6 @@
 import { setupWebhookListener } from './redux/listeners/webhookListener'
 
 import { reducer as webhookReducer } from 'Plugins/admin/redux/features/WebhookSlice'
-import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
 
 import {
   ACR_READ,
@@ -194,10 +193,7 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.AuditLogs,
     },
   ],
-  reducers: [
-    { name: 'webhookReducer', reducer: webhookReducer },
-    { name: 'assetReducer', reducer: assetReducer },
-  ],
+  reducers: [{ name: 'webhookReducer', reducer: webhookReducer }],
   listeners: [setupWebhookListener],
 }
 

@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { Close } from '@/components/icons'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
-  getWebhooksByFeatureIdResponse,
   completeTriggerWebhook,
   setWebhookModal,
   setWebhookTriggerResults,
@@ -89,12 +88,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     () => featureWebhooks.filter((item) => Boolean(item.jansEnabled)),
     [featureWebhooks],
   )
-
-  useEffect(() => {
-    if (isFetched) {
-      dispatch(getWebhooksByFeatureIdResponse(featureWebhooks))
-    }
-  }, [featureWebhooks, isFetched, dispatch])
 
   useEffect(() => {
     authorizeHelper(WEBHOOK_SCOPES)

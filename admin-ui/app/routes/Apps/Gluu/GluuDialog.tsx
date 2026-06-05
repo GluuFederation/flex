@@ -25,7 +25,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   const { hasCedarReadPermission, authorizeHelper } = useCedarling()
 
   const [userMessage, setUserMessage] = useState('')
-  const loadingWebhooks = useAppSelector((state) => state.webhookReducer?.loadingWebhooks ?? false)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
@@ -79,7 +78,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
     return null
   }
 
-  if ((webhookModal || loadingWebhooks) && canReadWebhooks) {
+  if (webhookModal && canReadWebhooks) {
     return <>{webhookTriggerModal({ closeModal })}</>
   }
 

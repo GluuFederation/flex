@@ -2,7 +2,6 @@ import i18n from 'i18next'
 import type { WebhookEntry } from 'JansConfigApi'
 import { customInstance } from 'Orval'
 import {
-  getWebhooksByFeatureIdResponse,
   completeTriggerWebhook,
   setWebhookModal,
   setWebhookTriggerResults,
@@ -68,21 +67,18 @@ export const setupWebhookListener = (startListening: AppStartListening): void =>
       try {
         const webhookState = listenerApi.getState().webhookReducer
         featureToTrigger = webhookState?.featureToTrigger ?? ''
-        let featureWebhooks: WebhookEntry[] = webhookState?.featureWebhooks ?? []
+        let featureWebhooks: WebhookEntry[] = []
 
         const featureFromPayload = payload?.feature
         if (featureFromPayload) {
           featureToTrigger = featureFromPayload
           dispatch(setFeatureToTrigger(featureFromPayload))
 
-          if (!featureWebhooks?.length) {
-            const data = await customInstance<WebhookEntry[]>({
-              url: `/admin-ui/webhook/${featureFromPayload}`,
-              method: 'GET',
-            })
-            featureWebhooks = data ?? []
-            dispatch(getWebhooksByFeatureIdResponse(featureWebhooks))
-          }
+          const data = await customInstance<WebhookEntry[]>({
+            url: `/admin-ui/webhook/${featureFromPayload}`,
+            method: 'GET',
+          })
+          featureWebhooks = data ?? []
         }
 
         const enabledFeatureWebhooks = (featureWebhooks ?? []).filter(

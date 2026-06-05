@@ -61,16 +61,13 @@ const GluuWebhookExecutionDialog = () => {
   }, [authorizeHelper, webhookScopes])
 
   const {
-    loadingWebhooks = false,
     triggerWebhookInProgress = false,
     webhookTriggerResults,
     showWebhookExecutionDialog,
   } = webhookState ?? {}
   const hasWebhookResults = (webhookTriggerResults?.length ?? 0) > 0
   const showWebhookLoader =
-    loadingWebhooks ||
-    triggerWebhookInProgress ||
-    (showWebhookExecutionDialog && !hasWebhookResults)
+    triggerWebhookInProgress || (showWebhookExecutionDialog && !hasWebhookResults)
 
   const closeModal = useCallback(() => {
     dispatch(setShowWebhookExecutionDialog(false))
