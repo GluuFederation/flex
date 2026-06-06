@@ -143,7 +143,7 @@ Three resolvers at the top of `plugins/` make the plugin system work. They are d
 
 - [`plugins/PluginMenuResolver.ts`](../plugins/PluginMenuResolver.ts): `processMenus()` collects every menu entry and sorts the parent groups by `order`. `processRoutes()` does the same for route definitions, returning a `PluginRoute[]` that the host's routing layer renders.
 - [`plugins/PluginReducersResolver.ts`](../plugins/PluginReducersResolver.ts): `process()` iterates over every plugin's metadata synchronously, collects all reducers, deduplicates by `name`, and registers them into the host's reducer registry. Synchronous on purpose: the Redux store must be built with these reducers already known.
-- [`plugins/PluginListenersResolver.ts`](../plugins/PluginListenersResolver.ts): `process(startListening)` walks every plugin's metadata and registers each plugin's `listeners` on the host listener middleware after `<App />` mounts. It has no return value.
+- [`plugins/PluginListenersResolver.ts`](../plugins/PluginListenersResolver.ts): `process(startListening)` walks every plugin's metadata and registers each plugin's `listeners` on the host listener middleware. It runs at store-module load (before `<App />` renders), not after App mounts. It has no return value.
 
 Each plugin's `plugin-metadata.ts` exports a `default` object shaped roughly as:
 
