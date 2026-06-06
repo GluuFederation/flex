@@ -113,7 +113,7 @@ The `permission` field is the OAuth scope URL the Config API uses for that opera
 
    The entity-type prefixes (`GluuFlexAdminUI::Action::`, `GluuFlexAdminUIResources::Features`) are not magic strings: they live in [`CEDARLING_CONSTANTS`](../app/cedarling/constants/cedarlingConstants.ts) and must stay in sync with the policy-store schema.
 
-4. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorize_multi_issuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision: true | false }`. The hook caches that decision under the key `${resourceId}_${actionLabel}`.
+4. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorize_multi_issuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision: true | false }`. The hook caches that decision under the key `${resourceId}::${action}`.
 
 After `authorizeHelper` finishes, the page renders. During render, it calls `hasCedarReadPermission(ADMIN_UI_RESOURCES.Clients)` to decide whether to show the clients table at all, and `hasCedarWritePermission(...)` to decide whether to show "Add Client" / "Edit" / "Delete" buttons. Each of these is a pure Redux selector. It reads the cached boolean and returns it. After the first `authorizeHelper` call on a page, every subsequent render costs nothing: no WASM, no network, just a cache hit.
 

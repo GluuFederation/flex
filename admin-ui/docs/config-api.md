@@ -158,7 +158,7 @@ Every write through the Config API should produce an audit record. The Admin UI 
   - Host-wide ones (used by code outside any single plugin) live in `@/audit`, e.g. `API_USERS`, `API_LICENSE`.
   - Plugin-specific ones live under `plugins/<name>/redux/audit/Resources`. For example, `auth-server` exports `OIDC`, `SCOPE`, `SESSION`. A plugin owns its own resource names.
 
-The audit payload is posted via `postUserAction` from the backend API helper. See [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) and look at [`app/redux/listeners/licenseListener.ts`](../app/redux/listeners/licenseListener.ts) for an end-to-end example.
+The audit payload is posted via `postUserAction` from the backend API helper. See [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) and look at [`app/redux/listeners/sessionListener.ts`](../app/redux/listeners/sessionListener.ts) for an end-to-end example.
 
 ## React Query conventions
 

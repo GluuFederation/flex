@@ -65,11 +65,11 @@ sequenceDiagram
     Browser->>Entry: load /admin/
     Entry->>Reducers: process(): register every plugin's reducers
     Entry->>Store: configStore(): build the Redux store
+    Store->>Listeners: process(startListening): register every plugin's listeners
+    Store->>Store: core + plugin listeners registered on the listener middleware
     Entry->>Persistor: PersistGate rehydrates persisted slices
     Entry->>QC: new QueryClient(queryDefaults)
     Entry->>App: render <Provider><PersistGate><QueryClientProvider><ThemeProvider><App/>
-    App->>Listeners: process(startListening): register every plugin's listeners
-    App->>App: register listeners on the listener middleware
     App->>Routes: processRoutes(): async-load plugin route definitions
     Routes-->>App: PluginRoute[]
     App->>App: render <Routes> with host + plugin routes
@@ -79,13 +79,13 @@ sequenceDiagram
 
 1. **Entry point** ([`app/index.tsx`](../app/index.tsx)) runs as the browser parses the JS bundle. Before rendering anything, it wires up the Redux store and the React Query client.
 2. **`PluginReducersResolver.process()`** runs eagerly, _before_ the store is built. It iterates over [`admin-ui/plugins.config.json`](../plugins.config.json), calls `loadPluginMetadata(metadataFile)` for each plugin (synchronously, via `import.meta.glob` references), and registers every reducer the plugin exports into the reducer registry. Doing this _before_ `configStore()` means the store is constructed with the full set of slices already known, so no late-registration is needed.
-3. **`configStore()`** builds the Redux store using the reducer registry. The listener middleware is prepended onto the default middleware here, and the host's core listeners self-register on import.
-4. **`PersistGate`** waits for `redux-persist` to rehydrate the slices marked persistent (theme, language, userinfo) before rendering anything below it. This is what keeps the user signed in across reloads and applies the right theme before the first paint.
+3. The Redux store is built at module load of [`app/redux/store/index.ts`](../app/redux/store/index.ts): the listener middleware is prepended onto the default middleware, the host's core listeners self-register via side-effect imports, and `PluginListenersResolver.process(startAppListening)` registers every plugin's listeners. `configStore()` (called from the entry point) then creates the persistor and wires HMR. All of this runs before `<App />` renders.
+4. **`PersistGate`** waits for `redux-persist` to rehydrate the persisted slices before rendering anything below it. The persist config uses a blacklist (`cedarPermissions`, `toastReducer`, `logoutAuditReducer`, `initReducer`), so everything else persists, including the `userinfo` in `authReducer` that keeps the user signed in across reloads. Theme and language are restored separately from `localStorage` by `themeContext` and `i18n`.
 5. **`QueryClient`** is constructed with the project's default query options (defined in [`app/utils/queryUtils.ts`](../app/utils/queryUtils.ts)). It is provided via `QueryClientProvider` so every `useGet*` / `usePut*` hook in the app uses the same cache.
-6. **`<App />`** renders. This is where `PluginListenersResolver` is called to register each plugin's listeners on the host listener middleware.
+6. **`<App />`** renders inside the providers. With the store and listeners already wired, it proceeds to load plugin routes.
 7. **`processRoutes()`** (asynchronously this time) collects the route definitions from each plugin's `plugin-metadata.ts` and stitches them into the React Router tree alongside the host's own routes. From here, the user sees the sidebar, the navigation works, and the rest of the app lifecycle (OIDC, license check, Cedarling bootstrap) takes over. See [auth.md](./auth.md) and [cedarling.md](./cedarling.md).
 
-If any plugin's metadata fails to load, the resolvers log via `devLogger.warn` and skip that plugin. The rest of the app continues to function. This is the reason the resolvers use `Promise.allSettled` instead of `Promise.all`.
+If a plugin's metadata fails to load, `loadPluginMetadata` logs via `devLogger.warn`/`devLogger.error` and skips it. The async menu/route resolution wraps each plugin in its own `try`/`catch`, so one bad plugin doesn't break the rest.
 
 ## Import rules
 
@@ -174,21 +174,20 @@ Everything that comes from the Jans Config API (OIDC clients, scopes, sessions, 
 
 Everything that exists only in the browser. Tokens, session flags, license status, theme, language, toast notifications, Cedarling decisions, and plugin-local UI workflow state. Lives in Redux Toolkit slices. Async flows (OIDC sign-in, license check, session creation) are driven by listener middleware.
 
-| Key in `state.*`                                     | What it holds                                               |
-| ---------------------------------------------------- | ----------------------------------------------------------- |
-| `authReducer`                                        | OIDC config, tokens, `userinfo`, backend reachability flag  |
-| `logoutAuditReducer` &nbsp;¹                         | Logout-audit state (`logoutAuditSucceeded`)                 |
-| `licenseReducer`                                     | License validity, trial state, SSA upload, threshold checks |
-| `cedarPermissions`                                   | Cached Cedarling authorize decisions + policy-store bytes   |
-| `logoutReducer`                                      | Logout flow state                                           |
-| `initReducer`                                        | Boot-time init flags                                        |
-| `toastReducer`                                       | Toast notifications shown across the app                    |
-| `profileDetailsReducer`                              | Current user's profile-page state                           |
-| _plugin-local_ (`AssetReducer`, `WebhookReducer`, …) | UI / workflow state for that plugin                         |
+| Key in `state.*`                                  | What it holds                                               |
+| ------------------------------------------------- | ----------------------------------------------------------- |
+| `authReducer`                                     | OIDC config, tokens, `userinfo`, backend reachability flag  |
+| `logoutAuditReducer` &nbsp;¹                      | Logout-audit state (`logoutAuditSucceeded`)                 |
+| `licenseReducer`                                  | License validity, trial state, SSA upload, threshold checks |
+| `cedarPermissions`                                | Cached Cedarling authorize decisions + policy-store bytes   |
+| `logoutReducer`                                   | Logout flow state                                           |
+| `initReducer`                                     | Boot-time init flags                                        |
+| `toastReducer`                                    | Toast notifications shown across the app                    |
+| _plugin-local_ (`webhookReducer`, `scopeReducer`) | UI / workflow state for that plugin                         |
 
 ¹ Defined in [`app/redux/features/sessionSlice.ts`](../app/redux/features/sessionSlice.ts). The file is named `sessionSlice` but the slice is registered under `logoutAuditReducer`. Grep the registry key, not the filename.
 
-**Why Redux for these:** most of them must be readable _outside_ React Query's lifecycle. Tokens need to be available to the axios mutator before any hook can fire. License status gates whether the app renders at all. Theme and language must apply before the first paint. None of these are server data, and trying to model them as queries adds friction without benefit.
+**Why Redux for these:** most of them must be readable _outside_ React Query's lifecycle. Tokens need to be available to the axios mutator before any hook can fire. License status gates whether the app renders at all. None of these are server data, and trying to model them as queries adds friction without benefit.
 
 **Redux is retained on purpose.** A common ask is whether the Redux side could be collapsed into React Query. The answer is no. The two libraries solve different problems, and the cost of maintaining both is lower than the cost of forcing one to do the other's job.
 

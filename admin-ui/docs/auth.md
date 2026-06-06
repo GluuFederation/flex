@@ -31,15 +31,17 @@ sequenceDiagram
     participant Redux as authReducer
 
     Browser->>Provider: visit /admin/ (no session)
-    Provider->>Provider: build AuthorizationRequest<br/>(code_challenge from PKCE verifier)
+    Provider->>Redux: dispatch checkLicenseConfigValid() then checkLicensePresent()
+    Provider->>Provider: build AuthorizationRequest<br/>(code_challenge from PKCE verifier; only once license is valid)
     Provider->>Jans: redirect → /authorize?code_challenge=…
     Jans-->>Browser: user authenticates on Jans
     Jans->>Provider: redirect back with ?code=…
     Provider->>Jans: POST /token (code + code_verifier)
-    Jans-->>Provider: id_token, access_token, refresh_token
-    Provider->>Provider: decode id_token → userinfo
-    Provider->>Redux: setUserInfo + setTokens
-    Provider->>Redux: dispatch checkLicenseConfigValid()
+    Jans-->>Provider: id_token, access_token
+    Provider->>Jans: GET /userinfo (access_token)
+    Jans-->>Provider: userinfo JWT
+    Provider->>Provider: decode userinfo JWT → userinfo
+    Provider->>Redux: dispatch getUserInfoResponse (userinfo + tokens)
 ```
 
 ### Explanation of the flow
@@ -52,9 +54,9 @@ The browser is redirected to the Jans Auth Server's `/authorize` endpoint. The u
 
 `AppAuthProvider` sees the `code` in the URL and exchanges it for tokens by POSTing to the auth server's `/token` endpoint with `grant_type=authorization_code`, the code, and the original code verifier. No client secret is involved.
 
-The response carries three tokens: an `id_token` (proof of identity, signed JWT), an `access_token` (for the UI's own scopes), and a `refresh_token` (for renewing the access token later). `AppAuthProvider` decodes the `id_token` using `jwt-decode` to extract the user profile (`userinfo`: email, name, `jansAdminUIRole`, etc.), then dispatches the tokens and decoded userinfo into [`authSlice`](../app/redux/features/authSlice.ts).
+The response carries an `id_token` (proof of identity, signed JWT) and an `access_token` (for the UI's own scopes). `AppAuthProvider` then calls the auth server's `/userinfo` endpoint with the access token, which returns the user profile as a signed JWT. It decodes that JWT with `jwt-decode` (`userinfo`: email, name, `jansAdminUIRole`, etc.) and dispatches `getUserInfoResponse` with the tokens and decoded userinfo into [`authSlice`](../app/redux/features/authSlice.ts).
 
-Once the tokens are in Redux, the provider triggers the next phase by dispatching `checkLicenseConfigValid()`. The user is signed in to the auth server, but the Admin UI is not yet usable. The license must be verified, and a server-side Admin UI session must be created.
+Once the userinfo and tokens are in Redux and the user has a valid `jansAdminUIRole`, the provider dispatches `getAPIAccessToken(userinfo_jwt)` to create the server-side Admin UI session. The license was already verified on mount: `checkLicenseConfigValid()` then `checkLicensePresent()` run first and gate the `/authorize` redirect, so by this point the license is valid. The user is signed in to the auth server, but the Admin UI is not usable until that session exists.
 
 ## Admin-UI session
 
@@ -76,7 +78,7 @@ sequenceDiagram
     Listener->>Orval: setApiToken(access_token)
     Listener->>API: POST /session { ujwt, apiProtectionToken } (withCredentials: true)
     API-->>Listener: Set-Cookie: admin-ui-session=…
-    Listener->>Listener: createAdminUiSessionResponse(hasSession: true)
+    Listener->>Listener: createAdminUiSessionResponse(success: true)
 ```
 
 ### Explanation of the flow
@@ -92,7 +94,7 @@ Then comes the session creation. The listener dispatches `createAdminUiSession({
 
 The helper in [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) POSTs to `ENDPOINTS.SESSION` with `withCredentials: true`, which tells the browser to accept any `Set-Cookie` header in the response and to send it back on subsequent requests to the same origin.
 
-The Config API creates a server-side session record, sets a cookie, and returns success. The listener dispatches `createAdminUiSessionResponse({ hasSession: true })`, and `state.authReducer.hasSession` flips to `true`: unblocking the rest of the app.
+The Config API creates a server-side session record, sets a cookie, and returns success. The listener dispatches `createAdminUiSessionResponse({ success: true })`, and the reducer flips `state.authReducer.hasSession` to `true`: unblocking the rest of the app.
 
 If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The listener calls `redirectToLogout()` from [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts), which surfaces a toast and forces sign-out.
 
@@ -194,18 +196,18 @@ Never reach into `localStorage` directly for tokens. Go through [`app/utils/Toke
 | `USER_CONFIG`              | User prefs blob (theme + language)           | `LanguageMenu`, `ThemeDropdown`     | `i18n.ts`, `themeContext`             |
 | `INIT_THEME`               | UI theme (light/dark)                        | `themeContext`, `logoutSlice` reset | `themeContext`, `default.tsx` layout  |
 | `INIT_LANG`                | UI language                                  | `LanguageMenu`, `logoutSlice` reset | `i18n.ts`, `LanguageMenu`             |
-| `USER_INFO`                | Decoded OIDC `userinfo` (theme/lang restore) | `AppAuthProvider` on sign-in        | `themeContext`                        |
+| `USER_INFO`                | Decoded OIDC `userinfo` (theme/lang restore) | no current writer                   | `themeContext`                        |
 | `ISSUER`                   | OIDC issuer URL                              | `TokenController` after discovery   | `TokenController` on subsequent boots |
 | `POST_LOGOUT_REDIRECT_URI` | Where to send the user after end-session     | auth listener from OAuth2 config    | `ByeBye.tsx` as fallback              |
 
 ## 401 vs 403
 
-The Config API rejects with two distinct status codes that mean different things:
+The Config API rejects with two distinct status codes, and the shared axios response interceptor in [`orval/interceptors.ts`](../orval/interceptors.ts) handles each globally:
 
-- **401 (unauthorized)**: the token is missing, expired, or invalid. AppAuth handles this as a normal token lifecycle event: it refreshes or re-authenticates the user.
-- **403 (forbidden)**: the token is fine, but the action is denied. This generally means Cedarling rejected the action, or the user does not have the right role. The UI surfaces a permission-error toast rather than signing the user out.
+- **401 (unauthorized)**: the token is missing, expired, or invalid. The interceptor calls `recoverAdminUiSession()` once to re-mint the Admin UI session, then retries the original request. If recovery fails, the error propagates.
+- **403 (forbidden)**: the interceptor treats this as a dead session. It audits the logout (`auditLogoutLogs`), cleans up the server-side session, and redirects the browser to `/admin/logout`.
 
-`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) distinguishes the two. When you write a new mutation, surface 403 separately. Do not collapse it into "session expired". The user is still signed in. They simply do not have permission for this specific action.
+`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) detects a 403. Both paths are global, so individual mutations do not handle 401 or 403 themselves.
 
 ## Idle timeout
 

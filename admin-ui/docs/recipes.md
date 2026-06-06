@@ -107,7 +107,7 @@ startAppListening({
 })
 ```
 
-Register the reducer at the root and add a side-effect import of the listener file in `app/redux/store/index.ts`. Copy an existing slice. Test the effect as a plain async function with a `jest.fn()` dispatch (see `app/redux/listeners/__tests__/authListener.test.ts`).
+Register the reducer through the reducer registry (the slice self-registers via `reducerRegistry.register(...)`, as the existing slices do) and add a side-effect import of the listener file in `app/redux/store/index.ts`. Copy an existing slice. Test the effect as a plain async function with a `jest.fn()` dispatch (see `app/redux/listeners/__tests__/authListener.test.ts`).
 
 > [!WARNING]
 > **Always import the action creator.** Dispatching `{ type: 'your/fetchSomething' }` as a string makes knip flag the reducer as unused and delete it.
