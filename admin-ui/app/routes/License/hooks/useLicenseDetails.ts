@@ -104,9 +104,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
         const message =
           error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
-        if (isDevelopment && error != null) {
-          logger.error('dev', 'License reset failed:', error)
-        }
+        logger.error('dev', 'License reset failed:', error)
       },
     },
   })
