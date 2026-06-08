@@ -19,14 +19,13 @@ import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from 'Utils/PermChecker'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
-import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
 import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import { useGetAcrs, usePutAcrs, getGetAcrsQueryKey } from 'JansConfigApi'
 import {
   useAuthServerJsonPropertiesQuery,
   usePatchAuthServerJsonPropertiesMutation,
 } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
-import { getScripts } from 'Redux/features/initSlice'
+import { useAuthServerScripts } from '../hooks/useAuthServerScripts'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -34,7 +33,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
@@ -55,7 +54,6 @@ import {
 } from '../constants'
 import {
   isRenamedKey,
-  isScriptEntry,
   renamedFieldFromObject,
   DISCOVERY_DENY_KEYS_I18N,
   createAppConfigurationSchema,
@@ -73,11 +71,10 @@ import type {
   JsonPatch,
   AcrPutOperation,
   PropertyValue,
-  Script,
   SimpleFieldModel,
 } from '../types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
-import type { UserAction, ActionData } from 'Utils/PermChecker'
+import type { UserAction } from 'Utils/PermChecker'
 
 const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
 const propertiesScopes = CEDAR_RESOURCE_SCOPES[propertiesResourceId] || []
@@ -116,8 +113,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     () => (isConfigLoaded ? serverConfiguration : DEFAULT_AUTH_SERVER_CONFIG),
     [isConfigLoaded, serverConfiguration],
   )
-  const rawScripts = useAppSelector((state) => state.initReducer?.scripts ?? [])
-  const scripts = useMemo<Script[]>(() => rawScripts.filter(isScriptEntry), [rawScripts])
+  const scripts = useAuthServerScripts()
   const { data: acrs, isLoading: acrLoading } = useGetAcrs({
     query: { staleTime: 30000 },
   })
@@ -214,20 +210,6 @@ const AuthServerPropertiesPage: React.FC = () => {
       }
     }
   }, [serverConfiguration, isConfigLoaded, patches.length])
-  useEffect(() => {
-    const actionPayload: ActionData = {}
-    const userAction = createUserAction()
-    buildPayload(userAction, FETCHING_JSON_PROPERTIES, actionPayload)
-    dispatch(
-      getScripts({
-        action:
-          (userAction.action_data as Record<
-            string,
-            string | number | boolean | string[] | number[] | boolean[] | null
-          >) || {},
-      }),
-    )
-  }, [dispatch])
   const deferredSearch = useDeferredValue(search.toLowerCase())
 
   const searchableEntries = useMemo(() => {

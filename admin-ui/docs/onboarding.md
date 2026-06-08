@@ -76,7 +76,7 @@ Default URL is `http://localhost:4100/admin/`. Open it and you'll be redirected 
 
 After sign-in, the sidebar shows whichever plugins your Cedarling role can read.
 
-`/admin/env-config.js` is served in dev by an in-dev Vite plugin. No 404 expected. If you see one, restart `npm start` (Vite doesn't hot-reload `vite.config.ts`).
+In dev, nothing serves `/admin/env-config.js`, so a 404 for it is expected and harmless: the axios base-URL fallback chain takes over. See [build-deploy.md](./build-deploy.md).
 
 React Query DevTools button appears bottom-right in dev. Click to inspect cache.
 
@@ -104,5 +104,5 @@ No CI lint or test step. The hook is the only enforcement point. See [build-depl
 - **"Cannot find module 'JansConfigApi'"** → you skipped `npm run api:orval`. Re-run it.
 - **Sign-in loops back to login** → user lacks the `jansAdminUIRole` claim. See [auth.md](./auth.md#debugging-tips).
 - **Sign-in succeeds, page blank** → license verification failed. Check network tab for `/license/...` and [auth.md](./auth.md#license-verification).
-- **404 on `/admin/env-config.js`** → restart `npm start`.
+- **404 on `/admin/env-config.js`** → expected in dev and harmless; the axios base-URL fallback handles it.
 - **Cedarling-gated pages render empty** → policy store didn't load. Check network for `fetchPolicyStore` and [cedarling.md](./cedarling.md).

@@ -9,7 +9,7 @@ One-page reference for every notable library. What it is, where it's wired, when
 | Language            | TypeScript 6 (strict)                                                                       |
 | Framework           | React 18                                                                                    |
 | Build               | Vite 8 (Rolldown bundler)                                                                   |
-| State (client/auth) | Redux Toolkit + redux-saga + redux-persist                                                  |
+| State (client/auth) | Redux Toolkit (+ listener middleware) + redux-persist                                       |
 | State (server)      | TanStack React Query 5                                                                      |
 | HTTP                | axios (driven by Orval-generated hooks)                                                     |
 | Forms               | Formik + Yup                                                                                |
@@ -39,8 +39,8 @@ One-page reference for every notable library. What it is, where it's wired, when
 
 Two libraries, intentional split. See [architecture.md](./architecture.md#state-management).
 
-- **Redux Toolkit**: store in `app/redux/`. Client / auth / session / theme state.
-- **redux-saga**: generator-based side-effect runtime. Sagas in `app/redux/sagas/`. Auth flows, polling, multi-step effects.
+- **Redux Toolkit**: store in `app/redux/`. Client / auth / session state. (Theme and language live in React context + `localStorage`, not Redux.)
+- **RTK listener middleware**: side-effect runtime for async flows (auth, license, webhooks). Core listeners in `app/redux/listeners/`, per-plugin listeners in `plugins/*/redux/listeners/`. A trigger action dispatched from a component runs the matching listener `effect`; `cancelActiveListeners()` gives takeLatest semantics.
 - **redux-persist**: persists chosen slices to storage. Keeps user signed in across reloads. Restores theme / language before first paint.
 - **TanStack React Query 5**: server-state cache via Orval-generated hooks (`useGet*`, `usePut*`). Use on **every** Config API read/write.
 
@@ -66,7 +66,7 @@ Two libraries, intentional split. See [architecture.md](./architecture.md#state-
 - **Recharts**: dashboard / metrics charts under `plugins/admin/`.
 - **react-ace**: Ace editor as React component. Used in `plugins/scripts/`.
 - **react-dropzone**: drag-and-drop file pickers (SSA upload, generic file pickers).
-- **@openid/appauth**: OIDC PKCE client. Drives sign-in via AuthSaga. See [auth.md](./auth.md).
+- **@openid/appauth**: OIDC PKCE client. Sign-in is initiated by `AppAuthProvider`; the auth listener only handles follow-up side effects after auth-state actions. See [auth.md](./auth.md).
 - **Cedarling (`@janssenproject/cedarling_wasm`)**: Cedar policy engine compiled to WASM. Every permission check goes through `useCedarling()`. See [cedarling.md](./cedarling.md).
 
 ### Build / quality / dev-only

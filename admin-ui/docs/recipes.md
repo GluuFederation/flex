@@ -1,6 +1,6 @@
 # Recipes
 
-Short walkthroughs for common Admin UI tasks: adding pages, plugins, Redux slices and sagas, forms, permission checks, audit records, constants, and translations. Each recipe names the files involved, the convention to follow, and a working skeleton you can copy. Reach for one when you're about to add a new piece that fits a pattern already used elsewhere in the codebase.
+Short walkthroughs for common Admin UI tasks: adding pages, plugins, Redux slices and listeners, forms, permission checks, audit records, constants, and translations. Each recipe names the files involved, the convention to follow, and a working skeleton you can copy. Reach for one when you're about to add a new piece that fits a pattern already used elsewhere in the codebase.
 
 ## Add a page inside an existing plugin
 
@@ -46,7 +46,7 @@ Copy a small plugin (`plugins/scim/`) as a template, then register it in `plugin
 `order` controls sidebar position. Run `npm start` and confirm the sidebar entry resolves.
 
 > [!IMPORTANT]
-> Don't refactor `plugins/PluginMenuResolver.ts`, `PluginReducersResolver.ts`, `PluginSagasResolver.ts`, or `plugins/internal/loadPluginMetadata.ts`. The metadata loader uses Vite's `import.meta.glob` to enumerate every plugin's `plugin-metadata.ts` eagerly; the three resolvers feed off it. Restructuring any of them breaks HMR and / or the plugin registration order.
+> Don't refactor `plugins/PluginMenuResolver.ts`, `PluginReducersResolver.ts`, `PluginListenersResolver.ts`, or `plugins/internal/loadPluginMetadata.ts`. The metadata loader uses Vite's `import.meta.glob` to enumerate every plugin's `plugin-metadata.ts` eagerly; the three resolvers feed off it. Restructuring any of them breaks HMR and / or the plugin registration order.
 
 ## Call the Config API
 
@@ -70,7 +70,7 @@ Rules:
 - Use `getGet<Op>QueryKey()`. Hand-written keys drift.
 - After an upstream OpenAPI change, run `npm run api:orval`.
 
-## Add a Redux slice and saga
+## Add a Redux slice and listener
 
 > [!NOTE]
 > Reach for Redux **only** for client / auth / session state. Server data goes through React Query.
@@ -80,7 +80,7 @@ Rules:
 ```text
 app/redux/features/yourSlice.ts
 app/redux/features/types/yourSliceTypes.ts
-app/redux/sagas/YourSaga.ts            # if side effects needed
+app/redux/listeners/yourListener.ts    # if side effects needed
 ```
 
 **Slice:**
@@ -96,20 +96,18 @@ const yourSlice = createSlice({
 })
 ```
 
-**Saga:**
+**Listener:**
 
 ```ts
-function* handleFetch() {
-  const data = yield call(/* api fn */)
-  yield put(fetchSomethingResponse(data))
-}
-
-export default function* yourSaga() {
-  yield takeLatest(fetchSomething.type, handleFetch)
-}
+startAppListening({
+  actionCreator: fetchSomething,
+  effect: async (action, listenerApi) => {
+    const data = await /* api fn */ listenerApi.dispatch(fetchSomethingResponse(data))
+  },
+})
 ```
 
-Register the reducer and saga at the root. Copy an existing slice. Test via `redux-saga-test-plan`.
+Register the reducer through the reducer registry (the slice self-registers via `reducerRegistry.register(...)`, as the existing slices do) and add a side-effect import of the listener file in `app/redux/store/index.ts`. Copy an existing slice. Test the effect as a plain async function with a `jest.fn()` dispatch (see `app/redux/listeners/__tests__/authListener.test.ts`).
 
 > [!WARNING]
 > **Always import the action creator.** Dispatching `{ type: 'your/fetchSomething' }` as a string makes knip flag the reducer as unused and delete it.

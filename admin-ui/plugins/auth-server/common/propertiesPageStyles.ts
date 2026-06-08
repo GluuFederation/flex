@@ -5,6 +5,7 @@ import customColors, { hexToRgb } from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createFormGroupOverrides, createFormLabelStyles } from '@/styles/formStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
+import { getAccordionStyles } from '@/styles/accordionStyles'
 
 export type PropertiesStyleProps = {
   isDark: boolean
@@ -23,7 +24,6 @@ export const createPropertiesPageStyles = (
   const accordionBorderColor = isDark
     ? `rgba(${hexToRgb(customColors.darkBorderGradientBase)}, 0.35)`
     : inputBorderColor
-  const accordionHeaderBg = isDark ? customColors.darkInputBg : themeColors.inputBackground
 
   return {
     searchCard: createSearchCardStyle({ cardBg, isDark }),
@@ -92,41 +92,11 @@ export const createPropertiesPageStyles = (
         backgroundColor: `${formInputBg} !important`,
         transition: 'background-color 5000s ease-in-out 0s',
       },
-      '& .card.b-primary': {
-        border: `1px solid ${accordionBorderColor} !important`,
-        borderRadius: BORDER_RADIUS.ACCORDION,
-        overflow: 'visible',
-        marginBottom: SPACING.CARD_CONTENT_GAP,
-        backgroundColor: `${cardBg} !important`,
-        boxShadow: 'none !important',
-      },
-      '& .card.b-primary > .card-header': {
-        backgroundColor: `${accordionHeaderBg} !important`,
-        borderBottom: `1px solid ${accordionBorderColor} !important`,
-        borderTop: 'none !important',
-        borderRadius: `${BORDER_RADIUS.ACCORDION}px ${BORDER_RADIUS.ACCORDION}px 0 0`,
-        padding: '12px 20px',
-        fontSize: '15px',
-        fontWeight: 600,
-        color: `${fontColor} !important`,
-      },
-      '& .card.b-primary:has(> .collapse:not(.show)) > .card-header': {
-        borderBottom: 'none !important',
-        borderRadius: BORDER_RADIUS.ACCORDION,
-      },
-      '& .card.b-primary > .card-header span': {
-        color: `${fontColor} !important`,
-      },
+      ...getAccordionStyles(isDark, themeColors, fontColor, formInputBg, inputBorderColor),
       '& .card.b-primary > .card-header button:not(.remove-btn), & .card.b-primary > .card-header .btn:not(.remove-btn)':
         {
           color: `${fontColor} !important`,
         },
-      '& .card.b-primary .card-body': {
-        backgroundColor: `${cardBg} !important`,
-        color: `${fontColor} !important`,
-        padding: `${SPACING.SECTION_GAP}px ${SPACING.CARD_PADDING}px !important`,
-        borderRadius: `0 0 ${BORDER_RADIUS.ACCORDION}px ${BORDER_RADIUS.ACCORDION}px`,
-      },
       '& .card.b-primary .card.b-primary': {
         border: `1px solid ${accordionBorderColor} !important`,
         borderRadius: BORDER_RADIUS.ACCORDION,

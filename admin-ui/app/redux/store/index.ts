@@ -1,7 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
-import rootSaga from '../sagas'
 import { listenerMiddleware, startAppListening } from '../listeners'
 import '../listeners/sessionListener'
 import '../listeners/authListener'
@@ -50,20 +48,17 @@ const reducers = combine(reducerRegistry.getReducers())
 process()
 const persistedReducer = persistReducer(persistConfig, reducers)
 
-const sagaMiddleware = createSagaMiddleware()
-
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false })
-      .prepend(listenerMiddleware.middleware)
-      .concat(sagaMiddleware),
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }).prepend(
+      listenerMiddleware.middleware,
+    ),
 })
 
 installInterceptors(() => store.getState() as object as RootState, store.dispatch)
 
 processListeners(startAppListening)
-sagaMiddleware.run(rootSaga)
 
 export const configStore = () => {
   const persistor = persistStore(store)

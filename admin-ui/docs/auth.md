@@ -12,10 +12,10 @@ Out of scope here:
 ## Where the code lives
 
 - **OIDC sign-in**: [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx), [`app/utils/TokenController.ts`](../app/utils/TokenController.ts), [`app/utils/urlSecurity.ts`](../app/utils/urlSecurity.ts)
-- **Auth state**: [`app/redux/features/authSlice.ts`](../app/redux/features/authSlice.ts), [`app/redux/sagas/AuthSaga.ts`](../app/redux/sagas/AuthSaga.ts)
-- **License flow**: [`app/redux/features/licenseSlice.ts`](../app/redux/features/licenseSlice.ts), [`app/redux/sagas/LicenseSaga.ts`](../app/redux/sagas/LicenseSaga.ts)
+- **Auth state**: [`app/redux/features/authSlice.ts`](../app/redux/features/authSlice.ts), [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts)
+- **License flow**: [`app/redux/features/licenseSlice.ts`](../app/redux/features/licenseSlice.ts), [`app/redux/listeners/licenseListener.ts`](../app/redux/listeners/licenseListener.ts)
 - **Idle timeout**: [`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx)
-- **Logout**: [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx), [`app/redux/sagas/SagaUtils.ts`](../app/redux/sagas/SagaUtils.ts)
+- **Logout**: [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx), [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts)
 - **Storage keys (all)**: [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts) (single source of truth)
 
 ## OAuth / PKCE sign-in
@@ -31,15 +31,17 @@ sequenceDiagram
     participant Redux as authReducer
 
     Browser->>Provider: visit /admin/ (no session)
-    Provider->>Provider: build AuthorizationRequest<br/>(code_challenge from PKCE verifier)
+    Provider->>Redux: dispatch checkLicenseConfigValid() then checkLicensePresent()
+    Provider->>Provider: build AuthorizationRequest<br/>(code_challenge from PKCE verifier; only once license is valid)
     Provider->>Jans: redirect → /authorize?code_challenge=…
     Jans-->>Browser: user authenticates on Jans
     Jans->>Provider: redirect back with ?code=…
     Provider->>Jans: POST /token (code + code_verifier)
-    Jans-->>Provider: id_token, access_token, refresh_token
-    Provider->>Provider: decode id_token → userinfo
-    Provider->>Redux: setUserInfo + setTokens
-    Provider->>Redux: dispatch checkLicenseConfigValid()
+    Jans-->>Provider: id_token, access_token
+    Provider->>Jans: GET /userinfo (access_token)
+    Jans-->>Provider: userinfo JWT
+    Provider->>Provider: decode userinfo JWT → userinfo
+    Provider->>Redux: dispatch getUserInfoResponse (userinfo + tokens)
 ```
 
 ### Explanation of the flow
@@ -52,9 +54,9 @@ The browser is redirected to the Jans Auth Server's `/authorize` endpoint. The u
 
 `AppAuthProvider` sees the `code` in the URL and exchanges it for tokens by POSTing to the auth server's `/token` endpoint with `grant_type=authorization_code`, the code, and the original code verifier. No client secret is involved.
 
-The response carries three tokens: an `id_token` (proof of identity, signed JWT), an `access_token` (for the UI's own scopes), and a `refresh_token` (for renewing the access token later). `AppAuthProvider` decodes the `id_token` using `jwt-decode` to extract the user profile (`userinfo`: email, name, `jansAdminUIRole`, etc.), then dispatches the tokens and decoded userinfo into [`authSlice`](../app/redux/features/authSlice.ts).
+The response carries an `id_token` (proof of identity, signed JWT) and an `access_token` (for the UI's own scopes). `AppAuthProvider` then calls the auth server's `/userinfo` endpoint with the access token, which returns the user profile as a signed JWT. It decodes that JWT with `jwt-decode` (`userinfo`: email, name, `jansAdminUIRole`, etc.) and dispatches `getUserInfoResponse` with the tokens and decoded userinfo into [`authSlice`](../app/redux/features/authSlice.ts).
 
-Once the tokens are in Redux, the provider triggers the next phase by dispatching `checkLicenseConfigValid()`. The user is signed in to the auth server, but the Admin UI is not yet usable. The license must be verified, and a server-side Admin UI session must be created.
+Once the userinfo and tokens are in Redux and the user has a valid `jansAdminUIRole`, the provider dispatches `getAPIAccessToken(userinfo_jwt)` to create the server-side Admin UI session. The license was already verified on mount: `checkLicenseConfigValid()` then `checkLicensePresent()` run first and gate the `/authorize` redirect, so by this point the license is valid. The user is signed in to the auth server, but the Admin UI is not usable until that session exists.
 
 ## Admin-UI session
 
@@ -67,34 +69,34 @@ OIDC sign-in alone does **not** let the UI talk to the Config API. The Config AP
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Saga as AuthSaga
+    participant Listener as auth listener
     participant API as Jans Config API
     participant Orval as Orval client
 
-    Saga->>API: fetchApiTokenWithDefaultScopes()
-    API-->>Saga: { access_token, scopes, issuer, postLogoutRedirectUri }
-    Saga->>Orval: setApiToken(access_token)
-    Saga->>API: POST /session { ujwt, apiProtectionToken } (withCredentials: true)
-    API-->>Saga: Set-Cookie: admin-ui-session=…
-    Saga->>Saga: createAdminUiSessionResponse(hasSession: true)
+    Listener->>API: fetchApiTokenWithDefaultScopes()
+    API-->>Listener: { access_token, scopes, issuer, postLogoutRedirectUri }
+    Listener->>Orval: setApiToken(access_token)
+    Listener->>API: POST /session { ujwt, apiProtectionToken } (withCredentials: true)
+    API-->>Listener: Set-Cookie: admin-ui-session=…
+    Listener->>Listener: createAdminUiSessionResponse(success: true)
 ```
 
 ### Explanation of the flow
 
-The flow is driven by [`app/redux/sagas/AuthSaga.ts`](../app/redux/sagas/AuthSaga.ts). After the OAuth/PKCE step writes the user info into Redux, `AppAuthProvider` dispatches `getAPIAccessToken`. The saga calls `fetchApiTokenWithDefaultScopes()` and receives back an `access_token` along with side values (`issuer`, `postLogoutRedirectUri`, the requested scopes).
+The flow is driven by [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts). After the OAuth/PKCE step writes the user info into Redux, `AppAuthProvider` dispatches `getAPIAccessToken`. The listener calls `fetchApiTokenWithDefaultScopes()` and receives back an `access_token` along with side values (`issuer`, `postLogoutRedirectUri`, the requested scopes).
 
-The saga hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The saga also persists `POST_LOGOUT_REDIRECT_URI` to `localStorage` so that [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) can use it as a fallback at logout time.
+The listener hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The listener also persists `POST_LOGOUT_REDIRECT_URI` to `localStorage` so that [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) can use it as a fallback at logout time.
 
-Then comes the session creation. The saga dispatches `createAdminUiSession({ ujwt, apiProtectionToken })`:
+Then comes the session creation. The listener dispatches `createAdminUiSession({ ujwt, apiProtectionToken })`:
 
 - **`ujwt`** is the user JWT. Proof of identity.
 - **`apiProtectionToken`** is a separate short-lived token that protects the session-creation endpoint itself.
 
 The helper in [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) POSTs to `ENDPOINTS.SESSION` with `withCredentials: true`, which tells the browser to accept any `Set-Cookie` header in the response and to send it back on subsequent requests to the same origin.
 
-The Config API creates a server-side session record, sets a cookie, and returns success. The saga dispatches `createAdminUiSessionResponse({ hasSession: true })`, and `state.authReducer.hasSession` flips to `true`: unblocking the rest of the app.
+The Config API creates a server-side session record, sets a cookie, and returns success. The listener dispatches `createAdminUiSessionResponse({ success: true })`, and the reducer flips `state.authReducer.hasSession` to `true`: unblocking the rest of the app.
 
-If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The saga calls `redirectToLogout()` from [`app/redux/sagas/SagaUtils.ts`](../app/redux/sagas/SagaUtils.ts), which surfaces a toast and forces sign-out.
+If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The listener calls `redirectToLogout()` from [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts), which surfaces a toast and forces sign-out.
 
 After this, every Config API call goes through the shared axios instance in [`orval/axiosInstance.ts`](../orval/axiosInstance.ts). The browser sends the `admin-ui-session` cookie alongside each request, and the Config API authenticates the caller off that cookie.
 
@@ -106,8 +108,8 @@ The Admin UI is part of **Gluu Flex**. A working installation must have an activ
 
 The check has two halves, run sequentially:
 
-1. **Config check** ([`checkLicenseConfigValid`](../app/redux/sagas/LicenseSaga.ts)): is the license-related OIDC configuration in persistence valid? In other words: is the Admin UI even able to _ask_ the License APIs anything?
-2. **Presence check** ([`checkLicensePresent`](../app/redux/sagas/LicenseSaga.ts)): given the config is valid, does this installation have an active license, and is the user under the licensed MAU (Monthly Active User) cap?
+1. **Config check** ([`checkLicenseConfigValid`](../app/redux/listeners/licenseListener.ts)): is the license-related OIDC configuration in persistence valid? In other words: is the Admin UI even able to _ask_ the License APIs anything?
+2. **Presence check** ([`checkLicensePresent`](../app/redux/listeners/licenseListener.ts)): given the config is valid, does this installation have an active license, and is the user under the licensed MAU (Monthly Active User) cap?
 
 If either half fails, the user lands on the license-error screen. If both pass, the rest of the app renders.
 
@@ -117,32 +119,32 @@ If either half fails, the user lands on the license-error screen. If both pass, 
 sequenceDiagram
     autonumber
     participant Provider as AppAuthProvider
-    participant Saga as LicenseSaga
+    participant Listener as license listener
     participant API as Jans Config API
     participant Slice as licenseSlice
     participant UI as App shell
 
-    Provider->>Saga: dispatch checkLicenseConfigValid()
-    Saga->>API: checkAdminuiLicenseConfig()
-    API-->>Saga: { success: true | false }
-    Saga->>Slice: checkLicenseConfigValidResponse(success)
+    Provider->>Listener: dispatch checkLicenseConfigValid()
+    Listener->>API: checkAdminuiLicenseConfig()
+    API-->>Listener: { success: true | false }
+    Listener->>Slice: checkLicenseConfigValidResponse(success)
 
     Note over Provider,Slice: useEffect reacts to isConfigValid === true
 
-    Provider->>Saga: dispatch checkLicensePresent()
-    Saga->>API: isLicenseActive()
+    Provider->>Listener: dispatch checkLicensePresent()
+    Listener->>API: isLicenseActive()
     alt active
-        Saga->>Slice: checkLicensePresentResponse(isLicenseValid: true)
-        Saga->>API: getStat(month): MAU usage
-        Saga->>Slice: checkThresholdLimit(isUnderThresholdLimit)
+        Listener->>Slice: checkLicensePresentResponse(isLicenseValid: true)
+        Listener->>API: getStat(month): MAU usage
+        Listener->>Slice: checkThresholdLimit(isUnderThresholdLimit)
     else not active
-        Saga->>API: retrieveLicense()
-        API-->>Saga: licenseKey or empty
+        Listener->>API: retrieveLicense()
+        API-->>Listener: licenseKey or empty
         alt key found
-            Saga->>API: activateAdminuiLicense({ licenseKey })
-            Saga->>Slice: generateTrialLicenseResponse + threshold check
+            Listener->>API: activateAdminuiLicense({ licenseKey })
+            Listener->>Slice: generateTrialLicenseResponse + threshold check
         else no key
-            Saga->>Slice: isNoValidLicenseKeyFound: true
+            Listener->>Slice: isNoValidLicenseKeyFound: true
         end
     end
 
@@ -151,19 +153,19 @@ sequenceDiagram
 
 ### Explanation of the flow
 
-The flow is driven by [`app/redux/sagas/LicenseSaga.ts`](../app/redux/sagas/LicenseSaga.ts), and the state it manipulates lives in [`app/redux/features/licenseSlice.ts`](../app/redux/features/licenseSlice.ts). It is kicked off by [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx): two `useEffect`s, run sequentially, not in parallel.
+The flow is driven by [`app/redux/listeners/licenseListener.ts`](../app/redux/listeners/licenseListener.ts), and the state it manipulates lives in [`app/redux/features/licenseSlice.ts`](../app/redux/features/licenseSlice.ts). It is kicked off by [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx): two `useEffect`s, run sequentially, not in parallel.
 
-**Step 1: Config check.** `AppAuthProvider` dispatches `checkLicenseConfigValid()` once, guarded by a `hasDispatchedConfigCheck` ref. The saga's `checkAdminuiLicenseConfigWorker` calls the `checkAdminuiLicenseConfig` Orval hook, which asks the Config API whether the OIDC client used to talk to the License APIs is valid. The response is a `{ success: boolean }`. The saga dispatches `checkLicenseConfigValidResponse(success)`, which sets `state.licenseReducer.isConfigValid`.
+**Step 1: Config check.** `AppAuthProvider` dispatches `checkLicenseConfigValid()` once, guarded by a `hasDispatchedConfigCheck` ref. The listener's `checkAdminuiLicenseConfigWorker` calls the `checkAdminuiLicenseConfig` Orval hook, which asks the Config API whether the OIDC client used to talk to the License APIs is valid. The response is a `{ success: boolean }`. The listener dispatches `checkLicenseConfigValidResponse(success)`, which sets `state.licenseReducer.isConfigValid`.
 
-If `isConfigValid` is `false`, the UI shows the SSA-upload screen and the flow stops. The user uploads a fresh SSA, which routes back through `uploadNewSsaToken` in the same saga. On success it re-runs the config check. If `isConfigValid` is `true`, a second `useEffect` in `AppAuthProvider` reacts and dispatches `checkLicensePresent()`.
+If `isConfigValid` is `false`, the UI shows the SSA-upload screen and the flow stops. The user uploads a fresh SSA, which routes back through `uploadNewSsaToken` in the same listener. On success it re-runs the config check. If `isConfigValid` is `true`, a second `useEffect` in `AppAuthProvider` reacts and dispatches `checkLicensePresent()`.
 
-**Step 2: Presence check.** `checkLicensePresentWorker` calls the `isLicenseActive` Orval hook. The Config API resolves this against its license backend (at most once per 30 days, otherwise it returns the cached result from persistence). If `success: true`, the response carries license fields (expiry, MAU cap, etc.) which the saga maps into the slice via `checkLicensePresentResponse({ isLicenseValid: true })`.
+**Step 2: Presence check.** `checkLicensePresentWorker` calls the `isLicenseActive` Orval hook. The Config API resolves this against its license backend (at most once per 30 days, otherwise it returns the cached result from persistence). If `success: true`, the response carries license fields (expiry, MAU cap, etc.) which the listener maps into the slice via `checkLicensePresentResponse({ isLicenseValid: true })`.
 
-**Step 3: MAU threshold.** With an active license, the saga also calls the `getStat` Orval hook for the current month and compares the licensed MAU cap against the current usage. If usage is under the cap, `checkThresholdLimit({ isUnderThresholdLimit: true })` is dispatched. If usage is over, it dispatches `false` and the UI shows a warning banner.
+**Step 3: MAU threshold.** With an active license, the listener also calls the `getStat` Orval hook for the current month and compares the licensed MAU cap against the current usage. If usage is under the cap, `checkThresholdLimit({ isUnderThresholdLimit: true })` is dispatched. If usage is over, it dispatches `false` and the UI shows a warning banner.
 
-**Step 4: Not active → retrieve.** If `isLicenseActive` returned `{ success: false }`, the saga falls into `retrieveLicenseKey`. This calls `retrieveLicense` (Orval), which asks the Config API to fetch a license key. If a key comes back (the user has subscribed in Agama Lab), the saga calls `activateAdminuiLicense({ licenseKey })`, dispatches `generateTrialLicenseResponse(...)`, and re-runs the MAU threshold check. If no key (the user has not subscribed), the saga dispatches `isNoValidLicenseKeyFound: true` and the UI offers a 30-day trial. The trial can only be generated once per Agama Lab user. `generateTrialLicense` follows the same retrieve/activate pattern but calls `getTrialLicense` instead.
+**Step 4: Not active → retrieve.** If `isLicenseActive` returned `{ success: false }`, the listener falls into `retrieveLicenseKey`. This calls `retrieveLicense` (Orval), which asks the Config API to fetch a license key. If a key comes back (the user has subscribed in Agama Lab), the listener calls `activateAdminuiLicense({ licenseKey })`, dispatches `generateTrialLicenseResponse(...)`, and re-runs the MAU threshold check. If no key (the user has not subscribed), the listener dispatches `isNoValidLicenseKeyFound: true` and the UI offers a 30-day trial. The trial can only be generated once per Agama Lab user. `generateTrialLicense` follows the same retrieve/activate pattern but calls `getTrialLicense` instead.
 
-**Error / network handling.** Every Orval call in `LicenseSaga` is wrapped to capture the failure shape via `getBackendStatusFromError`. The status code and error message are mirrored into `state.authReducer.backendStatus` so the global `GluuServiceDownModal` can render if the Config API is unreachable. A 403 on a license endpoint routes through `redirectToLogout()` from [`app/redux/sagas/SagaUtils.ts`](../app/redux/sagas/SagaUtils.ts): that path means the OIDC token is valid but the user lacks the role to call the license endpoints, which is treated as a hard sign-out.
+**Error / network handling.** Every Orval call in the license listener is wrapped to capture the failure shape via `getBackendStatusFromError`. The status code and error message are mirrored into `state.authReducer.backendStatus` so the global `GluuServiceDownModal` can render if the Config API is unreachable. A 403 on a license endpoint routes through `redirectToLogout()` from [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts): that path means the OIDC token is valid but the user lacks the role to call the license endpoints, which is treated as a hard sign-out.
 
 ### Slice fields the UI reads
 
@@ -183,7 +185,7 @@ Two OIDC tokens, **not interchangeable**:
 - **OIDC `id_token`**: JWT proof of identity. Decoded by `jwt-decode` to populate `userinfo`. Stored in `state.authReducer.userinfo` and persisted via `redux-persist` (so a page reload doesn't kick the user out).
 - **OIDC `access_token` (UI scopes)**: for the UI's own calls back to the issuer (e.g. fetching the userinfo endpoint). Held by AppAuth's `LocalStorageBackend` per the OAuth spec.
 
-Never reach into `localStorage` directly for tokens. Go through [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) or `AuthSaga`.
+Never reach into `localStorage` directly for tokens. Go through [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) or the auth listener.
 
 ## Storage keys
 
@@ -194,18 +196,18 @@ Never reach into `localStorage` directly for tokens. Go through [`app/utils/Toke
 | `USER_CONFIG`              | User prefs blob (theme + language)           | `LanguageMenu`, `ThemeDropdown`     | `i18n.ts`, `themeContext`             |
 | `INIT_THEME`               | UI theme (light/dark)                        | `themeContext`, `logoutSlice` reset | `themeContext`, `default.tsx` layout  |
 | `INIT_LANG`                | UI language                                  | `LanguageMenu`, `logoutSlice` reset | `i18n.ts`, `LanguageMenu`             |
-| `USER_INFO`                | Decoded OIDC `userinfo` (theme/lang restore) | `AppAuthProvider` on sign-in        | `themeContext`                        |
+| `USER_INFO`                | Decoded OIDC `userinfo` (theme/lang restore) | no current writer                   | `themeContext`                        |
 | `ISSUER`                   | OIDC issuer URL                              | `TokenController` after discovery   | `TokenController` on subsequent boots |
-| `POST_LOGOUT_REDIRECT_URI` | Where to send the user after end-session     | `AuthSaga` from OAuth2 config       | `ByeBye.tsx` as fallback              |
+| `POST_LOGOUT_REDIRECT_URI` | Where to send the user after end-session     | auth listener from OAuth2 config    | `ByeBye.tsx` as fallback              |
 
 ## 401 vs 403
 
-The Config API rejects with two distinct status codes that mean different things:
+The Config API rejects with two distinct status codes, and the shared axios response interceptor in [`orval/interceptors.ts`](../orval/interceptors.ts) handles each globally:
 
-- **401 (unauthorized)**: the token is missing, expired, or invalid. AppAuth handles this as a normal token lifecycle event: it refreshes or re-authenticates the user.
-- **403 (forbidden)**: the token is fine, but the action is denied. This generally means Cedarling rejected the action, or the user does not have the right role. The UI surfaces a permission-error toast rather than signing the user out.
+- **401 (unauthorized)**: the token is missing, expired, or invalid. The interceptor calls `recoverAdminUiSession()` once to re-mint the Admin UI session, then retries the original request. If recovery fails, the error propagates.
+- **403 (forbidden)**: the interceptor treats this as a dead session. It audits the logout (`auditLogoutLogs`), cleans up the server-side session, and redirects the browser to `/admin/logout`.
 
-`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) distinguishes the two. When you write a new mutation, surface 403 separately. Do not collapse it into "session expired". The user is still signed in. They simply do not have permission for this specific action.
+`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) detects a 403. Both paths are global, so individual mutations do not handle 401 or 403 themselves.
 
 ## Idle timeout
 
@@ -220,7 +222,7 @@ Logout is one cleanup path with three different triggers. All of them end up rou
 ### Trigger paths
 
 - **User-initiated**: the sidebar logout link routes to `/logout` → `ByeBye.tsx`.
-- **Forced**: `redirectToLogout(message)` in [`app/redux/sagas/SagaUtils.ts`](../app/redux/sagas/SagaUtils.ts) is called when a saga hits a fatal auth error (e.g. 403 from `createAdminUiSession`). It does best-effort cleanup and then sets `window.location.href = '/admin/logout'`.
+- **Forced**: `redirectToLogout(message)` in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) is called when a listener hits a fatal auth error (e.g. 403 from `createAdminUiSession`). It does best-effort cleanup and then sets `window.location.href = '/admin/logout'`.
 - **Idle timeout**: `GluuSessionTimeout` dispatches `auditLogoutLogs` first (so the involuntary exit is audited) and then navigates to `/logout`.
 
 ### What `ByeBye.tsx` does, in order

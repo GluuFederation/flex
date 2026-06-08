@@ -67,7 +67,7 @@ Anything in `node_modules` that is not matched by an explicit group falls into a
 ### Rules to follow
 
 - **`vendor-react` must come first and stay runtime-only.** React must not be duplicated across chunks (see the warning below).
-- **Group related packages together.** Put UI libraries (`@mui/*`, Emotion, tss-react) in one group. State libraries (Redux Toolkit, redux-saga, redux-persist) in another. Forms (Formik, Yup) in a third. Etc. Related packages tend to be loaded together by the same routes, so grouping them produces fewer requests.
+- **Group related packages together.** Put UI libraries (`@mui/*`, Emotion, tss-react) in one group. State libraries (Redux Toolkit, redux-persist) in another. Forms (Formik, Yup) in a third. Etc. Related packages tend to be loaded together by the same routes, so grouping them produces fewer requests.
 - **The current group list lives in code, not docs.** Read `FEATURE_GROUPS` in [`vite.config.ts`](../vite.config.ts) for the authoritative version. This doc would drift if it duplicated the list.
 
 > [!WARNING]

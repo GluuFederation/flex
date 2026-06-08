@@ -213,7 +213,6 @@ const pluginMetadata = {
     },
   ],
   reducers: [{ name: 'scopeReducer', reducer: scopeReducer }],
-  sagas: [],
 }
 
 export default pluginMetadata
