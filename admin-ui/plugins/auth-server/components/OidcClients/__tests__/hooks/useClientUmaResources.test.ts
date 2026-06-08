@@ -4,7 +4,7 @@ import { useClientUmaResources } from 'Plugins/auth-server/components/OidcClient
 const mockMutateAsync = jest.fn()
 const mockRefetch = jest.fn()
 const mockInvalidateQueriesByKey = jest.fn()
-const mockDevLoggerError = jest.fn()
+const mockLoggerError = jest.fn()
 
 const mockUseGetOauthUmaResourcesByClientid = jest.fn()
 const mockUseDeleteOauthUmaResourcesById = jest.fn()
@@ -13,8 +13,8 @@ const proxyUseGetOauthUmaResourcesByClientid = (
 ) => mockUseGetOauthUmaResourcesByClientid(...args)
 const proxyInvalidateQueriesByKey = (...args: Parameters<typeof mockInvalidateQueriesByKey>) =>
   mockInvalidateQueriesByKey(...args)
-const proxyDevLoggerError = (...args: Parameters<typeof mockDevLoggerError>) =>
-  mockDevLoggerError(...args)
+const proxyLoggerError = (...args: Parameters<typeof mockLoggerError>) =>
+  mockLoggerError(...args)
 
 jest.mock('JansConfigApi', () => ({
   useGetOauthUmaResourcesByClientid: proxyUseGetOauthUmaResourcesByClientid,
@@ -30,8 +30,8 @@ jest.mock('@/utils/queryUtils', () => ({
   invalidateQueriesByKey: proxyInvalidateQueriesByKey,
 }))
 
-jest.mock('@/utils/devLogger', () => ({
-  devLogger: { error: proxyDevLoggerError },
+jest.mock('@/utils/logger', () => ({
+  logger: { log: jest.fn(), warn: jest.fn(), error: proxyLoggerError, debug: jest.fn() },
 }))
 
 beforeEach(() => {
@@ -89,7 +89,7 @@ describe('useClientUmaResources', () => {
         await result.current.deleteUmaResource('uma-1')
       }),
     ).rejects.toThrow('delete failed')
-    expect(mockDevLoggerError).toHaveBeenCalled()
+    expect(mockLoggerError).toHaveBeenCalled()
   })
 
   it('exposes isLoading from the query', () => {

@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty'
 import AceEditor from 'react-ace'
 import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { GluuButton } from '@/components/GluuButton'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -115,7 +115,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       },
       onError: (error: ApiError) => {
         const errorMessage = getErrorMessage(error, 'Invalid JSON file')
-        devLogger.error('Error importing config:', error)
+        logger.error('dev', 'Error importing config:', error)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -140,7 +140,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       await navigator.clipboard.writeText(JSON.stringify(projectConfigs, null, 2))
       setIsCopied(true)
     } catch (error) {
-      devLogger.error(
+      logger.error('dev', 
         'Failed to copy to clipboard:',
         error instanceof Error ? error : String(error),
       )
@@ -174,13 +174,13 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           await refetchConfig()
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
-          devLogger.error('Error importing config:', importError)
+          logger.error('dev', 'Error importing config:', importError)
           const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
           dispatch(updateToast(true, 'error', errorMessage))
         }
       }
       reader.onerror = () => {
-        devLogger.error('Error reading file')
+        logger.error('dev', 'Error reading file')
         dispatch(updateToast(true, 'error', 'Failed to read file'))
       }
       reader.readAsText(file, 'utf-8')
@@ -210,7 +210,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
       dispatch(updateToast(true, 'success', 'File saved successfully'))
     } catch (e) {
-      devLogger.error('Error saving file:', e instanceof Error ? e : String(e))
+      logger.error('dev', 'Error saving file:', e instanceof Error ? e : String(e))
       dispatch(updateToast(true, 'error', 'An error occurred while saving the file'))
     }
   }

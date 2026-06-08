@@ -25,7 +25,7 @@ import { GluuBadge } from '@/components/GluuBadge'
 import { JsonViewerDialog } from '../../JsonViewer'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import {
   useGetAllSsas,
   useGetSsaJwt,
@@ -143,7 +143,7 @@ const SsaListPage: React.FC = () => {
   useEffect(() => {
     if (!ssaDialogOpen || !ssaJwtQuery.isError) return
 
-    devLogger.error('Failed to fetch SSA JWT:', ssaJwtQuery.error)
+    logger.error('dev', 'Failed to fetch SSA JWT:', ssaJwtQuery.error)
     dispatch(updateToast(true, 'error'))
     setSsaDialogOpen(false)
     setSelectedSsaJti(null)
@@ -155,7 +155,8 @@ const SsaListPage: React.FC = () => {
         const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        devLogger.error(
+        logger.error(
+          'dev',
           'Failed to download SSA JWT:',
           error instanceof Error ? error : String(error),
         )
@@ -175,7 +176,7 @@ const SsaListPage: React.FC = () => {
         })
         setDeleteData(null)
       } catch (error) {
-        devLogger.error('Delete SSA failed:', error instanceof Error ? error : String(error))
+        logger.error('dev', 'Delete SSA failed:', error instanceof Error ? error : String(error))
       }
     },
     [deleteData, revokeSsa],

@@ -9,7 +9,7 @@ import type { UmaResource } from 'JansConfigApi'
 import type { AxiosError } from 'axios'
 import type { UmaResourceApiError } from '../types'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 export const useClientUmaResources = (clientId: string | undefined) => {
   const queryClient = useQueryClient()
@@ -32,7 +32,7 @@ export const useClientUmaResources = (clientId: string | undefined) => {
           getGetOauthUmaResourcesByClientidQueryKey(clientId ?? ''),
         )
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to delete UMA resource:',
           error instanceof Error ? error : String(error),
         )

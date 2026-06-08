@@ -17,7 +17,7 @@ import { useAppDispatch } from '@/redux/hooks'
 import { type AcrsFormValues } from './AcrsForm'
 import type { AuthNItem } from '../types'
 import { isDefaultAuthNMethod, transformConfigurationProperties } from './helper/acrUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { AUTH_METHOD_NAMES, SCRIPT_TYPES } from '../constants'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
@@ -235,7 +235,7 @@ const AcrsEditPage = (): ReactElement => {
         }
       } catch (error) {
         if (error instanceof Error && !('response' in error)) {
-          devLogger.error('Unexpected error during form submission:', error)
+          logger.error('dev', 'Unexpected error during form submission:', error)
           handleError(error)
         }
         setIsSubmitting(false)

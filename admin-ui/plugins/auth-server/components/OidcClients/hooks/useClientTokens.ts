@@ -6,7 +6,7 @@ import type { TokenEntity } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { formatDate } from '@/utils/dayjsUtils'
 import { TOKEN_DATE_DISPLAY_FORMAT } from '../constants'
 import { buildClientTokenFieldValuePair } from '../helper/utils'
@@ -74,7 +74,7 @@ export const useClientTokens = ({
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : t('messages.error_in_deleting')
         dispatch(updateToast(true, 'error', errorMsg))
-        devLogger.error(
+        logger.error('dev', 
           'Failed to revoke client token:',
           error instanceof Error ? error : String(error),
         )
