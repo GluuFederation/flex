@@ -10,7 +10,7 @@ import type { AuthConfig } from 'Redux/types'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
 import { STORAGE_KEYS } from '@/constants'
 
@@ -32,7 +32,7 @@ const ByeBye = () => {
         try {
           await deleteSession()
         } catch (error) {
-          devLogger.error(
+          logger.error('dev', 
             'Error deleting admin UI session:',
             error instanceof Error ? error : String(error),
           )

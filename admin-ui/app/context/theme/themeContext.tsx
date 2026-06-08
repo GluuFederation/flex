@@ -1,6 +1,6 @@
 import { createContext, useReducer, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { STORAGE_KEYS } from '@/constants'
 import type { ThemeState, ThemeAction, ThemeContextType } from './types'
 
@@ -38,7 +38,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    devLogger.error(
+    logger.error('dev', 
       'Failed to extract user theme, using default:',
       e instanceof Error ? e : String(e),
     )
@@ -66,14 +66,14 @@ const getInitialTheme = (): ThemeValue => {
     window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    devLogger.error(
+    logger.error('dev', 
       'Failed to get initial theme, using default:',
       e instanceof Error ? e : String(e),
     )
     try {
       window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     } catch (e) {
-      devLogger.warn(
+      logger.warn('dev', 
         'Failed to write default theme to localStorage:',
         e instanceof Error ? e : String(e),
       )
@@ -108,7 +108,7 @@ const getUserInum = (): string | null => {
       return userInfo?.inum || null
     }
   } catch (e) {
-    devLogger.warn(
+    logger.warn('dev', 
       'Failed to parse userInfo from localStorage:',
       e instanceof Error ? e : String(e),
     )
@@ -144,7 +144,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
 
       hasSyncedRef.current = true
     } catch (e) {
-      devLogger.error(
+      logger.error('dev', 
         'Failed to sync theme in useEffect, ensuring default:',
         e instanceof Error ? e : String(e),
       )
@@ -158,7 +158,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        devLogger.error(error instanceof Error ? error : String(error))
+        logger.error('dev', error instanceof Error ? error : String(error))
       }
     }
   }, [])

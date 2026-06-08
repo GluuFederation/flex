@@ -30,7 +30,7 @@ import type { ApiTokenResponse } from '../api/types/BackendApi'
 import { fetchApiTokenWithDefaultScopes } from '../api/backend-api'
 import type { MauEntry } from '../types'
 import { getYearMonth } from '../../utils/Util'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { ApiErrorLike } from '../types/audit'
 import type { AppDispatch } from '../hooks'
 import { startAppListening } from './index'
@@ -60,7 +60,8 @@ const getAccessToken = async (dispatch: AppDispatch): Promise<ApiTokenResponse> 
     dispatch(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
     return token
   } catch (error) {
-    devLogger.error(
+    logger.error(
+      'dev',
       'Failed to fetch API token with default scopes',
       error instanceof Error ? error : String(error),
     )
@@ -92,7 +93,7 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
       dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     }
   } catch (err) {
-    devLogger.log(err instanceof Error ? err : String(err))
+    logger.log('dev', err instanceof Error ? err : String(err))
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
     dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
@@ -139,7 +140,7 @@ const retrieveLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
     }
   } catch (err) {
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-    devLogger.log('Error in generating key.', err instanceof Error ? err : String(err))
+    logger.log('dev', 'Error in generating key.', err instanceof Error ? err : String(err))
     dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     dispatch(generateTrialLicenseResponse(null))
@@ -177,7 +178,7 @@ const generateTrialLicenseKey = async (dispatch: AppDispatch): Promise<void> => 
     }
   } catch (err) {
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-    devLogger.log('Error in generating key.', err instanceof Error ? err : String(err))
+    logger.log('dev', 'Error in generating key.', err instanceof Error ? err : String(err))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     dispatch(generateTrialLicenseResponse(null))
   }
@@ -201,7 +202,7 @@ const uploadNewSsaTokenWorker = async (
     dispatch(getOAuth2Config(token))
   } catch (err) {
     dispatch(checkLicenseConfigValidResponse(false))
-    devLogger.log(err instanceof Error ? err : String(err))
+    logger.log('dev', err instanceof Error ? err : String(err))
     dispatch(uploadNewSsaTokenResponse(getLicenseErrorMessage(err as Error | ApiErrorLike)))
   }
 }
@@ -213,7 +214,7 @@ const checkAdminuiLicenseConfigWorker = async (dispatch: AppDispatch): Promise<v
     const response = (await checkAdminuiLicenseConfigApi()) as GenericResponse | null
     dispatch(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
-    devLogger.log(error instanceof Error ? error : String(error))
+    logger.log('dev', error instanceof Error ? error : String(error))
     dispatch(checkLicenseConfigValidResponse(false))
   }
 }
@@ -232,7 +233,8 @@ const checkLicensePresentWorker = async (dispatch: AppDispatch): Promise<void> =
       await checkMauThreshold(dispatch, parseInt(mauThreshold?.value ?? '', 10))
     }
   } catch (error) {
-    devLogger.log(
+    logger.log(
+      'dev',
       'Error in checking License present.',
       error instanceof Error ? error : String(error),
     )
