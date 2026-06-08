@@ -7,7 +7,7 @@ import {
 } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { SESSION_EXPIRED } from '@/audit/messages'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { ROUTES } from '@/helpers/navigation'
 import { getIssuer } from '@/utils/TokenController'
 import type { RootState } from '@/redux/types'
@@ -53,7 +53,8 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
           setApiToken(apiProtectionToken)
           return true
         } catch (error) {
-          devLogger.error(
+          logger.error(
+            'dev',
             'Failed to recover Admin UI session:',
             error instanceof Error ? error : String(error),
           )
@@ -113,7 +114,11 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
           const response = await fetchApiTokenWithDefaultScopes()
           await deleteAdminUiSession(response?.access_token)
         } catch (e) {
-          devLogger.error('Failed to cleanup session on 403:', e instanceof Error ? e : String(e))
+          logger.error(
+            'dev',
+            'Failed to cleanup session on 403:',
+            e instanceof Error ? e : String(e),
+          )
         } finally {
           window.location.href = ROUTES.LOGOUT
         }

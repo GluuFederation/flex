@@ -18,6 +18,7 @@ import {
   type PagedResultEntriesItem,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
+import { logger } from '@/utils/logger'
 import { adminUiFeatures } from '@/constants'
 import { useSchemaAuditLogger } from './useSchemaAuditLogger'
 import { useSchemaWebhook } from './useSchemaWebhook'
@@ -99,7 +100,11 @@ export const useCreateAttribute = (): UseMutationResult<
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args).catch(() => {})
+      // Error is surfaced to the user via the mutation's onError toast; log a
+      // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
+      mutateAsync(...args).catch((error) => {
+        logger.error('dev', 'Create attribute failed:', error)
+      })
     },
     mutateAsync,
   } as UseMutationResult<JansAttribute, Error, { data: JansAttribute; userMessage?: string }, void>
@@ -164,7 +169,11 @@ export const useUpdateAttribute = (): UseMutationResult<
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args).catch(() => {})
+      // Error is surfaced to the user via the mutation's onError toast; log a
+      // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
+      mutateAsync(...args).catch((error) => {
+        logger.error('dev', 'Update attribute failed:', error)
+      })
     },
     mutateAsync,
   } as UseMutationResult<
@@ -226,7 +235,11 @@ export const useDeleteAttribute = () => {
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof deleteWithAudit>) => {
-      deleteWithAudit(...args).catch(() => {})
+      // Error is surfaced to the user via the mutation's onError toast; log a
+      // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
+      deleteWithAudit(...args).catch((error) => {
+        logger.error('dev', 'Delete attribute failed:', error)
+      })
     },
     mutateAsync: deleteWithAudit,
   }

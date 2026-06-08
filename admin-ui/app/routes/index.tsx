@@ -1,7 +1,7 @@
 import { Suspense, useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { ROUTES } from '@/helpers/navigation'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useAppSelector } from '@/redux/hooks'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -39,7 +39,7 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
     if (queue.length === 0) return
     idle(() => {
       const fn = queue.shift()
-      fn?.()?.catch((err) => devLogger.warn('Chunk preload failed:', err))
+      fn?.()?.catch((err) => logger.warn('dev', 'Chunk preload failed:', err))
       next()
     })
   }
@@ -62,7 +62,7 @@ export const RoutedContent = () => {
         setPluginMenus(routes)
         schedulePreload(routes)
       } catch (error) {
-        devLogger.error('Failed to load plugins:', error instanceof Error ? error : String(error))
+        logger.error('dev', 'Failed to load plugins:', error instanceof Error ? error : String(error))
         const fallback = processRoutesSync()
         setPluginMenus(fallback)
         schedulePreload(fallback)

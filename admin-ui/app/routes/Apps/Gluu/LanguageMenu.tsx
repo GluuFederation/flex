@@ -5,7 +5,7 @@ import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { ensureLocaleLoaded } from '@/i18n'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 import { useStyles } from './styles/LanguageMenu.style'
@@ -20,7 +20,7 @@ const safeParseUserConfig = (): UserConfig => {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}') || {}
   } catch (error) {
-    devLogger.warn('Failed to parse userConfig:', error instanceof Error ? error : String(error))
+    logger.warn('dev', 'Failed to parse userConfig:', error instanceof Error ? error : String(error))
     return {}
   }
 }

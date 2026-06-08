@@ -14,7 +14,7 @@ import { GluuTable, type ColumnDef, type ActionDef } from '@/components/GluuTabl
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload, type UserAction } from 'Utils/PermChecker'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { useTheme } from '@/context/theme/themeContext'
@@ -113,7 +113,7 @@ const Aliases = ({
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to update ACR mappings:',
           error instanceof Error ? error : String(error),
         )
@@ -203,7 +203,7 @@ const Aliases = ({
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to delete ACR mapping:',
           error instanceof Error ? error : String(error),
         )

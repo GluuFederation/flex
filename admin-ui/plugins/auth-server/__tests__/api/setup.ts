@@ -1,4 +1,4 @@
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { fetchApiTokenWithDefaultScopes } from 'Redux/api/backend-api'
 
 type TestGlobal = {
@@ -20,11 +20,11 @@ export const beforeAllAsync = async (
     } catch (error) {
       formInitState(g.token ?? '', g.issuer ?? '')
       const message = error instanceof Error ? error.message : String(error)
-      devLogger.error(message)
+      logger.error('dev', message)
       throw new Error('Error during beforeAllAsync: ' + message, { cause: error })
     }
   } else {
-    devLogger.log('Issuer and token already available.')
+    logger.log('dev', 'Issuer and token already available.')
   }
 }
 

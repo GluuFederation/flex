@@ -5,6 +5,7 @@ import { Button } from 'Components'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { logger } from '@/utils/logger'
 import AceEditor from 'react-ace'
 import {
   Accordion,
@@ -151,7 +152,11 @@ const ClientCibaParUmaPanel = ({
 
   const onDeletionConfirmed = (_message: string) => {
     if (!selectedUMA?.id) return
-    deleteUmaResource(String(selectedUMA.id)).catch(() => undefined)
+    // deleteUmaResource already logs the failure; swallow the re-thrown rejection
+    // here (fire-and-forget) so it doesn't surface as an unhandled promise.
+    deleteUmaResource(String(selectedUMA.id)).catch((error) => {
+      logger.error('dev', 'UMA resource deletion failed:', error)
+    })
     setConfirmModal(false)
     setOpen(false)
   }

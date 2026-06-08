@@ -22,7 +22,7 @@ import {
   type TrustRelationship,
 } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 interface DeleteItem {
   inum: string
@@ -103,7 +103,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           userMessage: userAction.action_message,
         })
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to delete service provider:',
           error instanceof Error ? error : String(error),
         )

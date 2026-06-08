@@ -8,7 +8,7 @@ import {
 import type { UserActionPayload } from '../api/types/BackendApi'
 import { addAdditionalData, isFourZeroThreeError } from 'Utils/TokenController'
 import { CREATE } from '@/audit/UserActionType'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { AuditLog, HttpErrorLike } from '../types/audit'
 
 const API_USERS = '/api/v1/users'
@@ -20,7 +20,7 @@ startAppListening({
   effect: async (action, listenerApi) => {
     listenerApi.cancelActiveListeners()
     const { message } = action.payload
-    devLogger.log('Logout audit:', message)
+    logger.log('dev', 'Logout audit:', message)
 
     const { authReducer } = listenerApi.getState()
     const userinfo = authReducer?.userinfo
@@ -47,7 +47,8 @@ startAppListening({
           const response = await fetchApiTokenWithDefaultScopes()
           await deleteAdminUiSession(response?.access_token)
         } catch (recoveryError) {
-          devLogger.error(
+          logger.error(
+            'dev',
             'Session cleanup failed:',
             recoveryError instanceof Error ? recoveryError : String(recoveryError),
           )
@@ -56,7 +57,7 @@ startAppListening({
         return
       }
       listenerApi.dispatch(auditLogoutLogsResponse(false))
-      devLogger.error('Error:', e instanceof Error ? e : String(e))
+      logger.error('dev', 'Error:', e instanceof Error ? e : String(e))
     }
   },
 })

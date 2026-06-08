@@ -25,7 +25,7 @@ import customColors from '@/customColors'
 import { useStyles } from './JansAssetListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { T_KEYS } from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
@@ -172,7 +172,7 @@ const JansAssetListPage: React.FC = () => {
           refetch()
           setDeleteData(null)
         } catch (err) {
-          devLogger.error(
+          logger.error('dev', 
             '[Asset delete] submitForm failed',
             err instanceof Error ? err : String(err),
           )

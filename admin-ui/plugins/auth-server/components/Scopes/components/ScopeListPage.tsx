@@ -24,7 +24,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useDeleteOauthScopesByInum } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ScopeTableRow } from '../types'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useScopes, useScopeActions, invalidateScopeQueries } from '../hooks'
 import { toScopeJsonRecord } from '../helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -198,7 +198,7 @@ const ScopeListPage: React.FC = () => {
         setModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error('Error deleting scope:', error instanceof Error ? error : String(error))
+        logger.error('dev', 'Error deleting scope:', error instanceof Error ? error : String(error))
       }
     },
     [itemToDelete, deleteScope, logScopeDeletion, dispatch],

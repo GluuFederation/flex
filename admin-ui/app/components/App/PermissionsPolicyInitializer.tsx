@@ -6,6 +6,8 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
+import { logger } from '@/utils/logger'
+import type { LogArg } from '@/utils/types'
 import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 
@@ -57,7 +59,8 @@ const PermissionsPolicyInitializer = () => {
     let bytesUint8Array: Uint8Array
     try {
       bytesUint8Array = base64ToUint8Array(policyStoreBytes)
-    } catch {
+    } catch (error) {
+      logger.error('both', 'Cedarling: failed to decode policy store bytes.', error as LogArg)
       dispatch(setCedarlingInitializing(false))
       return
     }
@@ -73,14 +76,22 @@ const PermissionsPolicyInitializer = () => {
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })
-      .catch(() => {
+      .catch((error) => {
         retryCount.current.tryCount += 1
 
         if (retryCount.current.tryCount < maxRetries) {
+          logger.warn('both', 
+            `Cedarling initialization failed (attempt ${retryCount.current.tryCount}/${maxRetries}); retrying.`,
+            error,
+          )
           setTimeout(() => {
             dispatch(setCedarlingInitialized(false))
           }, 1000)
         } else {
+          logger.error('both', 
+            `Cedarling initialization failed after ${maxRetries} attempts; giving up.`,
+            error,
+          )
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })

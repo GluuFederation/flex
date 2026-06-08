@@ -16,7 +16,7 @@ import {
   type GetConfigScriptsByTypeParams,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { TriggerWebhookReducerPayload } from 'Plugins/admin/redux/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -51,7 +51,7 @@ const useWebhookTrigger = () => {
           } as TriggerWebhookReducerPayload),
         )
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to trigger webhook:',
           error instanceof Error ? error : String(error),
         )

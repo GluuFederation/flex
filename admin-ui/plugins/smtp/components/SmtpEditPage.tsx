@@ -24,7 +24,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from '@/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -174,7 +174,7 @@ const SmtpEditPage = () => {
               client_id: clientId,
               payload: patches,
             }).catch((error) => {
-              devLogger.error('Failed to log audit action:', error)
+              logger.error('dev', 'Failed to log audit action:', error)
             })
           },
         },

@@ -14,6 +14,7 @@ import type {
 } from '@/cedarling/types'
 import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 import { updateToast } from '@/redux/features/toastSlice'
+import { logger } from '@/utils/logger'
 
 const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
@@ -166,6 +167,10 @@ export const useCedarling = (): UseCedarlingReturn => {
         const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
+        logger.error(
+          'both',
+          `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
+        )
         const truncated = rawMessage.length > 25 ? rawMessage.slice(0, 25) + '…' : rawMessage
         dispatch(updateToast(true, 'error', `Authorization error: ${truncated}`))
         return {

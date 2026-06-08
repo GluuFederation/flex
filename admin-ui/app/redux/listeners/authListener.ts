@@ -20,7 +20,7 @@ import {
   deleteAdminUiSession,
 } from '../api/backend-api'
 import { isFourZeroThreeError } from 'Utils/TokenController'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { setApiToken } from 'Orval'
 import { STORAGE_KEYS } from '@/constants'
 import { SESSION_EXPIRED } from '@/audit/messages'
@@ -54,7 +54,7 @@ const redirectToLogout = async (
     const response = await fetchApiTokenWithDefaultScopes()
     await deleteAdminUiSession(response.access_token)
   } catch (e) {
-    devLogger.error('Error during logout cleanup:', e instanceof Error ? e : String(e))
+    logger.error('dev', 'Error during logout cleanup:', e instanceof Error ? e : String(e))
   } finally {
     window.location.href = '/admin/logout'
   }
@@ -134,7 +134,11 @@ startAppListening({
       }
     } catch (error) {
       const err = asApiError(error as Throwable)
-      devLogger.error('Problems getting OAuth2 configuration.', err?.response?.data ?? err.message)
+      logger.error(
+        'dev',
+        'Problems getting OAuth2 configuration.',
+        err?.response?.data ?? err.message,
+      )
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return
@@ -169,7 +173,7 @@ startAppListening({
             dispatch(getOAuth2Config({ access_token: response.access_token }))
           } else {
             setApiToken(null)
-            devLogger.error('Failed to obtain API token for session creation')
+            logger.error('dev', 'Failed to obtain API token for session creation')
             dispatch(
               createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
             )
@@ -179,7 +183,7 @@ startAppListening({
     } catch (error) {
       setApiToken(null)
       const err = asApiError(error as Throwable)
-      devLogger.error('Problems getting API Access Token.', err?.response?.data ?? err.message)
+      logger.error('dev', 'Problems getting API Access Token.', err?.response?.data ?? err.message)
       dispatch(
         setBackendStatus({
           active: false,
@@ -215,7 +219,7 @@ startAppListening({
       const err = asApiError(error as Throwable)
       const errorMessage =
         err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-      devLogger.error('Problems creating Admin UI session.', err?.response?.data ?? err.message)
+      logger.error('dev', 'Problems creating Admin UI session.', err?.response?.data ?? err.message)
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return

@@ -17,7 +17,7 @@ import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from 'Utils/PermChecker'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import { useGetAcrs, usePutAcrs, getGetAcrsQueryKey } from 'JansConfigApi'
@@ -452,14 +452,14 @@ const AuthServerPropertiesPage: React.FC = () => {
             await putAcrsMutation.mutateAsync({ data: newAcr })
             await logAcrUpdate(newAcr, message, { defaultAcr: newAcr.defaultAcr ?? '' })
           } catch (error) {
-            devLogger.error('Error updating ACR:', error instanceof Error ? error : String(error))
+            logger.error('dev', 'Error updating ACR:', error instanceof Error ? error : String(error))
           }
         }
         setPatches([])
         setPut(null)
         setResetKey((prev) => prev + 1)
       } catch (err) {
-        devLogger.error(
+        logger.error('dev', 
           'Error updating auth server properties:',
           err instanceof Error ? err : String(err),
         )

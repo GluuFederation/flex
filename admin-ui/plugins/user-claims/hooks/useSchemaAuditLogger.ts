@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { SchemaAuditLogParams } from '../types'
 import { UPDATE } from '@/audit/UserActionType'
 
@@ -28,7 +28,7 @@ export const useSchemaAuditLogger = () => {
           modifiedFields: params.modifiedFields,
         })
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           '[useSchemaAuditLogger] Failed to log audit action:',
           error instanceof Error ? error : String(error),
         )

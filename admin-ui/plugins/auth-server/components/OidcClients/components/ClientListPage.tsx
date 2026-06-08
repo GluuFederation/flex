@@ -20,7 +20,7 @@ import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { adminUiFeatures } from '@/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
 import { getGrantTypeLabel } from 'Plugins/auth-server/utils'
@@ -248,7 +248,7 @@ const ClientListPage: React.FC = () => {
           client: itemToDelete,
         })
       } catch (error) {
-        devLogger.error('Failed to delete client', error instanceof Error ? error : String(error))
+        logger.error('dev', 'Failed to delete client', error instanceof Error ? error : String(error))
       } finally {
         setModal(false)
         setItemToDelete(null)

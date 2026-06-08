@@ -3,7 +3,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { createSuccessAuditInit, useAuditContext } from '@/audit'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
 import type {
   AssetAuditActionData,
@@ -76,7 +76,7 @@ export const useAssetAudit = () => {
       try {
         await postUserAction(audit as UserActionPayload)
       } catch (err) {
-        devLogger.error(
+        logger.error('dev', 
           '[Asset audit] postUserAction failed',
           err instanceof Error ? err : String(err),
         )

@@ -21,7 +21,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { PaperContainer, getIdentityProviderTableCols } from '../helper'
 import { useIdentityProviders, useDeleteIdentityProvider, type IdentityProvider } from './hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 interface DeleteItem {
   inum?: string
@@ -152,7 +152,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         })
         toggle()
       } catch (error) {
-        devLogger.error(
+        logger.error('dev', 
           'Failed to delete identity provider:',
           error instanceof Error ? error : String(error),
         )

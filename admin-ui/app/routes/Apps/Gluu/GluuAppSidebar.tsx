@@ -28,7 +28,8 @@ import {
 } from '../../../components/SVG'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import type { AdminUiFeatureResource } from '@/cedarling/types'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { JANS_SERVICES } from '@/constants'
@@ -123,7 +124,7 @@ const GluuAppSidebar = (): JSX.Element => {
               return item
             }
             if (!item.resourceKey) {
-              devLogger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
+              logger.warn('dev', '[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
               return null
             }
             const [result] = await authorizeHelper([
@@ -163,6 +164,8 @@ const GluuAppSidebar = (): JSX.Element => {
     try {
       const filteredMenus = await filterMenuItems(await memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
+    } catch (error) {
+      logger.error('both', 'Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
     } finally {
       if (!didAnimateMenusRef.current) {
         didAnimateMenusRef.current = true

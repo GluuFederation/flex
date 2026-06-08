@@ -47,7 +47,7 @@ import { logAuditUserAction } from '@/utils/AuditLogger'
 import { UPDATE } from '@/audit/UserActionType'
 import { ADMIN_UI_SETTINGS } from 'Plugins/admin/redux/audit/Resources'
 import { getErrorMessage } from '@/utils/errorHandler'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
@@ -182,7 +182,7 @@ const SettingsPage: React.FC = () => {
             }),
           ),
         }).catch((auditError) => {
-          devLogger.error('Audit logging failed:', auditError)
+          logger.error('dev', 'Audit logging failed:', auditError)
         })
 
         if (cedarlingLogTypeChanged) {

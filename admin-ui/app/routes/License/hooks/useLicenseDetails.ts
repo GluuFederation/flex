@@ -13,7 +13,7 @@ import { postUserAction } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { isDevelopment } from '@/utils/env'
 import {
   API_LICENSE,
@@ -86,7 +86,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
             await postUserAction(audit)
           } catch (e) {
             if (isDevelopment) {
-              devLogger.error(
+              logger.error('dev', 
                 'License reset audit post failed:',
                 e instanceof Error ? e : String(e),
               )
@@ -105,7 +105,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
         if (isDevelopment && error != null) {
-          devLogger.error('License reset failed:', error)
+          logger.error('dev', 'License reset failed:', error)
         }
       },
     },
