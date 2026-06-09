@@ -19,7 +19,7 @@ const pluginMetadata = {
     {
       component: SmtpEditPage,
       path: ROUTES.SMTP_BASE,
-      action: CEDAR_ACTIONS.WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SMTP,
     },
   ],

@@ -56,6 +56,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   const {
     canRead: canReadWebsiteSsoServiceProviders,
     canWrite: canWriteWebsiteSsoServiceProviders,
+    canDelete: canDeleteWebsiteSsoServiceProviders,
   } = usePermission(ADMIN_UI_RESOURCES.SAML)
 
   const handleGoToEditPage = useCallback(
@@ -141,7 +142,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
         },
       })
     }
-    if (canWriteWebsiteSsoServiceProviders) {
+    if (canDeleteWebsiteSsoServiceProviders) {
       actions.push({
         icon: DeleteOutlinedIcon,
         iconProps: { color: 'secondary' },
@@ -166,6 +167,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
   }, [
     canReadWebsiteSsoServiceProviders,
     canWriteWebsiteSsoServiceProviders,
+    canDeleteWebsiteSsoServiceProviders,
     t,
     handleGoToEditPage,
     handleGoToAddPage,
@@ -202,7 +204,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           }}
         />
       </GluuViewWrapper>
-      {canWriteWebsiteSsoServiceProviders && (
+      {canDeleteWebsiteSsoServiceProviders && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}

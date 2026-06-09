@@ -135,7 +135,7 @@ const pluginMetadata = {
     {
       component: AcrsEditPage,
       path: ROUTES.AUTH_SERVER_AUTHN_EDIT_TEMPLATE,
-      action: CEDAR_ACTIONS.READ,
+      action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
@@ -189,7 +189,7 @@ const pluginMetadata = {
     {
       component: SsaAddPage,
       path: ROUTES.AUTH_SERVER_SSA_ADD,
-      action: CEDAR_ACTIONS.READ,
+      action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.SSA,
     },
     {

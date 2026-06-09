@@ -23,11 +23,11 @@ const JansAssetAddPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { canRead: canReadAssets } = usePermission(assetResourceId)
+  const { canWrite: canWriteAssets } = usePermission(assetResourceId)
 
   return (
     <GluuPageContent>
-      <GluuViewWrapper canShow={canReadAssets}>
+      <GluuViewWrapper canShow={canWriteAssets}>
         <div className={classes.formCard}>
           <div className={classes.content}>
             <AssetForm />

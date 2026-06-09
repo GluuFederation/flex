@@ -49,7 +49,11 @@ const Aliases = ({
   onWritePermissionChange,
 }: AliasesProps): React.ReactElement => {
   const { t } = useTranslation()
-  const { canRead: canReadAuth, canWrite: canWriteAuth } = usePermission(AUTH_RESOURCE_ID)
+  const {
+    canRead: canReadAuth,
+    canWrite: canWriteAuth,
+    canDelete: canDeleteAuth,
+  } = usePermission(AUTH_RESOURCE_ID)
 
   const { state: themeState } = useTheme()
   const themeColors = useMemo(
@@ -220,22 +224,33 @@ const Aliases = ({
   )
 
   const actions = useMemo<ActionDef<AcrMappingTableRow>[]>(() => {
-    if (!canWriteAuth) return []
-    return [
-      {
+    const list: ActionDef<AcrMappingTableRow>[] = []
+    if (canWriteAuth) {
+      list.push({
         icon: <Edit className={classes.editIcon} />,
         tooltip: t('messages.edit_acr'),
         id: 'editAlias',
         onClick: handleEditClick,
-      },
-      {
+      })
+    }
+    if (canDeleteAuth) {
+      list.push({
         icon: <DeleteOutlined className={classes.deleteIcon} />,
         tooltip: t('actions.delete'),
         id: 'deleteAlias',
         onClick: handleDeleteClick,
-      },
-    ]
-  }, [canWriteAuth, t, handleEditClick, handleDeleteClick, classes.editIcon, classes.deleteIcon])
+      })
+    }
+    return list
+  }, [
+    canWriteAuth,
+    canDeleteAuth,
+    t,
+    handleEditClick,
+    handleDeleteClick,
+    classes.editIcon,
+    classes.deleteIcon,
+  ])
 
   const getRowKey = useCallback(
     (row: AcrMappingTableRow, index: number) => row.mapping ?? `alias-${index}`,

@@ -39,7 +39,7 @@ const pluginMetadata = {
     {
       component: CustomScriptEditPage,
       path: ROUTES.CUSTOM_SCRIPT_EDIT_TEMPLATE,
-      action: CEDAR_ACTIONS.READ,
+      action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Scripts,
     },
   ],

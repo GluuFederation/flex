@@ -49,6 +49,8 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('MetricsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    const { usePermission } = jest.requireMock('@/cedarling/hooks/usePermission')
+    usePermission.mockImplementation(() => ({ canRead: true, canWrite: false, canDelete: false }))
   })
 
   it('renders the General tab with charts by default', () => {

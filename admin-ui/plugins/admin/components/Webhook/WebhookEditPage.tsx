@@ -20,13 +20,13 @@ const WebhookEditPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { canRead: canReadWebhooks } = usePermission(webhookResourceId)
+  const { canWrite: canWriteWebhooks } = usePermission(webhookResourceId)
 
   SetTitle(t('titles.edit_webhook', { defaultValue: 'Edit Webhook' }))
 
   return (
     <GluuPageContent>
-      <GluuViewWrapper canShow={canReadWebhooks}>
+      <GluuViewWrapper canShow={canWriteWebhooks}>
         <div className={classes.formCard}>
           <div className={classes.content}>
             <WebhookForm />

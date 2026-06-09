@@ -132,11 +132,13 @@ const pluginMetadata = {
       component: RolePermissionMappingPage,
       path: ROUTES.ADMIN_MAPPING,
       action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
     },
     {
       component: CedarlingConfigPage,
       path: ROUTES.ADMIN_CEDARLING_CONFIG,
       action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
     },
 
     {

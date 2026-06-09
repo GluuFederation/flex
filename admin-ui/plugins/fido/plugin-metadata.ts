@@ -32,7 +32,7 @@ const pluginMetadata = {
     {
       component: Fido,
       path: ROUTES.FIDO_BASE,
-      action: CEDAR_ACTIONS.WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },
     {

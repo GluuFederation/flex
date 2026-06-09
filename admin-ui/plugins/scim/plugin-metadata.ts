@@ -19,7 +19,7 @@ const pluginMetadata = {
     {
       component: ScimPage,
       path: ROUTES.SCIM_BASE,
-      action: CEDAR_ACTIONS.WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SCIM,
     },
   ],

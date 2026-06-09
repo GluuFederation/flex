@@ -68,12 +68,19 @@ describe('Aliases', () => {
     expect(screen.getByText('basic_auth')).toBeInTheDocument()
   })
 
-  it('does not render edit/delete actions when user lacks write permission', () => {
+  it('does not render the edit action when user lacks write permission', () => {
     jest
       .mocked(useCedarling)
       .mockReturnValue(makeMockCedarling({ hasCedarWritePermission: jest.fn(() => false) }))
     render(<Aliases />, { wrapper: Wrapper })
     expect(screen.queryByTitle(/edit/i)).not.toBeInTheDocument()
+  })
+
+  it('does not render the delete action when user lacks delete permission', () => {
+    jest
+      .mocked(useCedarling)
+      .mockReturnValue(makeMockCedarling({ hasCedarDeletePermission: jest.fn(() => false) }))
+    render(<Aliases />, { wrapper: Wrapper })
     expect(screen.queryByTitle(/delete/i)).not.toBeInTheDocument()
   })
 })

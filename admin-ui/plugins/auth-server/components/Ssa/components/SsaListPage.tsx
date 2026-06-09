@@ -273,7 +273,7 @@ const SsaListPage: React.FC = () => {
       })
     }
 
-    if (canWriteSsa || canDeleteSsa) {
+    if (canDeleteSsa) {
       list.push({
         icon: <DeleteOutlined className={classes.actionIcon} />,
         tooltip: t('tooltips.delete_ssa'),
