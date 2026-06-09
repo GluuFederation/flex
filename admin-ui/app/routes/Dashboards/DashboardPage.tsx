@@ -90,9 +90,7 @@ const DashboardPage = () => {
   const debouncedStartDate = useDebounce(startDate, 400)
   const debouncedEndDate = useDebounce(endDate, 400)
 
-  const { isUserInfoFetched, hasSession, permissions } = useAppSelector(
-    (state) => state.authReducer,
-  )
+  const { isUserInfoFetched, hasSession } = useAppSelector((state) => state.authReducer)
 
   const { canRead: canViewDashboard } = usePermission(DASHBOARD_RESOURCE_ID)
   const { navigateToRoute } = useAppNavigation()
@@ -270,23 +268,24 @@ const DashboardPage = () => {
     return null
   }, [isUserInfoFetched, hasSession, hasViewPermissions, handleLogout])
 
+  const hasAnyDashboardData = useMemo(
+    () => Boolean(mauData?.length) || totalClientsEntries > 0 || Boolean(lockData?.length),
+    [mauData, totalClientsEntries, lockData],
+  )
+
   const isBlocking = useMemo(() => {
-    return (
-      licenseLoading ||
-      clientsLoading ||
-      mauLoading ||
-      lockLoading ||
-      cedarIsInitializing ||
-      (!cedarInitialized && !permissions)
-    )
+    if (cedarIsInitializing || !cedarInitialized) {
+      return true
+    }
+    return (licenseLoading || clientsLoading || mauLoading || lockLoading) && !hasAnyDashboardData
   }, [
+    cedarIsInitializing,
+    cedarInitialized,
     licenseLoading,
     clientsLoading,
     mauLoading,
     lockLoading,
-    cedarIsInitializing,
-    cedarInitialized,
-    permissions,
+    hasAnyDashboardData,
   ])
 
   const handleDateChange = useCallback(
