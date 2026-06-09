@@ -1,3 +1,2 @@
-export { useCedarling, usePermission } from './hooks'
-export { Protected } from './components'
+export { useCedarling } from './hooks'
 export type * from './types'

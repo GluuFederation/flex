@@ -125,7 +125,7 @@ export const createSsaTestStore = (): Store =>
     }),
   })
 
-export const createSsaQueryClient = (): QueryClient =>
+const createSsaQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })

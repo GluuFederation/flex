@@ -129,7 +129,7 @@ export const createAgamaTestStore = (): Store =>
     }),
   })
 
-export const createAgamaQueryClient = (): QueryClient =>
+const createAgamaQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })

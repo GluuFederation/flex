@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { useMediaQuery } from 'react-responsive'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -42,7 +42,7 @@ import {
 } from '@/utils/dayjsUtils'
 
 const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
-const MOBILE_MEDIA_QUERY = { maxWidth: 767 }
+const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
 const DashboardPage = () => {
   const { t } = useTranslation()

@@ -6,7 +6,6 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 import { SHARED_CEDAR_CONSTANTS as mockSHARED_CEDAR_CONSTANTS } from './assetCedarTestConstants'
-export { SHARED_CEDAR_CONSTANTS } from './assetCedarTestConstants'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))

@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { CEDAR_ACTIONS, RESOURCE_ACTIONS, CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 
@@ -9,13 +8,6 @@ export type ResourceScopeEntry = {
   resourceId: AdminUiFeatureResource
 }
 export type CedarlingLogType = (typeof CEDARLING_LOG_TYPE)[keyof typeof CEDARLING_LOG_TYPE]
-
-export type ProtectedProps = {
-  resource: AdminUiFeatureResource
-  action?: CedarAction
-  fallback?: ReactNode
-  children: ReactNode
-}
 
 export type ITokenEntry = {
   mapping: string

@@ -127,7 +127,7 @@ export const createAuthenticationTestStore = (): Store =>
     }),
   })
 
-export const createAuthenticationQueryClient = (): QueryClient =>
+const createAuthenticationQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
