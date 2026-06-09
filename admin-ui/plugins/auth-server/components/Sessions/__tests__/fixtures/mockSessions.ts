@@ -1,6 +1,6 @@
 import { AUTHENTICATED_SESSION_STATE, type Session } from '../../types'
 
-export const mockSessions: Session[] = [
+const mockSessions: Session[] = [
   {
     id: 'session-001',
     userDn: 'inum=baea0439-d11f-4fd7-a349-b9cd80fda871,ou=people,o=jans',

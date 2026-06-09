@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
-import PropTypes from 'prop-types'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import customColors, { getCustomColorsAsCssVars, getLoadingOverlayRgba } from '@/customColors'
@@ -145,9 +144,6 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
   )
 }
 
-LayoutContent.propTypes = {
-  children: PropTypes.node as React.Validator<React.ReactNode>,
-}
 LayoutContent.layoutPartName = 'content'
 
 export { LayoutContent }
