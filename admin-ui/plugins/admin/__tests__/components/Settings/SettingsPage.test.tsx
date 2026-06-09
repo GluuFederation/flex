@@ -14,14 +14,10 @@ jest.mock('@/cedarling', () => ({
   })),
   ADMIN_UI_RESOURCES: { Settings: 'settings' },
   CEDAR_RESOURCE_SCOPES: { settings: [] },
-  CedarlingLogType: { OFF: 'off', STD_OUT: 'std_out' },
 }))
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Settings: 'settings' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { settings: [] },
 }))
 

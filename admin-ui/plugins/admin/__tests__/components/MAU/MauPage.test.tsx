@@ -33,9 +33,6 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { MAU: 'mau' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { mau: [] },
 }))
 

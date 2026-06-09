@@ -1,4 +1,5 @@
-import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
+import type { CedarlingLogType } from '@/cedarling/types'
 import type { AppConfigResponse, KeyValuePair } from 'JansConfigApi'
 import type { SettingsFormValues } from './types'
 
@@ -24,7 +25,7 @@ export const buildSettingsInitialValues = (
 ): SettingsFormValues => ({
   sessionTimeoutInMins: configData?.sessionTimeoutInMins ?? '',
   acrValues: configData?.acrValues ?? '',
-  cedarlingLogType: (configData?.cedarlingLogType as CedarlingLogType) ?? CedarlingLogType.OFF,
+  cedarlingLogType: (configData?.cedarlingLogType as CedarlingLogType) ?? CEDARLING_LOG_TYPE.OFF,
   additionalParameters: sanitizeAdditionalParameters(configData?.additionalParameters).map(
     (param) => ({
       id: crypto.randomUUID(),

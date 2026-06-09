@@ -1,10 +1,6 @@
-import {
-  ADMIN_UI_RESOURCES,
-  findPermissionByUrl,
-  buildCedarPermissionKey,
-  CEDARLING_BYPASS,
-} from '@/cedarling/utility/resources'
-import type { AdminUiFeatureResource, ApiPermissionType } from '@/cedarling'
+import { ADMIN_UI_RESOURCES, buildCedarPermissionKey } from '@/cedarling/utility/resources'
+import { CEDARLING_BYPASS } from '@/cedarling/constants'
+import type { AdminUiFeatureResource } from '@/cedarling'
 
 describe('CEDARLING_BYPASS', () => {
   it('equals "CEDARLING_BYPASS"', () => {
@@ -49,29 +45,6 @@ describe('ADMIN_UI_RESOURCES', () => {
 
   it.each(expectedResources)('has resource "%s" with matching key and value', (resource) => {
     expect(ADMIN_UI_RESOURCES[resource]).toBe(resource)
-  })
-})
-
-describe('findPermissionByUrl', () => {
-  const permissions: ApiPermissionType[] = [
-    { permission: 'https://example.com/read', tag: 'read-tag' },
-    { permission: 'https://example.com/write', tag: 'write-tag' },
-    { permission: 'https://example.com/delete', tag: 'delete-tag' },
-  ]
-
-  it('finds matching permission by url', () => {
-    const result = findPermissionByUrl(permissions, 'https://example.com/read')
-    expect(result).toEqual({ permission: 'https://example.com/read', tag: 'read-tag' })
-  })
-
-  it('returns undefined for non-matching url', () => {
-    const result = findPermissionByUrl(permissions, 'https://example.com/unknown')
-    expect(result).toBeUndefined()
-  })
-
-  it('returns undefined for empty permissions array', () => {
-    const result = findPermissionByUrl([], 'https://example.com/read')
-    expect(result).toBeUndefined()
   })
 })
 

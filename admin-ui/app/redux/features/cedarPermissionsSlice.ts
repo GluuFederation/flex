@@ -4,8 +4,6 @@ import type { CedarPermissionsState, SetCedarlingPermissionPayload } from '../..
 
 const initialState: CedarPermissionsState = {
   permissions: {},
-  loading: false,
-  error: null,
   initialized: null,
   isInitializing: false,
   cedarFailedStatusAfterMaxTries: null,
@@ -19,8 +17,6 @@ const cedarPermissionsSlice = createSlice({
     setCedarlingPermission: (state, action: PayloadAction<SetCedarlingPermissionPayload>) => {
       const { resourceId, isAuthorized } = action.payload
       state.permissions[resourceId] = isAuthorized
-      state.loading = false
-      state.error = null
     },
     setCedarlingInitialized: (state, action: PayloadAction<boolean>) => {
       state.initialized = action.payload

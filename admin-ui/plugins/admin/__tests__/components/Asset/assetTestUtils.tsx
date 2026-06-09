@@ -26,9 +26,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: mockSHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES,
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: mockSHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES,
 }))
 

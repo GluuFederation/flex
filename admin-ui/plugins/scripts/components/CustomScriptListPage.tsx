@@ -13,8 +13,7 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -40,7 +39,6 @@ import {
 const DELETE_SUBJECT_SCRIPT = 'script'
 const EMPTY_DESCRIPTION_PLACEHOLDER = '—'
 const scriptsResourceId = ADMIN_UI_RESOURCES.Scripts
-const scriptScopes = CEDAR_RESOURCE_SCOPES[scriptsResourceId] ?? []
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
@@ -55,12 +53,7 @@ const CustomScriptListPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+  const { canRead, canWrite, canDelete } = usePermission(scriptsResourceId)
 
   const theme = useContext(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
@@ -79,20 +72,6 @@ const CustomScriptListPage: React.FC = () => {
 
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<CustomScript | null>(null)
-
-  const canRead = useMemo(() => hasCedarReadPermission(scriptsResourceId), [hasCedarReadPermission])
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(scriptsResourceId),
-    [hasCedarWritePermission],
-  )
-  const canDelete = useMemo(
-    () => hasCedarDeletePermission(scriptsResourceId),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    authorizeHelper(scriptScopes)
-  }, [authorizeHelper])
 
   const {
     data: scriptsResponse,

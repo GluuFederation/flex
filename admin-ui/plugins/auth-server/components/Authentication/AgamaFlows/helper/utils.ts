@@ -1,7 +1,7 @@
 import type { AcrMapping, ApiError } from '../types'
 import type { AgamaJsonPatchRequestBody } from '../types/agamaTypes'
 import type { AcrMappingFormValues } from '../types/formTypes'
-import type { ActionData } from 'Utils/PermChecker'
+import type { ActionData } from 'Utils/types'
 import { JSON_PATCH_PATHS, JSON_PATCH_OPS } from '../../constants'
 
 export const getErrorMessage = (error: ApiError, fallback = 'An error occurred'): string =>

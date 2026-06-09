@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -14,7 +14,6 @@ import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
@@ -38,15 +37,13 @@ const SORT_COLUMN_LABELS: Record<string, string> = {
 }
 const DEFAULT_SERVER_SORT: { column: string; desc: boolean } = { column: 'inum', desc: false }
 const WEBHOOK_RESOURCE_ID = ADMIN_UI_RESOURCES.Webhooks
-const WEBHOOK_SCOPES = CEDAR_RESOURCE_SCOPES[WEBHOOK_RESOURCE_ID] ?? []
 const WebhookListPage: React.FC = () => {
   const { navigateToRoute } = useAppNavigation()
   const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+    canRead: canReadWebhooks,
+    canWrite: canWriteWebhooks,
+    canDelete: canDeleteWebhooks,
+  } = usePermission(WEBHOOK_RESOURCE_ID)
 
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -61,19 +58,6 @@ const WebhookListPage: React.FC = () => {
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
 
   SetTitle(t('titles.webhooks'))
-
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(WEBHOOK_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteWebhooks = useMemo(
-    () => hasCedarWritePermission(WEBHOOK_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-  const canDeleteWebhooks = useMemo(
-    () => hasCedarDeletePermission(WEBHOOK_RESOURCE_ID),
-    [hasCedarDeletePermission],
-  )
 
   const { data, isLoading, refetch } = useGetAllWebhooks(
     {
@@ -105,12 +89,6 @@ const WebhookListPage: React.FC = () => {
   }, [totalItems, pageNumber, limit, effectivePage])
 
   const { deleteWebhook, isLoading: isDeleting } = useDeleteWebhookWithAudit()
-
-  useEffect(() => {
-    if (WEBHOOK_SCOPES.length > 0) {
-      authorizeHelper(WEBHOOK_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 

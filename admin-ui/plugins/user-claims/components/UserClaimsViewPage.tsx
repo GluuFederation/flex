@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
@@ -9,9 +9,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import SetTitle from 'Utils/SetTitle'
 import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
 import { useStyles } from './styles/UserClaimsFormPage.style'
@@ -24,7 +23,6 @@ import type { AttributeItem } from './types'
 import type { JansAttribute } from 'JansConfigApi'
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
-const attributeScopes = CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? []
 
 const UserClaimsViewPage = (): JSX.Element => {
   const { gid } = useParams<{ gid: string }>()
@@ -40,18 +38,7 @@ const UserClaimsViewPage = (): JSX.Element => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { authorizeHelper, hasCedarReadPermission } = useCedarling()
-
-  useEffect(() => {
-    if (attributeScopes.length > 0) {
-      authorizeHelper(attributeScopes)
-    }
-  }, [authorizeHelper])
-
-  const canRead = useMemo(
-    () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission],
-  )
+  const { canRead } = usePermission(attributeResourceId)
 
   SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))
 

@@ -16,10 +16,9 @@ import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH } from '@/constants'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import {
   getDefaultPagingSize,
   savePagingSize as savePagingSizeToStorage,
@@ -53,7 +52,6 @@ import { GluuButton } from '@/components/GluuButton'
 import { useStyles } from './SettingsPage.style'
 
 const settingsResourceId = ADMIN_UI_RESOURCES.Settings
-const settingsScopes = CEDAR_RESOURCE_SCOPES[settingsResourceId] || []
 const SCRIPTS_FETCH_LIMIT = 200
 
 const SettingsPage: React.FC = () => {
@@ -63,7 +61,7 @@ const SettingsPage: React.FC = () => {
   const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const queryClient = useQueryClient()
 
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadSettings, canWrite: canWriteSettings } = usePermission(settingsResourceId)
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -86,23 +84,8 @@ const SettingsPage: React.FC = () => {
     refetch: refetchScripts,
   } = useGetConfigScriptsByType(SCRIPT_TYPES.PERSON_AUTHENTICATION, { limit: SCRIPTS_FETCH_LIMIT })
 
-  const canReadSettings = useMemo(
-    () => hasCedarReadPermission(settingsResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteSettings = useMemo(
-    () => hasCedarWritePermission(settingsResourceId),
-    [hasCedarWritePermission],
-  )
-
   const pageTitle = t('titles.application_settings')
   SetTitle(pageTitle)
-
-  useEffect(() => {
-    if (settingsScopes.length > 0) {
-      authorizeHelper(settingsScopes)
-    }
-  }, [authorizeHelper])
 
   const validationSchema = useMemo(() => getSettingsValidationSchema(t), [t])
   const savedPagingSize = useMemo(() => getDefaultPagingSize(), [])
@@ -443,7 +426,7 @@ const SettingsPage: React.FC = () => {
                         label="fields.showCedarLogs?"
                         name="cedarlingLogType"
                         formik={formik}
-                        value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
+                        value={formik.values.cedarlingLogType === CEDARLING_LOG_TYPE.STD_OUT}
                         doc_category={SETTINGS}
                         doc_entry="cedarSwitch"
                         lsize={12}
@@ -453,7 +436,9 @@ const SettingsPage: React.FC = () => {
                         handler={(event: React.ChangeEvent<HTMLInputElement>) => {
                           formik.setFieldValue(
                             'cedarlingLogType',
-                            event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
+                            event.target.checked
+                              ? CEDARLING_LOG_TYPE.STD_OUT
+                              : CEDARLING_LOG_TYPE.OFF,
                           )
                         }}
                       />

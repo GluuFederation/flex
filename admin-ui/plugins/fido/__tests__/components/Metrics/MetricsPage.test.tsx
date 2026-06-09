@@ -3,11 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import MetricsPage from 'Plugins/fido/components/Metrics/MetricsPage'
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
+jest.mock('@/cedarling/hooks/usePermission', () => ({
+  usePermission: jest.fn(() => ({ canRead: true, canWrite: false, canDelete: false })),
 }))
 
 jest.mock('@/cedarling/utility', () => ({
@@ -79,11 +76,8 @@ describe('MetricsPage', () => {
   })
 
   it('shows missing permission message when user lacks read permission', () => {
-    const { useCedarling } = jest.requireMock('@/cedarling')
-    useCedarling.mockImplementation(() => ({
-      hasCedarReadPermission: jest.fn(() => false),
-      authorizeHelper: jest.fn(),
-    }))
+    const { usePermission } = jest.requireMock('@/cedarling/hooks/usePermission')
+    usePermission.mockImplementation(() => ({ canRead: false, canWrite: false, canDelete: false }))
     render(<MetricsPage />, { wrapper: Wrapper })
     expect(screen.queryByTestId('passkey-auth-chart')).not.toBeInTheDocument()
     expect(screen.getByTestId('MISSING')).toBeInTheDocument()

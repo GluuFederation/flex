@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Box } from '@mui/material'
 import InfoOutlined from '@mui/icons-material/InfoOutlined'
@@ -13,14 +13,12 @@ import { GluuPageContent } from '@/components'
 import RolePermissionCard from './RolePermissionCard'
 import SetTitle from 'Utils/SetTitle'
 import { ROUTES } from '@/helpers/navigation'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useMappingData } from './hooks/useMappingApi'
 import { useStyles } from './styles/MappingPage.style'
 
 const MAPPING_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
-const MAPPING_SCOPES = CEDAR_RESOURCE_SCOPES[MAPPING_RESOURCE_ID] || []
 
 const RolePermissionMappingPage: React.FC = React.memo(() => {
   const { t } = useTranslation()
@@ -31,8 +29,7 @@ const RolePermissionMappingPage: React.FC = React.memo(() => {
   const currentTheme = themeConfig[state.theme]
   const { classes } = useStyles({ isDark, theme: currentTheme })
 
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-  const canReadMapping = hasCedarReadPermission(MAPPING_RESOURCE_ID)
+  const { canRead: canReadMapping } = usePermission(MAPPING_RESOURCE_ID)
 
   const { mapping, permissions, isLoading, isError } = useMappingData(canReadMapping)
 
@@ -40,12 +37,6 @@ const RolePermissionMappingPage: React.FC = React.memo(() => {
     () => permissions.map((p) => p.permission).filter(Boolean) as string[],
     [permissions],
   )
-
-  useEffect(() => {
-    if (MAPPING_SCOPES.length > 0) {
-      authorizeHelper(MAPPING_SCOPES)
-    }
-  }, [authorizeHelper])
 
   return (
     <GluuLoader blocking={isLoading}>

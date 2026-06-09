@@ -9,9 +9,8 @@ import { useAppSelector } from '@/redux/hooks'
 import Alert from '@mui/material/Alert'
 import { Close } from '@/components/icons'
 import { useWebhookDialogAction } from 'Utils/hooks'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import type { GluuCommitDialogProps } from './types/index'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
@@ -40,7 +39,7 @@ const GluuCommitDialog = ({
   alertSeverity = 'warning',
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadWebhooks } = usePermission(ADMIN_UI_RESOURCES.Webhooks)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -50,22 +49,6 @@ const GluuCommitDialog = ({
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
-
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
-    [webhookResourceId],
-  )
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
-
-  useEffect(() => {
-    if (webhookScopes && webhookScopes.length > 0) {
-      authorizeHelper(webhookScopes)
-    }
-  }, [authorizeHelper, webhookScopes])
 
   const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature,

@@ -5,7 +5,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import AssetForm from './AssetForm'
@@ -23,11 +23,7 @@ const JansAssetAddPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
-  const canReadAssets = useMemo(
-    () => hasCedarReadPermission(assetResourceId),
-    [hasCedarReadPermission],
-  )
+  const { canRead: canReadAssets } = usePermission(assetResourceId)
 
   return (
     <GluuPageContent>

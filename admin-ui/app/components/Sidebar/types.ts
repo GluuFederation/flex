@@ -1,6 +1,7 @@
 import type React from 'react'
 import type { HealthServiceKey } from 'Redux/features/types'
 import type { ROUTES } from '@/helpers/navigation'
+import type { CedarAction } from '@/cedarling/types'
 import type { PageConfig } from '../Layout/types'
 
 export type SidebarProps = {
@@ -15,7 +16,7 @@ export type MenuItem = {
   icon?: string
   path?: string
   title?: string
-  permission?: string
+  action?: CedarAction
   resourceKey?: string
   children?: MenuItem[]
   cedarlingPassed?: boolean

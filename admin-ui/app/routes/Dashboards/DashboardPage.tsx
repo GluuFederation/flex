@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useContext } from 'react'
+import { useState, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useMediaQuery } from 'react-responsive'
@@ -6,8 +6,7 @@ import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import customColors, { hexToRgb } from '@/customColors'
 import getThemeColor from '@/context/theme/config'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -43,7 +42,6 @@ import {
 } from '@/utils/dayjsUtils'
 
 const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
-const DASHBOARD_SCOPES = CEDAR_RESOURCE_SCOPES[DASHBOARD_RESOURCE_ID]
 const MOBILE_MEDIA_QUERY = { maxWidth: 767 }
 
 const DashboardPage = () => {
@@ -96,7 +94,7 @@ const DashboardPage = () => {
     (state) => state.authReducer,
   )
 
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canViewDashboard } = usePermission(DASHBOARD_RESOURCE_ID)
   const { navigateToRoute } = useAppNavigation()
   const cedarInitialized = useAppSelector((state) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useAppSelector((state) => state.cedarPermissions?.isInitializing)
@@ -105,21 +103,10 @@ const DashboardPage = () => {
     if (!cedarInitialized || cedarIsInitializing) {
       return false
     }
-    return Boolean(hasCedarReadPermission(DASHBOARD_RESOURCE_ID))
-  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission])
+    return canViewDashboard
+  }, [cedarInitialized, cedarIsInitializing, canViewDashboard])
 
   SetTitle(t('menus.dashboard'))
-
-  const initPermissions = useCallback(async () => {
-    if (!hasSession || !cedarInitialized) return
-    await authorizeHelper(DASHBOARD_SCOPES)
-  }, [hasSession, cedarInitialized, authorizeHelper])
-
-  useEffect(() => {
-    if (hasSession && cedarInitialized && !cedarIsInitializing) {
-      initPermissions()
-    }
-  }, [hasSession, cedarInitialized, cedarIsInitializing, initPermissions])
 
   const { item: license, loading: licenseLoading } = useLicenseDetails()
   const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useClients()

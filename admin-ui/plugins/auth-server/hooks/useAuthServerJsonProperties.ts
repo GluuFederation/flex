@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
-import type { UserAction } from 'Utils/PermChecker'
+import type { UserAction } from 'Utils/types'
 import type { AppConfiguration } from '../components/AuthServerProperties/types'
 import {
   fetchAuthServerJsonProperties,

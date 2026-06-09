@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -17,7 +17,6 @@ import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansCon
 import { useDeleteAssetWithAudit } from './hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
@@ -30,17 +29,15 @@ import { T_KEYS } from './constants'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const ASSET_RESOURCE_ID = ADMIN_UI_RESOURCES.Assets
-const ASSET_SCOPES = CEDAR_RESOURCE_SCOPES[ASSET_RESOURCE_ID] ?? []
 
 const JansAssetListPage: React.FC = () => {
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+    canRead: canReadAssets,
+    canWrite: canWriteAssets,
+    canDelete: canDeleteAssets,
+  } = usePermission(ASSET_RESOURCE_ID)
 
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -74,19 +71,6 @@ const JansAssetListPage: React.FC = () => {
 
   SetTitle(t(T_KEYS.TITLE_ASSETS))
 
-  const canReadAssets = useMemo(
-    () => hasCedarReadPermission(ASSET_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteAssets = useMemo(
-    () => hasCedarWritePermission(ASSET_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-  const canDeleteAssets = useMemo(
-    () => hasCedarDeletePermission(ASSET_RESOURCE_ID),
-    [hasCedarDeletePermission],
-  )
-
   const { data, isLoading, isFetching, refetch } = useGetAllAssets(
     {
       limit,
@@ -113,12 +97,6 @@ const JansAssetListPage: React.FC = () => {
       setPageNumber(effectivePage)
     }
   }, [totalItems, pageNumber, limit, effectivePage, setPageNumber])
-
-  useEffect(() => {
-    if (ASSET_SCOPES.length > 0) {
-      authorizeHelper(ASSET_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const { deleteAsset, isLoading: isDeleting } = useDeleteAssetWithAudit()
 

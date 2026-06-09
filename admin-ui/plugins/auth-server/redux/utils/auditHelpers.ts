@@ -1,5 +1,5 @@
 import type { AgamaJsonPatch } from '../../components/Authentication/AgamaFlows/types/agamaTypes'
-import type { UserAction } from 'Utils/PermChecker'
+import type { UserAction } from 'Utils/types'
 import { JSON_PATCH_PATHS } from '../../components/Authentication/constants'
 
 const ACR_MAPPINGS_PATH = JSON_PATCH_PATHS.ACR_MAPPINGS

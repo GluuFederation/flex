@@ -1,7 +1,7 @@
-import { useEffect, useCallback, useMemo, useState, type ReactElement } from 'react'
+import { useCallback, useMemo, useState, type ReactElement } from 'react'
 import { Check, Close, Edit } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
@@ -15,13 +15,7 @@ import { AUTHN } from 'Utils/ApiResources'
 import { DEFAULT_SCRIPT_TYPE, useCustomScriptsByType } from 'Plugins/scripts/components'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
 import type { AuthNItem } from '../types'
-import {
-  BUILT_IN_ACRS,
-  AUTH_RESOURCE_ID,
-  AUTH_SCOPES,
-  PAGE_SIZE,
-  AUTH_METHOD_NAMES,
-} from '../constants'
+import { BUILT_IN_ACRS, AUTH_RESOURCE_ID, PAGE_SIZE, AUTH_METHOD_NAMES } from '../constants'
 import { useStyles } from './Acrs.style'
 import { displayOrDash } from './helper/acrUtils'
 
@@ -30,7 +24,7 @@ type AcrsProps = {
 }
 
 const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadAuthN, canWrite: canWriteAuthN } = usePermission(AUTH_RESOURCE_ID)
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
 
@@ -43,15 +37,6 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
-
-  const canReadAuthN = useMemo(
-    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteAuthN = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   const { data: ldapConfigurations = [], isLoading: ldapLoading } = useGetConfigDatabaseLdap({
     query: { staleTime: 30000, enabled: canReadAuthN },
@@ -66,10 +51,6 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
 
   SetTitle(t('titles.authentication'))
-
-  useEffect(() => {
-    authorizeHelper(AUTH_SCOPES)
-  }, [authorizeHelper])
 
   const handleGoToAuthNEditPage = useCallback(
     (row: AuthNItem) => {

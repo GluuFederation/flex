@@ -69,9 +69,6 @@ jest.mock('@/cedarling/utility', () => ({
     Lock: 'Lock',
     Webhooks: 'Webhooks',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Logging: [], Keys: [], Lock: [], Webhooks: [] },
 }))
 

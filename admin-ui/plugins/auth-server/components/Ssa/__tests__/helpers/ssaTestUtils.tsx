@@ -25,9 +25,6 @@ jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
     SSA: 'SSA',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { SSA: [] },
 }))
 

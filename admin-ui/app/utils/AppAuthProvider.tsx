@@ -11,7 +11,10 @@ import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import { updateToast } from 'Redux/features/toastSlice'
-import { setPolicyStoreBytes } from 'Redux/features/cedarPermissionsSlice'
+import {
+  setPolicyStoreBytes,
+  setCedarFailedStatusAfterMaxTries,
+} from 'Redux/features/cedarPermissionsSlice'
 import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
@@ -108,17 +111,21 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (hasSession) {
       fetchPolicyStore()
         .then((policyStoreResponse) => {
-          if (isMounted && policyStoreResponse.data) {
-            const policyStoreBytes =
-              'responseBytes' in policyStoreResponse.data
-                ? policyStoreResponse.data.responseBytes
-                : undefined
-            dispatch(setPolicyStoreBytes(policyStoreBytes ?? ''))
+          if (!isMounted) return
+          const policyStoreBytes =
+            policyStoreResponse.data && 'responseBytes' in policyStoreResponse.data
+              ? policyStoreResponse.data.responseBytes
+              : undefined
+          if (policyStoreBytes && policyStoreBytes.trim().length > 0) {
+            dispatch(setPolicyStoreBytes(policyStoreBytes))
+          } else {
+            dispatch(setCedarFailedStatusAfterMaxTries())
           }
         })
         .catch((err: Error) => {
           if (isMounted) {
             setError(err)
+            dispatch(setCedarFailedStatusAfterMaxTries())
           }
         })
     }

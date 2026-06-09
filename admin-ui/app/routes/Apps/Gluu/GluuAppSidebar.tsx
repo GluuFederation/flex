@@ -29,7 +29,7 @@ import {
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import type { AdminUiFeatureResource } from '@/cedarling/types'
 import { devLogger } from '@/utils/devLogger'
-import { CEDARLING_BYPASS } from '@/cedarling/utility'
+import { CEDARLING_BYPASS } from '@/cedarling/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { JANS_SERVICES } from '@/constants'
 import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
@@ -118,7 +118,7 @@ const GluuAppSidebar = (): JSX.Element => {
             }
             return null
           }
-          if (item.permission) {
+          if (item.action) {
             if (item.resourceKey === CEDARLING_BYPASS) {
               return item
             }
@@ -128,7 +128,7 @@ const GluuAppSidebar = (): JSX.Element => {
             }
             const [result] = await authorizeHelper([
               {
-                permission: item.permission,
+                action: item.action,
                 resourceId: item.resourceKey as AdminUiFeatureResource,
               },
             ])

@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
@@ -16,9 +16,8 @@ import { ModalLayer } from '@/components/ModalLayer'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { useStyles } from './styles/GluuWebhookExecutionDialog.style'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
@@ -40,25 +39,12 @@ const GluuWebhookExecutionDialog = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const webhookState = useAppSelector((state) => state.webhookReducer)
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadWebhooks } = usePermission(ADMIN_UI_RESOURCES.Webhooks)
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ isDark, themeColors })
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
-
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[webhookResourceId], [webhookResourceId])
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
-
-  useEffect(() => {
-    if (webhookScopes && webhookScopes.length > 0) {
-      authorizeHelper(webhookScopes)
-    }
-  }, [authorizeHelper, webhookScopes])
 
   const {
     triggerWebhookInProgress = false,

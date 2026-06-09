@@ -12,9 +12,8 @@ import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
 import { formatLicenseFieldValue } from '@/utils/licenseUtils'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
 import type { LicenseField } from './types'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -22,7 +21,6 @@ import { useStyles } from './LicenseDetailsPage.style'
 
 const PLACEHOLDER = '_'
 const LICENSE_RESOURCE_ID = ADMIN_UI_RESOURCES.License
-const LICENSE_SCOPES = CEDAR_RESOURCE_SCOPES[LICENSE_RESOURCE_ID]
 
 const LICENSE_FIELD_CONFIG: ReadonlyArray<{ key: string; label: string }> = [
   { key: 'productName', label: 'fields.productName' },
@@ -43,19 +41,8 @@ const LicenseDetailsPage = () => {
     onResetSuccess: () => navigateToRoute(ROUTES.LOGOUT),
   })
   const { t } = useTranslation()
-  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canWrite: canWriteLicense } = usePermission(LICENSE_RESOURCE_ID)
   const [modal, setModal] = useState(false)
-
-  const canWriteLicense = useMemo(
-    () => hasCedarWritePermission(LICENSE_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-
-  useEffect(() => {
-    if (LICENSE_SCOPES?.length) {
-      authorizeHelper(LICENSE_SCOPES)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (item?.licenseExpired) {

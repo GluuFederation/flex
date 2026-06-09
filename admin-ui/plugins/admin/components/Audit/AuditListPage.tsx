@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   createDate,
@@ -12,9 +12,8 @@ import { AccessTimeIcon, SearchIcon } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -40,7 +39,6 @@ const getDefaultRange = () => ({
 })
 
 const AUDIT_LOGS_RESOURCE_ID = ADMIN_UI_RESOURCES.AuditLogs
-const AUDIT_LOGS_SCOPES = CEDAR_RESOURCE_SCOPES[AUDIT_LOGS_RESOURCE_ID] ?? []
 
 const T_KEYS = {
   TITLE_AUDIT_LOGS: 'titles.audit_logs',
@@ -66,20 +64,9 @@ const AuditListPage: React.FC = () => {
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ isDark: themeState.theme === THEME_DARK, themeColors })
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadAuditLogs } = usePermission(AUDIT_LOGS_RESOURCE_ID)
 
   SetTitle(t(T_KEYS.TITLE_AUDIT_LOGS))
-
-  const canReadAuditLogs = useMemo(
-    () => hasCedarReadPermission(AUDIT_LOGS_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-
-  useEffect(() => {
-    if (AUDIT_LOGS_SCOPES.length > 0) {
-      authorizeHelper(AUDIT_LOGS_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const queryClient = useQueryClient()
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()

@@ -12,16 +12,17 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuTable, type ColumnDef, type ActionDef } from '@/components/GluuTable'
 import SetTitle from 'Utils/SetTitle'
-import { buildPayload, type UserAction } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/auditAction'
+import type { UserAction } from 'Utils/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { devLogger } from '@/utils/devLogger'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './Aliases.style'
-import { AUTH_RESOURCE_ID, AUTH_SCOPES, PAGE_SIZE } from '../constants'
+import { AUTH_RESOURCE_ID, PAGE_SIZE } from '../constants'
 import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import {
@@ -48,7 +49,7 @@ const Aliases = ({
   onWritePermissionChange,
 }: AliasesProps): React.ReactElement => {
   const { t } = useTranslation()
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadAuth, canWrite: canWriteAuth } = usePermission(AUTH_RESOURCE_ID)
 
   const { state: themeState } = useTheme()
   const themeColors = useMemo(
@@ -68,15 +69,6 @@ const Aliases = ({
   const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE)
 
   SetTitle(t('titles.authentication'))
-
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   const {
     data: configuration = {},
@@ -132,12 +124,6 @@ const Aliases = ({
   const initialFormValuesRef = useRef(initialFormValues)
   formikRef.current = formik
   initialFormValuesRef.current = initialFormValues
-
-  useEffect(() => {
-    if (AUTH_SCOPES && AUTH_SCOPES.length > 0) {
-      authorizeHelper(AUTH_SCOPES)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (!showAddModal) {

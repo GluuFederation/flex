@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import React, { useState, useContext, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -13,9 +13,8 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { adminUiFeatures } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useQueryClient } from '@tanstack/react-query'
@@ -34,19 +33,13 @@ const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
 const attributeResourceId = ADMIN_UI_RESOURCES.Attributes
-const attributeScopes = CEDAR_RESOURCE_SCOPES[attributeResourceId] ?? []
 
 const UserClaimsListPage: React.FC = () => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
 
-  const {
-    authorizeHelper,
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-  } = useCedarling()
+  const { canRead, canWrite, canDelete } = usePermission(attributeResourceId)
 
   const theme = useContext(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
@@ -70,25 +63,6 @@ const UserClaimsListPage: React.FC = () => {
 
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<JansAttribute | null>(null)
-
-  const canRead = useMemo(
-    () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(attributeResourceId),
-    [hasCedarWritePermission],
-  )
-  const canDelete = useMemo(
-    () => hasCedarDeletePermission(attributeResourceId),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    if (attributeScopes.length > 0) {
-      authorizeHelper(attributeScopes)
-    }
-  }, [authorizeHelper])
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 

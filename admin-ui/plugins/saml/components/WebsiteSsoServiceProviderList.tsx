@@ -1,10 +1,11 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { buildPayload, type UserAction } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { buildPayload } from 'Utils/auditAction'
+import type { UserAction } from 'Utils/types'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -14,7 +15,6 @@ import { adminUiFeatures } from '@/constants'
 import { PaperContainer, getServiceProviderTableCols } from '../helper'
 import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import {
   useTrustRelationships,
@@ -32,7 +32,6 @@ interface DeleteItem {
 const DeleteOutlinedIcon = () => <DeleteOutlined />
 
 const WebsiteSsoServiceProviderList = React.memo(() => {
-  const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
@@ -54,20 +53,10 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
   const isLoading = isInitialLoading || isFetchingData || deleteTrustRelationshipMutation.isPending
 
-  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
-  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
-  const canReadWebsiteSsoServiceProviders = useMemo(
-    () => hasCedarReadPermission(samlResourceId),
-    [hasCedarReadPermission, samlResourceId],
-  )
-  const canWriteWebsiteSsoServiceProviders = useMemo(
-    () => hasCedarWritePermission(samlResourceId),
-    [hasCedarWritePermission, samlResourceId],
-  )
-
-  useEffect(() => {
-    authorizeHelper(samlScopes)
-  }, [authorizeHelper, samlScopes])
+  const {
+    canRead: canReadWebsiteSsoServiceProviders,
+    canWrite: canWriteWebsiteSsoServiceProviders,
+  } = usePermission(ADMIN_UI_RESOURCES.SAML)
 
   const handleGoToEditPage = useCallback(
     (rowData: TrustRelationship, viewOnly?: boolean) => {
