@@ -74,7 +74,7 @@ sequenceDiagram
     participant Orval as Orval client
 
     Listener->>API: fetchApiTokenWithDefaultScopes()
-    API-->>Listener: { access_token, scopes, issuer, postLogoutRedirectUri }
+    API-->>Listener: { access_token, scopes, issuer }
     Listener->>Orval: setApiToken(access_token)
     Listener->>API: POST /session { ujwt, apiProtectionToken } (withCredentials: true)
     API-->>Listener: Set-Cookie: admin-ui-session=…
@@ -83,9 +83,9 @@ sequenceDiagram
 
 ### Explanation of the flow
 
-The flow is driven by [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts). After the OAuth/PKCE step writes the user info into Redux, `AppAuthProvider` dispatches `getAPIAccessToken`. The listener calls `fetchApiTokenWithDefaultScopes()` and receives back an `access_token` along with side values (`issuer`, `postLogoutRedirectUri`, the requested scopes).
+The flow is driven by [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts). After the OAuth/PKCE step writes the user info into Redux, `AppAuthProvider` dispatches `getAPIAccessToken`. The listener calls `fetchApiTokenWithDefaultScopes()` and receives back an `access_token` along with side values (`issuer` and the requested scopes). Separately, the `getOAuth2Config` listener calls `fetchServerConfiguration()` and dispatches the result (including `postLogoutRedirectUri`) into `authReducer.config`.
 
-The listener hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The listener also persists `POST_LOGOUT_REDIRECT_URI` to `localStorage` so that [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) can use it as a fallback at logout time.
+The listener hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The OAuth2 server config (including `postLogoutRedirectUri`) is dispatched into Redux `authReducer.config` and persisted there, so [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) reads it as the logout fallback.
 
 Then comes the session creation. The listener dispatches `createAdminUiSession({ ujwt, apiProtectionToken })`:
 
@@ -191,14 +191,15 @@ Never reach into `localStorage` directly for tokens. Go through [`app/utils/Toke
 
 `localStorage` is used for state that needs to be readable **before** React and Redux even boot. Theme and language need to be available for the first paint, otherwise the user sees a flash of the wrong theme. Every key lives in [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts). Inline string keys are a lint regression.
 
-| Key                        | Feature                                      | Set by                              | Read by                               |
-| -------------------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------- |
-| `USER_CONFIG`              | User prefs blob (theme + language)           | `LanguageMenu`, `ThemeDropdown`     | `i18n.ts`, `themeContext`             |
-| `INIT_THEME`               | UI theme (light/dark)                        | `themeContext`, `logoutSlice` reset | `themeContext`, `default.tsx` layout  |
-| `INIT_LANG`                | UI language                                  | `LanguageMenu`, `logoutSlice` reset | `i18n.ts`, `LanguageMenu`             |
-| `USER_INFO`                | Decoded OIDC `userinfo` (theme/lang restore) | no current writer                   | `themeContext`                        |
-| `ISSUER`                   | OIDC issuer URL                              | `TokenController` after discovery   | `TokenController` on subsequent boots |
-| `POST_LOGOUT_REDIRECT_URI` | Where to send the user after end-session     | auth listener from OAuth2 config    | `ByeBye.tsx` as fallback              |
+Application code reads and writes through the `storage` helper in [`app/utils/storage.ts`](../app/utils/storage.ts) (`get` / `set` / `getJSON` / `setJSON` / `remove` / `clear`), which guards SSR and swallows quota and parse errors. The only raw `localStorage` access is the pre-paint theme script in `index.html`, which has to run before the bundle loads.
+
+| Key           | Feature                                      | Set by                              | Read by                               |
+| ------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------- |
+| `USER_CONFIG` | User prefs blob (theme + language)           | `LanguageMenu`, `ThemeDropdown`     | `i18n.ts`, `themeContext`             |
+| `INIT_THEME`  | UI theme (light/dark)                        | `themeContext`, `logoutSlice` reset | `themeContext`, `default.tsx` layout  |
+| `INIT_LANG`   | UI language                                  | `LanguageMenu`, `logoutSlice` reset | `i18n.ts`, `LanguageMenu`             |
+| `USER_INFO`   | Decoded OIDC `userinfo` (theme/lang restore) | no current writer                   | `themeContext`                        |
+| `ISSUER`      | OIDC issuer URL                              | `TokenController` after discovery   | `TokenController` on subsequent boots |
 
 ## 401 vs 403
 
@@ -231,7 +232,7 @@ Logout is one cleanup path with three different triggers. All of them end up rou
 2. If `state.authReducer.hasSession` is `true`, calls `deleteAdminUiSession()` against `ENDPOINTS.SESSION` (DELETE) so the Config API invalidates the admin-UI session cookie. Failures are logged but do not block the rest of logout.
 3. `dispatch(logoutUser())`: the `logoutSlice` reducer wipes `localStorage` of tokens and userinfo, **preserves** `USER_CONFIG`, and resets `INIT_THEME` + `INIT_LANG` to defaults so the next visitor lands on a clean theme.
 4. If the OAuth config has an `endSessionEndpoint`, builds the end-session URL with `buildSafeLogoutUrl(endSessionEndpoint, postLogoutRedirectUri, state)` (from [`app/utils/urlSecurity.ts`](../app/utils/urlSecurity.ts)) and redirects there. Jans clears its own session and returns the browser to the redirect URI.
-5. **Fallback**: if no `endSessionEndpoint` is available, redirects to the URL in `STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI` (validated via `buildSafeNavigationUrl`), or `/` as a last resort.
+5. **Fallback**: if no `endSessionEndpoint` is available, redirects to `config.postLogoutRedirectUri` from `authReducer.config` (validated via `buildSafeNavigationUrl`), or `/` as a last resort.
 
 `buildSafeLogoutUrl` and `buildSafeNavigationUrl` exist because constructing these URLs by hand is error-prone. A crafted `post_logout_redirect_uri` is a URL-injection vector. Always go through them.
 
@@ -240,7 +241,7 @@ Logout is one cleanup path with three different triggers. All of them end up rou
 Two unrelated things are both called "scopes":
 
 - **OIDC scopes** are declared in the auth config the Jans server hands back. AppAuth lists them in the `AuthorizationRequest`. They control what the OIDC token can be used for.
-- **Cedarling resource scopes** are declared in [`app/cedarling/constants/resourceScopes.ts`](../app/cedarling/constants/resourceScopes.ts) and evaluated at the page boundary by `useCedarling()`. They control which UI elements render for which role.
+- **Cedarling resource scopes** are derived from [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts) and evaluated at the page boundary by `usePermission()`. They control which UI elements render for which role.
 
 A user can be signed in (OIDC scopes valid) but unauthorized (Cedarling denies). That is the normal case for role-restricted pages. See [cedarling.md](./cedarling.md).
 

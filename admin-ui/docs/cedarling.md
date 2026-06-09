@@ -10,7 +10,7 @@ Three things make this design unusual:
 - **Policies are data, not code.** The rules ("a user with role X can read resource Y") live in a JSON file called a **policy store**, loaded into Cedarling at startup. Changing who can do what is a policy-store edit, not a component change.
 - **The UI gate is the first gate, not the only one.** Even when Cedarling says "yes", the Jans Config API revalidates server-side and can still return 403. Cedarling hides UI elements the user can't use. It does not replace server-side authorization.
 
-The check itself is simple: every page that gates a button, an action, or a whole section calls a small hook (`useCedarling`) and asks _can this user read / write / delete this resource?_ The first answer for each `(resource, action)` pair triggers a WASM call. Every later answer is a Redux cache read.
+The check itself is simple: every page that gates a button, an action, or a whole section calls `usePermission(resource)` and gets back `{ canRead, canWrite, canDelete }`. The first answer for each `(resource, action)` pair triggers a WASM call. Every later answer is a Redux cache read.
 
 ## Flow diagram
 
@@ -47,14 +47,15 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     participant Page as Page (e.g. Clients list)
+    participant Perm as usePermission(resource)
     participant Hook as useCedarling()
     participant Cache as cedarPermissions slice
     participant Client as cedarlingClient
     participant Wasm as Cedarling WASM
 
-    Page->>Hook: useCedarling()
-    Page->>Hook: authorizeHelper(CEDAR_RESOURCE_SCOPES[Clients]) in useEffect
-    Hook->>Hook: dedupe entries by (resourceId, actionLabel)
+    Page->>Perm: usePermission(ADMIN_UI_RESOURCES.Clients)
+    Perm->>Hook: authorizeHelper(CEDAR_RESOURCE_SCOPES[Clients]) in useEffect
+    Hook->>Hook: dedupe entries by (resourceId, action)
     loop each unique (resource, action)
         Hook->>Cache: cached?
         alt cached
@@ -66,8 +67,7 @@ sequenceDiagram
             Hook->>Cache: setCedarlingPermission(key, decision)
         end
     end
-    Page->>Hook: hasCedarReadPermission(Clients) on render
-    Cache-->>Page: boolean
+    Perm-->>Page: { canRead, canWrite, canDelete }
     Page->>Page: render the table or hide it
 ```
 
@@ -86,7 +86,7 @@ When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/util
 Once all three are ready, it:
 
 1. **Decodes** the base64 string into a `Uint8Array`.
-2. **Merges the bootstrap config**: a static JSON file at [`app/cedarling/config/cedarling-bootstrap-TBAC.json`](../app/cedarling/config/cedarling-bootstrap-TBAC.json) gets combined with the runtime-configured log type to produce the full bootstrap configuration that Cedarling will initialize with. The log type comes from the Config API (`authReducer.config.cedarlingLogType`) and is one of the values defined in [`CedarlingLogType`](../app/cedarling/enums/CedarlingLogType.ts): `OFF` (default) or `STD_OUT`. This step tells Cedarling _how_ to behave (logging, schema, token issuers, etc.). The policy store tells it _what to enforce_.
+2. **Merges the bootstrap config**: a static JSON file at [`app/cedarling/config/cedarling-bootstrap-TBAC.json`](../app/cedarling/config/cedarling-bootstrap-TBAC.json) gets combined with the runtime-configured log type to produce the full bootstrap configuration that Cedarling will initialize with. The log type comes from the Config API (`authReducer.config.cedarlingLogType`) and is one of the values in [`CEDARLING_LOG_TYPE`](../app/cedarling/constants/cedarlingConstants.ts): `OFF` (default) or `STD_OUT`. This step tells Cedarling _how_ to behave (logging, schema, token issuers). The policy store tells it _what to enforce_.
 3. **Initializes Cedarling** by calling `cedarlingClient.initialize(bootstrap config, policy store bytes)`. [`cedarlingClient`](../app/cedarling/client/) is a thin singleton wrapper around the WASM module. Its `initialize` function loads the WASM binary (`initWasm()`) and asks the WASM module to construct a `Cedarling` instance from the bootstrap config and the policy store bytes (`init_from_archive_bytes`). The client guards against double-init using a promise singleton. If Phase 1 re-runs while initialization is mid-flight, the second call returns the in-progress promise instead of starting over.
 4. **Marks Cedarling ready** with `setCedarlingInitialized(true)`. From this point on, any component can ask Cedarling for a decision.
 
@@ -94,28 +94,36 @@ If initialization fails, the initializer retries up to **10 times with a 1-secon
 
 ### Phase 2: Per-page permission check
 
-Take the OIDC Clients list page as a concrete example. When the page component mounts, it calls the `useCedarling()` hook ([`app/cedarling/hooks/useCedarling.ts`](../app/cedarling/hooks/useCedarling.ts)). The hook pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the existing decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission, error, isLoading }`.
+Take the OIDC Clients list page as a concrete example. The page calls [`usePermission(ADMIN_UI_RESOURCES.Clients)`](../app/cedarling/hooks/usePermission.ts) and gets back `{ canRead, canWrite, canDelete }`. Those three booleans decide whether the table renders and which action buttons appear.
 
-**`authorizeHelper`** is the one entry point for asking Cedarling about decisions. It takes an array of `ResourceScopeEntry` objects (each shaped like `{ permission: '<scope URL>', resourceId: 'Clients' }`), dedupes by `(resourceId, action)` so it fires exactly one WASM call per unique pair, and returns an `AuthorizationResult[]` aligned to the original input. Single-scope sites just pass a one-element array and destructure the first result.
+`usePermission` does two things. On mount it looks up the resource's scope list in `CEDAR_RESOURCE_SCOPES` and passes it to `authorizeHelper` inside a `useEffect`, which fills the decision cache. On every render it reads the cached decisions back through `hasCedarReadPermission`, `hasCedarWritePermission`, and `hasCedarDeletePermission`, defaulting each to `false` when no decision exists yet.
 
-The `permission` field is the OAuth scope URL the Config API uses for that operation. The `resourceId` is the logical resource name in the Cedar policy store.
+Under the hood `usePermission` is built on [`useCedarling()`](../app/cedarling/hooks/useCedarling.ts), the lower-level hook that pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission }`. Most components use `usePermission`. `useCedarling` is used directly only where a component needs to evaluate many resources at once, such as the sidebar.
 
-**Where do the scopes come from?** Every Cedarling-gated page has an entry in [`CEDAR_RESOURCE_SCOPES`](../app/cedarling/constants/resourceScopes.ts) keyed by `ADMIN_UI_RESOURCES.<Name>`. That entry lists every OAuth scope URL the page might need a decision on. The page passes this whole array into `authorizeHelper` once, in a `useEffect`, when the page mounts.
+**`authorizeHelper`** is the one entry point for asking Cedarling about decisions. It takes an array of `ResourceScopeEntry` objects (each shaped `{ action, resourceId }`), dedupes by `(resourceId, action)` so it fires exactly one WASM call per unique pair, and returns an `AuthorizationResult[]` aligned to the original input.
+
+**Where do the scopes come from?** A single catalog, [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), declares the allowed actions per resource, for example `Clients: ['read', 'write', 'delete']`. Two things derive from it in [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
+
+- `ADMIN_UI_RESOURCES`: the resource-id map, one key per resource.
+- `CEDAR_RESOURCE_SCOPES`: for each resource, its action list turned into `{ action, resourceId }` entries, which is exactly what `authorizeHelper` consumes.
+
+So adding a resource or changing its allowed actions is a single edit to `RESOURCE_ACTIONS`.
 
 **What `authorizeHelper` does internally:**
 
-1. **Derives an action label from each scope URL.** A URL containing `write` becomes the `write` action. One containing `delete` becomes `delete`. Everything else becomes `read`. A handful of special-case URLs (SSA admin/developer, SCIM bulk, revoke session, OpenID) are also forced to `write`. See `getActionLabelFromUrl` inside the hook.
-2. **Dedupes by `(resourceId, actionLabel)`.** If two different scope URLs both resolve to `(Clients, read)`: for example, a regular read scope and an admin read scope that both grant read access. The helper fires the underlying authorization exactly once and reuses the decision for both entries. This is the "dedupe" loop in the diagram.
-3. **For each unique pair**, the helper first checks the Redux cache. If a decision was already computed in this session, it is returned immediately and no WASM call happens. On a cache miss, the helper builds a `TokenAuthorizationRequest`:
+1. **Dedupes by `(resourceId, action)`.** Repeated pairs in the input collapse to one underlying authorization, and the decision is reused for every matching entry. This is the "dedupe" loop in the diagram.
+2. **For each unique pair**, the helper first checks the Redux cache. If a decision was already computed in this session, it is returned immediately and no WASM call happens. On a cache miss, the helper builds a `TokenAuthorizationRequest`:
    - All three tokens, mapped to Cedar entity types (`GluuFlexAdminUI::Access_token`, `::id_token`, `::Userinfo_token`).
    - The action, formatted as `GluuFlexAdminUI::Action::"read"` (or `"write"` / `"delete"`).
-   - The resource, as a Cedar entity with the `resourceId`.
+   - The resource, as a Cedar entity carrying the `resourceId`.
 
-   The entity-type prefixes (`GluuFlexAdminUI::Action::`, `GluuFlexAdminUIResources::Features`) are not magic strings: they live in [`CEDARLING_CONSTANTS`](../app/cedarling/constants/cedarlingConstants.ts) and must stay in sync with the policy-store schema.
+   The entity-type prefixes live in [`CEDARLING_CONSTANTS`](../app/cedarling/constants/cedarlingConstants.ts) and must stay in sync with the policy-store schema.
 
-4. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorize_multi_issuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision: true | false }`. The hook caches that decision under the key `${resourceId}::${action}`.
+3. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorize_multi_issuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision: true | false }`. The decision is cached under the key `${resourceId}::${action}` ([`buildCedarPermissionKey`](../app/cedarling/utility/resources.ts)).
 
-After `authorizeHelper` finishes, the page renders. During render, it calls `hasCedarReadPermission(ADMIN_UI_RESOURCES.Clients)` to decide whether to show the clients table at all, and `hasCedarWritePermission(...)` to decide whether to show "Add Client" / "Edit" / "Delete" buttons. Each of these is a pure Redux selector. It reads the cached boolean and returns it. After the first `authorizeHelper` call on a page, every subsequent render costs nothing: no WASM, no network, just a cache hit.
+A failed authorization is not cached: the catch path returns `false` for that call but skips the cache write, so a transient WASM or init error retries on the next check instead of sticking as a permanent denial.
+
+After the first `usePermission` call on a page, every subsequent render costs nothing: no WASM, no network, just a cache hit.
 
 A 403 from the Config API is still possible if a Cedarling decision and the server-side policy check disagree. Cedarling is the **early gate** for what the user can see and click, not the final word. The Config API always revalidates. When the API disagrees, the user sees a toast and the affected query fails. Cached decisions stay.
 
@@ -127,10 +135,12 @@ app/cedarling/
 ├── config/          # cedarling-bootstrap-TBAC.json
 │                    # policy-store-dev.json
 │                    # policy-store-prod.json
-├── constants/       # CEDAR_RESOURCE_SCOPES - scope arrays per resource
-├── hooks/           # useCedarling(): the hook every page uses
-├── types/           # AdminUiFeatureResource, ResourceScopeEntry, AuthorizationResponse, …
-└── utility/         # ADMIN_UI_RESOURCES, CEDARLING_BYPASS, buildCedarPermissionKey
+├── components/      # Protected - declarative action gate
+├── constants/       # RESOURCE_ACTIONS, CEDAR_ACTIONS, CEDARLING_BYPASS (resourceCatalog)
+│                    # CEDARLING_CONSTANTS, CEDARLING_LOG_TYPE (cedarlingConstants)
+├── hooks/           # useCedarling (low-level), usePermission (per-resource)
+├── types/           # cedarTypes: CedarAction, AdminUiFeatureResource, ResourceScopeEntry, …
+└── utility/         # ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES, buildCedarPermissionKey
 
 app/redux/features/cedarPermissionsSlice.ts
                      # decision cache, policy-store bytes, init state, retry state
@@ -142,84 +152,80 @@ app/utils/AppAuthProvider.tsx
                      # fetches the policy store after sign-in
 ```
 
-`vite.config.ts` (`getPolicyStoreConfig`) picks `policy-store-dev.json` or `policy-store-prod.json` by build mode and embeds it into the bundle. The Config API ships the same store at runtime via `fetchPolicyStore()`: that's the runtime override path, used so the policy store can change without rebuilding the UI.
+`vite.config.ts` (`getPolicyStoreConfig`) picks `policy-store-dev.json` or `policy-store-prod.json` by build mode and embeds it into the bundle. The Config API ships the same store at runtime via `fetchPolicyStore()`: that is the runtime override path, used so the policy store can change without rebuilding the UI.
+
+The `app/cedarling` module follows a one-way layering: `constants` ← `types` ← `utility` / `hooks` / `components`. Import from leaf paths (`@/cedarling/hooks/usePermission`, `@/cedarling/constants`, `@/cedarling/utility`, `@/cedarling/types`, `@/cedarling/components`). The top-level `@/cedarling` barrel is reserved for tests; it is blocked by `no-restricted-imports` in app and plugin code to keep Fast Refresh boundaries intact.
 
 ## How to use it
 
-To gate a button, a table, or a whole page on a Cedar permission, three things must be in place:
+To gate a button, a table, or a whole page on a Cedar permission, two things must be in place:
 
-1. The resource id must exist in [`ADMIN_UI_RESOURCES`](../app/cedarling/utility/resources.ts).
-2. The scope array must exist in [`CEDAR_RESOURCE_SCOPES`](../app/cedarling/constants/resourceScopes.ts) under that resource id.
-3. The matching Cedar policy must exist in **both** `policy-store-dev.json` and `policy-store-prod.json` (otherwise the answer is always "deny").
+1. The resource must exist in [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts) with the actions it supports. `ADMIN_UI_RESOURCES` and `CEDAR_RESOURCE_SCOPES` derive from it.
+2. The matching Cedar policy must exist in **both** `policy-store-dev.json` and `policy-store-prod.json` (otherwise the answer is always "deny").
 
 Then in the component:
 
-```ts
-import { useEffect, useMemo } from 'react'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+```tsx
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
-const RESOURCE_ID = ADMIN_UI_RESOURCES.Clients
-const SCOPES = CEDAR_RESOURCE_SCOPES[RESOURCE_ID]
+const resourceId = ADMIN_UI_RESOURCES.Clients
 
 const ClientListPage = () => {
-  const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
-
-  useEffect(() => {
-    if (SCOPES?.length) authorizeHelper(SCOPES)
-  }, [authorizeHelper])
-
-  const canRead = useMemo(() => hasCedarReadPermission(RESOURCE_ID), [hasCedarReadPermission])
-  const canWrite = useMemo(() => hasCedarWritePermission(RESOURCE_ID), [hasCedarWritePermission])
+  const { canRead, canWrite, canDelete } = usePermission(resourceId)
 
   if (!canRead) return <NoAccess />
   return (
     <>
       <ClientsTable />
       {canWrite && <AddClientButton />}
+      {canDelete && <DeleteAction />}
     </>
   )
 }
 ```
 
+`usePermission` runs the authorization in its own `useEffect`, so the component never calls `authorizeHelper` directly.
+
+For a single child that should appear only under one action, [`Protected`](../app/cedarling/components/Protected.tsx) is the declarative form:
+
+```tsx
+import { Protected } from '@/cedarling/components'
+import { ADMIN_UI_RESOURCES, CEDAR_ACTIONS } from '@/cedarling/constants'
+;<Protected resource={ADMIN_UI_RESOURCES.Clients} action={CEDAR_ACTIONS.WRITE}>
+  <AddClientButton />
+</Protected>
+```
+
 Rules:
 
-- Import the resource id (`ADMIN_UI_RESOURCES.Clients`). Never inline `'Clients'`: typos compile but always evaluate to `false`.
-- Call `authorizeHelper` in `useEffect`, never in the render body. It dispatches Redux actions.
-- Wrap `hasCedar*Permission` calls in `useMemo`.
+- Match the action to the operation: read for viewing, write for add and edit, delete for delete. Gate the destination page and its confirm dialog on the same action as the button that opens them.
+- Import the resource id from `ADMIN_UI_RESOURCES`. Never inline `'Clients'`: typos compile but always evaluate to `false`.
+- Use `CEDAR_ACTIONS.READ` / `WRITE` / `DELETE`, never the bare strings.
+- Use leaf import paths, not the top `@/cedarling` barrel.
 
 ## Adding a new permission check
 
-1. Add the resource id to [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
+1. Add the resource and its allowed actions to [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts):
 
    ```ts
-   export const ADMIN_UI_RESOURCES = {
+   export const RESOURCE_ACTIONS = {
      // …existing
-     MyNewFeature: 'MyNewFeature',
-   } as const
+     MyNewFeature: ['read', 'write'],
+   } as const satisfies Record<string, readonly CedarAction[]>
    ```
 
-2. Add the scopes to [`app/cedarling/constants/resourceScopes.ts`](../app/cedarling/constants/resourceScopes.ts):
+   `ADMIN_UI_RESOURCES.MyNewFeature` and `CEDAR_RESOURCE_SCOPES[MyNewFeature]` are derived automatically. Every action a component reads through `usePermission` (and every action used on a sidebar entry) must be listed here, otherwise that decision is always `false`.
 
-   ```ts
-   [ADMIN_UI_RESOURCES.MyNewFeature]: [
-     { permission: MY_FEATURE_READ, resourceId: ADMIN_UI_RESOURCES.MyNewFeature },
-     { permission: MY_FEATURE_WRITE, resourceId: ADMIN_UI_RESOURCES.MyNewFeature },
-   ],
-   ```
+2. Add the Cedar policy to **both** `policy-store-dev.json` and `policy-store-prod.json`. A policy in dev but not prod returns "deny" in production with no obvious error.
 
-   `MY_FEATURE_READ` / `MY_FEATURE_WRITE` are the OAuth scope URLs from [`app/utils/PermChecker.ts`](../app/utils/PermChecker.ts).
+3. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` or `<Protected>` as shown above.
 
-3. Add the Cedar policy to **both** `policy-store-dev.json` and `policy-store-prod.json`. A policy in dev but not prod returns "deny" in production with no obvious error.
-
-4. Wire `useCedarling()` into the component as shown above.
-
-5. Verify in the browser. Sign in as a user with the role that should have access. Confirm the page renders. Sign in as a user without it. Confirm the page is gated.
+4. Verify in the browser. Sign in as a user with the role that should have access and confirm the page renders. Sign in as a user without it and confirm the page is gated.
 
 ## The `CEDARLING_BYPASS` sentinel
 
-`CEDARLING_BYPASS` (`'CEDARLING_BYPASS'`, exported from [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts)) is a **production sentinel**, not a debug switch. Use it as the `resourceKey` on a menu item or route whose visibility should not depend on a Cedar decision. The sidebar code recognizes this exact value and short-circuits the permission check, returning the item unconditionally:
+`CEDARLING_BYPASS` (`'CEDARLING_BYPASS'`, exported from [`app/cedarling/constants/resourceCatalog.ts`](../app/cedarling/constants/resourceCatalog.ts)) is a **production sentinel**, not a debug switch. Use it as the `resourceKey` on a menu item or route whose visibility should not depend on a Cedar decision. The sidebar code recognizes this exact value and short-circuits the permission check, returning the item unconditionally:
 
 ```ts
 // app/routes/Apps/Gluu/GluuAppSidebar.tsx
@@ -234,7 +240,7 @@ Real production usage in [`plugins/admin/plugin-metadata.ts`](../plugins/admin/p
 {
   title: 'menus.health',
   path: ROUTES.ADMIN_HEALTH,
-  permission: PROPERTIES_READ,
+  action: CEDAR_ACTIONS.READ,
   resourceKey: CEDARLING_BYPASS,
 }
 ```

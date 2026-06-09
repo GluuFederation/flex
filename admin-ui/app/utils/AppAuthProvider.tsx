@@ -42,7 +42,6 @@ import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
-import { STORAGE_KEYS } from '@/constants'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -60,6 +59,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     hasSession,
   } = useAppSelector((state) => state.authReducer)
   const config = rawConfig as OAuthConfig
+  const configRef = useRef(config)
+  configRef.current = config
 
   const { islicenseCheckResultLoaded, isLicenseValid, isConfigValid, isUnderThresholdLimit } =
     useAppSelector((state) => state.licenseReducer)
@@ -252,7 +253,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 const state = uuidv4()
                 const sessionEndpoint = buildSafeLogoutUrl(
                   authConfigs?.endSessionEndpoint || null,
-                  localStorage.getItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI),
+                  configRef.current.postLogoutRedirectUri,
                   state,
                 )
                 dispatch(

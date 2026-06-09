@@ -1,6 +1,7 @@
 import { createContext, useReducer, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 import { devLogger } from '@/utils/devLogger'
+import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
 import type { ThemeState, ThemeAction, ThemeContextType } from './types'
 
@@ -14,12 +15,9 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
   }
 
   try {
-    const userConfigStr = window.localStorage.getItem(STORAGE_KEYS.USER_CONFIG)
-    if (!userConfigStr) {
-      return DEFAULT_THEME
-    }
-
-    const userConfig = JSON.parse(userConfigStr) as { theme?: string | Record<string, string> }
+    const userConfig = storage.getJSON<{ theme?: string | Record<string, string> }>(
+      STORAGE_KEYS.USER_CONFIG,
+    )
     if (!userConfig?.theme) {
       return DEFAULT_THEME
     }
@@ -52,18 +50,18 @@ const getInitialTheme = (): ThemeValue => {
   }
 
   try {
-    const savedTheme = window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)
+    const savedTheme = storage.get(STORAGE_KEYS.INIT_THEME)
     if (savedTheme && isValidTheme(savedTheme)) {
       return savedTheme
     }
 
     const userTheme = extractUserTheme()
     if (userTheme !== DEFAULT_THEME) {
-      window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, userTheme)
+      storage.set(STORAGE_KEYS.INIT_THEME, userTheme)
       return userTheme
     }
 
-    window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
+    storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
     devLogger.error(
@@ -71,7 +69,7 @@ const getInitialTheme = (): ThemeValue => {
       e instanceof Error ? e : String(e),
     )
     try {
-      window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
+      storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     } catch (e) {
       devLogger.warn(
         'Failed to write default theme to localStorage:',
@@ -89,7 +87,7 @@ const initialState: ThemeState = {
 const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
   if (action.type) {
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, action.type)
+      storage.set(STORAGE_KEYS.INIT_THEME, action.type)
     }
     return { theme: action.type }
   }
@@ -102,11 +100,8 @@ interface ThemeProviderProps {
 
 const getUserInum = (): string | null => {
   try {
-    const userInfoStr = window.localStorage.getItem(STORAGE_KEYS.USER_INFO)
-    if (userInfoStr) {
-      const userInfo = JSON.parse(userInfoStr) as { inum?: string }
-      return userInfo?.inum || null
-    }
+    const userInfo = storage.getJSON<{ inum?: string }>(STORAGE_KEYS.USER_INFO)
+    return userInfo?.inum || null
   } catch (e) {
     devLogger.warn(
       'Failed to parse userInfo from localStorage:',
@@ -124,7 +119,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
     if (typeof window === 'undefined' || hasSyncedRef.current) return
 
     try {
-      const savedTheme = window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)
+      const savedTheme = storage.get(STORAGE_KEYS.INIT_THEME)
       if (savedTheme && isValidTheme(savedTheme)) {
         dispatch({ type: savedTheme })
         hasSyncedRef.current = true
@@ -135,10 +130,10 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
       const userTheme = extractUserTheme(currentInum)
 
       if (userTheme !== DEFAULT_THEME) {
-        window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, userTheme)
+        storage.set(STORAGE_KEYS.INIT_THEME, userTheme)
         dispatch({ type: userTheme })
       } else {
-        window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
+        storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
         dispatch({ type: DEFAULT_THEME })
       }
 
@@ -149,9 +144,9 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         e instanceof Error ? e : String(e),
       )
       try {
-        const currentTheme = window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)
+        const currentTheme = storage.get(STORAGE_KEYS.INIT_THEME)
         if (!currentTheme || !isValidTheme(currentTheme)) {
-          window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
+          storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
           dispatch({ type: DEFAULT_THEME })
         } else {
           dispatch({ type: currentTheme })

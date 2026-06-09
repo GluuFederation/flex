@@ -4,6 +4,7 @@ import type { InitOptions } from 'i18next'
 import translationEn from './locales/en/translation.json'
 import { isDevelopment } from './utils/env'
 import { devLogger } from './utils/devLogger'
+import { storage } from '@/utils/storage'
 import { hmrAccept } from '@/utils/hmr'
 import { toast } from 'react-toastify'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
@@ -30,9 +31,9 @@ const handleMissingKey = (key: string, defaultValue?: string): string => {
 
 const getSavedLanguage = (): string => {
   try {
-    const initLang = localStorage.getItem(STORAGE_KEYS.INIT_LANG)
+    const initLang = storage.get(STORAGE_KEYS.INIT_LANG)
     if (initLang) return initLang
-    const config = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}')
+    const config = storage.getJSON<{ lang?: Record<string, string> }>(STORAGE_KEYS.USER_CONFIG)
     const langs = config?.lang
     if (langs && typeof langs === 'object') {
       const values = Object.values(langs) as string[]

@@ -6,6 +6,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { devLogger } from '@/utils/devLogger'
+import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
@@ -38,13 +39,11 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
       }
 
       try {
-        const existingConfigStr = localStorage.getItem(STORAGE_KEYS.USER_CONFIG)
-        const existingConfig = existingConfigStr
-          ? (JSON.parse(existingConfigStr) as {
-              theme?: Record<string, string>
-              lang?: Record<string, string>
-            })
-          : {}
+        const existingConfig =
+          storage.getJSON<{
+            theme?: Record<string, string>
+            lang?: Record<string, string>
+          }>(STORAGE_KEYS.USER_CONFIG) ?? {}
 
         const updatedTheme = {
           ...(existingConfig.theme || {}),
@@ -57,14 +56,14 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
           theme: updatedTheme,
         }
 
-        localStorage.setItem(STORAGE_KEYS.USER_CONFIG, JSON.stringify(newConfig))
+        storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
       } catch (e) {
         devLogger.debug('Failed to parse userConfig:', e instanceof Error ? e : String(e))
         const newConfig = {
           lang: {},
           theme: { [inum]: themeValue },
         }
-        localStorage.setItem(STORAGE_KEYS.USER_CONFIG, JSON.stringify(newConfig))
+        storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
       }
 
       dispatch({ type: themeValue })

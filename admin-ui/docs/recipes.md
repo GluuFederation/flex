@@ -26,12 +26,12 @@ plugins/<plugin>/components/hooks/useYourPageApi.ts   # if needed
    const YourPage = createLazyRoute(() => import('./components/YourPage'))
 
    menus: [{ title: 'menus.your_page', icon: '<icon>', path: ROUTES.YOUR_PAGE,
-            permission: <READ_PERM>, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
+            action: CEDAR_ACTIONS.READ, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
    routes: [{ component: YourPage, path: ROUTES.YOUR_PAGE,
-            permission: <WRITE_PERM>, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
+            action: CEDAR_ACTIONS.READ, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
    ```
 
-3. Gate the render with `useCedarling()`: see [Add an authorization check](#add-an-authorization-check).
+3. Gate the render with `usePermission()`: see [Add an authorization check](#add-an-authorization-check).
 4. Add the `menus.your_page` key to **all four** `app/locales/{en,es,fr,pt}/translation.json`.
 5. Add a sibling test under `plugins/<plugin>/__tests__/components/YourPage.test.tsx`: see [testing.md](./testing.md).
 
@@ -135,17 +135,17 @@ Rules:
 Full version in [cedarling.md](./cedarling.md). Short form:
 
 ```ts
-const RESOURCE_ID = ADMIN_UI_RESOURCES.<YourFeature>
-const SCOPES = CEDAR_RESOURCE_SCOPES[RESOURCE_ID]
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 
-const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
+const resourceId = ADMIN_UI_RESOURCES.<YourFeature>
 
-useEffect(() => { if (SCOPES?.length) authorizeHelper(SCOPES) }, [authorizeHelper])
-const canRead = useMemo(() => hasCedarReadPermission(RESOURCE_ID), [hasCedarReadPermission])
-const canWrite = useMemo(() => hasCedarWritePermission(RESOURCE_ID), [hasCedarWritePermission])
+const { canRead, canWrite, canDelete } = usePermission(resourceId)
 ```
 
-New resource → add it to `app/cedarling/utility/resources.ts` **and** the policy to both `policy-store-dev.json` and `policy-store-prod.json`. A missing prod policy returns "deny" with no error.
+Match the action to the operation: read for viewing, write for add and edit, delete for delete.
+
+New resource → add it (with its allowed actions) to `RESOURCE_ACTIONS` in `app/cedarling/constants/resourceCatalog.ts` **and** the policy to both `policy-store-dev.json` and `policy-store-prod.json`. A missing prod policy returns "deny" with no error.
 
 ## Add an audit record
 
