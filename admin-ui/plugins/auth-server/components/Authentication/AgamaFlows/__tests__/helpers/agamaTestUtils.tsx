@@ -25,9 +25,6 @@ jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
     Authentication: 'Authentication',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Authentication: [] },
 }))
 
@@ -132,7 +129,7 @@ export const createAgamaTestStore = (): Store =>
     }),
   })
 
-export const createAgamaQueryClient = (): QueryClient =>
+const createAgamaQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })

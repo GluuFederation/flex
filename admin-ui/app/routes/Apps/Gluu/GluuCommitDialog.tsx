@@ -4,16 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import PropTypes from 'prop-types'
 import { useAppSelector } from '@/redux/hooks'
 import Alert from '@mui/material/Alert'
 import { Close } from '@/components/icons'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import type { GluuCommitDialogProps } from './types/index'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
@@ -42,7 +40,7 @@ const GluuCommitDialog = ({
   alertSeverity = 'warning',
 }: GluuCommitDialogProps) => {
   const { t } = useTranslation()
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadWebhooks } = usePermission(ADMIN_UI_RESOURCES.Webhooks)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -52,22 +50,6 @@ const GluuCommitDialog = ({
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
-
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
-    [webhookResourceId],
-  )
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
-
-  useEffect(() => {
-    if (webhookScopes && webhookScopes.length > 0) {
-      authorizeHelper(webhookScopes)
-    }
-  }, [authorizeHelper, webhookScopes])
 
   const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature,
@@ -279,25 +261,3 @@ const GluuCommitDialog = ({
 }
 
 export default GluuCommitDialog
-GluuCommitDialog.propTypes = {
-  feature: PropTypes.string,
-  handler: PropTypes.func.isRequired,
-  modal: PropTypes.bool.isRequired,
-  onAccept: PropTypes.func.isRequired,
-  formik: PropTypes.object,
-  placeholderLabel: PropTypes.string,
-  label: PropTypes.string,
-  alertMessage: PropTypes.string,
-  alertSeverity: PropTypes.oneOf(['error', 'warning', 'info', 'success']),
-  inputType: PropTypes.oneOf([
-    'text',
-    'textarea',
-    'email',
-    'password',
-    'number',
-    'tel',
-    'url',
-    'search',
-  ]),
-  isLicenseLabel: PropTypes.bool,
-}

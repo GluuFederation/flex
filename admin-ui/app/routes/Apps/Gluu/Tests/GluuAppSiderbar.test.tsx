@@ -52,7 +52,6 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  CEDARLING_BYPASS: 'CEDARLING_BYPASS',
   ADMIN_UI_RESOURCES: {
     Dashboard: 'Dashboard',
     License: 'License',

@@ -22,7 +22,6 @@ import {
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { logger } from '@/utils/logger'
 import { setApiToken } from 'Orval'
-import { STORAGE_KEYS } from '@/constants'
 import { SESSION_EXPIRED } from '@/audit/messages'
 import type { Config } from '../features/types/authTypes'
 import type { PutConfigMeta } from '../features/types/authSliceTypes'
@@ -128,7 +127,6 @@ startAppListening({
 
       const response = await fetchServerConfiguration(token ?? undefined)
       if (response?.postLogoutRedirectUri) {
-        localStorage.setItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI, response.postLogoutRedirectUri)
         dispatch(getOAuth2ConfigResponse({ config: response as Config }))
         return
       }

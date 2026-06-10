@@ -18,9 +18,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Session: 'sessions', Webhooks: 'webhooks' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { sessions: [], webhooks: [] },
 }))
 

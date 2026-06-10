@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useCallback, useMemo, memo } from 'react'
+import React, { useContext, useCallback, useMemo, memo } from 'react'
 import { GluuBadge } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
@@ -10,21 +10,19 @@ import { Box, Divider } from '@mui/material'
 import { EditOutlined } from '@/components/icons'
 import { randomAvatar } from '../../../utilities'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import type { ThemeContextValue, InfoRowProps } from './types'
 import { useAppSelector } from '@/redux/hooks'
 import { useProfileDetails } from './hooks/useProfileDetails'
 import GluuLoader from '../Gluu/GluuLoader'
 import GluuViewWrapper from '../Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 
 const USERS_RESOURCE_ID = ADMIN_UI_RESOURCES.Users
-const USERS_SCOPES = CEDAR_RESOURCE_SCOPES[USERS_RESOURCE_ID]
 
 const InfoRow = memo(({ label, value, index, classes }: InfoRowProps) => (
   <Box
@@ -60,23 +58,9 @@ const ProfileDetails: React.FC = () => {
 
   const { profileDetails, loading, surname, roles } = useProfileDetails(userInum, hasSession)
 
-  const { authorizeHelper, hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
-  const canReadProfile = useMemo(
-    () => hasCedarReadPermission(USERS_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canEditProfile = useMemo(
-    () => hasCedarWritePermission(USERS_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
+  const { canRead: canReadProfile, canWrite: canEditProfile } = usePermission(USERS_RESOURCE_ID)
 
   const avatarSrc = useMemo(() => randomAvatar(), [])
-
-  useEffect(() => {
-    if (USERS_SCOPES?.length) {
-      authorizeHelper(USERS_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const navigateToUserManagement = useCallback((): void => {
     if (!profileDetails?.inum) return

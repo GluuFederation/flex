@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { logger } from '@/utils/logger'
+import { storage } from '@/utils/storage'
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50] as const
 
@@ -15,7 +16,7 @@ const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number => {
   }
 
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const stored = storage.get(STORAGE_KEY)
 
     if (!stored) return defaultSize
 
@@ -60,7 +61,7 @@ export const savePagingSize = (size: number): void => {
   }
 
   try {
-    localStorage.setItem(STORAGE_KEY, String(validSize))
+    storage.set(STORAGE_KEY, String(validSize))
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(PAGING_SIZE_CHANGED_EVENT, { detail: validSize }))
     }

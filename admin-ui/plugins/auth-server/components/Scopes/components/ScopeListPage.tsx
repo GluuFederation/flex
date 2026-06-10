@@ -14,8 +14,7 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { updateToast } from 'Redux/features/toastSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
@@ -67,12 +66,7 @@ const ScopeListPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
-  const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+  const { canRead, canWrite, canDelete } = usePermission(ADMIN_UI_RESOURCES.Scopes)
   const { logScopeDeletion } = useScopeActions()
 
   const theme = useContext(ThemeContext)
@@ -92,29 +86,6 @@ const ScopeListPage: React.FC = () => {
 
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<Scope | null>(null)
-
-  const scopesResourceId = ADMIN_UI_RESOURCES.Scopes
-  const scopesScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[scopesResourceId] ?? [],
-    [scopesResourceId],
-  )
-
-  const canRead = useMemo(
-    () => hasCedarReadPermission(scopesResourceId),
-    [hasCedarReadPermission, scopesResourceId],
-  )
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(scopesResourceId),
-    [hasCedarWritePermission, scopesResourceId],
-  )
-  const canDelete = useMemo(
-    () => hasCedarDeletePermission(scopesResourceId),
-    [hasCedarDeletePermission, scopesResourceId],
-  )
-
-  useEffect(() => {
-    authorizeHelper(scopesScopes)
-  }, [authorizeHelper, scopesScopes])
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 

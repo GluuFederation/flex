@@ -56,6 +56,7 @@ Each file runs in fresh jsdom. Setup runs before any test code:
 | ---------------------------------------------- | ------------------------------------------------------------------------------- |
 | `@janssenproject/cedarling_wasm.ts`            | Replaces the WASM bundle (jsdom can't load it)                                  |
 | `cedarlingHookBridge.ts`                       | Stub for `@/cedarling/hooks/useCedarling` so components don't hit the real auth |
+| `cedarlingPermissionBridge.ts`                 | Stub for `@/cedarling/hooks/usePermission`; wraps `useCedarling`                |
 | `fileMock.ts` / `styleMock.ts`                 | Inert stubs for image, font, `.css/.scss` imports                               |
 | `hmr.ts`, `utilities.ts`, `loadPluginMetadata` | Inert stubs for runtime-only modules that crash jsdom                           |
 
@@ -70,13 +71,8 @@ import { render } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import YourPage from 'Plugins/<name>/components/YourPage'
 
-jest.mock('@/cedarling', () => ({
-  useCedarling: () => ({
-    hasCedarReadPermission: () => true,
-    hasCedarWritePermission: () => true,
-    authorizeHelper: jest.fn(),
-  }),
-  ADMIN_UI_RESOURCES: { /* the keys your page reads */ },
+jest.mock('@/cedarling/hooks/usePermission', () => ({
+  usePermission: () => ({ canRead: true, canWrite: true, canDelete: true }),
 }))
 
 it('renders', () => {
@@ -85,8 +81,8 @@ it('renders', () => {
 })
 ```
 
-- Don't grant blanket `true` for both read and write in every test. Flip them off in at least one to verify the gated UI actually disappears.
-- Mock `useCedarling`, not the underlying tokens. Unmocked, Cedarling sees no tokens, returns `undefined`, and the page hides everything.
+- Don't grant blanket `true` for read, write, and delete in every test. Flip them off in at least one to verify the gated UI actually disappears.
+- Mock the hook the component uses: `usePermission` for a page, `useCedarling` for the sidebar or any multi-resource caller. Unmocked, Cedarling sees no tokens, returns `false`, and the page hides everything.
 
 ## Writing a listener / reducer test
 

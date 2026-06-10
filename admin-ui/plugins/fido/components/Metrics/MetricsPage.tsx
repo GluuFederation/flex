@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useState } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { Row, Col, GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -7,9 +7,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { GluuButton } from '@/components/GluuButton'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { FIDO_METRICS_READ } from '@/utils/PermChecker'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -25,7 +24,6 @@ import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from 
 import type { MetricsDateRange } from './types'
 
 const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
-const METRICS_SCOPES = [{ permission: FIDO_METRICS_READ, resourceId: METRICS_RESOURCE_ID }]
 
 const MetricsPage: React.FC = () => {
   const { t } = useTranslation()
@@ -49,11 +47,7 @@ const MetricsPage: React.FC = () => {
 
   const isApplyEnabled = !!(startDate && endDate)
 
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-  const canView = useMemo(
-    () => hasCedarReadPermission(METRICS_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
+  const { canRead: canView } = usePermission(METRICS_RESOURCE_ID)
 
   const { isLoading: adoptionLoading, isFetching: adoptionFetching } =
     useAdoptionMetrics(appliedRange)
@@ -68,10 +62,6 @@ const MetricsPage: React.FC = () => {
     adoptionFetching ||
     errorsFetching ||
     performanceFetching
-
-  useEffect(() => {
-    authorizeHelper(METRICS_SCOPES)
-  }, [authorizeHelper])
 
   const handleStartDateChange = useCallback((date: Dayjs | null) => {
     setStartDate(date ? date.millisecond(0) : null)

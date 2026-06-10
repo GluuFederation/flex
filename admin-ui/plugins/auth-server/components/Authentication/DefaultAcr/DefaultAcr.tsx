@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useAppDispatch } from '@/redux/hooks'
 import { useFormik } from 'formik'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -33,14 +33,14 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
 import { useStyles } from './DefaultAcr.style'
 import { MAX_AGAMA_PROJECTS_FOR_ACR } from './constants'
-import { AUTH_RESOURCE_ID, AUTH_SCOPES } from '../constants'
+import { AUTH_RESOURCE_ID } from '../constants'
 
 type DefaultAcrFormValues = {
   defaultAcr: string
 }
 
 const DefaultAcr = (): React.ReactElement => {
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadAuth, canWrite: canWriteAuth } = usePermission(AUTH_RESOURCE_ID)
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAcrUpdate } = useAcrAudit()
@@ -52,15 +52,6 @@ const DefaultAcr = (): React.ReactElement => {
   const { classes } = useStyles({ themeColors })
 
   const [modal, setModal] = useState<boolean>(false)
-
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   const { data: scriptsResponse, isLoading: loadingScripts } = useCustomScriptsByType(
     DEFAULT_SCRIPT_TYPE,
@@ -107,12 +98,6 @@ const DefaultAcr = (): React.ReactElement => {
   })
 
   SetTitle(t('titles.authentication'))
-
-  useEffect(() => {
-    if (AUTH_SCOPES.length > 0) {
-      authorizeHelper(AUTH_SCOPES)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (acrError) {

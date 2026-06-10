@@ -14,7 +14,7 @@ import { useCustomScript, useUpdateCustomScript, useMutationEffects } from './ho
 import CustomScriptForm from './CustomScriptForm'
 import { useStyles } from './styles/CustomScriptFormPage.style'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import { ROUTES } from '@/helpers/navigation'
@@ -39,15 +39,7 @@ const CustomScriptEditPage: React.FC = () => {
 
   SetTitle(t('titles.edit_script', { defaultValue: 'Edit Custom Script' }))
 
-  const { hasCedarReadPermission, hasCedarWritePermission } = useCedarling()
-  const canRead = useMemo(
-    () => hasCedarReadPermission(scriptsResourceId),
-    [hasCedarReadPermission, scriptsResourceId],
-  )
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(scriptsResourceId),
-    [hasCedarWritePermission, scriptsResourceId],
-  )
+  const { canRead, canWrite } = usePermission(scriptsResourceId)
 
   const viewMatch = useMatch(ROUTES.CUSTOM_SCRIPT_VIEW_TEMPLATE)
 

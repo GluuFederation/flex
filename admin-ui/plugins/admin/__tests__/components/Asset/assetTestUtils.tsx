@@ -6,7 +6,6 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 import { SHARED_CEDAR_CONSTANTS as mockSHARED_CEDAR_CONSTANTS } from './assetCedarTestConstants'
-export { SHARED_CEDAR_CONSTANTS } from './assetCedarTestConstants'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -26,9 +25,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: mockSHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES,
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: mockSHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES,
 }))
 

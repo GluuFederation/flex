@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
+import React, { useState, useCallback, useMemo, memo } from 'react'
 import isEmpty from 'lodash/isEmpty'
 import { DeleteOutlined, FilterListIcon, GetAppIcon } from '@/components/icons'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -16,8 +16,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
 import { logger } from '@/utils/logger'
@@ -42,7 +41,6 @@ import type { Dayjs } from 'dayjs'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const sessionResourceId = ADMIN_UI_RESOURCES.Session
-const SESSION_SCOPES = CEDAR_RESOURCE_SCOPES[sessionResourceId] || []
 const DATE_FILTER_FIELDS = ['expirationDate', 'authenticationTime'] as const
 const FILTER_FIELD_OPTIONS = [
   { value: '', labelKey: 'options.choose' },
@@ -59,7 +57,7 @@ const isDateFilterField = (field: string): field is (typeof DATE_FILTER_FIELDS)[
   DATE_FILTER_FIELDS.includes(field as (typeof DATE_FILTER_FIELDS)[number])
 
 const SessionListPage: React.FC = () => {
-  const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
+  const { canDelete } = usePermission(sessionResourceId)
   const { t } = useTranslation()
 
   const { data: sessionsData, isLoading: sessionsLoading } = useGetSessions()
@@ -103,17 +101,6 @@ const SessionListPage: React.FC = () => {
   const [revokeModal, setRevokeModal] = useState(false)
   const [item, setItem] = useState<Session>({} as Session)
   const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
-
-  const canDelete = useMemo(
-    () => hasCedarDeletePermission(sessionResourceId),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    if (SESSION_SCOPES.length > 0) {
-      authorizeHelper(SESSION_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const adaptSessionIdToSession = useCallback(
     (sessionId: SessionId): Session => ({

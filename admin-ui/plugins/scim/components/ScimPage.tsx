@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
@@ -17,9 +17,8 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -27,7 +26,6 @@ import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { useStyles } from './styles/ScimFormPage.style'
 
 const scimResourceId = ADMIN_UI_RESOURCES.SCIM
-const scimScopes = CEDAR_RESOURCE_SCOPES[scimResourceId]
 
 const ScimPage: React.FC = () => {
   const { t } = useTranslation()
@@ -36,21 +34,7 @@ const ScimPage: React.FC = () => {
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
   SetTitle(t('titles.scim_management'))
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const canReadScim = useMemo(
-    () => hasCedarReadPermission(scimResourceId),
-    [hasCedarReadPermission, scimResourceId],
-  )
-  const canWriteScim = useMemo(
-    () => hasCedarWritePermission(scimResourceId),
-    [hasCedarWritePermission, scimResourceId],
-  )
-
-  useEffect(() => {
-    if (scimScopes && scimScopes.length > 0) {
-      authorizeHelper(scimScopes)
-    }
-  }, [authorizeHelper, scimScopes])
+  const { canRead: canReadScim, canWrite: canWriteScim } = usePermission(scimResourceId)
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(

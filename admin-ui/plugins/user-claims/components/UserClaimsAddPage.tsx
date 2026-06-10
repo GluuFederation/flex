@@ -6,7 +6,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
@@ -30,11 +30,7 @@ const UserClaimsAddPage = (): JSX.Element => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarWritePermission } = useCedarling()
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(attributeResourceId),
-    [hasCedarWritePermission],
-  )
+  const { canWrite } = usePermission(attributeResourceId)
 
   SetTitle(t('fields.add_attribute', { defaultValue: 'Add User Claim' }))
 

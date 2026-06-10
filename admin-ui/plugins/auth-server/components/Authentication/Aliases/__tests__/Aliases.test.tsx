@@ -68,12 +68,35 @@ describe('Aliases', () => {
     expect(screen.getByText('basic_auth')).toBeInTheDocument()
   })
 
-  it('does not render edit/delete actions when user lacks write permission', () => {
+  it('hides the edit action but keeps delete when user lacks write permission', () => {
+    jest.mocked(useAuthServerJsonPropertiesQuery).mockReturnValue({
+      data: { acrMappings: { basic: 'basic_auth' } },
+      isLoading: false,
+      isFetching: false,
+    } as Partial<ReturnType<typeof useAuthServerJsonPropertiesQuery>> as ReturnType<
+      typeof useAuthServerJsonPropertiesQuery
+    >)
     jest
       .mocked(useCedarling)
       .mockReturnValue(makeMockCedarling({ hasCedarWritePermission: jest.fn(() => false) }))
     render(<Aliases />, { wrapper: Wrapper })
     expect(screen.queryByTitle(/edit/i)).not.toBeInTheDocument()
+    expect(screen.getByTitle(/delete/i)).toBeInTheDocument()
+  })
+
+  it('hides the delete action but keeps edit when user lacks delete permission', () => {
+    jest.mocked(useAuthServerJsonPropertiesQuery).mockReturnValue({
+      data: { acrMappings: { basic: 'basic_auth' } },
+      isLoading: false,
+      isFetching: false,
+    } as Partial<ReturnType<typeof useAuthServerJsonPropertiesQuery>> as ReturnType<
+      typeof useAuthServerJsonPropertiesQuery
+    >)
+    jest
+      .mocked(useCedarling)
+      .mockReturnValue(makeMockCedarling({ hasCedarDeletePermission: jest.fn(() => false) }))
+    render(<Aliases />, { wrapper: Wrapper })
     expect(screen.queryByTitle(/delete/i)).not.toBeInTheDocument()
+    expect(screen.getByTitle(/edit/i)).toBeInTheDocument()
   })
 })

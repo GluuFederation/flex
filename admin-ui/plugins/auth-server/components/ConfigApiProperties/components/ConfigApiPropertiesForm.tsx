@@ -5,8 +5,7 @@ import { logger } from '@/utils/logger'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
@@ -37,7 +36,6 @@ import type { AppConfiguration, PropertyValue } from '../../AuthServerProperties
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
 
 const CONFIG_API_RESOURCE_ID = ADMIN_UI_RESOURCES.ConfigApiConfiguration
-const configApiScopes = CEDAR_RESOURCE_SCOPES[CONFIG_API_RESOURCE_ID] || []
 
 const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   configuration,
@@ -46,7 +44,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
 }) => {
   const { t } = useTranslation()
   const deferredSearch = useDeferredValue(search.toLowerCase())
-  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
+  const { canWrite: canWriteConfigApi } = usePermission(CONFIG_API_RESOURCE_ID)
   const { navigateToRoute } = useAppNavigation()
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -66,11 +64,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   )
   const previousConfigurationRef = useRef<ApiAppConfiguration | null>(null)
   const processingRemovalsRef = useRef<Set<string>>(new Set())
-
-  const canWriteConfigApi = useMemo(
-    () => hasCedarWritePermission(CONFIG_API_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   const formik = useFormik<ApiAppConfiguration>({
     initialValues: configuration,
@@ -115,12 +108,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
       }
     }
   }, [configuration, patches.length, formik.resetForm])
-
-  useEffect(() => {
-    if (configApiScopes && configApiScopes.length > 0) {
-      authorizeHelper(configApiScopes)
-    }
-  }, [authorizeHelper])
 
   const operations: GluuCommitDialogOperation[] = useMemo(() => {
     return patches.map((patch) => ({

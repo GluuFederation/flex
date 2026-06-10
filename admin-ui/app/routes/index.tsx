@@ -11,6 +11,7 @@ import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
+import { useFirstAuthorizedPath } from '@/utils/hooks'
 
 const ALWAYS_MOUNTED_LAZY_ROUTES: ReadonlySet<keyof typeof LazyRoutes> = new Set([
   'GluuToast',
@@ -48,6 +49,14 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
   } else {
     window.addEventListener('load', () => idle(next), { once: true })
   }
+}
+
+const LandingRedirect = () => {
+  const { path, loading } = useFirstAuthorizedPath()
+  if (loading) {
+    return <GluuLoader blocking />
+  }
+  return <Navigate to={path ?? ROUTES.LOGOUT} replace />
 }
 
 export const RoutedContent = () => {
@@ -107,7 +116,7 @@ export const RoutedContent = () => {
             </ProtectedRoute>
           }
         />
-        <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.HOME_DASHBOARD} />} />
+        <Route path={ROUTES.ROOT} element={<LandingRedirect />} />
 
         {/* -------- Plugins ---------*/}
         {pluginMenus.map((item, key) => (

@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 import { Layout, ThemeProvider } from 'Components'
 import { DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
+import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
 
 import 'Styles/bootstrap.scss'
@@ -33,7 +34,7 @@ const getInitialThemeStyle = (): string => {
   }
 
   try {
-    const savedTheme = window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)
+    const savedTheme = storage.get(STORAGE_KEYS.INIT_THEME)
     if (savedTheme && isValidTheme(savedTheme)) {
       return savedTheme
     }

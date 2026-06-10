@@ -4,5 +4,4 @@ export const STORAGE_KEYS = {
   INIT_LANG: 'initLang',
   USER_INFO: 'userInfo',
   ISSUER: 'issuer',
-  POST_LOGOUT_REDIRECT_URI: 'postLogoutRedirectUri',
 } as const

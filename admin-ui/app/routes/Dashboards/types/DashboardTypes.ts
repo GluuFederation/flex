@@ -1,7 +1,10 @@
 import type { MauStatEntry } from 'Plugins/admin/components/MAU/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
+import type { DATE_RANGE_TYPE } from '../constants'
 
 export type { MauStatEntry }
+
+export type DateRangeType = (typeof DATE_RANGE_TYPE)[keyof typeof DATE_RANGE_TYPE]
 
 export type LockStatEntry = {
   monthly_active_users?: number

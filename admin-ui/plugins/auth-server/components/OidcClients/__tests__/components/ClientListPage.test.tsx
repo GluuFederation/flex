@@ -50,15 +50,12 @@ jest.mock('@/cedarling', () => ({
   })),
 }))
 
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: {},
-}))
-
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
     Clients: 'clients',
     Webhooks: 'webhooks',
   },
+  CEDAR_RESOURCE_SCOPES: {},
 }))
 
 jest.mock('@/cedarling/hooks/useCedarling', () => ({

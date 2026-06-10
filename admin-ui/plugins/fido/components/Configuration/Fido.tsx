@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -10,9 +10,8 @@ import { fidoConstants } from '../../helper'
 import { useFidoConfig, useUpdateFidoConfig } from '../../hooks'
 import type { DynamicConfigFormValues, StaticConfigFormValues } from '../../types'
 import type { UpdateFidoParams } from '../../types'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -20,24 +19,11 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/FidoFormPage.style'
 
 const fidoResourceId = ADMIN_UI_RESOURCES.FIDO
-const fidoScopes = CEDAR_RESOURCE_SCOPES[fidoResourceId]
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
 
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const canReadFido = useMemo(
-    () => hasCedarReadPermission(fidoResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteFido = useMemo(
-    () => hasCedarWritePermission(fidoResourceId),
-    [hasCedarWritePermission],
-  )
-
-  useEffect(() => {
-    authorizeHelper(fidoScopes)
-  }, [authorizeHelper])
+  const { canRead: canReadFido, canWrite: canWriteFido } = usePermission(fidoResourceId)
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(

@@ -9,8 +9,7 @@ import { SSA } from 'Utils/ApiResources'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAppDispatch } from '@/redux/hooks'
@@ -38,16 +37,14 @@ import type { SsaData } from '../types/SsaApiTypes'
 import type { SsaTableRowData } from '../types/SsaFormTypes'
 
 const SSA_RESOURCE_ID = ADMIN_UI_RESOURCES.SSA
-const SSA_SCOPES = CEDAR_RESOURCE_SCOPES[SSA_RESOURCE_ID] ?? []
 const SSA_ROWS_PER_PAGE_OPTIONS = getRowsPerPageOptions()
 
 const SsaListPage: React.FC = () => {
   const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+    canRead: canReadSsa,
+    canWrite: canWriteSsa,
+    canDelete: canDeleteSsa,
+  } = usePermission(SSA_RESOURCE_ID)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
@@ -65,23 +62,6 @@ const SsaListPage: React.FC = () => {
   const isDark = selectedTheme === THEME_DARK
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
-
-  const canReadSsa = useMemo(
-    () => hasCedarReadPermission(SSA_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteSsa = useMemo(
-    () => hasCedarWritePermission(SSA_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-  const canDeleteSsa = useMemo(
-    () => hasCedarDeletePermission(SSA_RESOURCE_ID),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    authorizeHelper(SSA_SCOPES)
-  }, [authorizeHelper])
 
   SetTitle(t('titles.ssa_management'))
 
@@ -290,7 +270,7 @@ const SsaListPage: React.FC = () => {
       })
     }
 
-    if (canWriteSsa || canDeleteSsa) {
+    if (canDeleteSsa) {
       list.push({
         icon: <DeleteOutlined className={classes.actionIcon} />,
         tooltip: t('tooltips.delete_ssa'),

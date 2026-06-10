@@ -97,7 +97,7 @@ No CI lint or test step. The hook is the only enforcement point. See [build-depl
 - [config-api.md](./config-api.md): how Orval + React Query talk to the Jans Config API.
 - [recipes.md](./recipes.md): adding a page, plugin, slice, etc.
 - [build-deploy.md](./build-deploy.md): Vite build, env injection, Jenkins, Husky.
-- [testing.md](./testing.md): Jest unit tests, Playwright e2e.
+- [testing.md](./testing.md): Jest unit tests.
 
 ## If something doesn't work
 

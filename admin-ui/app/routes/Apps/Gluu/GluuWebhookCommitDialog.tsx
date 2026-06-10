@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppSelector } from '@/redux/hooks'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -18,8 +18,7 @@ const GluuWebhookCommitDialog: React.FC<GluuWebhookCommitDialogProps> = ({
   alertMessage,
   alertSeverity,
 }) => {
-  const { hasCedarReadPermission } = useCedarling()
-  const canReadWebhooks = hasCedarReadPermission(ADMIN_UI_RESOURCES.Webhooks)
+  const { canRead: canReadWebhooks } = usePermission(ADMIN_UI_RESOURCES.Webhooks)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
   const { webhookTriggerModal, onCloseModal, webhookCheckComplete } = useWebhookDialogAction({
     feature: webhookFeature,

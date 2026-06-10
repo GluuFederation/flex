@@ -18,9 +18,8 @@ import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -72,27 +71,10 @@ const CachePage: React.FC = () => {
 
   const [modal, setModal] = useState(false)
 
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-  const cacheResourceId = useMemo(() => ADMIN_UI_RESOURCES.Cache, [])
-  const cacheScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[cacheResourceId] || [], [cacheResourceId])
-
-  const canReadCache = useMemo(
-    () => hasCedarReadPermission(cacheResourceId),
-    [hasCedarReadPermission, cacheResourceId],
-  )
-  const canWriteCache = useMemo(
-    () => hasCedarWritePermission(cacheResourceId),
-    [hasCedarWritePermission, cacheResourceId],
-  )
+  const { canRead: canReadCache, canWrite: canWriteCache } = usePermission(ADMIN_UI_RESOURCES.Cache)
 
   const pageTitle = t('fields.cache_configuration')
   SetTitle(pageTitle)
-
-  useEffect(() => {
-    if (cacheScopes.length > 0) {
-      authorizeHelper(cacheScopes)
-    }
-  }, [authorizeHelper, cacheScopes])
 
   const {
     data: cacheData = {} as CacheConfiguration,

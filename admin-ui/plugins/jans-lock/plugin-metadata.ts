@@ -1,5 +1,5 @@
-import { JANS_LOCK_READ } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -11,7 +11,7 @@ const pluginMetadata = {
       title: 'titles.jans_lock',
       icon: 'jans_lock',
       path: ROUTES.JANS_LOCK_BASE,
-      permission: JANS_LOCK_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Lock,
     },
   ],
@@ -19,7 +19,7 @@ const pluginMetadata = {
     {
       component: JansLock,
       path: ROUTES.JANS_LOCK_BASE,
-      permission: JANS_LOCK_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Lock,
     },
   ],

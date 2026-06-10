@@ -41,9 +41,6 @@ jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
     AuthenticationServerConfiguration: 'AuthenticationServerConfiguration',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { AuthenticationServerConfiguration: [] },
 }))
 

@@ -29,14 +29,12 @@ import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from '@/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { SmtpFormValues, ApiError, PatchOp } from 'Plugins/smtp/types'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useStyles } from './styles/SmtpFormPage.style'
 
 const API_SMTP = 'api-smtp-configuration'
 const smtpResourceId = ADMIN_UI_RESOURCES.SMTP
-const smtpScopes = CEDAR_RESOURCE_SCOPES[smtpResourceId]
 
 const buildPatches = (
   originalConfig: Partial<SmtpConfiguration> | undefined,
@@ -76,7 +74,7 @@ const SmtpEditPage = () => {
     isError: isSmtpError,
     error: smtpError,
   } = useGetConfigSmtp()
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadSmtp, canWrite: canWriteSmtp } = usePermission(smtpResourceId)
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
@@ -86,21 +84,6 @@ const SmtpEditPage = () => {
     [themeState.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
-
-  const canReadSmtp = useMemo(
-    () => hasCedarReadPermission(smtpResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteSmtp = useMemo(
-    () => hasCedarWritePermission(smtpResourceId),
-    [hasCedarWritePermission],
-  )
-
-  useEffect(() => {
-    if (smtpScopes.length > 0) {
-      authorizeHelper(smtpScopes)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (!isSmtpError) return

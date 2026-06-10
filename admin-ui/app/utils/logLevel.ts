@@ -6,8 +6,8 @@ export const DEFAULT_LOG_LEVEL: LogLevel = 'INFO'
 
 const STORAGE_KEY = 'gluu.logLevel'
 
-const isLogLevel = (value: unknown): value is LogLevel =>
-  typeof value === 'string' && (LOG_LEVELS as readonly string[]).includes(value)
+const isLogLevel = (value: string | null | undefined): value is LogLevel =>
+  value != null && (LOG_LEVELS as readonly string[]).includes(value)
 
 export const getLogLevel = (defaultLevel: LogLevel = DEFAULT_LOG_LEVEL): LogLevel => {
   try {

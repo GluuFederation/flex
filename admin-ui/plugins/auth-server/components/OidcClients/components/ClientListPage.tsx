@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import React, { useState, useMemo, useCallback, memo } from 'react'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
@@ -16,8 +16,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { adminUiFeatures } from '@/constants'
 import { logger } from '@/utils/logger'
@@ -50,7 +49,6 @@ import {
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const clientResourceId = ADMIN_UI_RESOURCES.Clients
-const clientCedarScopes = CEDAR_RESOURCE_SCOPES[clientResourceId] || []
 
 const addOrg = (client: ClientRow): ClientRow => {
   if (!client) return client
@@ -79,12 +77,7 @@ const ClientListPage: React.FC = () => {
   const { search } = useLocation()
   const { state } = useTheme()
 
-  const {
-    authorizeHelper,
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-  } = useCedarling()
+  const { canRead, canWrite, canDelete } = usePermission(clientResourceId)
 
   const { themeColors, isDarkTheme } = useMemo(() => {
     const selected = state?.theme || DEFAULT_THEME
@@ -110,16 +103,6 @@ const ClientListPage: React.FC = () => {
     return params.get(SCOPE_INUM_PARAM)
   }, [search])
   const haveScopeINUMParam = useMemo(() => !!scopeInumParam, [scopeInumParam])
-
-  const canRead = useMemo(() => hasCedarReadPermission(clientResourceId), [hasCedarReadPermission])
-  const canWrite = useMemo(
-    () => hasCedarWritePermission(clientResourceId),
-    [hasCedarWritePermission],
-  )
-  const canDelete = useMemo(
-    () => hasCedarDeletePermission(clientResourceId),
-    [hasCedarDeletePermission],
-  )
 
   const clientQueryParams = useMemo(
     () => ({
@@ -292,10 +275,6 @@ const ClientListPage: React.FC = () => {
     },
     [setLimit, setPageNumber],
   )
-
-  useEffect(() => {
-    if (clientCedarScopes.length > 0) authorizeHelper(clientCedarScopes)
-  }, [authorizeHelper, clientCedarScopes])
 
   const shouldHideOrgColumn = useMemo(
     () => !clients.some((c) => c.organization !== EM_DASH_PLACEHOLDER),

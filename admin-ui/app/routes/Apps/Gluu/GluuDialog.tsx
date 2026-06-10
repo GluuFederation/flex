@@ -5,9 +5,8 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { useAppSelector } from '@/redux/hooks'
 import { useWebhookDialogAction } from 'Utils/hooks'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import customColors from '@/customColors'
 import { GluuButton } from '@/components'
 import { GluuModalShell } from '@/components/GluuModalShell'
@@ -22,7 +21,7 @@ const ACTION_MESSAGE_MIN_LENGTH = 10
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: GluuDialogProps) => {
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadWebhooks } = usePermission(ADMIN_UI_RESOURCES.Webhooks)
 
   const [userMessage, setUserMessage] = useState('')
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
@@ -32,22 +31,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: G
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
-
-  const webhookResourceId = useMemo(() => ADMIN_UI_RESOURCES.Webhooks, [])
-  const webhookScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[webhookResourceId] || [],
-    [webhookResourceId],
-  )
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
-
-  useEffect(() => {
-    if (webhookScopes && webhookScopes.length > 0) {
-      authorizeHelper(webhookScopes)
-    }
-  }, [authorizeHelper, webhookScopes])
 
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,

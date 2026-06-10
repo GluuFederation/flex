@@ -3,6 +3,8 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import type { CedarPermissionsState } from '@/cedarling'
 
 jest.mock('@/cedarling/client', () => ({
@@ -28,8 +30,6 @@ const createStore = (
 
   const defaultCedar: CedarPermissionsState = {
     permissions: {},
-    loading: false,
-    error: null,
     initialized: true,
     isInitializing: false,
     cedarFailedStatusAfterMaxTries: null,
@@ -65,7 +65,7 @@ describe('useCedarling', () => {
     it('returns undefined when no cached permission', () => {
       const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarReadPermission('Dashboard')).toBeUndefined()
+      expect(result.current.hasCedarReadPermission(ADMIN_UI_RESOURCES.Dashboard)).toBeUndefined()
     })
 
     it('returns cached read permission', () => {
@@ -73,7 +73,7 @@ describe('useCedarling', () => {
         cedarState: { permissions: { 'Dashboard::read': true } },
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarReadPermission('Dashboard')).toBe(true)
+      expect(result.current.hasCedarReadPermission(ADMIN_UI_RESOURCES.Dashboard)).toBe(true)
     })
 
     it('returns false for denied read permission', () => {
@@ -81,7 +81,7 @@ describe('useCedarling', () => {
         cedarState: { permissions: { 'Users::read': false } },
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarReadPermission('Users')).toBe(false)
+      expect(result.current.hasCedarReadPermission(ADMIN_UI_RESOURCES.Users)).toBe(false)
     })
   })
 
@@ -89,7 +89,7 @@ describe('useCedarling', () => {
     it('returns undefined when no cached permission', () => {
       const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarWritePermission('Dashboard')).toBeUndefined()
+      expect(result.current.hasCedarWritePermission(ADMIN_UI_RESOURCES.Dashboard)).toBeUndefined()
     })
 
     it('returns cached write permission', () => {
@@ -97,7 +97,7 @@ describe('useCedarling', () => {
         cedarState: { permissions: { 'SMTP::write': true } },
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarWritePermission('SMTP')).toBe(true)
+      expect(result.current.hasCedarWritePermission(ADMIN_UI_RESOURCES.SMTP)).toBe(true)
     })
   })
 
@@ -105,7 +105,7 @@ describe('useCedarling', () => {
     it('returns undefined when no cached permission', () => {
       const store = createStore()
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarDeletePermission('Scripts')).toBeUndefined()
+      expect(result.current.hasCedarDeletePermission(ADMIN_UI_RESOURCES.Scripts)).toBeUndefined()
     })
 
     it('returns cached delete permission', () => {
@@ -113,7 +113,7 @@ describe('useCedarling', () => {
         cedarState: { permissions: { 'Scripts::delete': true } },
       })
       const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.hasCedarDeletePermission('Scripts')).toBe(true)
+      expect(result.current.hasCedarDeletePermission(ADMIN_UI_RESOURCES.Scripts)).toBe(true)
     })
   })
 
@@ -127,7 +127,7 @@ describe('useCedarling', () => {
       let results: { isAuthorized: boolean; error?: string }[] = []
       await act(async () => {
         results = await result.current.authorizeHelper([
-          { permission: 'https://example.com/read', resourceId: 'Dashboard' },
+          { action: CEDAR_ACTIONS.READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
         ])
       })
       expect(results[0]?.isAuthorized).toBe(false)
@@ -143,7 +143,7 @@ describe('useCedarling', () => {
       let results: { isAuthorized: boolean; error?: string }[] = []
       await act(async () => {
         results = await result.current.authorizeHelper([
-          { permission: 'https://example.com/read', resourceId: 'Dashboard' },
+          { action: CEDAR_ACTIONS.READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
         ])
       })
       expect(results[0]?.isAuthorized).toBe(false)
@@ -170,7 +170,7 @@ describe('useCedarling', () => {
       let results: { isAuthorized: boolean }[] = []
       await act(async () => {
         results = await result.current.authorizeHelper([
-          { permission: 'https://example.com/read', resourceId: 'Dashboard' },
+          { action: CEDAR_ACTIONS.READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
         ])
       })
       expect(results[0]?.isAuthorized).toBe(true)
@@ -184,8 +184,8 @@ describe('useCedarling', () => {
       let results: { isAuthorized: boolean }[] = []
       await act(async () => {
         results = await result.current.authorizeHelper([
-          { permission: 'https://example.com/stat-read', resourceId: 'Dashboard' },
-          { permission: 'https://example.com/stat-jans-read', resourceId: 'Dashboard' },
+          { action: CEDAR_ACTIONS.READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
+          { action: CEDAR_ACTIONS.READ, resourceId: ADMIN_UI_RESOURCES.Dashboard },
         ])
       })
       expect(results).toHaveLength(2)
@@ -205,20 +205,6 @@ describe('useCedarling', () => {
       expect(typeof result.current.hasCedarReadPermission).toBe('function')
       expect(typeof result.current.hasCedarWritePermission).toBe('function')
       expect(typeof result.current.hasCedarDeletePermission).toBe('function')
-      expect(typeof result.current.isLoading).toBe('boolean')
-      expect(result.current.error).toBeNull()
-    })
-
-    it('reflects loading state from store', () => {
-      const store = createStore({ cedarState: { loading: true } })
-      const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.isLoading).toBe(true)
-    })
-
-    it('reflects error state from store', () => {
-      const store = createStore({ cedarState: { error: 'test error' } })
-      const { result } = renderHook(() => useCedarling(), { wrapper: createWrapper(store) })
-      expect(result.current.error).toBe('test error')
     })
   })
 })

@@ -12,7 +12,6 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { logger } from '@/utils/logger'
 import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
-import { STORAGE_KEYS } from '@/constants'
 
 const ByeBye = () => {
   const config = useAppSelector((state) => state.authReducer.config) as AuthConfig
@@ -54,8 +53,7 @@ const ByeBye = () => {
           return
         }
       } else {
-        const fallbackUri =
-          buildSafeNavigationUrl(localStorage.getItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI)) || '/'
+        const fallbackUri = buildSafeNavigationUrl(config.postLogoutRedirectUri) || '/'
         window.location.href = fallbackUri
         return
       }
@@ -63,7 +61,10 @@ const ByeBye = () => {
       window.location.href = '/'
     }
 
-    performLogout()
+    performLogout().catch((error) => {
+      logger.error('Logout failed:', error instanceof Error ? error : String(error))
+      window.location.href = '/'
+    })
   }, [])
 
   return (

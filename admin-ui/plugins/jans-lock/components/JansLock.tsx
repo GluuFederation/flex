@@ -16,9 +16,8 @@ import { PatchOperation } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
@@ -27,28 +26,12 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/JansLockFormPage.style'
 
 const lockResourceId = ADMIN_UI_RESOURCES.Lock
-const lockScopes = CEDAR_RESOURCE_SCOPES[lockResourceId]
 
 const JansLock: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
-
-  const canReadLock = useMemo(
-    () => hasCedarReadPermission(lockResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteLock = useMemo(
-    () => hasCedarWritePermission(lockResourceId),
-    [hasCedarWritePermission],
-  )
-
-  useEffect(() => {
-    if (lockScopes && lockScopes.length > 0) {
-      authorizeHelper(lockScopes)
-    }
-  }, [authorizeHelper])
+  const { canRead: canReadLock, canWrite: canWriteLock } = usePermission(lockResourceId)
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(

@@ -5,7 +5,7 @@ import User2FADevicesModal from './User2FADevicesModal'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -21,7 +21,6 @@ import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
 import { adminUiFeatures } from '@/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
@@ -31,15 +30,13 @@ import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { useStyles } from './UserListPage.style'
 
 const usersResourceId = ADMIN_UI_RESOURCES.Users
-const usersScopes = CEDAR_RESOURCE_SCOPES[usersResourceId]
 
 const UserList = (): JSX.Element => {
   const {
-    authorizeHelper,
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-  } = useCedarling()
+    canRead: canReadUsers,
+    canWrite: canWriteUsers,
+    canDelete: canDeleteUsers,
+  } = usePermission(usersResourceId)
   const queryClient = useQueryClient()
 
   const { t } = useTranslation()
@@ -54,24 +51,6 @@ const UserList = (): JSX.Element => {
   const LIMIT_OPTIONS = useMemo(() => getRowsPerPageOptions(), [])
 
   // React Query hooks for data fetching
-  const canReadUsers = useMemo(
-    () => hasCedarReadPermission(usersResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteUsers = useMemo(
-    () => hasCedarWritePermission(usersResourceId),
-    [hasCedarWritePermission],
-  )
-  const canDeleteUsers = useMemo(
-    () => hasCedarDeletePermission(usersResourceId),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    if (usersScopes.length > 0) {
-      authorizeHelper(usersScopes)
-    }
-  }, [authorizeHelper])
 
   const {
     data: usersData,

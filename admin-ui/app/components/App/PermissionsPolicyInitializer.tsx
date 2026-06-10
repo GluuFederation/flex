@@ -8,7 +8,7 @@ import {
 import { cedarlingClient } from '@/cedarling/client'
 import { logger } from '@/utils/logger'
 import type { LogArg } from '@/utils/types'
-import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 
 const base64ToUint8Array = (base64: string): Uint8Array => {
@@ -35,7 +35,7 @@ const PermissionsPolicyInitializer = () => {
     (state) => state.cedarPermissions,
   )
   const cedarlingLogType =
-    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
+    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CEDARLING_LOG_TYPE.OFF
 
   useEffect(() => {
     const isValidPolicyStoreBytes = (bytes: string): boolean => {
@@ -73,6 +73,7 @@ const PermissionsPolicyInitializer = () => {
     cedarlingClient
       .initialize(bootstrapConfig, bytesUint8Array)
       .then(() => {
+        logger.info('Cedarling initialize SUCCEEDED')
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })

@@ -18,8 +18,7 @@ import {
 import type { LoggingFormValues } from '../utils'
 import { Formik } from 'formik'
 import { useLoggingConfig, useUpdateLoggingConfig } from '../hooks'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -36,7 +35,6 @@ import { logger } from '@/utils/logger'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 
 const LOGGING_RESOURCE_ID = ADMIN_UI_RESOURCES.Logging
-const LOGGING_SCOPES = CEDAR_RESOURCE_SCOPES[LOGGING_RESOURCE_ID] || []
 
 const FORM_STYLE: React.CSSProperties = {
   display: 'flex',
@@ -47,23 +45,13 @@ const FORM_STYLE: React.CSSProperties = {
 const LoggingPage = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadLogging, canWrite: canWriteLogging } = usePermission(LOGGING_RESOURCE_ID)
   const { navigateBack } = useAppNavigation()
 
   const { data: logging, isLoading: queryLoading } = useLoggingConfig()
   const updateLoggingMutation = useUpdateLoggingConfig()
 
   const loading = queryLoading || updateLoggingMutation.isPending
-
-  const canReadLogging = useMemo(
-    () => !!hasCedarReadPermission(LOGGING_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-
-  const canWriteLogging = useMemo(
-    () => !!hasCedarWritePermission(LOGGING_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -89,12 +77,6 @@ const LoggingPage = (): React.ReactElement => {
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.AUTH_SERVER_CONFIG_PROPERTIES)
   }, [navigateBack])
-
-  useEffect(() => {
-    if (LOGGING_SCOPES.length > 0) {
-      authorizeHelper(LOGGING_SCOPES)
-    }
-  }, [authorizeHelper])
 
   const initialValues: LoggingFormValues = useMemo(
     () => getLoggingInitialValues(logging),

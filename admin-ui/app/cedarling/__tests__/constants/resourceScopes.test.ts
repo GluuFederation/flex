@@ -1,13 +1,9 @@
-import { CEDAR_RESOURCE_SCOPES, CEDARLING_CONSTANTS } from '@/cedarling/constants/resourceScopes'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import type { AdminUiFeatureResource } from '@/cedarling'
-import {
-  JANS_LOCK_READ,
-  JANS_LOCK_WRITE,
-  SMTP_READ,
-  SMTP_WRITE,
-  SMTP_DELETE,
-} from '@/utils/PermChecker'
+import type { AdminUiFeatureResource, CedarAction } from '@/cedarling'
+
+const VALID_ACTIONS: CedarAction[] = Object.values(CEDAR_ACTIONS)
 
 describe('CEDAR_RESOURCE_SCOPES', () => {
   const allResources = Object.keys(ADMIN_UI_RESOURCES) as AdminUiFeatureResource[]
@@ -28,44 +24,23 @@ describe('CEDAR_RESOURCE_SCOPES', () => {
     expect(scopes.length).toBeGreaterThan(0)
   })
 
-  it.each(allResources)('%s scope entries have correct resourceId', (resource) => {
+  it.each(allResources)('%s entries carry the resourceId and a valid action', (resource) => {
     const scopes = CEDAR_RESOURCE_SCOPES[resource]
     scopes.forEach((scope) => {
       expect(scope.resourceId).toBe(resource)
-      expect(typeof scope.permission).toBe('string')
-      expect(scope.permission.length).toBeGreaterThan(0)
+      expect(VALID_ACTIONS).toContain(scope.action)
     })
   })
 
-  it('Lock has read and write scopes', () => {
-    const lockScopes = CEDAR_RESOURCE_SCOPES.Lock
-    expect(lockScopes).toHaveLength(2)
-    const permissions = lockScopes.map((s) => s.permission)
-    expect(permissions).toContain(JANS_LOCK_READ)
-    expect(permissions).toContain(JANS_LOCK_WRITE)
+  it('Lock has read and write actions', () => {
+    expect(CEDAR_RESOURCE_SCOPES.Lock.map((s) => s.action)).toEqual(['read', 'write'])
   })
 
-  it('SMTP has read, write, and delete scopes', () => {
-    const smtpScopes = CEDAR_RESOURCE_SCOPES.SMTP
-    expect(smtpScopes).toHaveLength(3)
-    const permissions = smtpScopes.map((s) => s.permission)
-    expect(permissions).toContain(SMTP_READ)
-    expect(permissions).toContain(SMTP_WRITE)
-    expect(permissions).toContain(SMTP_DELETE)
+  it('SMTP has read, write, and delete actions', () => {
+    expect(CEDAR_RESOURCE_SCOPES.SMTP.map((s) => s.action)).toEqual(['read', 'write', 'delete'])
   })
 
-  it('Dashboard has 2 stat scopes', () => {
-    const dashScopes = CEDAR_RESOURCE_SCOPES.Dashboard
-    expect(dashScopes).toHaveLength(2)
-  })
-})
-
-describe('CEDARLING_CONSTANTS', () => {
-  it('has ACTION_TYPE with correct prefix', () => {
-    expect(CEDARLING_CONSTANTS.ACTION_TYPE).toBe('GluuFlexAdminUI::Action::')
-  })
-
-  it('has RESOURCE_TYPE with correct value', () => {
-    expect(CEDARLING_CONSTANTS.RESOURCE_TYPE).toBe('GluuFlexAdminUIResources::Features')
+  it('Dashboard has a single read action', () => {
+    expect(CEDAR_RESOURCE_SCOPES.Dashboard.map((s) => s.action)).toEqual(['read'])
   })
 })

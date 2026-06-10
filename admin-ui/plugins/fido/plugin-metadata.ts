@@ -1,5 +1,5 @@
-import { FIDO_READ, FIDO_WRITE, FIDO_METRICS_READ } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -16,13 +16,13 @@ const pluginMetadata = {
         {
           title: 'menus.configuration',
           path: ROUTES.FIDO_BASE,
-          permission: FIDO_READ,
+          action: CEDAR_ACTIONS.READ,
           resourceKey: ADMIN_UI_RESOURCES.FIDO,
         },
         {
           title: 'menus.metrics',
           path: ROUTES.FIDO_METRICS,
-          permission: FIDO_METRICS_READ,
+          action: CEDAR_ACTIONS.READ,
           resourceKey: ADMIN_UI_RESOURCES.FIDO,
         },
       ],
@@ -32,13 +32,13 @@ const pluginMetadata = {
     {
       component: Fido,
       path: ROUTES.FIDO_BASE,
-      permission: FIDO_WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },
     {
       component: MetricsPage,
       path: ROUTES.FIDO_METRICS,
-      permission: FIDO_METRICS_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },
   ],

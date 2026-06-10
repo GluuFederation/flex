@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
 import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -13,9 +13,8 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { logger } from '@/utils/logger'
 import { useStyles } from './styles/ConfigApiPropertiesForm.style'
@@ -28,22 +27,12 @@ import type {
 } from '../types'
 
 const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
-const configApiScopes = CEDAR_RESOURCE_SCOPES[configApiResourceId] || []
 
 const ConfigApiPropertiesPage = (): JSX.Element => {
   const { t } = useTranslation()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-  const canReadConfigApi = useMemo(
-    () => hasCedarReadPermission(configApiResourceId),
-    [hasCedarReadPermission],
-  )
-  useEffect(() => {
-    if (configApiScopes.length > 0) {
-      authorizeHelper(configApiScopes)
-    }
-  }, [authorizeHelper, configApiScopes])
+  const { canRead: canReadConfigApi } = usePermission(configApiResourceId)
   const { state: themeState } = useTheme()
 
   const { themeColors, isDark } = useMemo(
