@@ -27,27 +27,16 @@ import {
   LockIcon,
 } from '../../../components/SVG'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import type { AdminUiFeatureResource } from '@/cedarling/types'
-import { devLogger } from '@/utils/devLogger'
-import { CEDARLING_BYPASS } from '@/cedarling/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { JANS_SERVICES } from '@/constants'
 import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { filterMenusByHealth, filterMenusByAuth } from '@/utils/menuFilters'
 import type {
   MenuItem,
   PluginMenu,
-  VisibilityConditions,
   MenuIconMap,
   ThemeContextState,
   SidebarRootState,
 } from '../../../components/Sidebar'
-
-const VISIBILITY_CONDITIONS: VisibilityConditions = {
-  [ROUTES.JANS_LOCK_BASE]: JANS_SERVICES.LOCK,
-  [ROUTES.FIDO_BASE]: JANS_SERVICES.FIDO2,
-  [ROUTES.SCIM_BASE]: JANS_SERVICES.SCIM,
-  [ROUTES.SAML_BASE]: JANS_SERVICES.KEYCLOAK,
-} as const
 
 const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
@@ -107,41 +96,6 @@ const GluuAppSidebar = (): JSX.Element => {
     return Array.isArray(plugin.children) && plugin.children.length > 0
   }, [])
 
-  const filterMenuItems = useCallback(
-    async (menus: MenuItem[]): Promise<MenuItem[]> => {
-      const evaluations = await Promise.all(
-        menus.map(async (item): Promise<MenuItem | null> => {
-          if (hasChildren(item)) {
-            const filteredChildren = await filterMenuItems(item.children!)
-            if (filteredChildren.length > 0) {
-              return { ...item, children: filteredChildren }
-            }
-            return null
-          }
-          if (item.action) {
-            if (item.resourceKey === CEDARLING_BYPASS) {
-              return item
-            }
-            if (!item.resourceKey) {
-              devLogger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
-              return null
-            }
-            const [result] = await authorizeHelper([
-              {
-                action: item.action,
-                resourceId: item.resourceKey as AdminUiFeatureResource,
-              },
-            ])
-            return result?.isAuthorized ? item : null
-          }
-          return item
-        }),
-      )
-      return evaluations.filter((x): x is MenuItem => !!x)
-    },
-    [hasChildren, authorizeHelper],
-  )
-
   const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {
     const menus: PluginMenu[] = await processMenus()
 
@@ -149,19 +103,12 @@ const GluuAppSidebar = (): JSX.Element => {
       return []
     }
 
-    return menus.filter((menu: PluginMenu): boolean => {
-      const healthKey = menu.path
-        ? VISIBILITY_CONDITIONS[menu.path as keyof VisibilityConditions]
-        : undefined
-      if (!healthKey) return true
-      const service = combinedServices.find((s) => s.name === healthKey)
-      return service?.status === 'up'
-    })
+    return filterMenusByHealth(menus, combinedServices)
   }, [combinedServices, fetchedServersLength])
 
   const loadMenus = async () => {
     try {
-      const filteredMenus = await filterMenuItems(await memoizedFilteredMenus)
+      const filteredMenus = await filterMenusByAuth(await memoizedFilteredMenus, authorizeHelper)
       setPluginMenus(filteredMenus)
     } finally {
       if (!didAnimateMenusRef.current) {
@@ -172,7 +119,7 @@ const GluuAppSidebar = (): JSX.Element => {
 
   useEffect(() => {
     loadMenus()
-  }, [memoizedFilteredMenus, filterMenuItems])
+  }, [memoizedFilteredMenus, authorizeHelper])
 
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
