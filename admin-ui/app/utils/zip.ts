@@ -8,6 +8,7 @@ const CENTRAL_HEADER_FIXED_SIZE = 46
 const LOCAL_HEADER_FIXED_SIZE = 30
 const COMPRESSION_STORED = 0
 const COMPRESSION_DEFLATE = 8
+const MAX_UNCOMPRESSED_SIZE = 100 * 1024 * 1024
 
 const toBytes = async (input: Blob | ArrayBuffer | Uint8Array): Promise<Uint8Array> => {
   if (input instanceof Uint8Array) {
@@ -53,6 +54,7 @@ export const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<Z
   for (let index = 0; index < entryCount; index += 1) {
     const method = view.getUint16(cursor + 10, true)
     const compressedSize = view.getUint32(cursor + 20, true)
+    const uncompressedSize = view.getUint32(cursor + 24, true)
     const fileNameLength = view.getUint16(cursor + 28, true)
     const extraFieldLength = view.getUint16(cursor + 30, true)
     const fileCommentLength = view.getUint16(cursor + 32, true)
@@ -64,6 +66,9 @@ export const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<Z
     const text = async (): Promise<string> => {
       if (dir || compressedSize === 0) {
         return ''
+      }
+      if (uncompressedSize > MAX_UNCOMPRESSED_SIZE) {
+        throw new Error(`readZip: entry "${name}" exceeds the maximum uncompressed size`)
       }
       const localNameLength = view.getUint16(localHeaderOffset + 26, true)
       const localExtraLength = view.getUint16(localHeaderOffset + 28, true)

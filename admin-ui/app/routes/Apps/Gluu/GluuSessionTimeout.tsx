@@ -112,10 +112,13 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     onActive,
     onIdle,
     debounce: 250,
+    disabled: !isAuthenticated,
   })
 
   useEffect(() => {
-    reset()
+    if (isAuthenticated) {
+      reset()
+    }
   }, [sessionTimeout, isAuthenticated, reset])
 
   return (

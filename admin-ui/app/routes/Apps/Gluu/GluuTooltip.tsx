@@ -10,6 +10,7 @@ import {
   useStyles,
   TOOLTIP_ARROW_CLASS,
 } from './styles/GluuTooltip.style'
+import { tooltipManager } from '@/utils/tooltipManager'
 import type { GluuTooltipProps } from './types'
 
 const GluuTooltip = ({
@@ -46,28 +47,8 @@ const GluuTooltip = ({
           : doc_entry
 
   useEffect(() => {
-    const resolveAnchor = (target: EventTarget | null): Element | null => {
-      if (!(target instanceof Element)) return null
-      const el = target.closest('[data-tooltip-id]')
-      return el?.getAttribute('data-tooltip-id') === doc_entry ? el : null
-    }
-    const show = (event: Event) => {
-      const el = resolveAnchor(event.target)
-      if (el) setAnchorEl(el)
-    }
-    const hide = (event: Event) => {
-      if (resolveAnchor(event.target)) setAnchorEl(null)
-    }
-    document.addEventListener('mouseover', show)
-    document.addEventListener('mouseout', hide)
-    document.addEventListener('focusin', show)
-    document.addEventListener('focusout', hide)
-    return () => {
-      document.removeEventListener('mouseover', show)
-      document.removeEventListener('mouseout', hide)
-      document.removeEventListener('focusin', show)
-      document.removeEventListener('focusout', hide)
-    }
+    tooltipManager.addListener(doc_entry, setAnchorEl)
+    return () => tooltipManager.removeListener(doc_entry, setAnchorEl)
   }, [doc_entry])
 
   const modifiers = useMemo(
