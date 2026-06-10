@@ -76,7 +76,7 @@ const PermissionsPolicyInitializer = () => {
         dispatch(setCedarlingInitialized(true))
       })
       .catch((error) => {
-        devLogger.error(
+        console.error(
           `Cedarling initialize FAILED (attempt ${retryCount.current.tryCount + 1}/${maxRetries}):`,
           error instanceof Error ? error : String(error),
         )
