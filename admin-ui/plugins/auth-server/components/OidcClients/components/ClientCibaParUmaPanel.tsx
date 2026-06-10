@@ -155,7 +155,7 @@ const ClientCibaParUmaPanel = ({
     // deleteUmaResource already logs the failure; swallow the re-thrown rejection
     // here (fire-and-forget) so it doesn't surface as an unhandled promise.
     deleteUmaResource(String(selectedUMA.id)).catch((error) => {
-      logger.error('dev', 'UMA resource deletion failed:', error)
+      logger.error('UMA resource deletion failed:', error)
     })
     setConfirmModal(false)
     setOpen(false)

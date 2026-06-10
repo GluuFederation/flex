@@ -103,7 +103,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
           userMessage: userAction.action_message,
         })
       } catch (error) {
-        logger.error('dev', 
+        logger.error(
           'Failed to delete service provider:',
           error instanceof Error ? error : String(error),
         )

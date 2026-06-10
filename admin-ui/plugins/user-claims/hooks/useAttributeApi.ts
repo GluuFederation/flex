@@ -103,7 +103,7 @@ export const useCreateAttribute = (): UseMutationResult<
       // Error is surfaced to the user via the mutation's onError toast; log a
       // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
       mutateAsync(...args).catch((error) => {
-        logger.error('dev', 'Create attribute failed:', error)
+        logger.error('Create attribute failed:', error)
       })
     },
     mutateAsync,
@@ -172,7 +172,7 @@ export const useUpdateAttribute = (): UseMutationResult<
       // Error is surfaced to the user via the mutation's onError toast; log a
       // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
       mutateAsync(...args).catch((error) => {
-        logger.error('dev', 'Update attribute failed:', error)
+        logger.error('Update attribute failed:', error)
       })
     },
     mutateAsync,
@@ -238,7 +238,7 @@ export const useDeleteAttribute = () => {
       // Error is surfaced to the user via the mutation's onError toast; log a
       // dev breadcrumb and swallow the rejection to avoid an unhandled promise.
       deleteWithAudit(...args).catch((error) => {
-        logger.error('dev', 'Delete attribute failed:', error)
+        logger.error('Delete attribute failed:', error)
       })
     },
     mutateAsync: deleteWithAudit,

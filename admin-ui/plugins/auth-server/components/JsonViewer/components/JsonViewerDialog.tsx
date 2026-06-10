@@ -100,7 +100,7 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
       setIsCopied(true)
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err)
-      logger.error('dev', 'Failed to copy to clipboard:', err instanceof Error ? err : String(err))
+      logger.error('Failed to copy to clipboard:', err instanceof Error ? err : String(err))
       dispatch(updateToast(true, 'error', `Failed to copy to clipboard: ${detail}`))
     }
   }, [data, isCopied, dispatch])

@@ -20,7 +20,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
   const onChangeTheme = useCallback(
     (value: string) => {
       if (!isValidTheme(value)) {
-        logger.warn('dev', 'Invalid theme value:', value)
+        logger.warn('Invalid theme value:', value)
         return
       }
 
@@ -59,7 +59,7 @@ export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userI
 
         localStorage.setItem(STORAGE_KEYS.USER_CONFIG, JSON.stringify(newConfig))
       } catch (e) {
-        logger.debug('dev', 'Failed to parse userConfig:', e instanceof Error ? e : String(e))
+        logger.debug('Failed to parse userConfig:', e instanceof Error ? e : String(e))
         const newConfig = {
           lang: {},
           theme: { [inum]: themeValue },

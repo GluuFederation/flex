@@ -126,7 +126,7 @@ const GluuCommitDialog = ({
         closeModal()
       }
     } catch (error) {
-      logger.error('both', 'Commit action failed: ' + resolveApiErrorMessage(error as Error))
+      logger.error('Commit action failed: ' + resolveApiErrorMessage(error as Error))
       throw error
     } finally {
       setIsSubmitting(false)

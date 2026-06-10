@@ -163,7 +163,7 @@ const UserClaimsListPage: React.FC = () => {
             t('messages.attribute_deleted', { name: itemToDelete?.name ?? itemToDelete?.inum }),
         })
       } catch (error) {
-        logger.error('both', 'Failed to delete attribute: ' + resolveApiErrorMessage(error as Error))
+        logger.error('Failed to delete attribute: ' + resolveApiErrorMessage(error as Error))
       } finally {
         setModal(false)
         setItemToDelete(null)

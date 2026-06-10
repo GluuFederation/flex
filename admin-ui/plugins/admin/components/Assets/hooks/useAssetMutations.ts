@@ -75,7 +75,7 @@ const useAssetSaveMutation = (
         logAction(auditAction, ASSET, { action_message: userMessage, action_data: body }).catch(
           (err) => {
             const auditError = err instanceof Error ? err : new Error(String(err))
-            logger.error('dev', '[Asset audit] logAction failed', auditError)
+            logger.error('[Asset audit] logAction failed', auditError)
           },
         )
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
@@ -123,7 +123,7 @@ export const useDeleteAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
         }).catch((err) => {
           const auditError = err instanceof Error ? err : new Error(String(err))
           callbacksRef.current?.onError?.(auditError)
-          logger.error('dev', `[Asset audit] logAction failed for asset inum=${inum}`, auditError)
+          logger.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
         })
         dispatch(updateToast(true, 'success', t(T_KEYS.MSG_ASSET_DELETED_SUCCESSFULLY)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())

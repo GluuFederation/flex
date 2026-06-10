@@ -60,7 +60,7 @@ const PermissionsPolicyInitializer = () => {
     try {
       bytesUint8Array = base64ToUint8Array(policyStoreBytes)
     } catch (error) {
-      logger.error('both', 'Cedarling: failed to decode policy store bytes.', error as LogArg)
+      logger.error('Cedarling: failed to decode policy store bytes.', error as LogArg)
       dispatch(setCedarlingInitializing(false))
       return
     }
@@ -80,7 +80,7 @@ const PermissionsPolicyInitializer = () => {
         retryCount.current.tryCount += 1
 
         if (retryCount.current.tryCount < maxRetries) {
-          logger.warn('both', 
+          logger.warn(
             `Cedarling initialization failed (attempt ${retryCount.current.tryCount}/${maxRetries}); retrying.`,
             error,
           )
@@ -88,7 +88,7 @@ const PermissionsPolicyInitializer = () => {
             dispatch(setCedarlingInitialized(false))
           }, 1000)
         } else {
-          logger.error('both', 
+          logger.error(
             `Cedarling initialization failed after ${maxRetries} attempts; giving up.`,
             error,
           )

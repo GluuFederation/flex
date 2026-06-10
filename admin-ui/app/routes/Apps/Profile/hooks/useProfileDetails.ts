@@ -61,7 +61,7 @@ export const useProfileDetails = (
       message: '',
       payload: { pattern: userInum },
     }).catch((error) =>
-      logger.error('dev', '[Profile audit] failed', error instanceof Error ? error : String(error)),
+      logger.error('[Profile audit] failed', error instanceof Error ? error : String(error)),
     )
   }, [profileDetails, userInum, userinfo, clientId])
 

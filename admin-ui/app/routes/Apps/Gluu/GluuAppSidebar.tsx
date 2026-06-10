@@ -124,7 +124,7 @@ const GluuAppSidebar = (): JSX.Element => {
               return item
             }
             if (!item.resourceKey) {
-              logger.warn('dev', '[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
+              logger.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
               return null
             }
             const [result] = await authorizeHelper([
@@ -165,7 +165,7 @@ const GluuAppSidebar = (): JSX.Element => {
       const filteredMenus = await filterMenuItems(await memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
     } catch (error) {
-      logger.error('both', 'Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
+      logger.error('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
     } finally {
       if (!didAnimateMenusRef.current) {
         didAnimateMenusRef.current = true

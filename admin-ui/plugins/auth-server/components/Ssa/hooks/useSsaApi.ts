@@ -62,7 +62,9 @@ const fetchAllSsas = async (
 
     return await handleResponse<SsaData[]>(response)
   } catch (error) {
-    logger.error('both', 'Failed to fetch SSAs: ' + (error instanceof Error ? error.message : String(error)))
+    logger.error(
+      'Failed to fetch SSAs: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,
@@ -91,7 +93,9 @@ const createSsa = async (
 
     return await handleResponse<SsaData>(response)
   } catch (error) {
-    logger.error('both', 'Failed to create SSA: ' + (error instanceof Error ? error.message : String(error)))
+    logger.error(
+      'Failed to create SSA: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,
@@ -120,7 +124,9 @@ const getSsaJwt = async (
 
     return await handleResponse<SsaJwtResponse>(response)
   } catch (error) {
-    logger.error('both', 'Failed to fetch SSA JWT: ' + (error instanceof Error ? error.message : String(error)))
+    logger.error(
+      'Failed to fetch SSA JWT: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,

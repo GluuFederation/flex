@@ -25,6 +25,8 @@ import {
   savePagingSize as savePagingSizeToStorage,
   ROWS_PER_PAGE_OPTIONS,
 } from 'Utils/pagingUtils'
+import { getLogLevel, saveLogLevel, type LogLevel } from 'Utils/logLevel'
+import { LOG_LEVELS } from 'Plugins/auth-server/components/Logging/utils'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
 import {
@@ -137,8 +139,16 @@ const SettingsPage: React.FC = () => {
   const [baselinePagingSize, setBaselinePagingSize] = useState(savedPagingSize)
   const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
 
+  const savedLogLevel = useMemo(() => getLogLevel(), [])
+  const [baselineLogLevel, setBaselineLogLevel] = useState(savedLogLevel)
+  const [currentLogLevel, setCurrentLogLevel] = useState(savedLogLevel)
+
   const handlePagingSizeChange = useCallback((size: number) => {
     setCurrentPagingSize(size)
+  }, [])
+
+  const handleLogLevelChange = useCallback((level: LogLevel) => {
+    setCurrentLogLevel(level)
   }, [])
 
   const formik = useFormik<SettingsFormValues>({
@@ -146,6 +156,7 @@ const SettingsPage: React.FC = () => {
     enableReinitialize: true,
     onSubmit: async (values, formikHelpers) => {
       savePagingSizeToStorage(currentPagingSize)
+      saveLogLevel(currentLogLevel)
 
       const cedarlingLogTypeChanged = values?.cedarlingLogType !== config?.cedarlingLogType
 
@@ -182,7 +193,7 @@ const SettingsPage: React.FC = () => {
             }),
           ),
         }).catch((auditError) => {
-          logger.error('dev', 'Audit logging failed:', auditError)
+          logger.error('Audit logging failed:', auditError)
         })
 
         if (cedarlingLogTypeChanged) {
@@ -192,6 +203,7 @@ const SettingsPage: React.FC = () => {
         }
 
         setBaselinePagingSize(currentPagingSize)
+        setBaselineLogLevel(currentLogLevel)
         formikHelpers.resetForm({ values })
       } catch (error) {
         const normalizedError = error instanceof Error ? error : new Error(String(error))
@@ -205,10 +217,12 @@ const SettingsPage: React.FC = () => {
   const { resetForm } = formik
 
   const isPagingSizeChanged = currentPagingSize !== baselinePagingSize
+  const isLogLevelChanged = currentLogLevel !== baselineLogLevel
   const isAdditionalParamsChanged =
     JSON.stringify(formik.initialValues.additionalParameters ?? []) !==
     JSON.stringify(formik.values.additionalParameters ?? [])
-  const isFormChanged = formik.dirty || isPagingSizeChanged || isAdditionalParamsChanged
+  const isFormChanged =
+    formik.dirty || isPagingSizeChanged || isLogLevelChanged || isAdditionalParamsChanged
   const hasErrors = !formik.isValid
   const isSubmitting = editConfigMutation.isPending
   const hasQueryError = isConfigError || isScriptsError
@@ -230,7 +244,8 @@ const SettingsPage: React.FC = () => {
     const resetValues = transformToFormValues(config)
     resetForm({ values: resetValues })
     setCurrentPagingSize(baselinePagingSize)
-  }, [config, transformToFormValues, baselinePagingSize, resetForm])
+    setCurrentLogLevel(baselineLogLevel)
+  }, [config, transformToFormValues, baselinePagingSize, baselineLogLevel, resetForm])
 
   const handleRetry = useCallback(() => {
     if (isConfigError) refetchConfig()
@@ -389,6 +404,23 @@ const SettingsPage: React.FC = () => {
                         const n = Number.parseInt(e.target.value, 10)
                         if (!Number.isNaN(n)) handlePagingSizeChange(n)
                       }}
+                    />
+                  </div>
+
+                  <div className={classes.fieldItem}>
+                    <GluuSelectRow
+                      label="fields.log_level"
+                      name="logLevel"
+                      value={currentLogLevel}
+                      formik={formik}
+                      values={[...LOG_LEVELS]}
+                      lsize={12}
+                      rsize={12}
+                      doc_category={SETTINGS}
+                      doc_entry="logLevel"
+                      disabled={!canWriteSettings}
+                      isDark={isDark}
+                      handleChange={(e) => handleLogLevelChange(e.target.value as LogLevel)}
                     />
                   </div>
 

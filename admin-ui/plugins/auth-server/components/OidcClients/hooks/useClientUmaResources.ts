@@ -32,7 +32,7 @@ export const useClientUmaResources = (clientId: string | undefined) => {
           getGetOauthUmaResourcesByClientidQueryKey(clientId ?? ''),
         )
       } catch (error) {
-        logger.error('dev', 
+        logger.error(
           'Failed to delete UMA resource:',
           error instanceof Error ? error : String(error),
         )

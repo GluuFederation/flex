@@ -179,7 +179,7 @@ const DefaultAcr = (): React.ReactElement => {
       try {
         await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
       } catch (auditError) {
-        logger.error('dev', 
+        logger.error(
           'Failed to log ACR update:',
           auditError instanceof Error ? auditError : String(auditError),
         )
@@ -192,7 +192,7 @@ const DefaultAcr = (): React.ReactElement => {
         )
       }
     } catch (error) {
-      logger.error('dev', 'Failed to update ACR:', error instanceof Error ? error : String(error))
+      logger.error('Failed to update ACR:', error instanceof Error ? error : String(error))
     }
   }
 

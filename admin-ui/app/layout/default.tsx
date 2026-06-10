@@ -39,7 +39,7 @@ const getInitialThemeStyle = (): string => {
     }
     return DEFAULT_THEME
   } catch (e) {
-    logger.error('dev', 
+    logger.error(
       'Failed to get initial theme from localStorage:',
       e instanceof Error ? e : String(e),
     )

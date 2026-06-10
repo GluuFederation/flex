@@ -133,7 +133,7 @@ const LoggingPage = (): React.ReactElement => {
   const handleSubmit = useCallback(
     (values: LoggingFormValues): void => {
       if (!logging) {
-        logger.error('dev', 'Cannot submit: logging data not loaded')
+        logger.error('Cannot submit: logging data not loaded')
         return
       }
 
@@ -166,7 +166,6 @@ const LoggingPage = (): React.ReactElement => {
         setPendingValues(null)
       } catch (error) {
         logger.error(
-          'dev',
           'Failed to update logging config:',
           error instanceof Error ? error : String(error),
         )

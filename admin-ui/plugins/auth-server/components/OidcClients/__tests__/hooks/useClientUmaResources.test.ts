@@ -13,8 +13,7 @@ const proxyUseGetOauthUmaResourcesByClientid = (
 ) => mockUseGetOauthUmaResourcesByClientid(...args)
 const proxyInvalidateQueriesByKey = (...args: Parameters<typeof mockInvalidateQueriesByKey>) =>
   mockInvalidateQueriesByKey(...args)
-const proxyLoggerError = (...args: Parameters<typeof mockLoggerError>) =>
-  mockLoggerError(...args)
+const proxyLoggerError = (...args: Parameters<typeof mockLoggerError>) => mockLoggerError(...args)
 
 jest.mock('JansConfigApi', () => ({
   useGetOauthUmaResourcesByClientid: proxyUseGetOauthUmaResourcesByClientid,

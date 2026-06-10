@@ -20,7 +20,7 @@ const safeParseUserConfig = (): UserConfig => {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}') || {}
   } catch (error) {
-    logger.warn('dev', 'Failed to parse userConfig:', error instanceof Error ? error : String(error))
+    logger.warn('Failed to parse userConfig:', error instanceof Error ? error : String(error))
     return {}
   }
 }

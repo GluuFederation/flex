@@ -119,7 +119,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           }
         })
         .catch((err: Error) => {
-          logger.error('both', 'Failed to fetch policy store: ' + resolveApiErrorMessage(err))
+          logger.error('Failed to fetch policy store: ' + resolveApiErrorMessage(err))
           if (isMounted) {
             setError(err)
           }
@@ -172,7 +172,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
       })
       .catch((fetchError: Error) => {
         logger.error(
-          'both',
           'Failed to fetch OIDC configuration from issuer: ' + resolveApiErrorMessage(fetchError),
         )
         setError(fetchError)
@@ -270,7 +269,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
             })
             .catch((oError: Error) => {
               logger.error(
-                'both',
                 'Failed to fetch user information after token exchange: ' +
                   resolveApiErrorMessage(oError),
               )

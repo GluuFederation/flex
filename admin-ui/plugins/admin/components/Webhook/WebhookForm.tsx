@@ -380,7 +380,7 @@ const WebhookForm: React.FC = () => {
         resetForm({ values: formikValues })
         setBaselineSelectedFeatures([...selectedFeatures])
       } catch (error) {
-        logger.error('dev', 
+        logger.error(
           'Failed to submit webhook form:',
           error instanceof Error ? error : String(error),
         )

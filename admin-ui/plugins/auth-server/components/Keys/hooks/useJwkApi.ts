@@ -19,7 +19,7 @@ export const useJwkApi = (): UseJwkApiResult => {
 
   useEffect(() => {
     if (error) {
-      logger.error('dev', 'Failed to fetch JWKs:', stringifyError(error))
+      logger.error('Failed to fetch JWKs:', stringifyError(error))
     }
   }, [error])
 

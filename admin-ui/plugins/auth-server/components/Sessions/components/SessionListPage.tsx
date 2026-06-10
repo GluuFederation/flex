@@ -187,7 +187,7 @@ const SessionListPage: React.FC = () => {
         setDeleteModal(false)
         setItem({} as Session)
       } catch (err) {
-        logger.error('dev', 'Failed to delete session', {
+        logger.error('Failed to delete session', {
           sessionId,
           auth_user: item.sessionAttributes?.auth_user,
           err,
@@ -216,7 +216,7 @@ const SessionListPage: React.FC = () => {
         await revokeSession(userDn, message, item.sessionAttributes?.auth_user)
         setRevokeModal(false)
       } catch (err) {
-        logger.error('dev', 'Failed to revoke session', {
+        logger.error('Failed to revoke session', {
           userDn,
           auth_user: item.sessionAttributes?.auth_user,
           err,

@@ -1,46 +1,35 @@
-import { isDevelopment } from '@/utils/env'
-import type { LogArg, LogEnv } from '@/utils/types'
+import { getLogLevel } from '@/utils/logLevel'
+import { LOG_LEVELS } from 'Plugins/auth-server/components/Logging/utils'
+import type { LogArg } from '@/utils/types'
 
-/**
- * Resolves whether a log call should reach the console for the given audience:
- * - `'dev'`  → development only (verbose breadcrumbs, never shipped).
- * - `'prod'` → production only.
- * - `'both'` → every environment.
- *
- * `'prod'` output is gated so it is suppressed in development; `'dev'` output is
- * gated on {@link isDevelopment} so it never ships (issue #2811).
- */
-const emit = (
-  method: 'log' | 'warn' | 'error' | 'debug',
-  env: LogEnv,
-  args: LogArg[],
-): void => {
-  if (env === 'dev') {
-    if (isDevelopment) console[method](...args)
-    return
-  }
+type Level = (typeof LOG_LEVELS)[number]
 
-  if (env === 'prod' && isDevelopment) {
-    return
-  }
-
-  // 'prod' (in production) or 'both' (any environment).
-  console[method](...args)
+const METHOD_BY_LEVEL: Record<Level, keyof Console> = {
+  TRACE: 'trace',
+  DEBUG: 'debug',
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error',
 }
 
-/**
- * Unified logger. The first argument selects the audience (`'dev'`, `'prod'` or
- * `'both'`); the rest are the values to log. A single import covers logging in
- * every environment.
- *
- * @example
- *   logger.error('prod', 'Cedarling init failed:', message) // prod + dev console
- *   logger.warn('both', 'Retrying request')                 // every environment
- *   logger.log('dev', 'Breadcrumb', payload)                // development only
- */
+const rankOf = (level: Level): number => LOG_LEVELS.indexOf(level)
+
+const emit =
+  (callLevel: Level) =>
+  (...args: LogArg[]) => {
+    const from = rankOf(getLogLevel())
+    const to = rankOf(callLevel)
+    for (let rank = from; rank <= to; rank++) {
+      const level = LOG_LEVELS[rank]
+      const print = console[METHOD_BY_LEVEL[level]] as (...a: LogArg[]) => void
+      print(`[${level}]`, ...args)
+    }
+  }
+
 export const logger = {
-  log: (env: LogEnv, ...args: LogArg[]) => emit('log', env, args),
-  warn: (env: LogEnv, ...args: LogArg[]) => emit('warn', env, args),
-  error: (env: LogEnv, ...args: LogArg[]) => emit('error', env, args),
-  debug: (env: LogEnv, ...args: LogArg[]) => emit('debug', env, args),
+  trace: emit('TRACE'),
+  debug: emit('DEBUG'),
+  info: emit('INFO'),
+  warn: emit('WARN'),
+  error: emit('ERROR'),
 }

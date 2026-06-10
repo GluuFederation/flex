@@ -22,7 +22,7 @@ export const useSchemaWebhook = () => {
           }),
         )
       } catch (error) {
-        logger.error('dev', 
+        logger.error(
           'Failed to trigger attribute webhook:',
           error instanceof Error ? error : String(error),
         )

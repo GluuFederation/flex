@@ -28,7 +28,7 @@ class Wizard extends React.Component<WizardProps, WizardState> {
     const { initialActiveStep, activeStep, onStepChanged } = this.props
 
     if (activeStep && !onStepChanged) {
-      logger.warn('dev', 
+      logger.warn(
         'Warning: You need to provide onStepChanged props if you want the ' +
           'component to be controlled. For uncontrolled type, use initialActiveStep.',
       )

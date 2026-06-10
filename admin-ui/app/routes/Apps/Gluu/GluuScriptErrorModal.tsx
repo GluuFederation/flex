@@ -39,7 +39,7 @@ const GluuScriptErrorModal = ({
       await navigator.clipboard.writeText(error)
       setIsCopied(true)
     } catch (clipboardError) {
-      logger.error('dev', 
+      logger.error(
         'Failed to copy script error to clipboard:',
         clipboardError instanceof Error ? clipboardError : String(clipboardError),
       )

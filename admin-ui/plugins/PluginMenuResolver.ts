@@ -15,7 +15,7 @@ export const processMenus = async (): Promise<PluginMenu[]> => {
       const metadata = await loadPluginMetadataAsync(item.metadataFile)
       return (metadata.default?.menus || []) as PluginMenu[]
     } catch (error) {
-      logger.warn('dev', 
+      logger.warn(
         `Failed to load plugin menus: ${item.metadataFile}`,
         error instanceof Error ? error : String(error),
       )
@@ -42,7 +42,7 @@ export const processRoutes = async (): Promise<PluginRoute[]> => {
       const metadata = await loadPluginMetadataAsync(item.metadataFile)
       return (metadata.default?.routes || []) as PluginRoute[]
     } catch (error) {
-      logger.warn('dev', 
+      logger.warn(
         `Failed to load plugin routes: ${item.metadataFile}`,
         error instanceof Error ? error : String(error),
       )
@@ -66,7 +66,7 @@ export const processRoutesSync = (): PluginRoute[] => {
     try {
       pluginRoutes.push(...(loadPluginMetadata(item.metadataFile).default?.routes || []))
     } catch (error) {
-      logger.warn('dev', 
+      logger.warn(
         `Failed to load plugin routes: ${item.metadataFile}`,
         error instanceof Error ? error : String(error),
       )

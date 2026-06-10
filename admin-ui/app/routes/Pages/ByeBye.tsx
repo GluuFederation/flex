@@ -32,7 +32,7 @@ const ByeBye = () => {
         try {
           await deleteSession()
         } catch (error) {
-          logger.error('dev', 
+          logger.error(
             'Error deleting admin UI session:',
             error instanceof Error ? error : String(error),
           )
