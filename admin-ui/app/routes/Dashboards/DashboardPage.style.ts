@@ -6,6 +6,8 @@ import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
+export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+
 interface DashboardThemeColors {
   cardBg: string
   cardBorder: string

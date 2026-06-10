@@ -54,9 +54,6 @@ jest.mock('Plugins/auth-server/components/Sessions/hooks/useSessionMutations', (
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Session: 'sessions', Webhooks: 'webhooks' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { sessions: [], webhooks: [] },
 }))
 

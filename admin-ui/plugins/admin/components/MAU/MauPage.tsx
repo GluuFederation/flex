@@ -1,13 +1,12 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
 import { Row, Col, Alert, GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTheme } from '@/context/theme/themeContext'
 import customColors, { hexToRgb } from '@/customColors'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
@@ -26,7 +25,6 @@ import {
 } from './components'
 
 const mauResourceId = ADMIN_UI_RESOURCES.MAU
-const mauScopes = CEDAR_RESOURCE_SCOPES[mauResourceId]
 
 const MauPage: React.FC = () => {
   const { t } = useTranslation()
@@ -67,12 +65,7 @@ const MauPage: React.FC = () => {
   const [endDate, setEndDate] = useState<Dayjs>(() => createDate())
   const [selectedPreset, setSelectedPreset] = useState<number | null>(DEFAULT_DATE_RANGE_MONTHS)
 
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-  const canViewMau = useMemo(() => hasCedarReadPermission(mauResourceId), [hasCedarReadPermission])
-
-  useEffect(() => {
-    authorizeHelper(mauScopes)
-  }, [authorizeHelper])
+  const { canRead: canViewMau } = usePermission(mauResourceId)
 
   const dateRange: MauDateRange = useMemo(() => ({ startDate, endDate }), [startDate, endDate])
 

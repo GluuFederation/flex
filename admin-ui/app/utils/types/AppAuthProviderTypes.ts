@@ -11,6 +11,7 @@ export type OAuthConfig = {
   clientId?: string
   redirectUrl?: string
   scope?: string
+  postLogoutRedirectUri?: string
 }
 
 export type AppAuthProviderProps = {

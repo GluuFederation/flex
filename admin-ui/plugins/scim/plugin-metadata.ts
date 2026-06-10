@@ -1,5 +1,5 @@
-import { SCIM_CONFIG_READ, SCIM_CONFIG_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -11,7 +11,7 @@ const pluginMetadata = {
       title: 'menus.scim',
       icon: 'scim',
       path: ROUTES.SCIM_BASE,
-      permission: SCIM_CONFIG_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SCIM,
     },
   ],
@@ -19,7 +19,7 @@ const pluginMetadata = {
     {
       component: ScimPage,
       path: ROUTES.SCIM_BASE,
-      permission: SCIM_CONFIG_WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SCIM,
     },
   ],

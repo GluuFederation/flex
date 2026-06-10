@@ -17,9 +17,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Keys: 'Keys', Lock: 'Lock', Webhooks: 'Webhooks' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Keys: [], Lock: [], Webhooks: [] },
 }))
 

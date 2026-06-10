@@ -3,9 +3,8 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useSyncRoleToScopesMappings } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
@@ -33,14 +32,14 @@ import { useStyles } from './CedarlingConfigPage.style'
 import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
-const SECURITY_SCOPES = CEDAR_RESOURCE_SCOPES[SECURITY_RESOURCE_ID] ?? []
 
 const CJAR_ACCEPT = {
   'application/zip': ['.cjar'],
 }
 
 const CedarlingConfigPage: React.FC = () => {
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
+    usePermission(SECURITY_RESOURCE_ID)
   const { t } = useTranslation()
   const { navigateBack, navigateToRoute } = useAppNavigation()
   SetTitle(t('titles.cedarling_config'))
@@ -64,21 +63,6 @@ const CedarlingConfigPage: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const dialogRef = useRef<HTMLDivElement | null>(null)
-
-  const canReadSecurity = useMemo(
-    () => hasCedarReadPermission(SECURITY_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
-  const canWriteSecurity = useMemo(
-    () => hasCedarWritePermission(SECURITY_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-
-  useEffect(() => {
-    if (SECURITY_SCOPES.length > 0) {
-      authorizeHelper(SECURITY_SCOPES)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (showConfirm) {

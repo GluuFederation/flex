@@ -4,8 +4,8 @@ import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { buildPayload } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { buildPayload } from 'Utils/auditAction'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { DeleteOutlined } from '@/components/icons'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -16,7 +16,6 @@ import customColors from '@/customColors'
 import getThemeColor from 'Context/theme/config'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { PaperContainer, getIdentityProviderTableCols } from '../helper'
 import { useIdentityProviders, useDeleteIdentityProvider, type IdentityProvider } from './hooks'
@@ -31,12 +30,6 @@ interface DeleteItem {
 const DeleteOutlinedIcon = () => <DeleteOutlined />
 
 const WebsiteSsoIdentityBrokeringList = React.memo(() => {
-  const {
-    authorizeHelper,
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-  } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = getThemeColor(selectedTheme)
@@ -73,24 +66,11 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
   const items = idpData?.entries ?? []
   const totalItems = idpData?.totalEntriesCount ?? 0
 
-  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
-  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
-  const canReadIdentities = useMemo(
-    () => hasCedarReadPermission(samlResourceId),
-    [hasCedarReadPermission, samlResourceId],
-  )
-  const canWriteIdentities = useMemo(
-    () => hasCedarWritePermission(samlResourceId),
-    [hasCedarWritePermission, samlResourceId],
-  )
-  const canDeleteIdentities = useMemo(
-    () => hasCedarDeletePermission(samlResourceId),
-    [hasCedarDeletePermission, samlResourceId],
-  )
-
-  useEffect(() => {
-    authorizeHelper(samlScopes)
-  }, [authorizeHelper, samlScopes])
+  const {
+    canRead: canReadIdentities,
+    canWrite: canWriteIdentities,
+    canDelete: canDeleteIdentities,
+  } = usePermission(ADMIN_UI_RESOURCES.SAML)
 
   const debouncedSetPattern = useMemo(
     () =>

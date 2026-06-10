@@ -13,16 +13,16 @@ jest.mock('@/cedarling', () => ({
   }),
 }))
 
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { License: 'License', Webhooks: 'Webhooks' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
-  CEDAR_RESOURCE_SCOPES: {
-    License: [{ permission: 'read', resourceId: 'License' }],
-    Webhooks: [],
-  },
-}))
+jest.mock('@/cedarling/utility', () => {
+  const { CEDAR_ACTIONS } = jest.requireActual('@/cedarling/constants')
+  return {
+    ADMIN_UI_RESOURCES: { License: 'License', Webhooks: 'Webhooks' },
+    CEDAR_RESOURCE_SCOPES: {
+      License: [{ action: CEDAR_ACTIONS.READ, resourceId: 'License' }],
+      Webhooks: [],
+    },
+  }
+})
 
 jest.mock('../Apps/Gluu/GluuCommitDialog', () => ({
   __esModule: true,

@@ -11,8 +11,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik, type FormikProps } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -51,6 +50,7 @@ import type {
 } from '../types'
 import type { FilterField } from '@/components/GluuFilterPopover'
 const INITIAL_TOKEN_PATTERN: TokenSearchPattern = { dateAfter: null, dateBefore: null }
+const clientResourceId = ADMIN_UI_RESOURCES.Clients
 
 const ClientWizardForm = ({
   client_data,
@@ -62,7 +62,6 @@ const ClientWizardForm = ({
   modifiedFields,
   setModifiedFields,
 }: ClientWizardFormProps) => {
-  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef<FormikProps<ClientWizardFormValues>>(null)
   const footerRef = useRef<HTMLDivElement>(null)
   const commitMessageRef = useRef('')
@@ -168,20 +167,7 @@ const ClientWizardForm = ({
   const [currentStep, setCurrentStep] = useState(CLIENT_WIZARD_SEQUENCE[0])
   const dispatch = useAppDispatch()
 
-  const clientResourceId = ADMIN_UI_RESOURCES.Clients
-  const clientScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[clientResourceId] || [],
-    [clientResourceId],
-  )
-
-  const canWriteClient = useMemo(
-    () => hasCedarWritePermission(clientResourceId),
-    [hasCedarWritePermission, clientResourceId],
-  )
-
-  useEffect(() => {
-    authorizeHelper(clientScopes)
-  }, [authorizeHelper, clientScopes])
+  const { canWrite: canWriteClient } = usePermission(clientResourceId)
 
   const initialValues = useMemo(() => buildClientInitialValues(client_data), [client_data])
   const clientSnapshot = useMemo(() => cloneDeep(initialValues), [initialValues])

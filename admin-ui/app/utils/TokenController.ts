@@ -3,6 +3,7 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { AuditRecord } from 'Redux/types/audit'
 import type { AdditionalPayload, AxiosErrorLike, DirectStatusError, HttpError } from './types'
 import { STORAGE_KEYS } from '@/constants'
+import { storage } from '@/utils/storage'
 
 export type { AdditionalPayload }
 
@@ -14,11 +15,11 @@ export const isFourZeroThreeError = (error?: HttpError | Error): boolean => {
 }
 
 export const saveIssuer = (issuer: string): void => {
-  localStorage.setItem(STORAGE_KEYS.ISSUER, issuer)
+  storage.set(STORAGE_KEYS.ISSUER, issuer)
 }
 
 export const getIssuer = (): string | null => {
-  return localStorage.getItem(STORAGE_KEYS.ISSUER)
+  return storage.get(STORAGE_KEYS.ISSUER)
 }
 
 export const addAdditionalData = (

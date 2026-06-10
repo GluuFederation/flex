@@ -6,7 +6,7 @@ import useSetTitle from 'Utils/SetTitle'
 import { useAgamaActions } from './hooks/useAgamaActions'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -53,7 +53,7 @@ import type {
   AgamaTableRow,
 } from './types'
 import { DATE_TIME_FORMAT_OPTIONS, ACCEPTED_PROJECT_TYPES, ACCEPTED_SHA_TYPES } from './constants'
-import { AUTH_RESOURCE_ID, AUTH_SCOPES } from '../constants'
+import { AUTH_RESOURCE_ID } from '../constants'
 
 const agamaButtonStyle = {
   minHeight: BUTTON_STYLES.height,
@@ -66,11 +66,10 @@ const agamaButtonStyle = {
 
 const AgamaFlows: React.FC = () => {
   const {
-    hasCedarReadPermission,
-    hasCedarWritePermission,
-    hasCedarDeletePermission,
-    authorizeHelper,
-  } = useCedarling()
+    canRead: canReadAuth,
+    canWrite: canWriteAuth,
+    canDelete: canDeleteAuth,
+  } = usePermission(AUTH_RESOURCE_ID)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -108,11 +107,6 @@ const AgamaFlows: React.FC = () => {
   )
   const { classes } = useStyles({ isDark, themeColors })
   const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
-
-  const canReadAuth = useMemo(
-    () => hasCedarReadPermission(AUTH_RESOURCE_ID),
-    [hasCedarReadPermission],
-  )
 
   const {
     data: configuration = {},
@@ -173,21 +167,6 @@ const AgamaFlows: React.FC = () => {
     () => agamaRepositoriesData ?? { projects: [] },
     [agamaRepositoriesData],
   )
-
-  const canWriteAuth = useMemo(
-    () => hasCedarWritePermission(AUTH_RESOURCE_ID),
-    [hasCedarWritePermission],
-  )
-  const canDeleteAuth = useMemo(
-    () => hasCedarDeletePermission(AUTH_RESOURCE_ID),
-    [hasCedarDeletePermission],
-  )
-
-  useEffect(() => {
-    if (AUTH_SCOPES.length > 0) {
-      authorizeHelper(AUTH_SCOPES)
-    }
-  }, [authorizeHelper])
 
   useEffect(() => {
     if (repositoriesError) {

@@ -5,7 +5,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import WebhookForm from './WebhookForm'
@@ -20,17 +20,13 @@ const WebhookAddPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
-  const canReadWebhooks = useMemo(
-    () => hasCedarReadPermission(webhookResourceId),
-    [hasCedarReadPermission, webhookResourceId],
-  )
+  const { canWrite: canWriteWebhooks } = usePermission(webhookResourceId)
 
   SetTitle(t('messages.add_webhook', { defaultValue: 'Add Webhook' }))
 
   return (
     <GluuPageContent>
-      <GluuViewWrapper canShow={canReadWebhooks}>
+      <GluuViewWrapper canShow={canWriteWebhooks}>
         <div className={classes.formCard}>
           <div className={classes.content}>
             <WebhookForm />

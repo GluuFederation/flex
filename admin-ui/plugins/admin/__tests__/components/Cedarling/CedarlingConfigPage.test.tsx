@@ -33,9 +33,6 @@ jest.mock('@/cedarling/utility', () => ({
     Users: 'Users',
     Attributes: 'Attributes',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [], Lock: [], Users: [], Attributes: [] },
 }))
 

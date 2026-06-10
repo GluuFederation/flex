@@ -6,8 +6,9 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
-import { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
+import { devLogger } from '@/utils/devLogger'
 
 const base64ToUint8Array = (base64: string): Uint8Array => {
   const binaryString = atob(base64)
@@ -33,7 +34,7 @@ const PermissionsPolicyInitializer = () => {
     (state) => state.cedarPermissions,
   )
   const cedarlingLogType =
-    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
+    useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CEDARLING_LOG_TYPE.OFF
 
   useEffect(() => {
     const isValidPolicyStoreBytes = (bytes: string): boolean => {
@@ -70,10 +71,15 @@ const PermissionsPolicyInitializer = () => {
     cedarlingClient
       .initialize(bootstrapConfig, bytesUint8Array)
       .then(() => {
+        devLogger.log('Cedarling initialize SUCCEEDED')
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(
+          `Cedarling initialize FAILED (attempt ${retryCount.current.tryCount + 1}/${maxRetries}):`,
+          error instanceof Error ? error : String(error),
+        )
         retryCount.current.tryCount += 1
 
         if (retryCount.current.tryCount < maxRetries) {

@@ -18,9 +18,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { FIDO: 'FIDO', Lock: 'Lock' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { FIDO: [], Lock: [] },
 }))
 

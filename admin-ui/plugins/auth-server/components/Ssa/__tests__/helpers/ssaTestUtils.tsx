@@ -25,9 +25,6 @@ jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: {
     SSA: 'SSA',
   },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { SSA: [] },
 }))
 
@@ -128,7 +125,7 @@ export const createSsaTestStore = (): Store =>
     }),
   })
 
-export const createSsaQueryClient = (): QueryClient =>
+const createSsaQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })

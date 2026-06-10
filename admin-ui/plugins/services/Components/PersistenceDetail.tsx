@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -8,9 +8,8 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import { GluuPageContent } from 'Components'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useGetPropertiesPersistence } from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/PersistenceDetail.style'
@@ -24,23 +23,9 @@ const PersistenceDetail = () => {
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
-
-  const persistenceResourceId = useMemo(() => ADMIN_UI_RESOURCES.Persistence, [])
-  const persistenceScopes = useMemo(
-    () => CEDAR_RESOURCE_SCOPES[persistenceResourceId],
-    [persistenceResourceId],
-  )
-  const canReadPersistence = useMemo(
-    () => hasCedarReadPermission(persistenceResourceId),
-    [hasCedarReadPermission, persistenceResourceId],
-  )
+  const { canRead: canReadPersistence } = usePermission(ADMIN_UI_RESOURCES.Persistence)
 
   SetTitle(t('menus.persistence'))
-
-  useEffect(() => {
-    authorizeHelper(persistenceScopes)
-  }, [authorizeHelper, persistenceScopes])
 
   const { data: persistenceData, isLoading } = useGetPropertiesPersistence({
     query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadPersistence },

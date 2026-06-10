@@ -1,5 +1,5 @@
-import { CACHE_READ, PERSISTENCE_DETAIL } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -15,13 +15,13 @@ const pluginMetadata = {
         {
           title: 'menus.cache',
           path: ROUTES.SERVICES_CACHE,
-          permission: CACHE_READ,
+          action: CEDAR_ACTIONS.READ,
           resourceKey: ADMIN_UI_RESOURCES.Cache,
         },
         {
           title: 'menus.persistence',
           path: ROUTES.SERVICES_PERSISTENCE,
-          permission: PERSISTENCE_DETAIL,
+          action: CEDAR_ACTIONS.READ,
           resourceKey: ADMIN_UI_RESOURCES.Persistence,
         },
       ],
@@ -31,13 +31,13 @@ const pluginMetadata = {
     {
       component: CachePage,
       path: ROUTES.SERVICES_CACHE,
-      permission: CACHE_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Cache,
     },
     {
       component: PersistenceDetail,
       path: ROUTES.SERVICES_PERSISTENCE,
-      permission: PERSISTENCE_DETAIL,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Persistence,
     },
   ],

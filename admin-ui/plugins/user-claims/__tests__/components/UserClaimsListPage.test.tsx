@@ -25,13 +25,8 @@ jest.mock('@/cedarling', () => {
 })
 
 jest.mock('@/cedarling/utility', () => {
-  const { ADMIN_UI_RESOURCES } = jest.requireActual('../cedarTestHelpers')
-  return { ADMIN_UI_RESOURCES: ADMIN_UI_RESOURCES }
-})
-
-jest.mock('@/cedarling/constants/resourceScopes', () => {
-  const { CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
-  return { CEDAR_RESOURCE_SCOPES: CEDAR_RESOURCE_SCOPES }
+  const { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } = jest.requireActual('../cedarTestHelpers')
+  return { ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES }
 })
 
 jest.mock('JansConfigApi', () => ({

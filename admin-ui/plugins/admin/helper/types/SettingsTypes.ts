@@ -1,4 +1,4 @@
-import type { CedarlingLogType } from '@/cedarling/enums/CedarlingLogType'
+import type { CedarlingLogType } from '@/cedarling/types'
 import type { KeyValuePair } from 'JansConfigApi'
 
 export type AdditionalParameterFormItem = KeyValuePair & {

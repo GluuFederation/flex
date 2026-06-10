@@ -9,7 +9,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Alert } from '@mui/material'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import SetTitle from 'Utils/SetTitle'
 import UserClaimsForm from 'Plugins/user-claims/components/UserClaimsForm'
@@ -38,11 +38,7 @@ const UserClaimsEditPage = (): JSX.Element => {
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { hasCedarReadPermission } = useCedarling()
-  const canRead = useMemo(
-    () => hasCedarReadPermission(attributeResourceId),
-    [hasCedarReadPermission],
-  )
+  const { canRead } = usePermission(attributeResourceId)
 
   SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))
 

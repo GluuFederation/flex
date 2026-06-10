@@ -16,7 +16,7 @@ import type { GluuSelectRowFormik } from 'Routes/Apps/Gluu/types/GluuSelectRow.t
 import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/auditAction'
 import { devLogger } from '@/utils/devLogger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SIMPLE_PASSWORD_AUTH } from '@/constants'
@@ -26,8 +26,7 @@ import {
   usePatchAuthServerJsonPropertiesMutation,
 } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { useAuthServerScripts } from '../hooks/useAuthServerScripts'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
@@ -74,10 +73,9 @@ import type {
   SimpleFieldModel,
 } from '../types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
-import type { UserAction } from 'Utils/PermChecker'
+import type { UserAction } from 'Utils/types'
 
 const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
-const propertiesScopes = CEDAR_RESOURCE_SCOPES[propertiesResourceId] || []
 const createUserAction = (): UserAction => ({
   action_message: '',
   action_data: null,
@@ -99,7 +97,8 @@ const AuthServerPropertiesPage: React.FC = () => {
     [themeState?.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
-  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const { canRead: canReadProperties, canWrite: canWriteProperties } =
+    usePermission(propertiesResourceId)
   const { logAcrUpdate } = useAcrAudit()
   const {
     data: serverConfigurationData,
@@ -118,14 +117,6 @@ const AuthServerPropertiesPage: React.FC = () => {
     query: { staleTime: 30000 },
   })
   const lSize = DEFAULT_FORM_LABEL_SIZE
-  const canReadProperties = useMemo(
-    () => hasCedarReadPermission(propertiesResourceId),
-    [hasCedarReadPermission],
-  )
-  const canWriteProperties = useMemo(
-    () => hasCedarWritePermission(propertiesResourceId),
-    [hasCedarWritePermission],
-  )
   const [modal, setModal] = useState<boolean>(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
   const [resetKey, setResetKey] = useState<number>(0)
@@ -182,9 +173,6 @@ const AuthServerPropertiesPage: React.FC = () => {
     validateOnMount: false,
     onSubmit: () => {},
   })
-  useEffect(() => {
-    authorizeHelper(propertiesScopes)
-  }, [authorizeHelper])
   useEffect(() => {
     setFieldValueRef.current = formik.setFieldValue
     resetFormRef.current = formik.resetForm

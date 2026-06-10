@@ -1,5 +1,5 @@
-import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -13,7 +13,7 @@ const pluginMetadata = {
       title: 'menus.users',
       icon: 'usersmanagement',
       path: ROUTES.USER_MANAGEMENT,
-      permission: USER_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
   ],
@@ -21,19 +21,19 @@ const pluginMetadata = {
     {
       component: UserList,
       path: ROUTES.USER_MANAGEMENT,
-      permission: USER_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
     {
       component: UserAddPage,
       path: ROUTES.USER_ADD,
-      permission: USER_WRITE,
+      action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
     {
       component: UserEditPage,
       path: ROUTES.USER_EDIT_TEMPLATE,
-      permission: USER_WRITE,
+      action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
   ],

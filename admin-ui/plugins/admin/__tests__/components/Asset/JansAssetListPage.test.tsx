@@ -28,12 +28,10 @@ jest.mock('@/cedarling', () => {
 
 jest.mock('@/cedarling/utility', () => {
   const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
-  return { ADMIN_UI_RESOURCES: SHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES }
-})
-
-jest.mock('@/cedarling/constants/resourceScopes', () => {
-  const { SHARED_CEDAR_CONSTANTS } = jest.requireActual('./assetCedarTestConstants')
-  return { CEDAR_RESOURCE_SCOPES: SHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES }
+  return {
+    ADMIN_UI_RESOURCES: SHARED_CEDAR_CONSTANTS.ADMIN_UI_RESOURCES,
+    CEDAR_RESOURCE_SCOPES: SHARED_CEDAR_CONSTANTS.CEDAR_RESOURCE_SCOPES,
+  }
 })
 
 jest.mock('JansConfigApi', () => ({
@@ -109,8 +107,6 @@ describe('JansAssetListPage', () => {
       hasCedarWritePermission: jest.fn(() => false),
       hasCedarDeletePermission: jest.fn(() => true),
       authorizeHelper: jest.fn(),
-      isLoading: false,
-      error: null,
     })
     render(<JansAssetListPage />, { wrapper: Wrapper })
     expect(screen.queryByText(/Add Jans Asset/i)).not.toBeInTheDocument()

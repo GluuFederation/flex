@@ -16,9 +16,6 @@ jest.mock('@/cedarling', () => ({
 
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Persistence: 'Persistence' },
-}))
-
-jest.mock('@/cedarling/constants/resourceScopes', () => ({
   CEDAR_RESOURCE_SCOPES: { Persistence: [] },
 }))
 

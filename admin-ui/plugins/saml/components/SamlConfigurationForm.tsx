@@ -1,17 +1,16 @@
 import { useFormik } from 'formik'
-import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
+import React, { useState, useMemo, useCallback, memo, useRef } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from '@/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useStyles } from './styles/SamlPage.style'
 import { samlConfigurationValidationSchema, transformToFormValues } from '../helper'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -24,7 +23,6 @@ const DOC_SECTION = 'samlConfiguration' as const
 const SamlConfigurationForm: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const [modal, setModal] = useState<boolean>(false)
   const { classes } = useStyles()
 
@@ -34,16 +32,7 @@ const SamlConfigurationForm: React.FC = () => {
 
   SetTitle(t('titles.saml_management'))
 
-  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
-  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
-  const canWriteConfig = useMemo(
-    () => hasCedarWritePermission(samlResourceId),
-    [hasCedarWritePermission, samlResourceId],
-  )
-
-  useEffect(() => {
-    authorizeHelper(samlScopes)
-  }, [authorizeHelper, samlScopes])
+  const { canWrite: canWriteConfig } = usePermission(ADMIN_UI_RESOURCES.SAML)
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)

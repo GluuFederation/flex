@@ -1,5 +1,5 @@
-import { SMTP_READ, SMTP_WRITE } from '../../app/utils/PermChecker'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
@@ -11,7 +11,7 @@ const pluginMetadata = {
       title: 'menus.smtp',
       icon: 'smtpmanagement',
       path: ROUTES.SMTP_BASE,
-      permission: SMTP_READ,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SMTP,
     },
   ],
@@ -19,7 +19,7 @@ const pluginMetadata = {
     {
       component: SmtpEditPage,
       path: ROUTES.SMTP_BASE,
-      permission: SMTP_WRITE,
+      action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.SMTP,
     },
   ],

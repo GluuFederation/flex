@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
-import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
@@ -11,7 +10,10 @@ import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import { updateToast } from 'Redux/features/toastSlice'
-import { setPolicyStoreBytes } from 'Redux/features/cedarPermissionsSlice'
+import {
+  setPolicyStoreBytes,
+  setCedarFailedStatusAfterMaxTries,
+} from 'Redux/features/cedarPermissionsSlice'
 import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
@@ -39,7 +41,6 @@ import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
-import { STORAGE_KEYS } from '@/constants'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -57,6 +58,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     hasSession,
   } = useAppSelector((state) => state.authReducer)
   const config = rawConfig as OAuthConfig
+  const configRef = useRef(config)
+  configRef.current = config
 
   const { islicenseCheckResultLoaded, isLicenseValid, isConfigValid, isUnderThresholdLimit } =
     useAppSelector((state) => state.licenseReducer)
@@ -77,8 +80,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
 
   const hasDispatchedConfigCheck = useRef(false)
   useEffect(() => {
-    const params = queryString.parse(location.search)
-    const hasCallbackParams = !!(params.code && params.state)
+    const params = new URLSearchParams(location.search)
+    const hasCallbackParams = !!(params.get('code') && params.get('state'))
 
     if (hasCallbackParams && !getIssuer()) {
       window.history.replaceState({}, '', window.location.pathname)
@@ -94,8 +97,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   }, [dispatch])
 
   useEffect(() => {
-    const params = queryString.parse(location.search)
-    if (isConfigValid && !(params.code && params.state)) {
+    const params = new URLSearchParams(location.search)
+    if (isConfigValid && !(params.get('code') && params.get('state'))) {
       dispatch(checkLicensePresent(undefined))
     }
   }, [isConfigValid])
@@ -108,17 +111,21 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (hasSession) {
       fetchPolicyStore()
         .then((policyStoreResponse) => {
-          if (isMounted && policyStoreResponse.data) {
-            const policyStoreBytes =
-              'responseBytes' in policyStoreResponse.data
-                ? policyStoreResponse.data.responseBytes
-                : undefined
-            dispatch(setPolicyStoreBytes(policyStoreBytes ?? ''))
+          if (!isMounted) return
+          const policyStoreBytes =
+            policyStoreResponse.data && 'responseBytes' in policyStoreResponse.data
+              ? policyStoreResponse.data.responseBytes
+              : undefined
+          if (policyStoreBytes && policyStoreBytes.trim().length > 0) {
+            dispatch(setPolicyStoreBytes(policyStoreBytes))
+          } else {
+            dispatch(setCedarFailedStatusAfterMaxTries())
           }
         })
         .catch((err: Error) => {
           if (isMounted) {
             setError(err)
+            dispatch(setCedarFailedStatusAfterMaxTries())
           }
         })
     }
@@ -245,7 +252,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 const state = uuidv4()
                 const sessionEndpoint = buildSafeLogoutUrl(
                   authConfigs?.endSessionEndpoint || null,
-                  localStorage.getItem(STORAGE_KEYS.POST_LOGOUT_REDIRECT_URI),
+                  configRef.current.postLogoutRedirectUri,
                   state,
                 )
                 dispatch(

@@ -5,7 +5,7 @@ import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { storage } from '@/utils/storage'
 import { ensureLocaleLoaded } from '@/i18n'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 import { useStyles } from './styles/LanguageMenu.style'
@@ -16,17 +16,11 @@ interface UserConfig {
   theme?: Record<string, string>
 }
 
-const safeParseUserConfig = (): UserConfig => {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_CONFIG) || '{}') || {}
-  } catch (error) {
-    devLogger.warn('Failed to parse userConfig:', error instanceof Error ? error : String(error))
-    return {}
-  }
-}
+const safeParseUserConfig = (): UserConfig =>
+  storage.getJSON<UserConfig>(STORAGE_KEYS.USER_CONFIG) ?? {}
 
 const getInitialLang = (inum?: string): string => {
-  const initLang = localStorage.getItem(STORAGE_KEYS.INIT_LANG) || DEFAULT_LANG
+  const initLang = storage.get(STORAGE_KEYS.INIT_LANG) || DEFAULT_LANG
   const config = safeParseUserConfig()
   return config?.lang?.[inum || ''] || initLang
 }
@@ -71,7 +65,8 @@ const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
         langConfig[inum] = code
       }
       const newConfig = { ...config, lang: langConfig }
-      localStorage.setItem(STORAGE_KEYS.USER_CONFIG, JSON.stringify(newConfig))
+      storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
+      storage.set(STORAGE_KEYS.INIT_LANG, code)
     },
     [i18n, inum],
   )
