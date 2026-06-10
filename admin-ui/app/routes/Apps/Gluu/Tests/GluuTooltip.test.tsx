@@ -24,3 +24,22 @@ it('Test gluutooltip', async () => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)
   })
 })
+
+it('shows a tooltipOnly tooltip when a detached data-tooltip-id anchor is hovered', async () => {
+  render(
+    <AppTestWrapper>
+      <>
+        <button data-tooltip-id="applicationType">trigger</button>
+        <GluuTooltip tooltipOnly doc_category="openid_client" doc_entry="applicationType" />
+      </>
+    </AppTestWrapper>,
+  )
+
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+
+  await userEvent.hover(screen.getByText('trigger'))
+
+  await waitFor(() => {
+    expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)
+  })
+})
