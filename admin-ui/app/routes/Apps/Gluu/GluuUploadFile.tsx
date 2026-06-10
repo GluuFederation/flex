@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDropzone, type Accept } from 'react-dropzone'
+import { useFileDrop, type Accept } from '@/hooks/useFileDrop'
 import { Box } from '@mui/material'
 import { DeleteOutline } from '@/components/icons'
 import { Button } from 'Components'
@@ -61,7 +61,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
     isDragActive: isDragActive1,
-  } = useDropzone({
+  } = useFileDrop({
     onDrop: handleDrop,
     accept,
     disabled,

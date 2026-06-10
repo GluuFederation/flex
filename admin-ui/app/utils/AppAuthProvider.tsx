@@ -37,7 +37,7 @@ import {
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
 import { useTranslation } from 'react-i18next'
-import { jwtDecode } from 'jwt-decode'
+import { decodeJwt } from '@/utils/jwtDecode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
@@ -232,7 +232,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               if (value === -1) return
               const ujwt = value
 
-              const decoded = jwtDecode<UserInfo>(ujwt)
+              const decoded = decodeJwt<UserInfo>(ujwt)
               dispatch(
                 getUserInfoResponse({
                   userinfo: decoded,

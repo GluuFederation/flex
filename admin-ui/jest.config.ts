@@ -35,9 +35,7 @@ const config: Config = {
     'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-  transformIgnorePatterns: [
-    'node_modules/(?!(query-string|decode-uri-component|uuid|split-on-first|filter-obj)/)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(uuid)/)'],
 }
 
 export default config

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
-import { withIdleTimer, type IIdleTimer } from 'react-idle-timer'
+import { useIdleTimer } from '@/hooks/useIdleTimer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -13,10 +13,6 @@ type SessionTimeoutProps = {
 const COUNTDOWN_SECONDS = 10
 const DEFAULT_TIMEOUT_MINS = 5
 const IDLE_TO_MODAL_DELAY = 1000
-
-const IdleTimerComponent = ({ children }: IIdleTimer & { children?: React.ReactNode }) =>
-  (children as React.ReactElement) ?? null
-const IdleTimer = withIdleTimer(IdleTimerComponent)
 
 const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
@@ -111,15 +107,19 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     }
   }, [logoutAuditSucceeded, navigateToRoute])
 
+  const { reset } = useIdleTimer({
+    timeout: sessionTimeout * 60 * 1000,
+    onActive,
+    onIdle,
+    debounce: 250,
+  })
+
+  useEffect(() => {
+    reset()
+  }, [sessionTimeout, isAuthenticated, reset])
+
   return (
     <>
-      <IdleTimer
-        key={`${sessionTimeout}-${isAuthenticated}`}
-        onActive={onActive}
-        onIdle={onIdle}
-        debounce={250}
-        timeout={sessionTimeout * 60 * 1000}
-      />
       <SessionTimeoutDialog
         countdown={timeoutCountdown}
         onContinue={handleContinue}
