@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { useAppSelector } from '@/redux/hooks'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import type { Dayjs } from 'dayjs'
 import Grid from '@mui/material/Grid'
@@ -9,12 +9,10 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import customColors, { hexToRgb } from '@/customColors'
 import getThemeColor from '@/context/theme/config'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
-import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { formatDate } from 'Utils/Util'
 import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
@@ -23,12 +21,13 @@ import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { DEFAULT_STATUS, JANS_SERVICES } from '@/constants'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import DashboardChart from './Chart/DashboardChart'
-import { CHART_LEGEND_CONFIG, STATUS_DETAILS } from './constants'
+import { CHART_LEGEND_CONFIG, STATUS_DETAILS, DATE_RANGE_TYPE } from './constants'
+import type { DateRangeType } from './types'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
 import { useClients } from 'Plugins/auth-server/components/OidcClients/hooks'
 import { useDashboardLockStats } from './hooks'
-import { useStyles } from './DashboardPage.style'
+import { useStyles, MOBILE_MEDIA_QUERY } from './DashboardPage.style'
 import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -42,11 +41,9 @@ import {
 } from '@/utils/dayjsUtils'
 
 const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
-const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
 const DashboardPage = () => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const themeContext = useContext(ThemeContext)
@@ -90,10 +87,9 @@ const DashboardPage = () => {
   const debouncedStartDate = useDebounce(startDate, 400)
   const debouncedEndDate = useDebounce(endDate, 400)
 
-  const { isUserInfoFetched, hasSession } = useAppSelector((state) => state.authReducer)
+  const { hasSession } = useAppSelector((state) => state.authReducer)
 
   const { canRead: canViewDashboard } = usePermission(DASHBOARD_RESOURCE_ID)
-  const { navigateToRoute } = useAppNavigation()
   const cedarInitialized = useAppSelector((state) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useAppSelector((state) => state.cedarPermissions?.isInitializing)
 
@@ -246,28 +242,6 @@ const DashboardPage = () => {
     })
   }, [allServices, healthLoading])
 
-  const handleLogout = useCallback(() => {
-    if (hasSession) {
-      dispatch(
-        auditLogoutLogs({
-          message: 'Logging out due to insufficient permissions for Admin UI access.',
-        }),
-      )
-    } else {
-      navigateToRoute(ROUTES.LOGOUT)
-    }
-  }, [hasSession, dispatch, navigateToRoute])
-
-  const showModal = useMemo(() => {
-    const shouldShowModal = !isUserInfoFetched && (!hasSession || !hasViewPermissions)
-
-    if (shouldShowModal) {
-      return <GluuPermissionModal handler={handleLogout} isOpen={true} />
-    }
-
-    return null
-  }, [isUserInfoFetched, hasSession, hasViewPermissions, handleLogout])
-
   const hasAnyDashboardData = useMemo(
     () => Boolean(mauData?.length) || totalClientsEntries > 0 || Boolean(lockData?.length),
     [mauData, totalClientsEntries, lockData],
@@ -289,10 +263,10 @@ const DashboardPage = () => {
   ])
 
   const handleDateChange = useCallback(
-    (type: 'start' | 'end', date: Dayjs | null) => {
+    (type: DateRangeType, date: Dayjs | null) => {
       if (!date) return
 
-      if (type === 'start') {
+      if (type === DATE_RANGE_TYPE.START) {
         setStartDate(date)
         if (isAfterDate(date, endDate)) {
           setEndDate(date)
@@ -308,12 +282,12 @@ const DashboardPage = () => {
   )
 
   const handleStartDateChange = useCallback(
-    (date: Dayjs | null) => handleDateChange('start', date),
+    (date: Dayjs | null) => handleDateChange(DATE_RANGE_TYPE.START, date),
     [handleDateChange],
   )
 
   const handleEndDateChange = useCallback(
-    (date: Dayjs | null) => handleDateChange('end', date),
+    (date: Dayjs | null) => handleDateChange(DATE_RANGE_TYPE.END, date),
     [handleDateChange],
   )
 
@@ -327,130 +301,131 @@ const DashboardPage = () => {
 
   return (
     <GluuLoader blocking={isBlocking}>
-      {showModal}
-      <GluuPageContent>
-        <Grid container className={classes.topGridNoMargin}>
-          <Grid size={12}>
-            <div className={classes.statusSection}>
-              <div className={classes.statusContainer}>
-                <GluuText variant="span" className={classes.statusTitle}>
-                  {t('dashboard.system_status')}:
-                </GluuText>
-                {visibleStatusDetails.map(({ label, key }) => (
-                  <StatusIndicator
-                    key={label}
-                    label={label}
-                    status={getServiceStatus(key)}
-                    classes={classes}
-                    t={t}
-                  />
-                ))}
+      <GluuViewWrapper canShow={canViewDashboard}>
+        <GluuPageContent>
+          <Grid container className={classes.topGridNoMargin}>
+            <Grid size={12}>
+              <div className={classes.statusSection}>
+                <div className={classes.statusContainer}>
+                  <GluuText variant="span" className={classes.statusTitle}>
+                    {t('dashboard.system_status')}:
+                  </GluuText>
+                  {visibleStatusDetails.map(({ label, key }) => (
+                    <StatusIndicator
+                      key={label}
+                      label={label}
+                      status={getServiceStatus(key)}
+                      classes={classes}
+                      t={t}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2}>
-          <Grid size={12}>
-            <Grid container spacing={2}>
-              {summaryData.slice(0, 3).map((data) => (
-                <Grid
-                  key={data.text}
-                  size={{
-                    xs: 12,
-                    sm: 6,
-                    md: 4,
-                  }}
-                >
-                  <SummaryCard text={data.text} value={data.value} classes={classes} />
-                </Grid>
-              ))}
             </Grid>
           </Grid>
 
-          <Grid size={12}>
-            <div className={classes.userInfoChartRow}>
-              <div className={classes.userInfoChartCol}>
-                <Paper
-                  className={`${classes.dashboardCard} ${classes.dashboardCardCentered}`}
-                  elevation={0}
-                >
-                  <Grid className={classes.flex} container>
-                    <Grid className={isMobile ? classes.mobileTopSpacing : ''} size={12}>
-                      <div className={classes.userInfo}>
-                        <GluuText variant="div" className={classes.userInfoTitle}>
-                          {t('dashboard.user_info')}
-                        </GluuText>
-                        <div className={classes.userInfoContent}>
-                          {userInfo.map((item) => (
-                            <UserInfoItem
-                              key={item.text}
-                              item={item}
-                              classes={classes}
-                              isStatus={item.isStatus}
-                              isDark={isDark}
-                              t={t}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </Grid>
+          <Grid container spacing={2}>
+            <Grid size={12}>
+              <Grid container spacing={2}>
+                {summaryData.slice(0, 3).map((data) => (
+                  <Grid
+                    key={data.text}
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      md: 4,
+                    }}
+                  >
+                    <SummaryCard text={data.text} value={data.value} classes={classes} />
                   </Grid>
-                </Paper>
-              </div>
-              <div className={classes.userInfoChartCol}>
-                <Paper elevation={0} style={{ background: 'transparent' }}>
-                  <div className={classes.whiteBg}>
-                    <GluuText variant="h3" className={classes.chartTitle}>
-                      {t('dashboard.access_tokens_graph')}
-                    </GluuText>
-                    <div className={classes.chartDatePickers}>
-                      <GluuDatePicker
-                        mode="range"
-                        dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY}
-                        startDate={startDate}
-                        endDate={endDate}
-                        onStartDateChange={handleStartDateChange}
-                        onEndDateChange={handleEndDateChange}
-                        onStartDateAccept={handleStartDateChange}
-                        onEndDateAccept={handleEndDateChange}
-                        textColor={dashboardThemeColors.text}
-                        backgroundColor={dashboardThemeColors.cardBg}
-                      />
-                    </div>
-                    <div className={classes.desktopChartStyle}>
-                      <div className={classes.chartBackground} />
-                      <DashboardChart
-                        statData={mauData ?? []}
-                        startMonth={dateMonths.start}
-                        endMonth={dateMonths.end}
-                        textColor={dashboardThemeColors.text}
-                        gridColor={dashboardThemeColors.textSecondary}
-                        tooltipBackgroundColor={dashboardThemeColors.cardBg}
-                        tooltipTextColor={dashboardThemeColors.text}
-                        isDark={isDark}
-                      />
-                    </div>
-                    <div className={classes.chartLegend}>
-                      {CHART_LEGEND_CONFIG.map((config) => (
-                        <div key={config.dataKey} className={classes.legendItem}>
-                          <div
-                            className={classes.legendColor}
-                            style={{ backgroundColor: config.color }}
-                          />
-                          <GluuText variant="span" className={classes.legendLabel}>
-                            {t(config.translationKey)}
+                ))}
+              </Grid>
+            </Grid>
+
+            <Grid size={12}>
+              <div className={classes.userInfoChartRow}>
+                <div className={classes.userInfoChartCol}>
+                  <Paper
+                    className={`${classes.dashboardCard} ${classes.dashboardCardCentered}`}
+                    elevation={0}
+                  >
+                    <Grid className={classes.flex} container>
+                      <Grid className={isMobile ? classes.mobileTopSpacing : ''} size={12}>
+                        <div className={classes.userInfo}>
+                          <GluuText variant="div" className={classes.userInfoTitle}>
+                            {t('dashboard.user_info')}
                           </GluuText>
+                          <div className={classes.userInfoContent}>
+                            {userInfo.map((item) => (
+                              <UserInfoItem
+                                key={item.text}
+                                item={item}
+                                classes={classes}
+                                isStatus={item.isStatus}
+                                isDark={isDark}
+                                t={t}
+                              />
+                            ))}
+                          </div>
                         </div>
-                      ))}
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+                <div className={classes.userInfoChartCol}>
+                  <Paper elevation={0} style={{ background: 'transparent' }}>
+                    <div className={classes.whiteBg}>
+                      <GluuText variant="h3" className={classes.chartTitle}>
+                        {t('dashboard.access_tokens_graph')}
+                      </GluuText>
+                      <div className={classes.chartDatePickers}>
+                        <GluuDatePicker
+                          mode="range"
+                          dateFormat={DATE_FORMATS.DATE_PICKER_DISPLAY}
+                          startDate={startDate}
+                          endDate={endDate}
+                          onStartDateChange={handleStartDateChange}
+                          onEndDateChange={handleEndDateChange}
+                          onStartDateAccept={handleStartDateChange}
+                          onEndDateAccept={handleEndDateChange}
+                          textColor={dashboardThemeColors.text}
+                          backgroundColor={dashboardThemeColors.cardBg}
+                        />
+                      </div>
+                      <div className={classes.desktopChartStyle}>
+                        <div className={classes.chartBackground} />
+                        <DashboardChart
+                          statData={mauData ?? []}
+                          startMonth={dateMonths.start}
+                          endMonth={dateMonths.end}
+                          textColor={dashboardThemeColors.text}
+                          gridColor={dashboardThemeColors.textSecondary}
+                          tooltipBackgroundColor={dashboardThemeColors.cardBg}
+                          tooltipTextColor={dashboardThemeColors.text}
+                          isDark={isDark}
+                        />
+                      </div>
+                      <div className={classes.chartLegend}>
+                        {CHART_LEGEND_CONFIG.map((config) => (
+                          <div key={config.dataKey} className={classes.legendItem}>
+                            <div
+                              className={classes.legendColor}
+                              style={{ backgroundColor: config.color }}
+                            />
+                            <GluuText variant="span" className={classes.legendLabel}>
+                              {t(config.translationKey)}
+                            </GluuText>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </Paper>
+                  </Paper>
+                </div>
               </div>
-            </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </GluuPageContent>
+        </GluuPageContent>
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }
