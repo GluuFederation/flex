@@ -6,6 +6,7 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { Card, CardBody, GluuPageContent } from 'Components'
 import { useLicenseDetails } from './hooks/useLicenseDetails'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuRefreshButton } from '@/components/GluuSearchToolbar'
 import Alert from '@mui/material/Alert'
@@ -41,7 +42,7 @@ const LicenseDetailsPage = () => {
     onResetSuccess: () => navigateToRoute(ROUTES.LOGOUT),
   })
   const { t } = useTranslation()
-  const { canWrite: canWriteLicense } = usePermission(LICENSE_RESOURCE_ID)
+  const { canRead: canReadLicense, canWrite: canWriteLicense } = usePermission(LICENSE_RESOURCE_ID)
   const [modal, setModal] = useState(false)
 
   useEffect(() => {
@@ -113,38 +114,40 @@ const LicenseDetailsPage = () => {
 
   return (
     <GluuLoader blocking={loading || isResetting}>
-      <GluuPageContent>
-        {showLicenseCard ? (
-          <div className={classes.licenseCard}>
-            <div className={classes.licenseContent}>
-              {licenseFields?.map((field) => renderLicenseField(field))}
-            </div>
-            {canWriteLicense && (
-              <div className={classes.buttonContainer}>
-                <GluuRefreshButton
-                  className={classes.resetButton}
-                  variant="primary"
-                  onClick={toggle}
-                  disabled={loading || isResetting}
-                  label={t('fields.resetLicense')}
-                />
+      <GluuViewWrapper canShow={canReadLicense}>
+        <GluuPageContent>
+          {showLicenseCard ? (
+            <div className={classes.licenseCard}>
+              <div className={classes.licenseContent}>
+                {licenseFields?.map((field) => renderLicenseField(field))}
               </div>
-            )}
-          </div>
-        ) : (
-          <Card className={classes.card}>
-            <CardBody className={classes.cardBody}>
-              <Alert severity="error">{t('messages.license_api_not_enabled')}</Alert>
-            </CardBody>
-          </Card>
-        )}
-        <GluuCommitDialog
-          handler={toggle}
-          modal={modal}
-          onAccept={(userMessage) => handleReset(userMessage)}
-          isLicenseLabel={true}
-        />
-      </GluuPageContent>
+              {canWriteLicense && (
+                <div className={classes.buttonContainer}>
+                  <GluuRefreshButton
+                    className={classes.resetButton}
+                    variant="primary"
+                    onClick={toggle}
+                    disabled={loading || isResetting}
+                    label={t('fields.resetLicense')}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <Card className={classes.card}>
+              <CardBody className={classes.cardBody}>
+                <Alert severity="error">{t('messages.license_api_not_enabled')}</Alert>
+              </CardBody>
+            </Card>
+          )}
+          <GluuCommitDialog
+            handler={toggle}
+            modal={modal}
+            onAccept={(userMessage) => handleReset(userMessage)}
+            isLicenseLabel={true}
+          />
+        </GluuPageContent>
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }

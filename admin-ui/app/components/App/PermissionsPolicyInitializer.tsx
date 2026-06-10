@@ -8,6 +8,7 @@ import {
 import { cedarlingClient } from '@/cedarling/client'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
+import { devLogger } from '@/utils/devLogger'
 
 const base64ToUint8Array = (base64: string): Uint8Array => {
   const binaryString = atob(base64)
@@ -70,10 +71,15 @@ const PermissionsPolicyInitializer = () => {
     cedarlingClient
       .initialize(bootstrapConfig, bytesUint8Array)
       .then(() => {
+        devLogger.log('Cedarling initialize SUCCEEDED')
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(
+          `Cedarling initialize FAILED (attempt ${retryCount.current.tryCount + 1}/${maxRetries}):`,
+          error instanceof Error ? error : String(error),
+        )
         retryCount.current.tryCount += 1
 
         if (retryCount.current.tryCount < maxRetries) {

@@ -191,7 +191,8 @@ For a single child that should appear only under one action, [`Protected`](../ap
 
 ```tsx
 import { Protected } from '@/cedarling/components'
-import { ADMIN_UI_RESOURCES, CEDAR_ACTIONS } from '@/cedarling/constants'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 ;<Protected resource={ADMIN_UI_RESOURCES.Clients} action={CEDAR_ACTIONS.WRITE}>
   <AddClientButton />
 </Protected>

@@ -21,9 +21,13 @@ import {
 import customColors from '@/customColors'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import TooltipDesign from './TooltipDesign'
-import { chartGlobalStyles } from './DashboardChart.style'
+import {
+  chartGlobalStyles,
+  CHART_CONSTANTS,
+  RECHARTS_INITIAL_DIMENSION,
+} from './DashboardChart.style'
 import type { DashboardChartProps, MauStatEntry } from '../types'
-import { CHART_CONSTANTS, CHART_LEGEND_CONFIG, RECHARTS_INITIAL_DIMENSION } from '../constants'
+import { CHART_LEGEND_CONFIG } from '../constants'
 
 const DashboardChart = memo(
   ({

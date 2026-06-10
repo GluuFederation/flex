@@ -1,6 +1,13 @@
 import { devLogger } from '@/utils/devLogger'
 
-const isAvailable = (): boolean => typeof window !== 'undefined' && !!window.localStorage
+const isAvailable = (): boolean => {
+  if (typeof window === 'undefined') return false
+  try {
+    return !!window.localStorage
+  } catch {
+    return false
+  }
+}
 
 const get = (key: string): string | null => {
   if (!isAvailable()) return null

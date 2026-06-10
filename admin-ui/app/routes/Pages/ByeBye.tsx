@@ -61,7 +61,10 @@ const ByeBye = () => {
       window.location.href = '/'
     }
 
-    performLogout()
+    performLogout().catch((error) => {
+      devLogger.error('Logout failed:', error instanceof Error ? error : String(error))
+      window.location.href = '/'
+    })
   }, [])
 
   return (
