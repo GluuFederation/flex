@@ -48,7 +48,10 @@ const GluuTooltip = ({
 
   useEffect(() => {
     tooltipManager.addListener(doc_entry, setAnchorEl)
-    return () => tooltipManager.removeListener(doc_entry, setAnchorEl)
+    return () => {
+      tooltipManager.removeListener(doc_entry, setAnchorEl)
+      setAnchorEl(null)
+    }
   }, [doc_entry])
 
   const modifiers = useMemo(
