@@ -40,7 +40,7 @@ sudo SUSEConnect -p PackageHub/15.4/x86_64
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse16.x86_64.rpm -P /tmp
 ```
 - Go to `/tmp` directory:
 
@@ -63,7 +63,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex_replace-flex-version-stable.bundle \
+          --bundle flex-suse16-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
           flex-replace-flex-version-stable.suse16.x86_64.rpm
@@ -92,7 +92,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 
 Use SUSE `zypper` to install
 ```shell
-sudo zypper install ~/flex-replace-flex-version-stable.suse15.x86_64.rpm
+sudo zypper install ~/flex-replace-flex-version-stable.suse16.x86_64.rpm
 ```
 
 ### Run the setup script
