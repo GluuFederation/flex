@@ -20,7 +20,7 @@ startAppListening({
   effect: async (action, listenerApi) => {
     listenerApi.cancelActiveListeners()
     const { message } = action.payload
-    logger.info('Logout audit:', message)
+    logger('Logout audit:', message)
 
     const { authReducer } = listenerApi.getState()
     const userinfo = authReducer?.userinfo
@@ -47,7 +47,7 @@ startAppListening({
           const response = await fetchApiTokenWithDefaultScopes()
           await deleteAdminUiSession(response?.access_token)
         } catch (recoveryError) {
-          logger.error(
+          logger(
             'Session cleanup failed:',
             recoveryError instanceof Error ? recoveryError : String(recoveryError),
           )
@@ -56,7 +56,7 @@ startAppListening({
         return
       }
       listenerApi.dispatch(auditLogoutLogsResponse(false))
-      logger.error('Error:', e instanceof Error ? e : String(e))
+      logger('Error:', e instanceof Error ? e : String(e))
     }
   },
 })

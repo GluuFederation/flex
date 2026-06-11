@@ -70,8 +70,7 @@ const GluuAppSidebar = (): JSX.Element => {
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const [menusLoaded, setMenusLoaded] = useState<boolean>(false)
   const didAnimateMenusRef = useRef<boolean>(false)
-  // ready once a load attempt has settled (success, empty, or error) so the
-  // blocking loader can't spin forever when loadMenus fails or returns no menus.
+  // ready once a load attempt has settled, so the loader can't spin forever
   const isReady = menusLoaded
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextState
@@ -116,7 +115,7 @@ const GluuAppSidebar = (): JSX.Element => {
       const filteredMenus = await filterMenusByAuth(await memoizedFilteredMenus, authorizeHelper)
       setPluginMenus(filteredMenus)
     } catch (error) {
-      logger.error('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
+      logger('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
     } finally {
       setMenusLoaded(true)
       if (!didAnimateMenusRef.current) {

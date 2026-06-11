@@ -53,7 +53,7 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
           setApiToken(apiProtectionToken)
           return true
         } catch (error) {
-          logger.error(
+          logger(
             'Failed to recover Admin UI session:',
             error instanceof Error ? error : String(error),
           )
@@ -113,7 +113,7 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
           const response = await fetchApiTokenWithDefaultScopes()
           await deleteAdminUiSession(response?.access_token)
         } catch (e) {
-          logger.error('Failed to cleanup session on 403:', e instanceof Error ? e : String(e))
+          logger('Failed to cleanup session on 403:', e instanceof Error ? e : String(e))
         } finally {
           window.location.href = ROUTES.LOGOUT
         }

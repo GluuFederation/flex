@@ -125,7 +125,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           }
         })
         .catch((err: Error) => {
-          logger.error('Failed to fetch policy store: ' + resolveApiErrorMessage(err))
+          logger('Failed to fetch policy store: ' + resolveApiErrorMessage(err))
           if (isMounted) {
             setError(err)
             dispatch(setCedarFailedStatusAfterMaxTries())
@@ -178,7 +178,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         authorizationHandler.performAuthorizationRequest(response, authRequest)
       })
       .catch((fetchError: Error) => {
-        logger.error(
+        logger(
           'Failed to fetch OIDC configuration from issuer: ' + resolveApiErrorMessage(fetchError),
         )
         setError(fetchError)
@@ -275,7 +275,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               setShowAdminUI(true)
             })
             .catch((oError: Error) => {
-              logger.error(
+              logger(
                 'Failed to fetch user information after token exchange: ' +
                   resolveApiErrorMessage(oError),
               )

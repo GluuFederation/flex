@@ -235,7 +235,7 @@ const AcrsEditPage = (): ReactElement => {
         }
       } catch (error) {
         if (error instanceof Error && !('response' in error)) {
-          logger.error('Unexpected error during form submission:', error)
+          logger('Unexpected error during form submission:', error)
           handleError(error)
         }
         setIsSubmitting(false)

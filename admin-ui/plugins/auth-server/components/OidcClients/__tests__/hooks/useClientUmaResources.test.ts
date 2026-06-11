@@ -30,7 +30,12 @@ jest.mock('@/utils/queryUtils', () => ({
 }))
 
 jest.mock('@/utils/logger', () => ({
-  logger: { log: jest.fn(), warn: jest.fn(), error: proxyLoggerError, debug: jest.fn() },
+  logger: Object.assign(proxyLoggerError, {
+    log: jest.fn(),
+    warn: jest.fn(),
+    error: proxyLoggerError,
+    debug: jest.fn(),
+  }),
 }))
 
 beforeEach(() => {

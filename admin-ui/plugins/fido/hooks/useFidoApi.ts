@@ -102,7 +102,7 @@ export const useUpdateFidoConfig = () => {
             ip_address: ipAddress,
             modifiedFields: modifiedFieldsOnly,
           }).catch((auditError) => {
-            logger.error('Audit logging failed:', auditError)
+            logger('Audit logging failed:', auditError)
           })
         },
       })

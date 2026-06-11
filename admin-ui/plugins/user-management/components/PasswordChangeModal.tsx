@@ -141,7 +141,7 @@ const PasswordChangeModal = ({
         } catch (error) {
           // A 404 is expected (the user has no active session); log other failures
           // for diagnosis without surfacing them to the user.
-          logger.error('Failed to revoke user session after password change:', error as Error)
+          logger('Failed to revoke user session after password change:', error as Error)
         }
       }
 
@@ -152,7 +152,7 @@ const PasswordChangeModal = ({
       onSuccess?.()
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
-        logger.error('Failed to log password change:', error)
+        logger('Failed to log password change:', error)
       })
     },
     [

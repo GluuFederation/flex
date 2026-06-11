@@ -53,7 +53,7 @@ const redirectToLogout = async (
     const response = await fetchApiTokenWithDefaultScopes()
     await deleteAdminUiSession(response.access_token)
   } catch (e) {
-    logger.error('Error during logout cleanup:', e instanceof Error ? e : String(e))
+    logger('Error during logout cleanup:', e instanceof Error ? e : String(e))
   } finally {
     window.location.href = '/admin/logout'
   }
@@ -132,7 +132,7 @@ startAppListening({
       }
     } catch (error) {
       const err = asApiError(error as Throwable)
-      logger.error('Problems getting OAuth2 configuration.', err?.response?.data ?? err.message)
+      logger('Problems getting OAuth2 configuration.', err?.response?.data ?? err.message)
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return
@@ -167,7 +167,7 @@ startAppListening({
             dispatch(getOAuth2Config({ access_token: response.access_token }))
           } else {
             setApiToken(null)
-            logger.error('Failed to obtain API token for session creation')
+            logger('Failed to obtain API token for session creation')
             dispatch(
               createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
             )
@@ -177,7 +177,7 @@ startAppListening({
     } catch (error) {
       setApiToken(null)
       const err = asApiError(error as Throwable)
-      logger.error('Problems getting API Access Token.', err?.response?.data ?? err.message)
+      logger('Problems getting API Access Token.', err?.response?.data ?? err.message)
       dispatch(
         setBackendStatus({
           active: false,
@@ -213,7 +213,7 @@ startAppListening({
       const err = asApiError(error as Throwable)
       const errorMessage =
         err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-      logger.error('Problems creating Admin UI session.', err?.response?.data ?? err.message)
+      logger('Problems creating Admin UI session.', err?.response?.data ?? err.message)
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return

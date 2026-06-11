@@ -153,7 +153,7 @@ const ClientCibaParUmaPanel = ({
   const onDeletionConfirmed = (_message: string) => {
     if (!selectedUMA?.id) return
     deleteUmaResource(String(selectedUMA.id)).catch((error) => {
-      logger.error('UMA resource deletion failed:', error)
+      logger('UMA resource deletion failed:', error)
     })
     setConfirmModal(false)
     setOpen(false)

@@ -92,8 +92,12 @@ export const useCedarling = (): UseCedarlingReturn => {
       if (!scopeEntry) return { isAuthorized: false }
 
       const resolvedResourceId = scopeEntry.resourceId
+      const requestedAction = scopeEntry.action
 
       if (!cedarlingInitialized || isInitializing) {
+        console.log(
+          `Cedarling authorization skipped for "${resolvedResourceId}" (${requestedAction}): Cedarling is not yet initialized.`,
+        )
         return {
           isAuthorized: false,
           error: 'Cedarling is not yet initialized. Please wait...',
@@ -101,6 +105,9 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!access_token || !id_token || !userinfo_token) {
+        console.log(
+          `Cedarling authorization denied for "${resolvedResourceId}" (${requestedAction}): required tokens are missing.`,
+        )
         return {
           isAuthorized: false,
           error: 'Required tokens are missing',
@@ -108,6 +115,9 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!resolvedResourceId) {
+        console.log(
+          `Cedarling authorization denied (${requestedAction}): resource id is missing for the given permission.`,
+        )
         return {
           isAuthorized: false,
           error: 'Resource id is missing for the given permission',
@@ -148,7 +158,7 @@ export const useCedarling = (): UseCedarlingReturn => {
         const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
-        logger.error(
+        logger(
           `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
         )
         const truncated =

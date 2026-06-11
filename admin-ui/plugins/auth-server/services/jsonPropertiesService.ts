@@ -34,9 +34,7 @@ export const fetchAuthServerJsonProperties = async (): Promise<AppConfiguration>
     await postUserAction(audit as UserActionPayload)
     return data
   } catch (e) {
-    logger.error(
-      'Failed to fetch auth server JSON properties: ' + resolveApiErrorMessage(e as Error),
-    )
+    logger('Failed to fetch auth server JSON properties: ' + resolveApiErrorMessage(e as Error))
     await handleForbidden(e as HttpErrorLike)
     throw e
   }
@@ -69,9 +67,7 @@ export const patchAuthServerJsonProperties = async (
     await postUserAction(audit as UserActionPayload)
     return data
   } catch (e) {
-    logger.error(
-      'Failed to patch auth server JSON properties: ' + resolveApiErrorMessage(e as Error),
-    )
+    logger('Failed to patch auth server JSON properties: ' + resolveApiErrorMessage(e as Error))
     await handleForbidden(e as HttpErrorLike)
     throw e
   }

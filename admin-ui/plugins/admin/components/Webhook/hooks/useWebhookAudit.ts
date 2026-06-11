@@ -35,10 +35,7 @@ export const useWebhookAudit = () => {
       try {
         await postUserAction(audit as UserActionPayload)
       } catch (err) {
-        logger.error(
-          '[Webhook audit] postUserAction failed',
-          err instanceof Error ? err : String(err),
-        )
+        logger('[Webhook audit] postUserAction failed', err instanceof Error ? err : String(err))
       }
     },
     [initAudit],

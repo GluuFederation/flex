@@ -32,10 +32,7 @@ export const useAuthServerScripts = (): Script[] => {
       resource: SCRIPT,
       message: '',
     }).catch((error) =>
-      logger.error(
-        '[AuthServer scripts audit] failed',
-        error instanceof Error ? error : String(error),
-      ),
+      logger('[AuthServer scripts audit] failed', error instanceof Error ? error : String(error)),
     )
   }, [isSuccess, userinfo, clientId])
 

@@ -20,11 +20,11 @@ export const beforeAllAsync = async (
     } catch (error) {
       formInitState(g.token ?? '', g.issuer ?? '')
       const message = error instanceof Error ? error.message : String(error)
-      logger.error(message)
+      logger(message)
       throw new Error('Error during beforeAllAsync: ' + message, { cause: error })
     }
   } else {
-    logger.info('Issuer and token already available.')
+    console.log('Issuer and token already available.')
   }
 }
 

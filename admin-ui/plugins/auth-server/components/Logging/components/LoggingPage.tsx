@@ -115,7 +115,7 @@ const LoggingPage = (): React.ReactElement => {
   const handleSubmit = useCallback(
     (values: LoggingFormValues): void => {
       if (!logging) {
-        logger.error('Cannot submit: logging data not loaded')
+        logger('Cannot submit: logging data not loaded')
         return
       }
 
@@ -147,10 +147,7 @@ const LoggingPage = (): React.ReactElement => {
         closeCommitDialog()
         setPendingValues(null)
       } catch (error) {
-        logger.error(
-          'Failed to update logging config:',
-          error instanceof Error ? error : String(error),
-        )
+        logger('Failed to update logging config:', error instanceof Error ? error : String(error))
         dispatch(updateToast(true, 'error', t('messages.error_processing_request')))
       }
     },

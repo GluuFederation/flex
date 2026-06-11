@@ -205,7 +205,7 @@ const AgamaFlows: React.FC = () => {
       setSHAfile(null)
       setShaStatus(false)
     } catch (error) {
-      logger.error('Error uploading project: ' + resolveApiErrorMessage(error as Error))
+      logger('Error uploading project: ' + resolveApiErrorMessage(error as Error))
       dispatch(updateToast(true, 'error', 'Failed to upload project'))
     } finally {
       setUploadLoading(false)
@@ -239,7 +239,7 @@ const AgamaFlows: React.FC = () => {
               break
             }
           } catch (parseError) {
-            logger.error(
+            logger(
               `Error parsing JSON from ${filename}:`,
               parseError instanceof Error ? parseError : String(parseError),
             )
@@ -251,7 +251,7 @@ const AgamaFlows: React.FC = () => {
         setGetProjectName(true)
       }
     } catch (error) {
-      logger.error('Error reading zip file:', error instanceof Error ? error : String(error))
+      logger('Error reading zip file:', error instanceof Error ? error : String(error))
       toast.error('Failed to read zip file')
     }
   }, [])
@@ -374,7 +374,7 @@ const AgamaFlows: React.FC = () => {
     }
 
     reader.onerror = (error) => {
-      logger.error('Error reading SHA256 file:', error)
+      logger('Error reading SHA256 file:', error)
       toast.error('Failed to read SHA256 file')
     }
 
@@ -473,7 +473,7 @@ const AgamaFlows: React.FC = () => {
       setRepoName(null)
       setDeployLoading(false)
     } catch (error) {
-      logger.error('Error deploying project: ' + resolveApiErrorMessage(error as Error))
+      logger('Error deploying project: ' + resolveApiErrorMessage(error as Error))
       toast.error('File not found or deployment failed')
       setDeployLoading(false)
     }
@@ -501,7 +501,7 @@ const AgamaFlows: React.FC = () => {
       try {
         await deleteProjectMutation.mutateAsync({ name: projName })
       } catch (error) {
-        logger.error('Error deleting project: ' + resolveApiErrorMessage(error as Error))
+        logger('Error deleting project: ' + resolveApiErrorMessage(error as Error))
         return
       }
       setDeleteModal(false)
@@ -509,7 +509,7 @@ const AgamaFlows: React.FC = () => {
       try {
         await logAgamaDeletion(projectToDelete as Deployment, message)
       } catch (error) {
-        logger.error('Error logging agama deletion: ' + resolveApiErrorMessage(error as Error))
+        logger('Error logging agama deletion: ' + resolveApiErrorMessage(error as Error))
       }
     },
     [projectToDelete, deleteProjectMutation, logAgamaDeletion],

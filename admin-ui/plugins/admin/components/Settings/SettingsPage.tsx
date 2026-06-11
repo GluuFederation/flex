@@ -176,7 +176,7 @@ const SettingsPage: React.FC = () => {
             }),
           ),
         }).catch((auditError) => {
-          logger.error('Audit logging failed:', auditError)
+          logger('Audit logging failed:', auditError)
         })
 
         if (cedarlingLogTypeChanged) {

@@ -125,7 +125,7 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
     if (cleaned === '') return
     const pathParts = cleaned.split('/')
     if (pathParts.length === 0 || pathParts.some((segment) => segment === '')) {
-      logger.warn('[applyRemovePatchToValues] Rejecting malformed patch path:', pathStr)
+      logger('[applyRemovePatchToValues] Rejecting malformed patch path:', pathStr)
       return
     }
 
@@ -145,7 +145,7 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
       target.splice(lastIndex, 1)
     }
   } catch (error) {
-    logger.error(
+    logger(
       '[applyRemovePatchToValues] Error applying remove patch:',
       error instanceof Error ? error : String(error),
     )

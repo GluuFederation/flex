@@ -36,7 +36,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
 
     return DEFAULT_THEME
   } catch (e) {
-    logger.error('Failed to extract user theme, using default:', e instanceof Error ? e : String(e))
+    logger('Failed to extract user theme, using default:', e instanceof Error ? e : String(e))
     return DEFAULT_THEME
   }
 }
@@ -61,14 +61,11 @@ const getInitialTheme = (): ThemeValue => {
     storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     return DEFAULT_THEME
   } catch (e) {
-    logger.error('Failed to get initial theme, using default:', e instanceof Error ? e : String(e))
+    logger('Failed to get initial theme, using default:', e instanceof Error ? e : String(e))
     try {
       storage.set(STORAGE_KEYS.INIT_THEME, DEFAULT_THEME)
     } catch (e) {
-      logger.warn(
-        'Failed to write default theme to localStorage:',
-        e instanceof Error ? e : String(e),
-      )
+      logger('Failed to write default theme to localStorage:', e instanceof Error ? e : String(e))
     }
     return DEFAULT_THEME
   }
@@ -97,7 +94,7 @@ const getUserInum = (): string | null => {
     const userInfo = storage.getJSON<{ inum?: string }>(STORAGE_KEYS.USER_INFO)
     return userInfo?.inum || null
   } catch (e) {
-    logger.warn('Failed to parse userInfo from localStorage:', e instanceof Error ? e : String(e))
+    logger('Failed to parse userInfo from localStorage:', e instanceof Error ? e : String(e))
   }
   return null
 }
@@ -130,7 +127,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
 
       hasSyncedRef.current = true
     } catch (e) {
-      logger.error(
+      logger(
         'Failed to sync theme in useEffect, ensuring default:',
         e instanceof Error ? e : String(e),
       )
@@ -144,7 +141,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        logger.error(error instanceof Error ? error : String(error))
+        logger(error instanceof Error ? error : String(error))
       }
     }
   }, [])

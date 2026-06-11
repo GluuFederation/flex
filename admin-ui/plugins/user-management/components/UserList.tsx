@@ -100,7 +100,7 @@ const UserList = (): JSX.Element => {
           await deleteUser(inumToDelete, userMessage, userWithMessage)
           setDeleteData(null)
         } catch (error) {
-          logger.error('Delete user failed:', error instanceof Error ? error : String(error))
+          logger('Delete user failed:', error instanceof Error ? error : String(error))
         }
       }
     },

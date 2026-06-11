@@ -132,7 +132,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         })
         toggle()
       } catch (error) {
-        logger.error(
+        logger(
           'Failed to delete identity provider:',
           error instanceof Error ? error : String(error),
         )
