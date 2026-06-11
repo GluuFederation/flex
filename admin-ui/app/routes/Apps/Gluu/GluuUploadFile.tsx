@@ -75,7 +75,8 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
 
   const hasFile = Boolean(selectedFile || preDefinedFileName)
   const dropzoneClassName = [
-    isDragActive1 ? 'active' : 'dropzone',
+    'dropzone',
+    isDragActive1 ? 'active' : '',
     hasFile ? classes.dropzoneWithFile : '',
   ]
     .filter(Boolean)

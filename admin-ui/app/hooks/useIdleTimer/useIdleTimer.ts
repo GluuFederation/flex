@@ -1,18 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-type UseIdleTimerOptions = {
-  timeout: number
-  onIdle?: () => void
-  onActive?: () => void
-  debounce?: number
-  events?: string[]
-  disabled?: boolean
-}
-
-type UseIdleTimerResult = {
-  reset: () => void
-  isIdle: boolean
-}
+import type { UseIdleTimerOptions, UseIdleTimerResult } from './types'
 
 const DEFAULT_EVENTS = [
   'mousemove',
@@ -38,12 +25,16 @@ export const useIdleTimer = ({
   const [isIdle, setIsIdle] = useState(false)
   const onIdleRef = useRef(onIdle)
   const onActiveRef = useRef(onActive)
+  const timeoutRef = useRef(timeout)
+  const debounceRef = useRef(debounce)
   const isIdleRef = useRef(false)
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastActivityRef = useRef(Number.NEGATIVE_INFINITY)
 
   onIdleRef.current = onIdle
   onActiveRef.current = onActive
+  timeoutRef.current = timeout
+  debounceRef.current = debounce
 
   const clearTimer = useCallback(() => {
     if (timeoutIdRef.current !== null) {
@@ -58,8 +49,8 @@ export const useIdleTimer = ({
       isIdleRef.current = true
       setIsIdle(true)
       onIdleRef.current?.()
-    }, timeout)
-  }, [clearTimer, timeout])
+    }, timeoutRef.current)
+  }, [clearTimer])
 
   const reset = useCallback(() => {
     if (isIdleRef.current) {
@@ -78,7 +69,7 @@ export const useIdleTimer = ({
     startTimer()
     const handleActivity = () => {
       const now = Date.now()
-      if (debounce > 0 && now - lastActivityRef.current < debounce) {
+      if (debounceRef.current > 0 && now - lastActivityRef.current < debounceRef.current) {
         return
       }
       lastActivityRef.current = now
@@ -93,7 +84,7 @@ export const useIdleTimer = ({
         eventTarget(eventName).removeEventListener(eventName, handleActivity),
       )
     }
-  }, [disabled, debounce, events, reset, startTimer, clearTimer])
+  }, [disabled, events, reset, startTimer, clearTimer])
 
   return { reset, isIdle }
 }

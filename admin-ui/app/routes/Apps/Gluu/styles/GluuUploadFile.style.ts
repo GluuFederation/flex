@@ -10,7 +10,15 @@ export const useStyles = makeStyles<{
   removeDisabled: boolean
 }>()((theme: Theme, { fontColor, removeColor, removeDisabled }) => ({
   root: {
-    width: '100%',
+    'width': '100%',
+    '& .dropzone': {
+      cursor: 'pointer',
+      transition: 'border-color 0.15s ease, background-color 0.15s ease',
+    },
+    '&& .dropzone.active, && .dropzone:has(strong):hover': {
+      borderColor: customColors.lightBlue,
+      backgroundColor: alpha(customColors.lightBlue, OPACITY.HOVER_LIGHT),
+    },
   },
   dropzoneWithFile: {
     justifyContent: 'flex-start',

@@ -6,40 +6,16 @@ import type {
   InputHTMLAttributes,
   KeyboardEvent,
   MouseEvent,
-  Ref,
 } from 'react'
-
-export type Accept = Record<string, readonly string[]>
-export type FileError = { code: string; message: string }
-export type FileRejection = { file: File; errors: FileError[] }
-
-type UseFileDropOptions = {
-  onDrop: (acceptedFiles: File[]) => void
-  accept?: Accept
-  maxSize?: number
-  disabled?: boolean
-  onDropRejected?: (fileRejections: FileRejection[]) => void
-}
-
-type RootProps = HTMLAttributes<HTMLElement> & {
-  onClick: (event: MouseEvent<HTMLElement>) => void
-  onKeyDown: (event: KeyboardEvent<HTMLElement>) => void
-  onDrop: (event: DragEvent<HTMLElement>) => void
-  onDragOver: (event: DragEvent<HTMLElement>) => void
-  onDragEnter: (event: DragEvent<HTMLElement>) => void
-  onDragLeave: (event: DragEvent<HTMLElement>) => void
-}
-
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  ref: Ref<HTMLInputElement>
-}
-
-type UseFileDropResult = {
-  getRootProps: (props?: HTMLAttributes<HTMLElement>) => RootProps
-  getInputProps: (props?: InputHTMLAttributes<HTMLInputElement>) => InputProps
-  isDragActive: boolean
-  open: () => void
-}
+import type {
+  Accept,
+  FileError,
+  FileRejection,
+  InputProps,
+  RootProps,
+  UseFileDropOptions,
+  UseFileDropResult,
+} from './types'
 
 const ERROR_FILE_INVALID_TYPE = 'file-invalid-type'
 const ERROR_FILE_TOO_LARGE = 'file-too-large'
@@ -97,7 +73,7 @@ export const useFileDrop = ({
   onDropRejected,
 }: UseFileDropOptions): UseFileDropResult => {
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const dragDepthRef = useRef(0)
+  const dragTargetsRef = useRef<Node[]>([])
   const [isDragActive, setIsDragActive] = useState(false)
 
   useEffect(() => {
@@ -158,7 +134,7 @@ export const useFileDrop = ({
       },
       onDrop: (event: DragEvent<HTMLElement>) => {
         event.preventDefault()
-        dragDepthRef.current = 0
+        dragTargetsRef.current = []
         setIsDragActive(false)
         if (!disabled) {
           processFiles(event.dataTransfer.files)
@@ -169,16 +145,21 @@ export const useFileDrop = ({
       },
       onDragEnter: (event: DragEvent<HTMLElement>) => {
         event.preventDefault()
-        dragDepthRef.current += 1
+        if (event.target instanceof Node) {
+          dragTargetsRef.current = [...dragTargetsRef.current, event.target]
+        }
         if (!disabled) {
           setIsDragActive(true)
         }
       },
       onDragLeave: (event: DragEvent<HTMLElement>) => {
         event.preventDefault()
-        dragDepthRef.current -= 1
-        if (dragDepthRef.current <= 0) {
-          dragDepthRef.current = 0
+        const root = event.currentTarget
+        const remaining = dragTargetsRef.current.filter(
+          (target) => target !== event.target && root.contains(target),
+        )
+        dragTargetsRef.current = remaining
+        if (remaining.length === 0) {
           setIsDragActive(false)
         }
       },
