@@ -1,4 +1,4 @@
-import { decodeJwt } from '../jwtDecode'
+import decodeJwt from '../jwtDecode'
 
 const toJwt = (payload: Record<string, string | number | boolean>): string => {
   const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url')

@@ -65,7 +65,7 @@ const validateFile = (file: File, accept?: Accept, maxSize?: number): FileError[
   return errors
 }
 
-export const useFileDrop = ({
+const useFileDrop = ({
   onDrop,
   accept,
   maxSize,
@@ -191,5 +191,4 @@ export const useFileDrop = ({
 
   return { getRootProps, getInputProps, isDragActive, open }
 }
-
 export default useFileDrop

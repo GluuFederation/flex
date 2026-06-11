@@ -43,7 +43,7 @@ const inflateRaw = async (data: Uint8Array): Promise<Uint8Array> => {
   return new Uint8Array(await new Response(stream).arrayBuffer())
 }
 
-export const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<ZipArchive> => {
+const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<ZipArchive> => {
   const bytes = await toBytes(input)
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const decoder = new TextDecoder()
@@ -91,5 +91,5 @@ export const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<Z
   return { files }
 }
 
-export default readZip
-export type { ZipArchive, ZipEntry }
+export { readZip }
+export type { ZipArchive }

@@ -5,7 +5,7 @@ type JsonObject = { [key: string]: JsonValue }
 
 const BASE64_GROUP_SIZE = 4
 
-export const decodeJwt = <T = JsonObject>(token: string): T => {
+const decodeJwt = <T = JsonObject>(token: string): T => {
   const segments = typeof token === 'string' ? token.split('.') : []
   const payloadSegment = segments[1]
   if (segments.length < 2 || !payloadSegment) {
@@ -33,5 +33,4 @@ export const decodeJwt = <T = JsonObject>(token: string): T => {
     throw new Error('decodeJwt: token payload is not valid JSON')
   }
 }
-
 export default decodeJwt

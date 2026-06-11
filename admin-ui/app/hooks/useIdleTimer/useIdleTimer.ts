@@ -14,7 +14,7 @@ const DEFAULT_EVENTS = [
 const eventTarget = (eventName: string): Window | Document =>
   eventName === 'visibilitychange' ? document : window
 
-export const useIdleTimer = ({
+const useIdleTimer = ({
   timeout,
   onIdle,
   onActive,
@@ -88,5 +88,4 @@ export const useIdleTimer = ({
 
   return { reset, isIdle }
 }
-
 export default useIdleTimer

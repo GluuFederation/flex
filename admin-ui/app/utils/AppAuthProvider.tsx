@@ -37,7 +37,7 @@ import {
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
 import { useTranslation } from 'react-i18next'
-import { decodeJwt } from '@/utils/jwtDecode'
+import decodeJwt from '@/utils/jwtDecode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'

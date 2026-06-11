@@ -1,2 +1,2 @@
-export { useIdleTimer, default } from './useIdleTimer'
+export { default as useIdleTimer } from './useIdleTimer'
 export type * from './types'
