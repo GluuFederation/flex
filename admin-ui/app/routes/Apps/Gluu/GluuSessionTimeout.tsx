@@ -54,7 +54,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
           }),
         )
       } catch (err) {
-        logger(err instanceof Error ? err : String(err))
+        logger('Error in logout flow:', err instanceof Error ? err : String(err))
       }
     },
     [clearTimers, dispatch],

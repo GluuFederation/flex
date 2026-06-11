@@ -115,7 +115,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       },
       onError: (error: ApiError) => {
         const errorMessage = getErrorMessage(error, 'Invalid JSON file')
-        logger('Error importing config:', error)
+        logger('Error importing config:', errorMessage)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -171,8 +171,8 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           await refetchConfig()
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
-          logger('Error importing config:', importError)
           const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
+          logger('Error importing config:', errorMessage)
           dispatch(updateToast(true, 'error', errorMessage))
         }
       }

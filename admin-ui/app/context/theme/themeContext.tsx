@@ -141,7 +141,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         }
         hasSyncedRef.current = true
       } catch (error) {
-        logger(error instanceof Error ? error : String(error))
+        logger('Failed to apply fallback theme:', error instanceof Error ? error : String(error))
       }
     }
   }, [])

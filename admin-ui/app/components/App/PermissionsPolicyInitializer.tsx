@@ -7,7 +7,6 @@ import {
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
 import { logger } from '@/utils/logger'
-import type { LogArg } from '@/utils/types'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 
@@ -60,7 +59,10 @@ const PermissionsPolicyInitializer = () => {
     try {
       bytesUint8Array = base64ToUint8Array(policyStoreBytes)
     } catch (error) {
-      logger('Cedarling: failed to decode policy store bytes.', error as LogArg)
+      logger(
+        'Cedarling: failed to decode policy store bytes.',
+        error instanceof Error ? error : String(error),
+      )
       dispatch(setCedarlingInitializing(false))
       return
     }

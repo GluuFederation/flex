@@ -25,6 +25,7 @@ import { JsonViewerDialog } from '../../JsonViewer'
 import { useStyles } from './styles/SsaListPage.style'
 import { useQueryClient } from '@tanstack/react-query'
 import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import {
   useGetAllSsas,
   useGetSsaJwt,
@@ -123,7 +124,7 @@ const SsaListPage: React.FC = () => {
   useEffect(() => {
     if (!ssaDialogOpen || !ssaJwtQuery.isError) return
 
-    logger('Failed to fetch SSA JWT:', ssaJwtQuery.error)
+    logger('Failed to fetch SSA JWT:', resolveApiErrorMessage(ssaJwtQuery.error as Error))
     dispatch(updateToast(true, 'error'))
     setSsaDialogOpen(false)
     setSelectedSsaJti(null)
@@ -135,7 +136,7 @@ const SsaListPage: React.FC = () => {
         const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        logger('Failed to download SSA JWT:', error instanceof Error ? error : String(error))
+        logger('Failed to download SSA JWT:', resolveApiErrorMessage(error as Error))
         dispatch(updateToast(true, 'error'))
       }
     },

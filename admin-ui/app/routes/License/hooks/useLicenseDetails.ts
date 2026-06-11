@@ -14,7 +14,6 @@ import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
 import { logger } from '@/utils/logger'
-import { isDevelopment } from '@/utils/env'
 import {
   API_LICENSE,
   createSuccessAuditInit,
@@ -85,9 +84,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           try {
             await postUserAction(audit)
           } catch (e) {
-            if (isDevelopment) {
-              logger('License reset audit post failed:', e instanceof Error ? e : String(e))
-            }
+            logger('License reset audit post failed:', e instanceof Error ? e : String(e))
           }
         }
         dispatch(updateToast(true, 'success', t('messages.license_reset_success')))
@@ -101,7 +98,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
         const message =
           error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
-        if (isDevelopment && error != null) {
+        if (error != null) {
           logger('License reset failed:', error)
         }
       },

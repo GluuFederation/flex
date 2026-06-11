@@ -92,7 +92,7 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
       dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     }
   } catch (err) {
-    logger(err instanceof Error ? err : String(err))
+    logger('Error checking MAU threshold:', err instanceof Error ? err : String(err))
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
     dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
@@ -201,7 +201,7 @@ const uploadNewSsaTokenWorker = async (
     dispatch(getOAuth2Config(token))
   } catch (err) {
     dispatch(checkLicenseConfigValidResponse(false))
-    logger(err instanceof Error ? err : String(err))
+    logger('Error uploading SSA token:', err instanceof Error ? err : String(err))
     dispatch(uploadNewSsaTokenResponse(getLicenseErrorMessage(err as Error | ApiErrorLike)))
   }
 }
@@ -213,7 +213,7 @@ const checkAdminuiLicenseConfigWorker = async (dispatch: AppDispatch): Promise<v
     const response = (await checkAdminuiLicenseConfigApi()) as GenericResponse | null
     dispatch(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
-    logger(error instanceof Error ? error : String(error))
+    logger('Error checking license config:', error instanceof Error ? error : String(error))
     dispatch(checkLicenseConfigValidResponse(false))
   }
 }

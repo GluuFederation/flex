@@ -21,6 +21,7 @@ import {
 } from '../api/backend-api'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { setApiToken } from 'Orval'
 import { SESSION_EXPIRED } from '@/audit/messages'
 import type { Config } from '../features/types/authTypes'
@@ -132,7 +133,7 @@ startAppListening({
       }
     } catch (error) {
       const err = asApiError(error as Throwable)
-      logger('Problems getting OAuth2 configuration.', err?.response?.data ?? err.message)
+      logger('Problems getting OAuth2 configuration:', resolveApiErrorMessage(err))
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return
@@ -177,7 +178,7 @@ startAppListening({
     } catch (error) {
       setApiToken(null)
       const err = asApiError(error as Throwable)
-      logger('Problems getting API Access Token.', err?.response?.data ?? err.message)
+      logger('Problems getting API Access Token:', resolveApiErrorMessage(err))
       dispatch(
         setBackendStatus({
           active: false,
@@ -213,7 +214,7 @@ startAppListening({
       const err = asApiError(error as Throwable)
       const errorMessage =
         err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-      logger('Problems creating Admin UI session.', err?.response?.data ?? err.message)
+      logger('Problems creating Admin UI session:', resolveApiErrorMessage(err))
       if (isFourZeroThreeError(err)) {
         await redirectToLogout(dispatch)
         return
