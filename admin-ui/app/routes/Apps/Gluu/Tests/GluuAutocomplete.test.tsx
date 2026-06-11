@@ -48,6 +48,12 @@ it('falls back to the raw value when no matching option label exists', () => {
   expect(screen.getByText('localhost:1636')).toBeInTheDocument()
 })
 
+it('deduplicates repeated values so tags stay unique', () => {
+  renderComponent({ value: ['ES512', 'ES512', 'RS256'], options: [] })
+  expect(screen.getAllByTitle('ES512')).toHaveLength(1)
+  expect(screen.getByTitle('RS256')).toBeInTheDocument()
+})
+
 it('calls onChange without the removed item when a tag is removed', () => {
   const onChange = jest.fn()
   renderComponent({ value: ['localhost:1636', 'localhost:1389'], options: [], onChange })
