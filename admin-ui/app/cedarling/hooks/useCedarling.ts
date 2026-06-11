@@ -149,7 +149,6 @@ export const useCedarling = (): UseCedarlingReturn => {
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
         logger.error(
-          'both',
           `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
         )
         const truncated =

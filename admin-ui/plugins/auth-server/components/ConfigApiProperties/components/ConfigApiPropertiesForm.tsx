@@ -282,11 +282,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         await onSubmit(patches, userMessage)
         setPatches([])
       } catch (error) {
-        logger.error(
-          'dev',
-          'Error submitting form:',
-          error instanceof Error ? error : String(error),
-        )
+        logger.error('Error submitting form:', error instanceof Error ? error : String(error))
         toast.error(t('messages.error_in_saving'))
       }
     },

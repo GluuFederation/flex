@@ -99,11 +99,10 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
       await navigator.clipboard.writeText(text)
       setIsCopied(true)
     } catch (err) {
-      const detail = err instanceof Error ? err.message : String(err)
       logger.error('Failed to copy to clipboard:', err instanceof Error ? err : String(err))
-      dispatch(updateToast(true, 'error', `Failed to copy to clipboard: ${detail}`))
+      dispatch(updateToast(true, 'error', t('messages.copy_failed')))
     }
-  }, [data, isCopied, dispatch])
+  }, [data, isCopied, dispatch, t])
 
   const handleOverlayKeyDown = useCallback(
     (e: KeyboardEvent<HTMLButtonElement>) => {

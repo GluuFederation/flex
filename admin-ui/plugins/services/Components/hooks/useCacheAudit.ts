@@ -29,7 +29,6 @@ export const useCacheAudit = () => {
         })
       } catch (error) {
         logger.error(
-          'dev',
           'Failed to log cache update audit:',
           error instanceof Error ? error : String(error),
         )

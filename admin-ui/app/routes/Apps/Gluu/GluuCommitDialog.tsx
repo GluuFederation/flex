@@ -109,7 +109,6 @@ const GluuCommitDialog = ({
       }
     } catch (error) {
       logger.error('Commit action failed: ' + resolveApiErrorMessage(error as Error))
-      throw error
     } finally {
       setIsSubmitting(false)
       if (autoCloseOnAccept) {

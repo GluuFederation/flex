@@ -121,8 +121,9 @@ export const useDeleteAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
           action_message: userMessage,
           action_data: { inum },
         }).catch((err) => {
+          // audit logging failure is side-effect only; do not call onError (the delete
+          // already succeeded). Real failures are reported by the outer catch below.
           const auditError = err instanceof Error ? err : new Error(String(err))
-          callbacksRef.current?.onError?.(auditError)
           logger.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
         })
         dispatch(updateToast(true, 'success', t(T_KEYS.MSG_ASSET_DELETED_SUCCESSFULLY)))
