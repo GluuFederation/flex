@@ -9,7 +9,7 @@ import type {
   AuthorizationResult,
 } from '@/cedarling/types'
 
-export const MENU_VISIBILITY_CONDITIONS: VisibilityConditions = {
+const MENU_VISIBILITY_CONDITIONS: VisibilityConditions = {
   [ROUTES.JANS_LOCK_BASE]: JANS_SERVICES.LOCK,
   [ROUTES.FIDO_BASE]: JANS_SERVICES.FIDO2,
   [ROUTES.SCIM_BASE]: JANS_SERVICES.SCIM,

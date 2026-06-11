@@ -91,5 +91,4 @@ const readZip = async (input: Blob | ArrayBuffer | Uint8Array): Promise<ZipArchi
   return { files }
 }
 
-export { readZip }
-export type { ZipArchive }
+export default readZip

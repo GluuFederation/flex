@@ -134,24 +134,25 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
     propsError: dl.listError,
     propsActionBtn: dl.listActionBtn,
     formWithInputs: {
-      '& input:not([type="checkbox"]), & select, & .custom-select, & textarea': {
-        backgroundColor: `${formInputBg} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
-        color: `${themeColors.fontColor} !important`,
-        WebkitTextFillColor: `${themeColors.fontColor} !important`,
-        caretColor: themeColors.fontColor,
-        minHeight: INPUT.HEIGHT,
-        height: 'auto',
-        paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-        paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
-        paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-        paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
-      },
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input), & select, & .custom-select, & textarea':
+        {
+          backgroundColor: `${formInputBg} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+          color: `${themeColors.fontColor} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          caretColor: themeColors.fontColor,
+          minHeight: INPUT.HEIGHT,
+          height: 'auto',
+          paddingTop: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+          paddingBottom: CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL,
+          paddingLeft: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+          paddingRight: CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL,
+        },
       '& select, & .custom-select': {
         paddingRight: SELECT_ARROW_SPACE,
       },
-      '& input:not([type="checkbox"]):focus, & input:not([type="checkbox"]):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & textarea:focus, & textarea:active':
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input):focus, & input:not([type="checkbox"]):not(.MuiOutlinedInput-input):active, & select:focus, & select:active, & .custom-select:focus, & .custom-select:active, & textarea:focus, & textarea:active':
         {
           backgroundColor: `${formInputBg} !important`,
           color: `${themeColors.fontColor} !important`,
@@ -160,7 +161,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
           outline: 'none',
           boxShadow: 'none',
         },
-      '& input:not([type="checkbox"]):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled':
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled':
         {
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
@@ -168,13 +169,13 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
           opacity: OPACITY.DISABLED,
           cursor: 'not-allowed',
         },
-      '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input).is-valid, & input:not([type="checkbox"]):not(.MuiOutlinedInput-input).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':
         {
           border: `1px solid ${inputBorderColor} !important`,
           backgroundImage: 'none !important',
           boxShadow: 'none !important',
         },
-      '& input.form-control, & input[type="text"], & input[type="number"], & textarea.form-control':
+      '& input.form-control, & input[type="text"]:not(.MuiOutlinedInput-input), & input[type="number"]:not(.MuiOutlinedInput-input), & textarea.form-control':
         {
           backgroundColor: `${formInputBg} !important`,
           color: `${themeColors.fontColor} !important`,
@@ -186,15 +187,17 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
         WebkitTextFillColor: `${themeColors.fontColor} !important`,
         caretColor: `${themeColors.fontColor} !important`,
       },
-      '& input:not([type="checkbox"])::selection, & textarea::selection': {
-        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)',
-        color: `${themeColors.fontColor} !important`,
-      },
-      '& input:not([type="checkbox"])::placeholder, & textarea::placeholder': {
-        color: `${themeColors.textMuted} !important`,
-        opacity: `${OPACITY.PLACEHOLDER} !important`,
-      },
-      '& input:not([type="checkbox"]):-webkit-autofill, & input:not([type="checkbox"]):-webkit-autofill:hover, & input:not([type="checkbox"]):-webkit-autofill:focus, & input:not([type="checkbox"]):-webkit-autofill:active':
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input)::selection, & textarea::selection':
+        {
+          backgroundColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)',
+          color: `${themeColors.fontColor} !important`,
+        },
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input)::placeholder, & textarea::placeholder':
+        {
+          color: `${themeColors.textMuted} !important`,
+          opacity: `${OPACITY.PLACEHOLDER} !important`,
+        },
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input):-webkit-autofill, & input:not([type="checkbox"]):not(.MuiOutlinedInput-input):-webkit-autofill:hover, & input:not([type="checkbox"]):not(.MuiOutlinedInput-input):-webkit-autofill:focus, & input:not([type="checkbox"]):not(.MuiOutlinedInput-input):-webkit-autofill:active':
         {
           WebkitBoxShadow: `0 0 0 100px ${formInputBg} inset !important`,
           WebkitTextFillColor: `${themeColors.fontColor} !important`,

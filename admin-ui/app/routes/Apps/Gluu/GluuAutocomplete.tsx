@@ -50,7 +50,7 @@ const GluuAutocomplete = ({
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const themeColors = React.useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({
     themeColors,
     allowCustom,
@@ -81,9 +81,10 @@ const GluuAutocomplete = ({
     [labelByValue],
   )
 
-  const selectedItems = Array.isArray(value)
-    ? value.filter((v): v is string => typeof v === 'string')
-    : []
+  const selectedItems = React.useMemo(
+    () => (Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []),
+    [value],
+  )
 
   const [inputValue, setInputValue] = React.useState('')
   const lockedPlacementRef = React.useRef<Placement | null>(null)

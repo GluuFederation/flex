@@ -13,7 +13,7 @@ import { LayoutNavbar } from './LayoutNavbar'
 import { LayoutSidebar } from './LayoutSidebar'
 import { PageConfigContext } from './PageConfigContext'
 import { ThemeClass } from './../Theme'
-import { siteDescription, siteKeywords } from '@/config/site'
+import { SITE_DESCRIPTION, SITE_KEYWORDS } from '@/constants'
 import type {
   LayoutPartComponentType,
   LayoutProps,
@@ -89,8 +89,8 @@ const initialLayoutState: LayoutState = {
   screenSize: (typeof window !== 'undefined' ? getScreenSize() : '') as ScreenSize,
   animationsDisabled: true,
   pageTitle: null,
-  pageDescription: siteDescription,
-  pageKeywords: siteKeywords,
+  pageDescription: SITE_DESCRIPTION,
+  pageKeywords: SITE_KEYWORDS,
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {

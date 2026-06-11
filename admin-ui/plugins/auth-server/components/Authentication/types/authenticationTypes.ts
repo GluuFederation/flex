@@ -44,3 +44,58 @@ export type BuiltInAcr = {
   defaultAuthNMethod: boolean
   acrName: string
 }
+
+export type TabName = {
+  id: string
+  name: string
+  path: string
+}
+
+export type AcrsProps = {
+  isBuiltIn?: boolean
+}
+
+export type DefaultAcrFormValues = {
+  defaultAcr: string
+}
+
+export type AliasesProps = {
+  onRegisterAddHandler?: (fn: () => void) => void
+  onWritePermissionChange?: (canWrite: boolean) => void
+}
+
+export type AcrsFormValues = {
+  acr: string
+  level: number
+  defaultAuthNMethod: boolean | string
+  samlACR: string
+  description: string
+  primaryKey: string
+  passwordAttribute: string
+  hashAlgorithm: string
+  bindDN: string
+  maxConnections: string | number
+  remotePrimaryKey: string
+  localPrimaryKey: string
+  servers: string[]
+  baseDNs: string[]
+  bindPassword: string
+  useSSL: boolean
+  enabled: boolean
+  configId: string
+  baseDn: string | undefined
+  inum: string | undefined
+  configurationProperties?: Array<{
+    id?: string
+    key?: string
+    value?: string
+    value1?: string
+    value2?: string
+  }>
+}
+
+export type AcrsFormProps = {
+  item: AuthNItem
+  handleSubmit: (values: AcrsFormValues) => void
+  isSubmitting?: boolean
+}

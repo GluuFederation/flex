@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react'
 import type { FormikProps } from 'formik'
 import { useFormik } from 'formik'
-import Toggle from 'react-toggle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import { Button, Form, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
@@ -458,11 +458,11 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
                   doc_entry="enabled"
                   isDark={isDark}
                 />
-                <Toggle
+                <GluuToggle
                   id="enabled"
                   name="enabled"
-                  onChange={handleEnabledToggle}
-                  checked={Boolean(formik.values.enabled)}
+                  value={Boolean(formik.values.enabled)}
+                  handler={handleEnabledToggle}
                   disabled={viewOnly}
                 />
               </FormGroup>

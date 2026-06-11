@@ -13,7 +13,8 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { updateToast } from 'Redux/features/toastSlice'
-import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
+import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import {
   nameIDPolicyFormat,
   websiteSsoServiceProviderValidationSchema,
@@ -251,6 +252,27 @@ const WebsiteSsoServiceProviderForm = ({
     [dispatch],
   )
 
+  const releasedAttributeOptions = useMemo<AutocompleteOption[]>(
+    () => attributesList.map((item) => ({ value: item.dn, label: item.name })),
+    [attributesList],
+  )
+
+  const releasedAttributeValues = useMemo(
+    () => scopeFieldValue.map((item) => item.dn),
+    [scopeFieldValue],
+  )
+
+  const handleReleasedAttributesChange = useCallback(
+    (values: string[]) => {
+      formik.setFieldValue('releasedAttributes', values)
+      const selected = values
+        .map((dn) => attributesList.find((item) => item.dn === dn))
+        .filter((item): item is ScopeOption => Boolean(item))
+      saveSelectedScopes(selected)
+    },
+    [formik, saveSelectedScopes, attributesList],
+  )
+
   useEffect(() => {
     if (savedForm) {
       navigateBack(ROUTES.SAML_SP_LIST)
@@ -401,24 +423,31 @@ const WebsiteSsoServiceProviderForm = ({
                 />
               </Col>
               <Col sm={10}>
-                <GluuTypeAheadForDn
-                  key={releasedAttributesKey}
-                  name="releasedAttributes"
-                  label="fields.released_attributes"
-                  formik={formik}
-                  value={scopeFieldValue}
-                  options={attributesList}
-                  lsize={4}
-                  rsize={8}
-                  disabled={viewOnly || attributesLoading}
-                  isLoading={attributesLoading}
-                  placeholder={attributesLoading ? `${t('messages.loading_attributes')}...` : ''}
-                  onChange={saveSelectedScopes}
-                  paginate={false}
-                  hideHelperMessage={true}
-                  defaultSelected={scopeFieldValue}
-                  doc_category={DOC_SECTION}
-                />
+                <FormGroup row>
+                  <GluuLabel
+                    label="fields.released_attributes"
+                    size={4}
+                    doc_category={DOC_SECTION}
+                    doc_entry="releasedAttributes"
+                  />
+                  <Col sm={8}>
+                    <GluuAutocomplete
+                      key={releasedAttributesKey}
+                      hideLabel
+                      name="releasedAttributes"
+                      label={t('fields.released_attributes')}
+                      value={releasedAttributeValues}
+                      options={releasedAttributeOptions}
+                      onChange={handleReleasedAttributesChange}
+                      disabled={viewOnly || attributesLoading}
+                      isLoading={attributesLoading}
+                      placeholder={
+                        attributesLoading ? `${t('messages.loading_attributes')}...` : ''
+                      }
+                      helperText=""
+                    />
+                  </Col>
+                </FormGroup>
                 {attributesError ? (
                   <GluuStatusMessage
                     message={t('errors.attribute_load_failed')}

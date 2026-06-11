@@ -16,12 +16,7 @@ import Aliases from './Aliases/Aliases'
 import AgamaFlows from './AgamaFlows/AgamaFlows'
 import { useStyles } from './styles/Authentication.style'
 import { ALIASES_TAB_INDEX, TAB_IDS } from './constants'
-
-type TabName = {
-  id: string
-  name: string
-  path: string
-}
+import type { TabName } from './types'
 
 const Authentication = (): ReactElement => {
   const { t } = useTranslation()

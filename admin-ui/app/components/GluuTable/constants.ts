@@ -4,6 +4,8 @@ export const COLUMN_WIDTHS = {
   PILL_LIST: 280,
 } as const
 
+export const EMPTY_CELL_PLACEHOLDER = '—'
+
 export const T_KEYS = {
   FIELDS_ACTIONS: 'fields.actions',
   FIELDS_OF: 'fields.of',
