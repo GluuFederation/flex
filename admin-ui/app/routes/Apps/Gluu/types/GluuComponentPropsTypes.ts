@@ -11,19 +11,6 @@ export type GluuAlertProps = {
   show?: boolean
 }
 
-export type GluuBooleanSelectBoxProps<T extends object = Record<string, JsonValue>> = {
-  label: string
-  name: string
-  value?: boolean | string
-  formik: FormikProps<T>
-  handler?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  lsize?: number
-  rsize?: number
-  doc_category?: string
-  disabled?: boolean
-  toToggle?: boolean
-}
-
 type DialogRow = {
   name?: string
   inum?: string
@@ -126,17 +113,6 @@ export type GluuScriptErrorModalProps = {
   error: string
   isOpen: boolean
   handler: () => void
-}
-
-export type GluuSecretDetailProps = {
-  label: string
-  value: string
-  doc_category?: string
-  doc_entry?: string
-  lsize?: number
-  rsize?: number
-  labelStyle?: CSSProperties
-  rowClassName?: string
 }
 
 export type SessionTimeoutDialogProps = {

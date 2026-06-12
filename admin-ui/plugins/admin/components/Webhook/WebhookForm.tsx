@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import isEqual from 'lodash/isEqual'
-import Toggle from 'react-toggle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import { Add, DeleteOutline, InfoOutlined as InfoOutlinedIcon } from '@/components/icons'
 import { Form, FormGroup, Input } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -556,11 +556,11 @@ const WebhookForm: React.FC = () => {
                     doc_entry="enabled"
                     isDark={isDark}
                   />
-                  <Toggle
+                  <GluuToggle
                     id="jansEnabled"
                     name="jansEnabled"
-                    onChange={formik.handleChange}
-                    checked={formikValues.jansEnabled}
+                    formik={formik}
+                    value={Boolean(formikValues.jansEnabled)}
                   />
                 </FormGroup>
               </div>

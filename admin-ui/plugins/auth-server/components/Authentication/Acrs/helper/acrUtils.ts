@@ -1,17 +1,11 @@
 import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import type { Deployment } from 'JansConfigApi'
 import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
-import type { AuthNItem, ConfigurationProperty } from '../../types'
+import type { AuthNItem, ConfigurationProperty, PropertyConfig } from '../../types'
 import { EMPTY_PLACEHOLDER } from '../constants'
 
 export type DropdownOption = {
   label: string
-  value: string
-}
-
-export type PropertyConfig = {
-  id: string
-  key: string
   value: string
 }
 

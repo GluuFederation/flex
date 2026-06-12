@@ -1,6 +1,5 @@
 export { default as AccessTimeIcon } from '@mui/icons-material/AccessTime'
 export { default as Add } from '@mui/icons-material/Add'
-export { default as AddCircleOutline } from '@mui/icons-material/AddCircleOutlineOutlined'
 export { default as CachedIcon } from '@mui/icons-material/Cached'
 export { default as Check } from '@mui/icons-material/Check'
 export { default as CheckCircleOutline } from '@mui/icons-material/CheckCircleOutlineOutlined'

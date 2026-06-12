@@ -1,11 +1,12 @@
 import { useState, useCallback, useMemo, useRef, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
 import { Add, DeleteOutline } from '@/components/icons'
-import { Form, Input } from 'Components'
+import { Form, Input, FormGroup, Col } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -17,48 +18,12 @@ import { useGetAcrs } from 'JansConfigApi'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import type { AuthNItem } from '../types'
+import type { AcrsFormValues, AcrsFormProps } from '../types'
 import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
 import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
 import { AUTH_METHOD_NAMES } from '../constants'
-import { getPropertiesConfig, type PropertyConfig } from './helper/acrUtils'
-
-export type AcrsFormValues = {
-  acr: string
-  level: number
-  defaultAuthNMethod: boolean | string
-  samlACR: string
-  description: string
-  primaryKey: string
-  passwordAttribute: string
-  hashAlgorithm: string
-  bindDN: string
-  maxConnections: string | number
-  remotePrimaryKey: string
-  localPrimaryKey: string
-  servers: string[]
-  baseDNs: string[]
-  bindPassword: string
-  useSSL: boolean
-  enabled: boolean
-  configId: string
-  baseDn: string | undefined
-  inum: string | undefined
-  configurationProperties?: Array<{
-    id?: string
-    key?: string
-    value?: string
-    value1?: string
-    value2?: string
-  }>
-}
-
-type AcrsFormProps = {
-  item: AuthNItem
-  handleSubmit: (values: AcrsFormValues) => void
-  isSubmitting?: boolean
-}
+import { getPropertiesConfig } from './helper/acrUtils'
 
 const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): ReactElement => {
   const { t } = useTranslation()
@@ -148,7 +113,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   }, [formik, initialValues])
 
   const configurationProperties = useMemo(
-    () => (formik.values.configurationProperties as PropertyConfig[]) || [],
+    () => formik.values.configurationProperties || [],
     [formik.values.configurationProperties],
   )
 
@@ -388,37 +353,60 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 />
               </div>
 
-              <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
-                <GluuTypeAhead
-                  name="servers"
-                  label="fields.remote_ldap_server_post"
-                  formik={formik}
-                  required={true}
-                  lsize={12}
-                  rsize={12}
-                  options={[]}
-                  value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
-                  showError={!!(formik.errors.servers && formik.touched.servers)}
-                  errorMessage={
-                    typeof formik.errors.servers === 'string' ? formik.errors.servers : undefined
-                  }
-                />
-              </div>
+              <div className={`${classes.fieldItemFullWidth} ${classes.formGrid}`}>
+                <div className={classes.fieldItem}>
+                  <FormGroup row>
+                    <GluuLabel label="fields.remote_ldap_server_post" size={12} required />
+                    <Col sm={12}>
+                      <GluuAutocomplete
+                        hideLabel
+                        allowCustom
+                        name="servers"
+                        label={t('fields.remote_ldap_server_post')}
+                        value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
+                        options={[]}
+                        onChange={(vals) => {
+                          formik.setFieldValue('servers', vals)
+                          formik.setFieldTouched('servers', true)
+                        }}
+                        showError={!!(formik.errors.servers && formik.touched.servers)}
+                        errorMessage={
+                          typeof formik.errors.servers === 'string'
+                            ? formik.errors.servers
+                            : undefined
+                        }
+                        helperText={t('placeholders.typeahead_holder_message')}
+                      />
+                    </Col>
+                  </FormGroup>
+                </div>
 
-              <div className={`${classes.fieldItem} ${classes.fieldItemFullWidth}`}>
-                <GluuTypeAhead
-                  name="baseDNs"
-                  label="fields.base_dns"
-                  formik={formik}
-                  lsize={12}
-                  rsize={12}
-                  options={[]}
-                  value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
-                  showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
-                  errorMessage={
-                    typeof formik.errors.baseDNs === 'string' ? formik.errors.baseDNs : undefined
-                  }
-                />
+                <div className={classes.fieldItem}>
+                  <FormGroup row>
+                    <GluuLabel label="fields.base_dns" size={12} />
+                    <Col sm={12}>
+                      <GluuAutocomplete
+                        hideLabel
+                        allowCustom
+                        name="baseDNs"
+                        label={t('fields.base_dns')}
+                        value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
+                        options={[]}
+                        onChange={(vals) => {
+                          formik.setFieldValue('baseDNs', vals)
+                          formik.setFieldTouched('baseDNs', true)
+                        }}
+                        showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
+                        errorMessage={
+                          typeof formik.errors.baseDNs === 'string'
+                            ? formik.errors.baseDNs
+                            : undefined
+                        }
+                        helperText={t('placeholders.typeahead_holder_message')}
+                      />
+                    </Col>
+                  </FormGroup>
+                </div>
               </div>
 
               <div className={classes.toggleRow}>

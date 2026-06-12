@@ -12,7 +12,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
-import Toggle from 'react-toggle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import {
   nameIDPolicyFormat,
   websiteSsoIdentityProviderValidationSchema,
@@ -381,9 +381,10 @@ const WebsiteSsoIdentityProviderForm = ({
                 <FormGroup row>
                   <GluuLabel label={'fields.import_metadata_from_file'} size={4} />
                   <Col sm={8}>
-                    <Toggle
-                      onChange={handleToggleMetadataImport}
-                      checked={showUploadBtn}
+                    <GluuToggle
+                      name="metaDataFileImportedFlag"
+                      value={showUploadBtn}
+                      handler={handleToggleMetadataImport}
                       disabled={viewOnly}
                     />
                   </Col>

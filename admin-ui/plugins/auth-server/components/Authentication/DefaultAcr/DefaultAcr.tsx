@@ -34,10 +34,7 @@ import { devLogger } from '@/utils/devLogger'
 import { useStyles } from './DefaultAcr.style'
 import { MAX_AGAMA_PROJECTS_FOR_ACR } from './constants'
 import { AUTH_RESOURCE_ID } from '../constants'
-
-type DefaultAcrFormValues = {
-  defaultAcr: string
-}
+import type { DefaultAcrFormValues } from '../types'
 
 const DefaultAcr = (): React.ReactElement => {
   const { canRead: canReadAuth, canWrite: canWriteAuth } = usePermission(AUTH_RESOURCE_ID)

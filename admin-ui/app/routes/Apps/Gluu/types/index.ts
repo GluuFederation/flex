@@ -1,7 +1,6 @@
 export type { JsonValue } from './common'
 export type { GluuCommitDialogOperation, GluuCommitDialogProps } from './GluuCommitDialog.types'
 export type { GluuAdvancedSearchProps } from './GluuAdvancedSearch.types'
-export type { GluuTypeAheadWithAddProps } from './GluuTypeAheadWithAdd.types'
 export type { GluuWebhookCommitDialogProps } from './GluuWebhookCommitDialog.types'
 export type { LanguageMenuProps, ThemeDropdownComponentProps } from './MenuTypes'
 export type { GluuRemovableInputRowProps } from './GluuRemovableInputRow.types'

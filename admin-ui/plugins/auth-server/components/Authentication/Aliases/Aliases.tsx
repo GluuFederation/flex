@@ -38,11 +38,7 @@ import {
   prepareMappingsForDelete,
   toActionData,
 } from '../AgamaFlows/helper'
-
-type AliasesProps = {
-  onRegisterAddHandler?: (fn: () => void) => void
-  onWritePermissionChange?: (canWrite: boolean) => void
-}
+import type { AliasesProps } from '../types'
 
 const Aliases = ({
   onRegisterAddHandler,
