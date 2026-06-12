@@ -88,7 +88,7 @@ const initialLayoutState: LayoutState = {
   screenSize: (typeof window !== 'undefined' ? getScreenSize() : '') as ScreenSize,
   animationsDisabled: true,
   pageTitle: null,
-  pageDescription: 'Jans-server admin UI',
+  pageDescription: 'Jans-server admin Ui',
   pageKeywords: 'jans-server oauth jans gluu',
 }
 
