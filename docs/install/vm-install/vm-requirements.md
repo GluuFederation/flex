@@ -4,12 +4,14 @@
 
 Gluu Flex currently provides packages for these Linux distros:
 
-- Ubuntu (versions: 20.04 and 22.04)
+- Ubuntu (versions: 22.04 and 24.04)
+- Debian 13
 - SUSE Distributions
-    - SUSE Linux Enterprise Server (SLES) 15
-    - openSUSE Leap 15.5
+    - SUSE Linux Enterprise Server (SLES) 16
+    - openSUSE Leap 16
     - openSUSE Tumbleweed
-- RedHat Enterprise Linux (version: 8)
+- Red Hat Enterprise Linux (version: 9)
+- Red Hat Enterprise Linux (version: 10)
 
 !!! Note
     This document is intended exclusively for dev and staging environments. Use Flex [helm deployments](../helm-install/README.md) for production setups. You can consider referring to this [documentation](../helm-install/prerequisites/rancher.md) which utilizes Rancher and Helm deployments.
