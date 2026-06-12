@@ -8,7 +8,7 @@ export const mockLoggingConfig: Logging = {
   enabledOAuthAuditLogging: false,
 }
 
-export const LOGGING_TEST_PERMISSIONS = [
+const LOGGING_TEST_PERMISSIONS = [
   'https://jans.io/oauth/config/logging.readonly',
   'https://jans.io/oauth/config/logging.write',
   'https://jans.io/oauth/config/logging.delete',

@@ -13,6 +13,7 @@ import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import { devLogger } from '@/utils/devLogger'
+import apiAxios from '@/redux/api/axios'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import { Close, InfoOutlined } from '@/components/icons'
@@ -35,6 +36,18 @@ const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
 const CJAR_ACCEPT = {
   'application/zip': ['.cjar'],
+}
+
+const buildPolicyStoreFileName = (): string => {
+  const base = apiAxios.defaults.baseURL
+  if (!base) {
+    return 'policy-store.cjar'
+  }
+  try {
+    return `${new URL(base).hostname}-policy-store.cjar`
+  } catch {
+    return 'policy-store.cjar'
+  }
 }
 
 const CedarlingConfigPage: React.FC = () => {
@@ -183,7 +196,7 @@ const CedarlingConfigPage: React.FC = () => {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = 'policy-store.cjar'
+      link.download = buildPolicyStoreFileName()
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

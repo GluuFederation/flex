@@ -176,3 +176,7 @@ export const regexForOrvalQueryHook = (hookName: string): RegExp => {
 export const regexForOrvalHookDecl = (hookName: string): RegExp => {
   return new RegExp(`export (?:const|function) ${escapeRegexSpecialChars(hookName)}\\b`)
 }
+/** Matches base64url '-' characters; replace with '+' to convert base64url → standard base64 before atob (JWT decode). */
+export const REGEX_BASE64URL_MINUS = /-/g
+/** Matches base64url '_' characters; replace with '/' to convert base64url → standard base64 before atob (JWT decode). */
+export const REGEX_BASE64URL_UNDERSCORE = /_/g

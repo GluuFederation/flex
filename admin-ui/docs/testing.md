@@ -108,4 +108,8 @@ For a listener, test its effect as a plain async function: pass a `jest.fn()` as
 
 ## Knip and tests
 
-knip uses production imports to decide if a module is used. Test files don't count. A `jest.mock(...)` that _replaces_ a module doesn't keep the production file alive in knip's view. If knip flags a module you know is in use, check whether the test mocks it _instead of_ importing it.
+knip scans test files, so unused fixtures, helpers, and exports inside `__tests__/` get flagged like any other dead code.
+
+Liveness still comes from production imports: a `jest.mock(...)` that _replaces_ a module doesn't keep the production file alive in knip's view. If knip flags a module you know is in use, check whether a test mocks it _instead of_ importing it.
+
+knip can't trace `jest.requireActual('<path>')` (a dynamic string require), so a helper consumed only that way looks unused. List it in `knip.json` `entry`, as `plugins/user-claims/__tests__/cedarTestHelpers.ts` is.

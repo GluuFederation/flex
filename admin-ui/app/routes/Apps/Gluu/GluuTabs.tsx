@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useState, type SyntheticEvent } 
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 import { useAppNavigation } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import type { GluuTabsProps, NavigationTab, TabItem, TabPanelProps } from './types'

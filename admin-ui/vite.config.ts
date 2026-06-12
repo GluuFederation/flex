@@ -137,8 +137,6 @@ const REACT_RUNTIME_PACKAGES = new Set<string>([
   'react-redux',
   'react-i18next',
   'react-error-boundary',
-  'react-responsive',
-  'react-idle-timer',
 ])
 
 const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly string[]]> = [
@@ -185,29 +183,13 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
     ],
   ],
   [
-    'vendor-bootstrap',
-    [
-      'bootstrap',
-      'react-toggle',
-      'react-bootstrap-typeahead',
-      '@restart/hooks',
-      '@restart/ui',
-      'compute-scroll-into-view',
-      'scroll-into-view-if-needed',
-      'lodash.debounce',
-      'fast-deep-equal',
-      'warning',
-      'invariant',
-    ],
-  ],
-  [
     'vendor-floating-ui',
     ['@floating-ui/react-dom', '@floating-ui/dom', '@floating-ui/core', '@floating-ui/utils'],
   ],
-  ['vendor-data', ['axios', 'dayjs', 'lodash', 'query-string', 'jszip']],
+  ['vendor-data', ['axios', 'dayjs', 'lodash']],
   ['vendor-forms', ['formik', 'yup']],
   ['vendor-date', ['date-fns']],
-  ['vendor-feedback', ['react-toastify', 'react-tooltip']],
+  ['vendor-feedback', ['react-toastify']],
 ]
 
 const getVendorPackageName = (id: string): string | null => {

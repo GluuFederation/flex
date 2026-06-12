@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Container } from 'Components'
-import { useDropzone } from 'react-dropzone'
+import { useFileDrop } from '@/hooks/useFileDrop'
 import logo from 'Images/logos/logo192.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
@@ -69,7 +69,7 @@ const UploadSSA = () => {
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
     isDragActive: isDragActive1,
-  } = useDropzone({
+  } = useFileDrop({
     onDrop: onDrop,
     accept: {
       'application/jwt': ['.jwt'],

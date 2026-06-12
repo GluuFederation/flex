@@ -1,7 +1,6 @@
 import { Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
-import PropTypes from 'prop-types'
 import type { FormikValues } from 'formik'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -106,21 +105,4 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   )
 }
 
-GluuRemovableInputRow.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  type: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  formik: PropTypes.object,
-  required: PropTypes.bool,
-  lsize: PropTypes.number,
-  rsize: PropTypes.number,
-  handler: PropTypes.func,
-  doc_category: PropTypes.string,
-  isDirect: PropTypes.bool,
-  isBoolean: PropTypes.bool,
-  hideRemoveButton: PropTypes.bool,
-  modifiedFields: PropTypes.object,
-  setModifiedFields: PropTypes.func,
-}
 export default GluuRemovableInputRow

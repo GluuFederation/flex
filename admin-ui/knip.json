@@ -5,10 +5,10 @@
     "plugins/PluginMenuResolver.ts",
     "plugins/PluginReducersResolver.ts",
     "plugins/PluginListenersResolver.ts",
-    "script/*.ts"
+    "script/*.ts",
+    "plugins/user-claims/__tests__/cedarTestHelpers.ts"
   ],
   "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
-  "ignore": ["**/__tests__/**"],
   "ignoreDependencies": ["babel-preset-jest", "markdownlint-cli2"],
   "rules": {
     "enumMembers": "off",
