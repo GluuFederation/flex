@@ -95,7 +95,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       const requestedAction = scopeEntry.action
 
       if (!cedarlingInitialized || isInitializing) {
-        console.log(
+        logger.log(
           `Cedarling authorization skipped for "${resolvedResourceId}" (${requestedAction}): Cedarling is not yet initialized.`,
         )
         return {
@@ -105,7 +105,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!access_token || !id_token || !userinfo_token) {
-        console.log(
+        logger.log(
           `Cedarling authorization denied for "${resolvedResourceId}" (${requestedAction}): required tokens are missing.`,
         )
         return {
@@ -115,7 +115,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!resolvedResourceId) {
-        console.log(
+        logger.log(
           `Cedarling authorization denied (${requestedAction}): resource id is missing for the given permission.`,
         )
         return {

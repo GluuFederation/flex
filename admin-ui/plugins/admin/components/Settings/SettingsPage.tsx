@@ -392,7 +392,7 @@ const SettingsPage: React.FC = () => {
 
                   <div className={classes.fieldItem}>
                     <GluuSelectRow
-                      label="fields.log_level"
+                      label="fields.admin_ui_log_level"
                       name="logLevel"
                       value={currentLogLevel}
                       formik={formik}

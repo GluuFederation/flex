@@ -43,7 +43,7 @@ const token_authorize = async (
   request: TokenAuthorizationRequest,
 ): Promise<AuthorizationResponse> => {
   if (!cedarlingInitialized || !cedarling) {
-    console.log('Cedarling token_authorize called before initialization completed.')
+    logger.log('Cedarling token_authorize called before initialization completed.')
     throw new Error('Cedarling not initialized')
   }
 

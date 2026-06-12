@@ -403,6 +403,7 @@
     "list_paging_size": "List paging size",
     "location_type": "Location Type",
     "log_level": "Log level",
+    "admin_ui_log_level": "Admin UI Logging Level",
     "log_layout": "Log layout",
     "login_uris": "Login URIs",
     "logo_uri": "Logo URI",
