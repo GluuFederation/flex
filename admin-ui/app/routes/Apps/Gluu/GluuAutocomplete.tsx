@@ -279,8 +279,8 @@ const GluuAutocomplete = ({
                           const trimmed = inputValue.trim()
                           if (
                             trimmed &&
-                            !optionValues.some((o) =>
-                              getDisplayLabel(o).toLowerCase().includes(trimmed.toLowerCase()),
+                            !optionValues.some(
+                              (o) => getDisplayLabel(o).toLowerCase() === trimmed.toLowerCase(),
                             ) &&
                             !selectedItems.some(
                               (s) => getDisplayLabel(s).toLowerCase() === trimmed.toLowerCase(),

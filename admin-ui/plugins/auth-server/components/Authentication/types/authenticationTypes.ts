@@ -6,6 +6,12 @@ export type ConfigurationProperty = {
   hide?: boolean
 }
 
+export type PropertyConfig = {
+  id: string
+  key: string
+  value: string
+}
+
 export type AuthNItem = {
   inum?: string
   name?: string
@@ -85,13 +91,7 @@ export type AcrsFormValues = {
   configId: string
   baseDn: string | undefined
   inum: string | undefined
-  configurationProperties?: Array<{
-    id?: string
-    key?: string
-    value?: string
-    value1?: string
-    value2?: string
-  }>
+  configurationProperties?: PropertyConfig[]
 }
 
 export type AcrsFormProps = {

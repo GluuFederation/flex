@@ -282,7 +282,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
             setModifiedFields((prev) => ({
               ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.RUN_INTROSPECTION_SCRIPT_BEFORE_JWT_CREATION]:
-                e.target.value,
+                e.target.checked,
             }))
           }}
         />

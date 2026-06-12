@@ -23,7 +23,7 @@ import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
 import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
 import { AUTH_METHOD_NAMES } from '../constants'
-import { getPropertiesConfig, type PropertyConfig } from './helper/acrUtils'
+import { getPropertiesConfig } from './helper/acrUtils'
 
 const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): ReactElement => {
   const { t } = useTranslation()
@@ -113,7 +113,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   }, [formik, initialValues])
 
   const configurationProperties = useMemo(
-    () => (formik.values.configurationProperties as PropertyConfig[]) || [],
+    () => formik.values.configurationProperties || [],
     [formik.values.configurationProperties],
   )
 
@@ -365,7 +365,10 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                         label={t('fields.remote_ldap_server_post')}
                         value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
                         options={[]}
-                        onChange={(vals) => formik.setFieldValue('servers', vals)}
+                        onChange={(vals) => {
+                          formik.setFieldValue('servers', vals)
+                          formik.setFieldTouched('servers', true)
+                        }}
                         showError={!!(formik.errors.servers && formik.touched.servers)}
                         errorMessage={
                           typeof formik.errors.servers === 'string'
@@ -389,7 +392,10 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                         label={t('fields.base_dns')}
                         value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
                         options={[]}
-                        onChange={(vals) => formik.setFieldValue('baseDNs', vals)}
+                        onChange={(vals) => {
+                          formik.setFieldValue('baseDNs', vals)
+                          formik.setFieldTouched('baseDNs', true)
+                        }}
                         showError={!!(formik.errors.baseDNs && formik.touched.baseDNs)}
                         errorMessage={
                           typeof formik.errors.baseDNs === 'string'

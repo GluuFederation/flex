@@ -13,7 +13,6 @@ import { LayoutNavbar } from './LayoutNavbar'
 import { LayoutSidebar } from './LayoutSidebar'
 import { PageConfigContext } from './PageConfigContext'
 import { ThemeClass } from './../Theme'
-import { SITE_DESCRIPTION, SITE_KEYWORDS } from '@/constants'
 import type {
   LayoutPartComponentType,
   LayoutProps,
@@ -89,8 +88,8 @@ const initialLayoutState: LayoutState = {
   screenSize: (typeof window !== 'undefined' ? getScreenSize() : '') as ScreenSize,
   animationsDisabled: true,
   pageTitle: null,
-  pageDescription: SITE_DESCRIPTION,
-  pageKeywords: SITE_KEYWORDS,
+  pageDescription: 'Jans-server admin UI',
+  pageKeywords: 'jans-server oauth jans gluu',
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {
