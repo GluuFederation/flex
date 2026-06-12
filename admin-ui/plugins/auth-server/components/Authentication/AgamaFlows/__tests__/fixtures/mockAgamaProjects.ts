@@ -1,5 +1,4 @@
 import type { Deployment } from 'JansConfigApi'
-import type { AgamaProject } from '../../types'
 
 export const mockDeployments: Deployment[] = [
   {
@@ -34,22 +33,3 @@ export const mockDeployments: Deployment[] = [
     },
   },
 ]
-
-export const mockAgamaProjects: AgamaProject[] = [
-  {
-    ...mockDeployments[0],
-    deployed_on: '01/15/24, 10:30 AM',
-    type: 'community',
-    status: 'Processed',
-    error: 'No',
-  } as AgamaProject,
-  {
-    ...mockDeployments[1],
-    deployed_on: '-',
-    type: 'agama',
-    status: 'Pending',
-    error: '',
-  } as AgamaProject,
-]
-
-export default mockAgamaProjects

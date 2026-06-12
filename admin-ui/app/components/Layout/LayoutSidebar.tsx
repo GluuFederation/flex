@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import type { LayoutSidebarProps } from './types'
 
@@ -12,11 +11,6 @@ const LayoutSidebar: React.FC<LayoutSidebarProps> & { layoutPartName: string } =
   return <div className={sidebarClass}>{props.children}</div>
 }
 
-LayoutSidebar.propTypes = {
-  children: PropTypes.node as React.Validator<React.ReactNode>,
-  sidebarSlim: PropTypes.bool,
-  sidebarCollapsed: PropTypes.bool,
-}
 LayoutSidebar.layoutPartName = 'sidebar'
 
 export { LayoutSidebar }

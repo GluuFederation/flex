@@ -26,8 +26,8 @@ import Radio from '@mui/material/Radio'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
-import { useDropzone, type FileRejection } from 'react-dropzone'
-import JSZip from 'jszip'
+import { useFileDrop, type FileRejection } from '@/hooks/useFileDrop'
+import { readZip } from '@/utils/zip'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
@@ -223,14 +223,14 @@ const AgamaFlows: React.FC = () => {
     let foundProjectName = false
 
     try {
-      const zip = await JSZip.loadAsync(file)
+      const zip = await readZip(file)
       const jsonFiles = Object.keys(zip.files).filter((filename) => filename.endsWith('.json'))
 
       for (const filename of jsonFiles) {
         const zipEntry = zip.files[filename]
         if (!zipEntry.dir) {
           try {
-            const jsonStr = await zipEntry.async('string')
+            const jsonStr = await zipEntry.text()
             const jsonData = JSON.parse(jsonStr) as { projectName?: string }
             if (jsonData?.projectName) {
               setProjectName(jsonData.projectName)
@@ -280,7 +280,7 @@ const AgamaFlows: React.FC = () => {
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
     isDragActive: isDragActive1,
-  } = useDropzone({
+  } = useFileDrop({
     onDrop: onDrop,
     accept: ACCEPTED_PROJECT_TYPES,
     maxSize: 50 * 1024 * 1024,
@@ -291,7 +291,7 @@ const AgamaFlows: React.FC = () => {
     getRootProps: getRootProps2,
     getInputProps: getInputProps2,
     isDragActive: isDragActive2,
-  } = useDropzone({
+  } = useFileDrop({
     onDrop: onSHA256FileDrop,
     accept: ACCEPTED_SHA_TYPES,
     maxSize: 1024 * 1024,

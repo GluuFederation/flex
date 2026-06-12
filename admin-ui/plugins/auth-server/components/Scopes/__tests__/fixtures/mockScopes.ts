@@ -1,6 +1,6 @@
 import type { Scope } from 'Plugins/auth-server/components/Scopes/types'
 
-export const scopes: Partial<Scope>[] = [
+const scopes: Partial<Scope>[] = [
   {
     dn: 'inum=F0C4,ou=scopes,o=jans',
     inum: 'F0C4',

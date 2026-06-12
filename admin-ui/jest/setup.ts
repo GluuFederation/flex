@@ -39,7 +39,9 @@ jest
 
 jest.setTimeout(30000)
 
-jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(jest.fn())
+if (typeof HTMLAnchorElement !== 'undefined') {
+  jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(jest.fn())
+}
 if (typeof globalThis.URL !== 'undefined') {
   if ('createObjectURL' in globalThis.URL) {
     jest.spyOn(globalThis.URL, 'createObjectURL').mockImplementation(jest.fn())
@@ -58,16 +60,18 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 }
 
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation((query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-})
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  })
+}

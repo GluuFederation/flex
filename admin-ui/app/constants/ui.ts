@@ -120,6 +120,15 @@ export const ICON_SIZE = {
 
 export const ICON_BUTTON_SIZE = 32
 
+export const TOOLTIP = {
+  ARROW_SIZE: 8,
+  PADDING_VERTICAL: 8,
+  PADDING_HORIZONTAL: 16,
+  BORDER_RADIUS: 3,
+  OFFSET: 10,
+  FONT_SIZE: '90%',
+} as const
+
 export const TOOLBAR = {
   MIN_WIDTH: 130,
   SEARCH_MIN_WIDTH: 220,
