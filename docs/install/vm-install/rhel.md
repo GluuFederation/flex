@@ -29,7 +29,7 @@ sudo firewall-cmd --reload;
 sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
 ```
 ```shell
-sudo yum -y module enable mod_auth_openidc;
+ sudo yum -y install mod_auth_openidc;
 ```
 - Please obtain an [SSA](../../install/flex/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
@@ -40,7 +40,7 @@ sudo yum -y module enable mod_auth_openidc;
 - Download the release package from the Github Flex
   [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el9.x86_64.rpm -P /tmp
 ```
 - Go to `/tmp` directory:
 
@@ -56,14 +56,14 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     - Download the cosign bundle from the [Releases](https://github.com/gluufederation/flex/releases/latest) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-el9-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex_replace-flex-version-stable.bundle \
+          --bundle flex-el9-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
           flex-replace-flex-version-stable.el9.x86_64.rpm
