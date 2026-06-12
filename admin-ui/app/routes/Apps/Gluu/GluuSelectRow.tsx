@@ -45,6 +45,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   inputHeight,
   inputPaddingTop,
   inputPaddingBottom,
+  hideChooseOption = false,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -144,7 +145,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             disabled={disabled}
             className={classes.select}
           >
-            <option value="">{t('actions.choose')}...</option>
+            {!hideChooseOption && <option value="">{t('actions.choose')}...</option>}
             {deduplicateSelectValues(values).map((item) => {
               const optionValue = typeof item === 'string' ? item : item.value
               const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)

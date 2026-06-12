@@ -403,6 +403,7 @@ const SettingsPage: React.FC = () => {
                       doc_entry="logLevel"
                       disabled={!canWriteSettings}
                       isDark={isDark}
+                      hideChooseOption
                       handleChange={(e) => handleLogLevelChange(e.target.value as LogLevel)}
                     />
                   </div>
