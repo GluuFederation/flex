@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useGetConfigScripts } from 'JansConfigApi'
 import { useAppSelector } from '@/redux/hooks'
 import { logAuditUserAction } from 'Utils/AuditLogger'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { isScriptEntry } from '../Properties/utils'
 import { FETCH_SCRIPTS_FOR_STAT, SCRIPT } from '@/audit'
 import type { GenericItem } from 'Redux/types'
@@ -32,10 +32,7 @@ export const useAuthServerScripts = (): Script[] => {
       resource: SCRIPT,
       message: '',
     }).catch((error) =>
-      devLogger.error(
-        '[AuthServer scripts audit] failed',
-        error instanceof Error ? error : String(error),
-      ),
+      logger('[AuthServer scripts audit] failed', error instanceof Error ? error : String(error)),
     )
   }, [isSuccess, userinfo, clientId])
 

@@ -1,4 +1,4 @@
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 const isAvailable = (): boolean => {
   if (typeof window === 'undefined') return false
@@ -14,7 +14,7 @@ const get = (key: string): string | null => {
   try {
     return window.localStorage.getItem(key)
   } catch (e) {
-    devLogger.warn(`storage.get failed for "${key}":`, e instanceof Error ? e : String(e))
+    logger(`storage.get failed for "${key}":`, e instanceof Error ? e : String(e))
     return null
   }
 }
@@ -24,7 +24,7 @@ const set = (key: string, value: string): void => {
   try {
     window.localStorage.setItem(key, value)
   } catch (e) {
-    devLogger.warn(`storage.set failed for "${key}":`, e instanceof Error ? e : String(e))
+    logger(`storage.set failed for "${key}":`, e instanceof Error ? e : String(e))
   }
 }
 
@@ -34,7 +34,7 @@ const getJSON = <T>(key: string): T | null => {
   try {
     return JSON.parse(raw) as T
   } catch (e) {
-    devLogger.warn(`storage.getJSON failed for "${key}":`, e instanceof Error ? e : String(e))
+    logger(`storage.getJSON failed for "${key}":`, e instanceof Error ? e : String(e))
     return null
   }
 }
@@ -43,7 +43,7 @@ const setJSON = <T>(key: string, value: T): void => {
   try {
     set(key, JSON.stringify(value))
   } catch (e) {
-    devLogger.warn(`storage.setJSON failed for "${key}":`, e instanceof Error ? e : String(e))
+    logger(`storage.setJSON failed for "${key}":`, e instanceof Error ? e : String(e))
   }
 }
 
@@ -52,7 +52,7 @@ const remove = (key: string): void => {
   try {
     window.localStorage.removeItem(key)
   } catch (e) {
-    devLogger.warn(`storage.remove failed for "${key}":`, e instanceof Error ? e : String(e))
+    logger(`storage.remove failed for "${key}":`, e instanceof Error ? e : String(e))
   }
 }
 
@@ -61,7 +61,7 @@ const clear = (): void => {
   try {
     window.localStorage.clear()
   } catch (e) {
-    devLogger.warn('storage.clear failed:', e instanceof Error ? e : String(e))
+    logger('storage.clear failed:', e instanceof Error ? e : String(e))
   }
 }
 

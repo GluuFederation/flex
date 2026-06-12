@@ -27,7 +27,7 @@ import type {
   PasswordChangeModalProps,
   CustomUser,
 } from '../types'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import {
   getPasswordChangeValidationSchema,
   logPasswordChange,
@@ -138,8 +138,10 @@ const PasswordChangeModal = ({
         try {
           await revokeSessionMutation.mutateAsync({ userDn })
           await AXIOS_INSTANCE.delete(`/app/admin-ui/oauth2/session/${encodeURIComponent(userDn)}`)
-        } catch {
-          // Silently ignore — 404 means the user has no active session
+        } catch (error) {
+          // A 404 is expected (the user has no active session); log other failures
+          // for diagnosis without surfacing them to the user.
+          logger('Failed to revoke user session after password change:', error as Error)
         }
       }
 
@@ -150,7 +152,7 @@ const PasswordChangeModal = ({
       onSuccess?.()
 
       logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
-        devLogger.error('Failed to log password change:', error)
+        logger('Failed to log password change:', error)
       })
     },
     [

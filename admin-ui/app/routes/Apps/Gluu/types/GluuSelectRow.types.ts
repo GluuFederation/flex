@@ -29,4 +29,5 @@ export type GluuSelectRowProps = {
   inputHeight?: number
   inputPaddingTop?: number
   inputPaddingBottom?: number
+  hideChooseOption?: boolean
 }

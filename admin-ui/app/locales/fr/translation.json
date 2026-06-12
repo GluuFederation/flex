@@ -560,6 +560,7 @@
     "list_paging_size": "Taille de la pagination de la liste",
     "location_type": "Type de lieu",
     "log_level": "Niveau de journal",
+    "admin_ui_log_level": "Niveau de journal de l'Admin UI",
     "log_layout": "Disposition du journal",
     "login_uris": "URI de connexion",
     "logo_uri": "URI du logo",

@@ -13,11 +13,23 @@ import type {
   ITokenEntry,
 } from '@/cedarling/types'
 import { updateToast } from '@/redux/features/toastSlice'
+import { logger } from '@/utils/logger'
 
 const inFlightAuthorizations = new Map<string, Promise<AuthorizationResult>>()
 
 const MAX_ERROR_MESSAGE_LENGTH = 25
 const { ACTION_TYPE, RESOURCE_TYPE, TOKEN_MAPPINGS } = CEDARLING_CONSTANTS
+
+const buildLogPayload = (resourceId: AdminUiFeatureResource, action: CedarAction) => ({
+  action: `${ACTION_TYPE}"${action}"`,
+  resource: {
+    cedar_entity_mapping: {
+      entity_type: RESOURCE_TYPE,
+      id: resourceId,
+    },
+  },
+  context: {},
+})
 
 export const useCedarling = (): UseCedarlingReturn => {
   const dispatch = useAppDispatch()
@@ -60,18 +72,9 @@ export const useCedarling = (): UseCedarlingReturn => {
         throw new Error('Resource id is missing for Cedar authorization request')
       }
 
-      const resource = {
-        cedar_entity_mapping: {
-          entity_type: RESOURCE_TYPE,
-          id: resourceId,
-        },
-      }
-
       const requestPayload = {
         tokens,
-        action: `${ACTION_TYPE}"${actionLabel}"`,
-        resource,
-        context: {},
+        ...buildLogPayload(resourceId, actionLabel),
       }
 
       return { request: requestPayload, cacheKey }
@@ -91,8 +94,13 @@ export const useCedarling = (): UseCedarlingReturn => {
       if (!scopeEntry) return { isAuthorized: false }
 
       const resolvedResourceId = scopeEntry.resourceId
+      const requestedAction = scopeEntry.action
 
       if (!cedarlingInitialized || isInitializing) {
+        logger.log(
+          `Cedarling authorization skipped for "${resolvedResourceId}" (${requestedAction}): Cedarling is not yet initialized.`,
+          { payload: buildLogPayload(resolvedResourceId, requestedAction) },
+        )
         return {
           isAuthorized: false,
           error: 'Cedarling is not yet initialized. Please wait...',
@@ -100,6 +108,10 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!access_token || !id_token || !userinfo_token) {
+        logger.log(
+          `Cedarling authorization denied for "${resolvedResourceId}" (${requestedAction}): required tokens are missing.`,
+          { payload: buildLogPayload(resolvedResourceId, requestedAction) },
+        )
         return {
           isAuthorized: false,
           error: 'Required tokens are missing',
@@ -107,6 +119,10 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!resolvedResourceId) {
+        logger.log(
+          `Cedarling authorization denied (${requestedAction}): resource id is missing for the given permission.`,
+          { payload: buildLogPayload(resolvedResourceId, requestedAction) },
+        )
         return {
           isAuthorized: false,
           error: 'Resource id is missing for the given permission',
@@ -133,6 +149,15 @@ export const useCedarling = (): UseCedarlingReturn => {
           .token_authorize(request)
           .then((response): AuthorizationResult => {
             const isAuthorized = response?.decision === true
+            if (!isAuthorized) {
+              logger.log(
+                `Cedarling authorization denied: "${resolvedResourceId}" (${actionLabel})`,
+                {
+                  payload: buildLogPayload(resolvedResourceId, actionLabel),
+                  response,
+                },
+              )
+            }
             dispatch(setCedarlingPermission({ resourceId: cacheKey, isAuthorized }))
             return { isAuthorized, response }
           })
@@ -147,6 +172,13 @@ export const useCedarling = (): UseCedarlingReturn => {
         const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
+        logger(
+          `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
+          {
+            payload: buildLogPayload(resolvedResourceId, actionLabel),
+            error,
+          },
+        )
         const truncated =
           rawMessage.length > MAX_ERROR_MESSAGE_LENGTH
             ? rawMessage.slice(0, MAX_ERROR_MESSAGE_LENGTH) + '…'

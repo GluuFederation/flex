@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next'
 import type { InitOptions } from 'i18next'
 import translationEn from './locales/en/translation.json'
 import { isDevelopment } from './utils/env'
-import { devLogger } from './utils/devLogger'
+import { logger } from './utils/logger'
 import { storage } from '@/utils/storage'
 import { hmrAccept } from '@/utils/hmr'
 import { toast } from 'react-toastify'
@@ -16,7 +16,7 @@ const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof transl
 }
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
-  devLogger.warn(
+  logger(
     `[i18n] Missing translation key: "${key}"`,
     defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
   )
@@ -40,7 +40,7 @@ const getSavedLanguage = (): string => {
       if (values.length > 0) return values[values.length - 1]
     }
   } catch (error) {
-    devLogger.warn(
+    logger(
       'Failed to read saved language from localStorage:',
       error instanceof Error ? error : String(error),
     )
@@ -57,7 +57,7 @@ export const ensureLocaleLoaded = async (lng: string): Promise<void> => {
     const mod = await loader()
     i18n.addResourceBundle(base, 'translation', mod.default, true, true)
   } catch (error) {
-    devLogger.warn(
+    logger(
       `[i18n] Failed to load "${base}" translations:`,
       error instanceof Error ? error : String(error),
     )

@@ -12,7 +12,7 @@ import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import apiAxios from '@/redux/api/axios'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
@@ -125,10 +125,7 @@ const CedarlingConfigPage: React.FC = () => {
           payload: { fileName: selectedFile.name },
         })
       } catch (e) {
-        devLogger.error(
-          'Audit log failed after policy store upload:',
-          e instanceof Error ? e : String(e),
-        )
+        logger('Audit log failed after policy store upload:', e instanceof Error ? e : String(e))
       }
 
       await syncRoleToScopesMappingsMutation.mutateAsync()
@@ -143,19 +140,13 @@ const CedarlingConfigPage: React.FC = () => {
           payload: { fileName: selectedFile.name },
         })
       } catch (e) {
-        devLogger.error(
-          'Audit log failed after role/scope sync:',
-          e instanceof Error ? e : String(e),
-        )
+        logger('Audit log failed after role/scope sync:', e instanceof Error ? e : String(e))
       }
 
       setSelectedFile(null)
       navigateToRoute(ROUTES.LOGOUT)
     } catch (error) {
-      devLogger.error(
-        'Policy store upload flow failed:',
-        error instanceof Error ? error : String(error),
-      )
+      logger('Policy store upload flow failed:', error instanceof Error ? error : String(error))
       const errorMessage = getErrorMessage(
         error as Error | ApiError,
         'documentation.cedarlingConfig.uploadFailed',

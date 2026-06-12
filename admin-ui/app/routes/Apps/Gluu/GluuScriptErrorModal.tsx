@@ -10,7 +10,7 @@ import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.st
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { GluuScriptErrorModalProps } from './types'
 
 const GluuScriptErrorModal = ({
@@ -39,7 +39,7 @@ const GluuScriptErrorModal = ({
       await navigator.clipboard.writeText(error)
       setIsCopied(true)
     } catch (clipboardError) {
-      devLogger.error(
+      logger(
         'Failed to copy script error to clipboard:',
         clipboardError instanceof Error ? clipboardError : String(clipboardError),
       )

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useAppDispatch } from '@/redux/hooks'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { adminUiFeatures } from '@/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { JansAttribute } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
@@ -22,7 +22,7 @@ export const useSchemaWebhook = () => {
           }),
         )
       } catch (error) {
-        devLogger.error(
+        logger(
           'Failed to trigger attribute webhook:',
           error instanceof Error ? error : String(error),
         )

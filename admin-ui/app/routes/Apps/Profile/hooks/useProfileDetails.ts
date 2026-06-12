@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useGetUserByInum } from 'JansConfigApi'
 import { FETCH, API_USERS } from '@/audit'
 import { logAuditUserAction } from '@/utils/AuditLogger'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useAppSelector } from '@/redux/hooks'
 import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
 import type { CustomAttribute, ProfileDetails, UseProfileDetailsResult } from '../types'
@@ -61,7 +61,7 @@ export const useProfileDetails = (
       message: '',
       payload: { pattern: userInum },
     }).catch((error) =>
-      devLogger.error('[Profile audit] failed', error instanceof Error ? error : String(error)),
+      logger('[Profile audit] failed', error instanceof Error ? error : String(error)),
     )
   }, [profileDetails, userInum, userinfo, clientId])
 

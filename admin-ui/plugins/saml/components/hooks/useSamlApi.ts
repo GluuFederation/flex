@@ -7,7 +7,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { AUDIT_RESOURCE_NAMES } from '../../helper/constants'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { triggerWebhookForFeature } from '@/utils/triggerWebhookForFeature'
 import { adminUiFeatures } from '@/constants'
 import type {
@@ -140,7 +140,7 @@ const createAuditLogger =
         payload: payloadMapper(data) as JsonValue,
       })
     } catch (error) {
-      devLogger.error(
+      logger(
         `Failed to log ${resource} audit action:`,
         error instanceof Error ? error : String(error),
       )

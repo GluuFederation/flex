@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRevokeSsa, type RevokeSsaParams } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { updateToast } from 'Redux/features/toastSlice'
 import type { CaughtError } from '../types/ErrorTypes'
 import type { SsaAuditLogPayload } from '../types/SsaFormTypes'
@@ -38,7 +38,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await logSsaDeletion(jti, auditPayload || { jti }, userMessage)
       } catch (auditError) {
-        devLogger.error(
+        logger(
           'Audit logging failed:',
           auditError instanceof Error ? auditError : String(auditError),
           { jti },
@@ -49,7 +49,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
       } catch (invalidateError) {
-        devLogger.error(
+        logger(
           'Query invalidation failed after delete:',
           invalidateError instanceof Error ? invalidateError : String(invalidateError),
           { jti },
@@ -60,7 +60,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'success'))
         callbacksRef.current?.onSuccess?.()
       } catch (callbackError) {
-        devLogger.error(
+        logger(
           'Post-delete callback failed:',
           callbackError instanceof Error ? callbackError : String(callbackError),
           { jti },

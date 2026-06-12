@@ -14,7 +14,7 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { REGEX_LEADING_COLON } from '@/utils/regex'
 import SetTitle from 'Utils/SetTitle'
 
@@ -87,7 +87,7 @@ const ScopeEditPage: React.FC = () => {
       try {
         await updateScope(data, modifiedFields)
       } catch (error) {
-        devLogger.error('Error updating scope:', error instanceof Error ? error : String(error))
+        logger('Error updating scope:', error instanceof Error ? error : String(error))
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },

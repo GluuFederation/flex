@@ -15,7 +15,7 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
@@ -136,10 +136,8 @@ const CustomScriptListPage: React.FC = () => {
         setModal(false)
         setItemToDelete(null)
       } catch (err) {
-        devLogger.error('Failed to delete custom script:', err instanceof Error ? err : String(err))
-        const errorMessage =
-          err instanceof Error ? err.message : t('messages.error_deleting_script')
-        dispatch(updateToast(true, 'error', errorMessage))
+        logger('Failed to delete custom script:', err instanceof Error ? err : String(err))
+        dispatch(updateToast(true, 'error', t('messages.error_deleting_script')))
       }
     },
     [deleteMutation, dispatch, t],

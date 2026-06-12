@@ -6,9 +6,9 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
+import { logger } from '@/utils/logger'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
-import { devLogger } from '@/utils/devLogger'
 
 const base64ToUint8Array = (base64: string): Uint8Array => {
   const binaryString = atob(base64)
@@ -58,7 +58,11 @@ const PermissionsPolicyInitializer = () => {
     let bytesUint8Array: Uint8Array
     try {
       bytesUint8Array = base64ToUint8Array(policyStoreBytes)
-    } catch {
+    } catch (error) {
+      logger(
+        'Cedarling: failed to decode policy store bytes.',
+        error instanceof Error ? error : String(error),
+      )
       dispatch(setCedarlingInitializing(false))
       return
     }
@@ -71,22 +75,23 @@ const PermissionsPolicyInitializer = () => {
     cedarlingClient
       .initialize(bootstrapConfig, bytesUint8Array)
       .then(() => {
-        devLogger.log('Cedarling initialize SUCCEEDED')
+        logger.log('Cedarling initialize SUCCEEDED')
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })
       .catch((error) => {
-        console.error(
-          `Cedarling initialize FAILED (attempt ${retryCount.current.tryCount + 1}/${maxRetries}):`,
-          error instanceof Error ? error : String(error),
-        )
         retryCount.current.tryCount += 1
 
         if (retryCount.current.tryCount < maxRetries) {
+          logger(
+            `Cedarling initialization failed (attempt ${retryCount.current.tryCount}/${maxRetries}); retrying.`,
+            error,
+          )
           setTimeout(() => {
             dispatch(setCedarlingInitialized(false))
           }, 1000)
         } else {
+          logger(`Cedarling initialization failed after ${maxRetries} attempts; giving up.`, error)
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })

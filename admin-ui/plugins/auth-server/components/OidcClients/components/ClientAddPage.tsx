@@ -5,7 +5,7 @@ import { GluuPageContent } from '@/components'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import SetTitle from 'Utils/SetTitle'
 import { INITIAL_NEW_CLIENT } from '../constants'
 import { useCreateClient, useClientScripts, useOidcProperties } from '../hooks'
@@ -38,7 +38,7 @@ const ClientAddPage = (): JSX.Element => {
         await createClient(data)
         navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
-        devLogger.error('Failed to create client:', error instanceof Error ? error : String(error))
+        logger('Failed to create client:', error instanceof Error ? error : String(error))
       }
     },
     [createClient, navigateToRoute],

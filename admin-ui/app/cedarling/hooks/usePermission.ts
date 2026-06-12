@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useCedarling } from './useCedarling'
+import { useAppSelector } from '@/redux/hooks'
 import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/utility'
 import type { AdminUiFeatureResource, ResourcePermission } from '@/cedarling/types'
 
@@ -10,13 +11,14 @@ export const usePermission = (resource: AdminUiFeatureResource): ResourcePermiss
     hasCedarWritePermission,
     hasCedarDeletePermission,
   } = useCedarling()
+  const cedarInitialized = useAppSelector((state) => state.cedarPermissions.initialized)
   const scopes = CEDAR_RESOURCE_SCOPES[resource]
 
   useEffect(() => {
-    if (scopes && scopes.length > 0) {
+    if (cedarInitialized && scopes && scopes.length > 0) {
       authorizeHelper(scopes)
     }
-  }, [authorizeHelper, scopes])
+  }, [cedarInitialized, authorizeHelper, scopes])
 
   return {
     canRead: hasCedarReadPermission(resource) ?? false,

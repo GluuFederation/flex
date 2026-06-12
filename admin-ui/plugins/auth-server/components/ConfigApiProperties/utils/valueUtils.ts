@@ -1,6 +1,6 @@
 import type { ApiAppConfiguration, JsonPatch } from '../types'
 import { REGEX_LEADING_SLASH } from '@/utils/regex'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { PropertyValue } from '../../AuthServerProperties/types'
 
 type TraversableValue = PropertyValue | PropertyValue[]
@@ -125,7 +125,7 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
     if (cleaned === '') return
     const pathParts = cleaned.split('/')
     if (pathParts.length === 0 || pathParts.some((segment) => segment === '')) {
-      devLogger.warn('[applyRemovePatchToValues] Rejecting malformed patch path:', pathStr)
+      logger('[applyRemovePatchToValues] Rejecting malformed patch path:', pathStr)
       return
     }
 
@@ -145,7 +145,7 @@ export const applyRemovePatchToValues = (values: ApiAppConfiguration, patch: Jso
       target.splice(lastIndex, 1)
     }
   } catch (error) {
-    devLogger.error(
+    logger(
       '[applyRemovePatchToValues] Error applying remove patch:',
       error instanceof Error ? error : String(error),
     )

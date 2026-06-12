@@ -14,10 +14,8 @@ jest.mock('@/redux/api/backend-api', () => ({
   createAdminUiSession: mockCreateAdminUiSession,
 }))
 
-jest.mock('@/utils/devLogger', () => ({
-  devLogger: {
-    error: jest.fn(),
-  },
+jest.mock('@/utils/logger', () => ({
+  logger: jest.fn(),
 }))
 
 describe('orval interceptors', () => {

@@ -16,7 +16,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
 import { adminUiFeatures } from '@/constants'
@@ -100,7 +100,7 @@ const UserList = (): JSX.Element => {
           await deleteUser(inumToDelete, userMessage, userWithMessage)
           setDeleteData(null)
         } catch (error) {
-          devLogger.error('Delete user failed:', error instanceof Error ? error : String(error))
+          logger('Delete user failed:', error instanceof Error ? error : String(error))
         }
       }
     },

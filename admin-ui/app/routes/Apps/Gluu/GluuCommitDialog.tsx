@@ -8,6 +8,8 @@ import { useAppSelector } from '@/redux/hooks'
 import Alert from '@mui/material/Alert'
 import { Close } from '@/components/icons'
 import { useWebhookDialogAction } from 'Utils/hooks'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import type { GluuCommitDialogProps } from './types/index'
@@ -105,6 +107,8 @@ const GluuCommitDialog = ({
       if (!autoCloseOnAccept) {
         closeModal()
       }
+    } catch (error) {
+      logger('Commit action failed: ' + resolveApiErrorMessage(error as Error))
     } finally {
       setIsSubmitting(false)
       if (autoCloseOnAccept) {

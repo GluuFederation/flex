@@ -59,12 +59,8 @@ jest.mock('Plugins/user-management/helper', () => ({
     mockTriggerUserWebhook(userData, feature),
 }))
 
-jest.mock('@/utils/devLogger', () => ({
-  devLogger: {
-    log: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  },
+jest.mock('@/utils/logger', () => ({
+  logger: Object.assign(jest.fn(), { log: jest.fn() }),
 }))
 
 jest.mock('@/constants', () => ({

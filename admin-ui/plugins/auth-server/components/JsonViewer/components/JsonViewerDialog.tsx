@@ -20,7 +20,7 @@ import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/Gluu
 import { updateToast } from '@/redux/features/toastSlice'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import JsonViewer from './JsonViewer'
 import { useStyles } from './styles/JsonViewerDialog.style'
 import type { JsonViewerDialogProps } from '../types'
@@ -99,11 +99,10 @@ const JsonViewerDialog: FC<JsonViewerDialogProps> = ({
       await navigator.clipboard.writeText(text)
       setIsCopied(true)
     } catch (err) {
-      const detail = err instanceof Error ? err.message : String(err)
-      devLogger.error('Failed to copy to clipboard:', err instanceof Error ? err : String(err))
-      dispatch(updateToast(true, 'error', `Failed to copy to clipboard: ${detail}`))
+      logger('Failed to copy to clipboard:', err instanceof Error ? err : String(err))
+      dispatch(updateToast(true, 'error', t('messages.copy_failed')))
     }
-  }, [data, isCopied, dispatch])
+  }, [data, isCopied, dispatch, t])
 
   const handleOverlayKeyDown = useCallback(
     (e: KeyboardEvent<HTMLButtonElement>) => {

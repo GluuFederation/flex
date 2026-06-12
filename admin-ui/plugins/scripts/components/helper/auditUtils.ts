@@ -1,4 +1,4 @@
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { createSuccessAuditInit, selectAuditContext } from '@/audit'
 import { addAdditionalData, type AdditionalPayload } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -17,7 +17,7 @@ export const logAuditAction = async (
   try {
     await postUserAction(audit as UserActionPayload)
   } catch (error) {
-    devLogger.error(
+    logger(
       `Audit logging failed for ${actionType}:`,
       error instanceof Error ? error : String(error),
     )

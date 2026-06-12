@@ -1,5 +1,6 @@
 type ApiErrorResponseBody = {
   message?: string
+  responseMessage?: string
   description?: string
   error_description?: string
 }
@@ -69,7 +70,12 @@ export const resolveApiErrorMessage = (
     body?.error_description,
   )
 
-  const message = pickFirstString(data?.message, body?.message)
+  const message = pickFirstString(
+    data?.responseMessage,
+    data?.message,
+    body?.responseMessage,
+    body?.message,
+  )
   const responseText = pickFirstString(typedError.response?.text)
   const errorMessage = pickFirstString(typedError.message)
 

@@ -10,7 +10,8 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import SsaForm from './SsaForm'
 import { useStyles } from './styles/SsaFormPage.style'
 import { useCreateSsa } from '../hooks'
@@ -58,10 +59,7 @@ const SsaAddPage: React.FC = () => {
         dispatch(updateToast(true, 'success'))
         navigateToRoute(ROUTES.AUTH_SERVER_SSA_LIST)
       } catch (error) {
-        devLogger.error(
-          'Failed to submit SSA form:',
-          error instanceof Error ? error : String(error),
-        )
+        logger('Failed to submit SSA form:', resolveApiErrorMessage(error as Error))
         dispatch(updateToast(true, 'error'))
       }
     },
