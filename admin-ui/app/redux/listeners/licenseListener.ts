@@ -31,6 +31,7 @@ import { fetchApiTokenWithDefaultScopes } from '../api/backend-api'
 import type { MauEntry } from '../types'
 import { getYearMonth } from '../../utils/Util'
 import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import type { ApiErrorLike } from '../types/audit'
 import type { AppDispatch } from '../hooks'
 import { startAppListening } from './index'
@@ -92,7 +93,7 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
       dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     }
   } catch (err) {
-    logger('Error checking MAU threshold:', err instanceof Error ? err : String(err))
+    logger('Error checking MAU threshold:', resolveApiErrorMessage(err as Error))
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
     dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
