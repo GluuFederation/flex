@@ -25,7 +25,16 @@ declare global {
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['cedarPermissions', 'toastReducer', 'logoutAuditReducer', 'initReducer'],
+  blacklist: [
+    'cedarPermissions',
+    'toastReducer',
+    'logoutAuditReducer',
+    'initReducer',
+    'webhookReducer',
+    'scopeReducer',
+    'licenseReducer',
+    'logoutReducer',
+  ],
   version: 1,
   migrate: (state: PersistedState) => Promise.resolve(state),
 }
