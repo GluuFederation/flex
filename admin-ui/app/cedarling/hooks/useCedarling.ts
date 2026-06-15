@@ -137,6 +137,10 @@ export const useCedarling = (): UseCedarlingReturn => {
           actionLabel,
         )
         if (cachedDecision !== undefined) {
+          logger.trace(
+            `Cedarling authorization served from cache: "${resolvedResourceId}" (${actionLabel}) → ${cachedDecision ? 'allowed' : 'denied'}`,
+            { payload: buildLogPayload(resolvedResourceId, actionLabel) },
+          )
           return { isAuthorized: cachedDecision }
         }
 
@@ -155,12 +159,12 @@ export const useCedarling = (): UseCedarlingReturn => {
             }
             if (isAuthorized) {
               logger.trace(
-                `Cedarling authorization allowed: "${resolvedResourceId}" (${actionLabel})`,
+                `Cedarling authorization allowed (live): "${resolvedResourceId}" (${actionLabel})`,
                 logPayload,
               )
             } else {
               logger.warn(
-                `Cedarling authorization denied: "${resolvedResourceId}" (${actionLabel})`,
+                `Cedarling authorization denied (live): "${resolvedResourceId}" (${actionLabel})`,
                 logPayload,
               )
             }
