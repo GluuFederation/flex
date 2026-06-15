@@ -75,7 +75,7 @@ const PermissionsPolicyInitializer = () => {
     cedarlingClient
       .initialize(bootstrapConfig, bytesUint8Array)
       .then(() => {
-        logger.debug('Cedarling initialize SUCCEEDED')
+        logger.info('Cedarling initialized successfully')
         retryCount.current = { tryCount: 0, callMethod: false }
         dispatch(setCedarlingInitialized(true))
       })

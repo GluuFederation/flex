@@ -149,13 +149,19 @@ export const useCedarling = (): UseCedarlingReturn => {
           .token_authorize(request)
           .then((response): AuthorizationResult => {
             const isAuthorized = response?.decision === true
-            if (!isAuthorized) {
-              logger.debug(
+            const logPayload = {
+              payload: buildLogPayload(resolvedResourceId, actionLabel),
+              response,
+            }
+            if (isAuthorized) {
+              logger.trace(
+                `Cedarling authorization allowed: "${resolvedResourceId}" (${actionLabel})`,
+                logPayload,
+              )
+            } else {
+              logger.warn(
                 `Cedarling authorization denied: "${resolvedResourceId}" (${actionLabel})`,
-                {
-                  payload: buildLogPayload(resolvedResourceId, actionLabel),
-                  response,
-                },
+                logPayload,
               )
             }
             dispatch(setCedarlingPermission({ resourceId: cacheKey, isAuthorized }))
