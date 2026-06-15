@@ -115,7 +115,7 @@ const GluuAppSidebar = (): JSX.Element => {
       const filteredMenus = await filterMenusByAuth(await memoizedFilteredMenus, authorizeHelper)
       setPluginMenus(filteredMenus)
     } catch (error) {
-      logger('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
+      logger.error('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
     } finally {
       setMenusLoaded(true)
       if (!didAnimateMenusRef.current) {

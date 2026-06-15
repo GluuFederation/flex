@@ -74,7 +74,10 @@ export const useClientTokens = ({
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : t('messages.error_in_deleting')
         dispatch(updateToast(true, 'error', errorMsg))
-        logger('Failed to revoke client token:', error instanceof Error ? error : String(error))
+        logger.error(
+          'Failed to revoke client token:',
+          error instanceof Error ? error : String(error),
+        )
         throw error
       }
     },

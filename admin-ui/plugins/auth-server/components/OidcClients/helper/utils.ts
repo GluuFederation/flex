@@ -172,7 +172,10 @@ export const downloadClientTokensCSV = (csv: string): void => {
     link.click()
     document.body.removeChild(link)
   } catch (error) {
-    logger('Failed to download client tokens CSV:', error instanceof Error ? error : String(error))
+    logger.error(
+      'Failed to download client tokens CSV:',
+      error instanceof Error ? error : String(error),
+    )
   } finally {
     URL.revokeObjectURL(url)
   }

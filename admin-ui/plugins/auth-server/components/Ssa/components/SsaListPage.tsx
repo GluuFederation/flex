@@ -124,7 +124,7 @@ const SsaListPage: React.FC = () => {
   useEffect(() => {
     if (!ssaDialogOpen || !ssaJwtQuery.isError) return
 
-    logger('Failed to fetch SSA JWT:', resolveApiErrorMessage(ssaJwtQuery.error as Error))
+    logger.error('Failed to fetch SSA JWT:', resolveApiErrorMessage(ssaJwtQuery.error as Error))
     dispatch(updateToast(true, 'error'))
     setSsaDialogOpen(false)
     setSelectedSsaJti(null)
@@ -136,7 +136,7 @@ const SsaListPage: React.FC = () => {
         const jwtResponse = await downloadSsaJwtMutation.mutateAsync(row.ssa.jti)
         downloadJwtFile(jwtResponse.ssa, row.ssa.software_id)
       } catch (error) {
-        logger('Failed to download SSA JWT:', resolveApiErrorMessage(error as Error))
+        logger.error('Failed to download SSA JWT:', resolveApiErrorMessage(error as Error))
         dispatch(updateToast(true, 'error'))
       }
     },
@@ -153,7 +153,7 @@ const SsaListPage: React.FC = () => {
         })
         setDeleteData(null)
       } catch (error) {
-        logger('Delete SSA failed:', error instanceof Error ? error : String(error))
+        logger.error('Delete SSA failed:', error instanceof Error ? error : String(error))
       }
     },
     [deleteData, revokeSsa],

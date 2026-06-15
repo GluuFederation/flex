@@ -30,7 +30,7 @@ export const logSsaCreation = async (payload: SsaFormValues, message?: string): 
       payload: serialized,
     })
   } catch (error) {
-    logger('Failed to log SSA creation:', resolveApiErrorMessage(error as Error))
+    logger.error('Failed to log SSA creation:', resolveApiErrorMessage(error as Error))
   }
 }
 
@@ -51,7 +51,7 @@ export const logSsaDeletion = async (
       payload: toJsonObject({ ...(payload || {}), jti }),
     })
   } catch (error) {
-    logger('Failed to log SSA deletion:', resolveApiErrorMessage(error as Error))
+    logger.error('Failed to log SSA deletion:', resolveApiErrorMessage(error as Error))
   }
 }
 

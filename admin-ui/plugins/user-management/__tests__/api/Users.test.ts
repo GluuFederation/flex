@@ -60,7 +60,13 @@ jest.mock('Plugins/user-management/helper', () => ({
 }))
 
 jest.mock('@/utils/logger', () => ({
-  logger: Object.assign(jest.fn(), { log: jest.fn() }),
+  logger: {
+    trace: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
 }))
 
 jest.mock('@/constants', () => ({

@@ -44,7 +44,7 @@ export const useDeleteClient = (auditContext: AuditContext) => {
             client_id: auditContext.clientId,
           })
         } catch (auditError) {
-          logger(
+          logger.error(
             'Audit logging failed:',
             auditError instanceof Error ? auditError : String(auditError),
           )

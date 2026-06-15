@@ -140,7 +140,7 @@ const createAuditLogger =
         payload: payloadMapper(data) as JsonValue,
       })
     } catch (error) {
-      logger(
+      logger.error(
         `Failed to log ${resource} audit action:`,
         error instanceof Error ? error : String(error),
       )

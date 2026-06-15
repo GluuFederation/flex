@@ -27,7 +27,7 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   const normalized = path.replace(REGEX_SCRIPT_EXTENSION, '')
   const metadata = eagerModuleMap.get(normalized) ?? eagerModuleMap.get(path)
   if (!metadata) {
-    logger(
+    logger.warn(
       `[loadPluginMetadata] No metadata found for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
     )
     return createFallbackMetadata()
@@ -35,7 +35,7 @@ export const loadPluginMetadata = (path: string): PluginMetadataModule => {
   try {
     return metadata
   } catch (err) {
-    logger(
+    logger.warn(
       `[loadPluginMetadata] Loader failed for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
       err instanceof Error ? err : String(err),
     )
@@ -51,7 +51,7 @@ export const loadPluginMetadataAsync = async (path: string): Promise<PluginMetad
   const normalized = path.replace(REGEX_SCRIPT_EXTENSION, '')
   const metadata = eagerModuleMap.get(normalized) ?? eagerModuleMap.get(path)
   if (!metadata) {
-    logger(
+    logger.warn(
       `[loadPluginMetadata] No async metadata found for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
     )
     return createFallbackMetadata()
@@ -59,7 +59,7 @@ export const loadPluginMetadataAsync = async (path: string): Promise<PluginMetad
   try {
     return metadata
   } catch (err) {
-    logger(
+    logger.warn(
       `[loadPluginMetadata] Async loader failed for path: "${path}" (normalized: "${normalized}"); using empty fallback`,
       err instanceof Error ? err : String(err),
     )

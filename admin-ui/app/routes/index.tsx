@@ -40,7 +40,7 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
     if (queue.length === 0) return
     idle(() => {
       const fn = queue.shift()
-      fn?.()?.catch((err) => logger('Chunk preload failed:', err))
+      fn?.()?.catch((err) => logger.error('Chunk preload failed:', err))
       next()
     })
   }
@@ -71,7 +71,7 @@ export const RoutedContent = () => {
         setPluginMenus(routes)
         schedulePreload(routes)
       } catch (error) {
-        logger('Failed to load plugins:', error instanceof Error ? error : String(error))
+        logger.error('Failed to load plugins:', error instanceof Error ? error : String(error))
         const fallback = processRoutesSync()
         setPluginMenus(fallback)
         schedulePreload(fallback)

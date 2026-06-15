@@ -101,7 +101,7 @@ export const useCreateAttribute = (): UseMutationResult<
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
       mutateAsync(...args).catch((error) => {
-        logger('Create attribute failed:', error)
+        logger.error('Create attribute failed:', error)
       })
     },
     mutateAsync,
@@ -168,7 +168,7 @@ export const useUpdateAttribute = (): UseMutationResult<
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
       mutateAsync(...args).catch((error) => {
-        logger('Update attribute failed:', error)
+        logger.error('Update attribute failed:', error)
       })
     },
     mutateAsync,
@@ -232,7 +232,7 @@ export const useDeleteAttribute = () => {
     ...baseMutation,
     mutate: (...args: Parameters<typeof deleteWithAudit>) => {
       deleteWithAudit(...args).catch((error) => {
-        logger('Delete attribute failed:', error)
+        logger.error('Delete attribute failed:', error)
       })
     },
     mutateAsync: deleteWithAudit,

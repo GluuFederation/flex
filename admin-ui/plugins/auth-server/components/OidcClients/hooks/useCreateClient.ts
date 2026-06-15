@@ -49,7 +49,7 @@ export const useCreateClient = (auditContext: AuditContext) => {
             client_id: auditContext.clientId,
           })
         } catch (auditError) {
-          logger('Audit logging failed:', resolveApiErrorMessage(auditError as Error))
+          logger.error('Audit logging failed:', resolveApiErrorMessage(auditError as Error))
         }
 
         return created

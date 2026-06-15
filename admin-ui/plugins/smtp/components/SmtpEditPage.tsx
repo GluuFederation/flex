@@ -157,7 +157,7 @@ const SmtpEditPage = () => {
               client_id: clientId,
               payload: patches,
             }).catch((error) => {
-              logger('Failed to log audit action:', error)
+              logger.error('Failed to log audit action:', error)
             })
           },
         },

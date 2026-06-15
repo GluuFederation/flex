@@ -49,7 +49,7 @@ export const filterMenusByAuth = async (
           return item
         }
         if (!item.resourceKey) {
-          logger('[Menu] Missing resourceKey for menu item', item.path ?? item.title)
+          logger.warn('[Menu] Missing resourceKey for menu item', item.path ?? item.title)
           return null
         }
         const [result] = await authorizeHelper([

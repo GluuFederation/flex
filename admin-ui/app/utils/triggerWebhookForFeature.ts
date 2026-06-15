@@ -17,7 +17,7 @@ export const triggerWebhookForFeature = (
       }),
     )
   } catch (error) {
-    logger(
+    logger.error(
       `Failed to trigger webhook for feature "${feature}":`,
       error instanceof Error ? error : String(error),
     )

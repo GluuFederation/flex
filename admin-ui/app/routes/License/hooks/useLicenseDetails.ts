@@ -84,7 +84,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           try {
             await postUserAction(audit)
           } catch (e) {
-            logger('License reset audit post failed:', e instanceof Error ? e : String(e))
+            logger.error('License reset audit post failed:', e instanceof Error ? e : String(e))
           }
         }
         dispatch(updateToast(true, 'success', t('messages.license_reset_success')))
@@ -99,7 +99,7 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
           error instanceof Error ? error.message : t('messages.error_processing_request')
         dispatch(updateToast(true, 'error', message))
         if (error != null) {
-          logger('License reset failed:', error)
+          logger.error('License reset failed:', error)
         }
       },
     },

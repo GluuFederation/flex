@@ -97,7 +97,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       const requestedAction = scopeEntry.action
 
       if (!cedarlingInitialized || isInitializing) {
-        logger.log(
+        logger.debug(
           `Cedarling authorization skipped for "${resolvedResourceId}" (${requestedAction}): Cedarling is not yet initialized.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -108,7 +108,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!access_token || !id_token || !userinfo_token) {
-        logger.log(
+        logger.debug(
           `Cedarling authorization denied for "${resolvedResourceId}" (${requestedAction}): required tokens are missing.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -119,7 +119,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!resolvedResourceId) {
-        logger.log(
+        logger.debug(
           `Cedarling authorization denied (${requestedAction}): resource id is missing for the given permission.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -150,7 +150,7 @@ export const useCedarling = (): UseCedarlingReturn => {
           .then((response): AuthorizationResult => {
             const isAuthorized = response?.decision === true
             if (!isAuthorized) {
-              logger.log(
+              logger.debug(
                 `Cedarling authorization denied: "${resolvedResourceId}" (${actionLabel})`,
                 {
                   payload: buildLogPayload(resolvedResourceId, actionLabel),
@@ -172,7 +172,7 @@ export const useCedarling = (): UseCedarlingReturn => {
         const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
-        logger(
+        logger.error(
           `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
           {
             payload: buildLogPayload(resolvedResourceId, actionLabel),

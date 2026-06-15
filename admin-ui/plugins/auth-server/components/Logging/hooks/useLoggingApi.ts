@@ -54,7 +54,7 @@ export const useUpdateLoggingConfig = () => {
           payload: { modifiedFields: changedFields },
         })
       } catch (error) {
-        logger(
+        logger.error(
           'Failed to log logging audit action:',
           error instanceof Error ? error : String(error),
         )

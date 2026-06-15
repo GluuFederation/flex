@@ -122,7 +122,7 @@ const UserEditPage = () => {
             await AXIOS_INSTANCE.delete(`${SESSION_ENDPOINT}/${encodeURIComponent(userDn)}`)
           } catch (err) {
             const status = (err as { response?: { status?: number } }).response?.status
-            logger('Failed to revoke user session:', err instanceof Error ? err : String(err))
+            logger.error('Failed to revoke user session:', err instanceof Error ? err : String(err))
             if (status !== 404) {
               dispatch(updateToast(true, 'error', t('messages.session_revoke_failed')))
             }

@@ -125,7 +125,10 @@ const CedarlingConfigPage: React.FC = () => {
           payload: { fileName: selectedFile.name },
         })
       } catch (e) {
-        logger('Audit log failed after policy store upload:', e instanceof Error ? e : String(e))
+        logger.error(
+          'Audit log failed after policy store upload:',
+          e instanceof Error ? e : String(e),
+        )
       }
 
       await syncRoleToScopesMappingsMutation.mutateAsync()
@@ -140,13 +143,16 @@ const CedarlingConfigPage: React.FC = () => {
           payload: { fileName: selectedFile.name },
         })
       } catch (e) {
-        logger('Audit log failed after role/scope sync:', e instanceof Error ? e : String(e))
+        logger.error('Audit log failed after role/scope sync:', e instanceof Error ? e : String(e))
       }
 
       setSelectedFile(null)
       navigateToRoute(ROUTES.LOGOUT)
     } catch (error) {
-      logger('Policy store upload flow failed:', error instanceof Error ? error : String(error))
+      logger.error(
+        'Policy store upload flow failed:',
+        error instanceof Error ? error : String(error),
+      )
       const errorMessage = getErrorMessage(
         error as Error | ApiError,
         'documentation.cedarlingConfig.uploadFailed',

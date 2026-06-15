@@ -16,7 +16,7 @@ const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof transl
 }
 
 const handleMissingKey = (key: string, defaultValue?: string): string => {
-  logger(
+  logger.error(
     `[i18n] Missing translation key: "${key}"`,
     defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
   )
@@ -40,7 +40,7 @@ const getSavedLanguage = (): string => {
       if (values.length > 0) return values[values.length - 1]
     }
   } catch (error) {
-    logger(
+    logger.error(
       'Failed to read saved language from localStorage:',
       error instanceof Error ? error : String(error),
     )
@@ -57,7 +57,7 @@ export const ensureLocaleLoaded = async (lng: string): Promise<void> => {
     const mod = await loader()
     i18n.addResourceBundle(base, 'translation', mod.default, true, true)
   } catch (error) {
-    logger(
+    logger.error(
       `[i18n] Failed to load "${base}" translations:`,
       error instanceof Error ? error : String(error),
     )

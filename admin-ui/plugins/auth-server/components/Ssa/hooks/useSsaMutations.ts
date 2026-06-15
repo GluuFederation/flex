@@ -38,7 +38,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await logSsaDeletion(jti, auditPayload || { jti }, userMessage)
       } catch (auditError) {
-        logger(
+        logger.error(
           'Audit logging failed:',
           auditError instanceof Error ? auditError : String(auditError),
           { jti },
@@ -49,7 +49,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await queryClient.invalidateQueries({ queryKey: SSA_QUERY_KEYS.all })
       } catch (invalidateError) {
-        logger(
+        logger.error(
           'Query invalidation failed after delete:',
           invalidateError instanceof Error ? invalidateError : String(invalidateError),
           { jti },
@@ -60,7 +60,7 @@ export const useRevokeSsaWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'success'))
         callbacksRef.current?.onSuccess?.()
       } catch (callbackError) {
-        logger(
+        logger.error(
           'Post-delete callback failed:',
           callbackError instanceof Error ? callbackError : String(callbackError),
           { jti },

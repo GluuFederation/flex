@@ -15,7 +15,13 @@ jest.mock('@/redux/api/backend-api', () => ({
 }))
 
 jest.mock('@/utils/logger', () => ({
-  logger: jest.fn(),
+  logger: {
+    trace: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
 }))
 
 describe('orval interceptors', () => {

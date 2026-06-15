@@ -55,7 +55,7 @@ export const useDeleteSessionWithAudit = (
           payload: { sessionId, username },
         })
       } catch (auditError) {
-        logger(
+        logger.error(
           'Audit logging failed:',
           auditError instanceof Error ? auditError : String(auditError),
         )
@@ -65,7 +65,7 @@ export const useDeleteSessionWithAudit = (
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        logger(
+        logger.error(
           'Query invalidation failed after delete:',
           invalidateError instanceof Error ? invalidateError : String(invalidateError),
         )
@@ -117,7 +117,7 @@ export const useRevokeSessionWithAudit = (
           payload: { userDn, username },
         })
       } catch (auditError) {
-        logger(
+        logger.error(
           'Audit logging failed:',
           auditError instanceof Error ? auditError : String(auditError),
         )
@@ -127,7 +127,7 @@ export const useRevokeSessionWithAudit = (
       try {
         await invalidateSessionQueries(queryClient)
       } catch (invalidateError) {
-        logger(
+        logger.error(
           'Query invalidation failed after revoke:',
           invalidateError instanceof Error ? invalidateError : String(invalidateError),
         )

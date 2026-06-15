@@ -115,7 +115,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       },
       onError: (error: ApiError) => {
         const errorMessage = getErrorMessage(error, 'Invalid JSON file')
-        logger('Error importing config:', errorMessage)
+        logger.error('Error importing config:', errorMessage)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -140,7 +140,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       await navigator.clipboard.writeText(JSON.stringify(projectConfigs, null, 2))
       setIsCopied(true)
     } catch (error) {
-      logger('Failed to copy to clipboard:', error instanceof Error ? error : String(error))
+      logger.error('Failed to copy to clipboard:', error instanceof Error ? error : String(error))
       dispatch(updateToast(true, 'error', t('messages.copy_failed')))
     }
   }
@@ -172,12 +172,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         } catch (error) {
           const importError: ApiError = error instanceof Error ? error : { message: String(error) }
           const errorMessage = getErrorMessage(importError, 'Invalid JSON file')
-          logger('Error importing config:', errorMessage)
+          logger.error('Error importing config:', errorMessage)
           dispatch(updateToast(true, 'error', errorMessage))
         }
       }
       reader.onerror = () => {
-        logger('Error reading file')
+        logger.error('Error reading file')
         dispatch(updateToast(true, 'error', 'Failed to read file'))
       }
       reader.readAsText(file, 'utf-8')
@@ -207,7 +207,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
       dispatch(updateToast(true, 'success', 'File saved successfully'))
     } catch (e) {
-      logger('Error saving file:', e instanceof Error ? e : String(e))
+      logger.error('Error saving file:', e instanceof Error ? e : String(e))
       dispatch(updateToast(true, 'error', 'An error occurred while saving the file'))
     }
   }

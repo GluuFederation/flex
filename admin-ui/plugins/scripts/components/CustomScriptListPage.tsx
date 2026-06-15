@@ -136,7 +136,7 @@ const CustomScriptListPage: React.FC = () => {
         setModal(false)
         setItemToDelete(null)
       } catch (err) {
-        logger('Failed to delete custom script:', err instanceof Error ? err : String(err))
+        logger.error('Failed to delete custom script:', err instanceof Error ? err : String(err))
         dispatch(updateToast(true, 'error', t('messages.error_deleting_script')))
       }
     },

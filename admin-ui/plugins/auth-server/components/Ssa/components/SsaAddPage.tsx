@@ -59,7 +59,7 @@ const SsaAddPage: React.FC = () => {
         dispatch(updateToast(true, 'success'))
         navigateToRoute(ROUTES.AUTH_SERVER_SSA_LIST)
       } catch (error) {
-        logger('Failed to submit SSA form:', resolveApiErrorMessage(error as Error))
+        logger.error('Failed to submit SSA form:', resolveApiErrorMessage(error as Error))
         dispatch(updateToast(true, 'error'))
       }
     },

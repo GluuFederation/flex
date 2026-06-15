@@ -31,7 +31,10 @@ const ByeBye = () => {
         try {
           await deleteSession()
         } catch (error) {
-          logger('Error deleting admin UI session:', error instanceof Error ? error : String(error))
+          logger.error(
+            'Error deleting admin UI session:',
+            error instanceof Error ? error : String(error),
+          )
         }
       }
 
@@ -59,7 +62,7 @@ const ByeBye = () => {
     }
 
     performLogout().catch((error) => {
-      logger('Logout failed:', error instanceof Error ? error : String(error))
+      logger.error('Logout failed:', error instanceof Error ? error : String(error))
       window.location.href = '/'
     })
   }, [])

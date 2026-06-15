@@ -27,7 +27,7 @@ const getPagingSize = (defaultSize: number = DEFAULT_PAGING_SIZE): number => {
 
     return defaultSize
   } catch (error) {
-    logger(
+    logger.error(
       'Failed to read paging size from localStorage:',
       error instanceof Error ? error : String(error),
     )
@@ -47,12 +47,12 @@ export const getRowsPerPageOptions = (): number[] => [...ROWS_PER_PAGE_OPTIONS]
 export const savePagingSize = (size: number): void => {
   const validSize = Math.floor(size)
   if (validSize <= 0) {
-    logger('Invalid paging size:', size, '- must be a positive integer')
+    logger.warn('Invalid paging size:', size, '- must be a positive integer')
     return
   }
 
   if (!(ROWS_PER_PAGE_OPTIONS as readonly number[]).includes(validSize)) {
-    logger('Invalid paging size:', validSize, '- must be one of', ROWS_PER_PAGE_OPTIONS)
+    logger.warn('Invalid paging size:', validSize, '- must be one of', ROWS_PER_PAGE_OPTIONS)
     return
   }
 
@@ -66,7 +66,7 @@ export const savePagingSize = (size: number): void => {
       window.dispatchEvent(new CustomEvent(PAGING_SIZE_CHANGED_EVENT, { detail: validSize }))
     }
   } catch (error) {
-    logger(
+    logger.error(
       'Failed to save paging size to localStorage:',
       error instanceof Error ? error : String(error),
     )
