@@ -3,6 +3,7 @@ import type { JsonValue } from './common'
 export type GluuCommitDialogOperation = {
   path: string
   value: JsonValue
+  label?: string
 }
 
 export type GluuCommitDialogProps = {

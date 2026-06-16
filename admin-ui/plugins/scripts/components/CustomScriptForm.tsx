@@ -482,7 +482,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           </div>
         )}
 
-        <div className={classes.fieldItemFullWidth}>
+        <div className={cx(classes.fieldItemFullWidth, classes.propsSection)}>
           <div
             className={cx(classes.propsBox, {
               [classes.propsBoxEmpty]: !formik.values.configurationProperties?.length,
@@ -548,7 +548,7 @@ const CustomScriptForm = ({ item, handleSubmit, viewOnly = false }: CustomScript
           </div>
         </div>
 
-        <div className={classes.fieldItemFullWidth}>
+        <div className={cx(classes.fieldItemFullWidth, classes.propsSection)}>
           <div
             className={cx(classes.propsBox, {
               [classes.propsBoxEmpty]: !formik.values.moduleProperties?.length,

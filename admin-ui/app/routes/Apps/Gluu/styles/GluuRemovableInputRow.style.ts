@@ -2,10 +2,11 @@ import { makeStyles } from 'tss-react/mui'
 
 interface GluuRemovableInputRowStyleParams {
   fontColor?: string
+  isDark?: boolean
 }
 
 export const useStyles = makeStyles<GluuRemovableInputRowStyleParams>()(
-  (_theme, { fontColor }) => ({
+  (_theme, { fontColor, isDark }) => ({
     removeButton: {
       width: 32,
       height: 32,
@@ -41,8 +42,12 @@ export const useStyles = makeStyles<GluuRemovableInputRowStyleParams>()(
       gap: 8,
     },
     input: {
-      flex: 1,
-      minWidth: 0,
+      'flex': 1,
+      'minWidth': 0,
+      '&::-webkit-calendar-picker-indicator': {
+        filter: isDark ? 'brightness(0) invert(1)' : 'none',
+        cursor: 'pointer',
+      },
     },
   }),
 )

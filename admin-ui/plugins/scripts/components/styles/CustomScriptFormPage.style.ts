@@ -87,8 +87,10 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       'display': DISPLAY_FLEX,
       'flexDirection': FLEX_DIRECTION_COLUMN,
       'width': WIDTH_FULL,
-      '& > * + *:not(:last-child)': {
-        marginTop: SPACING.SECTION_GAP,
+      'gap': SPACING.SECTION_GAP,
+      '& > *': {
+        marginTop: '0 !important',
+        marginBottom: '0 !important',
       },
     },
     fieldsGrid: {
@@ -112,6 +114,9 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
       '& > div': {
         flex: '1 1 0',
         minWidth: 0,
+      },
+      '& > div .form-group [class*="col"]': {
+        paddingBottom: 0,
       },
       [theme.breakpoints.down('md')]: {
         flexDirection: FLEX_DIRECTION_COLUMN,
@@ -349,6 +354,11 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           transition: 'background-color 5000s ease-in-out 0s',
         },
+    },
+    propsSection: {
+      '& + &': {
+        marginTop: '16px !important',
+      },
     },
     propsBox: dl.listBox,
     propsBoxEmpty: dl.listBoxEmpty,

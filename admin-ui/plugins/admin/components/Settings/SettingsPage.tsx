@@ -383,6 +383,7 @@ const SettingsPage: React.FC = () => {
                       doc_entry="pageSize"
                       disabled={!canWriteSettings}
                       isDark={isDark}
+                      reserveErrorSpace
                       handleChange={(e) => {
                         const n = Number.parseInt(e.target.value, 10)
                         if (!Number.isNaN(n)) handlePagingSizeChange(n)
@@ -404,6 +405,7 @@ const SettingsPage: React.FC = () => {
                       disabled={!canWriteSettings}
                       isDark={isDark}
                       hideChooseOption
+                      reserveErrorSpace
                       handleChange={(e) => handleLogLevelChange(e.target.value as LogLevel)}
                     />
                   </div>
@@ -442,6 +444,7 @@ const SettingsPage: React.FC = () => {
                       doc_entry="adminui_default_acr"
                       disabled={!canWriteSettings}
                       isDark={isDark}
+                      reserveErrorSpace
                     />
                   </div>
 

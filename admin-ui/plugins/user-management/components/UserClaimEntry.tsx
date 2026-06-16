@@ -6,7 +6,7 @@ import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { Close as CloseIcon } from '@/components/icons'
 import { countries } from 'Plugins/user-management/common/countries'
 import { JANS_ADMIN_UI_ROLE_ATTR } from '@/constants'
-import { COUNTRY_ATTR } from '../common'
+import { COUNTRY_ATTR, BIRTHDATE_ATTR } from '../common'
 import { getClaimLabel, getClaimLabelKey } from '../utils/claimLabelUtils'
 import { useGetAllAdminuiRoles } from 'JansConfigApi'
 import { useTheme } from '@/context/theme/themeContext'
@@ -136,24 +136,24 @@ const UserClaimEntry = ({
     )
   }
 
+  const isBoolean = data?.dataType?.toLowerCase() === 'boolean'
+  const isDate = data?.dataType?.toLowerCase() === 'date' || data.name === BIRTHDATE_ATTR
+
   return (
     <div key={entry}>
       <GluuRemovableInputRow
         label={claimLabelKey}
         name={data.name}
+        type={isDate ? 'date' : 'text'}
         isDirect={true}
-        value={
-          data?.dataType?.toLowerCase() === 'boolean'
-            ? Boolean(formik.values[data.name])
-            : String(formik.values[data.name] ?? '')
-        }
+        value={isBoolean ? Boolean(formik.values[data.name]) : String(formik.values[data.name] ?? '')}
         formik={formik}
         handler={doHandle}
         modifiedFields={modifiedFields}
         setModifiedFields={setModifiedFields}
         doc_category={typeof data.description === 'string' ? data.description : undefined}
         lsize={12}
-        isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
+        isBoolean={isBoolean}
       />
     </div>
   )

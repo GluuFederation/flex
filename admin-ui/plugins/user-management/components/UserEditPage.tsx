@@ -162,7 +162,6 @@ const UserEditPage = () => {
         baseCustomAttributes,
         modifiedFields,
         personAttributes,
-        userDetails,
       )
       const standardFieldValues = getStandardFieldValues(values, standardFields)
 

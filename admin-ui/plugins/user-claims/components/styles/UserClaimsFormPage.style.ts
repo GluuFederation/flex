@@ -125,6 +125,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       'width': '100%',
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
+      'paddingBottom': 18,
       ...createFormGroupOverrides(),
       '& .form-group > label': {
         ...createFormGroupOverrides()['& .form-group > label'],

@@ -19,6 +19,7 @@ import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { buildFormOperations, shouldDisableApplyButton, isEmptyValue } from '../utils'
+import { getClaimLabel } from '../utils/claimLabelUtils'
 import type {
   FormFieldValue,
   UserFormProps,
@@ -183,20 +184,30 @@ const UserForm = ({
     prevModifiedFieldsLengthRef.current = currentLength
   }, [modifiedFields, resetFormToInitialCustomAttributes])
 
-  const updateModifiedFields = useCallback((name: string, value: FormFieldValue) => {
-    setModifiedFields((prev) => {
-      if (isEmptyValue(value) && !Array.isArray(value)) {
-        const rest = { ...prev }
-        delete rest[name]
-        return rest
-      } else {
+  const isTrackedChange = useCallback(
+    (name: string, value: FormFieldValue): boolean => {
+      if (!isEmptyValue(value) || Array.isArray(value)) return true
+      return !isEmptyValue(formik.initialValues[name])
+    },
+    [formik.initialValues],
+  )
+
+  const updateModifiedFields = useCallback(
+    (name: string, value: FormFieldValue) => {
+      setModifiedFields((prev) => {
+        if (!isTrackedChange(name, value)) {
+          const rest = { ...prev }
+          delete rest[name]
+          return rest
+        }
         return {
           ...prev,
           [name]: value as string | string[] | boolean,
         }
-      }
-    })
-  }, [])
+      })
+    },
+    [isTrackedChange],
+  )
 
   const removeSelectedClaimsFromState = useCallback(
     (id: string) => {
@@ -204,14 +215,9 @@ const UserForm = ({
       const isMultiValued = attributeDef?.oxMultiValuedAttribute
       const isBoolean = attributeDef?.dataType?.toLowerCase() === 'boolean'
 
-      if (isMultiValued) {
-        formik.setFieldValue(id, [])
-      } else if (isBoolean) {
-        formik.setFieldValue(id, false)
-      } else {
-        formik.setFieldValue(id, '')
-      }
-      updateModifiedFields(id, isMultiValued ? [] : '')
+      const clearedValue = isMultiValued ? [] : isBoolean ? false : ''
+      formik.setFieldValue(id, clearedValue)
+      updateModifiedFields(id, clearedValue)
       setSelectedClaims((prev) => prev.filter((data) => data.name !== id))
     },
     [formik, memoizedPersonAttributes, updateModifiedFields],
@@ -224,8 +230,7 @@ const UserForm = ({
         const cleanedFields: Record<string, string | string[] | boolean> = {}
 
         for (const [key, value] of Object.entries(newFields)) {
-          // Preserve empty arrays as they represent intentional clearing of multi-valued fields
-          if (!isEmptyValue(value) || Array.isArray(value)) {
+          if (isTrackedChange(key, value)) {
             cleanedFields[key] = value
           }
         }
@@ -233,7 +238,7 @@ const UserForm = ({
         return cleanedFields
       })
     },
-    [],
+    [isTrackedChange],
   )
 
   const handleChange = useCallback(
@@ -251,8 +256,14 @@ const UserForm = ({
   )
 
   const commitDialogOperations = useMemo(
-    () => operations.map(({ path, value }) => ({ path, value })),
-    [operations],
+    () =>
+      operations.map(({ path, value }) => {
+        const attributeDef = memoizedPersonAttributes.find((attr) => attr.name === path)
+        const displayName =
+          typeof attributeDef?.displayName === 'string' ? attributeDef.displayName : undefined
+        return { path, value, label: getClaimLabel(t, path, displayName) }
+      }),
+    [operations, memoizedPersonAttributes, t],
   )
 
   return (
