@@ -186,7 +186,7 @@ const UserForm = ({
 
   const isTrackedChange = useCallback(
     (name: string, value: FormFieldValue): boolean => {
-      if (!isEmptyValue(value) || Array.isArray(value)) return true
+      if (!isEmptyValue(value)) return true
       return !isEmptyValue(formik.initialValues[name])
     },
     [formik.initialValues],
