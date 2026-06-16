@@ -146,7 +146,9 @@ const UserClaimEntry = ({
         name={data.name}
         type={isDate ? 'date' : 'text'}
         isDirect={true}
-        value={isBoolean ? Boolean(formik.values[data.name]) : String(formik.values[data.name] ?? '')}
+        value={
+          isBoolean ? Boolean(formik.values[data.name]) : String(formik.values[data.name] ?? '')
+        }
         formik={formik}
         handler={doHandle}
         modifiedFields={modifiedFields}
