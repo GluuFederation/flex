@@ -160,11 +160,9 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             <ChevronIcon width={20} height={20} direction="down" />
           </span>
         </div>
-        {showError && errorMessage && (
-          <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
-            {errorMessage}
-          </GluuText>
-        )}
+        <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
+          {showError && errorMessage ? errorMessage : '\u00A0'}
+        </GluuText>
       </Col>
     </FormGroup>
   )
