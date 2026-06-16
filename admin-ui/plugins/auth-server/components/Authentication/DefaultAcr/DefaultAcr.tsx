@@ -30,7 +30,7 @@ import {
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAcrAudit } from '../Acrs/hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useStyles } from './DefaultAcr.style'
 import { MAX_AGAMA_PROJECTS_FOR_ACR } from './constants'
 import { AUTH_RESOURCE_ID } from '../constants'
@@ -161,7 +161,7 @@ const DefaultAcr = (): React.ReactElement => {
       try {
         await logAcrUpdate(newAcr, userMessage, { defaultAcr: acrValue })
       } catch (auditError) {
-        devLogger.error(
+        logger.error(
           'Failed to log ACR update:',
           auditError instanceof Error ? auditError : String(auditError),
         )
@@ -174,7 +174,7 @@ const DefaultAcr = (): React.ReactElement => {
         )
       }
     } catch (error) {
-      devLogger.error('Failed to update ACR:', error instanceof Error ? error : String(error))
+      logger.error('Failed to update ACR:', error instanceof Error ? error : String(error))
     }
   }
 

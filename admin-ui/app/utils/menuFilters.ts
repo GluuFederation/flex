@@ -1,7 +1,7 @@
 import { CEDARLING_BYPASS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { JANS_SERVICES } from '@/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type { MenuItem, VisibilityConditions } from '@/components/Sidebar'
 import type {
   AdminUiFeatureResource,
@@ -49,7 +49,7 @@ export const filterMenusByAuth = async (
           return item
         }
         if (!item.resourceKey) {
-          devLogger.warn('[Menu] Missing resourceKey for menu item', item.path ?? item.title)
+          logger.warn('[Menu] Missing resourceKey for menu item', item.path ?? item.title)
           return null
         }
         const [result] = await authorizeHelper([

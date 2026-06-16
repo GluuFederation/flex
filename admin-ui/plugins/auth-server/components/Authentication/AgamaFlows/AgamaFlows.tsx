@@ -31,7 +31,8 @@ import readZip from '@/utils/zip'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from 'Orval'
@@ -204,7 +205,7 @@ const AgamaFlows: React.FC = () => {
       setSHAfile(null)
       setShaStatus(false)
     } catch (error) {
-      devLogger.error('Error uploading project:', error instanceof Error ? error : String(error))
+      logger.error('Error uploading project: ' + resolveApiErrorMessage(error as Error))
       dispatch(updateToast(true, 'error', 'Failed to upload project'))
     } finally {
       setUploadLoading(false)
@@ -238,7 +239,7 @@ const AgamaFlows: React.FC = () => {
               break
             }
           } catch (parseError) {
-            devLogger.error(
+            logger.error(
               `Error parsing JSON from ${filename}:`,
               parseError instanceof Error ? parseError : String(parseError),
             )
@@ -250,7 +251,7 @@ const AgamaFlows: React.FC = () => {
         setGetProjectName(true)
       }
     } catch (error) {
-      devLogger.error('Error reading zip file:', error instanceof Error ? error : String(error))
+      logger.error('Error reading zip file:', error instanceof Error ? error : String(error))
       toast.error('Failed to read zip file')
     }
   }, [])
@@ -373,7 +374,7 @@ const AgamaFlows: React.FC = () => {
     }
 
     reader.onerror = (error) => {
-      devLogger.error('Error reading SHA256 file:', error)
+      logger.error('Error reading SHA256 file:', error)
       toast.error('Failed to read SHA256 file')
     }
 
@@ -472,7 +473,7 @@ const AgamaFlows: React.FC = () => {
       setRepoName(null)
       setDeployLoading(false)
     } catch (error) {
-      devLogger.error('Error deploying project:', error instanceof Error ? error : String(error))
+      logger.error('Error deploying project: ' + resolveApiErrorMessage(error as Error))
       toast.error('File not found or deployment failed')
       setDeployLoading(false)
     }
@@ -500,7 +501,7 @@ const AgamaFlows: React.FC = () => {
       try {
         await deleteProjectMutation.mutateAsync({ name: projName })
       } catch (error) {
-        devLogger.error('Error deleting project:', error instanceof Error ? error : String(error))
+        logger.error('Error deleting project: ' + resolveApiErrorMessage(error as Error))
         return
       }
       setDeleteModal(false)
@@ -508,10 +509,7 @@ const AgamaFlows: React.FC = () => {
       try {
         await logAgamaDeletion(projectToDelete as Deployment, message)
       } catch (error) {
-        devLogger.error(
-          'Error logging agama deletion:',
-          error instanceof Error ? error : String(error),
-        )
+        logger.error('Error logging agama deletion: ' + resolveApiErrorMessage(error as Error))
       }
     },
     [projectToDelete, deleteProjectMutation, logAgamaDeletion],

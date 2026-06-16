@@ -23,7 +23,7 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import {
   useGetConfigCache,
   useGetConfigCacheInMemory,
@@ -271,14 +271,14 @@ const CachePage: React.FC = () => {
             'Cache configuration updated',
           )
         } catch (logError) {
-          devLogger.error(
+          logger.error(
             'Failed to log cache update:',
             logError instanceof Error ? logError : String(logError),
           )
         }
       } catch (error) {
         dispatch(updateToast(true, 'error'))
-        devLogger.error(
+        logger.error(
           'Failed to update cache config:',
           error instanceof Error ? error : String(error),
         )

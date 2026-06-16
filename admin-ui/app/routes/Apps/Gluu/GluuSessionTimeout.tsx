@@ -4,7 +4,7 @@ import { useIdleTimer } from '@/hooks/useIdleTimer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 type SessionTimeoutProps = {
   isAuthenticated: boolean
@@ -50,7 +50,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
           }),
         )
       } catch (err) {
-        devLogger.error(err instanceof Error ? err : String(err))
+        logger.error('Error in logout flow:', err instanceof Error ? err : String(err))
       }
     },
     [clearTimers, dispatch],

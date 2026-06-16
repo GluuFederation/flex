@@ -17,6 +17,8 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { adminUiFeatures } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAttributes, useDeleteAttribute, useMutationEffects, toAttributeList } from '../hooks'
 import { API_ATTRIBUTE } from '../constants'
@@ -134,6 +136,8 @@ const UserClaimsListPage: React.FC = () => {
             message ||
             t('messages.attribute_deleted', { name: itemToDelete?.name ?? itemToDelete?.inum }),
         })
+      } catch (error) {
+        logger.error('Failed to delete attribute: ' + resolveApiErrorMessage(error as Error))
       } finally {
         setModal(false)
         setItemToDelete(null)

@@ -402,6 +402,7 @@
     "list_paging_size": "Tamaño de Paginación",
     "location_type": "Tipo de Ubicación",
     "log_level": "Nivel de Log",
+    "admin_ui_log_level": "Nivel de Log de Admin UI",
     "log_layout": "Formato de Log",
     "login_uris": "URIs de Login",
     "logo_uri": "URI del Logo",

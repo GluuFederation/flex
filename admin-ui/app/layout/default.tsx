@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Layout, ThemeProvider } from 'Components'
 import { DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
 
@@ -39,7 +39,7 @@ const getInitialThemeStyle = (): string => {
     }
     return DEFAULT_THEME
   } catch (e) {
-    devLogger.error(
+    logger.error(
       'Failed to get initial theme from localStorage:',
       e instanceof Error ? e : String(e),
     )

@@ -9,7 +9,7 @@ import type { CaughtError } from '../types'
 import { logUserDeletion, getErrorMessage, triggerUserWebhook } from '../helper'
 import { adminUiFeatures } from '@/constants'
 import type { CustomUser } from '../types'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 export interface MutationCallbacks {
   onSuccess?: () => void
@@ -38,7 +38,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await logUserDeletion(inum, userData)
       } catch (auditError) {
-        devLogger.error(
+        logger.error(
           'Audit logging failed:',
           auditError instanceof Error ? auditError : String(auditError),
           { inum },
@@ -50,7 +50,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         try {
           triggerUserWebhook(userData, adminUiFeatures.users_delete)
         } catch (webhookError) {
-          devLogger.error(
+          logger.error(
             'Webhook trigger failed:',
             webhookError instanceof Error ? webhookError : String(webhookError),
             { inum },
@@ -62,7 +62,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
       try {
         await queryUtils.invalidateQueriesByKey(queryClient, getGetUserQueryKey())
       } catch (invalidateError) {
-        devLogger.error(
+        logger.error(
           'Query invalidation failed after delete:',
           invalidateError instanceof Error ? invalidateError : String(invalidateError),
           { inum },
@@ -74,7 +74,7 @@ export const useDeleteUserWithAudit = (callbacks?: MutationCallbacks) => {
         dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
         callbacksRef.current?.onSuccess?.()
       } catch (callbackError) {
-        devLogger.error(
+        logger.error(
           'Post-delete callback failed:',
           callbackError instanceof Error ? callbackError : String(callbackError),
           { inum },
