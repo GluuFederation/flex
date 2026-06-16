@@ -3,7 +3,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { useAuditContext, PATCH } from '@/audit'
 import type { CacheConfiguration } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 const API_CACHE = 'api-cache'
 
@@ -28,7 +28,7 @@ export const useCacheAudit = () => {
           payload: cache as JsonValue,
         })
       } catch (error) {
-        devLogger.error(
+        logger.error(
           'Failed to log cache update audit:',
           error instanceof Error ? error : String(error),
         )

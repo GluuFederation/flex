@@ -27,6 +27,8 @@ import {
   LockIcon,
 } from '../../../components/SVG'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { filterMenusByHealth, filterMenusByAuth } from '@/utils/menuFilters'
@@ -66,8 +68,10 @@ const GluuAppSidebar = (): JSX.Element => {
   )
   const logoutAuditSucceeded = useAppSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
+  const [menusLoaded, setMenusLoaded] = useState<boolean>(false)
   const didAnimateMenusRef = useRef<boolean>(false)
-  const isReady = pluginMenus.length > 0
+  // ready once a load attempt has settled, so the loader can't spin forever
+  const isReady = menusLoaded
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
@@ -110,7 +114,10 @@ const GluuAppSidebar = (): JSX.Element => {
     try {
       const filteredMenus = await filterMenusByAuth(await memoizedFilteredMenus, authorizeHelper)
       setPluginMenus(filteredMenus)
+    } catch (error) {
+      logger.error('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
     } finally {
+      setMenusLoaded(true)
       if (!didAnimateMenusRef.current) {
         didAnimateMenusRef.current = true
       }

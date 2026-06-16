@@ -1,5 +1,5 @@
 import { getCurrentAuditContext } from '@/audit'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import type { JsonObject } from 'Routes/Apps/Gluu/types/common'
@@ -30,7 +30,7 @@ export const logSsaCreation = async (payload: SsaFormValues, message?: string): 
       payload: serialized,
     })
   } catch (error) {
-    devLogger.error('Failed to log SSA creation:', error instanceof Error ? error : String(error))
+    logger.error('Failed to log SSA creation:', resolveApiErrorMessage(error as Error))
   }
 }
 
@@ -51,7 +51,7 @@ export const logSsaDeletion = async (
       payload: toJsonObject({ ...(payload || {}), jti }),
     })
   } catch (error) {
-    devLogger.error('Failed to log SSA deletion:', error instanceof Error ? error : String(error))
+    logger.error('Failed to log SSA deletion:', resolveApiErrorMessage(error as Error))
   }
 }
 

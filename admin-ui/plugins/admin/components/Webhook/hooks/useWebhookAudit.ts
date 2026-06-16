@@ -3,7 +3,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 import type { UserActionPayload } from 'Redux/api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { createSuccessAuditInit, useAuditContext } from '@/audit'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type {
   WebhookAuditActionData,
   WebhookAuditActionType,
@@ -35,7 +35,7 @@ export const useWebhookAudit = () => {
       try {
         await postUserAction(audit as UserActionPayload)
       } catch (err) {
-        devLogger.error(
+        logger.error(
           '[Webhook audit] postUserAction failed',
           err instanceof Error ? err : String(err),
         )

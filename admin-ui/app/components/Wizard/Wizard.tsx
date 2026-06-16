@@ -3,7 +3,7 @@ import isUndefined from 'lodash/isUndefined'
 import map from 'lodash/map'
 
 import 'Styles/components/wizard.scss'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 interface WizardProps {
   children: ReactNode
@@ -28,8 +28,8 @@ class Wizard extends React.Component<WizardProps, WizardState> {
     const { initialActiveStep, activeStep, onStepChanged } = this.props
 
     if (activeStep && !onStepChanged) {
-      devLogger.warn(
-        'Warning: You need to provide onStepChanged props if you want the ' +
+      logger.warn(
+        'You need to provide onStepChanged props if you want the ' +
           'component to be controlled. For uncontrolled type, use initialActiveStep.',
       )
     }

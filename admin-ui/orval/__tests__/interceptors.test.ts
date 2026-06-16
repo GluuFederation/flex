@@ -14,8 +14,12 @@ jest.mock('@/redux/api/backend-api', () => ({
   createAdminUiSession: mockCreateAdminUiSession,
 }))
 
-jest.mock('@/utils/devLogger', () => ({
-  devLogger: {
+jest.mock('@/utils/logger', () => ({
+  logger: {
+    trace: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
     error: jest.fn(),
   },
 }))

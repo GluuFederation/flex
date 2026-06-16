@@ -9,7 +9,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useAssetAudit } from './useAssetAudit'
 import { CREATE, UPDATE, DELETION, ASSET } from '@/audit'
 import { T_KEYS } from '../constants'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import type {
   AssetApiError,
   AssetMutationError,
@@ -75,7 +75,7 @@ const useAssetSaveMutation = (
         logAction(auditAction, ASSET, { action_message: userMessage, action_data: body }).catch(
           (err) => {
             const auditError = err instanceof Error ? err : new Error(String(err))
-            devLogger.error('[Asset audit] logAction failed', auditError)
+            logger.error('[Asset audit] logAction failed', auditError)
           },
         )
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
@@ -121,8 +121,9 @@ export const useDeleteAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
           action_message: userMessage,
           action_data: { inum },
         }).catch((err) => {
+          // audit failure is side-effect only; the delete already succeeded
           const auditError = err instanceof Error ? err : new Error(String(err))
-          devLogger.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
+          logger.error(`[Asset audit] logAction failed for asset inum=${inum}`, auditError)
         })
         dispatch(updateToast(true, 'success', t(T_KEYS.MSG_ASSET_DELETED_SUCCESSFULLY)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())

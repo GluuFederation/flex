@@ -8,7 +8,8 @@ import type {
   UserActionPayload,
 } from './types/BackendApi'
 import axios from '../api/axios'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 
 export type {
   ApiTokenResponse,
@@ -36,9 +37,9 @@ export const fetchServerConfiguration = async (token?: string): Promise<AppConfi
     const response = await axios.get<AppConfigResponse>(ENDPOINTS.CONFIG, getAuthConfig(token))
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems getting configuration in order to process authz code flow.',
-      error instanceof Error ? error : String(error),
+    logger.error(
+      'Problems getting configuration in order to process authz code flow: ' +
+        resolveApiErrorMessage(error as Error),
     )
     throw error
   }
@@ -55,10 +56,7 @@ export const putServerConfiguration = async (
     )
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems updating configuration.',
-      error instanceof Error ? error : String(error),
-    )
+    logger.error('Problems updating configuration: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }
@@ -73,9 +71,9 @@ export const fetchUserInformation = async ({
     const response = await axios.get<string>(userInfoEndpoint, { headers })
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems fetching user information with the provided code.',
-      error instanceof Error ? error : String(error),
+    logger.error(
+      'Problems fetching user information with the provided code: ' +
+        resolveApiErrorMessage(error as Error),
     )
     return -1
   }
@@ -97,9 +95,8 @@ export const postUserAction = async (
     )
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error(
-      'Problems posting user action audit log.',
-      error instanceof Error ? error : String(error),
+    logger.error(
+      'Problems posting user action audit log: ' + resolveApiErrorMessage(error as Error),
     )
     throw error
   }
@@ -114,9 +111,9 @@ export const fetchApiTokenWithDefaultScopes = async (): Promise<ApiTokenResponse
     )
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems getting API access token in order to process api calls.',
-      error instanceof Error ? error : String(error),
+    logger.error(
+      'Problems getting API access token in order to process api calls: ' +
+        resolveApiErrorMessage(error as Error),
     )
     throw error
   }
@@ -132,10 +129,7 @@ export const fetchPolicyStore = async (
     )
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error(
-      'Problems fetching policy store.',
-      error instanceof Error ? error : String(error),
-    )
+    logger.error('Problems fetching policy store: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }
@@ -156,10 +150,7 @@ export const uploadPolicyStore = async (
     })
     return { status: response.status, data: response.data }
   } catch (error) {
-    devLogger.error(
-      'Problems uploading policy store.',
-      error instanceof Error ? error : String(error),
-    )
+    logger.error('Problems uploading policy store: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }
@@ -174,10 +165,7 @@ export const createAdminUiSession = async (ujwt: string, apiProtectionToken: str
     )
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems creating Admin UI session.',
-      error instanceof Error ? error : String(error),
-    )
+    logger.error('Problems creating Admin UI session: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }
@@ -187,10 +175,7 @@ export const deleteAdminUiSession = async (token?: string) => {
     const response = await axios.delete(ENDPOINTS.SESSION, getAuthConfig(token))
     return response.data
   } catch (error) {
-    devLogger.error(
-      'Problems deleting Admin UI session.',
-      error instanceof Error ? error : String(error),
-    )
+    logger.error('Problems deleting Admin UI session: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }

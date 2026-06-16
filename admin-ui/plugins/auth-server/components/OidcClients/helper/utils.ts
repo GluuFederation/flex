@@ -1,6 +1,7 @@
 import type { Client } from 'JansConfigApi'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { formatDate } from '@/utils/dayjsUtils'
+import { logger } from '@/utils/logger'
 import type {
   ClientRow,
   ClientFormInitialData,
@@ -170,6 +171,11 @@ export const downloadClientTokensCSV = (csv: string): void => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  } catch (error) {
+    logger.error(
+      'Failed to download client tokens CSV:',
+      error instanceof Error ? error : String(error),
+    )
   } finally {
     URL.revokeObjectURL(url)
   }

@@ -18,7 +18,7 @@ import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../he
 import type { ApiErrorResponse } from '../types'
 import type { UpdateFidoParams } from '../types'
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from 'Utils/queryUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 
 const FIDO_CACHE_CONFIG = {
   STALE_TIME: DEFAULT_STALE_TIME,
@@ -102,7 +102,7 @@ export const useUpdateFidoConfig = () => {
             ip_address: ipAddress,
             modifiedFields: modifiedFieldsOnly,
           }).catch((auditError) => {
-            devLogger.error('Audit logging failed:', auditError)
+            logger.error('Audit logging failed:', auditError)
           })
         },
       })

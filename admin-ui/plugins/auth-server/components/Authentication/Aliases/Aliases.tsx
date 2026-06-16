@@ -15,7 +15,7 @@ import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from 'Utils/auditAction'
 import type { UserAction } from 'Utils/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { useTheme } from '@/context/theme/themeContext'
@@ -109,7 +109,7 @@ const Aliases = ({
         setSelectedRow(null)
         setShowAddModal(false)
       } catch (error) {
-        devLogger.error(
+        logger.error(
           'Failed to update ACR mappings:',
           error instanceof Error ? error : String(error),
         )
@@ -193,7 +193,7 @@ const Aliases = ({
         setDeleteModal(false)
         setItemToDelete(null)
       } catch (error) {
-        devLogger.error(
+        logger.error(
           'Failed to delete ACR mapping:',
           error instanceof Error ? error : String(error),
         )

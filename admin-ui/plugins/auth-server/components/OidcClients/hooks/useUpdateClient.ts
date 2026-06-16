@@ -13,7 +13,7 @@ import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import { adminUiFeatures } from '@/constants'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { UPDATE } from '@/audit/UserActionType'
 import { OIDC } from '../../../redux/audit/Resources'
 import { toClientJsonRecord } from '../helper/utils'
@@ -56,7 +56,7 @@ export const useUpdateClient = (auditContext: AuditContext) => {
             client_id: auditContext.clientId,
           })
         } catch (auditError) {
-          devLogger.error(
+          logger.error(
             'Audit logging failed:',
             auditError instanceof Error ? auditError : String(auditError),
           )

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import { useAppSelector } from '@/redux/hooks'
 import { invalidateQueriesByKey, queryDefaults } from '@/utils/queryUtils'
+import { logger } from '@/utils/logger'
 import type { SsaData, SsaJwtResponse, SsaCreatePayload } from '../types'
 
 interface ApiError extends Error {
@@ -61,6 +62,9 @@ const fetchAllSsas = async (
 
     return await handleResponse<SsaData[]>(response)
   } catch (error) {
+    logger.error(
+      'Failed to fetch SSAs: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,
@@ -89,6 +93,9 @@ const createSsa = async (
 
     return await handleResponse<SsaData>(response)
   } catch (error) {
+    logger.error(
+      'Failed to create SSA: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,
@@ -117,6 +124,9 @@ const getSsaJwt = async (
 
     return await handleResponse<SsaJwtResponse>(response)
   } catch (error) {
+    logger.error(
+      'Failed to fetch SSA JWT: ' + (error instanceof Error ? error.message : String(error)),
+    )
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to reach the server. Please check your connection.', {
         cause: error,

@@ -18,6 +18,7 @@ import {
   type PagedResultEntriesItem,
 } from 'JansConfigApi'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
+import { logger } from '@/utils/logger'
 import { adminUiFeatures } from '@/constants'
 import { useSchemaAuditLogger } from './useSchemaAuditLogger'
 import { useSchemaWebhook } from './useSchemaWebhook'
@@ -99,7 +100,9 @@ export const useCreateAttribute = (): UseMutationResult<
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args).catch(() => {})
+      mutateAsync(...args).catch((error) => {
+        logger.error('Create attribute failed:', error)
+      })
     },
     mutateAsync,
   } as UseMutationResult<JansAttribute, Error, { data: JansAttribute; userMessage?: string }, void>
@@ -164,7 +167,9 @@ export const useUpdateAttribute = (): UseMutationResult<
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof mutateAsync>) => {
-      mutateAsync(...args).catch(() => {})
+      mutateAsync(...args).catch((error) => {
+        logger.error('Update attribute failed:', error)
+      })
     },
     mutateAsync,
   } as UseMutationResult<
@@ -226,7 +231,9 @@ export const useDeleteAttribute = () => {
   return {
     ...baseMutation,
     mutate: (...args: Parameters<typeof deleteWithAudit>) => {
-      deleteWithAudit(...args).catch(() => {})
+      deleteWithAudit(...args).catch((error) => {
+        logger.error('Delete attribute failed:', error)
+      })
     },
     mutateAsync: deleteWithAudit,
   }

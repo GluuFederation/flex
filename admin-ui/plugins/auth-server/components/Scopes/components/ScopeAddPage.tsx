@@ -11,7 +11,7 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/ScopeFormPage.style'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import SetTitle from 'Utils/SetTitle'
 
 const ScopeAddPage: React.FC = () => {
@@ -43,7 +43,7 @@ const ScopeAddPage: React.FC = () => {
       try {
         await createScope(data, modifiedFields)
       } catch (error) {
-        devLogger.error('Error creating scope:', error instanceof Error ? error : String(error))
+        logger.error('Error creating scope:', error instanceof Error ? error : String(error))
         setErrorMessage(error instanceof Error ? error.message : t('messages.error_in_saving'))
       }
     },

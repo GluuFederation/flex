@@ -41,6 +41,8 @@ import decodeJwt from '@/utils/jwtDecode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
+import { logger } from '@/utils/logger'
+import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 
 const LOGOUT_DELAY_SECONDS = 10
 
@@ -123,6 +125,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           }
         })
         .catch((err: Error) => {
+          logger.error('Failed to fetch policy store: ' + resolveApiErrorMessage(err))
           if (isMounted) {
             setError(err)
             dispatch(setCedarFailedStatusAfterMaxTries())
@@ -175,6 +178,9 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         authorizationHandler.performAuthorizationRequest(response, authRequest)
       })
       .catch((fetchError: Error) => {
+        logger.error(
+          'Failed to fetch OIDC configuration from issuer: ' + resolveApiErrorMessage(fetchError),
+        )
         setError(fetchError)
       })
   }, [isLicenseValid, issuer, userinfo_jwt, hasSession, location.search, config])
@@ -269,6 +275,10 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               setShowAdminUI(true)
             })
             .catch((oError: Error) => {
+              logger.error(
+                'Failed to fetch user information after token exchange: ' +
+                  resolveApiErrorMessage(oError),
+              )
               setError(oError)
             })
         }

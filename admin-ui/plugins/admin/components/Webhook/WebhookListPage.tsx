@@ -6,7 +6,7 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -101,7 +101,7 @@ const WebhookListPage: React.FC = () => {
           refetch()
           setDeleteData(null)
         } catch (error) {
-          devLogger.error('Delete webhook failed:', error instanceof Error ? error : String(error))
+          logger.error('Delete webhook failed:', error instanceof Error ? error : String(error))
         }
       }
     },

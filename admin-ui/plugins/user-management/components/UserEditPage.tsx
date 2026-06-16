@@ -43,7 +43,7 @@ import { USER_ID_ATTR, MAIL_ATTR, DISPLAY_NAME_ATTR, STATUS_ATTR, GIVEN_NAME_ATT
 import { adminUiFeatures } from '@/constants'
 import { AXIOS_INSTANCE } from 'Orval'
 import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -122,10 +122,7 @@ const UserEditPage = () => {
             await AXIOS_INSTANCE.delete(`${SESSION_ENDPOINT}/${encodeURIComponent(userDn)}`)
           } catch (err) {
             const status = (err as { response?: { status?: number } }).response?.status
-            devLogger.error(
-              'Failed to revoke user session:',
-              err instanceof Error ? err : String(err),
-            )
+            logger.error('Failed to revoke user session:', err instanceof Error ? err : String(err))
             if (status !== 404) {
               dispatch(updateToast(true, 'error', t('messages.session_revoke_failed')))
             }

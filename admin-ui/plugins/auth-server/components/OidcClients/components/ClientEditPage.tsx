@@ -7,7 +7,7 @@ import { GluuPageContent } from '@/components'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import SetTitle from 'Utils/SetTitle'
 import { useUpdateClient, useClientScripts, useOidcProperties } from '../hooks'
 import { CLIENT_VIEW_QUERY_PARAM, CLIENT_VIEW_QUERY_VALUE } from '../constants'
@@ -57,7 +57,7 @@ const ClientEditPage = (): JSX.Element => {
         await updateClient(data)
         navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
-        devLogger.error('Failed to update client:', error instanceof Error ? error : String(error))
+        logger.error('Failed to update client:', error instanceof Error ? error : String(error))
       }
     },
     [updateClient, navigateBack],

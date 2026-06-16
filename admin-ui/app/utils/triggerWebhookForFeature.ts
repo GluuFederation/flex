@@ -1,6 +1,6 @@
 import store from 'Redux/store'
 import type { AppDispatch } from '@/redux/hooks'
-import { devLogger } from '@/utils/devLogger'
+import { logger } from '@/utils/logger'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
@@ -17,7 +17,7 @@ export const triggerWebhookForFeature = (
       }),
     )
   } catch (error) {
-    devLogger.error(
+    logger.error(
       `Failed to trigger webhook for feature "${feature}":`,
       error instanceof Error ? error : String(error),
     )
