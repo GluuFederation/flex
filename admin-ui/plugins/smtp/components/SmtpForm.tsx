@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Form, FormGroup } from 'Components'
-import Toggle from 'react-toggle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -459,11 +459,11 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 doc_category={smtpConstants.DOC_CATEGORY}
                 doc_entry="trust_host"
               />
-              <Toggle
+              <GluuToggle
                 id="trust_host"
                 name="trust_host"
-                checked={Boolean(formik.values.trust_host)}
-                onChange={(e) => formik.setFieldValue('trust_host', e.target.checked)}
+                formik={formik}
+                value={Boolean(formik.values.trust_host)}
                 disabled={readOnly}
               />
             </FormGroup>
@@ -479,11 +479,11 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 doc_entry="allowKeystoreEdit"
               />
               <GluuLoader blocking={Boolean(loadingConfig)}>
-                <Toggle
+                <GluuToggle
                   id="allowKeystoreEdit"
                   name="allowKeystoreEdit"
-                  checked={Boolean(optimisticKeystoreEdit)}
-                  onChange={(e) => {
+                  value={Boolean(optimisticKeystoreEdit)}
+                  handler={(e) => {
                     const checked = e.target.checked
                     if (Boolean(checked) !== Boolean(allowSmtpKeystoreEdit)) {
                       setOptimisticKeystoreEdit(checked)
@@ -513,11 +513,11 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 doc_category={smtpConstants.DOC_CATEGORY}
                 doc_entry="requires_authentication"
               />
-              <Toggle
+              <GluuToggle
                 id="requires_authentication"
                 name="requires_authentication"
-                checked={Boolean(formik.values.requires_authentication)}
-                onChange={(e) => formik.setFieldValue('requires_authentication', e.target.checked)}
+                formik={formik}
+                value={Boolean(formik.values.requires_authentication)}
                 disabled={readOnly}
               />
             </FormGroup>

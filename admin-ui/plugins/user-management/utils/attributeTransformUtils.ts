@@ -9,7 +9,6 @@ import {
   ModifiedFieldValue,
   ValueExtractionRecord,
   PersonAttribute,
-  CustomUser,
   CustomAttribute,
   AttributeValue,
 } from '../types'
@@ -104,14 +103,6 @@ export const isMultiValuedAttribute = (attributeDef?: PersonAttribute): boolean 
   return Boolean(attributeDef?.oxMultiValuedAttribute)
 }
 
-const hadOriginalValue = (originalAttr?: CustomAttribute): boolean => {
-  if (!originalAttr) return false
-  return Boolean(
-    (originalAttr.values && originalAttr.values.length > 0) ||
-    (originalAttr.value !== undefined && originalAttr.value !== null),
-  )
-}
-
 export const processMultiValuedField = (
   modifiedValue: ModifiedFieldValue,
 ): (string | boolean)[] => {
@@ -186,7 +177,6 @@ export const updateCustomAttributesWithModifiedFields = (
   customAttributes: CustomAttribute[],
   modifiedFields: ModifiedFields,
   personAttributes: PersonAttribute[],
-  originalUserDetails?: CustomUser | null,
 ): CustomAttribute[] => {
   const attributeMap = createAttributeMap(personAttributes)
   const result: CustomAttribute[] = [...customAttributes]
@@ -209,23 +199,14 @@ export const updateCustomAttributesWithModifiedFields = (
       }
     } else {
       const valueToStore = processSingleValuedField(modifiedValue, isBoolean)
-      const originalAttr = originalUserDetails?.customAttributes?.find(
-        (attr) => attr.name === attributeName,
-      )
-      const hadOriginal = hadOriginalValue(originalAttr)
+      const isCleared = !isBoolean && valueToStore === ''
+      const valuesToSet: AttributeValue[] = isCleared ? [] : [valueToStore]
 
       const existingAttr = result.find((attr) => attr.name === attributeName)
       if (existingAttr) {
-        if (isBoolean || valueToStore !== '' || hadOriginal) {
-          existingAttr.values = [valueToStore]
-        } else {
-          const index = result.indexOf(existingAttr)
-          if (index > -1) {
-            result.splice(index, 1)
-          }
-        }
-      } else if (isBoolean || valueToStore !== '' || hadOriginal) {
-        result.push(createCustomAttribute(attributeName, [valueToStore], false))
+        existingAttr.values = valuesToSet
+      } else {
+        result.push(createCustomAttribute(attributeName, valuesToSet, false))
       }
     }
   })

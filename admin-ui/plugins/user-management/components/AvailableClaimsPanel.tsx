@@ -4,35 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Close } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { PersonAttribute, AvailableClaimsPanelProps } from '../types'
-import {
-  USER_PASSWORD_ATTR,
-  USER_ID_ATTR,
-  DISPLAY_NAME_ATTR,
-  MAIL_ATTR,
-  STATUS_ATTR,
-  GIVEN_NAME_ATTR,
-  MIDDLE_NAME_ATTR,
-  SN_ATTR,
-  CREATED_AT_ATTR,
-  UPDATED_AT_ATTR,
-} from '../common'
+import { RESERVED_STANDARD_CLAIMS, CREATED_AT_ATTR, UPDATED_AT_ATTR } from '../common'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './AvailableClaimsPanel.style'
 
-const USED_CLAIMS = new Set([
-  USER_ID_ATTR,
-  DISPLAY_NAME_ATTR,
-  MAIL_ATTR,
-  STATUS_ATTR,
-  USER_PASSWORD_ATTR,
-  GIVEN_NAME_ATTR,
-  MIDDLE_NAME_ATTR,
-  SN_ATTR,
-  CREATED_AT_ATTR,
-  UPDATED_AT_ATTR,
-])
+const USED_CLAIMS = new Set([...RESERVED_STANDARD_CLAIMS, CREATED_AT_ATTR, UPDATED_AT_ATTR])
 
 const AvailableClaimsPanel = ({
   searchClaims,

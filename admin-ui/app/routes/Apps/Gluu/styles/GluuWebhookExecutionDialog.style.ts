@@ -41,10 +41,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) =>
       display: 'flex',
       alignItems: 'center',
     },
-    titleIcon: {
-      marginRight: MAPPING_SPACING.CHECKBOX_LABEL_GAP,
-      flexShrink: 0,
-    },
     description: {
       fontFamily,
       fontWeight: fontWeights.semiBold,
@@ -82,10 +78,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) =>
       alignItems: 'center',
       gap: MAPPING_SPACING.CHECKBOX_LABEL_GAP + CHECKBOX_LABEL_EXTRA_GAP,
       marginTop: CEDARLING_CONFIG_SPACING.BUTTONS_MT,
-    },
-    actionIcon: {
-      marginRight: MAPPING_SPACING.CHECKBOX_LABEL_GAP,
-      flexShrink: 0,
     },
   }
 })

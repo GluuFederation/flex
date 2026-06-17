@@ -11,14 +11,13 @@ import {
   setShowWebhookExecutionDialog,
   setWebhookTriggerResults,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import { Check, Close, InfoOutlined } from '@/components/icons'
+import { Close } from '@/components/icons'
 import { ModalLayer } from '@/components/ModalLayer'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import customColors from '@/customColors'
 import { useStyles } from './styles/GluuWebhookExecutionDialog.style'
 import { useStyles as useCommitDialogStyles } from './styles/GluuCommitDialog.style'
 import GluuText from './GluuText'
@@ -99,11 +98,6 @@ const GluuWebhookExecutionDialog = () => {
         <div className={`${commitClasses.contentArea} ${classes.contentArea}`}>
           <div className={classes.titleWithDescription}>
             <GluuText variant="h2" className={classes.title} id="webhook-execution-dialog-title">
-              <InfoOutlined
-                style={{ color: customColors.logo }}
-                className={classes.titleIcon}
-                aria-hidden
-              />
               {t('messages.webhook_execution_information')}
             </GluuText>
             <GluuText variant="p" className={classes.description}>
@@ -175,7 +169,6 @@ const GluuWebhookExecutionDialog = () => {
               useOpacityOnHover
               className={commitClasses.yesButton}
             >
-              <Check fontSize="small" className={classes.actionIcon} aria-hidden />
               {t('actions.ok')}
             </GluuButton>
           </div>

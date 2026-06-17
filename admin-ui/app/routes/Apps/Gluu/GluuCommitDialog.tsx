@@ -200,7 +200,9 @@ const GluuCommitDialog = ({
                     {operations.map((operation, index) => (
                       <div key={`${operation.path}-${index}`} className={classes.operationRow}>
                         <span className={classes.operationLabel}>{t('set')}</span>
-                        <span className={classes.operationBadge}>{operation.path}</span>
+                        <span className={classes.operationBadge}>
+                          {operation.label || operation.path}
+                        </span>
                         <span className={classes.operationLabel}>{t('to')}</span>
                         <span className={classes.operationBadge}>
                           {operation.value === null || operation.value === ''

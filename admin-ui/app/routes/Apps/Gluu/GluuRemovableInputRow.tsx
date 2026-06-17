@@ -6,6 +6,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/GluuRemovableInputRow.style'
 import type { GluuRemovableInputRowProps } from './types'
 import { Close as CloseIcon } from '@/components/icons'
@@ -29,7 +30,8 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const { classes } = useStyles({ fontColor: themeColors.fontColor })
+  const isDark = themeState.theme === THEME_DARK
+  const { classes } = useStyles({ fontColor: themeColors.fontColor, isDark })
   const currentValue = formik.values[name as keyof TValues] as string | boolean | undefined
   const isChecked = (formik.values[name as keyof TValues] as boolean | undefined) ?? false
 
@@ -61,7 +63,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           formik={formik}
           value={isChecked}
           handler={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setModifiedFields({
+            setModifiedFields?.({
               ...modifiedFields,
               [name]: e.target.checked,
             })
@@ -92,7 +94,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           className={classes.input}
           value={(currentValue as string) ?? (value as string) ?? ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setModifiedFields({
+            setModifiedFields?.({
               ...modifiedFields,
               [name]: e.target.value,
             })

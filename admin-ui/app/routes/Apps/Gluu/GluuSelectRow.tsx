@@ -46,6 +46,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   inputPaddingTop,
   inputPaddingBottom,
   hideChooseOption = false,
+  reserveErrorSpace = false,
 }) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
@@ -160,11 +161,11 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             <ChevronIcon width={20} height={20} direction="down" />
           </span>
         </div>
-        {showError && errorMessage && (
+        {(showError && errorMessage) || reserveErrorSpace ? (
           <GluuText variant="span" className={classes.error} data-field-error disableThemeColor>
-            {errorMessage}
+            {showError && errorMessage ? errorMessage : ' '}
           </GluuText>
-        )}
+        ) : null}
       </Col>
     </FormGroup>
   )

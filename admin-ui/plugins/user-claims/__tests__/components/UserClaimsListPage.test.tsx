@@ -5,7 +5,19 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import attributes from '../../utils/attributes'
+function mockBuildAttributes() {
+  return ['givenName', 'emailVerified'].map((name, index) => ({
+    name,
+    inum: `B4B${index}`,
+    displayName: name,
+    description: name,
+    status: 'ACTIVE',
+    editType: 'ADMIN',
+    viewType: 'ADMIN',
+  }))
+}
+
+const attributes = mockBuildAttributes()
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -34,7 +46,7 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 jest.mock('Plugins/user-claims/hooks', () => {
-  const mockAttributes = jest.requireActual('../../utils/attributes').default
+  const mockAttributes = mockBuildAttributes()
   return {
     useAttributes: jest.fn(() => ({
       data: {

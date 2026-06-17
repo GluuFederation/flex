@@ -1,6 +1,6 @@
 /** @jest-environment node */
 import { deflateRawSync } from 'node:zlib'
-import { readZip } from '../zip'
+import readZip from '../zip'
 
 const STORED_CONTENT = '{"stored":true}'
 const DEFLATED_CONTENT = 'deflate me '.repeat(50)

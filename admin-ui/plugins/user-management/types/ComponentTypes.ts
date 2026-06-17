@@ -31,8 +31,6 @@ export type UserClaimEntryProps = {
   entry: string | number
   formik: FormikProps<UserFormValues>
   handler: (name: string) => void
-  modifiedFields: ModifiedFields
-  setModifiedFields: React.Dispatch<React.SetStateAction<ModifiedFields>>
 }
 
 export type UserFormProps = {

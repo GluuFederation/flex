@@ -8,7 +8,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import Toggle from 'react-toggle'
+import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import { useTranslation } from 'react-i18next'
 import { useAssetServices, useCreateAssetWithAudit, useUpdateAssetWithAudit } from './hooks'
 import { useParams } from 'react-router-dom'
@@ -258,11 +258,11 @@ const AssetForm: React.FC = () => {
                   isDark={isDark}
                 />
                 <div className={classes.toggleRow}>
-                  <Toggle
+                  <GluuToggle
                     id="enabled"
                     name="enabled"
-                    onChange={formik.handleChange}
-                    checked={Boolean(formik.values.enabled)}
+                    formik={formik}
+                    value={Boolean(formik.values.enabled)}
                   />
                 </div>
               </FormGroup>

@@ -3,7 +3,6 @@ import { GluuDynamicList } from 'Components'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -270,7 +269,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
     ),
     runIntrospectionScriptBeforeJwtCreation: (
       <div className={classes.fieldItem}>
-        <GluuBooleanSelectBox
+        <GluuToggleRow
           name="attributes.runIntrospectionScriptBeforeJwtCreation"
           label="fields.run_introspection_script_before_accesstoken"
           value={Boolean(formik.values.attributes?.runIntrospectionScriptBeforeJwtCreation)}
@@ -283,7 +282,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
             setModifiedFields((prev) => ({
               ...prev,
               [CLIENT_TOKEN_MODIFIED_FIELDS.RUN_INTROSPECTION_SCRIPT_BEFORE_JWT_CREATION]:
-                e.target.value,
+                e.target.checked,
             }))
           }}
         />

@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
 import { Sidebar } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
-import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import GluuAppSidebar from 'Routes/Apps/Gluu/GluuAppSidebar'
 import type { DefaultSidebarProps } from './types'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/helpers/navigation'
 import { useStyles } from './DefaultSidebar.style'
+import { GluuSpinner } from '@/components/GluuSpinner'
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
@@ -26,7 +26,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       </div>
     ) : (
       <div className={classes.sidebarLoaderRoot}>
-        <GluuSuspenseLoader />
+        <GluuSpinner />
       </div>
     )
 

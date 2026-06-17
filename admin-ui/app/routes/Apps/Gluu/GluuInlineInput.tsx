@@ -3,7 +3,8 @@ import { Check, Close } from '@/components/icons'
 import { OPACITY } from '@/constants'
 import GluuLabel from './GluuLabel'
 import GluuToggle from './GluuToggle'
-import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuAutocomplete from './GluuAutocomplete'
+import type { AutocompleteOption } from './types/GluuAutocomplete.types'
 import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { useStyles } from '@/routes/Apps/Gluu/styles/GluuInlineInput.style'
 import { Col, FormGroup, Input, Button } from 'Components'
@@ -137,8 +138,11 @@ const GluuInlineInput = ({
     [value],
   )
 
-  const filteredOptions = useMemo(
-    () => (Array.isArray(options) ? options.filter((item) => item != null) : []),
+  const filteredOptions = useMemo<AutocompleteOption[]>(
+    () =>
+      Array.isArray(options)
+        ? options.filter((item) => item != null).map((item) => ({ value: item, label: item }))
+        : [],
     [options],
   )
   const resolvedId = id || name
@@ -173,21 +177,19 @@ const GluuInlineInput = ({
                 data-testid={resolvedId}
                 name={name}
                 handler={onValueChanged}
-                value={value as boolean}
+                value={Boolean(data)}
                 disabled={disabled}
               />
             )}
             {isArray && (
-              <Typeahead
-                id={resolvedId}
-                data-testid={resolvedId}
-                allowNew
-                emptyLabel=""
-                labelKey={name}
-                onChange={handleTypeAheadChange}
-                multiple={true}
-                defaultSelected={filteredValue}
+              <GluuAutocomplete
+                hideLabel
+                allowCustom
+                name={name}
+                label={label}
+                value={filteredValue}
                 options={filteredOptions}
+                onChange={handleTypeAheadChange}
                 disabled={disabled}
               />
             )}

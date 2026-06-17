@@ -9,7 +9,7 @@ import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import { useStyles, TABLE_MIN_WIDTH, TABLE_RESPONSIVE_BREAKPOINT } from './GluuTable.style'
-import { T_KEYS } from './constants'
+import { T_KEYS, EMPTY_CELL_PLACEHOLDER } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import {
@@ -652,7 +652,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                                 })
                               ) : (
                                 <GluuText variant="span" disableThemeColor>
-                                  {String(value ?? '')}
+                                  {value === null || value === undefined || value === ''
+                                    ? EMPTY_CELL_PLACEHOLDER
+                                    : String(value)}
                                 </GluuText>
                               )}
                             </td>

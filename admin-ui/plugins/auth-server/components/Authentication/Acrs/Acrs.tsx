@@ -14,14 +14,10 @@ import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetai
 import { AUTHN } from 'Utils/ApiResources'
 import { DEFAULT_SCRIPT_TYPE, useCustomScriptsByType } from 'Plugins/scripts/components'
 import { useGetAcrs, useGetConfigDatabaseLdap, type GluuLdapConfiguration } from 'JansConfigApi'
-import type { AuthNItem } from '../types'
+import type { AuthNItem, AcrsProps } from '../types'
 import { BUILT_IN_ACRS, AUTH_RESOURCE_ID, PAGE_SIZE, AUTH_METHOD_NAMES } from '../constants'
 import { useStyles } from './Acrs.style'
 import { displayOrDash } from './helper/acrUtils'
-
-type AcrsProps = {
-  isBuiltIn?: boolean
-}
 
 const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   const { canRead: canReadAuthN, canWrite: canWriteAuthN } = usePermission(AUTH_RESOURCE_ID)

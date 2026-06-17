@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -16,20 +15,19 @@ import { logger } from '@/utils/logger'
 import apiAxios from '@/redux/api/axios'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
-import { Close, InfoOutlined } from '@/components/icons'
-import { ModalLayer } from '@/components/ModalLayer'
+import { InfoOutlined } from '@/components/icons'
 import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { useStyles as useCommitDialogStyles } from 'Routes/Apps/Gluu/styles/GluuCommitDialog.style'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './CedarlingConfigPage.style'
+import PolicyStoreUploadConfirmDialog from './PolicyStoreUploadConfirmDialog'
 import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
@@ -67,21 +65,12 @@ const CedarlingConfigPage: React.FC = () => {
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
   const { classes } = useStyles({ themeColors, isDark })
-  const { classes: commitClasses } = useCommitDialogStyles({ isDark, themeColors })
 
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const dispatch = useAppDispatch()
-
-  const dialogRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (showConfirm) {
-      dialogRef.current?.focus()
-    }
-  }, [showConfirm])
 
   const handleFileDrop = useCallback((files: File[]) => {
     const [file] = files
@@ -218,63 +207,6 @@ const CedarlingConfigPage: React.FC = () => {
     navigateBack(ROUTES.HOME_DASHBOARD)
   }, [navigateBack])
 
-  const handleModalKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        e.stopPropagation()
-        handleConfirmCancel()
-      }
-    },
-    [handleConfirmCancel],
-  )
-
-  const confirmModal = showConfirm
-    ? createPortal(
-        <ModalLayer onClose={handleConfirmCancel}>
-          <div
-            ref={dialogRef}
-            className={commitClasses.modalContainer}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={handleModalKeyDown}
-            role="dialog"
-            aria-modal="true"
-            tabIndex={-1}
-            aria-labelledby="confirm-upload-title"
-            style={{ outline: 'none' }}
-          >
-            <button
-              type="button"
-              onClick={handleConfirmCancel}
-              className={commitClasses.closeButton}
-              aria-label={t('actions.close')}
-              title={t('actions.close')}
-            >
-              <Close fontSize="small" aria-hidden />
-            </button>
-            <div className={commitClasses.contentArea}>
-              <GluuText variant="h2" className={commitClasses.title} id="confirm-upload-title">
-                {t('documentation.cedarlingConfig.uploadConfirmTitle')}
-              </GluuText>
-              <p className={commitClasses.description}>
-                {t('documentation.cedarlingConfig.uploadConfirmMessage')}
-              </p>
-              <GluuThemeFormFooter
-                showApply
-                applyButtonLabel={t('actions.yes')}
-                onApply={handleConfirmUpload}
-                applyButtonType="button"
-                showCancel
-                cancelButtonLabel={t('actions.no')}
-                onCancel={handleConfirmCancel}
-              />
-            </div>
-          </div>
-        </ModalLayer>,
-        document.body,
-      )
-    : null
-
   return (
     <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadSecurity}>
@@ -393,7 +325,11 @@ const CedarlingConfigPage: React.FC = () => {
         </GluuPageContent>
       </GluuViewWrapper>
 
-      {confirmModal}
+      <PolicyStoreUploadConfirmDialog
+        open={showConfirm}
+        onConfirm={handleConfirmUpload}
+        onClose={handleConfirmCancel}
+      />
     </GluuLoader>
   )
 }

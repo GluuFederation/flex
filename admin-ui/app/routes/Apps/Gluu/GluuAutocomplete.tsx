@@ -50,7 +50,7 @@ const GluuAutocomplete = ({
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const themeColors = React.useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({
     themeColors,
     allowCustom,
@@ -63,7 +63,7 @@ const GluuAutocomplete = ({
   const resolvedHelperText = helperText ?? t('messages.multi_select_hint')
 
   const optionValues = React.useMemo(
-    () => options.map((o) => (typeof o === 'string' ? o : o.value)),
+    () => [...new Set(options.map((o) => (typeof o === 'string' ? o : o.value)))],
     [options],
   )
   const labelByValue = React.useMemo(() => {
@@ -81,12 +81,61 @@ const GluuAutocomplete = ({
     [labelByValue],
   )
 
-  const selectedItems = Array.isArray(value)
-    ? value.filter((v): v is string => typeof v === 'string')
-    : []
+  const selectedItems = React.useMemo(
+    () =>
+      Array.isArray(value)
+        ? [...new Set(value.filter((v): v is string => typeof v === 'string'))]
+        : [],
+    [value],
+  )
 
   const [inputValue, setInputValue] = React.useState('')
   const lockedPlacementRef = React.useRef<Placement | null>(null)
+
+  const autocompleteOptions = React.useMemo(
+    () =>
+      allowCustom
+        ? [...optionValues, ...selectedItems.filter((s) => !optionValues.includes(s))]
+        : optionValues,
+    [allowCustom, optionValues, selectedItems],
+  )
+
+  const popperSlotProps = React.useMemo(
+    () => ({
+      paper: { className: classes.dropdownPaper },
+      popper: {
+        placement: 'bottom-start' as const,
+        className: classes.popperRoot,
+        modifiers: [
+          {
+            name: 'computeStyles',
+            options: { adaptive: false, gpuAcceleration: false },
+          },
+          {
+            name: 'sameWidth',
+            enabled: true,
+            phase: 'afterWrite' as const,
+            fn: sameWidthModifier,
+          },
+          {
+            name: 'lockPlacement',
+            enabled: true,
+            phase: 'main' as const,
+            requires: ['flip'],
+            fn: ({ state }: ModifierArguments<Obj>) => {
+              if (lockedPlacementRef.current == null) {
+                lockedPlacementRef.current = state.placement
+              } else if (state.placement !== lockedPlacementRef.current) {
+                state.placement = lockedPlacementRef.current
+                state.reset = true
+              }
+            },
+          },
+        ],
+      },
+    }),
+    [classes.dropdownPaper, classes.popperRoot],
+  )
 
   const handleChange = useCallback(
     (_event: React.SyntheticEvent, newValue: string[]) => {
@@ -161,11 +210,7 @@ const GluuAutocomplete = ({
                 onSearch?.(val)
               }
             }}
-            options={
-              allowCustom
-                ? [...optionValues, ...selectedItems.filter((s) => !optionValues.includes(s))]
-                : optionValues
-            }
+            options={autocompleteOptions}
             value={selectedItems}
             isOptionEqualToValue={(option, val) => option === val}
             onChange={handleChange}
@@ -178,41 +223,7 @@ const GluuAutocomplete = ({
             disableCloseOnSelect
             disablePortal
             className={classes.autocompleteRoot}
-            slotProps={{
-              paper: {
-                className: classes.dropdownPaper,
-              },
-              popper: {
-                placement: 'bottom-start' as const,
-                className: classes.popperRoot,
-                modifiers: [
-                  {
-                    name: 'computeStyles',
-                    options: { adaptive: false, gpuAcceleration: false },
-                  },
-                  {
-                    name: 'sameWidth',
-                    enabled: true,
-                    phase: 'afterWrite' as const,
-                    fn: sameWidthModifier,
-                  },
-                  {
-                    name: 'lockPlacement',
-                    enabled: true,
-                    phase: 'main' as const,
-                    requires: ['flip'],
-                    fn: ({ state }: ModifierArguments<Obj>) => {
-                      if (lockedPlacementRef.current == null) {
-                        lockedPlacementRef.current = state.placement
-                      } else if (state.placement !== lockedPlacementRef.current) {
-                        state.placement = lockedPlacementRef.current
-                        state.reset = true
-                      }
-                    },
-                  },
-                ],
-              },
-            }}
+            slotProps={popperSlotProps}
             forcePopupIcon
             popupIcon={<ChevronIcon width={20} height={20} direction="down" />}
             filterOptions={filterOptions}
@@ -268,8 +279,8 @@ const GluuAutocomplete = ({
                           const trimmed = inputValue.trim()
                           if (
                             trimmed &&
-                            !optionValues.some((o) =>
-                              getDisplayLabel(o).toLowerCase().includes(trimmed.toLowerCase()),
+                            !optionValues.some(
+                              (o) => getDisplayLabel(o).toLowerCase() === trimmed.toLowerCase(),
                             ) &&
                             !selectedItems.some(
                               (s) => getDisplayLabel(s).toLowerCase() === trimmed.toLowerCase(),
