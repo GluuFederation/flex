@@ -13,14 +13,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserClaimEntry.style'
 import { UserClaimEntryProps } from '../types'
-const UserClaimEntry = ({
-  data,
-  entry,
-  formik,
-  handler,
-  modifiedFields,
-  setModifiedFields,
-}: UserClaimEntryProps) => {
+const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
@@ -61,22 +54,8 @@ const UserClaimEntry = ({
     (next: string[]) => {
       formik.setFieldValue(data.name, next)
       formik.setFieldTouched(data.name, true, false)
-      const initial = formik.initialValues[data.name]
-      const initialArr = Array.isArray(initial)
-        ? (initial as string[]).filter((v): v is string => typeof v === 'string')
-        : []
-      const isSameAsInitial =
-        next.length === initialArr.length && next.every((v, i) => v === initialArr[i])
-      setModifiedFields((prev) => {
-        if (isSameAsInitial) {
-          const rest = { ...prev }
-          delete rest[data.name]
-          return rest
-        }
-        return { ...prev, [data.name]: next }
-      })
     },
-    [data.name, formik, setModifiedFields],
+    [data.name, formik],
   )
 
   if (data.oxMultiValuedAttribute) {
@@ -127,8 +106,6 @@ const UserClaimEntry = ({
           value={String(formik.values[data.name] ?? '')}
           values={countries}
           formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
-          modifiedFields={modifiedFields}
-          setModifiedFields={setModifiedFields}
           handler={doHandle}
           lsize={12}
         />
@@ -151,8 +128,6 @@ const UserClaimEntry = ({
         }
         formik={formik}
         handler={doHandle}
-        modifiedFields={modifiedFields}
-        setModifiedFields={setModifiedFields}
         doc_category={typeof data.description === 'string' ? data.description : undefined}
         lsize={12}
         isBoolean={isBoolean}

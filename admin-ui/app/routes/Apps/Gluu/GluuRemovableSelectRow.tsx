@@ -45,7 +45,7 @@ const GluuRemovableSelectRow = ({
             name={name}
             value={currentValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setModifiedFields({
+              setModifiedFields?.({
                 ...modifiedFields,
                 [name]: e.target.value,
               })

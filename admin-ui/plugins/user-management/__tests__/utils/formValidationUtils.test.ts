@@ -3,6 +3,7 @@ import {
   shouldDisableApplyButton,
   hasFormChanges,
   buildFormOperations,
+  diffFormValues,
 } from 'Plugins/user-management/utils/formValidationUtils'
 
 describe('isEmptyValue', () => {
@@ -97,5 +98,58 @@ describe('buildFormOperations', () => {
     const result = buildFormOperations({})
 
     expect(result).toHaveLength(0)
+  })
+})
+
+describe('diffFormValues', () => {
+  it('returns only changed scalar fields', () => {
+    const result = diffFormValues(
+      { displayName: 'New', mail: 'a@b.com' },
+      { displayName: 'Old', mail: 'a@b.com' },
+    )
+    expect(result).toEqual({ displayName: 'New' })
+  })
+
+  it('ignores a field reverted to its original value', () => {
+    const result = diffFormValues({ locale: 'en' }, { locale: 'en' })
+    expect(result).toEqual({})
+  })
+
+  it('treats empty string and undefined as equal (no change)', () => {
+    const result = diffFormValues({ middleName: '' }, { middleName: undefined })
+    expect(result).toEqual({})
+  })
+
+  it('tracks a cleared field that originally had a value', () => {
+    const result = diffFormValues({ o: '' }, { o: 'Acme' })
+    expect(result).toEqual({ o: '' })
+  })
+
+  it('tracks a newly set field with no original value', () => {
+    const result = diffFormValues({ nickname: 'qa' }, {})
+    expect(result).toEqual({ nickname: 'qa' })
+  })
+
+  it('compares array values element-wise', () => {
+    expect(diffFormValues({ role: ['a', 'b'] }, { role: ['a', 'b'] })).toEqual({})
+    expect(diffFormValues({ role: ['a', 'c'] }, { role: ['a', 'b'] })).toEqual({ role: ['a', 'c'] })
+  })
+
+  it('tracks a cleared multi-valued field', () => {
+    expect(diffFormValues({ role: [] }, { role: ['a'] })).toEqual({ role: [] })
+  })
+
+  it('tracks boolean toggles but not unchanged booleans', () => {
+    expect(diffFormValues({ emailVerified: false }, { emailVerified: true })).toEqual({
+      emailVerified: false,
+    })
+    expect(diffFormValues({ emailVerified: true }, { emailVerified: true })).toEqual({})
+  })
+
+  it('skips ignored keys', () => {
+    const result = diffFormValues({ userPassword: 'x', userConfirmPassword: 'x' }, {}, [
+      'userConfirmPassword',
+    ])
+    expect(result).toEqual({ userPassword: 'x' })
   })
 })
