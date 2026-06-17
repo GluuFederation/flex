@@ -7,8 +7,6 @@ import { SondaVitePlugin } from 'sonda'
 import {
   REGEX_BACKSLASH,
   REGEX_CODE_BUILD_ASSET,
-  REGEX_DATE_FNS_BARE_SPECIFIER,
-  REGEX_DATE_FNS_SUBPATH_SPECIFIER,
   REGEX_FORWARD_SLASH,
   REGEX_NODE_MODULES_PREFIX,
   REGEX_NODE_MODULES_SEGMENT,
@@ -27,27 +25,6 @@ const timingPlugin = () => {
       } else {
         console.log(`\n🔄 HMR update   ${ctx.file}`)
       }
-    },
-  }
-}
-
-const DATE_FNS_PACKAGE_DIR = path.resolve(process.cwd(), 'node_modules/date-fns')
-
-const dateFnsEsmResolverPlugin = () => {
-  return {
-    name: 'admin-ui:date-fns-esm',
-    enforce: 'pre' as const,
-    resolveId(source: string): string | null {
-      let mjsPath: string | null = null
-      if (REGEX_DATE_FNS_BARE_SPECIFIER.test(source)) {
-        mjsPath = path.join(DATE_FNS_PACKAGE_DIR, 'index.mjs')
-      } else {
-        const subpath = REGEX_DATE_FNS_SUBPATH_SPECIFIER.exec(source)?.[1]
-        if (subpath) {
-          mjsPath = path.join(DATE_FNS_PACKAGE_DIR, `${subpath}.mjs`)
-        }
-      }
-      return mjsPath && existsSync(mjsPath) ? mjsPath : null
     },
   }
 }
@@ -188,7 +165,6 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
   ],
   ['vendor-data', ['axios', 'dayjs', 'lodash']],
   ['vendor-forms', ['formik', 'yup']],
-  ['vendor-date', ['date-fns']],
   ['vendor-feedback', ['react-toastify']],
 ]
 
@@ -308,7 +284,6 @@ export default defineConfig(({ mode }) => {
     base,
     publicDir: 'public',
     plugins: [
-      dateFnsEsmResolverPlugin(),
       timingPlugin(),
       wasm(),
       wasmPreloadPlugin(base),

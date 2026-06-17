@@ -13,8 +13,3 @@ export {
   buildIdentityProviderPayload,
   buildWebsiteSsoServiceProviderPayload,
 } from './utils'
-export {
-  PaperContainer,
-  getIdentityProviderTableCols,
-  getServiceProviderTableCols,
-} from './tableUtils'

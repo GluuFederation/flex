@@ -1,42 +1,57 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import MaterialTable, { type Action } from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/auditAction'
 import type { UserAction } from 'Utils/types'
 import { usePermission } from '@/cedarling/hooks/usePermission'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { DeleteOutlined } from '@/components/icons'
+import { Add, Edit, VisibilityOutlined, DeleteOutlined } from '@/components/icons'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
 import { adminUiFeatures } from '@/constants'
-import { PaperContainer, getServiceProviderTableCols } from '../helper'
-import customColors from '@/customColors'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import {
   useTrustRelationships,
   useDeleteTrustRelationshipMutation,
   type TrustRelationship,
 } from './hooks'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
+import { useStyles } from './styles/WebsiteSsoList.style'
 
 interface DeleteItem {
   inum: string
   displayName?: string
 }
 
-const DeleteOutlinedIcon = () => <DeleteOutlined />
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+const samlResourceId = ADMIN_UI_RESOURCES.SAML
+
+const matchesPattern = (provider: TrustRelationship, pattern: string): boolean => {
+  if (!pattern) return true
+  const needle = pattern.toLowerCase()
+  return [provider.inum, provider.displayName].some((field) =>
+    (field ?? '').toLowerCase().includes(needle),
+  )
+}
 
 const WebsiteSsoServiceProviderList = React.memo(() => {
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isDark = selectedTheme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
+
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState<DeleteItem>({ inum: '' })
+  const [pattern, setPattern] = useState('')
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
@@ -57,7 +72,7 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
     canRead: canReadWebsiteSsoServiceProviders,
     canWrite: canWriteWebsiteSsoServiceProviders,
     canDelete: canDeleteWebsiteSsoServiceProviders,
-  } = usePermission(ADMIN_UI_RESOURCES.SAML)
+  } = usePermission(samlResourceId)
 
   const handleGoToEditPage = useCallback(
     (rowData: TrustRelationship, viewOnly?: boolean) => {
@@ -102,119 +117,156 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
     [deleteTrustRelationshipMutation, item.inum, toggle],
   )
 
-  const handleRefresh = useCallback((): void => {
-    refetch()
-  }, [refetch])
+  const handleSearch = useCallback(
+    (value: string) => {
+      setPattern(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
 
-  const tableActions = useMemo(() => {
-    const actions: Action<TrustRelationship>[] = []
+  const handleRefresh = useCallback(() => {
+    setPattern('')
+    setPageNumber(0)
+    refetch()
+  }, [setPageNumber, refetch])
+
+  const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
+
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const filteredProviders = useMemo(
+    () => websiteSsoServiceProviders.filter((provider) => matchesPattern(provider, pattern)),
+    [websiteSsoServiceProviders, pattern],
+  )
+
+  const pagedProviders = useMemo(
+    () => filteredProviders.slice(pageNumber * limit, pageNumber * limit + limit),
+    [filteredProviders, pageNumber, limit],
+  )
+
+  const columns: ColumnDef<TrustRelationship>[] = useMemo(
+    () => [
+      { key: 'inum', label: t('fields.inum'), sortable: true },
+      { key: 'displayName', label: t('fields.displayName'), sortable: true },
+      { key: 'enabled', label: t('fields.enabled'), sortable: true },
+    ],
+    [t],
+  )
+
+  const actions: ActionDef<TrustRelationship>[] = useMemo(() => {
+    const list: ActionDef<TrustRelationship>[] = []
     if (canWriteWebsiteSsoServiceProviders) {
-      actions.push({
-        icon: 'edit',
-        tooltip: `${t('messages.edit_service_provider')}`,
-        iconProps: { style: { color: customColors.darkGray } },
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData)
-        },
-      })
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_service_provider')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => handleGoToAddPage(),
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('messages.edit_service_provider'),
+        onClick: (row) => handleGoToEditPage(row),
       })
     }
     if (canReadWebsiteSsoServiceProviders) {
-      actions.push({
-        icon: 'visibility',
-        tooltip: `${t('messages.view_service_provider')}`,
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData, true)
-        },
+      list.push({
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
+        tooltip: t('messages.view_service_provider'),
+        onClick: (row) => handleGoToEditPage(row, true),
       })
     }
     if (canDeleteWebsiteSsoServiceProviders) {
-      actions.push({
-        icon: DeleteOutlinedIcon,
-        iconProps: { color: 'secondary' },
-        tooltip: `${t('messages.delete_service_provider')}`,
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: TrustRelationship | TrustRelationship[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleDelete(rowData)
-        },
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('messages.delete_service_provider'),
+        onClick: handleDelete,
       })
     }
-    actions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: handleRefresh,
-    })
-    return actions
+    return list
   }, [
-    canReadWebsiteSsoServiceProviders,
     canWriteWebsiteSsoServiceProviders,
+    canReadWebsiteSsoServiceProviders,
     canDeleteWebsiteSsoServiceProviders,
     t,
+    classes,
     handleGoToEditPage,
-    handleGoToAddPage,
     handleDelete,
-    handleRefresh,
   ])
 
-  const tableColumns = useMemo(() => getServiceProviderTableCols(t), [t])
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems: filteredProviders.length,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [pageNumber, limit, filteredProviders.length, handlePageChange, handleRowsPerPageChange],
+  )
+
+  const primaryAction = useMemo(
+    () => ({
+      label: t('messages.add_service_provider'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: handleGoToAddPage,
+      disabled: !canWriteWebsiteSsoServiceProviders,
+    }),
+    [t, classes.addIcon, handleGoToAddPage, canWriteWebsiteSsoServiceProviders],
+  )
+
+  const getRowKey = useCallback(
+    (row: TrustRelationship, index: number) => row.inum ?? `row-${index}`,
+    [],
+  )
 
   return (
     <GluuLoader blocking={isLoading}>
-      <GluuViewWrapper canShow={canReadWebsiteSsoServiceProviders}>
-        <MaterialTable
-          components={{
-            Container: PaperContainer,
-          }}
-          columns={tableColumns}
-          data={websiteSsoServiceProviders}
-          isLoading={isLoading}
-          title=""
-          actions={tableActions}
-          options={{
-            search: true,
-            searchFieldAlignment: 'left',
-            selection: false,
-            pageSize: 10,
-            idSynonym: 'inum',
-            headerStyle: {
-              ...applicationStyle.tableHeaderStyle,
-              backgroundColor: themeColors.background,
-              color: themeColors.fontColor,
-            } as React.CSSProperties,
-            actionsColumnIndex: -1,
-          }}
-        />
-      </GluuViewWrapper>
-      {canDeleteWebsiteSsoServiceProviders && (
-        <GluuDialog
-          row={item}
-          name={item?.displayName || ''}
-          handler={toggle}
-          modal={modal}
-          subject="saml website sso service provider"
-          onAccept={onDeletionConfirmed}
-          feature={adminUiFeatures.saml_delete}
-        />
-      )}
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadWebsiteSsoServiceProviders}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t('fields.pattern')}:`}
+                searchPlaceholder={t('placeholders.search_pattern')}
+                searchValue={pattern}
+                searchOnType
+                onSearch={handleSearch}
+                onSearchSubmit={handleSearch}
+                onRefresh={canReadWebsiteSsoServiceProviders ? handleRefresh : undefined}
+                refreshLoading={isLoading}
+                primaryAction={primaryAction}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
+          <div className={classes.tableCard}>
+            <GluuTable<TrustRelationship>
+              columns={columns}
+              data={pagedProviders}
+              loading={false}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={t('messages.no_data')}
+            />
+          </div>
+        </GluuViewWrapper>
+        {canDeleteWebsiteSsoServiceProviders && (
+          <GluuDialog
+            row={item}
+            name={item?.displayName || ''}
+            handler={toggle}
+            modal={modal}
+            subject="saml website sso service provider"
+            onAccept={onDeletionConfirmed}
+            feature={adminUiFeatures.saml_delete}
+          />
+        )}
+      </div>
     </GluuLoader>
   )
 })
