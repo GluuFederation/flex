@@ -146,21 +146,22 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     headerCellActions: {
       textAlign: 'center',
     },
+    headerCellSortable: {
+      padding: 0,
+    },
     sortableHeader: {
       'cursor': 'pointer',
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'flex-start',
-      'position': 'absolute',
-      'left': 0,
-      'top': 0,
-      'right': 6,
-      'bottom': 0,
-      'width': 'auto',
+      'width': '100%',
       'padding': '14px 16px',
+      'paddingRight': 20,
+      'boxSizing': 'border-box',
       'background': 'none',
       'border': 'none',
       'font': 'inherit',
+      'lineHeight': '28px',
       'color': headerColor,
       'textAlign': 'inherit',
       '&:hover [data-sort-icon]': {
@@ -178,7 +179,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       display: 'inline-flex',
       alignItems: 'center',
       opacity: OPACITY.NONE,
-      transition: 'opacity 0.15s ease',
+      transformOrigin: 'center',
+      transition: 'opacity 0.15s ease, transform 0.2s ease',
     },
     cell: {
       padding: '14px 16px',

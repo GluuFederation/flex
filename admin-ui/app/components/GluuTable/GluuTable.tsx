@@ -401,13 +401,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const handleSort = useCallback((columnKey: string) => {
     setSortState((prev) => {
       const isSameColumn = prev.column === columnKey
-      const nextDirection: SortDirection = !isSameColumn
-        ? 'asc'
-        : prev.direction === 'asc'
-          ? 'desc'
-          : null
+      const nextDirection: SortDirection = isSameColumn && prev.direction === 'asc' ? 'desc' : 'asc'
       return {
-        column: nextDirection ? columnKey : null,
+        column: columnKey,
         direction: nextDirection,
       }
     })
@@ -510,7 +506,11 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                     <th
                       ref={(el) => setHeaderCellRef(id, el)}
                       key={`${id}-${colIdx}`}
-                      className={`${classes.headerCell} ${classes.headerCellResizable}`}
+                      className={
+                        isSortable
+                          ? `${classes.headerCell} ${classes.headerCellSortable}`
+                          : `${classes.headerCell} ${classes.headerCellResizable}`
+                      }
                       style={{
                         width: effectiveWidths[id],
                         ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
@@ -529,12 +529,17 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           onClick={() => handleSort(id)}
                         >
                           {col.label}
-                          <span className={classes.sortIconWrap} data-sort-icon>
-                            <ChevronIcon
-                              width={14}
-                              height={14}
-                              direction={isActive && sortState.direction === 'asc' ? 'up' : 'down'}
-                            />
+                          <span
+                            className={classes.sortIconWrap}
+                            data-sort-icon
+                            style={{
+                              transform:
+                                isActive && sortState.direction === 'asc'
+                                  ? 'rotate(180deg)'
+                                  : 'rotate(0deg)',
+                            }}
+                          >
+                            <ChevronIcon width={14} height={14} />
                           </span>
                         </button>
                       ) : (
@@ -542,23 +547,25 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           {col.label}
                         </GluuText>
                       )}
-                      <div
-                        role="separator"
-                        aria-orientation="vertical"
-                        aria-label="Resize column"
-                        className={classes.resizeHandle}
-                        onMouseDown={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          handleResizeStart(id, e.clientX, e.currentTarget)
-                        }}
-                        onTouchStart={(e) => {
-                          e.preventDefault()
-                          if (e.touches.length > 0) {
-                            handleResizeStart(id, e.touches[0].clientX, e.currentTarget)
-                          }
-                        }}
-                      />
+                      {(colIdx < columns.length - 1 || (actions?.length ?? 0) > 0) && (
+                        <div
+                          role="separator"
+                          aria-orientation="vertical"
+                          aria-label="Resize column"
+                          className={classes.resizeHandle}
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            handleResizeStart(id, e.clientX, e.currentTarget)
+                          }}
+                          onTouchStart={(e) => {
+                            e.preventDefault()
+                            if (e.touches.length > 0) {
+                              handleResizeStart(id, e.touches[0].clientX, e.currentTarget)
+                            }
+                          }}
+                        />
+                      )}
                     </th>
                   )
                 })}

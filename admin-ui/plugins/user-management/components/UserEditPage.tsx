@@ -39,7 +39,7 @@ import {
   getStandardFieldValues,
   isPersistenceInfo,
 } from '../utils'
-import { USER_ID_ATTR, MAIL_ATTR, DISPLAY_NAME_ATTR, STATUS_ATTR, GIVEN_NAME_ATTR } from '../common'
+import { STANDARD_FORM_FIELDS } from '../common'
 import { adminUiFeatures } from '@/constants'
 import { AXIOS_INSTANCE } from 'Orval'
 import { SESSION_ENDPOINT } from '@/redux/api/backend-api'
@@ -150,11 +150,6 @@ const UserEditPage = () => {
   })
   const isSubmitting = updateUserMutation.isPending
 
-  const standardFields = useMemo(
-    () => [USER_ID_ATTR, MAIL_ATTR, DISPLAY_NAME_ATTR, STATUS_ATTR, GIVEN_NAME_ATTR] as const,
-    [],
-  )
-
   const submitData = useCallback(
     async (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
       const baseCustomAttributes = buildCustomAttributesFromValues(values, personAttributes)
@@ -163,7 +158,7 @@ const UserEditPage = () => {
         modifiedFields,
         personAttributes,
       )
-      const standardFieldValues = getStandardFieldValues(values, standardFields)
+      const standardFieldValues = getStandardFieldValues(values, STANDARD_FORM_FIELDS)
 
       await updateUserMutation.mutateAsync({
         data: {
@@ -185,7 +180,7 @@ const UserEditPage = () => {
         } as CustomUser,
       })
     },
-    [personAttributes, userDetails, persistenceType, standardFields, updateUserMutation],
+    [personAttributes, userDetails, persistenceType, updateUserMutation],
   )
 
   return (

@@ -19,7 +19,8 @@ import UserClaimEntry from './UserClaimEntry'
 import PasswordChangeModal from './PasswordChangeModal'
 import AvailableClaimsPanel from './AvailableClaimsPanel'
 import { buildFormOperations, diffFormValues } from '../utils'
-import { getClaimLabel } from '../utils/claimLabelUtils'
+import { getClaimLabel, getCountryName } from '../utils/claimLabelUtils'
+import { COUNTRY_ATTR } from '../common'
 import type {
   FormFieldValue,
   UserFormProps,
@@ -197,7 +198,11 @@ const UserForm = ({
         const attributeDef = memoizedPersonAttributes.find((attr) => attr.name === path)
         const displayName =
           typeof attributeDef?.displayName === 'string' ? attributeDef.displayName : undefined
-        return { path, value, label: getClaimLabel(t, path, displayName) }
+        const displayValue =
+          path === COUNTRY_ATTR && typeof value === 'string' && value !== ''
+            ? getCountryName(value)
+            : value
+        return { path, value: displayValue, label: getClaimLabel(t, path, displayName) }
       }),
     [operations, memoizedPersonAttributes, t],
   )
