@@ -33,7 +33,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from 'Orval'
 import {
@@ -252,7 +251,7 @@ const AgamaFlows: React.FC = () => {
       }
     } catch (error) {
       logger.error('Error reading zip file:', error instanceof Error ? error : String(error))
-      toast.error('Failed to read zip file')
+      dispatch(updateToast(true, 'error', 'Failed to read zip file'))
     }
   }, [])
 
@@ -268,12 +267,12 @@ const AgamaFlows: React.FC = () => {
   const handleProjectDropRejected = useCallback((fileRejections: FileRejection[]) => {
     const error = fileRejections[0]?.errors[0]
     if (error?.code === 'file-too-large') {
-      toast.error('File size exceeds 50MB limit')
+      dispatch(updateToast(true, 'error', 'File size exceeds 50MB limit'))
     }
   }, [])
 
   const handleShaDropRejected = useCallback(() => {
-    toast.error('SHA256 file size exceeds 1MB limit')
+    dispatch(updateToast(true, 'error', 'SHA256 file size exceeds 1MB limit'))
   }, [])
 
   const {
@@ -375,7 +374,7 @@ const AgamaFlows: React.FC = () => {
 
     reader.onerror = (error) => {
       logger.error('Error reading SHA256 file:', error)
-      toast.error('Failed to read SHA256 file')
+      dispatch(updateToast(true, 'error', 'Failed to read SHA256 file'))
     }
 
     const blob = new Blob([shaFile])
@@ -425,13 +424,13 @@ const AgamaFlows: React.FC = () => {
 
   const handleDeploy = async (): Promise<void> => {
     if (!repoName) {
-      toast.error('No repository selected')
+      dispatch(updateToast(true, 'error', 'No repository selected'))
       return
     }
 
     const repo = agamaRepositoriesList.projects.find((item) => item['repository-name'] === repoName)
     if (!repo) {
-      toast.error('Repository not found')
+      dispatch(updateToast(true, 'error', 'Repository not found'))
       return
     }
 
@@ -474,7 +473,7 @@ const AgamaFlows: React.FC = () => {
       setDeployLoading(false)
     } catch (error) {
       logger.error('Error deploying project: ' + resolveApiErrorMessage(error as Error))
-      toast.error('File not found or deployment failed')
+      dispatch(updateToast(true, 'error', 'File not found or deployment failed'))
       setDeployLoading(false)
     }
   }

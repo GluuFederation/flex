@@ -947,6 +947,8 @@
     "both_dates_required": "Both start and end dates are required for date range filtering",
     "success": "Success",
     "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
     "success_in_saving": "Changes saved successfully",
     "fido_config_updated_successfully": "FIDO configuration updated successfully",
     "fido_config_update_failed": "Failed to update FIDO configuration",

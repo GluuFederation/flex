@@ -13,9 +13,6 @@ import type {
   SidebarMenuItemProps,
 } from './types'
 
-/**
- * Renders a collapse trigger or a ReactRouter Link
- */
 const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
   return props.to || props.href ? (
     props.to !== 'logout' ? (

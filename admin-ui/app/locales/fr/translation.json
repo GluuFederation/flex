@@ -1148,6 +1148,8 @@
     "try_again_later": "Veuillez réessayer plus tard",
     "success": "Succès",
     "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information",
     "error_processing_request": "Erreur lors du traitement de la demande.",
     "no_data": "Aucune donnée trouvée",
     "no_data_available": "Aucune donnée disponible",
