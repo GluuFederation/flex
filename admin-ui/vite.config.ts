@@ -165,7 +165,6 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
   ],
   ['vendor-data', ['axios', 'dayjs', 'lodash']],
   ['vendor-forms', ['formik', 'yup']],
-  ['vendor-feedback', ['react-toastify']],
 ]
 
 const getVendorPackageName = (id: string): string | null => {

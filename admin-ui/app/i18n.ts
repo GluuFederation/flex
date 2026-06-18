@@ -6,7 +6,8 @@ import { isDevelopment } from './utils/env'
 import { logger } from './utils/logger'
 import { storage } from '@/utils/storage'
 import { hmrAccept } from '@/utils/hmr'
-import { toast } from 'react-toastify'
+import store from '@/redux/store'
+import { updateToast } from '@/redux/features/toastSlice'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 
 const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof translationEn }>> = {
@@ -15,16 +16,16 @@ const LAZY_LOCALE_LOADERS: Record<string, () => Promise<{ default: typeof transl
   [LANG_CODES.PT]: () => import('./locales/pt/translation.json'),
 }
 
+const warnedMissingKeys = new Set<string>()
+
 const handleMissingKey = (key: string, defaultValue?: string): string => {
   logger.error(
     `[i18n] Missing translation key: "${key}"`,
     defaultValue !== undefined ? `(default: "${defaultValue}")` : '',
   )
-  if (isDevelopment) {
-    toast.warning(`[i18n] Missing translation key: "${key}"`, {
-      autoClose: 5000,
-      toastId: `i18n-missing-${key}`,
-    })
+  if (isDevelopment && !warnedMissingKeys.has(key)) {
+    warnedMissingKeys.add(key)
+    store.dispatch(updateToast(true, 'warning', `[i18n] Missing translation key: "${key}"`))
   }
   return defaultValue ?? key
 }

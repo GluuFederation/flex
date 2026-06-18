@@ -16,9 +16,9 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { toast } from 'react-toastify'
 import { adminUiFeatures, OPACITY } from '@/constants'
 import { putConfigWorker } from 'Redux/features/authSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp/types'
 import { trimObjectStrings } from 'Utils/Util'
 import {
@@ -129,7 +129,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
           touched[k] = true
         }
         formik.setTouched(touched)
-        toast.error(t('messages.mandatory_fields_required'))
+        dispatch(updateToast(true, 'error', t('messages.mandatory_fields_required')))
         return
       }
       const { smtp_authentication_account_password, key_store_password, ...rest } = formik.values
@@ -143,7 +143,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
       }
       handleSubmit(toSmtpConfiguration(trimmedValues), userMessage)
     },
-    [readOnly, formik, handleSubmit, t],
+    [readOnly, formik, handleSubmit, t, dispatch],
   )
 
   const testSmtpConfig = useCallback(() => {
@@ -155,9 +155,9 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
         message: t('messages.smtp_test_message'),
       })
     } else {
-      toast.error(t('messages.mandatory_fields_required'))
+      dispatch(updateToast(true, 'error', t('messages.mandatory_fields_required')))
     }
-  }, [readOnly, formik.isValid, onTestSmtp, t])
+  }, [readOnly, formik.isValid, onTestSmtp, t, dispatch])
 
   const keystoreTooltip = useCallback(
     (fieldLabel: string) =>

@@ -2,7 +2,8 @@ import React, { useCallback, useState, useEffect, useMemo, useRef, useDeferredVa
 import { useFormik, setIn } from 'formik'
 import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { logger } from '@/utils/logger'
-import { toast } from 'react-toastify'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -43,6 +44,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   search = '',
 }) => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const deferredSearch = useDeferredValue(search.toLowerCase())
   const { canWrite: canWriteConfigApi } = usePermission(CONFIG_API_RESOURCE_ID)
   const { navigateToRoute } = useAppNavigation()
@@ -283,10 +285,10 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         setPatches([])
       } catch (error) {
         logger.error('Error submitting form:', error instanceof Error ? error : String(error))
-        toast.error(t('messages.error_in_saving'))
+        dispatch(updateToast(true, 'error', t('messages.error_in_saving')))
       }
     },
-    [onSubmit, patches, t],
+    [onSubmit, patches, t, dispatch],
   )
 
   const handleBack = useCallback(() => {
