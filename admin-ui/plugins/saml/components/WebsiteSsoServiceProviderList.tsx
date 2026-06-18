@@ -273,4 +273,5 @@ const WebsiteSsoServiceProviderList = React.memo(() => {
 
 WebsiteSsoServiceProviderList.displayName = 'WebsiteSsoServiceProviderList'
 
+export { matchesPattern }
 export default WebsiteSsoServiceProviderList

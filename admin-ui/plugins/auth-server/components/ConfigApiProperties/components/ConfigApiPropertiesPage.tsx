@@ -95,7 +95,7 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
         logger.error('Error updating config:', err instanceof Error ? err : String(err))
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
         setErrorMessage(errorMsg)
-        dispatch(updateToast(true, 'error', errorMsg))
+        throw err
       }
     },
     [patchConfigMutation, logConfigApiUpdate, t, refetch, dispatch],

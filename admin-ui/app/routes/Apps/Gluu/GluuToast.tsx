@@ -27,6 +27,13 @@ const TITLE_KEY_BY_TYPE: Record<ToastType, string> = {
   info: 'messages.info',
 }
 
+const FALLBACK_KEY_BY_TYPE: Record<ToastType, string> = {
+  success: 'messages.success_in_saving',
+  error: 'messages.error_processing_request',
+  warning: 'messages.warning',
+  info: 'messages.info',
+}
+
 const renderToastBody = (
   t: TFunction,
   type: ToastType,
@@ -39,11 +46,7 @@ const renderToastBody = (
     <>
       <span className={titleClassName}>{t(TITLE_KEY_BY_TYPE[type])}</span>
       <br />
-      {normalizedMessage === ''
-        ? type === 'success'
-          ? t('messages.success_in_saving')
-          : t('messages.error_processing_request')
-        : normalizedMessage}
+      {normalizedMessage === '' ? t(FALLBACK_KEY_BY_TYPE[type]) : normalizedMessage}
     </>
   )
 }

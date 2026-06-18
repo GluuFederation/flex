@@ -9,8 +9,9 @@ jest.mock('formik', () => ({
   useFormik: jest.fn(),
 }))
 
+const mockDispatch = jest.fn()
 jest.mock('@/redux/hooks', () => ({
-  useAppDispatch: () => jest.fn(),
+  useAppDispatch: () => mockDispatch,
 }))
 
 jest.mock('react-i18next', () => ({
