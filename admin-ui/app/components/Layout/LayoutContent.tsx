@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react'
+import React, { use, useEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import customColors, { getCustomColorsAsCssVars, getLoadingOverlayRgba } from '@/customColors'
@@ -7,7 +7,7 @@ import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
 
 const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } = ({ children }) => {
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   if (!theme) {
     throw new Error('ThemeContext must be used within a ThemeProvider')
   }

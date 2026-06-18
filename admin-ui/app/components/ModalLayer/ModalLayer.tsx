@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { use, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -8,7 +8,7 @@ import type { ModalLayerProps } from './types'
 
 const ModalLayer = ({ onClose, overlayClassName, children }: ModalLayerProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { use, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { OPACITY } from '@/constants'
@@ -14,7 +14,7 @@ const LIGHT_ICON_FILTER =
 
 const Notifications = () => {
   const { t } = useTranslation()
-  const themeContext = useContext(ThemeContext)
+  const themeContext = use(ThemeContext)
 
   const currentTheme = useMemo(() => {
     return themeContext?.state?.theme || DEFAULT_THEME

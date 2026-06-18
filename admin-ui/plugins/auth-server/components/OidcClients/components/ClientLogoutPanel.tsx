@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuDynamicList } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'

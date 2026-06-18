@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, type JSX } from 'react'
 import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
 import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'

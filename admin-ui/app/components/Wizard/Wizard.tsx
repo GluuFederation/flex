@@ -65,14 +65,16 @@ class Wizard extends React.Component<WizardProps, WizardState> {
 
     return (
       <div className="wizard">
-        {map(children as React.ReactElement[], (child, index) =>
-          React.cloneElement(child, {
-            onClick: () => {
-              this.stepClick(child.props.id || '')
-            },
-            active: child.props.id === activeStep,
-            key: index,
-          }),
+        {map(
+          children as React.ReactElement<{ id?: string; onClick?: () => void; active?: boolean }>[],
+          (child, index) =>
+            React.cloneElement(child, {
+              onClick: () => {
+                this.stepClick(child.props.id || '')
+              },
+              active: child.props.id === activeStep,
+              key: index,
+            }),
         )}
       </div>
     )

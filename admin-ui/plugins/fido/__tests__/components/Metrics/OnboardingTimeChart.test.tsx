@@ -14,8 +14,11 @@ jest.mock('recharts', () => {
   const reactLib = jest.requireActual('react') as typeof import('react')
   return {
     ...actual,
-    ResponsiveContainer: ({ children }: { children: React.ReactElement }) =>
-      reactLib.cloneElement(children, { width: 800, height: 320 }),
+    ResponsiveContainer: ({
+      children,
+    }: {
+      children: React.ReactElement<{ width?: number; height?: number }>
+    }) => reactLib.cloneElement(children, { width: 800, height: 320 }),
   }
 })
 

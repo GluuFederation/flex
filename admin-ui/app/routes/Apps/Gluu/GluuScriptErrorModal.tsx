@@ -1,4 +1,4 @@
-import { memo, useContext, useState, useCallback, useMemo } from 'react'
+import { memo, use, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close } from '@/components/icons'
@@ -20,7 +20,7 @@ const GluuScriptErrorModal = ({
   handler,
 }: GluuScriptErrorModalProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const [isCopied, setIsCopied] = useState(false)
   const selectedTheme = theme?.state.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK

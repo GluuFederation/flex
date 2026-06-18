@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode, HTMLAttributes } from 'react'
+import type { CSSProperties, ReactNode, HTMLAttributes, Ref } from 'react'
 import type { AlertProps } from '@mui/material/Alert'
 import type { FormikProps } from 'formik'
 import type { Accept } from '@/hooks/useFileDrop'
@@ -9,6 +9,10 @@ export type GluuAlertProps = {
   severity?: AlertProps['severity']
   message?: string
   show?: boolean
+}
+
+export type GluuMuiAlertProps = AlertProps & {
+  ref?: Ref<HTMLDivElement>
 }
 
 type DialogRow = {

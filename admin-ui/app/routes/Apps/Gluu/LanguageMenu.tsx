@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo, useCallback, memo, useRef } from 'react'
+import { useState, useEffect, use, useMemo, useCallback, memo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
@@ -28,7 +28,7 @@ const getInitialLang = (inum?: string): string => {
 const LanguageMenu = memo<LanguageMenuProps>(({ userInfo }) => {
   const { t, i18n } = useTranslation()
   const { inum } = userInfo
-  const themeContext = useContext(ThemeContext)
+  const themeContext = use(ThemeContext)
   const currentTheme = themeContext?.state?.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })

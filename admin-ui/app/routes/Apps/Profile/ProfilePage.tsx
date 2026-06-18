@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useMemo, memo } from 'react'
+import React, { use, useCallback, useMemo, memo } from 'react'
 import { GluuBadge } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
@@ -40,7 +40,7 @@ InfoRow.displayName = 'InfoRow'
 
 const ProfileDetails: React.FC = () => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeContextValue
+  const theme = use(ThemeContext) as ThemeContextValue
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])

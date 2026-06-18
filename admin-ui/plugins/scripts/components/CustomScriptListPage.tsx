@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import React, { useState, useEffect, use, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -55,7 +55,7 @@ const CustomScriptListPage: React.FC = () => {
   const { navigateToRoute } = useAppNavigation()
   const { canRead, canWrite, canDelete } = usePermission(scriptsResourceId)
 
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
     const selected = theme?.state?.theme || DEFAULT_THEME
     return {

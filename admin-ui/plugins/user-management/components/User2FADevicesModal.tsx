@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, use, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Close, DeleteOutlined } from '@/components/icons'
 import GluuViewDetailModal from 'Routes/Apps/Gluu/GluuViewDetailsModal'
@@ -38,7 +38,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const themeContext = useContext(ThemeContext)
+  const themeContext = use(ThemeContext)
   const selectedTheme = useMemo(
     () => theme || themeContext?.state?.theme || DEFAULT_THEME,
     [theme, themeContext?.state?.theme],

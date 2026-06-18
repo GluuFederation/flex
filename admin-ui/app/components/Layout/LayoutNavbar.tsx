@@ -14,7 +14,11 @@ const LayoutNavbar: LayoutNavbarComponent = (props) => {
     throw new Error('LayoutNavbar expects a single valid React element as a child')
   }
 
-  return <div className="layout__navbar">{React.cloneElement(child, { fixed: null })}</div>
+  return (
+    <div className="layout__navbar">
+      {React.cloneElement(child as React.ReactElement<{ fixed?: boolean | null }>, { fixed: null })}
+    </div>
+  )
 }
 
 LayoutNavbar.layoutPartName = 'navbar'

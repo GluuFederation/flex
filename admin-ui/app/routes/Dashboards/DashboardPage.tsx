@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useContext } from 'react'
+import { useState, useMemo, useCallback, use } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from '@/redux/hooks'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -46,7 +46,7 @@ const DashboardPage = () => {
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
-  const themeContext = useContext(ThemeContext)
+  const themeContext = use(ThemeContext)
   const currentTheme = useMemo(
     () => themeContext?.state?.theme || DEFAULT_THEME,
     [themeContext?.state?.theme],

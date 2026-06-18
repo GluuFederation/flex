@@ -198,7 +198,7 @@ const AuthServerPropertiesPage: React.FC = () => {
       }
     }
   }, [serverConfiguration, isConfigLoaded, patches.length])
-  const deferredSearch = useDeferredValue(search.toLowerCase())
+  const deferredSearch = useDeferredValue(search.toLowerCase(), '')
 
   const searchableEntries = useMemo(() => {
     const renamed = renamedFieldFromObject(configuration, t(DISCOVERY_DENY_KEYS_I18N))

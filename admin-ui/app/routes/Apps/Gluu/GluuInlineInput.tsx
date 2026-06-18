@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, use, useCallback, useEffect, useMemo } from 'react'
 import { Check, Close } from '@/components/icons'
 import { OPACITY } from '@/constants'
 import GluuLabel from './GluuLabel'
@@ -33,7 +33,7 @@ const GluuInlineInput = ({
   placeholder,
 }: GluuInlineInputProps) => {
   const { classes } = useStyles()
-  const theme = useContext(ThemeContext) as ThemeContextValue
+  const theme = use(ThemeContext) as ThemeContextValue
   const selectedTheme = theme.state.theme
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState<string[]>([])

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, use, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -42,7 +42,7 @@ const matchesPattern = (provider: TrustRelationship, pattern: string): boolean =
 }
 
 const WebsiteSsoServiceProviderList = React.memo(() => {
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state?.theme ?? DEFAULT_THEME, [theme?.state?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK

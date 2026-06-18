@@ -1,4 +1,4 @@
-import React, { memo, useContext, useMemo } from 'react'
+import React, { memo, use, useMemo } from 'react'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
@@ -8,7 +8,7 @@ import type { GluuPageContentProps } from './types'
 
 const GluuPageContent: React.FC<GluuPageContentProps> = memo(
   ({ children, className, withVerticalPadding = true, maxWidth, backgroundColor }) => {
-    const themeContext = useContext(ThemeContext)
+    const themeContext = use(ThemeContext)
     const currentTheme = useMemo(
       () => themeContext?.state.theme || DEFAULT_THEME,
       [themeContext?.state.theme],

@@ -18,11 +18,17 @@ export const AccordionIndicator: React.FC<AccordionIndicatorProps> = ({
   <Consumer>
     {({ isOpen }) =>
       isOpen
-        ? React.cloneElement(open as React.ReactElement, {
-            className: clsx(className, (open as React.ReactElement).props.className),
+        ? React.cloneElement(open as React.ReactElement<{ className?: string }>, {
+            className: clsx(
+              className,
+              (open as React.ReactElement<{ className?: string }>).props.className,
+            ),
           })
-        : React.cloneElement(closed as React.ReactElement, {
-            className: clsx(className, (closed as React.ReactElement).props.className),
+        : React.cloneElement(closed as React.ReactElement<{ className?: string }>, {
+            className: clsx(
+              className,
+              (closed as React.ReactElement<{ className?: string }>).props.className,
+            ),
           })
     }
   </Consumer>

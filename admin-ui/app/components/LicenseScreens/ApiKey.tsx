@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { use, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import logo from 'Images/logos/logo192.png'
 import { Box } from '@mui/material'
@@ -13,7 +13,7 @@ import useStyles from './LicenseScreen.style'
 
 const ApiKey = () => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })

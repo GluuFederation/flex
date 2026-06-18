@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, type JSX } from 'react'
 import { DeleteOutline } from '@/components/icons'
 import { Accordion, FormGroup, Col } from 'Components'
 import { GluuButton } from '@/components'

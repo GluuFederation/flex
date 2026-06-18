@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, use, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -29,7 +29,7 @@ const LIMIT_OPTIONS = getRowsPerPageOptions()
 const samlResourceId = ADMIN_UI_RESOURCES.SAML
 
 const WebsiteSsoIdentityBrokeringList = React.memo(() => {
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK

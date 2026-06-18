@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react'
+import { use, useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { uuidv4 } from 'Utils/Util'
 import { EmptyLayout, Label } from 'Components'
@@ -19,7 +19,7 @@ const ByeBye = () => {
 
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 

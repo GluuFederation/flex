@@ -44,16 +44,19 @@ export type AlertProps = React.HTMLAttributes<HTMLDivElement> & {
 type StandardInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children'> & {
   type?: Exclude<React.HTMLInputTypeAttribute, 'select' | 'textarea'>
   children?: React.ReactNode
+  ref?: React.Ref<HTMLInputElement>
 }
 
 type SelectInputProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   type: 'select'
   children?: React.ReactNode
+  ref?: React.Ref<HTMLSelectElement>
 }
 
 type TextareaInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   type: 'textarea'
   children?: React.ReactNode
+  ref?: React.Ref<HTMLTextAreaElement>
 }
 
 export type InputProps = StandardInputProps | SelectInputProps | TextareaInputProps

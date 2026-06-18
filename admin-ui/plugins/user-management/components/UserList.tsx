@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, type JSX } from 'react'
 import { Add, DeleteOutlined, Edit, LockOpenIcon } from '@/components/icons'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useMemo, memo } from 'react'
+import React, { useState, use, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
@@ -43,7 +43,7 @@ const UserClaimsListPage: React.FC = () => {
 
   const { canRead, canWrite, canDelete } = usePermission(attributeResourceId)
 
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
     const selected = theme?.state?.theme || DEFAULT_THEME
     return {

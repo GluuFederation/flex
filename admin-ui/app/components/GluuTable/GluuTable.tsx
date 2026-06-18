@@ -4,7 +4,6 @@ import { ExpandMore as ExpandMoreIcon } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { ICON_SIZE } from '@/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
@@ -12,6 +11,7 @@ import { useStyles, TABLE_MIN_WIDTH, TABLE_RESPONSIVE_BREAKPOINT } from './GluuT
 import { T_KEYS, EMPTY_CELL_PLACEHOLDER } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
+import { ICON_SIZE } from '@/constants'
 import {
   getDefaultPagingSize,
   getRowsPerPageOptions,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DeleteOutline } from '@/components/icons'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'

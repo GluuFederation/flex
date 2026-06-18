@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, use, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFileDrop, type Accept } from '@/hooks/useFileDrop'
 import { Box } from '@mui/material'
@@ -25,7 +25,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
   showClearButton = true,
 }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = useMemo(() => {
     return theme?.state?.theme || DEFAULT_THEME
   }, [theme?.state?.theme])

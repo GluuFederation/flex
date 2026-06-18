@@ -10,6 +10,7 @@ module.exports = {
     'dist',
     'coverage',
     'jans_config_api_orval',
+    'jans_config_api',
     '.husky/_',
     '.claude',
     'CHANGELOG.md',

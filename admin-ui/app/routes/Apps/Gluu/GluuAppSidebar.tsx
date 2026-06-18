@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, use, useMemo, useCallback, useRef, type JSX } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
 import { useAppSelector } from '@/redux/hooks'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -73,7 +73,7 @@ const GluuAppSidebar = (): JSX.Element => {
   // ready once a load attempt has settled, so the loader can't spin forever
   const isReady = menusLoaded
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeContextState
+  const theme = use(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
   const { authorizeHelper } = useCedarling()

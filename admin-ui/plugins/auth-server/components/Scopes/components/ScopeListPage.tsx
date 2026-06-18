@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react'
+import React, { useState, useEffect, use, useCallback, useMemo, memo } from 'react'
 import { Add, DeleteOutlined, Edit } from '@/components/icons'
 import { Link } from 'react-router-dom'
 import { useAppDispatch } from '@/redux/hooks'
@@ -69,7 +69,7 @@ const ScopeListPage: React.FC = () => {
   const { canRead, canWrite, canDelete } = usePermission(ADMIN_UI_RESOURCES.Scopes)
   const { logScopeDeletion } = useScopeActions()
 
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
     const selected = theme?.state?.theme || DEFAULT_THEME
     return {

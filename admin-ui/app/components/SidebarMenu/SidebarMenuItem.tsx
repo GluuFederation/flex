@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEvent, useEffect, useId, useContext, useMemo } from 'react'
+import React, { CSSProperties, MouseEvent, useEffect, useId, use, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import { MenuContext } from './MenuContext'
@@ -80,8 +80,8 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   sidebarMenuActiveClass,
   isEmptyNode = false,
 }) => {
-  const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext)
-  const theme = useContext(ThemeContext)
+  const { entries, addEntry, updateEntry, removeEntry } = use(MenuContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const id = useId()
 
@@ -173,8 +173,11 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           handleClick={handleClick}
         >
           {icon &&
-            React.cloneElement(icon, {
-              className: clsx(icon.props.className, `${classBase}__entry__icon`),
+            React.cloneElement(icon as React.ReactElement<{ className?: string; fill?: string }>, {
+              className: clsx(
+                (icon as React.ReactElement<{ className?: string }>).props.className,
+                `${classBase}__entry__icon`,
+              ),
               fill: iconFillColor,
             })}
           {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}
@@ -205,13 +208,16 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
               <MenuContext.Consumer>
                 {(ctx: SidebarMenuContext) =>
                   React.isValidElement(child)
-                    ? React.cloneElement(child, {
-                        isSubNode: true,
-                        parentId: id,
-                        currentUrl,
-                        slim,
-                        ...ctx,
-                      })
+                    ? React.cloneElement(
+                        child as React.ReactElement<SidebarMenuItemProps & SidebarMenuContext>,
+                        {
+                          isSubNode: true,
+                          parentId: id,
+                          currentUrl,
+                          slim,
+                          ...ctx,
+                        },
+                      )
                     : child
                 }
               </MenuContext.Consumer>
