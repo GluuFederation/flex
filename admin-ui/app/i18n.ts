@@ -24,9 +24,16 @@ const handleMissingKey = (key: string, defaultValue?: string): string => {
   )
   if (isDevelopment && !warnedMissingKeys.has(key)) {
     warnedMissingKeys.add(key)
-    void import('@/redux/store').then(({ default: store }) => {
-      store.dispatch(updateToast(true, 'warning', `[i18n] Missing translation key: "${key}"`))
-    })
+    void import('@/redux/store')
+      .then(({ default: store }) => {
+        store.dispatch(updateToast(true, 'warning', `[i18n] Missing translation key: "${key}"`))
+      })
+      .catch((error) => {
+        logger.error(
+          '[i18n] Failed to load store for missing-key toast:',
+          error instanceof Error ? error : String(error),
+        )
+      })
   }
   return defaultValue ?? key
 }
