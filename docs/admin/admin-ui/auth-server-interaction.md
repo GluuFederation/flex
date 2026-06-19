@@ -14,9 +14,9 @@ When accessing the Gluu Flex Admin UI through a web browser, the following steps
 
 1. The user accesses the Gluu Flex Admin UI frontend through a web browser.
 2. The frontend requests the Admin UI backend to retrieve Admin UI configuration from Janssen persistence. The [Admin UI configuration](./configuration.md) includes OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata. It's important to note that **the Admin UI backend is implemented as a Jans Config API plugin**.
-3. The frontend calls the Admin UI backend API (`/isConfigValid`) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, `/isConfigValid` verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, `/isConfigValid` checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).
-4. After validating the OIDC client, the Admin UI calls the backend API (/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the SCAN API (/scan/license/isActive) to verify license validity and sync its details into the license configuration (persistence).
-5. If a valid license is not present, the frontend calls the backend API (/retrieve) to retrieve the license for the user via the SCAN API (/scan/license/retrieve). The license can only be retrieved from SCAN if the user has subscribed to the Admin UI license in Agama Lab.
+3. The frontend calls the Admin UI backend API (`/v1/license/isConfigValid`) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, `/v1/license/isConfigValid` verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, `/v1/license/isConfigValid` checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).
+4. After validating the OIDC client, the Admin UI calls the backend API (/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the License API (/v1/license/isActive) in Agama Lab to verify license validity and sync its details into the license configuration (persistence).
+5. If a valid license is not present, the frontend calls the backend API (/v1/license/retrieve) to retrieve the license for the user via the Agama Lab's License API (/v1/license/retrieve). The license can only be retrieved if the user has subscribed to the Admin UI license in Agama Lab.
 6. If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.
 7. After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.
 
@@ -48,16 +48,16 @@ else license client invalid
 end
 Gluu Flex Admin UI->>Admin UI Backend: /license/isActive
 Note over Gluu Flex Admin UI,Admin UI Backend: validate license
-Admin UI Backend->>SCAN: /scan/license/isActive
+Admin UI Backend->>Agama Lab: /license/isActive
 alt license active
-    SCAN->>Admin UI Backend: true
+    Agama Lab->>Admin UI Backend: true
 else license inactive / not present
-    SCAN->>Admin UI Backend: false
-    Admin UI Backend->>SCAN: /retrieve
+    Agama Lab->>Admin UI Backend: false
+    Admin UI Backend->>Agama Lab: /retrieve
     alt license subscribed
-        SCAN->>Admin UI Backend: license
+        Agama Lab->>Admin UI Backend: license
     else license not subscribed
-        SCAN->>Admin UI Backend: false
+        Agama Lab->>Admin UI Backend: false
         Admin UI Backend->>Gluu Flex Admin UI: false
         Gluu Flex Admin UI->>Browser: Screen to generate Trial license
     end

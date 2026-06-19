@@ -69,7 +69,6 @@ The information is stored in json format with following attributes.
 |Attribute Name|Description|
 |--------------|-----------|
 |uiConfig|Object with UI configuration attributes|
-|sessionTimeoutInMins|The admin UI will auto-logout after a period of inactivity defined in this field.|
 
 uiConfig
 
@@ -80,7 +79,6 @@ uiConfig
 |cedarlingLogType|Set embeded Cedarling log-type in Admin UI. The allowed values are `off` and `std_out`.|
 |auiPolicyStoreUrl|Path of Policy Store archive file|
 |auiDefaultPolicyStorePath|The path of the default Policy Store json file on Config Api pod.|
-|cedarlingPolicyStoreRetrievalPoint|The retrieval point of the Policy Store. The allowed values are `default` and `remote`.|
 
 ### OIDC Client Details for License Server
 
@@ -105,8 +103,19 @@ The information is stored in json format with following attributes.
 |licenseConfig| Object with License configuration details |
 |ssa| SSA used to register OIDC client to access license APIs |
 |scanLicenseApiHostname| SCAN License server hostname |
+|licenseKey|License-key to access Admin UI|
 |licenseHardwareKey| Hardware key (org_id) to access license APIs |
 |intervalForSyncLicenseDetailsInDays| The Admin UI backend syncs license details into the configuration (persistence) after the set interval (default: 30 days). |
+|licenseValidUpto|Expiry date to the subscribed flex license|
+|licenseDetailsLastUpdatedOn|The date on which the license details were synced from Agama Lab to the Admin UI's License Configuration|
+|productCode|The product code of the issued license at [LicenseSpring](https://licensespring.com/)|
+|licenseType|The license type of the issued license at [LicenseSpring](https://licensespring.com/)
+|licenseActive|Is the license configured currently active?|
+|licenseExpired|Is the license configured expired?|
+|licenseMAUThreshold|The allowed monthly active users for issued license|
+|oidcClient|Object with details of OIDC client to access license API|
+
+
 
 **Sample configuration stored in persistence**
 
@@ -162,6 +171,88 @@ The information is stored in json format with following attributes.
       "clientId": "36a43e2b-a77b-4e9c-a966-a9d98af1665c",
       "clientSecret": "211188d8-a2d8-4562-ab53-80907c1bb5ba"
     }
+  }
+}
+
+{
+  "oidcConfig": {
+    "auiWebClient": {
+      "introspectionEndpoint": null,
+      "tokenEndpoint": null,
+      "redirectUri": "https://your.host.com/admin",
+      "postLogoutUri": "https://your.host.com/admin",
+      "frontchannelLogoutUri": "https://your.host.com/admin/logout",
+      "scopes": [
+        "openid",
+        "https://jans.io/auth/ssa.admin",
+        "email",
+        "profile",
+        "offline_access",
+        "jans_stat"
+      ],
+      "acrValues": [
+        "simple_password_auth"
+      ],
+      "opHost": "https://your.host.com",
+      "clientId": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+      "clientSecret": "xxxxxxxxxxxxx",
+      "additionalParameters": []
+    },
+    "auiBackendApiClient": {
+      "introspectionEndpoint": "https://your.host.com/jans-auth/restv1/introspection",
+      "tokenEndpoint": "https://your.host.com/jans-auth/restv1/token",
+      "redirectUri": null,
+      "postLogoutUri": null,
+      "frontchannelLogoutUri": null,
+      "scopes": [
+        "openid",
+        "https://jans.io/auth/ssa.admin"
+      ],
+      "acrValues": null,
+      "opHost": "https://your.host.com",
+      "clientId": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+      "clientSecret": "xxxxxxxxxxxxx",
+      "additionalParameters": null
+    }
+  },
+  "licenseConfig": {
+    "ssa": "eyJraWQiOiJzc2FfN2IyMGM1MDYtMDlhNi00MTU1LWF....",
+    "scanLicenseApiHostname": "https://op-hostname.gluu.org",
+    "licenseKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+    "licenseHardwareKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+    "licenseValidUpto": "2026-07-07",
+    "licenseDetailsLastUpdatedOn": "2026-06-18",
+    "productCode": "adminui001",
+    "productName": "Gluu Admin UI",
+    "licenseType": "time-limited",
+    "customerFirstName": "",
+    "customerLastName": "",
+    "customerEmail": "trial_request",
+    "companyName": "",
+    "licenseActive": true,
+    "licenseExpired": false,
+    "licenseMAUThreshold": 1000,
+    "intervalForSyncLicenseDetailsInDays": 30,
+    "oidcClient": {
+      "introspectionEndpoint": null,
+      "tokenEndpoint": null,
+      "redirectUri": null,
+      "postLogoutUri": null,
+      "frontchannelLogoutUri": null,
+      "scopes": null,
+      "acrValues": null,
+      "opHost": "https://op-hostname.gluu.org",
+      "clientId": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+      "clientSecret": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
+      "additionalParameters": null
+    }
+  },
+  "uiConfig": {
+    "sessionTimeoutInMins": 31,
+    "allowSmtpKeystoreEdit": true,
+    "cedarlingLogType": "off",
+    "auiPolicyStoreUrl": "",
+    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.cjar"
   }
 }
 ```
