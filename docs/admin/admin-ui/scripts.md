@@ -18,7 +18,6 @@ tags:
 The Janssen Authentication Server leverages custom scripts, which, when implemented, can facilitate complex business workflows without changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.
 
 ![image](../../assets/admin-ui/admin-ui-custom-script-1.png)
-![image](../../assets/admin-ui/admin-ui-custom-script-2.png)
 
 ## Script properties
 
