@@ -1,7 +1,5 @@
 import React, { use, useCallback, useMemo, memo } from 'react'
 import { GluuBadge } from 'Components'
-import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
@@ -111,167 +109,165 @@ const ProfileDetails: React.FC = () => {
   const displayMail = profileDetails?.mail ?? userinfo?.email ?? '-'
 
   return (
-    <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <GluuViewWrapper canShow={canReadProfile}>
-        <GluuLoader blocking={loading}>
-          <Box className={classes.mainContainer}>
-            <Box className={classes.profileCard}>
-              <Box className={classes.avatarContainer}>
-                <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
-              </Box>
-
-              <Box
-                sx={{
-                  textAlign: 'center',
-                }}
-              >
-                <GluuText variant="h5" className={classes.nameText}>
-                  {displayName}
-                </GluuText>
-                <GluuText variant="div" className={classes.emailText} disableThemeColor>
-                  {displayMail}
-                </GluuText>
-                <Box
-                  className={classes.profileHeaderStatusWrap}
-                  sx={{
-                    width: '100%',
-                  }}
-                >
-                  <Box className={classes.statusRow}>
-                    <div
-                      className={`${classes.statusDot} ${
-                        profileDetails?.status === 'active'
-                          ? classes.statusDotActive
-                          : classes.statusDotInactive
-                      }`}
-                    />
-                    <Box component="span" className={classes.statusKeyValueWrap}>
-                      <GluuText
-                        variant="span"
-                        className={
-                          profileDetails?.status === 'active'
-                            ? classes.statusLabelActive
-                            : classes.statusLabelInactive
-                        }
-                        disableThemeColor
-                      >
-                        {t('fields.statusLabel')}:
-                      </GluuText>
-                      <GluuText
-                        variant="span"
-                        className={
-                          profileDetails?.status === 'active'
-                            ? classes.statusValueActive
-                            : classes.statusValueInactive
-                        }
-                        disableThemeColor
-                      >
-                        {statusLabel}
-                      </GluuText>
-                    </Box>
-                  </Box>
-                  <Box className={classes.statusDividerWrapper}>
-                    <Divider className={classes.statusDivider} />
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  width: '100%',
-                }}
-              >
-                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
-                  {t('titles.personal_information', { defaultValue: 'Personal Information' })}
-                </GluuText>
-                <Box className={classes.dataContainer}>
-                  <InfoRow
-                    label={t('fields.givenName')}
-                    value={profileDetails?.givenName}
-                    index={0}
-                    classes={classes}
-                  />
-                  <InfoRow
-                    label={t('fields.sn', { defaultValue: 'Last Name' })}
-                    value={surname}
-                    index={1}
-                    classes={classes}
-                  />
-                  <InfoRow
-                    label={t('fields.mail')}
-                    value={profileDetails?.mail}
-                    index={2}
-                    classes={classes}
-                  />
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  width: '100%',
-                }}
-              >
-                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
-                  {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
-                </GluuText>
-                <Box className={classes.roleContainer}>
-                  <GluuText className={classes.roleLabel} disableThemeColor>
-                    {t('fields.admin')}:
-                  </GluuText>
-                  <GluuBadge
-                    size="sm"
-                    backgroundColor={adminBadgeColors.bg}
-                    textColor={adminBadgeColors.text}
-                    borderColor={adminBadgeColors.bg}
-                  >
-                    {roles}
-                  </GluuBadge>
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  width: '100%',
-                }}
-              >
-                <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
-                  {t('titles.account_status', { defaultValue: 'Account Status' })}
-                </GluuText>
-                <Box className={classes.accountStatusContainer}>
-                  <GluuText className={classes.roleLabel} disableThemeColor>
-                    {t('fields.statusLabel')}:
-                  </GluuText>
-                  <GluuBadge
-                    size="sm"
-                    className={classes.accountStatusPill}
-                    borderRadius={5}
-                    backgroundColor={accountStatusPillColors.bg}
-                    textColor={accountStatusPillColors.text}
-                    borderColor={accountStatusPillColors.bg}
-                  >
-                    {statusLabel}
-                  </GluuBadge>
-                </Box>
-              </Box>
-
-              {canEditProfile && (
-                <GluuButton
-                  block
-                  disableHoverStyles
-                  className={classes.editButton}
-                  onClick={navigateToUserManagement}
-                  backgroundColor={themeColors.formFooter?.back?.backgroundColor}
-                  textColor={themeColors.formFooter?.back?.textColor}
-                >
-                  <EditOutlined fontSize="small" className={classes.editButtonIcon} />
-                  {t('actions.edit')}
-                </GluuButton>
-              )}
+    <GluuViewWrapper canShow={canReadProfile}>
+      <GluuLoader blocking={loading}>
+        <Box className={classes.mainContainer}>
+          <Box className={classes.profileCard}>
+            <Box className={classes.avatarContainer}>
+              <img src={avatarSrc} alt="Avatar" className={classes.avatar} />
             </Box>
+
+            <Box
+              sx={{
+                textAlign: 'center',
+              }}
+            >
+              <GluuText variant="h5" className={classes.nameText}>
+                {displayName}
+              </GluuText>
+              <GluuText variant="div" className={classes.emailText} disableThemeColor>
+                {displayMail}
+              </GluuText>
+              <Box
+                className={classes.profileHeaderStatusWrap}
+                sx={{
+                  width: '100%',
+                }}
+              >
+                <Box className={classes.statusRow}>
+                  <div
+                    className={`${classes.statusDot} ${
+                      profileDetails?.status === 'active'
+                        ? classes.statusDotActive
+                        : classes.statusDotInactive
+                    }`}
+                  />
+                  <Box component="span" className={classes.statusKeyValueWrap}>
+                    <GluuText
+                      variant="span"
+                      className={
+                        profileDetails?.status === 'active'
+                          ? classes.statusLabelActive
+                          : classes.statusLabelInactive
+                      }
+                      disableThemeColor
+                    >
+                      {t('fields.statusLabel')}:
+                    </GluuText>
+                    <GluuText
+                      variant="span"
+                      className={
+                        profileDetails?.status === 'active'
+                          ? classes.statusValueActive
+                          : classes.statusValueInactive
+                      }
+                      disableThemeColor
+                    >
+                      {statusLabel}
+                    </GluuText>
+                  </Box>
+                </Box>
+                <Box className={classes.statusDividerWrapper}>
+                  <Divider className={classes.statusDivider} />
+                </Box>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                width: '100%',
+              }}
+            >
+              <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                {t('titles.personal_information', { defaultValue: 'Personal Information' })}
+              </GluuText>
+              <Box className={classes.dataContainer}>
+                <InfoRow
+                  label={t('fields.givenName')}
+                  value={profileDetails?.givenName}
+                  index={0}
+                  classes={classes}
+                />
+                <InfoRow
+                  label={t('fields.sn', { defaultValue: 'Last Name' })}
+                  value={surname}
+                  index={1}
+                  classes={classes}
+                />
+                <InfoRow
+                  label={t('fields.mail')}
+                  value={profileDetails?.mail}
+                  index={2}
+                  classes={classes}
+                />
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                width: '100%',
+              }}
+            >
+              <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                {t('titles.admin_roles', { defaultValue: 'Admin Roles' })}
+              </GluuText>
+              <Box className={classes.roleContainer}>
+                <GluuText className={classes.roleLabel} disableThemeColor>
+                  {t('fields.admin')}:
+                </GluuText>
+                <GluuBadge
+                  size="sm"
+                  backgroundColor={adminBadgeColors.bg}
+                  textColor={adminBadgeColors.text}
+                  borderColor={adminBadgeColors.bg}
+                >
+                  {roles}
+                </GluuBadge>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                width: '100%',
+              }}
+            >
+              <GluuText variant="h6" className={classes.sectionTitle} disableThemeColor>
+                {t('titles.account_status', { defaultValue: 'Account Status' })}
+              </GluuText>
+              <Box className={classes.accountStatusContainer}>
+                <GluuText className={classes.roleLabel} disableThemeColor>
+                  {t('fields.statusLabel')}:
+                </GluuText>
+                <GluuBadge
+                  size="sm"
+                  className={classes.accountStatusPill}
+                  borderRadius={5}
+                  backgroundColor={accountStatusPillColors.bg}
+                  textColor={accountStatusPillColors.text}
+                  borderColor={accountStatusPillColors.bg}
+                >
+                  {statusLabel}
+                </GluuBadge>
+              </Box>
+            </Box>
+
+            {canEditProfile && (
+              <GluuButton
+                block
+                disableHoverStyles
+                className={classes.editButton}
+                onClick={navigateToUserManagement}
+                backgroundColor={themeColors.formFooter?.back?.backgroundColor}
+                textColor={themeColors.formFooter?.back?.textColor}
+              >
+                <EditOutlined fontSize="small" className={classes.editButtonIcon} />
+                {t('actions.edit')}
+              </GluuButton>
+            )}
           </Box>
-        </GluuLoader>
-      </GluuViewWrapper>
-    </ErrorBoundary>
+        </Box>
+      </GluuLoader>
+    </GluuViewWrapper>
   )
 }
 

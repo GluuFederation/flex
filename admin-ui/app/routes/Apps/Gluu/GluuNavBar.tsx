@@ -1,5 +1,4 @@
 import { useEffect, useRef, useMemo, useCallback, memo } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
 import Box from '@mui/material/Box'
 import { Notifications, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -7,7 +6,6 @@ import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
-import GluuErrorFallBack from './GluuErrorFallBack'
 import { UserIcon } from './components/UserIcon'
 import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
@@ -70,53 +68,49 @@ const GluuNavBar = () => {
   }, [userInfo])
 
   return (
-    <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
-        <Box className={classes.navbarContainer}>
-          <Box className={classes.leftSection}>
-            <GluuText
-              variant="h3"
-              className={classes.pageTitle}
-              id="page-title-navbar"
-              disableThemeColor
-            >
-              {pageTitle}
-            </GluuText>
+    <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
+      <Box className={classes.navbarContainer}>
+        <Box className={classes.leftSection}>
+          <GluuText
+            variant="h3"
+            className={classes.pageTitle}
+            id="page-title-navbar"
+            disableThemeColor
+          >
+            {pageTitle}
+          </GluuText>
+        </Box>
+        <Box className={classes.rightSection}>
+          <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
+            <Notifications />
           </Box>
-          <Box className={classes.rightSection}>
-            <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
-              <Notifications />
-            </Box>
-            {userInfo && (
-              <>
-                <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
-                  <ThemeDropdownComponent userInfo={userInfo} />
+          {userInfo && (
+            <>
+              <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
+                <ThemeDropdownComponent userInfo={userInfo} />
+              </Box>
+              <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
+                <LanguageMenu userInfo={userInfo} />
+              </Box>
+            </>
+          )}
+          <DropdownProfile
+            renderTrigger={(isOpen: boolean) => (
+              <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
+                <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
+                <GluuText variant="span" className={classes.userName} disableThemeColor>
+                  {displayName}
+                </GluuText>
+                <Box className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}>
+                  <ChevronIcon />
                 </Box>
-                <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
-                  <LanguageMenu userInfo={userInfo} />
-                </Box>
-              </>
+              </Box>
             )}
-            <DropdownProfile
-              renderTrigger={(isOpen: boolean) => (
-                <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
-                  <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
-                  <GluuText variant="span" className={classes.userName} disableThemeColor>
-                    {displayName}
-                  </GluuText>
-                  <Box
-                    className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}
-                  >
-                    <ChevronIcon />
-                  </Box>
-                </Box>
-              )}
-              position="bottom"
-            />
-          </Box>
+            position="bottom"
+          />
         </Box>
       </Box>
-    </ErrorBoundary>
+    </Box>
   )
 }
 
