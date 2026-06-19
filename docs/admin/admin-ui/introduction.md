@@ -16,7 +16,7 @@ The above diagram explains the interaction between various dependent components.
 
 ### Admin UI Frontend
 
-This user facing Frontend has been developed using the following:
+This user-facing Frontend has been developed using the following:
 
 #### UI Framework & Styling
 
@@ -75,7 +75,7 @@ The GUI utilizes a dedicated Java backend to handle specific tasks, such as read
 
 ## Installation
 
-Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requirements.md) or using [Helm Deployments](../install/helm-install/README.md) on Cloud Native.
+Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requirements.md) or using [Helm Deployments](../../install/helm-install/README.md) on Cloud Native.
 
 ## Gluu Flex License
 
