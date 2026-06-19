@@ -7,7 +7,6 @@ import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
 import { UserIcon } from './components/UserIcon'
-import GluuErrorBoundaryDemo from './GluuErrorBoundaryDemo'
 import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
@@ -82,9 +81,6 @@ const GluuNavBar = () => {
           </GluuText>
         </Box>
         <Box className={classes.rightSection}>
-          <Box className={classes.navbarItem}>
-            <GluuErrorBoundaryDemo />
-          </Box>
           <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
             <Notifications />
           </Box>
