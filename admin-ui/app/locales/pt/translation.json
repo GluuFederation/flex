@@ -1583,9 +1583,6 @@
     "passkey_authentication": "Autenticação com Passkey",
     "passkey_metrics_dashboard": "Painel de Métricas de Passkey"
   },
-  "links": {
-    "support": "https://support.gluu.org/"
-  },
   "options": {
     "admin": "ADMIN",
     "active": "ATIVO",

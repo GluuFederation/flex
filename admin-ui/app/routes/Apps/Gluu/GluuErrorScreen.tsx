@@ -11,6 +11,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import customColors from '@/customColors'
+import { EXTERNAL_LINKS } from '@/constants'
 import { isDevelopment } from '@/utils/env'
 import { createDate } from '@/utils/dayjsUtils'
 import { useStyles } from './styles/GluuErrorScreen.style'
@@ -81,7 +82,7 @@ const GluuErrorScreen = ({ error }: FallbackProps) => {
               minHeight={40}
               padding="0 28px"
               style={{ letterSpacing: '0.28px' }}
-              onClick={() => window.open(t('links.support'), '_blank', 'noopener,noreferrer')}
+              onClick={() => window.open(EXTERNAL_LINKS.SUPPORT, '_blank', 'noopener,noreferrer')}
             >
               <OpenInNew className={classes.buttonIconSmall} />
               {t('actions.support_portal')}

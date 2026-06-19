@@ -1587,9 +1587,6 @@
     "creation_date": "Creation Date",
     "uma_resource_detail": "Détail de la ressource UMA"
   },
-  "links": {
-    "support": "https://support.gluu.org/"
-  },
   "options": {
     "admin": "ADMINISTRER",
     "active": "ACTIF",

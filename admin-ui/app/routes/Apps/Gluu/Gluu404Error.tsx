@@ -4,6 +4,7 @@ import { HeaderAuth } from 'Routes/components/Pages/HeaderAuth'
 import { FooterAuth } from 'Routes/components/Pages/FooterAuth'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/helpers/navigation'
+import { EXTERNAL_LINKS } from '@/constants'
 import { useStyles } from './styles/Gluu404Error.style'
 
 const Gluu404Error = () => {
@@ -18,8 +19,13 @@ const Gluu404Error = () => {
         />
         <div className={classes.linkRow}>
           <Link to={ROUTES.ROOT}>{t('actions.back_home')}</Link>
-          <Link to={ROUTES.ROOT} className={classes.supportLink}>
-            {t('links.support')}
+          <Link
+            to={EXTERNAL_LINKS.SUPPORT}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={classes.supportLink}
+          >
+            {t('actions.support_portal')}
           </Link>
         </div>
         <FooterAuth />

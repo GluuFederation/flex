@@ -1579,9 +1579,6 @@
     "search_filter": "Search Filter",
     "uma_resource_detail": "UMA Resource Detail"
   },
-  "links": {
-    "support": "https://support.gluu.org/"
-  },
   "options": {
     "admin": "ADMIN",
     "active": "ACTIVE",
