@@ -168,6 +168,37 @@ const JsonPropertyBuilderConfigApi = ({
     [handler, path],
   )
 
+  const arrayValues = useMemo(
+    () =>
+      isStringArray(propValue) || shouldRenderAsStringArray(schema)
+        ? getStringArrayValue(propValue, schema)
+        : [],
+    [propValue, schema],
+  )
+
+  const selectOptions = useMemo<AutocompleteOption[]>(() => {
+    if (!isStringArray(propValue) && !shouldRenderAsStringArray(schema)) return []
+    const enumOptions = Array.from(new Set(schema?.items?.enum || arrayValues))
+    return enumOptions.map((v: string) => ({ value: v, label: v }))
+  }, [propValue, schema, arrayValues])
+
+  const sortedObjectKeys = useMemo(() => {
+    if (!isObject(propValue)) return []
+    const objVal = propValue as AppConfiguration
+    const allKeys = Object.keys(objVal)
+    const inputKeys = allKeys.filter((k) => {
+      const v = objVal[k]
+      return typeof v === 'string' || typeof v === 'number'
+    })
+    const booleanKeys = allKeys.filter((k) => typeof objVal[k] === 'boolean')
+    const arrKeys = allKeys.filter((k) => {
+      const v = objVal[k]
+      return Array.isArray(v) && !isObjectArray(v)
+    })
+    const complexKeys = allKeys.filter((k) => isObject(objVal[k]) || isObjectArray(objVal[k]))
+    return [...inputKeys, ...booleanKeys, ...arrKeys, ...complexKeys]
+  }, [propValue])
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <>
@@ -286,37 +317,6 @@ const JsonPropertyBuilderConfigApi = ({
       </>
     )
   }
-
-  const arrayValues = useMemo(
-    () =>
-      isStringArray(propValue) || shouldRenderAsStringArray(schema)
-        ? getStringArrayValue(propValue, schema)
-        : [],
-    [propValue, schema],
-  )
-
-  const selectOptions = useMemo<AutocompleteOption[]>(() => {
-    if (!isStringArray(propValue) && !shouldRenderAsStringArray(schema)) return []
-    const enumOptions = Array.from(new Set(schema?.items?.enum || arrayValues))
-    return enumOptions.map((v: string) => ({ value: v, label: v }))
-  }, [propValue, schema, arrayValues])
-
-  const sortedObjectKeys = useMemo(() => {
-    if (!isObject(propValue)) return []
-    const objVal = propValue as AppConfiguration
-    const allKeys = Object.keys(objVal)
-    const inputKeys = allKeys.filter((k) => {
-      const v = objVal[k]
-      return typeof v === 'string' || typeof v === 'number'
-    })
-    const booleanKeys = allKeys.filter((k) => typeof objVal[k] === 'boolean')
-    const arrKeys = allKeys.filter((k) => {
-      const v = objVal[k]
-      return Array.isArray(v) && !isObjectArray(v)
-    })
-    const complexKeys = allKeys.filter((k) => isObject(objVal[k]) || isObjectArray(objVal[k]))
-    return [...inputKeys, ...booleanKeys, ...arrKeys, ...complexKeys]
-  }, [propValue])
 
   if (isStringArray(propValue) || shouldRenderAsStringArray(schema)) {
     return (

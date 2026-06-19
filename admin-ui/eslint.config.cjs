@@ -2,6 +2,7 @@ const js = require('@eslint/js')
 const tsParser = require('@typescript-eslint/parser')
 const tsPlugin = require('@typescript-eslint/eslint-plugin')
 const reactPlugin = require('eslint-plugin-react')
+const reactHooksPlugin = require('eslint-plugin-react-hooks')
 const jestPlugin = require('eslint-plugin-jest')
 const jsoncPlugin = require('eslint-plugin-jsonc')
 const globals = require('globals')
@@ -37,6 +38,7 @@ module.exports = [
 
     plugins: {
       'react': reactPlugin,
+      'react-hooks': reactHooksPlugin,
       '@typescript-eslint': tsPlugin,
     },
 
@@ -66,6 +68,13 @@ module.exports = [
           },
         },
       ],
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/component-hook-factories': 'error',
+      'react-hooks/incompatible-library': 'error',
+      'react-hooks/error-boundaries': 'error',
+      'react-hooks/globals': 'error',
     },
   },
 

@@ -6,7 +6,6 @@ import { isDevelopment } from './utils/env'
 import { logger } from './utils/logger'
 import { storage } from '@/utils/storage'
 import { hmrAccept } from '@/utils/hmr'
-import store from '@/redux/store'
 import { updateToast } from '@/redux/features/toastSlice'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
 
@@ -25,7 +24,9 @@ const handleMissingKey = (key: string, defaultValue?: string): string => {
   )
   if (isDevelopment && !warnedMissingKeys.has(key)) {
     warnedMissingKeys.add(key)
-    store.dispatch(updateToast(true, 'warning', `[i18n] Missing translation key: "${key}"`))
+    void import('@/redux/store').then(({ default: store }) => {
+      store.dispatch(updateToast(true, 'warning', `[i18n] Missing translation key: "${key}"`))
+    })
   }
   return defaultValue ?? key
 }

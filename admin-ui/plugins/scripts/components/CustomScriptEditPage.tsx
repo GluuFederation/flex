@@ -69,6 +69,11 @@ const CustomScriptEditPage: React.FC = () => {
     [updateMutation, dispatch, t],
   )
 
+  const isBlocking = useMemo(
+    () => loadingScript || updateMutation.isPending,
+    [loadingScript, updateMutation.isPending],
+  )
+
   if (fetchError && !loadingScript) {
     return (
       <GluuPageContent>
@@ -88,11 +93,6 @@ const CustomScriptEditPage: React.FC = () => {
       </GluuPageContent>
     )
   }
-
-  const isBlocking = useMemo(
-    () => loadingScript || updateMutation.isPending,
-    [loadingScript, updateMutation.isPending],
-  )
 
   return (
     <GluuPageContent>

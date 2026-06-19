@@ -273,6 +273,12 @@ const JsonPropertyBuilder = ({
     [handler, path],
   )
 
+  const sortedObjectKeys = useMemo(() => {
+    if (!isObject(propValue)) return []
+    const objVal = propValue as AppConfiguration
+    return sortKeysByFieldType(Object.keys(objVal), objVal as Record<string, PropertyValue>)
+  }, [propValue])
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <>
@@ -354,12 +360,6 @@ const JsonPropertyBuilder = ({
       </>
     )
   }
-
-  const sortedObjectKeys = useMemo(() => {
-    if (!isObject(propValue)) return []
-    const objVal = propValue as AppConfiguration
-    return sortKeysByFieldType(Object.keys(objVal), objVal as Record<string, PropertyValue>)
-  }, [propValue])
 
   if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
     const arrayValues = (propValue as string[]) || []
