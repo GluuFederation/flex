@@ -69,11 +69,9 @@ This user facing Frontend has been developed using the following:
 - **Jest + React Testing Library** — unit/component testing
 - **ESLint + Prettier** — linting and formatting
 
-The Admin UI utilizes an Orval typed API client for Jans Config API, facilitating API calls to Jans Config API endpoints.
-
 ### Admin UI Backend
 
-The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on SCAN. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.
+The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on Agama Lab. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.
 
 ## Installation
 
@@ -81,7 +79,7 @@ Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requ
 
 ## Gluu Flex License
 
-After installation, the Admin UI can be accessed at `https://hostname/admin` (the hostname is provided during setup). Access to this web interface is granted only after issuing a Software Statement Assertion (SSA) and subscribing to the Admin UI license from [Agama Lab](https://cloud.gluu.org/agama-lab). We need to provide SSA which is used by Admin UI to register an OIDC client to access license APIs. Follow this [guide](../../install/flex/prerequisites.md) for detailed steps.
+After installation, the Admin UI can be accessed at `https://hostname/admin` (the hostname is provided during setup). Access to this web interface is granted only after issuing a Software Statement Assertion (SSA) and subscribing to the Admin UI license from [Agama Lab](https://cloud.gluu.org/agama-lab). The SSA issued from the Agama Lab is used by Admin UI to register an OIDC client to access license APIs. Follow this [guide](../../install/flex/prerequisites.md) for detailed steps.
 
 ![Upload SSA](../../assets/admin-ui/upload-license.png)
 

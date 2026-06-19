@@ -44,7 +44,7 @@ The dashboard has a bar graph showing month-wise access-token with grant-type `c
 
 ### Localization and Theme selection
 
-Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.
+Admin UI supports localization. The default language is English. The other supported languages are French, Spanish and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.
 
 ![image](../../assets/admin-ui/localization.png)
 

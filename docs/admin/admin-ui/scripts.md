@@ -11,9 +11,6 @@ tags:
 
 # Custom Scripts
 
-
-The Custom Scripts page provides a list of scripts. Easily add, update, and delete scripts to control and modify various authentication methods.
-
 ![image](../../assets/admin-ui/admin-ui-custom-script.png)
 
 [Custom Scripts](https://docs.jans.io/stable/janssen-server/developer/scripts/) are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation, etc.

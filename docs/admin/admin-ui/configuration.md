@@ -120,59 +120,6 @@ The information is stored in json format with following attributes.
 **Sample configuration stored in persistence**
 
 ```text
-{
-  "oidcConfig": {
-    "auiWebClient": {
-      "redirectUri": "https://your.host.com/admin",
-      "postLogoutUri": "https://your.gost.com/admin",
-      "frontchannelLogoutUri": "https://your.host.com/admin/logout",
-      "scopes": [
-        "openid",
-        "profile",
-        "user_name",
-        "email"
-      ],
-      "acrValues": [
-        "basic"
-      ],
-      "opHost": "https://your.host.com",
-      "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
-      "clientSecret": "GGO4t1uixrTpl4Rizt3zag==".
-      "additionalParameters": []
-    },
-    "auiBackendApiClient": {
-      "tokenEndpoint": "https://your.host.com/jans-auth/restv1/token",
-      "scopes": [
-        "openid",
-        "profile",
-        "user_name",
-        "email"
-      ],
-      "opHost": "https://your.host.com",
-      "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
-      "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
-    }
-  },
-  "uiConfig": {
-    "sessionTimeoutInMins": 30,
-    "allowSmtpKeystoreEdit": true,
-    "cedarlingLogType":"off",
-    "auiPolicyStoreUrl": "",
-    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
-    "cedarlingPolicyStoreRetrievalPoint": "default"
-  },
-  "licenseConfig": {
-    "ssa": "...ssa in jwt format...",
-    "scanLicenseApiHostname": "https://cloud-dev.gluu.cloud",
-    "licenseKey": "XXXX-XXXX-XXXX-XXXX",
-    "licenseHardwareKey": "github:ghUsername",
-    "oidcClient": {
-      "opHost": "https://account-dev.gluu.cloud",
-      "clientId": "36a43e2b-a77b-4e9c-a966-a9d98af1665c",
-      "clientSecret": "211188d8-a2d8-4562-ab53-80907c1bb5ba"
-    }
-  }
-}
 
 {
   "oidcConfig": {
@@ -217,7 +164,7 @@ The information is stored in json format with following attributes.
   },
   "licenseConfig": {
     "ssa": "eyJraWQiOiJzc2FfN2IyMGM1MDYtMDlhNi00MTU1LWF....",
-    "scanLicenseApiHostname": "https://op-hostname.gluu.org",
+    "scanLicenseApiHostname": "https://license-server-hostname.gluu.org",
     "licenseKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
     "licenseHardwareKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
     "licenseValidUpto": "2026-07-07",
@@ -241,7 +188,7 @@ The information is stored in json format with following attributes.
       "frontchannelLogoutUri": null,
       "scopes": null,
       "acrValues": null,
-      "opHost": "https://op-hostname.gluu.org",
+      "opHost": "https://account-server-hostname.gluu.org",
       "clientId": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
       "clientSecret": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
       "additionalParameters": null
