@@ -237,6 +237,8 @@ assurance or the context of the authentication process used for user authenticat
 This page allows the administrator to view all enabled ACRs and select the default ACR, which refers to the predefined
 or default authentication assurance when no specific ACR value is requested or specified.
 
+This menu also address the deployment of Agama projects on the Janssen Auth Server either by uploading the untampered Agama project packages (with .gama extension) or by adding a Agama Community project. 
+
 ![image](../../assets/admin-ui/authn.png)
 
 ## Config API Properties
@@ -250,15 +252,3 @@ details and the administrator can revoke the sessions of the selected user.
 
 ![image](../../assets/admin-ui/sessions.png)
 
-<!-- ## Agama
-
-This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introduction/) project packages (file with
-.gama extension). To make sure that package is untempered, the file containing sha256 checksum also need to be uploaded on UI.
-
-![image](../../assets/admin-ui/agama-deployment.png)
-
-The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration.
-
-![image](../../assets/admin-ui/gama-details.png)
-
-![image](../../assets/admin-ui/export-gama-config.png) -->

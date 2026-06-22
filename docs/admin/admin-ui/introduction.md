@@ -16,29 +16,76 @@ The above diagram explains the interaction between various dependent components.
 
 ### Admin UI Frontend
 
-This user facing GUI has been developed using [React.js](https://react.dev/) and [Redux](https://redux.js.org/) is used for state management. The Admin UI utilizes an OpenAPI JavaScript client for Jans Config API, facilitating API calls to Jans Config API endpoints.
+This user-facing Frontend has been developed using the following:
 
-The GUI utilizes popular libraries such as [Material-UI](https://mui.com/material-ui/), Axios, [Formik](https://formik.org/), etc. [Webpack](https://webpack.js.org/) is responsible for compiling and bundling the application, optimizing its performance, and generating the necessary production files. The Admin UI bundle is hosted on an **Apache HTTP server**, which is included as a component with the Janssen server installation. This setup ensures that the GUI is readily accessible and efficiently served to users.
+#### UI Framework & Styling
+
+- **React 18** — core UI framework
+- **MUI (Material UI) v9** — component library (@mui/material, @mui/icons-material, @mui/x-date-pickers)
+- **Bootstrap 5** — utility CSS
+- **Emotion (@emotion/react, @emotion/styled)** — CSS-in-JS, used by MUI
+- **tss-react** — MUI-compatible typed style system
+-  **@material-table/core** — data tables
+
+#### State Management & Data Fetching
+
+- **Redux Toolkit + react-redux** — global state management
+- **redux-persist** — persists Redux state across reloads
+- **TanStack Query (React Query) v5** — server state / API data fetching
+- **Axios** — HTTP client
+
+#### Routing
+
+- **React Router DOM v7**
+
+#### Forms & Validation
+
+- **Formik** — form state management
+- **Yup** — schema-based form validation
+
+#### Authentication/ Authorization
+
+- **@openid/appauth** — OpenID Connect / OAuth 2.0 client-side auth
+- **@janssenproject/cedarling_wasm** — Cedarling WASM module for policy-based authorization (Cedar policy engine)
+
+#### Internationalisation
+
+- **i18next + react-i18next** — i18n support
+
+#### Utilities
+
+- **Lodash** — general utility functions
+- **Dayjs** — date/time handling
+- **Recharts** — charts (used for MAU dashboard)
+- **react-toastify** — toast notifications
+- **animejs** — animations
+- **clsx** — conditional class names
+
+#### Build & Tooling
+
+- **Vite v8** — build tool
+- **TypeScript 6**
+- **Orval** — generates typed API client from OpenAPI spec
+- **Jest + React Testing Library** — unit/component testing
+- **ESLint + Prettier** — linting and formatting
 
 ### Admin UI Backend
 
-The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on SCAN. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.
+The GUI utilizes a dedicated Java backend to handle specific tasks, such as reading the Admin UI configuration from persistence, managing Admin UI roles and permission mapping in configuration, performing audit logging, and making calls to license APIs on Agama Lab. The Jans Config API follows a flexible plugin architecture, allowing the addition of new APIs through extensions known as plugins, without the need to modify the core application. The Admin UI Backend has been incorporated into the Jans Config API as a plugin to address Admin UI-specific tasks.
 
 ## Installation
 
-Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requirements.md) or using [Rancher](../recipes/getting-started-rancher.md) on Cloud Native.
-
-During installation, we need to provide a Software Statement Assertion (SSA) which is used by Admin UI to register an OIDC client to access license APIs. Check the following [guide](../../install/flex/prerequisites.md#software-statement-assertions) for the steps to issue SSA from the [Agama Lab](https://cloud.gluu.org/agama-lab) web interface.
-
-![image](../../assets/admin-ui/install-ssa.png)
+Gluu Flex can be installed using [VM installer](../../install/vm-install/vm-requirements.md) or using [Helm Deployments](../../install/helm-install/README.md) on Cloud Native.
 
 ## Gluu Flex License
 
-After installation, the Admin UI can be accessed at `https://hostname/admin` (the hostname is provided during setup). Access to this web interface is granted only after subscribing to the Admin UI license from Agama Lab.
+After installation, the Admin UI can be accessed at `https://hostname/admin` (the hostname is provided during setup). Access to this web interface is granted only after issuing a Software Statement Assertion (SSA) and subscribing to the Admin UI license from [Agama Lab](https://cloud.gluu.org/agama-lab). The SSA issued from the Agama Lab is used by Admin UI to register an OIDC client to access license APIs. Follow this [guide](../../install/flex/prerequisites.md) for detailed steps.
+
+![Upload SSA](../../assets/admin-ui/upload-license.png)
 
 There is a provision to generate a 30-day free trial license of Gluu Flex which will help users to enter and understand this web interface.
 
-![image](../../assets/admin-ui/trial-license.png)
+![Issue Trial license page](../../assets/admin-ui/trial-license.png)
 
 After license activation, the user can log into Gluu Flex Admin UI using the default username (`admin`) and the `password` (the admin password provided during installation).
 
