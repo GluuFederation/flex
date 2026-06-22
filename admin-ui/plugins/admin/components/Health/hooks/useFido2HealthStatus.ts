@@ -1,9 +1,5 @@
-import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
-import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { updateToast } from 'Redux/features/toastSlice'
-import { getQueryErrorMessage } from '@/utils/errorHandler'
+import { useAppSelector } from '@/redux/hooks'
 import { AXIOS_INSTANCE } from 'Orval'
 import { HEALTH_CACHE_CONFIG, STATUS_MAP, DEFAULT_STATUS } from '../constants'
 import type { ServiceHealth, ServiceStatusValue } from '../types'
@@ -42,12 +38,10 @@ const transformFido2Health = (data: Fido2HealthResponse): ServiceHealth => {
 }
 
 export const useFido2HealthStatus = (options?: { enabled?: boolean }) => {
-  const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const isEnabled = (options?.enabled ?? true) && hasSession === true
 
-  const query = useQuery({
+  return useQuery({
     queryKey: FIDO2_HEALTH_QUERY_KEY,
     queryFn: ({ signal }) => fetchFido2Health(signal),
     enabled: isEnabled,
@@ -56,12 +50,4 @@ export const useFido2HealthStatus = (options?: { enabled?: boolean }) => {
     retry: false,
     select: transformFido2Health,
   })
-
-  useEffect(() => {
-    if (!query.isError) return
-    const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
-    dispatch(updateToast(true, 'error', errorMsg))
-  }, [query.isError, query.error, dispatch, t])
-
-  return query
 }
