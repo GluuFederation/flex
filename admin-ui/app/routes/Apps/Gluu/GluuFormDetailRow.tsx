@@ -1,4 +1,4 @@
-import { memo, CSSProperties, useMemo, useContext } from 'react'
+import { memo, CSSProperties, useMemo, use } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge, GluuBadge } from 'Components'
 import GluuTooltip from './GluuTooltip'
@@ -28,7 +28,7 @@ const GluuFormDetailRow = ({
   layout = 'row',
 }: GluuFormDetailRowProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state?.theme || DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 

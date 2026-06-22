@@ -35,6 +35,7 @@ const config: Config = {
     'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testPathIgnorePatterns: ['/node_modules/', '/jans_config_api/', '/jans_config_api_orval/'],
   transformIgnorePatterns: ['node_modules/(?!(uuid)/)'],
 }
 

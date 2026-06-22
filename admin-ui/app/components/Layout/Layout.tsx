@@ -218,7 +218,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
   const layoutClass = clsx('layout', 'layout--animations-enabled')
 
   return (
-    <PageConfigContext.Provider
+    <PageConfigContext
       value={{
         ...state,
         sidebarSlim: false,
@@ -233,10 +233,13 @@ const Layout: React.FC<LayoutProps> = (props) => {
           <div className={clsx(layoutClass, themeClass)} ref={containerRef}>
             {!state.sidebarHidden &&
               sidebar &&
-              React.cloneElement(sidebar, {
-                sidebarSlim: false,
-                sidebarCollapsed: state.sidebarCollapsed,
-              })}
+              React.cloneElement(
+                sidebar as React.ReactElement<{
+                  sidebarSlim?: boolean
+                  sidebarCollapsed?: boolean
+                }>,
+                { sidebarSlim: false, sidebarCollapsed: state.sidebarCollapsed },
+              )}
 
             <div className="layout__wrap">
               {!state.navbarHidden && navbars}
@@ -248,7 +251,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
           </div>
         )}
       </ThemeClass>
-    </PageConfigContext.Provider>
+    </PageConfigContext>
   )
 }
 

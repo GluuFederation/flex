@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useMemo, useCallback, useId } from 'react'
+import React, { useState, useRef, useEffect, use, useMemo, useCallback, useId } from 'react'
 import Box from '@mui/material/Box'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
@@ -44,7 +44,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   const searchInputRef = useRef<HTMLInputElement>(null)
   const listboxId = useId()
 
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = theme?.state.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
   const dropdownBg = useMemo(() => {
@@ -68,7 +68,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   const extractTextFromReactNode = useCallback((node: React.ReactNode): string => {
     if (typeof node === 'string') return node
     if (typeof node === 'number') return String(node)
-    if (React.isValidElement(node) && node.props.children) {
+    if (React.isValidElement<{ children?: React.ReactNode }>(node) && node.props.children) {
       const { children } = node.props
       if (Array.isArray(children)) {
         return children.map((child) => extractTextFromReactNode(child)).join('')

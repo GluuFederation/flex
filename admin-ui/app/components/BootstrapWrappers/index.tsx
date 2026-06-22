@@ -134,10 +134,7 @@ export const Alert: React.FC<AlertProps> = ({
   )
 }
 
-export const Input = React.forwardRef<
-  HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
-  InputProps
->(({ type = 'text', className, children, ...props }, ref) => {
+export const Input = ({ ref, type = 'text', className, children, ...props }: InputProps) => {
   if (type === 'select') {
     return (
       <select
@@ -170,7 +167,7 @@ export const Input = React.forwardRef<
       {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
     />
   )
-})
+}
 Input.displayName = 'Input'
 
 const bootstrapColorToMui = (

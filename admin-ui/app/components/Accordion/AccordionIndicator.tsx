@@ -1,12 +1,14 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactElement } from 'react'
 import clsx from 'clsx'
 import { Add, Remove } from '@/components/icons'
 
 import { Consumer } from './context'
 
-interface AccordionIndicatorProps {
-  open?: ReactNode
-  closed?: ReactNode
+type IndicatorElement = ReactElement<{ className?: string }>
+
+type AccordionIndicatorProps = {
+  open?: IndicatorElement
+  closed?: IndicatorElement
   className?: string
 }
 
@@ -16,14 +18,11 @@ export const AccordionIndicator: React.FC<AccordionIndicatorProps> = ({
   className,
 }) => (
   <Consumer>
-    {({ isOpen }) =>
-      isOpen
-        ? React.cloneElement(open as React.ReactElement, {
-            className: clsx(className, (open as React.ReactElement).props.className),
-          })
-        : React.cloneElement(closed as React.ReactElement, {
-            className: clsx(className, (closed as React.ReactElement).props.className),
-          })
-    }
+    {({ isOpen }) => {
+      const indicator = isOpen ? open : closed
+      return React.cloneElement(indicator, {
+        className: clsx(className, indicator.props.className),
+      })
+    }}
   </Consumer>
 )

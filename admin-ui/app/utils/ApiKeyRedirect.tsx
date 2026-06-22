@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useMemo } from 'react'
+import React, { lazy, Suspense, use, useMemo } from 'react'
 import { Container, ApiKey } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
@@ -28,7 +28,7 @@ const ApiKeyRedirect = ({
   isConfigValid,
 }: ApiKeyRedirectProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })

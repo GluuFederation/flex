@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, type JSX } from 'react'
 import ConfigApiPropertiesForm from './ConfigApiPropertiesForm'
 import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -7,7 +7,8 @@ import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useGetConfigApiProperties, usePatchConfigApiProperties } from 'JansConfigApi'
 import { useConfigApiActions, DEFAULT_CONFIG_API_CONFIG } from '../utils'
-import { toast } from 'react-toastify'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -30,6 +31,7 @@ const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
 
 const ConfigApiPropertiesPage = (): JSX.Element => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { logConfigApiUpdate } = useConfigApiActions()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { canRead: canReadConfigApi } = usePermission(configApiResourceId)
@@ -85,18 +87,18 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
         }
 
         if (auditSuccess) {
-          toast.success(t('messages.success_in_saving'))
+          dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
         } else {
-          toast.warning(t('messages.success_in_saving_audit_failed'))
+          dispatch(updateToast(true, 'warning', t('messages.success_in_saving_audit_failed')))
         }
       } catch (err) {
         logger.error('Error updating config:', err instanceof Error ? err : String(err))
         const errorMsg = err instanceof Error ? err.message : t('messages.error_in_saving')
         setErrorMessage(errorMsg)
-        toast.error(errorMsg)
+        throw err
       }
     },
-    [patchConfigMutation, logConfigApiUpdate, t, refetch],
+    [patchConfigMutation, logConfigApiUpdate, t, refetch, dispatch],
   )
 
   if (error !== null && error !== undefined) {

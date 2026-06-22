@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { use, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import styles from './styles/GluuSessionTimeoutDialog.style'
@@ -21,7 +21,7 @@ const SessionTimeoutDialog = ({
   themeOverride,
 }: SessionTimeoutDialogProps) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = themeOverride ?? theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const isDark = currentTheme === THEME_DARK

@@ -1,0 +1,121 @@
+import { makeStyles } from 'tss-react/mui'
+import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import type { ThemeConfig } from '@/context/theme/config'
+
+type StyleParams = { themeColors: ThemeConfig }
+
+export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => ({
+  screen: {
+    backgroundColor: themeColors.background,
+  },
+  scroller: {
+    flex: 1,
+    width: '100%',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  root: {
+    flex: '1 0 auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: '100%',
+    padding: theme.spacing(12, 8),
+    boxSizing: 'border-box',
+    fontFamily,
+  },
+  ghost: {
+    width: 89.5,
+    height: 105.5,
+    marginTop: theme.spacing(5),
+  },
+  title: {
+    margin: 0,
+    marginTop: theme.spacing(3),
+    maxWidth: 414,
+    fontSize: fontSizes['2.5xl'],
+    fontWeight: fontWeights.bold,
+    lineHeight: '30px',
+    letterSpacing: '0.6px',
+    whiteSpace: 'pre-line',
+  },
+  message: {
+    margin: 0,
+    marginTop: theme.spacing(1.5),
+    maxWidth: 410,
+    fontSize: fontSizes.description,
+    fontWeight: fontWeights.medium,
+    lineHeight: lineHeights.tight,
+    letterSpacing: letterSpacing.normal,
+  },
+  divider: {
+    width: 40,
+    height: 1,
+    margin: 0,
+    marginTop: theme.spacing(3.5),
+    border: 'none',
+    backgroundColor: themeColors.borderColor,
+  },
+  actions: {
+    display: 'flex',
+    gap: theme.spacing(2),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: theme.spacing(4),
+  },
+  buttonIcon: {
+    fontSize: 18,
+  },
+  buttonIconSmall: {
+    fontSize: 14,
+  },
+  errorOverlay: {
+    position: 'fixed',
+    top: theme.spacing(2),
+    left: theme.spacing(4),
+    right: theme.spacing(4),
+    zIndex: theme.zIndex.modal,
+    borderRadius: 8,
+    overflow: 'hidden',
+    border: `1px solid ${themeColors.borderColor}`,
+    boxShadow: theme.shadows[6],
+    textAlign: 'left',
+  },
+  errorSummary: {
+    cursor: 'pointer',
+    fontFamily,
+    fontSize: fontSizes.base,
+    fontWeight: fontWeights.regular,
+    padding: theme.spacing(1, 2),
+    backgroundColor: themeColors.inputBackground,
+    color: themeColors.fontColor,
+  },
+  errorStack: {
+    margin: 0,
+    overflow: 'auto',
+    maxHeight: '40vh',
+    padding: theme.spacing(2),
+    backgroundColor: themeColors.inputBackground,
+    color: themeColors.fontColor,
+    fontFamily,
+    fontSize: fontSizes.base,
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
+    borderTop: `1px solid ${themeColors.borderColor}`,
+  },
+  footer: {
+    margin: 0,
+    marginTop: theme.spacing(5),
+    maxWidth: '100%',
+    fontSize: '13px',
+    fontWeight: fontWeights.medium,
+    lineHeight: lineHeights.base,
+    letterSpacing: '0.26px',
+  },
+  footerCompany: {
+    fontWeight: fontWeights.semiBold,
+  },
+}))

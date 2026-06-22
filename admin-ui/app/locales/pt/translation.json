@@ -175,6 +175,8 @@
     "apply_filter": "Aplicar filtro",
     "back": "Voltar",
     "back_home": "Voltar para casa",
+    "back_to_home": "Voltar para o início",
+    "support_portal": "Portal de suporte",
     "add_server": "Adicionar servidor",
     "add_base_dn": "Adicionar DN básico",
     "change_bind_password": "Alterar Senha de Vinculação",
@@ -1024,6 +1026,10 @@
     "request_waiting_message": "Executando a solicitação, aguarde!",
     "resource_not_found_message": "O recurso solicitado não existe neste servidor. Entre em contato com o administrador do site ou com a equipe de suporte.",
     "resource_not_found_title": "Recurso não encontrado",
+    "crash_title": "Algo deu errado\ndo nosso lado",
+    "crash_message": "A interface de administração do Gluu encontrou um problema inesperado ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.",
+    "crash_footer_pre": "© {{year}} Gluu Admin UI · Projetado e implementado por",
+    "crash_footer_post": "· Todos os direitos reservados.",
     "view_client_details": "Ver detalhes do cliente",
     "view_2FA_details": "Ver detalhes 2FA",
     "2FA_details": "detalhes 2FA",
@@ -1140,6 +1146,8 @@
     "try_again_later": "Por favor, tente novamente mais tarde",
     "success": "Sucesso",
     "error": "Erro",
+    "warning": "Aviso",
+    "info": "Informação",
     "error_processing_request": "Erro ao processar a solicitação.",
     "no_data": "Nenhum dado encontrado",
     "no_data_available": "Nenhum dado disponível",
@@ -1574,9 +1582,6 @@
     "passkey_adoption_rate": "Taxa de Adoção de Passkey",
     "passkey_authentication": "Autenticação com Passkey",
     "passkey_metrics_dashboard": "Painel de Métricas de Passkey"
-  },
-  "links": {
-    "support": "https://support.gluu.org/"
   },
   "options": {
     "admin": "ADMIN",

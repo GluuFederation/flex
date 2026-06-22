@@ -3,8 +3,7 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close } from '@/components/icons'
 import { Box, Divider } from '@mui/material'
-import MaterialTable from '@material-table/core'
-import type { Column } from '@material-table/core'
+import { GluuTable, type ColumnDef } from '@/components/GluuTable'
 import { updateToast } from 'Redux/features/toastSlice'
 import isEmpty from 'lodash/isEmpty'
 import AceEditor from 'react-ace'
@@ -228,13 +227,10 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     save_data(JSON.stringify(projectConfigs))
   }
 
-  const tableColumns: Column<FlowError>[] = useMemo(
+  const tableColumns: ColumnDef<FlowError>[] = useMemo(
     () => [
-      { title: `${t('fields.flow')}`, field: 'flow' },
-      {
-        title: `${t('fields.errors')}`,
-        field: 'error',
-      },
+      { key: 'flow', label: t('fields.flow') },
+      { key: 'error', label: t('fields.errors') },
     ],
     [t],
   )
@@ -259,9 +255,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     },
     [handler],
   )
-
-  const tableComponents = useMemo(() => ({ Toolbar: () => null }), [])
-  const tableOptions = useMemo(() => ({ search: false, selection: false, paging: false }), [])
 
   if (!isOpen) return null
 
@@ -374,13 +367,11 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                         {t('fields.errors')}: {projectDetailsData?.details?.error ?? 'No'}
                       </Box>
                       <Box className={classes.tableWrapper} sx={{ mt: 2 }}>
-                        <MaterialTable
-                          components={tableComponents}
+                        <GluuTable<FlowError>
                           columns={tableColumns}
                           data={flowErrors}
-                          isLoading={projectDetailsFetching}
-                          title=""
-                          options={tableOptions}
+                          loading={projectDetailsFetching}
+                          getRowKey={(row) => row.id}
                         />
                       </Box>
                       {projectConfigs ? (

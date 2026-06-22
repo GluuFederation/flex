@@ -110,8 +110,8 @@ export const regexForBracedKey = (key: string): RegExp => {
  * Build-tooling regexes
  * Imported by vite.config.ts, orval mutator, and script/* —
  * used at build / tooling time only (chunking, bundle reports,
- * date-fns ESM resolver, orval enum patcher, orval barrel
- * generator, write-method verifier, prettier output parser).
+ * orval enum patcher, orval barrel generator, write-method
+ * verifier, prettier output parser).
  * Not imported by app runtime code.
  * ============================================================ */
 
@@ -127,10 +127,6 @@ export const REGEX_NODE_MODULES_PREFIX = /^.*\/node_modules\//
 export const REGEX_VIRTUAL_MODULE_NULL_PREFIX = /^\0+/
 /** Matches built code/style output assets (`.js`, `.mjs`, `.css`, `.wasm`); used to focus the bundle report on optimizable output. */
 export const REGEX_CODE_BUILD_ASSET = /\.(?:m?js|css|wasm)$/
-/** Matches the bare `date-fns` import specifier; aliased to date-fns's ESM entry so its CJS build isn't bundled alongside the ESM one (date-fns ships disjoint `.js`/`.mjs` graphs). */
-export const REGEX_DATE_FNS_BARE_SPECIFIER = /^date-fns$/
-/** Matches a `date-fns/<subpath>` import specifier (excluding `package.json`); capture group [1] is the subpath, used to alias the import to the corresponding ESM `.mjs` file so a single date-fns build ends up in the bundle. */
-export const REGEX_DATE_FNS_SUBPATH_SPECIFIER = /^date-fns\/(?!package\.json)(.+)$/
 /** Matches a Prettier --write timing suffix (e.g. "5ms", "123ms"); used to identify file output lines in the format script. */
 export const REGEX_PRETTIER_TIMESTAMP = /\d+ms/
 /** Extracts the file path from a Prettier --write output line (e.g. "src/foo.ts 5ms (unchanged)" → capture group [1] = "src/foo.ts"). */

@@ -8,7 +8,9 @@ declare global {
 }
 
 const windowUrl =
-  window.configApiBaseUrl && !REGEX_PYTHON_PLACEHOLDER.test(window.configApiBaseUrl)
+  typeof window !== 'undefined' &&
+  window.configApiBaseUrl &&
+  !REGEX_PYTHON_PLACEHOLDER.test(window.configApiBaseUrl)
     ? window.configApiBaseUrl
     : undefined
 

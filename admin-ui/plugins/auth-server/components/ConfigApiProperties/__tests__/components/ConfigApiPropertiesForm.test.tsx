@@ -9,11 +9,9 @@ jest.mock('formik', () => ({
   useFormik: jest.fn(),
 }))
 
-jest.mock('react-toastify', () => ({
-  toast: {
-    error: jest.fn(),
-    success: jest.fn(),
-  },
+const mockDispatch = jest.fn()
+jest.mock('@/redux/hooks', () => ({
+  useAppDispatch: () => mockDispatch,
 }))
 
 jest.mock('react-i18next', () => ({

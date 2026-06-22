@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, use, useEffect, useMemo, useState } from 'react'
 import { Container } from 'Components'
 import { useFileDrop } from '@/hooks/useFileDrop'
 import logo from 'Images/logos/logo192.png'
@@ -16,7 +16,7 @@ import { GluuButton } from '@/components/GluuButton'
 const UploadSSA = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })

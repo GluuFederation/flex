@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { use, useMemo } from 'react'
 import clsx from 'clsx'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
@@ -13,7 +13,7 @@ const LOGO_FILTERS = {
 } as const
 
 const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...otherProps }) => {
-  const themeContext = useContext(ThemeContext)
+  const themeContext = use(ThemeContext)
   const currentTheme = themeContext?.state.theme || DEFAULT_THEME
 
   const logoStyle: React.CSSProperties = useMemo(() => {

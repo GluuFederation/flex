@@ -140,7 +140,6 @@ const ROUTES = {
 
   PROFILE: '/profile',
   LOGOUT: '/admin/logout',
-  ERROR_404: '/error-404',
 
   // ========== Wildcard routes ==========
   WILDCARD: '/*',

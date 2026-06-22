@@ -1,4 +1,4 @@
-import { createContext, useReducer, useContext, useEffect, useRef, type ReactNode } from 'react'
+import { createContext, useReducer, use, useEffect, useRef, type ReactNode } from 'react'
 import { DEFAULT_THEME, isValidTheme, type ThemeValue } from './constants'
 import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
@@ -158,11 +158,11 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
     document.documentElement.classList.add(`theme-${state.theme}`)
   }, [state.theme])
 
-  return <ThemeContext.Provider value={{ state, dispatch }}>{props.children}</ThemeContext.Provider>
+  return <ThemeContext value={{ state, dispatch }}>{props.children}</ThemeContext>
 }
 
 export const useTheme = (): ThemeContextType => {
-  const context = useContext(ThemeContext)
+  const context = use(ThemeContext)
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')
   }

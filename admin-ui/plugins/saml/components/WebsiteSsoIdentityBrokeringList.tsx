@@ -1,46 +1,44 @@
-import React, { useCallback, useEffect, useContext, useMemo, useState, useRef } from 'react'
-import debounce from 'lodash/debounce'
-import MaterialTable, { type Action } from '@material-table/core'
+import React, { useCallback, use, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { buildPayload } from 'Utils/auditAction'
 import { usePermission } from '@/cedarling/hooks/usePermission'
-import applicationStyle from '@/routes/Apps/Gluu/styles/applicationStyle'
-import { DeleteOutlined } from '@/components/icons'
+import { Add, Edit, VisibilityOutlined, DeleteOutlined } from '@/components/icons'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { TablePagination } from '@mui/material'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
+import { GluuTable } from '@/components/GluuTable'
+import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
 import { adminUiFeatures } from '@/constants'
-import customColors from '@/customColors'
 import getThemeColor from 'Context/theme/config'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { PaperContainer, getIdentityProviderTableCols } from '../helper'
+import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useIdentityProviders, useDeleteIdentityProvider, type IdentityProvider } from './hooks'
-import { DEFAULT_THEME } from '@/context/theme/constants'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
+import { useStyles } from './styles/WebsiteSsoList.style'
 
 interface DeleteItem {
   inum?: string
   displayName?: string
 }
 
-const DeleteOutlinedIcon = () => <DeleteOutlined />
+const LIMIT_OPTIONS = getRowsPerPageOptions()
+const samlResourceId = ADMIN_UI_RESOURCES.SAML
 
 const WebsiteSsoIdentityBrokeringList = React.memo(() => {
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const selectedTheme = theme?.state?.theme ?? DEFAULT_THEME
-  const themeColors = getThemeColor(selectedTheme)
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isDark = selectedTheme === THEME_DARK
+  const { classes } = useStyles({ isDark, themeColors })
 
   const [modal, setModal] = useState(false)
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState<string | null>(null)
-  const [searchInput, setSearchInput] = useState<string>('')
+  const [pattern, setPattern] = useState('')
   const [item, setItem] = useState<DeleteItem>({})
-  const [pageNumber, setPageNumber] = useState(0)
-  const prevPatternRef = useRef<string | null>(null)
+  const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
@@ -70,28 +68,7 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
     canRead: canReadIdentities,
     canWrite: canWriteIdentities,
     canDelete: canDeleteIdentities,
-  } = usePermission(ADMIN_UI_RESOURCES.SAML)
-
-  const debouncedSetPattern = useMemo(
-    () =>
-      debounce((value: string) => {
-        setPattern(value || null)
-      }, 500),
-    [],
-  )
-
-  useEffect(() => {
-    return () => {
-      debouncedSetPattern.cancel()
-    }
-  }, [debouncedSetPattern])
-
-  useEffect(() => {
-    if (pattern !== prevPatternRef.current) {
-      prevPatternRef.current = pattern
-      setPageNumber(0)
-    }
-  }, [pattern])
+  } = usePermission(samlResourceId)
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 
@@ -138,218 +115,148 @@ const WebsiteSsoIdentityBrokeringList = React.memo(() => {
         )
       }
     },
-    [buildPayload, deleteIdentityProviderMutation, item.inum, toggle],
+    [deleteIdentityProviderMutation, item.inum, toggle],
   )
 
-  const onRowCountChangeClick = useCallback((count: number): void => {
-    setPageNumber(0)
-    setLimit(count)
-  }, [])
-
-  const onPageChangeClick = useCallback((page: number): void => {
-    setPageNumber(page)
-  }, [])
-
-  const handleRefresh = useCallback((): void => {
-    setPageNumber(0)
-  }, [])
-
-  const handleOptionsChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
-      if (event.target.name === 'limit') {
-        setLimit(Number(event.target.value))
-      } else if (event.target.name === 'pattern') {
-        const value = event.target.value
-        setSearchInput(value)
-        debouncedSetPattern(value)
-      }
+  const handleSearch = useCallback(
+    (value: string) => {
+      setPattern(value)
+      setPageNumber(0)
     },
-    [debouncedSetPattern],
+    [setPageNumber],
   )
 
-  const handleOptionsKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>): void => {
-      if (event.target instanceof HTMLInputElement && event.target.name === 'pattern') {
-        if (event.key === 'Enter' || event.keyCode === 13) {
-          const nextPattern = event.target.value
-          setSearchInput(nextPattern)
-          debouncedSetPattern.cancel()
-          setPattern(nextPattern || null)
-          setPageNumber(0)
-        }
-      }
+  const handleRefresh = useCallback(() => {
+    setPattern('')
+    setPageNumber(0)
+  }, [setPageNumber])
+
+  const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
+
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
     },
-    [debouncedSetPattern],
+    [setLimit, setPageNumber],
   )
 
-  const PaginationWrapper = useCallback(
-    (): React.ReactElement => (
-      <TablePagination
-        count={totalItems}
-        page={pageNumber}
-        onPageChange={(_prop: React.MouseEvent<HTMLButtonElement> | null, page: number): void => {
-          onPageChangeClick(page)
-        }}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(
-          event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        ): void => {
-          onRowCountChangeClick(Number(event.target.value))
-        }}
-      />
-    ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+  const columns: ColumnDef<IdentityProvider>[] = useMemo(
+    () => [
+      { key: 'inum', label: t('fields.inum'), sortable: true },
+      { key: 'displayName', label: t('fields.displayName'), sortable: true },
+      { key: 'enabled', label: t('fields.enabled'), sortable: true },
+    ],
+    [t],
   )
 
-  const GluuSearch = useCallback((): React.ReactElement => {
-    return (
-      <GluuAdvancedSearch
-        limitId={'searchLimit'}
-        patternId={'searchPattern'}
-        limit={limit}
-        pattern={searchInput}
-        onChange={handleOptionsChange}
-        onKeyDown={handleOptionsKeyDown}
-        showLimit={false}
-        controlled={true}
-      />
-    )
-  }, [limit, searchInput, handleOptionsChange, handleOptionsKeyDown])
-
-  const tableActions = useMemo(() => {
-    const actions: Action<IdentityProvider>[] = []
+  const actions: ActionDef<IdentityProvider>[] = useMemo(() => {
+    const list: ActionDef<IdentityProvider>[] = []
     if (canWriteIdentities) {
-      actions.push({
-        icon: 'edit',
-        tooltip: `${t('titles.edit_identity_provider')}`,
-        iconProps: { style: { color: customColors.darkGray } },
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: IdentityProvider | IdentityProvider[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData)
-        },
-      })
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('titles.create_identity_provider')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => handleGoToAddPage(),
+      list.push({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('titles.edit_identity_provider'),
+        onClick: (row) => handleGoToEditPage(row),
       })
     }
     if (canReadIdentities) {
-      actions.push({
-        icon: 'visibility',
-        tooltip: `${t('titles.view_identity_provider')}`,
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: IdentityProvider | IdentityProvider[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleGoToEditPage(rowData, true)
-        },
+      list.push({
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
+        tooltip: t('titles.view_identity_provider'),
+        onClick: (row) => handleGoToEditPage(row, true),
       })
     }
     if (canDeleteIdentities) {
-      actions.push({
-        icon: DeleteOutlinedIcon,
-        iconProps: { color: 'secondary' },
-        tooltip: `${t('titles.delete_identity_provider')}`,
-        onClick: (
-          _event: React.MouseEvent,
-          rowData: IdentityProvider | IdentityProvider[],
-        ): void => {
-          if (Array.isArray(rowData)) return
-          handleDelete(rowData)
-        },
+      list.push({
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
+        tooltip: t('titles.delete_identity_provider'),
+        onClick: handleDelete,
       })
     }
-    const handleSearchIconClickNoop = (): void => {}
-    actions.push({
-      icon: GluuSearch,
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: handleSearchIconClickNoop,
-    })
-    actions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: handleRefresh,
-    } as Action<IdentityProvider> & { 'data-testid'?: string })
-    return actions
+    return list
   }, [
     canWriteIdentities,
     canReadIdentities,
     canDeleteIdentities,
     t,
+    classes,
     handleGoToEditPage,
-    handleGoToAddPage,
     handleDelete,
-    handleRefresh,
-    GluuSearch,
   ])
 
-  const tableColumns = useMemo(() => getIdentityProviderTableCols(t), [t])
-
-  const headerStyle = useMemo(
-    () =>
-      ({
-        ...applicationStyle.tableHeaderStyle,
-        backgroundColor: themeColors.background,
-        color: themeColors.fontColor,
-      }) as React.CSSProperties,
-    [themeColors.background, themeColors.fontColor],
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: pageNumber,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: handlePageChange,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [pageNumber, limit, totalItems, handlePageChange, handleRowsPerPageChange],
   )
 
-  const tableOptions = useMemo(
+  const primaryAction = useMemo(
     () => ({
-      search: false,
-      selection: false,
-      idSynonym: 'inum',
-      pageSize: limit,
-      headerStyle,
-      actionsColumnIndex: -1,
+      label: t('titles.create_identity_provider'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: handleGoToAddPage,
+      disabled: !canWriteIdentities,
     }),
-    [limit, headerStyle],
+    [t, classes.addIcon, handleGoToAddPage, canWriteIdentities],
   )
 
-  const tableComponents = useMemo(
-    () => ({
-      Container: PaperContainer,
-      Pagination: PaginationWrapper,
-    }),
-    [PaginationWrapper],
+  const getRowKey = useCallback(
+    (row: IdentityProvider, index: number) => row.inum ?? `row-${index}`,
+    [],
   )
 
   return (
     <GluuLoader blocking={isLoading}>
-      <GluuViewWrapper canShow={canReadIdentities}>
-        <MaterialTable
-          components={tableComponents}
-          columns={tableColumns}
-          data={items}
-          isLoading={isLoading}
-          title=""
-          actions={tableActions}
-          options={tableOptions}
-        />
-      </GluuViewWrapper>
-      {canDeleteIdentities && (
-        <GluuDialog
-          row={item}
-          name={item?.displayName || ''}
-          handler={toggle}
-          modal={modal}
-          subject="saml idp"
-          onAccept={onDeletionConfirmed}
-          feature={adminUiFeatures.saml_delete}
-        />
-      )}
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadIdentities}>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={`${t('fields.pattern')}:`}
+                searchPlaceholder={t('placeholders.search_pattern')}
+                searchValue={pattern}
+                searchOnType
+                onSearch={handleSearch}
+                onSearchSubmit={handleSearch}
+                onRefresh={canReadIdentities ? handleRefresh : undefined}
+                refreshLoading={isLoading}
+                primaryAction={primaryAction}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
+          <div className={classes.tableCard}>
+            <GluuTable<IdentityProvider>
+              columns={columns}
+              data={items}
+              loading={false}
+              pagination={pagination}
+              onPagingSizeSync={onPagingSizeSync}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={t('messages.no_data')}
+            />
+          </div>
+        </GluuViewWrapper>
+        {canDeleteIdentities && (
+          <GluuDialog
+            row={item}
+            name={item?.displayName || ''}
+            handler={toggle}
+            modal={modal}
+            subject="saml idp"
+            onAccept={onDeletionConfirmed}
+            feature={adminUiFeatures.saml_delete}
+          />
+        )}
+      </div>
     </GluuLoader>
   )
 })

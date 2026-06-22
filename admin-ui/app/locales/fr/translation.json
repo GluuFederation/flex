@@ -176,6 +176,8 @@
     "apply_filter": "Appliquer le filtre",
     "back": "Retour",
     "back_home": "Retour à la maison",
+    "back_to_home": "Retour à l'accueil",
+    "support_portal": "Portail d'assistance",
     "cancel": "Annuler",
     "clear": "Effacer",
     "clear_search": "Effacer la recherche",
@@ -1027,6 +1029,10 @@
     "request_waiting_message": "Exécution de la demande, veuillez patienter !",
     "resource_not_found_message": "La ressource demandée n'existe pas sur ce serveur. Veuillez contacter l'administrateur du site ou l'équipe d'assistance.",
     "resource_not_found_title": "Ressource introuvable",
+    "crash_title": "Une erreur s'est produite\nde notre côté",
+    "crash_message": "L'interface d'administration Gluu a rencontré un problème inattendu lors du traitement de votre demande. Réessayez ou contactez le support.",
+    "crash_footer_pre": "© {{year}} Gluu Admin UI · Conçu et mis en œuvre par",
+    "crash_footer_post": "· Tous droits réservés.",
     "view_client_details": "Afficher les détails du client",
     "view_2FA_details": "Afficher les détails de la 2FA",
     "2FA_details": "les détails de la 2FA",
@@ -1148,6 +1154,8 @@
     "try_again_later": "Veuillez réessayer plus tard",
     "success": "Succès",
     "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information",
     "error_processing_request": "Erreur lors du traitement de la demande.",
     "no_data": "Aucune donnée trouvée",
     "no_data_available": "Aucune donnée disponible",
@@ -1578,9 +1586,6 @@
     "edit_alias": "Edit Mapping",
     "creation_date": "Creation Date",
     "uma_resource_detail": "Détail de la ressource UMA"
-  },
-  "links": {
-    "support": "https://support.gluu.org/"
   },
   "options": {
     "admin": "ADMINISTRER",

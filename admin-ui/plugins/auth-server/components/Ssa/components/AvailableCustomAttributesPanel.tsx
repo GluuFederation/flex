@@ -20,7 +20,7 @@ const AvailableCustomAttributesPanel: React.FC<CustomAttributesPanelProps> = ({
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark })
-  const deferredSearchInputValue = useDeferredValue(searchInputValue)
+  const deferredSearchInputValue = useDeferredValue(searchInputValue, '')
 
   const normalizedAttributes = useMemo(
     () =>

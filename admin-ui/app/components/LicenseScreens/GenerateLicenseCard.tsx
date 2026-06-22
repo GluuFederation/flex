@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { use, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -15,7 +15,7 @@ import useStyles from './GenerateLicenseCard.style'
 const GenerateLicenseCard = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const theme = useContext(ThemeContext)
+  const theme = use(ThemeContext)
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })

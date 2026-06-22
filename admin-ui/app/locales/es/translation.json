@@ -34,6 +34,8 @@
     "apply_filter": "Aplicar filtro",
     "back": "Atrás",
     "back_home": "Volver al inicio",
+    "back_to_home": "Volver al inicio",
+    "support_portal": "Portal de soporte",
     "cancel": "Cancelar",
     "currentMonth": "Mes actual",
     "currentYear": "Año actual",
@@ -953,6 +955,8 @@
     "both_dates_required": "Las fechas de inicio y fin son obligatorias para el filtrado por rango de fechas",
     "success": "Éxito",
     "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información",
     "success_in_saving": "Cambios guardados correctamente",
     "fido_config_updated_successfully": "Configuración FIDO actualizada correctamente",
     "fido_config_update_failed": "Error al actualizar la configuración FIDO",
@@ -1058,6 +1062,10 @@
     "request_waiting_message": "Realizando la solicitud, por favor espere...",
     "resource_not_found_message": "El recurso solicitado no existe en este servidor. Contacte al administrador del sitio o al equipo de soporte.",
     "resource_not_found_title": "Recurso no encontrado",
+    "crash_title": "Algo salió mal\nde nuestro lado",
+    "crash_message": "La interfaz de administración de Gluu encontró un problema inesperado al procesar tu solicitud. Inténtalo de nuevo o contacta con soporte.",
+    "crash_footer_pre": "© {{year}} Gluu Admin UI · Diseñado e implementado por",
+    "crash_footer_post": "· Todos los derechos reservados.",
     "view_client_details": "Ver detalles del cliente",
     "view_2FA_details": "Ver detalles de 2FA",
     "2FA_details": "Detalles de 2FA",
@@ -1573,9 +1581,6 @@
     "passkey_adoption_rate": "Tasa de Adopción de Passkey",
     "passkey_authentication": "Autenticación con Passkey",
     "passkey_metrics_dashboard": "Panel de Métricas de Passkey"
-  },
-  "links": {
-    "support": "https://support.gluu.org/"
   },
   "options": {
     "admin": "ADMIN",

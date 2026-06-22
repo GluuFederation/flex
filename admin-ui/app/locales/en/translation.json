@@ -34,6 +34,8 @@
     "apply_filter": "Apply Filter",
     "back": "Back",
     "back_home": "Back Home",
+    "back_to_home": "Back to home",
+    "support_portal": "Support Portal",
     "cancel": "Cancel",
     "currentMonth": "Current Month",
     "currentYear": "Current Year",
@@ -947,6 +949,8 @@
     "both_dates_required": "Both start and end dates are required for date range filtering",
     "success": "Success",
     "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
     "success_in_saving": "Changes saved successfully",
     "fido_config_updated_successfully": "FIDO configuration updated successfully",
     "fido_config_update_failed": "Failed to update FIDO configuration",
@@ -1051,6 +1055,10 @@
     "request_waiting_message": "Performing the request, please wait!",
     "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team.",
     "resource_not_found_title": "Resource not found",
+    "crash_title": "Something went wrong\non our end",
+    "crash_message": "The Gluu Admin UI encountered an unexpected issue while processing your request. Please try again or contact support.",
+    "crash_footer_pre": "© {{year}} Gluu Admin UI · Designed and implemented by",
+    "crash_footer_post": "· All rights reserved.",
     "view_client_details": "View client details",
     "view_2FA_details": "View 2FA details",
     "2FA_details": "2FA details",
@@ -1570,9 +1578,6 @@
     "delete_identity_provider": "Delete Identity Provider",
     "search_filter": "Search Filter",
     "uma_resource_detail": "UMA Resource Detail"
-  },
-  "links": {
-    "support": "https://support.gluu.org/"
   },
   "options": {
     "admin": "ADMIN",

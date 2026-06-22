@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { formatDate as formatTokenDate } from '@/utils/dayjsUtils'

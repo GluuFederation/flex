@@ -1,12 +1,4 @@
-import React, {
-  ReactNode,
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  useContext,
-  useCallback,
-} from 'react'
+import React, { ReactNode, useState, useRef, useEffect, useMemo, use, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
@@ -37,7 +29,7 @@ interface SidebarMenuProps {
 
 const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) => {
   const location = useLocation()
-  const pageConfig = useContext(PageConfigContext)
+  const pageConfig = use(PageConfigContext)
   const containerRef = useRef<HTMLUListElement>(null)
   const [entries, setEntries] = useState<Record<string, SidebarMenuEntry>>({})
   const entriesRef = useRef(entries)
@@ -156,7 +148,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
   )
 
   return (
-    <MenuContext.Provider value={contextValue}>
+    <MenuContext value={contextValue}>
       <ul className={sidebarMenuClass} ref={containerRef}>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
@@ -174,7 +166,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
           return child
         })}
       </ul>
-    </MenuContext.Provider>
+    </MenuContext>
   )
 }
 

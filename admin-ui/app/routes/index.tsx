@@ -1,7 +1,10 @@
 import { Suspense, useState, useEffect } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
+import { ErrorBoundary } from 'react-error-boundary'
 import { ROUTES } from '@/helpers/navigation'
 import { logger } from '@/utils/logger'
+import GluuErrorScreen from 'Routes/Apps/Gluu/GluuErrorScreen'
+import logUiCrash from '@/utils/logUiCrash'
 import { useAppSelector } from '@/redux/hooks'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -81,6 +84,7 @@ export const RoutedContent = () => {
     loadPlugins()
   }, [])
 
+  const location = useLocation()
   const { userinfo, config } = useAppSelector((state) => state.authReducer)
   const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
     (state) => state.cedarPermissions,
@@ -106,32 +110,38 @@ export const RoutedContent = () => {
   }
 
   return (
-    <Suspense fallback={<GluuLoader blocking />}>
-      <Routes>
-        <Route
-          path={ROUTES.HOME_DASHBOARD}
-          element={
-            <ProtectedRoute>
-              <LazyRoutes.DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path={ROUTES.ROOT} element={<LandingRedirect />} />
+    <ErrorBoundary
+      FallbackComponent={GluuErrorScreen}
+      onError={(error, info) =>
+        logUiCrash(error instanceof Error ? error : new Error(String(error)), info.componentStack)
+      }
+      resetKeys={[location.pathname]}
+    >
+      <Suspense fallback={<GluuLoader blocking />}>
+        <Routes>
+          <Route
+            path={ROUTES.HOME_DASHBOARD}
+            element={
+              <ProtectedRoute>
+                <LazyRoutes.DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path={ROUTES.ROOT} element={<LandingRedirect />} />
 
-        {/* -------- Plugins ---------*/}
-        {pluginMenus.map((item, key) => (
-          <Route key={key} path={item.path} element={<item.component />} />
-        ))}
+          {/* -------- Plugins ---------*/}
+          {pluginMenus.map((item, key) => (
+            <Route key={key} path={item.path} element={<item.component />} />
+          ))}
 
-        {/*    Pages Routes    */}
-        <Route element={<LazyRoutes.ProfilePage />} path={ROUTES.PROFILE} />
+          {/*    Pages Routes    */}
+          <Route element={<LazyRoutes.ProfilePage />} path={ROUTES.PROFILE} />
 
-        <Route element={<LazyRoutes.Gluu404Error />} path={ROUTES.ERROR_404} />
-
-        {/*    404    */}
-        <Route path={ROUTES.WILDCARD} element={<Navigate to={ROUTES.ERROR_404} />} />
-      </Routes>
-    </Suspense>
+          {/*    404    */}
+          <Route path={ROUTES.WILDCARD} element={<LazyRoutes.Gluu404Error />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   )
 }
 

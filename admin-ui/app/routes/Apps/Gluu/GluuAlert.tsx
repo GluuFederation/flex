@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Snackbar from '@mui/material/Snackbar'
 import styles from './styles/GluuAlert.style'
-import MuiAlert, { AlertProps } from '@mui/material/Alert'
-import type { GluuAlertProps } from './types'
+import MuiAlert from '@mui/material/Alert'
+import type { GluuAlertProps, GluuMuiAlertProps } from './types'
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
+const Alert = ({ ref, ...props }: GluuMuiAlertProps) => (
+  <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+)
 
 const GluuAlert = ({ severity, message, show }: GluuAlertProps) => {
   const { classes } = styles()
