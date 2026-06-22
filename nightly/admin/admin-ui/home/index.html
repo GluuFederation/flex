@@ -1583,8 +1583,6 @@
       
         
       
-        
-      
     
     
     
@@ -1796,27 +1794,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#admin-ui-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      Admin UI Roles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#capabilities" class="md-nav__link">
     <span class="md-ellipsis">
       Capabilities
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      Role-Permission Mapping
     </span>
   </a>
   
@@ -2052,29 +2032,6 @@
   
   <span class="md-ellipsis">
     FIDO
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../saml-menu/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    SAML
     
   </span>
   
@@ -2981,27 +2938,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#admin-ui-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      Admin UI Roles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#capabilities" class="md-nav__link">
     <span class="md-ellipsis">
       Capabilities
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      Role-Permission Mapping
     </span>
   </a>
   
@@ -3202,7 +3141,7 @@
 <p>The dashboard has a bar graph showing month-wise access-token with grant-type <code>client credentials</code>, <code>authorization code</code> and <code>id_token</code> generated from auth server.</p>
 <p><img alt="image" src="../../../assets/admin-ui/access-token-graph.png" /></p>
 <h3 id="localization-and-theme-selection">Localization and Theme selection<a class="headerlink" href="#localization-and-theme-selection" title="Permanent link">#</a></h3>
-<p>Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.</p>
+<p>Admin UI supports localization. The default language is English. The other supported languages are French, Spanish and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.</p>
 <p><img alt="image" src="../../../assets/admin-ui/localization.png" /></p>
 <p>The administrator can also select from four website themes in Admin UI.</p>
 <p><img alt="image" src="../../../assets/admin-ui/theme-selection.png" /></p>
@@ -3228,163 +3167,19 @@
 <li><strong>List paging size:</strong> This field allows to define the default paging size for all search pages within the Admin UI.</li>
 <li><strong>Config API URL:</strong> The read-only URL of the Jans Config API is used by the Admin UI for interaction.</li>
 <li><strong>Admin UI Session Timeout (In Minutes):</strong> This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.</li>
+<li><strong>Cedarling Log enabled?:</strong> This switch enables or disables Cedarling logs in the browser console.</li>
+<li><strong>Admin UI Logging Level:</strong> This field is used to set frontend log level on browser console.</li>
 <li><strong>Admin UI authentication method (ACR):</strong> This dropdown enables user to select the default authentication method to be used in the Admin UI.</li>
 <li><strong>Custom Parameters (for authentication):</strong> The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.</li>
 </ul>
 <p><img alt="image" src="../../../assets/admin-ui/settings.png" /></p>
 <h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h2>
-<p>The features like managing Admin UI Roles and Capabilities and Mappings are placed under the Security menu. These features will be discussed one by one below:</p>
+<p>Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu.</p>
 <h3 id="gui-access-control">GUI Access Control<a class="headerlink" href="#gui-access-control" title="Permanent link">#</a></h3>
-<p>The administrator can control view/edit/delete access of users of Gluu Flex Admin UI by adding or removing the
-appropriate Permissions mapped to the user's Admin UI Role. For e.g. if the <strong>read</strong> Permission of OIDC
-clients (<code>https://jans.io/oauth/config/clients.readonly</code>) is not mapped to the logged-in user's Role, the contents of
-the page showing OIDC client records will not be visible to the user. In the same way, if the write and delete
-Permissions of OIDC clients are not mapped then the user will not be able to edit or delete any OIDC client record.</p>
-<h3 id="admin-ui-roles">Admin UI Roles<a class="headerlink" href="#admin-ui-roles" title="Permanent link">#</a></h3>
-<p>The logged-in administrator can create, edit or delete Admin UI Roles using this Page. The Admin UI Role
-can be assigned to the user using the <a href="../user-management-menu/">User Management</a> feature of this GUI. After installation,
-the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default
-user i.e. <code>admin</code> is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to
-log into Gluu Flex Admin UI.</p>
-<p><img alt="image" src="../../../assets/admin-ui/role.png" /></p>
+<p>This topic is covered in detail <a href="../access-control/">here</a>. New Admin UI roles can be added by introducing the corresponding policies in the policy store. These roles can then be assigned to users through the <a href="../user-management-menu/">User Management</a> feature of the Admin UI. After installation, the Admin UI uses a default policy store generated by the installer for access control. This policy store includes the <code>admin</code> role, and the default user (admin) is assigned that role.</p>
 <h3 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">#</a></h3>
-<p>Gluu Flex Admin UI uses <a href="https://github.com/JanssenProject/jans/tree/main/jans-config-api">Config API</a> to manage and
-configure the Jans Auth server.The user interface allows to add, edit and delete the Permissions or Capabilities used to access the APIs (i.e. rest APIs used by Admin UI).</p>
-<p><img alt="image" src="../../../assets/admin-ui/permission.png" /></p>
-<h3 id="role-permission-mapping">Role-Permission Mapping<a class="headerlink" href="#role-permission-mapping" title="Permanent link">#</a></h3>
-<p>The administrator can map the Admin UI Role with one or more Capabilities using the Role-Permission Mapping page. The Role mapped with Capabilities can be then assigned to the user to allow access to the corresponding operations of the GUI.</p>
+<p>In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the <a href="../configuration/#cedarling-configuration">Cedarling Configuration</a> page to control access to Admin UI features. After the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. </p>
 <p><img alt="image" src="../../../assets/admin-ui/role-permission.png" /></p>
-<p>The below table lists the Capabilities used in Admin UI:</p>
-<table>
-<thead>
-<tr>
-<th>Capability</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>https://jans.io/oauth/config/attributes.readonly</code></td>
-<td>View Person attributes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/attributes.write</code></td>
-<td>Add/Edit Person attributes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/attributes.delete</code></td>
-<td>Delete Person attributes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scopes.readonly</code></td>
-<td>View the Scopes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scopes.write</code></td>
-<td>Add/Edit Scopes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scopes.delete</code></td>
-<td>Delete Scopes</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scripts.readonly</code></td>
-<td>View the Scripts</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scripts.write</code></td>
-<td>Add/Edit Scripts</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/scripts.delete</code></td>
-<td>Delete Scripts</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/openid/clients.readonly</code></td>
-<td>View the Clients</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/openid/clients.write</code></td>
-<td>Add/Edit Clients</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/openid/clients.delete</code></td>
-<td>Delete Clients</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/smtp.readonly</code></td>
-<td>View SMTP configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/smtp.write</code></td>
-<td>Edit SMTP configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/smtp.delete</code></td>
-<td>Remove SMTP configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/logging.readonly</code></td>
-<td>View Auth server log configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/logging.write</code></td>
-<td>Edit Auth server log configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/database/ldap.readonly</code></td>
-<td>View LDAP persistence configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/database/ldap.write</code></td>
-<td>Edit LDAP persistence configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/database/ldap.delete</code></td>
-<td>Delete LDAP persistence configuration</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/config/jwks.readonly</code></td>
-<td>View JWKS</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly</code></td>
-<td>View Admin UI Roles</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write</code></td>
-<td>Edit Admin UI Roles</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete</code></td>
-<td>Delete Admin UI Roles</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly</code></td>
-<td>View Admin UI Permissions</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write</code></td>
-<td>Edit Admin UI Permissions</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete</code></td>
-<td>Delete Admin UI Permissions</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly</code></td>
-<td>View Role-Permission Mapping</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write</code></td>
-<td>Edit Role-Permission Mapping</td>
-</tr>
-<tr>
-<td><code>https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete</code></td>
-<td>Delete Role-Permission Mapping</td>
-</tr>
-</tbody>
-</table>
 <h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">#</a></h2>
 <p>Gluu Flex Admin UI uses webhooks to automate custom business logic during create, update, and delete operations (e.g., when a new user is created). Administrators can map webhooks to specific features and events, enabling dynamic and extensible workflows.</p>
 <p>Follow this <a href="../webhooks/">tutorial</a> for setup instructions.</p>
@@ -3430,7 +3225,7 @@ configure the Jans Auth server.The user interface allows to add, edit and delete
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 14, 2025 07:33:33 UTC"><span class="timeago" datetime="2025-08-14T07:33:33+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 14, 2025 07:33:33 UTC">2025-08-14</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 22, 2026 09:54:22 UTC"><span class="timeago" datetime="2026-06-22T09:54:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 22, 2026 09:54:22 UTC">2026-06-22</span>
   </span>
 
     

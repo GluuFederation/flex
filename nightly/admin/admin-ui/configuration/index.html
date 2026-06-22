@@ -1707,8 +1707,6 @@
       
         
       
-        
-      
     
     
     
@@ -1963,29 +1961,6 @@
   
   <span class="md-ellipsis">
     FIDO
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../saml-menu/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    SAML
     
   </span>
   
@@ -3037,10 +3012,6 @@
 <td>uiConfig</td>
 <td>Object with UI configuration attributes</td>
 </tr>
-<tr>
-<td>sessionTimeoutInMins</td>
-<td>The admin UI will auto-logout after a period of inactivity defined in this field.</td>
-</tr>
 </tbody>
 </table>
 <p>uiConfig</p>
@@ -3071,10 +3042,6 @@
 <tr>
 <td>auiDefaultPolicyStorePath</td>
 <td>The path of the default Policy Store json file on Config Api pod.</td>
-</tr>
-<tr>
-<td>cedarlingPolicyStoreRetrievalPoint</td>
-<td>The retrieval point of the Policy Store. The allowed values are <code>default</code> and <code>remote</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -3127,6 +3094,10 @@
 <td>SCAN License server hostname</td>
 </tr>
 <tr>
+<td>licenseKey</td>
+<td>License-key to access Admin UI</td>
+</tr>
+<tr>
 <td>licenseHardwareKey</td>
 <td>Hardware key (org_id) to access license APIs</td>
 </tr>
@@ -3134,60 +3105,120 @@
 <td>intervalForSyncLicenseDetailsInDays</td>
 <td>The Admin UI backend syncs license details into the configuration (persistence) after the set interval (default: 30 days).</td>
 </tr>
+<tr>
+<td>licenseValidUpto</td>
+<td>Expiry date to the subscribed flex license</td>
+</tr>
+<tr>
+<td>licenseDetailsLastUpdatedOn</td>
+<td>The date on which the license details were synced from Agama Lab to the Admin UI's License Configuration</td>
+</tr>
+<tr>
+<td>productCode</td>
+<td>The product code of the issued license at <a href="https://licensespring.com/">LicenseSpring</a></td>
+</tr>
+<tr>
+<td>licenseType</td>
+<td>The license type of the issued license at <a href="https://licensespring.com/">LicenseSpring</a></td>
+</tr>
+<tr>
+<td>licenseActive</td>
+<td>Is the license configured currently active?</td>
+</tr>
+<tr>
+<td>licenseExpired</td>
+<td>Is the license configured expired?</td>
+</tr>
+<tr>
+<td>licenseMAUThreshold</td>
+<td>The allowed monthly active users for issued license</td>
+</tr>
+<tr>
+<td>oidcClient</td>
+<td>Object with details of OIDC client to access license API</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Sample configuration stored in persistence</strong></p>
 <div class="highlight"><pre><span></span><code>{
   &quot;oidcConfig&quot;: {
     &quot;auiWebClient&quot;: {
+      &quot;introspectionEndpoint&quot;: null,
+      &quot;tokenEndpoint&quot;: null,
       &quot;redirectUri&quot;: &quot;https://your.host.com/admin&quot;,
-      &quot;postLogoutUri&quot;: &quot;https://your.gost.com/admin&quot;,
+      &quot;postLogoutUri&quot;: &quot;https://your.host.com/admin&quot;,
       &quot;frontchannelLogoutUri&quot;: &quot;https://your.host.com/admin/logout&quot;,
       &quot;scopes&quot;: [
         &quot;openid&quot;,
+        &quot;https://jans.io/auth/ssa.admin&quot;,
+        &quot;email&quot;,
         &quot;profile&quot;,
-        &quot;user_name&quot;,
-        &quot;email&quot;
+        &quot;offline_access&quot;,
+        &quot;jans_stat&quot;
       ],
       &quot;acrValues&quot;: [
-        &quot;basic&quot;
+        &quot;simple_password_auth&quot;
       ],
       &quot;opHost&quot;: &quot;https://your.host.com&quot;,
-      &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
-      &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;.
+      &quot;clientId&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+      &quot;clientSecret&quot;: &quot;xxxxxxxxxxxxx&quot;,
       &quot;additionalParameters&quot;: []
     },
     &quot;auiBackendApiClient&quot;: {
+      &quot;introspectionEndpoint&quot;: &quot;https://your.host.com/jans-auth/restv1/introspection&quot;,
       &quot;tokenEndpoint&quot;: &quot;https://your.host.com/jans-auth/restv1/token&quot;,
+      &quot;redirectUri&quot;: null,
+      &quot;postLogoutUri&quot;: null,
+      &quot;frontchannelLogoutUri&quot;: null,
       &quot;scopes&quot;: [
         &quot;openid&quot;,
-        &quot;profile&quot;,
-        &quot;user_name&quot;,
-        &quot;email&quot;
+        &quot;https://jans.io/auth/ssa.admin&quot;
       ],
+      &quot;acrValues&quot;: null,
       &quot;opHost&quot;: &quot;https://your.host.com&quot;,
-      &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
-      &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;
+      &quot;clientId&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+      &quot;clientSecret&quot;: &quot;xxxxxxxxxxxxx&quot;,
+      &quot;additionalParameters&quot;: null
+    }
+  },
+  &quot;licenseConfig&quot;: {
+    &quot;ssa&quot;: &quot;eyJraWQiOiJzc2FfN2IyMGM1MDYtMDlhNi00MTU1LWF....&quot;,
+    &quot;scanLicenseApiHostname&quot;: &quot;https://license-server-hostname.gluu.org&quot;,
+    &quot;licenseKey&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+    &quot;licenseHardwareKey&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+    &quot;licenseValidUpto&quot;: &quot;2026-07-07&quot;,
+    &quot;licenseDetailsLastUpdatedOn&quot;: &quot;2026-06-18&quot;,
+    &quot;productCode&quot;: &quot;adminui001&quot;,
+    &quot;productName&quot;: &quot;Gluu Admin UI&quot;,
+    &quot;licenseType&quot;: &quot;time-limited&quot;,
+    &quot;customerFirstName&quot;: &quot;&quot;,
+    &quot;customerLastName&quot;: &quot;&quot;,
+    &quot;customerEmail&quot;: &quot;trial_request&quot;,
+    &quot;companyName&quot;: &quot;&quot;,
+    &quot;licenseActive&quot;: true,
+    &quot;licenseExpired&quot;: false,
+    &quot;licenseMAUThreshold&quot;: 1000,
+    &quot;intervalForSyncLicenseDetailsInDays&quot;: 30,
+    &quot;oidcClient&quot;: {
+      &quot;introspectionEndpoint&quot;: null,
+      &quot;tokenEndpoint&quot;: null,
+      &quot;redirectUri&quot;: null,
+      &quot;postLogoutUri&quot;: null,
+      &quot;frontchannelLogoutUri&quot;: null,
+      &quot;scopes&quot;: null,
+      &quot;acrValues&quot;: null,
+      &quot;opHost&quot;: &quot;https://account-server-hostname.gluu.org&quot;,
+      &quot;clientId&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+      &quot;clientSecret&quot;: &quot;xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx&quot;,
+      &quot;additionalParameters&quot;: null
     }
   },
   &quot;uiConfig&quot;: {
-    &quot;sessionTimeoutInMins&quot;: 30,
+    &quot;sessionTimeoutInMins&quot;: 31,
     &quot;allowSmtpKeystoreEdit&quot;: true,
-    &quot;cedarlingLogType&quot;:&quot;off&quot;,
+    &quot;cedarlingLogType&quot;: &quot;off&quot;,
     &quot;auiPolicyStoreUrl&quot;: &quot;&quot;,
-    &quot;auiDefaultPolicyStorePath&quot;: &quot;./custom/config/adminUI/policy-store.json&quot;,
-    &quot;cedarlingPolicyStoreRetrievalPoint&quot;: &quot;default&quot;
-  },
-  &quot;licenseConfig&quot;: {
-    &quot;ssa&quot;: &quot;...ssa in jwt format...&quot;,
-    &quot;scanLicenseApiHostname&quot;: &quot;https://cloud-dev.gluu.cloud&quot;,
-    &quot;licenseKey&quot;: &quot;XXXX-XXXX-XXXX-XXXX&quot;,
-    &quot;licenseHardwareKey&quot;: &quot;github:ghUsername&quot;,
-    &quot;oidcClient&quot;: {
-      &quot;opHost&quot;: &quot;https://account-dev.gluu.cloud&quot;,
-      &quot;clientId&quot;: &quot;36a43e2b-a77b-4e9c-a966-a9d98af1665c&quot;,
-      &quot;clientSecret&quot;: &quot;211188d8-a2d8-4562-ab53-80907c1bb5ba&quot;
-    }
+    &quot;auiDefaultPolicyStorePath&quot;: &quot;./custom/config/adminUI/policy-store.cjar&quot;
   }
 }
 </code></pre></div>
@@ -3213,7 +3244,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 7, 2026 07:31:51 UTC"><span class="timeago" datetime="2026-04-07T07:31:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 7, 2026 07:31:51 UTC">2026-04-07</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 22, 2026 09:54:22 UTC"><span class="timeago" datetime="2026-06-22T09:54:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 22, 2026 09:54:22 UTC">2026-06-22</span>
   </span>
 
     
