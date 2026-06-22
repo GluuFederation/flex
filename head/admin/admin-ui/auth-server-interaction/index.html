@@ -1661,8 +1661,6 @@
       
         
       
-        
-      
     
     
     
@@ -1917,29 +1915,6 @@
   
   <span class="md-ellipsis">
     FIDO
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../saml-menu/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    SAML
     
   </span>
   
@@ -2833,9 +2808,9 @@
 <ol>
 <li>The user accesses the Gluu Flex Admin UI frontend through a web browser.</li>
 <li>The frontend requests the Admin UI backend to retrieve Admin UI configuration from Janssen persistence. The <a href="../configuration/">Admin UI configuration</a> includes OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata. It's important to note that <strong>the Admin UI backend is implemented as a Jans Config API plugin</strong>.</li>
-<li>The frontend calls the Admin UI backend API (<code>/isConfigValid</code>) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, <code>/isConfigValid</code> verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, <code>/isConfigValid</code> checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).</li>
-<li>After validating the OIDC client, the Admin UI calls the backend API (/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the SCAN API (/scan/license/isActive) to verify license validity and sync its details into the license configuration (persistence).</li>
-<li>If a valid license is not present, the frontend calls the backend API (/retrieve) to retrieve the license for the user via the SCAN API (/scan/license/retrieve). The license can only be retrieved from SCAN if the user has subscribed to the Admin UI license in Agama Lab.</li>
+<li>The frontend calls the Admin UI backend API (<code>/v1/license/isConfigValid</code>) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, <code>/v1/license/isConfigValid</code> verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, <code>/v1/license/isConfigValid</code> checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).</li>
+<li>After validating the OIDC client, the Admin UI calls the backend API (/v1/license/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the License API (/v1/license/isActive) in Agama Lab to verify license validity and sync its details into the license configuration (persistence).</li>
+<li>If a valid license is not present, the frontend calls the backend API (/v1/license/retrieve) to retrieve the license for the user via the Agama Lab's License API (/v1/license/retrieve). The license can only be retrieved if the user has subscribed to the Admin UI license in Agama Lab.</li>
 <li>If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.</li>
 <li>After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.</li>
 </ol>
@@ -2866,16 +2841,16 @@ else license client invalid
 end
 Gluu Flex Admin UI-&gt;&gt;Admin UI Backend: /license/isActive
 Note over Gluu Flex Admin UI,Admin UI Backend: validate license
-Admin UI Backend-&gt;&gt;SCAN: /scan/license/isActive
+Admin UI Backend-&gt;&gt;Agama Lab: /license/isActive
 alt license active
-    SCAN-&gt;&gt;Admin UI Backend: true
+    Agama Lab-&gt;&gt;Admin UI Backend: true
 else license inactive / not present
-    SCAN-&gt;&gt;Admin UI Backend: false
-    Admin UI Backend-&gt;&gt;SCAN: /retrieve
+    Agama Lab-&gt;&gt;Admin UI Backend: false
+    Admin UI Backend-&gt;&gt;Agama Lab: /retrieve
     alt license subscribed
-        SCAN-&gt;&gt;Admin UI Backend: license
+        Agama Lab-&gt;&gt;Admin UI Backend: license
     else license not subscribed
-        SCAN-&gt;&gt;Admin UI Backend: false
+        Agama Lab-&gt;&gt;Admin UI Backend: false
         Admin UI Backend-&gt;&gt;Gluu Flex Admin UI: false
         Gluu Flex Admin UI-&gt;&gt;Browser: Screen to generate Trial license
     end
@@ -2995,7 +2970,7 @@ JansServer-&gt;&gt;Backend: AT2
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 26, 2026 12:09:52 UTC"><span class="timeago" datetime="2026-01-26T12:09:52+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 26, 2026 12:09:52 UTC">2026-01-26</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 22, 2026 09:54:22 UTC"><span class="timeago" datetime="2026-06-22T09:54:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 22, 2026 09:54:22 UTC">2026-06-22</span>
   </span>
 
     
