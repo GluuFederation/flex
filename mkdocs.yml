@@ -165,7 +165,6 @@ nav:
             - 'SMTP': 'admin/admin-ui/smtp-menu.md'
             - 'SCIM': 'admin/admin-ui/scim-menu.md'
             - 'FIDO': 'admin/admin-ui/fido-menu.md'
-            - 'SAML': 'admin/admin-ui/saml-menu.md'
             - 'Jans Lock': 'admin/admin-ui/jans-lock-menu.md'
           - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
       - 'Flex Recipes':
