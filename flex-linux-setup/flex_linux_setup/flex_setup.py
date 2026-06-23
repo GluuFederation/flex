@@ -16,7 +16,6 @@ import uuid
 
 from pathlib import Path
 from urllib import request
-from urllib.parse import urljoin
 from xml.etree import ElementTree
 
 argsp = None
@@ -295,8 +294,6 @@ if not installed:
         base.argsp = arg_parser.get_parser()
         set_app_versions_from_arguments(base.argsp)
 
-maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
-
 node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
 jans_installer = JansInstaller()
@@ -365,9 +362,9 @@ class flex_installer(JettyInstaller):
             self.source_files += [
                 ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']),
                  os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
-                (urljoin(maven_base_url,
-                         'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(
-                             app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])),
+                (base.determine_jans_artifact_url(
+                         'maven/io/jans/jans-config-api/plugins/admin-ui-plugin/{0}/admin-ui-plugin-{0}-distribution.jar'.format(
+                             base.current_app.app_info['jans_version'])),
                  self.admin_ui_plugin_source_path),
                 (
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(
