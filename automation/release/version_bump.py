@@ -401,6 +401,8 @@ def main():
 
     if not VERSION_RE.match(args.version):
         ap.error(f"invalid version '{args.version}' (expected X.Y.Z or X.Y.Z-suffix)")
+    if not re.fullmatch(r"[0-9A-Za-z.]+", args.docker_suffix):
+        ap.error(f"invalid --docker-suffix '{args.docker_suffix}' (expected alphanumerics and dots)")
 
     ROOT = args.root.resolve()
     DRY = args.dry_run

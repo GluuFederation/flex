@@ -72,7 +72,10 @@ jobs:
       with:
         ref: ${{ github.event.inputs.ref }}
         fetch-depth: 0
-        token: ${{ secrets.MOWORKFLOWTOKEN }}
+        # Do NOT persist a token in .git/config: the bump step runs version_bump.py from
+        # the (possibly untrusted) ref before any push, so checked-out code must not be
+        # able to read the PAT. The tag push below supplies the PAT explicitly.
+        persist-credentials: false
 
     - name: Refuse if tag already exists
       run: |
@@ -103,6 +106,7 @@ jobs:
 
     - name: Commit the bump (detached) and tag it
       id: commit
+      if: ${{ github.event.inputs.dry_run != 'true' }}
       run: |
         git config user.name "gluu-flex-release-bot"
         git config user.email "mo@gluu.org"
@@ -114,10 +118,15 @@ jobs:
 
     - name: Push ONLY the tag (main is never pushed)
       if: ${{ github.event.inputs.dry_run != 'true' }}
+      env:
+        GH_PAT: ${{ secrets.MOWORKFLOWTOKEN }}
+        VERSION: ${{ github.event.inputs.version }}
       run: |
         # Single fully-qualified tag refspec. NEVER push a branch / HEAD / --all / --follow-tags.
+        # Checkout did not persist the PAT, so supply it here via a one-off authenticated URL.
         git symbolic-ref -q HEAD >/dev/null && { echo "::error::HEAD not detached"; exit 1; }
-        git push origin "refs/tags/v${{ github.event.inputs.version }}"
+        git push "https://x-access-token:${GH_PAT}@github.com/${GITHUB_REPOSITORY}.git" \
+          "refs/tags/v${VERSION}"
 
     - name: Create the GitHub Release on the tag
       if: ${{ github.event.inputs.dry_run != 'true' }}
@@ -133,14 +142,21 @@ jobs:
 
     - name: Summary
       if: always()
+      # Pass inputs through env (ref is unvalidated) and emit with printf, so a value
+      # containing backticks / $() cannot trigger command substitution.
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+        REF: ${{ github.event.inputs.ref }}
+        DRY_RUN: ${{ github.event.inputs.dry_run }}
       run: |
-        echo "## Release v${{ github.event.inputs.version }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-        echo "- Source ref: \`${{ github.event.inputs.ref }}\`" >> "$GITHUB_STEP_SUMMARY"
-        echo "- Dry run: \`${{ github.event.inputs.dry_run }}\`" >> "$GITHUB_STEP_SUMMARY"
-        if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
-          echo "- Bumped + verified only; no tag pushed." >> "$GITHUB_STEP_SUMMARY"
-        else
-          echo "- Pushed tag \`v${{ github.event.inputs.version }}\` and created its release." >> "$GITHUB_STEP_SUMMARY"
-          echo "- \`main\` was not modified." >> "$GITHUB_STEP_SUMMARY"
-        fi
+        {
+          printf '## Release v%s\n\n' "${VERSION}"
+          printf -- '- Source ref: `%s`\n' "${REF}"
+          printf -- '- Dry run: `%s`\n' "${DRY_RUN}"
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            printf -- '- Bumped + verified only; no tag pushed.\n'
+          else
+            printf -- '- Pushed tag `v%s` and created its release.\n' "${VERSION}"
+            printf -- '- `main` was not modified.\n'
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"

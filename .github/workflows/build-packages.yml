@@ -234,6 +234,15 @@ jobs:
         VERSION="${{ steps.previoustag.outputs.version }}"
         SUFFIX="${{ matrix.asset_suffix }}"
         
+        # On a tag push the release may not exist yet (release-trigger pushes the tag --
+        # which starts this build -- then creates the release; parallel matrix legs also
+        # race to create it), so ensure it exists idempotently before uploading.
+        if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+          gh release view "${{ steps.previoustag.outputs.tag }}" --repo "${{ github.repository }}" >/dev/null 2>&1 \
+            || gh release create "${{ steps.previoustag.outputs.tag }}" --repo "${{ github.repository }}" --title "${{ steps.previoustag.outputs.tag }}" --generate-notes \
+            || gh release view "${{ steps.previoustag.outputs.tag }}" --repo "${{ github.repository }}" >/dev/null 2>&1
+        fi
+
         gh release upload ${{ steps.previoustag.outputs.tag }} \
           "${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${VERSION}${SUFFIX}" \
           "${{github.workspace}}/flex-${OS}-${VERSION}.bundle" \
