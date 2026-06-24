@@ -89,9 +89,16 @@ jobs:
       run: git checkout --detach
 
     - name: Bump every owned version in the working tree
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+        DOCKER_SUFFIX: ${{ github.event.inputs.docker_suffix }}
       run: |
-        python3 automation/release/version_bump.py "${{ github.event.inputs.version }}" \
-          --docker-suffix "${{ github.event.inputs.docker_suffix }}"
+        # --flex-source-sha pins FLEX_SOURCE_VERSION to the released commit (HEAD here is the
+        # source ref, before the bump commit); version_bump also pins JANS_SOURCE_VERSION to the
+        # jans release's value.
+        python3 automation/release/version_bump.py "${VERSION}" \
+          --docker-suffix "${DOCKER_SUFFIX}" \
+          --flex-source-sha "$(git rev-parse HEAD)"
 
     # Safety net: abort BEFORE committing/pushing if any owned version was missed.
     - name: Verify the tree is fully bumped
