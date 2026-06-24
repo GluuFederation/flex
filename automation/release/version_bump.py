@@ -388,6 +388,25 @@ def pin_source_versions(flex_sha, jans_ver):
     for rel in grep_files("JANS_SOURCE_VERSION="):
         if sub(rel, r"(JANS_SOURCE_VERSION=)[0-9a-f]{40}", rf"\g<1>{jans_sha}"):
             changed.append(rel)
+
+    # Fail closed: after the rewrites, every owned assignment must equal the requested sha. A value
+    # the regex could not match (non-40-hex, a branch name, an already-different sha) would otherwise
+    # silently ship an image built from stale source. ``${VAR}`` indirections are left alone; skipped
+    # under --dry-run, which writes nothing.
+    if not DRY:
+        stale = []
+        for rel in grep_files("FLEX_SOURCE_VERSION="):
+            stale += [f"{rel}: FLEX_SOURCE_VERSION={v}"
+                      for v in re.findall(r"FLEX_SOURCE_VERSION=(\S+)", read(rel))
+                      if not v.startswith("$") and v != flex_sha]
+        for rel in grep_files("JANS_SOURCE_VERSION="):
+            stale += [f"{rel}: JANS_SOURCE_VERSION={v}"
+                      for v in re.findall(r"JANS_SOURCE_VERSION=(\S+)", read(rel))
+                      if not v.startswith("$") and v != jans_sha]
+        if stale:
+            raise SystemExit(
+                f"source-version pin incomplete (expected flex={flex_sha} jans={jans_sha}):\n  "
+                + "\n  ".join(stale))
     return changed
 
 
