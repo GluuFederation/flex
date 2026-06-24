@@ -191,9 +191,7 @@ if not jans_installer_downloaded:
     set_app_versions_from_arguments(base.argsp)
 
     downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
-    downloads.download_sqlalchemy()
-    downloads.download_cryptography()
-    downloads.download_pyjwt()
+    downloads.download_apps()
 
 install_components = {
     'admin_ui': argsp.install_admin_ui,
