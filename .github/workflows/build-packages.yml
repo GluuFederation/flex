@@ -17,15 +17,15 @@ on:
         type: boolean
         default: true
       jans_branch:
-        description: 'The --jans-branch to use for the setup script.'
-        required: true
+        description: 'Override the jans --jans-branch. Leave empty to derive from the tag (flex is +4 major, so v6.2.0 -> jans v2.2.0; nightly -> nightly).'
+        required: false
         type: string
-        default: 'main'
+        default: ''
       jans_setup_branch:
-        description: 'The --jans-setup-branch to use for the setup script.'
-        required: true
+        description: 'Override the jans --jans-setup-branch. Leave empty to use the resolved jans_branch.'
+        required: false
         type: string
-        default: 'main'
+        default: ''
 
 permissions:
   contents: read
@@ -131,36 +131,37 @@ jobs:
     - name: Set Branch Parameters
       id: set_branches
       run: |
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          echo "Using manual inputs for branches"
-          echo "JANS_BRANCH=${{ inputs.jans_branch }}" >> $GITHUB_ENV
-          echo "JANS_SETUP_BRANCH=${{ inputs.jans_setup_branch }}" >> $GITHUB_ENV
+        # Explicit override (workflow_dispatch only): honor jans_branch when supplied.
+        # Otherwise derive the jans tag from the flex tag for BOTH tag-push and dispatch:
+        # flex is +4 major ahead, so v6.2.0 -> jans v2.2.0 (nightly -> nightly).
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.jans_branch }}" ]]; then
+          echo "Using manual jans branch override"
+          JANS_BRANCH="${{ inputs.jans_branch }}"
+          JANS_SETUP_BRANCH="${{ inputs.jans_setup_branch }}"
+          [[ -z "${JANS_SETUP_BRANCH}" ]] && JANS_SETUP_BRANCH="${JANS_BRANCH}"
         else
-          echo "Deriving branches from release tag"
-          TAG_NAME=$(echo "${{ github.event.ref }}" | cut -d '/' -f 3)
+          echo "Deriving jans branch from the tag"
+          TAG_NAME="${{ steps.previoustag.outputs.tag }}"
 
           if [[ "${TAG_NAME}" == "nightly" ]]; then
             JANS_BRANCH="nightly"
-            JANS_SETUP_BRANCH="nightly"
           else
             VERSION_ONLY=$(echo "${TAG_NAME}" | sed 's/^v//')
             MAJOR=$(echo "${VERSION_ONLY}" | cut -d '.' -f 1)
             REST_OF_VERSION=$(echo "${VERSION_ONLY}" | cut -d '.' -f 2-)
-            
+
             if [[ "$MAJOR" =~ ^[0-9]+$ ]]; then
-              NEW_MAJOR=$((MAJOR - 4))
-              NEW_TAG="v${NEW_MAJOR}.${REST_OF_VERSION}"
-              JANS_BRANCH="${NEW_TAG}"
-              JANS_SETUP_BRANCH="${NEW_TAG}"
+              JANS_BRANCH="v$((MAJOR - 4)).${REST_OF_VERSION}"
             else
               # Fallback in case tag is not in the expected format
               JANS_BRANCH="${TAG_NAME}"
-              JANS_SETUP_BRANCH="${TAG_NAME}"
             fi
           fi
-          echo "JANS_BRANCH=${JANS_BRANCH}" >> $GITHUB_ENV
-          echo "JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}" >> $GITHUB_ENV
+          JANS_SETUP_BRANCH="${JANS_BRANCH}"
         fi
+        echo "JANS_BRANCH=${JANS_BRANCH}" >> $GITHUB_ENV
+        echo "JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}" >> $GITHUB_ENV
+        echo "Resolved JANS_BRANCH=${JANS_BRANCH}  JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}"
 
     - name: Print Version and tag
       run: |
