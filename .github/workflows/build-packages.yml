@@ -113,54 +113,76 @@ jobs:
         cryptography urllib3 certifi requests ruamel.yaml pymysql psycopg2-binary
     - name: Get tag and version
       id: previoustag
+      # Inputs/contexts are passed through env (never inlined into the script) so a
+      # crafted value cannot inject shell.
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        TARGET_TAG: ${{ inputs.target_tag }}
+        EVENT_REF: ${{ github.event.ref }}
       run: |
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          TAG_NAME="${{ inputs.target_tag }}"
+        if [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
+          TAG_NAME="${TARGET_TAG}"
         else
-          TAG_NAME=$(echo "${{ github.event.ref }}" | cut -d '/' -f 3)
+          TAG_NAME=$(echo "${EVENT_REF}" | cut -d '/' -f 3)
         fi
 
-        echo "tag=${TAG_NAME}" >> $GITHUB_OUTPUT
+        printf 'tag=%s\n' "${TAG_NAME}" >> "$GITHUB_OUTPUT"
         if [[ "${TAG_NAME}" == "nightly" ]]; then
-          echo "version=0.0.0-nightly" >> $GITHUB_OUTPUT
+          printf 'version=%s\n' "0.0.0-nightly" >> "$GITHUB_OUTPUT"
         else
-          echo "version=$(echo "${TAG_NAME}" | sed 's/^v//')-stable" >> $GITHUB_OUTPUT
+          printf 'version=%s-stable\n' "${TAG_NAME#v}" >> "$GITHUB_OUTPUT"
         fi
-        echo "PACKAGE_PREFIX=flex" >> ${GITHUB_ENV}
+        printf 'PACKAGE_PREFIX=flex\n' >> "$GITHUB_ENV"
 
     - name: Set Branch Parameters
       id: set_branches
+      # Inputs come through env (never inlined into the script). jans_branch and
+      # jans_setup_branch are each honored independently when supplied; otherwise the
+      # jans branch is derived from the flex tag (flex is +4 major: v6.2.0 -> v2.2.0).
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        IN_JANS_BRANCH: ${{ inputs.jans_branch }}
+        IN_JANS_SETUP_BRANCH: ${{ inputs.jans_setup_branch }}
+        TAG_NAME: ${{ steps.previoustag.outputs.tag }}
       run: |
-        # Explicit override (workflow_dispatch only): honor jans_branch when supplied.
-        # Otherwise derive the jans tag from the flex tag for BOTH tag-push and dispatch:
-        # flex is +4 major ahead, so v6.2.0 -> jans v2.2.0 (nightly -> nightly).
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.jans_branch }}" ]]; then
-          echo "Using manual jans branch override"
-          JANS_BRANCH="${{ inputs.jans_branch }}"
-          JANS_SETUP_BRANCH="${{ inputs.jans_setup_branch }}"
-          [[ -z "${JANS_SETUP_BRANCH}" ]] && JANS_SETUP_BRANCH="${JANS_BRANCH}"
-        else
-          echo "Deriving jans branch from the tag"
-          TAG_NAME="${{ steps.previoustag.outputs.tag }}"
+        # Reject override inputs that aren't a plain git ref name -- blocks shell /
+        # GITHUB_ENV injection via embedded newlines or quotes.
+        valid_ref() { [[ "$1" =~ ^[A-Za-z0-9._/-]+$ ]]; }
 
-          if [[ "${TAG_NAME}" == "nightly" ]]; then
-            JANS_BRANCH="nightly"
-          else
-            VERSION_ONLY=$(echo "${TAG_NAME}" | sed 's/^v//')
-            MAJOR=$(echo "${VERSION_ONLY}" | cut -d '.' -f 1)
-            REST_OF_VERSION=$(echo "${VERSION_ONLY}" | cut -d '.' -f 2-)
-
-            if [[ "$MAJOR" =~ ^[0-9]+$ ]]; then
-              JANS_BRANCH="v$((MAJOR - 4)).${REST_OF_VERSION}"
-            else
-              # Fallback in case tag is not in the expected format
-              JANS_BRANCH="${TAG_NAME}"
-            fi
+        # Map the flex tag to its jans branch. Only a full vX.Y.Z with major >= 4
+        # (flex's offset) maps; nightly passes through; anything else fails before a
+        # bad/negative branch is ever used.
+        derive_jans_branch() {
+          if [[ "${TAG_NAME}" == "nightly" ]]; then echo "nightly"; return 0; fi
+          local ver="${TAG_NAME#v}"
+          if [[ ! "${ver}" =~ ^([0-9]+)\.([0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?)$ ]]; then
+            echo "::error::tag '${TAG_NAME}' is not vX.Y.Z; cannot derive a jans branch" >&2
+            return 1
           fi
+          local major="${BASH_REMATCH[1]}" rest="${BASH_REMATCH[2]}"
+          if (( major < 4 )); then
+            echo "::error::flex major ${major} has no jans counterpart (flex is +4 ahead; need >= 4)" >&2
+            return 1
+          fi
+          echo "v$((major - 4)).${rest}"
+        }
+
+        if [[ "${EVENT_NAME}" == "workflow_dispatch" && -n "${IN_JANS_BRANCH}" ]]; then
+          valid_ref "${IN_JANS_BRANCH}" || { echo "::error::invalid jans_branch input"; exit 1; }
+          JANS_BRANCH="${IN_JANS_BRANCH}"
+        else
+          JANS_BRANCH="$(derive_jans_branch)" || exit 1
+        fi
+
+        if [[ "${EVENT_NAME}" == "workflow_dispatch" && -n "${IN_JANS_SETUP_BRANCH}" ]]; then
+          valid_ref "${IN_JANS_SETUP_BRANCH}" || { echo "::error::invalid jans_setup_branch input"; exit 1; }
+          JANS_SETUP_BRANCH="${IN_JANS_SETUP_BRANCH}"
+        else
           JANS_SETUP_BRANCH="${JANS_BRANCH}"
         fi
-        echo "JANS_BRANCH=${JANS_BRANCH}" >> $GITHUB_ENV
-        echo "JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}" >> $GITHUB_ENV
+
+        printf 'JANS_BRANCH=%s\n' "${JANS_BRANCH}" >> "$GITHUB_ENV"
+        printf 'JANS_SETUP_BRANCH=%s\n' "${JANS_SETUP_BRANCH}" >> "$GITHUB_ENV"
         echo "Resolved JANS_BRANCH=${JANS_BRANCH}  JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}"
 
     - name: Print Version and tag
