@@ -74,17 +74,15 @@ const UserForm = ({
   )
 
   const initializedRef = useRef<string | null>(null)
-  const formContentRef = useRef<HTMLDivElement | null>(null)
   const [formHeight, setFormHeight] = useState<number | undefined>(undefined)
 
-  useEffect(() => {
-    const el = formContentRef.current
-    if (!el) return
+  const formContentRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (entry) setFormHeight(entry.contentRect.height)
     })
-    observer.observe(el)
+    observer.observe(node)
     return () => observer.disconnect()
   }, [])
   const formik = useFormik<UserEditFormValues>({

@@ -7,8 +7,6 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { CachedIcon } from '@/components/icons'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
-import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
-import type { SidebarMenuContext } from '../../../components/SidebarMenu/MenuContext'
 
 import {
   HomeIcon,
@@ -138,47 +136,40 @@ const GluuAppSidebar = (): JSX.Element => {
         <div
           className={`${!didAnimateMenusRef.current ? classes.menuFadeIn : ''} ${classes.menuContainer}`}
         >
-          <MenuContext.Consumer>
-            {(ctx: SidebarMenuContext) =>
-              pluginMenus.map((plugin, key) => (
-                <SidebarMenuItem
-                  key={key}
-                  icon={getMenuIcon(plugin.icon)}
-                  to={getMenuPath(plugin)}
-                  title={t(`${plugin.title}`)}
-                  textStyle={{ fontSize: '18px' }}
-                  sidebarMenuActiveClass={sidebarMenuActiveClass}
-                  {...ctx}
-                >
-                  {hasChildren(plugin) &&
-                    plugin.children!.map((item, idx) => (
-                      <SidebarMenuItem
-                        key={idx}
-                        title={t(`${item.title}`)}
-                        to={getMenuPath(item)}
-                        icon={getMenuIcon(item.icon)}
-                        textStyle={{ fontSize: '15px' }}
-                        exact
-                        {...ctx}
-                      >
-                        {hasChildren(item) &&
-                          item.children!.map((sub, id) => (
-                            <SidebarMenuItem
-                              key={id}
-                              title={t(`${sub.title}`)}
-                              to={getMenuPath(sub)}
-                              icon={getMenuIcon(sub.icon)}
-                              textStyle={{ fontSize: '15px' }}
-                              exact
-                              {...ctx}
-                            ></SidebarMenuItem>
-                          ))}
-                      </SidebarMenuItem>
-                    ))}
-                </SidebarMenuItem>
-              ))
-            }
-          </MenuContext.Consumer>
+          {pluginMenus.map((plugin, key) => (
+            <SidebarMenuItem
+              key={key}
+              icon={getMenuIcon(plugin.icon)}
+              to={getMenuPath(plugin)}
+              title={t(`${plugin.title}`)}
+              textStyle={{ fontSize: '18px' }}
+              sidebarMenuActiveClass={sidebarMenuActiveClass}
+            >
+              {hasChildren(plugin) &&
+                plugin.children!.map((item, idx) => (
+                  <SidebarMenuItem
+                    key={idx}
+                    title={t(`${item.title}`)}
+                    to={getMenuPath(item)}
+                    icon={getMenuIcon(item.icon)}
+                    textStyle={{ fontSize: '15px' }}
+                    exact
+                  >
+                    {hasChildren(item) &&
+                      item.children!.map((sub, id) => (
+                        <SidebarMenuItem
+                          key={id}
+                          title={t(`${sub.title}`)}
+                          to={getMenuPath(sub)}
+                          icon={getMenuIcon(sub.icon)}
+                          textStyle={{ fontSize: '15px' }}
+                          exact
+                        ></SidebarMenuItem>
+                      ))}
+                  </SidebarMenuItem>
+                ))}
+            </SidebarMenuItem>
+          ))}
         </div>
       ) : (
         <div className={classes.loaderRoot}>

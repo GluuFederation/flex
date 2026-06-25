@@ -63,9 +63,7 @@ describe('GluuThemeFormFooter', () => {
   })
 
   it('disables both Apply and Cancel when isLoading is true', () => {
-    renderFooter(
-      baseProps({ showBack: true, showApply: true, showCancel: true, isLoading: true }),
-    )
+    renderFooter(baseProps({ showBack: true, showApply: true, showCancel: true, isLoading: true }))
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeDisabled()
   })

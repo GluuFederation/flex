@@ -77,7 +77,8 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   sidebarMenuActiveClass,
   isEmptyNode = false,
 }) => {
-  const { entries, addEntry, updateEntry, removeEntry } = use(MenuContext)
+  const menuContext = use(MenuContext)
+  const { entries, addEntry, updateEntry, removeEntry } = menuContext
   const theme = use(ThemeContext)
   const selectedTheme = theme?.state.theme || DEFAULT_THEME
   const id = useId()
@@ -201,24 +202,18 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
       {children && (
         <ul className="sidebar-submenu">
           {React.Children.map(children, (child) =>
-            child ? (
-              <MenuContext.Consumer>
-                {(ctx: SidebarMenuContext) =>
-                  React.isValidElement(child)
-                    ? React.cloneElement(
-                        child as React.ReactElement<SidebarMenuItemProps & SidebarMenuContext>,
-                        {
-                          isSubNode: true,
-                          parentId: id,
-                          currentUrl,
-                          slim,
-                          ...ctx,
-                        },
-                      )
-                    : child
-                }
-              </MenuContext.Consumer>
-            ) : null,
+            child && React.isValidElement(child)
+              ? React.cloneElement(
+                  child as React.ReactElement<SidebarMenuItemProps & SidebarMenuContext>,
+                  {
+                    isSubNode: true,
+                    parentId: id,
+                    currentUrl,
+                    slim,
+                    ...menuContext,
+                  },
+                )
+              : child,
           )}
         </ul>
       )}

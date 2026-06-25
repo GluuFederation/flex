@@ -35,9 +35,9 @@ describe('CustomInput', () => {
 
   it('forwards name, placeholder and disabled props to the input', () => {
     renderInput({
-      name: 'email',
-      type: 'text',
-      disabled: true,
+      'name': 'email',
+      'type': 'text',
+      'disabled': true,
       'data-testid': 'email',
     })
     const input = screen.getByTestId('email') as HTMLInputElement

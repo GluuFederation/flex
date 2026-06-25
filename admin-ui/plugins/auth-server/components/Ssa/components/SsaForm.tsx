@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormik, type FormikProps } from 'formik'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
@@ -54,7 +54,14 @@ const SsaForm: React.FC<SsaFormProps> = ({
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({})
   const [pendingPayload, setPendingPayload] = useState<SsaCreatePayload | null>(null)
   const [formHeight, setFormHeight] = useState(0)
-  const formContentRef = useRef<HTMLDivElement>(null)
+  const formContentRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
+    const observer = new ResizeObserver(([entry]) => {
+      setFormHeight(entry.contentRect.height)
+    })
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
 
   const formik = useFormik<SsaFormValues>({
     initialValues: getSsaInitialValues(),
@@ -67,15 +74,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
       openCommitDialog()
     },
   })
-
-  useEffect(() => {
-    if (!formContentRef.current) return
-    const observer = new ResizeObserver(([entry]) => {
-      setFormHeight(entry.contentRect.height)
-    })
-    observer.observe(formContentRef.current)
-    return () => observer.disconnect()
-  }, [])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.AUTH_SERVER_SSA_LIST)

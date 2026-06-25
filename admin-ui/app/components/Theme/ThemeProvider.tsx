@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Provider } from './ThemeContext'
+import { ThemeContext } from './ThemeContext'
 import { THEME_LIGHT } from '@/context/theme/constants'
 
 interface ThemeProviderProps {
@@ -46,14 +46,14 @@ export class ThemeProvider extends React.Component<ThemeProviderProps, ThemeProv
     const { children } = this.props
 
     return (
-      <Provider
+      <ThemeContext
         value={{
           ...this.state,
           onChangeTheme: this.onChangeTheme.bind(this),
         }}
       >
         {children}
-      </Provider>
+      </ThemeContext>
     )
   }
 }

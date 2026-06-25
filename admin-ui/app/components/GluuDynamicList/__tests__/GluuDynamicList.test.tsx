@@ -26,9 +26,7 @@ const renderList = (overrides: Partial<GluuDynamicListProps> = {}) =>
 const getRowInputs = (): HTMLInputElement[] =>
   screen
     .queryAllByRole('textbox')
-    .filter((el): el is HTMLInputElement =>
-      el.classList.contains('gluu-dynamic-list-input'),
-    )
+    .filter((el): el is HTMLInputElement => el.classList.contains('gluu-dynamic-list-input'))
 
 describe('GluuDynamicList', () => {
   it('renders the title and add button when there are no items', () => {

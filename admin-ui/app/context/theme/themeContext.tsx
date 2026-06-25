@@ -41,6 +41,15 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
   }
 }
 
+export const getStoredTheme = (): ThemeValue => {
+  if (typeof window === 'undefined') {
+    return DEFAULT_THEME
+  }
+
+  const savedTheme = storage.get(STORAGE_KEYS.INIT_THEME)
+  return savedTheme && isValidTheme(savedTheme) ? savedTheme : DEFAULT_THEME
+}
+
 const getInitialTheme = (): ThemeValue => {
   if (typeof window === 'undefined') {
     return DEFAULT_THEME

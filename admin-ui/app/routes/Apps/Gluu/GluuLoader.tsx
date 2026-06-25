@@ -1,7 +1,7 @@
 import React, { memo, use } from 'react'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { ThemeContext } from '@/context/theme/themeContext'
-import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { ThemeContext, getStoredTheme } from '@/context/theme/themeContext'
+import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './GluuLoader.style'
 
 interface GluuLoaderProps {
@@ -11,7 +11,7 @@ interface GluuLoaderProps {
 
 const GluuLoader: React.FC<GluuLoaderProps> = memo(({ blocking, children }) => {
   const themeContext = use(ThemeContext)
-  const currentTheme = themeContext?.state.theme || DEFAULT_THEME
+  const currentTheme = themeContext?.state.theme || getStoredTheme()
   const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
 

@@ -185,6 +185,9 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     })
   }, [processedFidoDetails, otpDevicesList])
 
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+
   // Reset pagination when user or data changes
   useEffect(() => {
     setPage(0)
@@ -233,9 +236,6 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
     },
     [userDetails, deleteFido2Mutation, updateUserData],
   )
-
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const columns: ColumnDef<DeviceData>[] = useMemo(
     () => [
