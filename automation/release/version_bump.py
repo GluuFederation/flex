@@ -301,6 +301,8 @@ def bump(version, docker_suffix="1"):
     image_tag_arg_subs = [
         (r'(ARG\s+FLEX_BASE_VERSION=)0\.0\.0-nightly', rf"\g<1>{flex_tag}"),
         (r'(ARG\s+BASE_VERSION=)0\.0\.0-nightly', rf"\g<1>{jans_tag}"),
+        # demo scripts: GLUU_VERSION is the flex-all-in-one image tag, so it is suffixed.
+        (r'(GLUU_VERSION=["\x27]?)0\.0\.0-nightly', rf"\g<1>{flex_tag}"),
     ]
 
     # 4. The remaining "0.0.0-nightly" / "0.0.0--nightly" sentinels are Flex-release
@@ -344,7 +346,68 @@ def bump(version, docker_suffix="1"):
         if sub(pkg, r'(?m)^(  "version":\s*")0\.0\.0(",?)$', rf"\g<1>{version}\g<2>"):
             changed.append(pkg)
 
+    # flex-linux-setup app_versions: JANS_APP_VERSION -> the mapped jans version and JANS_BUILD
+    # emptied, so the installer pulls the jans *release* (not 0.0.0-nightly) at flex release time.
+    flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
+    if (ROOT / flex_setup).exists():
+        n = sub(flex_setup, r'("JANS_APP_VERSION":\s*")0\.0\.0(")', rf"\g<1>{jv}\g<2>")
+        n += sub(flex_setup, r'("JANS_BUILD":\s*")-nightly(")', r"\g<1>\g<2>")
+        if n:
+            changed.append(flex_setup)
+
     return sorted(set(changed))
+
+
+def fetch_jans_source_version(jans_ver):
+    """The JANS_SOURCE_VERSION pinned in the jans release Dockerfiles -- so flex builds the
+    same jans source the jans release did."""
+    import urllib.request
+    url = (f"https://raw.githubusercontent.com/JanssenProject/jans/"
+           f"v{jans_ver}/docker-jans-all-in-one/Dockerfile")
+    try:
+        with urllib.request.urlopen(url, timeout=30) as resp:
+            text = resp.read().decode("utf-8")
+    except Exception as e:
+        raise SystemExit(f"could not fetch jans v{jans_ver} Dockerfile to pin JANS_SOURCE_VERSION: {e}")
+    m = re.search(r"JANS_SOURCE_VERSION=([0-9a-f]{40})", text)
+    if not m:
+        raise SystemExit(f"no JANS_SOURCE_VERSION found in jans v{jans_ver} Dockerfile")
+    return m.group(1)
+
+
+def pin_source_versions(flex_sha, jans_ver):
+    """Release mode: pin FLEX_SOURCE_VERSION to the released flex commit and JANS_SOURCE_VERSION
+    to the commit the jans release pinned, so each image builds the exact released sources."""
+    if not re.fullmatch(r"[0-9a-f]{40}", flex_sha or ""):
+        raise SystemExit(f"--flex-source-sha must be a 40-char commit sha, got: {flex_sha!r}")
+    jans_sha = fetch_jans_source_version(jans_ver)
+    changed = []
+    for rel in grep_files("FLEX_SOURCE_VERSION="):
+        if sub(rel, r"(FLEX_SOURCE_VERSION=)[0-9a-f]{40}", rf"\g<1>{flex_sha}"):
+            changed.append(rel)
+    for rel in grep_files("JANS_SOURCE_VERSION="):
+        if sub(rel, r"(JANS_SOURCE_VERSION=)[0-9a-f]{40}", rf"\g<1>{jans_sha}"):
+            changed.append(rel)
+
+    # Fail closed: after the rewrites, every owned assignment must equal the requested sha. A value
+    # the regex could not match (non-40-hex, a branch name, an already-different sha) would otherwise
+    # silently ship an image built from stale source. ``${VAR}`` indirections are left alone; skipped
+    # under --dry-run, which writes nothing.
+    if not DRY:
+        stale = []
+        for rel in grep_files("FLEX_SOURCE_VERSION="):
+            stale += [f"{rel}: FLEX_SOURCE_VERSION={v}"
+                      for v in re.findall(r"FLEX_SOURCE_VERSION=(\S+)", read(rel))
+                      if not v.startswith("$") and v != flex_sha]
+        for rel in grep_files("JANS_SOURCE_VERSION="):
+            stale += [f"{rel}: JANS_SOURCE_VERSION={v}"
+                      for v in re.findall(r"JANS_SOURCE_VERSION=(\S+)", read(rel))
+                      if not v.startswith("$") and v != jans_sha]
+        if stale:
+            raise SystemExit(
+                f"source-version pin incomplete (expected flex={flex_sha} jans={jans_sha}):\n  "
+                + "\n  ".join(stale))
+    return changed
 
 
 # --------------------------------------------------------------------------- #
@@ -377,6 +440,14 @@ def verify():
     if (ROOT / pkg).exists() and re.search(r'(?m)^  "version":\s*"0\.0\.0"', read(pkg)):
         problems.append(f"{pkg}: top-level version still '0.0.0'")
 
+    flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
+    if (ROOT / flex_setup).exists():
+        txt = read(flex_setup)
+        if re.search(r'"JANS_APP_VERSION":\s*"0\.0\.0"', txt):
+            problems.append(f"{flex_setup}: JANS_APP_VERSION still '0.0.0'")
+        if re.search(r'"JANS_BUILD":\s*"-nightly"', txt):
+            problems.append(f"{flex_setup}: JANS_BUILD still '-nightly'")
+
     if problems:
         print("VERSION VERIFY FAILED -- owned versions left at the dev sentinel:\n")
         for p in problems:
@@ -397,6 +468,9 @@ def main():
     ap.add_argument("--root", type=Path, default=Path.cwd(), help="repo root (default: cwd)")
     ap.add_argument("--docker-suffix", default="1",
                     help="suffix for image tags: '1' -> X.Y.Z-1 (default: 1)")
+    ap.add_argument("--flex-source-sha", metavar="SHA",
+                    help="release mode: pin FLEX_SOURCE_VERSION to this flex commit and "
+                         "JANS_SOURCE_VERSION to the jans release's pinned commit")
     args = ap.parse_args()
 
     if not VERSION_RE.match(args.version):
@@ -411,6 +485,8 @@ def main():
         sys.exit(0 if verify() else 1)
 
     changed = bump(args.version, args.docker_suffix)
+    if args.flex_source_sha:
+        changed = sorted(set(changed + pin_source_versions(args.flex_source_sha, jans_version(args.version))))
 
     mode = "DRY RUN -- would change" if DRY else "changed"
     jv = jans_version(args.version)
