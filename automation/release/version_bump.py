@@ -254,8 +254,11 @@ def bump(version, docker_suffix="1"):
     # questions.yaml may carry image-tag defaults that follow the repository rule
     questions_files = [f for f in grep_files(NIGHTLY)
                        if Path(f).name == "questions.yaml"]
+    # docker-*/version.txt holds the (suffixed) image tag, not a bare chart/package version
+    version_txt_files = [f for f in grep_files(NIGHTLY)
+                         if f.startswith("docker-") and Path(f).name == "version.txt"]
     STRUCTURED_NIGHTLY.clear()
-    STRUCTURED_NIGHTLY.update(chart_files, values_files, questions_files)
+    STRUCTURED_NIGHTLY.update(chart_files, values_files, questions_files, version_txt_files)
 
     # 1. Chart.yaml -- structured. version + dependency pins -> bare flex; the
     #    artifacthub image annotations -> suffixed image tag by org; appVersion ->
@@ -293,6 +296,11 @@ def bump(version, docker_suffix="1"):
             write(rel, new)
             changed.append(rel)
 
+    # 3b. docker-*/version.txt -- the suffixed flex image tag (whole-file content).
+    for rel in version_txt_files:
+        if sub(rel, re.escape(NIGHTLY), flex_tag):
+            changed.append(rel)
+
     # Dockerfile base-image ARGs are image tags (resolved into a FROM ref), so
     # they take the docker suffix and are mapped by the org they feed:
     # BASE_VERSION -> the janssenproject/jans AIO image (jans tag); FLEX_BASE_VERSION
@@ -303,6 +311,8 @@ def bump(version, docker_suffix="1"):
         (r'(ARG\s+BASE_VERSION=)0\.0\.0-nightly', rf"\g<1>{jans_tag}"),
         # demo scripts: GLUU_VERSION is the flex-all-in-one image tag, so it is suffixed.
         (r'(GLUU_VERSION=["\x27]?)0\.0\.0-nightly', rf"\g<1>{flex_tag}"),
+        # the OCI image.version label is the image tag, so it is suffixed too.
+        (r'(org\.opencontainers\.image\.version=")0\.0\.0-nightly', rf"\g<1>{flex_tag}"),
     ]
 
     # 4. The remaining "0.0.0-nightly" / "0.0.0--nightly" sentinels are Flex-release
