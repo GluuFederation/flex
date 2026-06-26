@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppAuthProvider from '../AppAuthProvider'
 import authReducer from '@/redux/features/authSlice'
 import licenseReducer from '@/redux/features/licenseSlice'
@@ -16,21 +16,26 @@ jest.mock('@/redux/api/backend-api', () => ({
   fetchUserInformation: jest.fn().mockResolvedValue(-1),
 }))
 
-const buildStore = () =>
+const rootReducer = combineReducers({
+  authReducer,
+  licenseReducer,
+  initReducer,
+  cedarPermissions: cedarPermissionsReducer,
+  toastReducer,
+  logoutAuditReducer,
+})
+
+const buildStore = (licenseState: object = {}) =>
   configureStore({
-    reducer: {
-      authReducer,
-      licenseReducer,
-      initReducer,
-      cedarPermissions: cedarPermissionsReducer,
-      toastReducer,
-      logoutAuditReducer,
-    },
+    reducer: rootReducer,
+    preloadedState: {
+      licenseReducer: { ...licenseReducer(undefined, { type: '@@i' }), ...licenseState },
+    } as never,
   })
 
-const renderProvider = () =>
+const renderProvider = (store = buildStore()) =>
   render(
-    <Provider store={buildStore()}>
+    <Provider store={store}>
       <AppTestWrapper>
         <AppAuthProvider>
           <div data-testid="admin-content">Admin UI</div>
@@ -45,5 +50,11 @@ describe('AppAuthProvider', () => {
 
     expect(container.querySelector('[aria-live="polite"]')).toBeInTheDocument()
     expect(queryByTestId('admin-content')).not.toBeInTheDocument()
+  })
+
+  it('shows the MAU-exceeded modal when the monthly active users pass the threshold', () => {
+    const { getByText } = renderProvider(buildStore({ isUnderThresholdLimit: false }))
+
+    expect(getByText(/monthly active users exceed/i)).toBeInTheDocument()
   })
 })

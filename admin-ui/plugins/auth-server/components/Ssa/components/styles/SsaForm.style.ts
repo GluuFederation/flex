@@ -165,11 +165,47 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       margin: '1px 2px',
     },
     datePickerCell: {
+      'position': 'relative' as const,
+      'minWidth': 0,
+      'boxSizing': 'border-box' as const,
       'display': 'flex',
-      'alignItems': 'center',
+      'flexDirection': 'column',
+      'alignItems': 'stretch',
       '& .MuiInputBase-root': {
         backgroundColor: `${inputBg} !important`,
       },
+      '& .MuiPickersInputBase-root.Mui-disabled': {
+        opacity: OPACITY.DISABLED,
+        cursor: 'not-allowed',
+      },
+      '& .MuiInputLabel-root, & .MuiPickersInputBase-root .MuiInputLabel-root': {
+        display: 'none',
+      },
+      '& .MuiOutlinedInput-notchedOutline legend, & .MuiPickersOutlinedInput-notchedOutline legend':
+        {
+          display: 'none',
+          width: 0,
+          maxWidth: 0,
+        },
+      '& label': {
+        flex: '0 0 auto',
+        display: 'block',
+        width: '100%',
+        maxWidth: '100%',
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginBottom: '4px !important',
+      },
+    },
+    datePickerError: {
+      position: 'absolute' as const,
+      top: '100%',
+      left: 0,
+      marginTop: 2,
+      color: themeColors.errorColor,
+      fontSize: fontSizes.sm,
     },
     claimsPanelWrap: {
       flex: 1,

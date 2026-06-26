@@ -3,45 +3,40 @@ tags:
 - administration
 - installation
 - vm
-- RHEL
-- CentOS
+- Debian
 ---
 
-# Install Gluu Flex On Red Hat EL
+# Install Gluu Flex On Debian Linux
 
-This is a step-by-step guide for installation and uninstallation of Gluu Flex on Red Hat Enterprise Linux.
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Debian Linux
 
 ## Prerequisites
+
 - Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
 - VM should meet [VM system requirements](./vm-requirements.md)
-- Make sure that if `SELinux` is installed then it is 
-[put into permissive mode](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/using_selinux/index#selinux-states-and-modes_getting-started-with-selinux)
+- Make sure that if `SELinux` is installed then it is put into permissive mode
 - If the server firewall is running, make sure you allow `https`, which is
   needed for OpenID and FIDO.
 ```shell
-sudo firewall-cmd --permanent --zone=public --add-service=https
-```
-```shell
-sudo firewall-cmd --reload;
-```
-- Install EPEL and mod-auth-openidc as dependencies
-```shell
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
-```
-```shell
- sudo yum -y install mod_auth_openidc;
+sudo ufw allow https
 ```
 - Please obtain an [SSA](../../install/flex/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
+## Supported Versions
+- Debian 13
+
+
 ## Install the Package
 
-### Download and Verify the Release Package
-- Download the release package from the Github Flex
-  [Releases](https://github.com/gluufederation/flex/releases)
-```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el9.x86_64.rpm -P /tmp
-```
+### Debian 13
+
+- Download the release package from the GitHub Flex [Releases](https://github.com/gluufederation/flex/releases)
+
+    ```bash title="Command"
+    wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.debian13_amd64.deb -P /tmp
+    ```
+
 - Go to `/tmp` directory:
 
     ```bash title="Command"
@@ -53,20 +48,20 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     !!! Note
         Install the [cosign CLI](https://docs.sigstore.dev/cosign/system_config/installation/) if not already installed.
 
-    - Download the cosign bundle from the [Releases](https://github.com/gluufederation/flex/releases/latest) page:
+    - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-el9-replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-debian13-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex-el9-replace-flex-version-stable.bundle \
+          --bundle flex-debian13-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-          flex-replace-flex-version-stable.el9.x86_64.rpm
+          flex_replace-flex-version-stable.debian13_amd64.deb
         ```
 
         Output similar to below confirms the package was signed by the Janssen CI pipeline:
@@ -78,46 +73,49 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 - Optionally, verify integrity using the published checksum file (secondary check):
 
     ```bash title="Command"
-       echo 'paste-release-sha256sum flex-replace-flex-version-stable.el9.x86_64.rpm' | sed 's/^sha256://' >flex-replace-flex-version-stable.el9.x86_64.rpm.sha256sum && sha256sum -c flex-replace-flex-version-stable.el9.x86_64.rpm.sha256sum
+       echo 'paste-release-sha256sum flex_replace-flex-version-stable.debian13_amd64.deb' | sed 's/^sha256://' >flex_replace-flex-version-stable.debian13_amd64.deb.sha256sum && sha256sum -c flex_replace-flex-version-stable.debian13_amd64.deb.sha256sum
     ```
 
     Output similar to below should confirm the integrity of the downloaded package.
 
     ```text title="Output"
-    flex-replace-flex-version-stable.el9.x86_64.rpm: OK
+    flex_replace-flex-version-stable.debian13_amd64.deb: OK
     ```
 
-### Install the Release Package
-```shell
-sudo yum install ./flex-replace-flex-version-stable.el9.x86_64.rpm
+Install the package
+
+```bash title="Command"
+sudo apt install -y /tmp/flex_replace-flex-version-stable.debian13_amd64.deb
 ```
 
-## Run the setup script
+
+### Run the setup script
+
 Execute the setup script with command below:
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 ```
 
 ```text
 Install Admin UI [Y/n]: y
-
 ```
 
 ## Verify and Access the Installation
-Verify that installation has been successful and all installed components are accessible using the steps below
+
+Verify that installation has been successful and all installed components are accessible using the steps below:
 
 - Log in to Text User Interface (TUI)
 ```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
-Full TUI documentation can be found [here](https://docs.jans.io/head/janssen-server/config-guide/config-tools/jans-tui/)
+[TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
 
 - Log into Admin-UI using URI below
 ```text
 https://FQDN/admin
 ```
 After successful installation of the Admin-UI component, we need to upload the required SSA input as a file path.
-This should be the SSA or file that was acquired as part of [prerequisite step](#prerequisites).
+This should be the SSA or file that was acquired as part of [the prerequisite step](#prerequisites).
 
 When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md/#flex-services-dependencies) for potential solutions.
 
@@ -126,27 +124,15 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 https://FQDN/jans-casa
 ```
 ## Enabling HTTPS
+
 To enable communication with Janssen Server over TLS (https) in a production
-environment, Janssen Server needs details about CA certificate. Update the
-HTTPS cofiguration file `https_jans.conf` as shown below:
+environment, Janssen Server needs details about CA certificate.
 
 !!! Note
     Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).
-- Open `https_jans.conf` 
-  ```bash
-  sudo vi /etc/httpd/conf.d/https_jans.conf
-  ```
-- Update `SSLCertificateFile` and `SSLCertificateKeyFile` parameters values
-  ```bash
-  SSLCertificateFile location_of_fullchain.pem
-  SSLCertificateKeyFile location_of_privkey.pem
-  ```
-- Restart `httpd` service for changes to take effect
-  ```bash
-  sudo service httpd restart
-  ```
+
 ## Uninstallation
-Removing Flex is a two step process:
+Removing Flex is a two-step process:
 
 - [Uninstall Gluu Flex](#uninstall-gluu-flex)
 - [Uninstall Janssen Packages](#uninstall-janssen-packages)
@@ -161,7 +147,7 @@ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-f
 ```
 Output:
 ```text
-[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -177,8 +163,6 @@ Log Files:
 /opt/jans/jans-setup/logs/flex-setup.log
 /opt/jans/jans-setup/logs/flex-setup-error.log
 
-/opt/jans/jans-setup/setup_app/pylib/jwt/utils.py:7: CryptographyDeprecationWarning: Python 3.6 is no longer supported by the Python core team. Therefore, support for it is deprecated in cryptography and will be removed in a future release.
-  from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurve
 Please wait while collecting properties...
 Uninstalling Gluu Casa
   - Deleting /etc/default/casa
@@ -197,7 +181,7 @@ Uninstalling Gluu Casa
   - Deleting script 3000-F75A from db backend
   - Deleting /opt/jans/jetty/casa
 Uninstalling Gluu Admin-UI
-  - Deleting Gluu Flex Admin UI Client  2001.931e814d-01e2-4983-898f-91bf93670f7b
+  - Deleting Gluu Flex Admin UI Client  2001.e7989c7e-09b5-4e39-a7c9-a78017127cf0
   - Removing Admin UI directives from apache configuration
   - Deleting /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar
   - Removing plugin /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar from Jans Config API Configuration
@@ -212,13 +196,13 @@ Restarting Janssen Config Api
 ```
 
 ### Uninstall Janssen Packages
-The command below removes and uninstall the `jans` package
+The command below removes and uninstalls the `jans` package
 ```shell
 sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
-Output:
+Output :
 ```text
-[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
+sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
@@ -238,6 +222,12 @@ Removing /etc/default/jans-scim
 Stopping jans-scim
 Removing /etc/default/jans-cache-refresh
 Stopping jans-cache-refresh
+Stopping OpenDj Server
+Stopping Server...
+[23/Jun/2023:09:10:27 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend userRoot is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend site is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend metric is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=CORE severity=NOTICE msgID=203 msg=The Directory Server is now stopped
 Executing rm -r -f /etc/certs
 Executing rm -r -f /etc/jans
 Executing rm -r -f /opt/jans
@@ -246,17 +236,20 @@ Executing rm -r -f /opt/jre
 Executing rm -r -f /opt/node*
 Executing rm -r -f /opt/jetty*
 Executing rm -r -f /opt/jython*
+Executing rm -r -f /opt/opendj
 Executing rm -r -f /opt/dist
-Removing /etc/httpd/conf.d/https_jans.conf
+Removing /etc/apache2/sites-enabled/https_jans.conf
+Removing /etc/apache2/sites-available/https_jans.conf
 ```
+
 ### Remove Gluu Flex Packages:
-List existing Gluu packages with:
+List existing Gluu Flex packages with:
 ```shell
-sudo yum list installed | grep flex
+sudo apt list --installed | grep flex
 ```
 Remove packages:
 ```shell
-sudo yum remove <package-name>
+sudo apt remove <package name>
 ```
 
 ### Uninstalling Admin UI

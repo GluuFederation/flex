@@ -69,22 +69,32 @@ describe('SsaForm', () => {
   })
 
   describe('expiration date', () => {
-    it('does not render the date picker until is_expirable is enabled', () => {
+    it('renders the expiration date field with a title', () => {
       render(<SsaForm {...defaultProps} />, { wrapper: Wrapper })
+      expect(screen.getByText('Expiration Date')).toBeInTheDocument()
+    })
+
+    it('disables the date picker until is_expirable is enabled', async () => {
+      render(<SsaForm {...defaultProps} />, { wrapper: Wrapper })
+      expect(screen.getByRole('button', { name: /choose date/i })).toBeDisabled()
+
       const expirableToggle = document.querySelector(
         'input#is_expirable[type="checkbox"]',
       ) as HTMLInputElement
-      expect(expirableToggle.checked).toBe(false)
+      fireEvent.click(expirableToggle)
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /choose date/i })).toBeEnabled()
+      })
     })
 
-    it('shows the date picker after toggling is_expirable on', async () => {
+    it('surfaces a validation message when is_expirable is on without a date', async () => {
       render(<SsaForm {...defaultProps} />, { wrapper: Wrapper })
       const expirableToggle = document.querySelector(
         'input#is_expirable[type="checkbox"]',
       ) as HTMLInputElement
       fireEvent.click(expirableToggle)
       await waitFor(() => {
-        expect(expirableToggle.checked).toBe(true)
+        expect(screen.getByText(/Expiration date is required/i)).toBeInTheDocument()
       })
     })
   })
