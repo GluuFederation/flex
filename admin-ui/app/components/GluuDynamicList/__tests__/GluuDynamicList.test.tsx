@@ -133,4 +133,61 @@ describe('GluuDynamicList', () => {
     getRowInputs().forEach((input) => expect(input).toBeDisabled())
     expect(screen.getByRole('button', { name: /Remove/i })).toBeDisabled()
   })
+
+  it('enables the add button when every item is complete', () => {
+    const items: GluuDynamicListItem[] = [
+      { id: '1', key: 'k1', value: 'v1' },
+      { id: '2', key: 'k2', value: 'v2' },
+    ]
+    renderList({ items })
+    expect(screen.getByRole('button', { name: /Add/i })).toBeEnabled()
+  })
+
+  it('disables the add button when a complete item fails validateItem', () => {
+    const items: GluuDynamicListItem[] = [{ id: '1', key: 'k', value: 'v' }]
+    const validateItem = jest.fn().mockReturnValue(false)
+    renderList({ items, validateItem })
+    expect(validateItem).toHaveBeenCalledWith(items[0], 'pair')
+    expect(screen.getByRole('button', { name: /Add/i })).toBeDisabled()
+  })
+
+  it('renders the label instead of the title when a label is provided', () => {
+    renderList({ label: 'My List' })
+    expect(screen.getByText('My List')).toBeInTheDocument()
+    expect(screen.queryByText('Attributes')).not.toBeInTheDocument()
+  })
+
+  it('renders key and value placeholders in pair mode', () => {
+    const items: GluuDynamicListItem[] = [{ id: '1', key: '', value: '' }]
+    renderList({ items })
+    expect(screen.getByPlaceholderText('Key')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Value')).toBeInTheDocument()
+  })
+
+  it('passes className and style through to the wrapper', () => {
+    const { container } = renderList({
+      className: 'my-custom-class',
+      style: { marginTop: '8px' },
+    })
+    const wrapper = container.firstChild as HTMLElement
+    expect(wrapper).toHaveClass('my-custom-class')
+    expect(wrapper).toHaveStyle({ marginTop: '8px' })
+  })
+
+  it('uses getItemKey to derive each row key', () => {
+    const items: GluuDynamicListItem[] = [
+      { id: '1', key: 'k1', value: 'v1' },
+      { id: '2', key: 'k2', value: 'v2' },
+    ]
+    const getItemKey = jest.fn((_item: GluuDynamicListItem, index: number) => `row-${index}`)
+    renderList({ items, getItemKey })
+    expect(getItemKey).toHaveBeenCalledWith(items[0], 0)
+    expect(getItemKey).toHaveBeenCalledWith(items[1], 1)
+  })
+
+  it('does not render a whitespace-only error message even when showError is set', () => {
+    renderList({ showError: true, errorMessage: '   ' })
+    expect(screen.queryByText('Bad input')).not.toBeInTheDocument()
+    expect(getRowInputs()).toHaveLength(0)
+  })
 })
