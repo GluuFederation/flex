@@ -95,6 +95,7 @@ const GluuDatePicker = memo(
           onAccept={props.onAccept}
           minDate={props.minDate}
           maxDate={props.maxDate}
+          disabled={props.disabled ?? false}
           slotProps={effectiveSlotProps}
           sx={datePickerSx}
           {...(props.showTime ? { closeOnSelect: false } : {})}
@@ -123,7 +124,8 @@ const GluuDatePicker = memo(
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
       prev.minDate === next.minDate &&
-      prev.maxDate === next.maxDate
+      prev.maxDate === next.maxDate &&
+      prev.disabled === next.disabled
     )
   },
 )
