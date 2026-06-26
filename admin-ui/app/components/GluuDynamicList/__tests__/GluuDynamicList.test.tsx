@@ -185,9 +185,21 @@ describe('GluuDynamicList', () => {
     expect(getItemKey).toHaveBeenCalledWith(items[1], 1)
   })
 
-  it('does not render a whitespace-only error message even when showError is set', () => {
-    renderList({ showError: true, errorMessage: '   ' })
+  it('renders a non-empty error message when showError is set, and suppresses a whitespace-only one', () => {
+    const { rerender } = render(
+      <Wrapper>
+        <GluuDynamicList {...baseProps} showError errorMessage="Bad input" />
+      </Wrapper>,
+    )
+    const errorNode = screen.getByText('Bad input')
+    expect(errorNode).toBeInTheDocument()
+
+    rerender(
+      <Wrapper>
+        <GluuDynamicList {...baseProps} showError errorMessage="   " />
+      </Wrapper>,
+    )
+    expect(errorNode).not.toBeInTheDocument()
     expect(screen.queryByText('Bad input')).not.toBeInTheDocument()
-    expect(getRowInputs()).toHaveLength(0)
   })
 })
