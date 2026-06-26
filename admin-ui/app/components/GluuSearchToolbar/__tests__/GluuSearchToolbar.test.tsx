@@ -137,10 +137,7 @@ describe('GluuSearchToolbar', () => {
   it('renders the primary action and calls its onClick', () => {
     const onClick = jest.fn()
     render(
-      <GluuSearchToolbar
-        searchPlaceholder="Find"
-        primaryAction={{ label: 'Apply', onClick }}
-      />,
+      <GluuSearchToolbar searchPlaceholder="Find" primaryAction={{ label: 'Apply', onClick }} />,
       { wrapper: Wrapper },
     )
     const applyButton = screen.getByRole('button', { name: /Apply/i })
