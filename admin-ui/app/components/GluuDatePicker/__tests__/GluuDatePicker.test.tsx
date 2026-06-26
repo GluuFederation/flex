@@ -39,16 +39,24 @@ describe('GluuDatePicker (single mode)', () => {
 
   it('displays the passed value formatted with the default US format (MM/DD/YYYY)', () => {
     const { container } = render(
-      <GluuDatePicker mode="single" label="When" value={createDate('2024-01-15')} onChange={jest.fn()} />,
+      <GluuDatePicker
+        mode="single"
+        label="When"
+        value={createDate('2024-01-15')}
+        onChange={jest.fn()}
+      />,
       { wrapper: Wrapper },
     )
     expect(getInputs(container)[0].value).toBe('01/15/2024')
   })
 
   it('renders an empty field when no value is provided', () => {
-    const { container } = render(<GluuDatePicker mode="single" label="When" onChange={jest.fn()} />, {
-      wrapper: Wrapper,
-    })
+    const { container } = render(
+      <GluuDatePicker mode="single" label="When" onChange={jest.fn()} />,
+      {
+        wrapper: Wrapper,
+      },
+    )
     expect(getInputs(container)[0].value).toBe('')
   })
 
@@ -75,7 +83,12 @@ describe('GluuDatePicker (single mode)', () => {
   it('fires onChange when a day is selected from the calendar', () => {
     const onChange = jest.fn()
     render(
-      <GluuDatePicker mode="single" label="When" value={createDate('2024-01-15')} onChange={onChange} />,
+      <GluuDatePicker
+        mode="single"
+        label="When"
+        value={createDate('2024-01-15')}
+        onChange={onChange}
+      />,
       { wrapper: Wrapper },
     )
     openCalendarAndPickDay('20')
