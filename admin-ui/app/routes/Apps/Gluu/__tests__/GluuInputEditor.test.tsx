@@ -103,8 +103,7 @@ const renderEditor = (props: GluuInputEditorProps<FormikValues>) =>
     </AppTestWrapper>,
   )
 
-const getEditor = (): HTMLTextAreaElement =>
-  screen.getByTestId('ace') as HTMLTextAreaElement
+const getEditor = (): HTMLTextAreaElement => screen.getByTestId('ace') as HTMLTextAreaElement
 
 describe('GluuInputEditor', () => {
   it('renders the label and the editor', () => {

@@ -124,10 +124,9 @@ describe('GluuDropdown', () => {
 
   it('fires onOpenChange when toggling open and closed', () => {
     const onOpenChange = jest.fn()
-    render(
-      <GluuDropdown trigger="Choose fruit" options={options} onOpenChange={onOpenChange} />,
-      { wrapper: Wrapper },
-    )
+    render(<GluuDropdown trigger="Choose fruit" options={options} onOpenChange={onOpenChange} />, {
+      wrapper: Wrapper,
+    })
 
     fireEvent.click(getTrigger())
     expect(onOpenChange).toHaveBeenLastCalledWith(true)
@@ -169,10 +168,9 @@ describe('GluuDropdown', () => {
   })
 
   it('renders the empty message when there are no options', () => {
-    render(
-      <GluuDropdown trigger="Choose fruit" options={[]} emptyMessage="Nothing available" />,
-      { wrapper: Wrapper },
-    )
+    render(<GluuDropdown trigger="Choose fruit" options={[]} emptyMessage="Nothing available" />, {
+      wrapper: Wrapper,
+    })
 
     fireEvent.click(getTrigger())
 

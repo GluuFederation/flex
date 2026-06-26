@@ -4,16 +4,18 @@ import { useFormik, type FormikProps } from 'formik'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { Form, Col, FormGroup } from 'Components'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
-import { createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { addDate, createDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SSA } from 'Utils/ApiResources'
+import { CEDARLING_CONFIG_SPACING } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -168,6 +170,8 @@ const SsaForm: React.FC<SsaFormProps> = ({
     [isSubmitting, formik.dirty, formik.isValid, modifiedFields, selectedAttributes],
   )
 
+  const minExpirationDate = useMemo(() => addDate(createDate(), 1, 'day'), [])
+
   const enterHerePlaceholder = useMemo(() => t('placeholders.enter_here'), [t])
 
   const softwareRolesPlaceholder = useMemo(
@@ -192,6 +196,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
   const handleExpirationDateChange = useCallback(
     (date: Dayjs | null) => {
       formik.setFieldValue('expirationDate', date)
+      formik.setFieldTouched('expirationDate', true, false)
     },
     [formik],
   )
@@ -310,17 +315,30 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     doc_category={SSA}
                   />
 
-                  <div className={classes.toggleCell}>
-                    <GluuToggleRow
-                      name="one_time_use"
-                      formik={formik}
-                      label="fields.one_time_use"
-                      lsize={12}
-                      rsize={12}
-                      value={formik.values.one_time_use}
+                  <div className={classes.datePickerCell}>
+                    <GluuLabel
+                      label="fields.expiration_date"
+                      size={12}
                       isDark={isDark}
                       doc_category={SSA}
+                      doc_entry="expiration"
                     />
+                    <GluuDatePicker
+                      format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
+                      label=""
+                      value={formik.values.expirationDate as Dayjs | null}
+                      onChange={handleExpirationDateChange}
+                      minDate={minExpirationDate}
+                      disabled={!formik.values.is_expirable}
+                      textColor={themeColors.fontColor}
+                      backgroundColor={themeColors.background}
+                      inputHeight={CEDARLING_CONFIG_SPACING.INPUT_HEIGHT}
+                    />
+                    {validationState.expirationDateError && (
+                      <GluuText disableThemeColor className={classes.datePickerError}>
+                        {validationState.expirationDateErrorMessage}
+                      </GluuText>
+                    )}
                   </div>
 
                   <div className={classes.toggleCell}>
@@ -349,19 +367,18 @@ const SsaForm: React.FC<SsaFormProps> = ({
                     />
                   </div>
 
-                  {formik.values.is_expirable && (
-                    <div className={classes.datePickerCell}>
-                      <GluuDatePicker
-                        format={DATE_FORMATS.DATE_PICKER_DISPLAY_US}
-                        value={formik.values.expirationDate as Dayjs | null}
-                        onChange={handleExpirationDateChange}
-                        minDate={createDate()}
-                        textColor={themeColors.fontColor}
-                        backgroundColor={themeColors.background}
-                        inputHeight={50}
-                      />
-                    </div>
-                  )}
+                  <div className={classes.toggleCell}>
+                    <GluuToggleRow
+                      name="one_time_use"
+                      formik={formik}
+                      label="fields.one_time_use"
+                      lsize={12}
+                      rsize={12}
+                      value={formik.values.one_time_use}
+                      isDark={isDark}
+                      doc_category={SSA}
+                    />
+                  </div>
                 </div>
 
                 <div className={classes.dynamicClaimsWrap}>
@@ -374,10 +391,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       value={formik.values[attribute] as string}
                       modifiedFields={modifiedFields}
                       setModifiedFields={setModifiedFields}
-                      // GluuRemovableInputRow constrains FormikProps to Record<string, JsonValue>;
-                      // SsaFormValues includes a Dayjs `expirationDate` (not JsonValue), but this row
-                      // only ever reads the dynamic string-valued custom attribute fields, so the cast
-                      // is safe at runtime.
                       formik={formik as object as FormikProps<Record<string, JsonValue>>}
                       lsize={12}
                       handler={() => handleAttributeRemove(attribute)}
