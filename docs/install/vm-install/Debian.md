@@ -51,14 +51,14 @@ sudo ufw allow https
     - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-Debian24-replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-debian13-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
 
         ```bash title="Command"
         cosign verify-blob \
-          --bundle flex-Debian13-replace-flex-version-stable.bundle \
+          --bundle flex-debian13-replace-flex-version-stable.bundle \
           --certificate-identity-regexp "https://github.com/GluuFederation/flex" \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
           flex_replace-flex-version-stable.debian13_amd64.deb
