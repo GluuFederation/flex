@@ -89,7 +89,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 
 ### Install the Release Package
 ```shell
-sudo yum install ./flex-replace-flex-version-stable.el8.x86_64.rpm
+sudo yum install ./flex-replace-flex-version-stable.el9.x86_64.rpm
 ```
 
 ## Run the setup script
