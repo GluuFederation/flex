@@ -85,7 +85,7 @@ sudo ufw allow https
 Install the package
 
 ```bash title="Command"
-apt install -y /tmp/flex_replace-flex-version-stable.debian13_amd64.deb
+sudo apt install -y /tmp/flex_replace-flex-version-stable.debian13_amd64.deb
 ```
 
 
@@ -132,7 +132,7 @@ environment, Janssen Server needs details about CA certificate.
     Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).
 
 ## Uninstallation
-Removing Flex is a two step process:
+Removing Flex is a two-step process:
 
 - [Uninstall Gluu Flex](#uninstall-gluu-flex)
 - [Uninstall Janssen Packages](#uninstall-janssen-packages)
@@ -196,9 +196,9 @@ Restarting Janssen Config Api
 ```
 
 ### Uninstall Janssen Packages
-The command below removes and uninstall the `jans` package
+The command below removes and uninstalls the `jans` package
 ```shell
-python3 /opt/jans/jans-setup/install.py -uninstall
+sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 Output :
 ```text
