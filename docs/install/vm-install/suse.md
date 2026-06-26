@@ -56,7 +56,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
     - Download the cosign bundle from the [Releases](https://github.com/GluuFederation/flex/releases/latest) page:
 
         ```bash title="Command"
-        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.bundle -P /tmp
+        wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-suse16-replace-flex-version-stable.bundle -P /tmp
         ```
 
     - Verify the signature:
