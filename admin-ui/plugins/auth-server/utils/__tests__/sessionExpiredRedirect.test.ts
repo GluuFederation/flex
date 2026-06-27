@@ -22,8 +22,8 @@ describe('redirectSessionExpired', () => {
   afterEach(() => dispatchSpy.mockRestore())
 
   it('dispatches the audit log and cleans up the session', async () => {
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' } as never)
-    mockedDeleteSession.mockResolvedValue({} as never)
+    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
+    mockedDeleteSession.mockResolvedValue({})
 
     await redirectSessionExpired()
 
@@ -33,7 +33,7 @@ describe('redirectSessionExpired', () => {
   })
 
   it('dispatches with a custom message and swallows a session cleanup failure', async () => {
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' } as never)
+    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
     mockedDeleteSession.mockRejectedValue(new Error('delete failed'))
 
     await expect(redirectSessionExpired('custom message')).resolves.toBeUndefined()

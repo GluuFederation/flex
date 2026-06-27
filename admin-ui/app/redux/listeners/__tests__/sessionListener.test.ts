@@ -39,7 +39,7 @@ describe('sessionListener - auditLogoutLogs', () => {
   })
 
   it('dispatches a successful audit result on a 2xx response', async () => {
-    mockedPostUserAction.mockResolvedValue({ status: 200 } as never)
+    mockedPostUserAction.mockResolvedValue({ status: 200 })
     const store = buildStore()
 
     store.dispatch(auditLogoutLogs({ message: 'logout' }))
@@ -50,7 +50,7 @@ describe('sessionListener - auditLogoutLogs', () => {
   })
 
   it('dispatches a failed audit result on a non-2xx response', async () => {
-    mockedPostUserAction.mockResolvedValue({ status: 500 } as never)
+    mockedPostUserAction.mockResolvedValue({ status: 500 })
     const store = buildStore()
 
     store.dispatch(auditLogoutLogs({ message: 'logout' }))
@@ -72,8 +72,8 @@ describe('sessionListener - auditLogoutLogs', () => {
   it('runs session cleanup and skips the audit result on a 403 error', async () => {
     mockedIs403.mockReturnValue(true)
     mockedPostUserAction.mockRejectedValue({ response: { status: 403 } })
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' } as never)
-    mockedDeleteSession.mockResolvedValue({} as never)
+    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
+    mockedDeleteSession.mockResolvedValue({})
     const store = buildStore()
 
     store.dispatch(auditLogoutLogs({ message: 'logout' }))
