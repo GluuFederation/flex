@@ -7,6 +7,7 @@ import {
   setFeatureToTrigger,
   setShowWebhookExecutionDialog,
 } from '../WebhookSlice'
+import type { WebhookTriggerResponseItem } from '../../types'
 
 const getInitial = () => reducer(undefined, { type: '@@INIT' })
 
@@ -26,14 +27,16 @@ describe('WebhookSlice', () => {
   })
 
   it('triggerWebhook / completeTriggerWebhook toggle the in-progress flag', () => {
-    const inProgress = reducer(getInitial(), triggerWebhook({} as never))
+    const inProgress = reducer(getInitial(), triggerWebhook({}))
     expect(inProgress.triggerWebhookInProgress).toBe(true)
     expect(reducer(inProgress, completeTriggerWebhook()).triggerWebhookInProgress).toBe(false)
   })
 
   it('setWebhookTriggerResults stores the results array', () => {
-    const results = [{ responseObject: { webhookId: 'w1' } }] as never
-    expect(reducer(getInitial(), setWebhookTriggerResults(results)).webhookTriggerResults).toBe(
+    const results: WebhookTriggerResponseItem[] = [
+      { success: true, responseObject: { webhookId: 'w1' } },
+    ]
+    expect(reducer(getInitial(), setWebhookTriggerResults(results)).webhookTriggerResults).toEqual(
       results,
     )
   })

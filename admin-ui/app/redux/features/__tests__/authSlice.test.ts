@@ -29,10 +29,7 @@ describe('authSlice', () => {
   })
 
   it('getOAuth2ConfigResponse merges config when provided', () => {
-    const state = reducer(
-      getInitial(),
-      getOAuth2ConfigResponse({ config: { issuer: 'x' } as never }),
-    )
+    const state = reducer(getInitial(), getOAuth2ConfigResponse({ config: { issuer: 'x' } }))
     expect(state.config).toMatchObject({ issuer: 'x' })
   })
 
@@ -51,7 +48,7 @@ describe('authSlice', () => {
       getInitial(),
       getUserInfoResponse({
         ujwt: 'jwt',
-        userinfo: { inum: 'inum-1' } as never,
+        userinfo: { inum: 'inum-1' },
         idToken: 'id',
         jwtToken: 'jt',
         isUserInfoFetched: true,
@@ -81,12 +78,12 @@ describe('authSlice', () => {
   })
 
   it('setApiDefaultToken only updates issuer when present', () => {
-    expect(reducer(getInitial(), setApiDefaultToken({ issuer: 'iss' } as never)).issuer).toBe('iss')
-    expect(reducer(getInitial(), setApiDefaultToken({} as never)).issuer).toBeNull()
+    expect(reducer(getInitial(), setApiDefaultToken({ issuer: 'iss' })).issuer).toBe('iss')
+    expect(reducer(getInitial(), setApiDefaultToken({})).issuer).toBeNull()
   })
 
   it('putConfigWorker / putConfigWorkerResponse toggle loadingConfig', () => {
-    const loading = reducer(getInitial(), putConfigWorker({} as never))
+    const loading = reducer(getInitial(), putConfigWorker({}))
     expect(loading.loadingConfig).toBe(true)
     expect(reducer(loading, putConfigWorkerResponse()).loadingConfig).toBe(false)
   })

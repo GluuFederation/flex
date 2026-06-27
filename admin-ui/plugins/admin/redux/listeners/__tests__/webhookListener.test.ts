@@ -5,6 +5,8 @@ import authReducer from 'Redux/features/authSlice'
 import { customInstance } from 'Orval'
 import { postUserAction } from 'Redux/api/backend-api'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
+import type { RootState } from '@/redux/types'
+import type { AppDispatch } from '@/redux/hooks'
 
 jest.mock('Orval', () => ({ customInstance: jest.fn() }))
 jest.mock('Redux/api/backend-api')
@@ -21,7 +23,7 @@ const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 const buildStore = () => {
   const listenerMiddleware = createListenerMiddleware()
-  setupWebhookListener(listenerMiddleware.startListening as never)
+  setupWebhookListener(listenerMiddleware.startListening.withTypes<RootState, AppDispatch>())
   return configureStore({
     reducer: { webhookReducer, authReducer },
     middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware),
@@ -43,7 +45,7 @@ describe('webhookListener - triggerWebhook', () => {
     ] as never)
 
     const store = buildStore()
-    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} } as never))
+    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} }))
     await flush()
 
     const state = store.getState().webhookReducer
@@ -57,7 +59,7 @@ describe('webhookListener - triggerWebhook', () => {
     mockedCustomInstance.mockResolvedValueOnce([{ jansEnabled: false }] as never)
 
     const store = buildStore()
-    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} } as never))
+    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} }))
     await flush()
 
     const state = store.getState().webhookReducer
@@ -70,7 +72,7 @@ describe('webhookListener - triggerWebhook', () => {
     mockedCustomInstance.mockRejectedValueOnce(new Error('network'))
 
     const store = buildStore()
-    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} } as never))
+    store.dispatch(triggerWebhook({ feature: 'clients', createdFeatureValue: {} }))
     await flush()
 
     const state = store.getState().webhookReducer

@@ -32,12 +32,13 @@ describe('redirectSessionExpired', () => {
     expect(mockedDeleteSession).toHaveBeenCalledWith('tok')
   })
 
-  it('dispatches with a custom message and swallows cleanup failures', async () => {
-    mockedFetchToken.mockRejectedValue(new Error('network'))
+  it('dispatches with a custom message and swallows a session cleanup failure', async () => {
+    mockedFetchToken.mockResolvedValue({ access_token: 'tok' } as never)
+    mockedDeleteSession.mockRejectedValue(new Error('delete failed'))
 
     await expect(redirectSessionExpired('custom message')).resolves.toBeUndefined()
 
     expect(dispatchSpy).toHaveBeenCalledWith(auditLogoutLogs({ message: 'custom message' }))
-    expect(mockedDeleteSession).not.toHaveBeenCalled()
+    expect(mockedDeleteSession).toHaveBeenCalledWith('tok')
   })
 })

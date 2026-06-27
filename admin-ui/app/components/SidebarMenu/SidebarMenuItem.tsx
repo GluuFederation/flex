@@ -210,7 +210,6 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
                     parentId: id,
                     currentUrl,
                     slim,
-                    ...menuContext,
                   },
                 )
               : child,
