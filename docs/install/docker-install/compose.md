@@ -23,7 +23,7 @@ Docker monolith image packaging for Gluu Flex. This image packs janssen services
 ## Versions
 
 See [Releases](https://github.com/GluuFederation/docker-flex-monolith/releases) for stable versions. This image should never be used in production.
-For bleeding-edge/unstable version, use `gluufederation/monolith:0.0.0-nightly`.
+For bleeding-edge/unstable version, use `gluufederation/monolith:6.2.0-1`.
 
 ## Environment Variables
 
