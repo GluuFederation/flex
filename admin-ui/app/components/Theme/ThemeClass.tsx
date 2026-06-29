@@ -1,6 +1,5 @@
-import React from 'react'
-import { Consumer } from './ThemeContext'
-import type { ThemeContextState } from './types'
+import React, { use } from 'react'
+import { ThemeContext } from './ThemeContext'
 
 interface ThemeClassProps {
   children: (layoutThemeClass: string) => React.ReactNode
@@ -15,12 +14,9 @@ const ThemeClass: React.FC<ThemeClassProps> = ({ children, color, style }) => {
 
 const ContextThemeClass: React.FC<
   Omit<ThemeClassProps, 'children'> & { children: (layoutThemeClass: string) => React.ReactNode }
-> = (otherProps) => (
-  <Consumer>
-    {(themeState: ThemeContextState | null) =>
-      themeState ? <ThemeClass {...{ ...themeState, ...otherProps }} /> : null
-    }
-  </Consumer>
-)
+> = (otherProps) => {
+  const themeState = use(ThemeContext)
+  return themeState ? <ThemeClass {...{ ...themeState, ...otherProps }} /> : null
+}
 
 export { ContextThemeClass as ThemeClass }
