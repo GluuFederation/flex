@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { Card, CardBody } from 'Components'
 import {
   BarChart,
@@ -95,17 +95,15 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   )
 
   // Measure the chart container to compute bar positions for the SVG overlay
-  const containerRef = useRef<HTMLDivElement>(null)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
+  const containerRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
     const ro = new ResizeObserver((entries) => {
       const { width, height } = entries[0]!.contentRect
       setContainerSize({ width, height })
     })
-    ro.observe(el)
+    ro.observe(node)
     return () => ro.disconnect()
   }, [])
 

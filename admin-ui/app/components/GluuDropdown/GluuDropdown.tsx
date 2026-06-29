@@ -8,6 +8,22 @@ import { NO_TEXT_SELECT } from './sharedDropdownStyles'
 import { useStyles } from './GluuDropdown.style'
 import type { DropdownValue, GluuDropdownOption, GluuDropdownProps, DropdownState } from './types'
 
+const extractTextFromReactNode = (node: React.ReactNode): string => {
+  if (typeof node === 'string') return node
+  if (typeof node === 'number') return String(node)
+  if (React.isValidElement<{ children?: React.ReactNode }>(node) && node.props.children) {
+    const { children } = node.props
+    if (Array.isArray(children)) {
+      return children.map((child) => extractTextFromReactNode(child)).join('')
+    }
+    return extractTextFromReactNode(children)
+  }
+  if (Array.isArray(node)) {
+    return node.map((child) => extractTextFromReactNode(child)).join('')
+  }
+  return ''
+}
+
 export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   trigger,
   options,
@@ -65,22 +81,6 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
     [controlled, onOpenChange],
   )
 
-  const extractTextFromReactNode = useCallback((node: React.ReactNode): string => {
-    if (typeof node === 'string') return node
-    if (typeof node === 'number') return String(node)
-    if (React.isValidElement<{ children?: React.ReactNode }>(node) && node.props.children) {
-      const { children } = node.props
-      if (Array.isArray(children)) {
-        return children.map((child) => extractTextFromReactNode(child)).join('')
-      }
-      return extractTextFromReactNode(children)
-    }
-    if (Array.isArray(node)) {
-      return node.map((child) => extractTextFromReactNode(child)).join('')
-    }
-    return ''
-  }, [])
-
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery.trim()) {
       return options
@@ -96,7 +96,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
           : extractTextFromReactNode(option.label).toLowerCase()
       return searchText.includes(query)
     })
-  }, [options, searchQuery, searchable, extractTextFromReactNode])
+  }, [options, searchQuery, searchable])
 
   const isSelected = useCallback(
     (value: T): boolean => {

@@ -1,12 +1,9 @@
-import React from 'react'
+import { createContext } from 'react'
+import type { AccordionContextType } from './types'
 
-interface AccordionContextType {
-  isOpen: boolean
-  onToggle: () => void
-}
-const { Provider, Consumer } = React.createContext<AccordionContextType>({
+const AccordionContext = createContext<AccordionContextType>({
   isOpen: false,
   onToggle: () => {},
 })
 
-export { Provider, Consumer }
+export { AccordionContext }

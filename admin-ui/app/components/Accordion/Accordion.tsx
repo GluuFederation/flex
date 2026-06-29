@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { AccordionProps } from './types'
 import Card from './../Card'
-import { Provider } from './context'
+import { AccordionContext } from './context'
 
 export const Accordion = (props: AccordionProps) => {
   const { className, children, initialOpen, open, onToggle, ...otherProps } = props
@@ -26,7 +26,7 @@ export const Accordion = (props: AccordionProps) => {
   const isOpen = onToggle ? (open ?? false) : isOpenState
 
   return (
-    <Provider
+    <AccordionContext
       value={{
         onToggle: toggleHandler,
         isOpen: isOpen,
@@ -35,6 +35,6 @@ export const Accordion = (props: AccordionProps) => {
       <Card className={className} type="border" {...otherProps}>
         {children}
       </Card>
-    </Provider>
+    </AccordionContext>
   )
 }

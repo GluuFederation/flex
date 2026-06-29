@@ -28,7 +28,12 @@ const Providers = ({ children, pageConfig }: ProvidersProps) => (
 const renderSidebar = (
   children: React.ReactNode,
   pageConfig: PageConfig = makePageConfig({ animationsDisabled: true }),
-) => render(<Providers pageConfig={pageConfig}><Sidebar>{children}</Sidebar></Providers>)
+) =>
+  render(
+    <Providers pageConfig={pageConfig}>
+      <Sidebar>{children}</Sidebar>
+    </Providers>,
+  )
 
 const getSidebar = (): HTMLElement => {
   const el = document.querySelector<HTMLElement>('.sidebar.custom-sidebar-container')

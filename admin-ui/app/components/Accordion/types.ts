@@ -18,3 +18,8 @@ export type AccordionBodyProps = {
   children?: React.ReactNode
   className?: string
 }
+
+export type AccordionContextType = {
+  isOpen: boolean
+  onToggle: () => void
+}

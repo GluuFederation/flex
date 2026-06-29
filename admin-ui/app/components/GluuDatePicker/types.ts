@@ -46,6 +46,7 @@ export type GluuDatePickerSingleProps = GluuDatePickerBase & {
   minDate?: Dayjs
   maxDate?: Dayjs
   labelShrink?: boolean
+  disabled?: boolean
 }
 
 export type GluuDatePickerRangeProps = GluuDatePickerBase & {

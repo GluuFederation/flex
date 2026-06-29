@@ -71,7 +71,7 @@ export const getSsaValidationSchema = () =>
             return false
           }
 
-          return dateValue.isAfter(dayjs())
+          return dateValue.isAfter(dayjs(), 'day')
         },
       ),
   }) as Yup.ObjectSchema<SsaFormValues>
