@@ -27,15 +27,32 @@ const baseQuery = {
   isLoading: false,
   isError: false,
   error: null,
-  refetch: jest.fn().mockResolvedValue(undefined),
 }
+
+// A distinct refetch spy per query so each refetch assertion verifies its own
+// query instance rather than a single shared mock (which would false-positive).
+const mockMappingRefetch = jest.fn().mockResolvedValue(undefined)
+const mockRolesRefetch = jest.fn().mockResolvedValue(undefined)
+const mockPermissionsRefetch = jest.fn().mockResolvedValue(undefined)
 
 describe('useMappingData', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockMapping.mockReturnValue({ ...baseQuery, data: [{ role: 'admin' }] })
-    mockRoles.mockReturnValue({ ...baseQuery, data: [{ role: 'admin' }] })
-    mockPermissions.mockReturnValue({ ...baseQuery, data: [{ permission: 'read' }] })
+    mockMapping.mockReturnValue({
+      ...baseQuery,
+      data: [{ role: 'admin' }],
+      refetch: mockMappingRefetch,
+    })
+    mockRoles.mockReturnValue({
+      ...baseQuery,
+      data: [{ role: 'admin' }],
+      refetch: mockRolesRefetch,
+    })
+    mockPermissions.mockReturnValue({
+      ...baseQuery,
+      data: [{ permission: 'read' }],
+      refetch: mockPermissionsRefetch,
+    })
   })
 
   it('returns combined data from all three queries', () => {
@@ -85,8 +102,8 @@ describe('useMappingData', () => {
     await act(async () => {
       await result.current.refetch()
     })
-    expect(mockMapping.mock.results[0].value.refetch).toHaveBeenCalled()
-    expect(mockRoles.mock.results[0].value.refetch).toHaveBeenCalled()
-    expect(mockPermissions.mock.results[0].value.refetch).toHaveBeenCalled()
+    expect(mockMappingRefetch).toHaveBeenCalledTimes(1)
+    expect(mockRolesRefetch).toHaveBeenCalledTimes(1)
+    expect(mockPermissionsRefetch).toHaveBeenCalledTimes(1)
   })
 })

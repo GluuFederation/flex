@@ -118,6 +118,20 @@ describe('useScopeQueries', () => {
         expect(result.current.attributes).toHaveLength(3)
       })
       expect(mockGetAttributes).toHaveBeenCalledTimes(2)
+
+      // The loop must advance startIndex by the page size between calls,
+      // otherwise it would re-fetch the same cursor.
+      expect(mockGetAttributes.mock.calls[0][0]).toEqual(
+        expect.objectContaining({ limit: 2, startIndex: 0 }),
+      )
+      expect(mockGetAttributes.mock.calls[1][0]).toEqual(
+        expect.objectContaining({ limit: 2, startIndex: 2 }),
+      )
+      expect(result.current.attributes).toEqual([
+        { dn: 'd1', name: 'n1', key: 'k1' },
+        { dn: 'd2', name: 'n2', key: 'k2' },
+        { dn: 'd3', name: 'n3', key: 'k3' },
+      ])
     })
   })
 })

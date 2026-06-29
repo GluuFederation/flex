@@ -166,6 +166,7 @@ describe('useAssetMutations', () => {
         'asset',
         expect.objectContaining({ action_data: { inum: 'asset-1' } }),
       )
+      expect(mockInvalidate).toHaveBeenCalledWith(expect.any(Object), ['/api/v1/jans-assets'])
       expect(dispatchSpy).toHaveBeenCalled()
       expect(onSuccess).toHaveBeenCalledTimes(1)
     })

@@ -137,6 +137,15 @@ describe('useSamlApi', () => {
       expect(mockGet).toHaveBeenCalledWith('/kc/saml/idp', { params: { limit: 5 } })
     })
 
+    it('does not run the identity providers query without a session', () => {
+      const store = buildStore(false)
+      const { result } = renderHook(() => useIdentityProviders({ limit: 5 }), {
+        wrapper: createWrapper(store),
+      })
+      expect(result.current.fetchStatus).toBe('idle')
+      expect(mockGet).not.toHaveBeenCalled()
+    })
+
     it('fetches trust relationships', async () => {
       mockGet.mockResolvedValueOnce({ data: [] })
       const store = buildStore(true)
@@ -146,6 +155,15 @@ describe('useSamlApi', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true))
       expect(mockGet).toHaveBeenCalledWith('/kc/saml/trust-relationships')
     })
+
+    it('does not run the trust relationships query without a session', () => {
+      const store = buildStore(false)
+      const { result } = renderHook(() => useTrustRelationships(), {
+        wrapper: createWrapper(store),
+      })
+      expect(result.current.fetchStatus).toBe('idle')
+      expect(mockGet).not.toHaveBeenCalled()
+    })
   })
 
   describe('useUpdateSamlConfiguration', () => {
@@ -153,6 +171,9 @@ describe('useSamlApi', () => {
       mockPut.mockResolvedValueOnce({ data: { enabled: false } })
       const store = buildStore(true)
       const dispatchSpy = jest.spyOn(store, 'dispatch')
+      const invalidateSpy = jest
+        .spyOn(QueryClient.prototype, 'invalidateQueries')
+        .mockResolvedValue(undefined)
       const { result } = renderHook(() => useUpdateSamlConfiguration(), {
         wrapper: createWrapper(store),
       })
@@ -162,7 +183,15 @@ describe('useSamlApi', () => {
       })
 
       expect(mockPut).toHaveBeenCalledWith('/kc/saml/properties', { enabled: false })
-      expect(dispatchSpy).toHaveBeenCalled()
+      // Assert the exact success-toast action, not merely that something was dispatched.
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'toast/updateToast',
+          payload: expect.objectContaining({ showToast: true, type: 'success' }),
+        }),
+      )
+      // The saml-properties cache must be refreshed after a successful update.
+      expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['kc', 'saml', 'properties'] })
       expect(mockTriggerWebhook).toHaveBeenCalledWith(
         { enabled: false },
         'saml_configuration_write',
@@ -170,6 +199,8 @@ describe('useSamlApi', () => {
       expect(mockLogAuditUserAction).toHaveBeenCalledWith(
         expect.objectContaining({ action: 'UPDATE' }),
       )
+
+      invalidateSpy.mockRestore()
     })
   })
 
@@ -264,7 +295,17 @@ describe('useSamlApi', () => {
           result.current.mutateAsync({ inum: 'idp-1', userMessage: 'x' }),
         ).rejects.toThrow('delete boom')
       })
-      expect(dispatchSpy).toHaveBeenCalled()
+      // Assert the exact error-toast action, including the propagated message.
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'toast/updateToast',
+          payload: expect.objectContaining({
+            showToast: true,
+            type: 'error',
+            message: 'delete boom',
+          }),
+        }),
+      )
     })
   })
 

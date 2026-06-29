@@ -121,9 +121,12 @@ describe('useCustomScriptApi', () => {
     })
 
     it('disables the query when external enabled is false', () => {
-      renderHook(() => useCustomScriptsByType('person_authentication', undefined, { enabled: false }), {
-        wrapper: createWrapper(),
-      })
+      renderHook(
+        () => useCustomScriptsByType('person_authentication', undefined, { enabled: false }),
+        {
+          wrapper: createWrapper(),
+        },
+      )
       expect(mockUseGetConfigScriptsByType).toHaveBeenCalledWith(
         'person_authentication',
         undefined,

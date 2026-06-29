@@ -57,9 +57,7 @@ jest.mock('JansConfigApi', () => ({
 const buildStore = () =>
   configureStore({
     reducer: combineReducers({
-      webhookReducer: (
-        state = { webhookModal: false, triggerWebhookInProgress: false },
-      ) => state,
+      webhookReducer: (state = { webhookModal: false, triggerWebhookInProgress: false }) => state,
     }),
   })
 
@@ -93,9 +91,12 @@ describe('useWebhookDialogAction', () => {
 
   it('returns the expected action shape', () => {
     const store = buildStore()
-    const { result } = renderHook(() => useWebhookDialogAction({ feature: 'feat-1', modal: true }), {
-      wrapper: createWrapper(store),
-    })
+    const { result } = renderHook(
+      () => useWebhookDialogAction({ feature: 'feat-1', modal: true }),
+      {
+        wrapper: createWrapper(store),
+      },
+    )
 
     expect(typeof result.current.onCloseModal).toBe('function')
     expect(typeof result.current.webhookTriggerModal).toBe('function')
@@ -107,9 +108,12 @@ describe('useWebhookDialogAction', () => {
   it('dispatches reset actions when onCloseModal is called', () => {
     const store = buildStore()
     const dispatchSpy = jest.spyOn(store, 'dispatch')
-    const { result } = renderHook(() => useWebhookDialogAction({ feature: 'feat-1', modal: true }), {
-      wrapper: createWrapper(store),
-    })
+    const { result } = renderHook(
+      () => useWebhookDialogAction({ feature: 'feat-1', modal: true }),
+      {
+        wrapper: createWrapper(store),
+      },
+    )
 
     dispatchSpy.mockClear()
     act(() => {
@@ -196,9 +200,12 @@ describe('useWebhookDialogAction', () => {
 
   it('renders no portal content from webhookTriggerModal when the modal is not open', () => {
     const store = buildStore()
-    const { result } = renderHook(() => useWebhookDialogAction({ feature: 'feat-1', modal: true }), {
-      wrapper: createWrapper(store),
-    })
+    const { result } = renderHook(
+      () => useWebhookDialogAction({ feature: 'feat-1', modal: true }),
+      {
+        wrapper: createWrapper(store),
+      },
+    )
 
     const rendered = result.current.webhookTriggerModal({ closeModal: jest.fn() })
     expect(rendered).toBeNull()

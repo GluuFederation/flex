@@ -40,7 +40,10 @@ jest.mock('Redux/features/toastSlice', () => ({
 }))
 
 jest.mock('Plugins/admin/redux/features/WebhookSlice', () => ({
-  triggerWebhook: (payload: { createdFeatureValue: Record<string, JsonValue>; feature: string }) => {
+  triggerWebhook: (payload: {
+    createdFeatureValue: Record<string, JsonValue>
+    feature: string
+  }) => {
     mockTriggerWebhook(payload)
     return { type: 'webhook/triggerWebhook', payload }
   },

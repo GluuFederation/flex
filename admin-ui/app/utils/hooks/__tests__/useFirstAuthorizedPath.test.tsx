@@ -115,10 +115,7 @@ describe('useFirstAuthorizedPath', () => {
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    expect(mockFilterMenusByHealth).toHaveBeenCalledWith(
-      menus,
-      expect.arrayContaining([fido2]),
-    )
+    expect(mockFilterMenusByHealth).toHaveBeenCalledWith(menus, expect.arrayContaining([fido2]))
   })
 
   it('returns a null path when no leaf path can be resolved', async () => {

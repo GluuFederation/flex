@@ -131,6 +131,15 @@ describe('useProfileDetails', () => {
     expect(opts.query.enabled).toBe(false)
   })
 
+  it('passes enabled=false to the query when disabled despite a valid inum', () => {
+    mockQueryReturn(sampleUser)
+    const store = buildStore()
+    renderHook(() => useProfileDetails('inum-123', false), { wrapper: createWrapper(store) })
+
+    const [, opts] = mockUseGetUserByInum.mock.calls[0]
+    expect(opts.query.enabled).toBe(false)
+  })
+
   it('reflects the loading state from the query', () => {
     mockQueryReturn(undefined, true)
     const store = buildStore()

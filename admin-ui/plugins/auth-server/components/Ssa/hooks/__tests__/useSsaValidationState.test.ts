@@ -6,11 +6,30 @@ import type { SsaFormValues } from '../../types'
 type TouchedInput = FormikTouched<SsaFormValues>
 type ErrorsInput = Partial<Record<keyof SsaFormValues, string | string[]>>
 
-const makeFormik = (touched: TouchedInput, errors: ErrorsInput): FormikProps<SsaFormValues> => {
-  const partial: Pick<FormikProps<SsaFormValues>, 'touched'> & {
+const defaultValues: SsaFormValues = {
+  software_id: '',
+  one_time_use: false,
+  org_id: '',
+  description: '',
+  software_roles: [],
+  rotate_ssa: false,
+  grant_types: [],
+  is_expirable: false,
+  expirationDate: null,
+}
+
+const makeFormik = (
+  touched: TouchedInput,
+  errors: ErrorsInput,
+  values: Partial<SsaFormValues> = {},
+): FormikProps<SsaFormValues> => {
+  const partial: Pick<FormikProps<SsaFormValues>, 'touched' | 'values'> & {
     errors: ErrorsInput
-  } = { touched, errors }
-  return partial as Pick<FormikProps<SsaFormValues>, 'touched' | 'errors'> as FormikProps<SsaFormValues>
+  } = { touched, errors, values: { ...defaultValues, ...values } }
+  return partial as Pick<
+    FormikProps<SsaFormValues>,
+    'touched' | 'errors' | 'values'
+  > as FormikProps<SsaFormValues>
 }
 
 describe('useSsaValidationState', () => {
@@ -26,9 +45,7 @@ describe('useSsaValidationState', () => {
 
   it('flags an error only when a field is both touched and has an error', () => {
     const { result } = renderHook(() =>
-      useSsaValidationState(
-        makeFormik({ software_id: true }, { software_id: 'required' }),
-      ),
+      useSsaValidationState(makeFormik({ software_id: true }, { software_id: 'required' })),
     )
     expect(result.current.softwareIdError).toBe(true)
     expect(result.current.softwareIdErrorMessage).toBe('required')
@@ -68,6 +85,23 @@ describe('useSsaValidationState', () => {
     expect(result.current.grantTypesErrorMessage).toBe('grants required')
     expect(result.current.descriptionError).toBe(true)
     expect(result.current.descriptionErrorMessage).toBe('desc required')
+  })
+
+  it('flags the expiration error only when is_expirable is set and an error exists', () => {
+    const enabled = renderHook(() =>
+      useSsaValidationState(
+        makeFormik({}, { expirationDate: 'date required' }, { is_expirable: true }),
+      ),
+    )
+    expect(enabled.result.current.expirationDateError).toBe(true)
+    expect(enabled.result.current.expirationDateErrorMessage).toBe('date required')
+
+    const disabled = renderHook(() =>
+      useSsaValidationState(
+        makeFormik({}, { expirationDate: 'date required' }, { is_expirable: false }),
+      ),
+    )
+    expect(disabled.result.current.expirationDateError).toBe(false)
   })
 
   it('returns an empty message when the error is not a string', () => {

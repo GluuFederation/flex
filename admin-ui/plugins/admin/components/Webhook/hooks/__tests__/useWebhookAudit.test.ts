@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { useWebhookAudit } from '../useWebhookAudit'
 import type { WebhookAuditLogActionPayload } from '../../types'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 const mockPostUserAction = jest.fn()
 const mockAddAdditionalData = jest.fn()
@@ -10,9 +11,15 @@ jest.mock('Redux/api/backend-api', () => ({
   postUserAction: (payload: object) => mockPostUserAction(payload),
 }))
 
+type AuditAccumulator = Record<string, JsonValue>
+
 jest.mock('Utils/TokenController', () => ({
-  addAdditionalData: (audit: object, actionType: string, resource: string, extra: object) =>
-    mockAddAdditionalData(audit, actionType, resource, extra),
+  addAdditionalData: (
+    audit: AuditAccumulator,
+    actionType: string,
+    resource: string,
+    extra: object,
+  ) => mockAddAdditionalData(audit, actionType, resource, extra),
 }))
 
 jest.mock('@/audit', () => ({
@@ -39,6 +46,15 @@ describe('useWebhookAudit', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockPostUserAction.mockResolvedValue(undefined)
+    // Mirror the real addAdditionalData, which enriches the audit object in
+    // place (action type/resource/payload) before it is posted.
+    mockAddAdditionalData.mockImplementation(
+      (audit: AuditAccumulator, actionType: string, resource: string, extra: AuditAccumulator) => {
+        audit.action_type = actionType
+        audit.resource = resource
+        audit.action = extra.action
+      },
+    )
   })
 
   it('exposes initAudit and logAction functions', () => {
@@ -71,18 +87,27 @@ describe('useWebhookAudit', () => {
     })
 
     expect(mockAddAdditionalData).toHaveBeenCalledTimes(1)
-    expect(mockAddAdditionalData).toHaveBeenCalledWith(
-      expect.any(Object),
-      'CREATE',
-      'webhook',
-      {
+    expect(mockAddAdditionalData).toHaveBeenCalledWith(expect.any(Object), 'CREATE', 'webhook', {
+      action: {
+        action_message: 'created webhook',
+        action_data: { displayName: 'hook', url: 'https://example.com' },
+      },
+    })
+    expect(mockPostUserAction).toHaveBeenCalledTimes(1)
+    // The posted object must be the audit AFTER enrichment, not the bare init.
+    expect(mockPostUserAction).toHaveBeenCalledWith(
+      expect.objectContaining({
+        client_id: 'client-1',
+        status: 'success',
+        performedBy: { user_inum: 'inum-1', userId: 'admin' },
+        action_type: 'CREATE',
+        resource: 'webhook',
         action: {
           action_message: 'created webhook',
           action_data: { displayName: 'hook', url: 'https://example.com' },
         },
-      },
+      }),
     )
-    expect(mockPostUserAction).toHaveBeenCalledTimes(1)
   })
 
   it('logs an error and does not throw when postUserAction rejects', async () => {

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { useLicenseDetails } from '../useLicenseDetails'
 import type { LicenseResponse } from 'JansConfigApi'
+import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
 type SelectFn = (data: LicenseResponse | undefined) => LicenseResponse | undefined
 
@@ -13,14 +14,36 @@ type QueryOptions = {
   select?: SelectFn
 }
 
+type DeleteMutationOptions = {
+  mutation?: {
+    onSuccess?: () => void | Promise<void>
+    onError?: (error: Error) => void
+  }
+}
+
 const mockUseGetAdminuiLicense = jest.fn()
 const mockMutate = jest.fn()
 const mockRefetch = jest.fn()
+const mockPostUserAction = jest.fn()
+const mockIsFourZeroThreeError = jest.fn()
+
+let capturedDeleteOptions: DeleteMutationOptions | undefined
 
 jest.mock('JansConfigApi', () => ({
   useGetAdminuiLicense: (opts: { query: QueryOptions }) => mockUseGetAdminuiLicense(opts),
-  useLicenseConfigDelete: () => ({ mutate: mockMutate, isPending: false }),
+  useLicenseConfigDelete: (opts: DeleteMutationOptions) => {
+    capturedDeleteOptions = opts
+    return { mutate: mockMutate, isPending: false }
+  },
   getGetAdminuiLicenseQueryKey: () => ['adminui', 'license'],
+}))
+
+jest.mock('@/redux/api/backend-api', () => ({
+  postUserAction: (userAction: UserActionPayload) => mockPostUserAction(userAction),
+}))
+
+jest.mock('@/utils/TokenController', () => ({
+  isFourZeroThreeError: (error: Error) => mockIsFourZeroThreeError(error),
 }))
 
 jest.mock('react-i18next', () => ({
@@ -62,6 +85,9 @@ const mockQueryReturn = (raw: LicenseResponse | undefined, isLoading = false) =>
 describe('useLicenseDetails', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    capturedDeleteOptions = undefined
+    mockIsFourZeroThreeError.mockReturnValue(false)
+    mockPostUserAction.mockResolvedValue({ status: 200 })
   })
 
   it('strips surrounding quotes from the license fields', () => {
@@ -112,6 +138,79 @@ describe('useLicenseDetails', () => {
     })
 
     expect(mockMutate).toHaveBeenCalledTimes(1)
+  })
+
+  it('invalidates the license query and toasts success on a successful reset', async () => {
+    const invalidateSpy = jest
+      .spyOn(QueryClient.prototype, 'invalidateQueries')
+      .mockResolvedValue(undefined)
+    const onResetSuccess = jest.fn()
+    mockQueryReturn(rawLicense)
+    const store = buildStore(true)
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    renderHook(() => useLicenseDetails({ onResetSuccess }), { wrapper: createWrapper(store) })
+
+    await act(async () => {
+      await capturedDeleteOptions?.mutation?.onSuccess?.()
+    })
+
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['adminui', 'license'] })
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'toast/updateToast',
+        payload: expect.objectContaining({
+          showToast: true,
+          type: 'success',
+          message: 'messages.license_reset_success',
+        }),
+      }),
+    )
+    expect(onResetSuccess).toHaveBeenCalledTimes(1)
+
+    invalidateSpy.mockRestore()
+  })
+
+  it('toasts an error with the error message on a non-403 reset failure', () => {
+    mockIsFourZeroThreeError.mockReturnValue(false)
+    mockQueryReturn(rawLicense)
+    const store = buildStore(true)
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    renderHook(() => useLicenseDetails(), { wrapper: createWrapper(store) })
+
+    act(() => {
+      capturedDeleteOptions?.mutation?.onError?.(new Error('boom'))
+    })
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'toast/updateToast',
+        payload: expect.objectContaining({
+          showToast: true,
+          type: 'error',
+          message: 'boom',
+        }),
+      }),
+    )
+  })
+
+  it('dispatches a session-expired logout audit on a 403 reset failure', () => {
+    mockIsFourZeroThreeError.mockReturnValue(true)
+    mockQueryReturn(rawLicense)
+    const store = buildStore(true)
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    renderHook(() => useLicenseDetails(), { wrapper: createWrapper(store) })
+
+    act(() => {
+      capturedDeleteOptions?.mutation?.onError?.(new Error('forbidden'))
+    })
+
+    const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) =>
+      typeof action === 'object' && action !== null && 'type' in action ? action.type : undefined,
+    )
+    expect(dispatchedTypes).toContain('session/auditLogoutLogs')
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'toast/updateToast' }),
+    )
   })
 
   it('disables the query when there is no session', () => {

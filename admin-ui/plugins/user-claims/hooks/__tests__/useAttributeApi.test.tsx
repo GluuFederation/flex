@@ -165,22 +165,40 @@ describe('useAttributeApi', () => {
     })
 
     it('exposes a mutate wrapper that logs failures without throwing', async () => {
-      mockPostMutateAsync.mockRejectedValue(new Error('create boom'))
+      const failure = new Error('create boom')
+      mockPostMutateAsync.mockRejectedValue(failure)
       const { result } = renderHook(() => useCreateAttribute(), { wrapper: createWrapper() })
 
       await act(async () => {
-        result.current.mutate({ data: buildAttribute({ inum: 'x' }) })
+        // The wrapper swallows the rejection; calling it must not throw.
+        expect(() => result.current.mutate({ data: buildAttribute({ inum: 'x' }) })).not.toThrow()
+        await Promise.resolve()
         await Promise.resolve()
       })
 
-      expect(typeof result.current.mutate).toBe('function')
+      expect(mockLoggerError).toHaveBeenCalledWith('Create attribute failed:', failure)
     })
 
-    it('dispatches an error toast through the onError handler', () => {
+    it('dispatches the exact error toast through the onError handler', () => {
       renderHook(() => useCreateAttribute(), { wrapper: createWrapper() })
-      const dispatchCallsBefore = mockDispatch.mock.calls.length
       postOptions?.mutation?.onError?.(new Error('server boom'))
-      expect(mockDispatch.mock.calls.length).toBeGreaterThan(dispatchCallsBefore)
+      // Plain error has no response.data.message, so it falls back to the i18n key.
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'toast/update',
+        payload: { show: true, type: 'error', message: 'messages.error_in_saving' },
+      })
+    })
+
+    it('uses the server-provided message in the error toast when present', () => {
+      renderHook(() => useCreateAttribute(), { wrapper: createWrapper() })
+      const apiError = Object.assign(new Error('server boom'), {
+        response: { data: { message: 'Name already exists' } },
+      })
+      postOptions?.mutation?.onError?.(apiError)
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'toast/update',
+        payload: { show: true, type: 'error', message: 'Name already exists' },
+      })
     })
   })
 

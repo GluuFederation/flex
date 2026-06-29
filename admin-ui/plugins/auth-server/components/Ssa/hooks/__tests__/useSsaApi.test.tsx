@@ -52,13 +52,7 @@ const createWrapper = (store: ReturnType<typeof buildStore>) => {
 
 const mockFetch = jest.fn()
 
-type JsonLike =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonLike[]
-  | { [key: string]: JsonLike }
+type JsonLike = string | number | boolean | null | JsonLike[] | { [key: string]: JsonLike }
 
 const jsonResponse = (body: JsonLike, ok = true, status = 200): Response => {
   const partial: Pick<Response, 'ok' | 'status' | 'statusText' | 'json'> = {
@@ -70,8 +64,14 @@ const jsonResponse = (body: JsonLike, ok = true, status = 200): Response => {
   return partial as Response
 }
 
+const originalFetch = global.fetch
+
 beforeAll(() => {
   global.fetch = mockFetch as typeof fetch
+})
+
+afterAll(() => {
+  global.fetch = originalFetch
 })
 
 beforeEach(() => {

@@ -119,6 +119,12 @@ describe('useAuthServerJsonProperties', () => {
       })
 
       expect(mockUpdateToast).toHaveBeenCalledWith(true, 'error')
+      // Guard against a regression where the hook builds the toast but stops
+      // dispatching the error action.
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'toast',
+        payload: { show: true, type: 'error' },
+      })
       await waitFor(() => {
         expect(userOnError).toHaveBeenCalledTimes(1)
       })

@@ -90,6 +90,11 @@ describe('useWebhookMutations', () => {
       const onSuccess = jest.fn()
       const store = buildStore()
       const dispatchSpy = jest.spyOn(store, 'dispatch')
+      // invalidateWebhooksByFeatureQueries calls queryClient.invalidateQueries
+      // with a predicate directly (not via queryUtils), so spy on it here.
+      const predicateInvalidateSpy = jest
+        .spyOn(QueryClient.prototype, 'invalidateQueries')
+        .mockResolvedValue(undefined)
       const { result } = renderHook(() => useCreateWebhookWithAudit({ onSuccess }), {
         wrapper: createWrapper(store),
       })
@@ -105,8 +110,13 @@ describe('useWebhookMutations', () => {
         expect.objectContaining({ action_message: 'created', action_data: webhook }),
       )
       expect(mockInvalidateByKey).toHaveBeenCalled()
+      expect(predicateInvalidateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ predicate: expect.any(Function) }),
+      )
       expect(dispatchSpy).toHaveBeenCalled()
       expect(onSuccess).toHaveBeenCalledTimes(1)
+
+      predicateInvalidateSpy.mockRestore()
     })
 
     it('dispatches an error toast and calls onError on failure', async () => {
@@ -171,6 +181,9 @@ describe('useWebhookMutations', () => {
       const onSuccess = jest.fn()
       const store = buildStore()
       const dispatchSpy = jest.spyOn(store, 'dispatch')
+      const predicateInvalidateSpy = jest
+        .spyOn(QueryClient.prototype, 'invalidateQueries')
+        .mockResolvedValue(undefined)
       const { result } = renderHook(() => useDeleteWebhookWithAudit({ onSuccess }), {
         wrapper: createWrapper(store),
       })
@@ -185,8 +198,16 @@ describe('useWebhookMutations', () => {
         'webhook',
         expect.objectContaining({ action_data: { inum: 'w-1' } }),
       )
+      expect(mockInvalidateByKey).toHaveBeenCalledWith(expect.any(Object), [
+        '/api/v1/admin-ui/webhook',
+      ])
+      expect(predicateInvalidateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ predicate: expect.any(Function) }),
+      )
       expect(dispatchSpy).toHaveBeenCalled()
       expect(onSuccess).toHaveBeenCalledTimes(1)
+
+      predicateInvalidateSpy.mockRestore()
     })
 
     it('dispatches an error toast and calls onError on failure', async () => {

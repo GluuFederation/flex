@@ -32,7 +32,7 @@ const mockAuthState: MockAuthState = {
 }
 
 jest.mock('@/redux/hooks', () => ({
-  useAppSelector: <T,>(selector: (s: MockRootState) => T): T =>
+  useAppSelector: <T>(selector: (s: MockRootState) => T): T =>
     selector({ authReducer: mockAuthState }),
 }))
 

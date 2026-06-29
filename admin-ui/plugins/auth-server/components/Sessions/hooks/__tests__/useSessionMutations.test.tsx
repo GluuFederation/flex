@@ -14,8 +14,18 @@ const mockLogAuditUserAction = jest.fn()
 const mockLoggerError = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
-  useDeleteSession: () => ({ mutateAsync: mockDeleteMutateAsync, isPending: false, isError: false, error: null }),
-  useRevokeUserSession: () => ({ mutateAsync: mockRevokeMutateAsync, isPending: false, isError: false, error: null }),
+  useDeleteSession: () => ({
+    mutateAsync: mockDeleteMutateAsync,
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
+  useRevokeUserSession: () => ({
+    mutateAsync: mockRevokeMutateAsync,
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
   getGetSessionsQueryKey: () => ['/sessions'],
 }))
 
@@ -197,5 +207,34 @@ describe('useRevokeSessionWithAudit', () => {
 
     expect(mockUpdateToast).toHaveBeenCalledWith(true, 'error', 'revoke failed')
     expect(onError).toHaveBeenCalledWith(failure)
+  })
+
+  it('still succeeds with a warning toast when audit logging fails after a revoke', async () => {
+    mockRevokeMutateAsync.mockResolvedValue(undefined)
+    const auditFailure = new Error('audit boom')
+    mockLogAuditUserAction.mockRejectedValue(auditFailure)
+    const onSuccess = jest.fn()
+    const onError = jest.fn()
+    const store = buildStore()
+    const { result } = renderHook(
+      () => useRevokeSessionWithAudit(auditContext, { onSuccess, onError }),
+      { wrapper: createWrapper(store) },
+    )
+
+    await act(async () => {
+      await result.current.revokeSession('user-dn', 'reason', 'bob')
+    })
+
+    // The revoke itself still runs and the audit failure is non-fatal.
+    expect(mockRevokeMutateAsync).toHaveBeenCalledWith({ userDn: 'user-dn' })
+    expect(mockUpdateToast).toHaveBeenCalledWith(true, 'warning', 'messages.audit_logging_failed')
+    expect(mockUpdateToast).toHaveBeenCalledWith(
+      true,
+      'success',
+      'messages.session_revoked_successfully',
+    )
+    // Audit failure is not a revoke failure: onSuccess fires, onError does not.
+    expect(onSuccess).toHaveBeenCalledTimes(1)
+    expect(onError).not.toHaveBeenCalled()
   })
 })
