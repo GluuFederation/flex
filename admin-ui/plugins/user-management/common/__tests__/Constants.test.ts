@@ -35,12 +35,15 @@ describe('user-management Constants', () => {
     expect(STANDARD_FORM_FIELDS).toEqual(['userId', 'mail', 'displayName', 'status', 'givenName'])
   })
 
-  it('includes the standard form fields plus extra reserved claims', () => {
-    STANDARD_FORM_FIELDS.forEach((field) => {
-      expect(RESERVED_STANDARD_CLAIMS).toContain(field)
-    })
-    expect(RESERVED_STANDARD_CLAIMS).toContain('uid')
-    expect(RESERVED_STANDARD_CLAIMS).toContain(USER_PASSWORD_ATTR)
-    expect(RESERVED_STANDARD_CLAIMS).toHaveLength(STANDARD_FORM_FIELDS.length + 6)
+  it('equals the standard form fields followed by the extra reserved claims', () => {
+    expect(RESERVED_STANDARD_CLAIMS).toEqual([
+      ...STANDARD_FORM_FIELDS,
+      'uid',
+      JANS_STATUS_ATTR,
+      USER_PASSWORD_ATTR,
+      MIDDLE_NAME_ATTR,
+      SN_ATTR,
+      FAMILY_NAME_ATTR,
+    ])
   })
 })
