@@ -131,12 +131,20 @@ describe('ProfilePage (ProfileDetails)', () => {
     })
   })
 
-  it('falls back to a dash when surname is missing', async () => {
+  it('shows a dash in the surname row when surname is missing', async () => {
     mockUseProfileDetails.mockReturnValue({
       ...mockProfileDetails,
       surname: undefined,
     })
     await renderPage()
-    expect(screen.getByText('Personal Information')).toBeInTheDocument()
+
+    // Locate the exact "Last Name" row and assert its value cell renders the
+    // dash fallback (the value sibling of the label within the same row).
+    const label = screen.getByText('Last Name')
+    const row = label.parentElement as HTMLElement
+    const value = label.nextElementSibling as HTMLElement
+    expect(row).toContainElement(value)
+    expect(value).toHaveTextContent('-')
+    expect(value).not.toHaveTextContent('Admin')
   })
 })

@@ -37,14 +37,18 @@ describe('GluuPageContent', () => {
     expect(screen.getByText('wrapped')).toBeInTheDocument()
   })
 
-  it('renders children directly when maxWidth is not set', () => {
-    render(
+  it('renders children directly in the root (no wrapper) when maxWidth is not set', () => {
+    const { container } = render(
       <AppTestWrapper>
         <GluuPageContent>
           <span>direct child</span>
         </GluuPageContent>
       </AppTestWrapper>,
     )
-    expect(screen.getByText('direct child')).toBeInTheDocument()
+    const root = container.firstElementChild as HTMLElement
+    // Without maxWidth the child span is mounted directly in root, not nested
+    // inside the extra wrapper div that the maxWidth branch introduces.
+    expect(root.firstElementChild?.tagName).toBe('SPAN')
+    expect(root.firstElementChild).toHaveTextContent('direct child')
   })
 })

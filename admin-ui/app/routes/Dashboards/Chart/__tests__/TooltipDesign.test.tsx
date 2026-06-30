@@ -25,12 +25,15 @@ describe('TooltipDesign', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('renders a mapped label with its value when active', () => {
+  it('renders the mapped "mau" label alongside its value when active', () => {
     renderTooltip({
       active: true,
       payload: [{ dataKey: 'mau', value: 42 }],
     })
-    expect(screen.getByText(/42/)).toBeInTheDocument()
+    // Assert the translated label from the labelMap, not just the value, so a
+    // regression in the mau -> monthly_active_users mapping is caught.
+    const label = i18n.t('fields.monthly_active_users')
+    expect(screen.getByText(`${label}: 42`)).toBeInTheDocument()
   })
 
   it('falls back to the payload name when the dataKey is unmapped', () => {

@@ -3,6 +3,7 @@ import { render, renderHook, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { ThemeProvider, useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { STORAGE_KEYS } from '@/constants'
 
 const wrapper = ({ children }: { children: ReactNode }) => <ThemeProvider>{children}</ThemeProvider>
 
@@ -45,7 +46,7 @@ describe('ThemeProvider / useTheme', () => {
     act(() => {
       result.current.dispatch({ type: THEME_LIGHT })
     })
-    expect(window.localStorage.getItem('initTheme')).toBe(THEME_LIGHT)
+    expect(window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)).toBe(THEME_LIGHT)
   })
 
   it('applies the theme class to the document root', () => {

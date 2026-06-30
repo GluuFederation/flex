@@ -2,6 +2,10 @@ import { render } from '@testing-library/react'
 import { LayoutNavbar } from '../LayoutNavbar'
 
 describe('LayoutNavbar', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('exposes the navbar layout part name', () => {
     expect(LayoutNavbar.layoutPartName).toBe('navbar')
   })
@@ -30,7 +34,8 @@ describe('LayoutNavbar', () => {
   })
 
   it('throws when given more than one child', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    // Restored via afterEach so the spy is cleaned up even if the assertion throws.
+    jest.spyOn(console, 'error').mockImplementation(() => {})
     expect(() =>
       render(
         <LayoutNavbar>
@@ -39,6 +44,5 @@ describe('LayoutNavbar', () => {
         </LayoutNavbar>,
       ),
     ).toThrow()
-    spy.mockRestore()
   })
 })

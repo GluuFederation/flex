@@ -24,13 +24,16 @@ jest.mock('react-ace', () => ({
   ),
 }))
 
-// Ace language/theme side-effect imports are not needed under the mock.
-jest.mock('ace-builds/src-noconflict/mode-java', () => ({}), { virtual: true })
-jest.mock('ace-builds/src-noconflict/mode-python', () => ({}), { virtual: true })
-jest.mock('ace-builds/src-noconflict/mode-json', () => ({}), { virtual: true })
-jest.mock('ace-builds/src-noconflict/theme-xcode', () => ({}), { virtual: true })
-jest.mock('ace-builds/src-noconflict/theme-monokai', () => ({}), { virtual: true })
-jest.mock('ace-builds/src-noconflict/ext-language_tools', () => ({}), { virtual: true })
+// Ace language/theme side-effect imports are not needed under the mock. These
+// modules are installed, so they must be mocked WITHOUT `virtual: true`;
+// otherwise Jest resolves the real files, which spawn an Ace worker/timer that
+// leaks past teardown ("worker process failed to exit gracefully").
+jest.mock('ace-builds/src-noconflict/mode-java', () => ({}))
+jest.mock('ace-builds/src-noconflict/mode-python', () => ({}))
+jest.mock('ace-builds/src-noconflict/mode-json', () => ({}))
+jest.mock('ace-builds/src-noconflict/theme-xcode', () => ({}))
+jest.mock('ace-builds/src-noconflict/theme-monokai', () => ({}))
+jest.mock('ace-builds/src-noconflict/ext-language_tools', () => ({}))
 
 const createMockFormik = (
   values: FormikValues = {},

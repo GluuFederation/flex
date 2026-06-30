@@ -78,15 +78,31 @@ describe('SidebarMenuItem', () => {
     expect(screen.queryByText('Group')).not.toBeInTheDocument()
   })
 
-  it('applies the active class from props when the entry is active', () => {
-    const id = 'will-not-match'
-    // active class depends on the generated entry id, so we assert the
-    // li carries the structural entry class instead.
+  it('marks the li active when the resolved entry is active', () => {
+    // The entry is keyed by a generated useId(), so back the entries map with a
+    // Proxy that resolves any id to an active entry — this exercises the active
+    // branch regardless of the generated id.
+    const activeEntries = new Proxy({} as Record<string, SidebarMenuEntry>, {
+      get: (_target, key): SidebarMenuEntry | undefined =>
+        typeof key === 'string' ? { id: key, exact: true, active: true } : undefined,
+    })
     const { container } = renderItem(
       { title: 'Dashboard', to: '/dashboard', sidebarMenuActiveClass: 'is-active' },
-      { entries: { [id]: { id, exact: true, active: true } } },
+      { entries: activeEntries },
     )
-    expect(container.querySelector('li')).toHaveClass('sidebar-menu__entry')
+    const li = container.querySelector('li') as HTMLElement
+    expect(li).toHaveClass('active')
+
+    // Sanity check: an inactive entry does NOT get the active class.
+    const inactiveEntries = new Proxy({} as Record<string, SidebarMenuEntry>, {
+      get: (_target, key): SidebarMenuEntry | undefined =>
+        typeof key === 'string' ? { id: key, exact: true, active: false } : undefined,
+    })
+    const { container: inactive } = renderItem(
+      { title: 'Reports', to: '/reports', sidebarMenuActiveClass: 'is-active' },
+      { entries: inactiveEntries },
+    )
+    expect(inactive.querySelector('li')).not.toHaveClass('active')
   })
 
   it('renders a caret when there are children and noCaret is not set', () => {

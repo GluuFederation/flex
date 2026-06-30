@@ -3,6 +3,7 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n'
 import { ThemeDropdownComponent } from 'Routes/Apps/Gluu/ThemeDropdown'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
+import { STORAGE_KEYS } from '@/constants'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 
 const mockDispatch = jest.fn()
@@ -56,7 +57,7 @@ describe('ThemeDropdownComponent', () => {
     openDropdown()
     fireEvent.click(screen.getByText('Light'))
     expect(mockDispatch).toHaveBeenCalledWith({ type: THEME_LIGHT })
-    expect(window.localStorage.getItem('userConfig')).toBeNull()
+    expect(window.localStorage.getItem(STORAGE_KEYS.USER_CONFIG)).toBeNull()
   })
 
   it('persists the theme to userConfig keyed by inum and dispatches', () => {
@@ -65,21 +66,21 @@ describe('ThemeDropdownComponent', () => {
     fireEvent.click(screen.getByText('Light'))
 
     expect(mockDispatch).toHaveBeenCalledWith({ type: THEME_LIGHT })
-    const stored = JSON.parse(window.localStorage.getItem('userConfig') ?? '{}')
+    const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.USER_CONFIG) ?? '{}')
     expect(stored.theme['user-123']).toBe(THEME_LIGHT)
     expect(stored.lang).toEqual({})
   })
 
   it('merges into existing userConfig theme map for other users', () => {
     window.localStorage.setItem(
-      'userConfig',
+      STORAGE_KEYS.USER_CONFIG,
       JSON.stringify({ lang: { 'user-999': 'en' }, theme: { 'user-999': THEME_DARK } }),
     )
     renderDropdown({ inum: 'user-123' })
     openDropdown()
     fireEvent.click(screen.getByText('Light'))
 
-    const stored = JSON.parse(window.localStorage.getItem('userConfig') ?? '{}')
+    const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.USER_CONFIG) ?? '{}')
     expect(stored.theme['user-123']).toBe(THEME_LIGHT)
     expect(stored.theme['user-999']).toBe(THEME_DARK)
     expect(stored.lang).toEqual({ 'user-999': 'en' })
