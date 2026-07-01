@@ -72,12 +72,20 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
   )
 
   const displayValue = value != null ? String(value) : ''
+  const resolvedValues = useMemo(() => {
+    if (!displayValue) return values
+    const hasValue = values.some(
+      (item) => (typeof item === 'string' ? item : item.value) === displayValue,
+    )
+    return hasValue ? values : [displayValue, ...values]
+  }, [values, displayValue])
+
   const options = useMemo(
     () =>
-      deduplicateSelectValues(values).map((item) =>
+      deduplicateSelectValues(resolvedValues).map((item) =>
         typeof item === 'string' ? item : (item.label ?? item.value),
       ),
-    [values],
+    [resolvedValues],
   )
 
   const content = freeSolo ? (
@@ -147,7 +155,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             className={classes.select}
           >
             {!hideChooseOption && <option value="">{t('actions.choose')}...</option>}
-            {deduplicateSelectValues(values).map((item) => {
+            {deduplicateSelectValues(resolvedValues).map((item) => {
               const optionValue = typeof item === 'string' ? item : item.value
               const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
               return (
