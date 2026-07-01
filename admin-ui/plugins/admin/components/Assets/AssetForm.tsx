@@ -36,10 +36,13 @@ import { T_KEYS } from './constants'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<RouteParams>()
-  const { data: assetPage, isLoading: isLoadingAsset } = useGetAssetByInum(id ?? '', {
+  const { data: assetResponse, isLoading: isLoadingAsset } = useGetAssetByInum(id ?? '', {
     query: { enabled: !!id },
   })
-  const asset = assetPage?.entries?.[0] as Document | undefined
+  const asset = useMemo(() => {
+    const entry = assetResponse?.entries?.[0]
+    return (entry ?? assetResponse) as Document | undefined
+  }, [assetResponse])
   const { data: servicesData } = useAssetServices()
   const services = servicesData ?? []
   const { t, i18n } = useTranslation()
