@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import type { CacheConfiguration } from 'JansConfigApi'
 import type { LogAuditParams } from 'Utils/AuditLogger'
-import { useCacheAudit } from 'Plugins/services/Components/hooks/useCacheAudit'
+import { useCacheAudit } from 'Plugins/services/components/hooks/useCacheAudit'
 
 const mockLogAuditUserAction = jest.fn()
 const mockLoggerError = jest.fn()

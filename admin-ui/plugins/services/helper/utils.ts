@@ -8,7 +8,7 @@ import type {
   MemcachedCacheFormValues,
   RedisCacheFormValues,
   NativePersistenceCacheFormValues,
-} from '../Components/types'
+} from '../components/types'
 
 export const isInMemoryCache = (
   values: CacheFormValues | CacheFormValuesUnion,

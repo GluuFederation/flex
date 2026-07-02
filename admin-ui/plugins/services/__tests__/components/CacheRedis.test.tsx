@@ -2,8 +2,8 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { useFormik } from 'formik'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import CacheRedis from 'Plugins/services/Components/CacheRedis'
-import type { CacheFormValues } from 'Plugins/services/Components/types'
+import CacheRedis from 'Plugins/services/components/CacheRedis'
+import type { CacheFormValues } from 'Plugins/services/components/types'
 
 const classes: Record<string, string> = {
   sectionGrid: 'sectionGrid',

@@ -3,8 +3,8 @@ import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { ROUTES } from '@/helpers/navigation'
 import { createLazyRoute } from '@/utils/RouteLoader'
 
-const CachePage = createLazyRoute(() => import('./Components/CachePage'))
-const PersistenceDetail = createLazyRoute(() => import('./Components/PersistenceDetail'))
+const CachePage = createLazyRoute(() => import('./components/CachePage'))
+const PersistenceDetail = createLazyRoute(() => import('./components/PersistenceDetail'))
 
 const pluginMetadata = {
   menus: [

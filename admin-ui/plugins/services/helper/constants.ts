@@ -1,4 +1,4 @@
-import type { CacheFormValues } from '../Components/types'
+import type { CacheFormValues } from '../components/types'
 
 type CacheFieldLabel = { key: keyof CacheFormValues; label: string }
 
