@@ -2,8 +2,8 @@ import { type ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import LicenseDetailsPage from './LicenseDetailsPage'
-import AppTestWrapper from '../Apps/Gluu/Tests/Components/AppTestWrapper'
+import LicenseDetailsPage from '../LicenseDetailsPage'
+import AppTestWrapper from '../../Apps/Gluu/Tests/Components/AppTestWrapper'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: () => ({
@@ -24,7 +24,7 @@ jest.mock('@/cedarling/utility', () => {
   }
 })
 
-jest.mock('../Apps/Gluu/GluuCommitDialog', () => ({
+jest.mock('../../Apps/Gluu/GluuCommitDialog', () => ({
   __esModule: true,
   default: () => null,
 }))
@@ -45,7 +45,7 @@ const mockLicense = {
   validityPeriod: '2022-10-01T00:00Z',
 }
 
-jest.mock('./hooks/useLicenseDetails', () => ({
+jest.mock('../hooks/useLicenseDetails', () => ({
   useLicenseDetails: () => ({
     item: mockLicense,
     loading: false,

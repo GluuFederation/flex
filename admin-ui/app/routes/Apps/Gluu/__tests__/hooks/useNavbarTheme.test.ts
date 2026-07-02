@@ -4,7 +4,7 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import type { ThemeContextType } from '@/context/theme/themeContext'
 import { themeConfig } from '@/context/theme/config'
 import { THEME_LIGHT, THEME_DARK, DEFAULT_THEME, type ThemeValue } from '@/context/theme/constants'
-import { useNavbarTheme } from '../useNavbarTheme'
+import { useNavbarTheme } from '../../hooks/useNavbarTheme'
 
 const makeWrapper = (theme: ThemeValue) => {
   const value: ThemeContextType = {

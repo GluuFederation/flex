@@ -4,7 +4,7 @@ import {
   isRedisCache,
   isNativePersistenceCache,
 } from 'Plugins/services/helper/utils'
-import type { CacheFormValues } from 'Plugins/services/Components/types'
+import type { CacheFormValues } from 'Plugins/services/components/types'
 
 const baseCacheValues: CacheFormValues = {
   cacheProviderType: 'IN_MEMORY',

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { LanguageMenu } from '../LanguageMenu'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 it('All supported languages will be visible', () => {
   render(

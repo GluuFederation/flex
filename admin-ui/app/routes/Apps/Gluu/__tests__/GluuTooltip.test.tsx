@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import GluuTooltip from '../GluuTooltip'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import userEvent from '@testing-library/user-event'
 
 it('Test gluutooltip', async () => {

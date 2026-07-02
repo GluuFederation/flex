@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import setTitle from 'Utils/SetTitle'
-import { usePageTitle } from '../usePageTitle'
+import { usePageTitle } from '../../hooks/usePageTitle'
 
 describe('usePageTitle', () => {
   afterEach(() => {

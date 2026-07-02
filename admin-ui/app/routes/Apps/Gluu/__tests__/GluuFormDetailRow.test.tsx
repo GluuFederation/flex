@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import GluuFormDetailRow from '../GluuFormDetailRow'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 const LABEL = 'fields.application_type'
 const VALUE = 'openid'

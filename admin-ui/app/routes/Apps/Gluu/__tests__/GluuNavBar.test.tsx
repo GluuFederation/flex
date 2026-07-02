@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import type { UserInfo } from 'Redux/features/types/authTypes'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import GluuNavBar from '../GluuNavBar'
 
 const createTestStore = (userinfo: UserInfo | null): Store =>

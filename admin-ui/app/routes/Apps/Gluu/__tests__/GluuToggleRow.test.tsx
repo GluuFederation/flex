@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import GluuToggleRow from '../GluuToggleRow'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 const LABEL = 'Enable Feature'
 const NAME = 'enabledFeature'

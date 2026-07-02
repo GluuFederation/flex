@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import GluuInlineInput from '../GluuInlineInput'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 const LABEL = 'fields.application_type'
 const NAME = 'application_type'

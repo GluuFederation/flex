@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import GluuAutocomplete from '../GluuAutocomplete'
-import AppTestWrapper from './Components/AppTestWrapper'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import type { AutocompleteOption } from '../types/GluuAutocomplete.types'
 
 const NAME = 'servers'

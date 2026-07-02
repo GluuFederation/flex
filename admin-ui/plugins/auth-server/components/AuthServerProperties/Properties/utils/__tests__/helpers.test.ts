@@ -1,4 +1,4 @@
-import { generateLabel } from './helpers'
+import { generateLabel } from '../helpers'
 
 describe('generateLabel', () => {
   it('title-cases camelCase keys without lowercasing inner words', () => {
