@@ -60,6 +60,13 @@
         @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             width: 0;
         }
+
+        // On mobile the desktop sidebar is fully replaced by the bottom
+        // navigation bar, so hide it outright rather than merely collapsing
+        // its width. Breakpoint mirrors MOBILE_MEDIA_QUERY (max-width: 767px).
+        @media (max-width: 767px) {
+            display: none;
+        }
     }
 
     &__content {
@@ -67,6 +74,14 @@
 
         @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             padding: 0.5rem;
+        }
+
+        // Leave room for the fixed mobile bottom navigation bar so page
+        // content isn't hidden behind it (bar height + safe-area inset). The
+        // height comes from --mobile-bottom-nav-height, bridged at runtime from
+        // MOBILE_BOTTOM_NAV_HEIGHT in constants; the 64px fallback matches it.
+        @media (max-width: 767px) {
+            padding-bottom: calc(var(--mobile-bottom-nav-height, 64px) + env(safe-area-inset-bottom) + 0.5rem);
         }
     }
 

@@ -100,6 +100,15 @@ const customColors = {
   cedarInfoBorderLight: '#a6d3e6',
   cedarInfoTextLight: '#4f8196',
 
+  mobileNavActive: '#00a65d',
+  mobileNavInactiveLight: '#6b7b8e',
+  mobileNavInactiveDark: '#8ca1b4',
+
+  mobileSheetTileChipLight: '#f5f6f8',
+  mobileSheetTileChipDark: '#16395d',
+
+  mobileSheetTitleDark: '#e1e5ea',
+
   // Other
   darkBorderGradientBase: '#00d5e6',
   ribbonShadowColor: '#1a237e',

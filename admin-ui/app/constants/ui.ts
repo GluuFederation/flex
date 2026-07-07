@@ -50,6 +50,8 @@ export const SCROLLBAR = {
   BORDER_RADIUS: 4,
 } as const
 
+export const MOBILE_BOTTOM_NAV_HEIGHT = 64
+
 export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
   '&::-webkit-scrollbar': {
     width: SCROLLBAR.WIDTH,
@@ -87,6 +89,7 @@ export const SPACING = {
 export const BORDER_RADIUS = {
   DEFAULT: 16,
   LARGE: 24,
+  MOBILE_SHEET: 20,
   MEDIUM: 14,
   ACCORDION: 10,
   SMALL_MEDIUM: 8,

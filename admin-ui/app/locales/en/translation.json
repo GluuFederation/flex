@@ -858,7 +858,11 @@
     "static_configuration": "Static Configuration",
     "dynamic_configuration": "Dynamic Configuration",
     "upload_agama_project": "Upload Agama project",
-    "add_community_project": "Add a Community Project"
+    "add_community_project": "Add a Community Project",
+    "more": "More",
+    "allCategory": "All Category",
+    "notification": "Notification",
+    "mobileNavigation": "Mobile navigation"
   },
   "footer": {
     "copyright": "(C) {{year}} All Rights Reserved.",

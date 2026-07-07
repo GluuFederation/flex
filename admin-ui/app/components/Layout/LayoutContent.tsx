@@ -2,7 +2,7 @@ import React, { use, useEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import customColors, { getCustomColorsAsCssVars, getLoadingOverlayRgba } from '@/customColors'
-import { getListHoverOpacity, SCROLLBAR } from '@/constants'
+import { getListHoverOpacity, SCROLLBAR, MOBILE_BOTTOM_NAV_HEIGHT } from '@/constants'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
 
@@ -42,6 +42,7 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
       '--theme-scrollbar-width': `${SCROLLBAR.WIDTH}px`,
       '--theme-scrollbar-height': `${SCROLLBAR.HEIGHT}px`,
       '--theme-scrollbar-radius': `${SCROLLBAR.BORDER_RADIUS}px`,
+      '--mobile-bottom-nav-height': `${MOBILE_BOTTOM_NAV_HEIGHT}px`,
       '--theme-sidebar-background': themeColors.menu.background,
       '--theme-navbar-background': themeColors.navbar.background,
       '--theme-navbar-border': themeColors.navbar.border,
