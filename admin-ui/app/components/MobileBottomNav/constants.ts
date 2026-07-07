@@ -1,4 +1,5 @@
 import { ROUTES } from '@/helpers/navigation'
+import { MOBILE_BOTTOM_NAV_HEIGHT } from '@/constants/ui'
 
 export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
@@ -30,7 +31,7 @@ export const PRIMARY_TAB_DEFS = [
 export const MORE_TAB_KEY = 'more'
 
 export const BOTTOM_NAV = {
-  HEIGHT: 64,
+  HEIGHT: MOBILE_BOTTOM_NAV_HEIGHT,
   ICON_SIZE: 26,
   TAB_GAP: 4,
   TAB_MIN_HEIGHT: 44,

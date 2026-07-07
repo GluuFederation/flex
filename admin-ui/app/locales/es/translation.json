@@ -861,7 +861,8 @@
     "metrics": "Métricas",
     "more": "Más",
     "allCategory": "Todas las categorías",
-    "notification": "Notificación"
+    "notification": "Notificación",
+    "mobileNavigation": "Navegación móvil"
   },
   "footer": {
     "copyright": "(C) {{year}} Todos los derechos reservados.",

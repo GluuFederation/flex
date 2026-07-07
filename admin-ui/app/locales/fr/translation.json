@@ -158,7 +158,8 @@
     "smtp": "SMTP",
     "more": "Plus",
     "allCategory": "Toutes les catégories",
-    "notification": "Notification"
+    "notification": "Notification",
+    "mobileNavigation": "Navigation mobile"
   },
   "actions": {
     "accept": "J'accepte",

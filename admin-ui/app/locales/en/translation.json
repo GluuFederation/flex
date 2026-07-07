@@ -861,7 +861,8 @@
     "add_community_project": "Add a Community Project",
     "more": "More",
     "allCategory": "All Category",
-    "notification": "Notification"
+    "notification": "Notification",
+    "mobileNavigation": "Mobile navigation"
   },
   "footer": {
     "copyright": "(C) {{year}} All Rights Reserved.",

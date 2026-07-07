@@ -29,7 +29,7 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     backgroundColor: colors.background,
     borderRadius: `${BORDER_RADIUS.MOBILE_SHEET}px ${BORDER_RADIUS.MOBILE_SHEET}px 0 0`,
     boxShadow: `0px ${SHEET.SHADOW_OFFSET_Y}px ${SHEET.SHADOW_BLUR}px 0px rgba(${hexToRgb(customColors.black)}, ${SHEET.SHADOW_OPACITY})`,
-    paddingBottom: BOTTOM_NAV.HEIGHT,
+    paddingBottom: `calc(${BOTTOM_NAV.HEIGHT}px + env(safe-area-inset-bottom))`,
   },
   header: {
     position: 'relative',

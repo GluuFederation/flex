@@ -16,10 +16,10 @@ describe('SHEET_ICON_BY_KEY', () => {
     }
   })
 
-  it('tags each icon with the shared sheet-icon className', () => {
+  it('tags each icon with the shared icon className', () => {
     for (const key of Object.keys(SHEET_ICON_BY_KEY)) {
       const element = SHEET_ICON_BY_KEY[key] as { props: { className?: string } }
-      expect(element.props.className).toBe('mobile-sheet-icon')
+      expect(element.props.className).toBe('mobile-nav-icon')
     }
   })
 })

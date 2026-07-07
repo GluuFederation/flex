@@ -9,6 +9,10 @@ export const SHEET_KEYS = {
 
 export type SheetKey = (typeof SHEET_KEYS)[keyof typeof SHEET_KEYS]
 
+export type SectionKey = Exclude<SheetKey, typeof SHEET_KEYS.MORE>
+
+export const isSectionKey = (key: SheetKey): key is SectionKey => key !== SHEET_KEYS.MORE
+
 export type SheetItem = {
   key: string
   titleKey: string
@@ -78,7 +82,7 @@ export type SectionMenu = {
   items: readonly SheetItem[]
 }
 
-export const SECTION_MENUS: Readonly<Record<'home' | 'auth-server' | 'users', SectionMenu>> = {
+export const SECTION_MENUS: Readonly<Record<SectionKey, SectionMenu>> = {
   'home': {
     key: SHEET_KEYS.HOME,
     titleKey: 'menus.home',

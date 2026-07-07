@@ -13,16 +13,22 @@ import {
   LockIcon,
 } from '../SVG'
 
+const ICON_CLASS = 'mobile-nav-icon'
+
+export const PRIMARY_ICON_BY_KEY: Record<string, JSX.Element> = {
+  home: <HomeIcon className={ICON_CLASS} />,
+  oauthserver: <OAuthIcon className={ICON_CLASS} />,
+  usersmanagement: <UsersIcon className={ICON_CLASS} />,
+}
+
 export const SHEET_ICON_BY_KEY: Record<string, JSX.Element> = {
-  home: <HomeIcon className="mobile-sheet-icon" />,
-  oauthserver: <OAuthIcon className="mobile-sheet-icon" />,
-  usersmanagement: <UsersIcon className="mobile-sheet-icon" />,
-  scripts: <ScriptsIcon className="mobile-sheet-icon" />,
-  user_claims: <UserClaimsIcon className="mobile-sheet-icon" />,
-  services: <ServicesIcon className="mobile-sheet-icon" />,
-  smtpmanagement: <SmtpZoneIcon className="mobile-sheet-icon" />,
-  scim: <ScimIcon className="mobile-sheet-icon" />,
-  fidomanagement: <FidoIcon className="mobile-sheet-icon" />,
-  jans_lock: <LockIcon className="mobile-sheet-icon" />,
-  notification: <NotificationsNoneOutlinedIcon className="mobile-sheet-icon" />,
+  ...PRIMARY_ICON_BY_KEY,
+  scripts: <ScriptsIcon className={ICON_CLASS} />,
+  user_claims: <UserClaimsIcon className={ICON_CLASS} />,
+  services: <ServicesIcon className={ICON_CLASS} />,
+  smtpmanagement: <SmtpZoneIcon className={ICON_CLASS} />,
+  scim: <ScimIcon className={ICON_CLASS} />,
+  fidomanagement: <FidoIcon className={ICON_CLASS} />,
+  jans_lock: <LockIcon className={ICON_CLASS} />,
+  notification: <NotificationsNoneOutlinedIcon className={ICON_CLASS} />,
 }

@@ -8,18 +8,12 @@ import customColors from '@/customColors'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_LIGHT } from '@/context/theme/constants'
-import { HomeIcon, OAuthIcon, UsersIcon } from '../SVG'
 import { useStyles } from './MobileBottomNav.style'
 import { MOBILE_MEDIA_QUERY, PRIMARY_TAB_DEFS, MORE_TAB_KEY } from './constants'
 import MobileNavSheet from './MobileNavSheet'
+import { PRIMARY_ICON_BY_KEY } from './sheetIcons'
 import { isMoreMenuPath, type SheetItem, type SheetKey } from './sheetConstants'
 import type { MobileNavTab, MobileBottomNavThemeColors } from './types'
-
-const ICON_BY_KEY: Record<string, JSX.Element> = {
-  home: <HomeIcon className="mobile-nav-icon" />,
-  oauthserver: <OAuthIcon className="mobile-nav-icon" />,
-  usersmanagement: <UsersIcon className="mobile-nav-icon" />,
-}
 
 const MobileBottomNav = (): JSX.Element | null => {
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
@@ -50,7 +44,7 @@ const MobileBottomNav = (): JSX.Element | null => {
       path: def.path,
       basePath: def.basePath,
       directNav: 'directNav' in def ? def.directNav : undefined,
-      icon: ICON_BY_KEY[def.iconKey],
+      icon: PRIMARY_ICON_BY_KEY[def.iconKey],
     }))
     return [
       ...primary,
@@ -100,7 +94,7 @@ const MobileBottomNav = (): JSX.Element | null => {
     <>
       <nav
         className={cx(classes.root, openSheet && classes.rootElevated)}
-        aria-label={t('menus.home')}
+        aria-label={t('menus.mobileNavigation')}
         data-testid="mobile-bottom-nav"
       >
         {tabs.map((tab) => {

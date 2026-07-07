@@ -157,7 +157,8 @@
     "webhooks": "Webhooks",
     "more": "Mais",
     "allCategory": "Todas as categorias",
-    "notification": "Notificação"
+    "notification": "Notificação",
+    "mobileNavigation": "Navegação móvel"
   },
   "actions": {
     "accept": "Aceitar",

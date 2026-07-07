@@ -77,9 +77,11 @@
         }
 
         // Leave room for the fixed mobile bottom navigation bar so page
-        // content isn't hidden behind it (bar height + safe-area inset).
+        // content isn't hidden behind it (bar height + safe-area inset). The
+        // height comes from --mobile-bottom-nav-height, bridged at runtime from
+        // MOBILE_BOTTOM_NAV_HEIGHT in constants; the 64px fallback matches it.
         @media (max-width: 767px) {
-            padding-bottom: calc(64px + env(safe-area-inset-bottom) + 0.5rem);
+            padding-bottom: calc(var(--mobile-bottom-nav-height, 64px) + env(safe-area-inset-bottom) + 0.5rem);
         }
     }
 

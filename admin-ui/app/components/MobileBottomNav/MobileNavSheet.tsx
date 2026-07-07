@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type JSX } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -15,6 +15,7 @@ import {
   MORE_TILE_DEFS,
   SECTION_MENUS,
   SHEET_KEYS,
+  isSectionKey,
   type SheetItem,
   type SheetKey,
 } from './sheetConstants'
@@ -37,6 +38,7 @@ const MobileNavSheet = ({
   const isLight = state.theme === THEME_LIGHT
   const [expandedKeys, setExpandedKeys] = useState<readonly string[]>([])
   const [drillTile, setDrillTile] = useState<SheetItem | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const toggleExpanded = useCallback((key: string): void => {
     setExpandedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
@@ -67,6 +69,11 @@ const MobileNavSheet = ({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [openKey, onClose])
 
+  useEffect(() => {
+    if (!openKey) return
+    closeButtonRef.current?.focus()
+  }, [openKey])
+
   const isItemActive = useCallback(
     (item: SheetItem): boolean =>
       !!item.path &&
@@ -89,7 +96,7 @@ const MobileNavSheet = ({
       return
     }
     setDrillTile(null)
-    const menu = SECTION_MENUS[openKey as 'home' | 'auth-server' | 'users']
+    const menu = SECTION_MENUS[openKey]
     const activeGroups = (menu?.items ?? [])
       .filter((item) => item.children?.some((child) => isItemActive(child)))
       .map((item) => item.key)
@@ -99,7 +106,7 @@ const MobileNavSheet = ({
   if (!openKey || typeof document === 'undefined') return null
 
   const isMore = openKey === SHEET_KEYS.MORE
-  const section = isMore ? null : SECTION_MENUS[openKey as 'home' | 'auth-server' | 'users']
+  const section = isSectionKey(openKey) ? SECTION_MENUS[openKey] : null
   const isDrilled = isMore && drillTile !== null
 
   const headerTitleKey = isDrilled
@@ -156,6 +163,7 @@ const MobileNavSheet = ({
             {t(headerTitleKey)}
           </span>
           <button
+            ref={closeButtonRef}
             type="button"
             className={classes.close}
             onClick={onClose}

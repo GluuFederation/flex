@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }))
 
@@ -180,5 +180,13 @@ describe('MobileNavSheet', () => {
     render(<MobileNavSheet openKey="more" onClose={onClose} onSelect={noop} />)
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(onClose).toHaveBeenCalled()
+  })
+
+  it('moves focus into the dialog (onto the header close button) when it opens', () => {
+    render(<MobileNavSheet openKey="more" onClose={noop} onSelect={noop} />)
+    const headerClose = within(screen.getByTestId('mobile-nav-sheet')).getByRole('button', {
+      name: 'actions.close',
+    })
+    expect(headerClose).toHaveFocus()
   })
 })
