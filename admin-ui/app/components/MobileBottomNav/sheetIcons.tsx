@@ -12,10 +12,11 @@ import {
   FidoIcon,
   LockIcon,
 } from '../SVG'
+import type { PrimaryIconKey } from './constants'
 
 const ICON_CLASS = 'mobile-nav-icon'
 
-export const PRIMARY_ICON_BY_KEY: Record<string, JSX.Element> = {
+export const PRIMARY_ICON_BY_KEY: Record<PrimaryIconKey, JSX.Element> = {
   home: <HomeIcon className={ICON_CLASS} />,
   oauthserver: <OAuthIcon className={ICON_CLASS} />,
   usersmanagement: <UsersIcon className={ICON_CLASS} />,

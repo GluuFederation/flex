@@ -28,6 +28,8 @@ export const PRIMARY_TAB_DEFS = [
   },
 ] as const
 
+export type PrimaryIconKey = (typeof PRIMARY_TAB_DEFS)[number]['iconKey']
+
 export const MORE_TAB_KEY = 'more'
 
 export const BOTTOM_NAV = {
