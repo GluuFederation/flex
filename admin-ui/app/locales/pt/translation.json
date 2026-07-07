@@ -154,7 +154,10 @@
     "jans_link": "Link Jans",
     "metrics": "Métricas",
     "smtp": "SMTP",
-    "webhooks": "Webhooks"
+    "webhooks": "Webhooks",
+    "more": "Mais",
+    "allCategory": "Todas as categorias",
+    "notification": "Notificação"
   },
   "actions": {
     "accept": "Aceitar",

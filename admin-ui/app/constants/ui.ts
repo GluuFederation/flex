@@ -87,6 +87,7 @@ export const SPACING = {
 export const BORDER_RADIUS = {
   DEFAULT: 16,
   LARGE: 24,
+  MOBILE_SHEET: 20,
   MEDIUM: 14,
   ACCORDION: 10,
   SMALL_MEDIUM: 8,

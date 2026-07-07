@@ -155,7 +155,10 @@
     "upload_agama_project": "Télécharger le projet Agama",
     "add_community_project": "Ajouter un projet communautaire",
     "agama": "Agama",
-    "smtp": "SMTP"
+    "smtp": "SMTP",
+    "more": "Plus",
+    "allCategory": "Toutes les catégories",
+    "notification": "Notification"
   },
   "actions": {
     "accept": "J'accepte",

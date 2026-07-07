@@ -28,6 +28,13 @@ jest.mock('../../routes', () => ({
   RoutedSidebars: () => <div data-testid="sidebars" />,
 }))
 
+// MobileBottomNav has its own suite and pulls in theme/router at import time;
+// stub it so this test stays focused on AppLayout's theme resolution.
+jest.mock('@/components/MobileBottomNav/MobileBottomNav', () => ({
+  __esModule: true,
+  default: () => <div data-testid="mobile-bottom-nav" />,
+}))
+
 // SCSS + favicon asset imports are handled by jest asset mocks, but stub the
 // stylesheet side-effects and the .ico favicon (not covered by the asset mapper)
 // explicitly to keep the module graph small.

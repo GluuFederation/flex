@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Layout, ThemeProvider } from 'Components'
+import MobileBottomNav from '@/components/MobileBottomNav/MobileBottomNav'
 import { DEFAULT_THEME, isValidTheme } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
@@ -84,6 +85,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <RoutedSidebars />
         </Layout.Sidebar>
         <Layout.Content>{children}</Layout.Content>
+        {/* Not a Navbar/Sidebar/Content slot — Layout renders it via otherChildren
+            at the root, where it self-positions fixed at the viewport bottom on
+            mobile only. */}
+        <MobileBottomNav />
       </Layout>
     </ThemeProvider>
   )

@@ -858,7 +858,10 @@
     "dynamic_configuration": "Configuración Dinámica",
     "upload_agama_project": "Subir Proyecto Agama",
     "add_community_project": "Agregar un Proyecto de la Comunidad",
-    "metrics": "Métricas"
+    "metrics": "Métricas",
+    "more": "Más",
+    "allCategory": "Todas las categorías",
+    "notification": "Notificación"
   },
   "footer": {
     "copyright": "(C) {{year}} Todos los derechos reservados.",
