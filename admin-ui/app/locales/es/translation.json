@@ -759,6 +759,7 @@
     "total_users_label": "Total de Usuarios"
   },
   "languages": {
+    "language": "Idioma",
     "french": "Frances",
     "english": "Ingles",
     "portuguese": "Portugues",
@@ -773,6 +774,7 @@
     "no_notifications": "Sin notificaciones"
   },
   "menus": {
+    "hello": "Hola {{name}}",
     "assets": "Recursos",
     "scim": "SCIM",
     "saml": "SAML",
@@ -1584,7 +1586,8 @@
     "onboarding_time_graph": "Gráfico de Tiempo de Incorporación",
     "passkey_adoption_rate": "Tasa de Adopción de Passkey",
     "passkey_authentication": "Autenticación con Passkey",
-    "passkey_metrics_dashboard": "Panel de Métricas de Passkey"
+    "passkey_metrics_dashboard": "Panel de Métricas de Passkey",
+    "services_health_heading": "Estado de Servicios"
   },
   "options": {
     "admin": "ADMIN",

@@ -759,6 +759,7 @@
     "search_filter": "Search Filter"
   },
   "languages": {
+    "language": "Language",
     "french": "French",
     "english": "English",
     "portuguese": "Portuguese",
@@ -773,6 +774,7 @@
     "no_notifications": "No notifications"
   },
   "menus": {
+    "hello": "Hello {{name}}",
     "assets": "Assets",
     "scim": "SCIM",
     "saml": "SAML",
@@ -1187,7 +1189,7 @@
     "service_status_down": "Service is currently unavailable.",
     "service_status_degraded": "Service is experiencing issues.",
     "service_status_unknown": "Service status could not be determined.",
-    "services_healthy_count": "{{healthyCount}} of {{totalCount}} services healthy",
+    "services_healthy_count": "{{healthyCount}} of {{totalCount}} Services Healthy",
     "error_fetching_health_status": "Error fetching health status. Please try again.",
     "no_services_found": "No services found.",
     "fido2_metrics_health_status": "FIDO2 Metrics",
@@ -1581,7 +1583,8 @@
     "view_identity_provider": "View Identity Provider",
     "delete_identity_provider": "Delete Identity Provider",
     "search_filter": "Search Filter",
-    "uma_resource_detail": "UMA Resource Detail"
+    "uma_resource_detail": "UMA Resource Detail",
+    "services_health_heading": "Services Health"
   },
   "options": {
     "admin": "ADMIN",

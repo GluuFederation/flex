@@ -123,6 +123,46 @@ const buildTextFieldSx = (
 const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 
 const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
+  // Keep the calendar popup within the viewport on small screens instead of
+  // letting it render at its full desktop width and overflow the card/screen.
+  '@media (max-width:767px)': {
+    '& .MuiPaper-root': {
+      width: 'min(256px, calc(100vw - 32px))',
+      maxWidth: 'calc(100vw - 32px)',
+      boxSizing: 'border-box',
+    },
+    '& .MuiDateCalendar-root': {
+      width: '100%',
+      maxWidth: '100%',
+      height: 'auto',
+      maxHeight: 'none',
+    },
+    // The month grid has a fixed min-height on desktop that leaves large empty
+    // space on mobile; let it size to its rows and compact the day cells.
+    '& .MuiDayCalendar-slideTransition': {
+      minHeight: '180px',
+    },
+    '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
+      justifyContent: 'space-around',
+    },
+    '& .MuiPickersDay-root, & .MuiPickerDay-root': {
+      width: '28px',
+      height: '28px',
+      margin: '1px',
+      fontSize: '12px',
+    },
+    '& .MuiDayCalendar-weekDayLabel': {
+      width: '28px',
+      margin: '1px',
+      fontSize: '12px',
+    },
+    // Tighten the calendar header (month label + arrows) to the narrower width.
+    '& .MuiPickersCalendarHeader-root': {
+      paddingLeft: '12px',
+      paddingRight: '8px',
+      marginTop: '8px',
+    },
+  },
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,

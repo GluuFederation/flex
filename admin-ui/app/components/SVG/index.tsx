@@ -12,6 +12,7 @@ import SmtpZoneIcon from './menu/Smtp'
 import ScriptsIcon from './menu/Scripts'
 import LockIcon from './menu/Lock'
 import { ChevronIcon } from './Chevron'
+import { RefreshIcon } from './Refresh'
 
 export {
   JansKcLinkIcon,
@@ -28,4 +29,5 @@ export {
   ScriptsIcon,
   LockIcon,
   ChevronIcon,
+  RefreshIcon,
 }
