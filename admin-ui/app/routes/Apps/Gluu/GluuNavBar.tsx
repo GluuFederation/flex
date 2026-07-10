@@ -79,7 +79,7 @@ const GluuNavBar = () => {
     <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
       <Box className={classes.navbarContainer}>
         <Box className={classes.leftSection}>
-          <Link to={ROUTES.ROOT} className={classes.mobileLogo} aria-label={pageTitle}>
+          <Link to={ROUTES.ROOT} className={classes.mobileLogo} aria-label={t('menus.home')}>
             <LogoThemed width={103} height={40} variant="green" />
           </Link>
           <GluuText

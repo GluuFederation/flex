@@ -7,8 +7,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useTheme } from '@/context/theme/themeContext'
-import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { ensureLocaleLoaded } from '@/i18n'
+import { useThemePersistence } from '@/hooks/useThemePersistence'
 import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
 import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
@@ -40,7 +41,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   const { navigateToRoute } = useAppNavigation()
   const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
 
-  const { state: themeState, dispatch: themeDispatch } = useTheme()
+  const { state: themeState } = useTheme()
   const currentTheme = themeState.theme
   const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
@@ -74,42 +75,21 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
     }
   }, [isOpen])
 
-  const onChangeTheme = useCallback(
-    (value: string) => {
-      if (!isValidTheme(value)) {
-        logger.warn('Invalid theme value:', value)
-        return
-      }
-
-      const themeValue: ThemeValue = value
-
-      if (!inum) {
-        themeDispatch({ type: themeValue })
-        return
-      }
-
-      try {
-        const existingConfig = safeParseUserConfig()
-        const newConfig = {
-          ...existingConfig,
-          lang: existingConfig.lang || {},
-          theme: { ...(existingConfig.theme || {}), [inum]: themeValue },
-        }
-        storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
-      } catch (e) {
-        logger.error('Failed to parse userConfig:', e instanceof Error ? e : String(e))
-        storage.setJSON(STORAGE_KEYS.USER_CONFIG, { lang: {}, theme: { [inum]: themeValue } })
-      }
-
-      themeDispatch({ type: themeValue })
-    },
-    [inum, themeDispatch],
-  )
+  const onChangeTheme = useThemePersistence(userInfo)
 
   const changeLanguage = useCallback(
     (code: string) => {
       setLang(code)
-      void ensureLocaleLoaded(code).then(() => i18n.changeLanguage(code))
+      // i18n falls back to DEFAULT_LANG when a bundle is missing, so a failure
+      // here is not worth reverting the stored preference for.
+      void ensureLocaleLoaded(code)
+        .then(() => i18n.changeLanguage(code))
+        .catch((error) => {
+          logger.error(
+            `Failed to switch language to "${code}":`,
+            error instanceof Error ? error : String(error),
+          )
+        })
 
       const config = safeParseUserConfig()
       const langConfig = { ...(config?.lang || {}) }
