@@ -337,17 +337,17 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     statusSection: {
       width: '100%',
-      height: '106px',
+      minHeight: '106px',
       padding: '0px 6px',
       marginLeft: 0,
       marginRight: 0,
       display: 'flex',
       alignItems: 'center',
       [theme.breakpoints.down('md')]: {
-        height: '80px',
+        minHeight: '80px',
       },
       [theme.breakpoints.down('sm')]: {
-        height: '70px',
+        minHeight: '70px',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         height: 'auto',
@@ -362,9 +362,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       width: '100%',
       color: themeColors.text,
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '40px',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      columnGap: '40px',
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         'display': 'flex',
         'flexWrap': 'wrap',
@@ -386,6 +386,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: lineHeights.relaxed,
       color: themeColors.text,
       whiteSpace: 'nowrap',
+      flexShrink: 0,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes.base,
       },
@@ -401,12 +402,21 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       },
     },
     statusItems: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '40px',
-      flexWrap: 'nowrap',
-      flex: 1,
-      justifyContent: 'space-between',
+      'flex': 1,
+      'minWidth': 0,
+      'display': 'flex',
+      'flexWrap': 'wrap',
+      'alignItems': 'center',
+      'columnGap': '40px',
+      'rowGap': '8px',
+      '@media (min-width:768px) and (max-width:1199.98px)': {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        columnGap: '25px',
+        rowGap: '8px',
+      },
     },
     statusIndicator: {
       fontFamily,

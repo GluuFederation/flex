@@ -74,7 +74,8 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
           spacing={2}
           sx={{
             alignItems: 'center',
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
+            justifyContent: { xs: 'flex-start', md: 'flex-end' },
+            flexWrap: 'wrap',
           }}
         >
           <Grid sx={{ width: { xs: '100%', md: 'auto' } }}>

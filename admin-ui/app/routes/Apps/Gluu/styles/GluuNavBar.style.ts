@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants'
+import { MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X, SPACING } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
 export { MOBILE_MEDIA_QUERY }
@@ -13,19 +13,24 @@ interface NavbarColors {
 
 const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarColors }) => ({
   navbarWrapper: {
-    height: '106px',
-    width: '100%',
-    backgroundColor: navbarColors.background,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0px 60px',
-    position: 'relative',
-    marginTop: '-1px',
-    borderBottom: `1px solid ${navbarColors.border}`,
+    'height': '106px',
+    'width': '100%',
+    'backgroundColor': navbarColors.background,
+    'display': 'flex',
+    'alignItems': 'center',
+    'justifyContent': 'space-between',
+    'padding': '0px 60px',
+    'position': 'relative',
+    'marginTop': '-1px',
+    'borderBottom': `1px solid ${navbarColors.border}`,
+    '@media (min-width:768px) and (max-width:991.98px)': {
+      padding: `0px ${SPACING.PAGE}px`,
+    },
     [theme.breakpoints.down('md')]: {
-      padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
       height: '80px',
+    },
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
     },
     [theme.breakpoints.down('sm')]: {
       padding: `0px ${MOBILE_PAGE_PADDING_X.SM}px`,
@@ -44,9 +49,14 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     margin: 0,
     padding: '0px',
     lineHeight: 1,
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
+    display: 'block',
+    minWidth: 0,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    [theme.breakpoints.down('lg')]: {
+      fontSize: fontSizes.xl,
+    },
     [theme.breakpoints.down('md')]: {
       fontSize: fontSizes.lg,
     },
@@ -77,7 +87,8 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     alignItems: 'center',
     gap: '20px',
     height: '100%',
-    flexShrink: 0,
+    minWidth: 0,
+    flexShrink: 1,
   },
   rightSection: {
     display: 'flex',
@@ -86,6 +97,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     gap: '19px',
     height: '100%',
     minWidth: 0,
+    flexShrink: 0,
     [theme.breakpoints.down('md')]: {
       gap: '12px',
     },
