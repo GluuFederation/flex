@@ -54,6 +54,8 @@ export const MOBILE_BOTTOM_NAV_HEIGHT = 64
 
 export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
+export const TABLET_MAX_MEDIA_QUERY = '(max-width:1024px)'
+
 export const MOBILE_PAGE_PADDING_X = {
   MD: 20,
   SM: 15,

@@ -27,6 +27,7 @@ import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
 import { useClients } from 'Plugins/auth-server/components/OidcClients/hooks'
 import { useDashboardLockStats } from './hooks'
+import { TABLET_MAX_MEDIA_QUERY } from '@/constants'
 import { useStyles, MOBILE_MEDIA_QUERY } from './DashboardPage.style'
 import { GluuPageContent } from '@/components'
 import { StatusIndicator, SummaryCard, UserInfoItem } from './components'
@@ -46,6 +47,7 @@ const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
 const DashboardPage = () => {
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const isTabletDown = useMediaQuery(TABLET_MAX_MEDIA_QUERY)
   const pageTitle = usePageTitle()
 
   const themeContext = use(ThemeContext)
@@ -337,7 +339,7 @@ const DashboardPage = () => {
               </Grid>
             </Grid>
 
-            {isMobile && (
+            {isTabletDown && (
               <GluuText variant="div" className={classes.summarySectionTitle}>
                 {t('dashboard.summary_title')}:
               </GluuText>
