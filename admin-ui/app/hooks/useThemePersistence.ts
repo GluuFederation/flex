@@ -4,17 +4,9 @@ import { isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
+import { safeParseUserConfig } from '@/utils/userConfig'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 
-type UserConfig = {
-  lang?: Record<string, string>
-  theme?: Record<string, string>
-}
-
-/**
- * Applies a theme change and, when the user is identified, persists it to
- * `USER_CONFIG` keyed by `inum`. Anonymous users get the dispatch without a write.
- */
 export const useThemePersistence = (userInfo: UserInfo | null | undefined) => {
   const { dispatch } = useTheme()
   const inum = userInfo?.inum
@@ -29,8 +21,7 @@ export const useThemePersistence = (userInfo: UserInfo | null | undefined) => {
       const themeValue: ThemeValue = value
 
       if (inum) {
-        // storage.getJSON already logs and returns null on a parse failure.
-        const existingConfig = storage.getJSON<UserConfig>(STORAGE_KEYS.USER_CONFIG) ?? {}
+        const existingConfig = safeParseUserConfig()
         storage.setJSON(STORAGE_KEYS.USER_CONFIG, {
           ...existingConfig,
           lang: existingConfig.lang || {},

@@ -5,7 +5,6 @@ import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 const MOBILE_MEDIA_QUERY = '(max-width:767px)'
-// Below this width the 16px header title runs into the refresh icon.
 const NARROW_MEDIA_QUERY = '(max-width:350px)'
 
 interface HealthPageThemeColors {
@@ -27,9 +26,6 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
   })
 
   return {
-    // Screen-edge inset for the page on mobile. Figma insets the card 30px from
-    // each side (matching the Dashboard mobile layout); apply the same padding
-    // so the Health page lines up with the rest of the mobile design system.
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         paddingLeft: '30px',
@@ -48,7 +44,6 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         lineHeight: 'normal',
         color: themeColors.text,
         margin: 0,
-        // Figma gap from the heading baseline to the card top is ~34px.
         marginBottom: '34px',
       },
     },
@@ -93,8 +88,6 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       lineHeight: lineHeights.tight,
       color: themeColors.text,
       margin: 0,
-      // Without min-width:0 a flex item refuses to shrink below its content
-      // width, so the title would run under the refresh button.
       minWidth: 0,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -117,15 +110,11 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       top: '50%',
       transform: 'translateY(-50%)',
       zIndex: 10,
-      // In flow on mobile so it reserves its width and the title cannot overlap.
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         position: 'static',
         transform: 'none',
         flexShrink: 0,
-        // The title is conditional; keeps the button right-aligned when it is
-        // the header's only in-flow child.
         marginLeft: 'auto',
-        // Centres the 22px icon inside the button's 32px mobile box.
         marginTop: `${-(32 - 22) / 2}px`,
       },
     },
@@ -143,9 +132,6 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       fontSize: fontSizes.base,
       fontWeight: fontWeights.medium,
       lineHeight: lineHeights.relaxed,
-      // Icon-only on mobile per Figma: strip the button chrome and collapse the
-      // text label to zero size. GluuButton applies these via INLINE styles, so
-      // every override here must use !important to win over the inline values.
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         'minWidth': 'auto !important',
         'width': '32px !important',
@@ -157,7 +143,6 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         'border': 'none !important',
         'borderColor': 'transparent !important',
         'backgroundColor': 'transparent !important',
-        // Keep the refresh icon itself visible at a fixed size.
         '& svg, & .MuiSvgIcon-root': {
           fontSize: '22px !important',
         },

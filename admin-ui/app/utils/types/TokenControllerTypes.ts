@@ -20,9 +20,7 @@ export type AdditionalPayload = {
   tableData?: JsonValue
   omitPayload?: boolean
   [key: string]:
-    | JsonValue
-    | { action_message?: string; action_data?: AdditionalActionData }
-    | undefined
+    JsonValue | { action_message?: string; action_data?: AdditionalActionData } | undefined
 }
 
 export type AxiosErrorLike = {

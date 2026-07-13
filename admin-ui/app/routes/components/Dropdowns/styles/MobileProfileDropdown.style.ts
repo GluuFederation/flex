@@ -1,51 +1,48 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights } from '@/styles/fonts'
-import customColors from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
+import getThemeColor from '@/context/theme/config'
+import { THEME_DARK, type ThemeValue } from '@/context/theme/constants'
 
 type StyleParams = {
-  isDark: boolean
+  theme: ThemeValue
 }
 
-// Colors taken directly from the Figma dropdown spec (nodes 3755:1350 light /
-// 3755:1671 dark). Kept local to this component because they are dropdown-only
-// tokens that do not exist in the shared theme config.
-const LIGHT = {
-  bg: customColors.white,
-  border: '#cfcfcf',
-  divider: '#c7c7c7',
-  text: '#0a2540',
-  controlBorder: '#ebebeb',
-  controlText: '#425466',
-  signOutBg: '#f5f6f8',
-  arrowBg: '#f5f6f8',
-} as const
+const MENU_SHADOW_OPACITY = 0.05
+const MENU_SHADOW = `0px 4px 5.5px rgba(${hexToRgb(customColors.black)}, ${MENU_SHADOW_OPACITY})`
+const MENU_TRANSITION_MS = 300
 
-const DARK = {
-  bg: '#0a2540',
-  border: '#3a628c',
-  divider: '#4a72a0',
-  text: customColors.white,
-  controlBorder: '#193f66',
-  controlText: customColors.white,
-  signOutBg: '#16395d',
-  arrowBg: '#16395d',
-} as const
-
-export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
-  const c = isDark ? DARK : LIGHT
+export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
+  const tc = getThemeColor(theme)
+  const isDark = theme === THEME_DARK
+  const controlTextColor = isDark ? customColors.white : customColors.textSecondary
+  const chipBg = isDark
+    ? customColors.mobileSheetTileChipDark
+    : customColors.mobileSheetTileChipLight
 
   return {
     menu: {
       width: 172,
       boxSizing: 'border-box',
-      backgroundColor: c.bg,
-      border: `1.5px solid ${c.border}`,
+      backgroundColor: tc.menu.background,
+      border: `1.5px solid ${
+        isDark ? customColors.mobileDropdownBorderDark : customColors.mobileDropdownBorderLight
+      }`,
       borderRadius: 10,
-      boxShadow: '0px 4px 5.5px rgba(0, 0, 0, 0.05)',
+      boxShadow: MENU_SHADOW,
       padding: '12px',
       display: 'flex',
       flexDirection: 'column',
       gap: 0,
+      transformOrigin: 'top right',
+      opacity: 0,
+      transform: 'translateY(-8px) scale(0.96)',
+      transition: `opacity ${MENU_TRANSITION_MS}ms ease, transform ${MENU_TRANSITION_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
+      willChange: 'opacity, transform',
+    },
+    menuOpen: {
+      opacity: 1,
+      transform: 'translateY(0) scale(1)',
     },
     row: {
       display: 'flex',
@@ -59,7 +56,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       fontWeight: fontWeights.semiBold,
       lineHeight: 'normal',
       letterSpacing: '0.22px',
-      color: c.text,
+      color: tc.menu.color,
       margin: 0,
       whiteSpace: 'nowrap',
     },
@@ -70,12 +67,12 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       width: 20,
       height: 21,
       borderRadius: '50%',
-      backgroundColor: c.arrowBg,
+      backgroundColor: chipBg,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       flexShrink: 0,
-      color: c.text,
+      color: tc.menu.color,
     },
     arrowIcon: {
       width: 10,
@@ -85,7 +82,9 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
     divider: {
       height: 0,
       border: 'none',
-      borderTop: `1px solid ${c.divider}`,
+      borderTop: `1px solid ${
+        isDark ? customColors.mobileDropdownDividerDark : customColors.mobileDropdownDividerLight
+      }`,
       margin: '12px 0',
       width: '100%',
     },
@@ -93,7 +92,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       minWidth: 74,
       height: 27,
       boxSizing: 'border-box',
-      border: `1px solid ${c.controlBorder}`,
+      border: `1px solid ${tc.settings.inputBorder}`,
       borderRadius: 3,
       display: 'flex',
       alignItems: 'center',
@@ -107,7 +106,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       fontSize: '12px',
       fontWeight: fontWeights.medium,
       lineHeight: '21.6px',
-      color: c.controlText,
+      color: controlTextColor,
       whiteSpace: 'nowrap',
     },
     controlIcon: {
@@ -117,7 +116,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'center',
-      'color': c.controlText,
+      'color': controlTextColor,
       '& svg': {
         width: '100%',
         height: '100%',
@@ -127,7 +126,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       marginTop: 12,
       height: 32,
       borderRadius: 3,
-      backgroundColor: c.signOutBg,
+      backgroundColor: chipBg,
       border: 'none',
       display: 'flex',
       alignItems: 'center',
@@ -141,18 +140,12 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
       fontSize: '13px',
       fontWeight: fontWeights.semiBold,
       lineHeight: '22.273px',
-      color: c.text,
+      color: tc.menu.color,
       whiteSpace: 'nowrap',
     },
-    // Shrinks the nested GluuDropdown option panel (theme/language selectors)
-    // so its list matches the compact 50x27 control instead of the default
-    // full-size dropdown rows. Applied via `dropdownClassName`.
     compactMenu: {
       'minWidth': '96px !important',
       'width': 'auto',
-      // Attach the list directly below the control, aligned to its right edge
-      // (the control sits at the right of its row). Override GluuDropdown's
-      // default centered + 13px-gap positioning.
       'left': 'auto !important',
       'right': '0 !important',
       'transform': 'none !important',
@@ -165,7 +158,6 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { isDark }) => {
         lineHeight: '16px',
         borderRadius: 4,
       },
-      // Tighten the menu content padding (default 16px) to match the compact rows.
       '& > div': {
         padding: '6px',
       },

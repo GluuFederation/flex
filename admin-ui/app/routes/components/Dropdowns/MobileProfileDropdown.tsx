@@ -1,58 +1,68 @@
-import { useEffect, useMemo, useCallback, useRef, useState } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+  type TransitionEvent as ReactTransitionEvent,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
-import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
+import { GluuDropdown, type GluuDropdownOption, ChevronIcon, ArrowRightIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
-import { ensureLocaleLoaded } from '@/i18n'
 import { useThemePersistence } from '@/hooks/useThemePersistence'
-import { logger } from '@/utils/logger'
-import { storage } from '@/utils/storage'
-import { STORAGE_KEYS, LANG_CODES, DEFAULT_LANG } from '@/constants'
-import type { UserInfo } from 'Redux/features/types/authTypes'
+import { useLangPersistence } from '@/hooks/useLangPersistence'
+import { LANG_CODES, DEFAULT_LANG } from '@/constants'
 import { useStyles } from './styles/MobileProfileDropdown.style'
-
-type UserConfig = {
-  lang?: Record<string, string>
-  theme?: Record<string, string>
-}
-
-type MobileProfileDropdownProps = {
-  userInfo: UserInfo | null
-  renderTrigger: (isOpen: boolean) => React.ReactNode
-}
-
-const safeParseUserConfig = (): UserConfig =>
-  storage.getJSON<UserConfig>(STORAGE_KEYS.USER_CONFIG) ?? {}
-
-const getInitialLang = (inum?: string): string => {
-  const initLang = storage.get(STORAGE_KEYS.INIT_LANG) || DEFAULT_LANG
-  const config = safeParseUserConfig()
-  return config?.lang?.[inum || ''] || initLang
-}
+import type { MobileProfileDropdownProps } from './types'
 
 const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdownProps) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
   const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
 
   const { state: themeState } = useTheme()
   const currentTheme = themeState.theme
-  const isDark = currentTheme === THEME_DARK
-  const { classes } = useStyles({ isDark })
+  const { classes } = useStyles({ theme: currentTheme })
 
   const inum = userInfo?.inum
 
   const [isOpen, setIsOpen] = useState(false)
-  const [lang, setLang] = useState<string>(() => getInitialLang(inum))
+  const [rendered, setRendered] = useState(false)
+  const [entered, setEntered] = useState(false)
+  const { lang, changeLanguage } = useLangPersistence(inum)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Close the menu when a logout audit completes and we navigate away.
+  useEffect(() => {
+    if (!isOpen) {
+      setEntered(false)
+      return undefined
+    }
+    setRendered(true)
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setEntered(true))
+    })
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
+    }
+  }, [isOpen])
+
+  const handleMenuTransitionEnd = useCallback(
+    (e: ReactTransitionEvent<HTMLDivElement>): void => {
+      if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+      if (!isOpen) setRendered(false)
+    },
+    [isOpen],
+  )
+
   useEffect(() => {
     if (logoutAuditSucceeded === true) {
       navigateToRoute(ROUTES.LOGOUT)
@@ -76,31 +86,6 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   }, [isOpen])
 
   const onChangeTheme = useThemePersistence(userInfo)
-
-  const changeLanguage = useCallback(
-    (code: string) => {
-      setLang(code)
-      // i18n falls back to DEFAULT_LANG when a bundle is missing, so a failure
-      // here is not worth reverting the stored preference for.
-      void ensureLocaleLoaded(code)
-        .then(() => i18n.changeLanguage(code))
-        .catch((error) => {
-          logger.error(
-            `Failed to switch language to "${code}":`,
-            error instanceof Error ? error : String(error),
-          )
-        })
-
-      const config = safeParseUserConfig()
-      const langConfig = { ...(config?.lang || {}) }
-      if (inum) {
-        langConfig[inum] = code
-      }
-      storage.setJSON(STORAGE_KEYS.USER_CONFIG, { ...config, lang: langConfig })
-      storage.set(STORAGE_KEYS.INIT_LANG, code)
-    },
-    [i18n, inum],
-  )
 
   const handleProfile = useCallback(() => {
     setIsOpen(false)
@@ -131,7 +116,6 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   )
 
   const themeLabel = currentTheme === THEME_DARK ? t('themes.dark') : t('themes.light')
-  // Match the desktop navbar language control: show the uppercased code (e.g. "FR").
   const langLabel = (lang || DEFAULT_LANG).split('-')[0].toUpperCase()
 
   return (
@@ -153,9 +137,10 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
         {renderTrigger(isOpen)}
       </Box>
 
-      {isOpen && (
+      {rendered && (
         <Box
-          className={classes.menu}
+          className={`${classes.menu} ${entered ? classes.menuOpen : ''}`}
+          onTransitionEnd={handleMenuTransitionEnd}
           role="menu"
           sx={{ position: 'absolute', right: 0, top: 'calc(100% + 8px)', zIndex: 1200 }}
         >
@@ -175,23 +160,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
               {t('menus.my_profile')}
             </GluuText>
             <span className={classes.arrowButton} aria-hidden="true">
-              <svg
-                className={classes.arrowIcon}
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                focusable="false"
-              >
-                <path
-                  d="M1 5h8M5.5 1.5L9 5l-3.5 3.5"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowRightIcon className={classes.arrowIcon} />
             </span>
           </div>
 

@@ -4,8 +4,6 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
 
-// When `variant` is set the logo ignores the active theme and always renders
-// that color (e.g. the mobile header always shows the green logo in both themes).
 type LogoVariant = 'green' | 'white'
 
 type LogoThemedProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'style'> & {

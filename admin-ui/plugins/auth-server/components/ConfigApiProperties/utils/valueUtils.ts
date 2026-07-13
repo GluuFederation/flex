@@ -103,9 +103,7 @@ const getNestedValue = (obj: ApiAppConfiguration, path: string[]): TraversableVa
       const key = String(part)
       if (key in current) {
         current = (current as Record<string, PropertyValue>)[key] as
-          | PropertyValue
-          | PropertyValue[]
-          | ApiAppConfiguration
+          PropertyValue | PropertyValue[] | ApiAppConfiguration
       } else {
         return null
       }

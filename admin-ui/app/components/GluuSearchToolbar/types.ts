@@ -87,7 +87,6 @@ export type GluuRefreshButtonProps = {
   label?: string
   loading?: boolean
   className?: string
-  // Optional custom icon rendered in place of the default MUI refresh icon.
   icon?: ReactNode
   variant?: 'primary' | 'outlined'
   minHeight?: number

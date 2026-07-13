@@ -69,8 +69,6 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // Allow flex children to shrink below their intrinsic content width so the
-    // greeting can truncate instead of the row overflowing.
     minWidth: 0,
   },
   leftSection: {
@@ -172,8 +170,6 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     'height': '100%',
     'flexShrink': 0,
     'minWidth': 0,
-    // Below 400px allow the trigger to shrink so the greeting can truncate
-    // within the available space instead of overflowing off-screen.
     '@media (max-width:399px)': {
       flexShrink: 1,
     },
@@ -185,8 +181,6 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     'color': navbarColors.text,
     'letterSpacing': '0.24px',
     'lineHeight': 'normal',
-    // display:block is required for maxWidth + text-overflow:ellipsis to take
-    // effect (they are ignored on the default inline span).
     'display': 'block',
     'whiteSpace': 'nowrap',
     'overflow': 'hidden',
@@ -194,13 +188,9 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     'minWidth': 0,
     'margin': 0,
     'padding': 0,
-    // Hard cap on mobile so a long username always truncates with an ellipsis
-    // (display:block makes maxWidth + text-overflow:ellipsis take effect).
-    // Uses the shared MOBILE_MEDIA_QUERY that is known to emit correctly here.
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       maxWidth: '120px',
     },
-    // Tighter cap on very small screens.
     '@media (max-width:399px)': {
       maxWidth: '100px',
     },

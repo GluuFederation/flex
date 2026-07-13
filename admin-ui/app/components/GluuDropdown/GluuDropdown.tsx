@@ -110,9 +110,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   )
 
   const getSelectedOption = useCallback(():
-    | GluuDropdownOption<T>
-    | GluuDropdownOption<T>[]
-    | undefined => {
+    GluuDropdownOption<T> | GluuDropdownOption<T>[] | undefined => {
     if (selectedValue === undefined) return undefined
     if (multiple && Array.isArray(selectedValue)) {
       return options.filter((opt) => selectedValue.includes(opt.value))

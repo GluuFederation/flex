@@ -18,14 +18,7 @@ export type RootFields = Record<string, FormValue>
 
 type NestedRecord = Record<string, string | number | boolean | null | undefined | string[]>
 export type CleanableValue =
-  | string
-  | number
-  | boolean
-  | File
-  | null
-  | undefined
-  | string[]
-  | NestedRecord
+  string | number | boolean | File | null | undefined | string[] | NestedRecord
 
 // Form value types
 export type WebsiteSsoIdentityProviderFormValues = {

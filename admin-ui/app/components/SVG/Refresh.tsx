@@ -6,8 +6,6 @@ type RefreshIconProps = {
   className?: string
 }
 
-// Refresh icon matching the Figma design (node "refresh 1"): a circular
-// double-arrow drawn as a single filled path, sized on a 22x22 viewBox.
 export const RefreshIcon = memo<RefreshIconProps>(({ width = 22, height = 22, className }) => (
   <svg
     width={width}

@@ -1189,7 +1189,7 @@
     "service_status_down": "Service is currently unavailable.",
     "service_status_degraded": "Service is experiencing issues.",
     "service_status_unknown": "Service status could not be determined.",
-    "services_healthy_count": "{{healthyCount}} of {{totalCount}} Services Healthy",
+    "services_healthy_count": "{{healthyCount}} of {{totalCount}} services healthy",
     "error_fetching_health_status": "Error fetching health status. Please try again.",
     "no_services_found": "No services found.",
     "fido2_metrics_health_status": "FIDO2 Metrics",
