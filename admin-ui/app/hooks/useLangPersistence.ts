@@ -13,9 +13,12 @@ const getInitialLang = (inum?: string): string => {
   return config.lang?.[inum || ''] || initLang
 }
 
-const applyLanguage = (code: string, i18nInstance: I18n) => {
+const applyLanguage = (code: string, i18nInstance: I18n, latestRef: { current: string }) => {
   void ensureLocaleLoaded(code)
-    .then(() => i18nInstance.changeLanguage(code))
+    .then(() => {
+      if (latestRef.current !== code) return undefined
+      return i18nInstance.changeLanguage(code)
+    })
     .catch((error) => {
       logger.error(
         `Failed to switch language to "${code}":`,
@@ -29,6 +32,7 @@ const useLangPersistence = (inum?: string) => {
   const [lang, setLang] = useState<string>(() => getInitialLang(inum))
   const hasInitializedRef = useRef(false)
   const prevInumRef = useRef<string | undefined>(inum)
+  const latestLangRef = useRef<string>(getInitialLang(inum))
 
   useEffect(() => {
     if (prevInumRef.current !== inum) {
@@ -40,8 +44,9 @@ const useLangPersistence = (inum?: string) => {
 
     const userLang = getInitialLang(inum)
     if (userLang !== i18n.language) {
+      latestLangRef.current = userLang
       setLang(userLang)
-      applyLanguage(userLang, i18n)
+      applyLanguage(userLang, i18n, latestLangRef)
     }
 
     hasInitializedRef.current = true
@@ -49,8 +54,9 @@ const useLangPersistence = (inum?: string) => {
 
   const changeLanguage = useCallback(
     (code: string) => {
+      latestLangRef.current = code
       setLang(code)
-      applyLanguage(code, i18n)
+      applyLanguage(code, i18n, latestLangRef)
 
       const config = safeParseUserConfig()
       const langConfig = { ...(config.lang || {}) }

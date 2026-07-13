@@ -282,6 +282,7 @@ const MobileNavSheet = ({
                                     childActive && classes.listItemActive,
                                   )}
                                   aria-current={childActive ? 'page' : undefined}
+                                  tabIndex={expanded ? 0 : -1}
                                   onClick={() => onSelect(child)}
                                 >
                                   {t(child.titleKey)}
