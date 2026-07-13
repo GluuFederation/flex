@@ -759,6 +759,7 @@
     "search_filter": "Search Filter"
   },
   "languages": {
+    "language": "Language",
     "french": "French",
     "english": "English",
     "portuguese": "Portuguese",
@@ -773,6 +774,7 @@
     "no_notifications": "No notifications"
   },
   "menus": {
+    "hello": "Hello {{name}}",
     "assets": "Assets",
     "scim": "SCIM",
     "saml": "SAML",
@@ -1581,7 +1583,8 @@
     "view_identity_provider": "View Identity Provider",
     "delete_identity_provider": "Delete Identity Provider",
     "search_filter": "Search Filter",
-    "uma_resource_detail": "UMA Resource Detail"
+    "uma_resource_detail": "UMA Resource Detail",
+    "services_health_heading": "Services Health"
   },
   "options": {
     "admin": "ADMIN",

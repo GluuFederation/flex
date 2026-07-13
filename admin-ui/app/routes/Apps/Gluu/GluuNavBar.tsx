@@ -1,13 +1,19 @@
 import { useEffect, useRef, useMemo, useCallback, memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { Link } from 'react-router-dom'
 import { Notifications, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
+import { MobileProfileDropdown } from 'Routes/components/Dropdowns/MobileProfileDropdown'
+import { ROUTES } from '@/helpers/navigation'
 import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
 import { UserIcon } from './components/UserIcon'
-import { useStyles } from './styles/GluuNavBar.style'
+import { useStyles, MOBILE_MEDIA_QUERY } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
 import { useAppSelector } from '@/redux/hooks'
@@ -17,10 +23,12 @@ const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =
 
 const GluuNavBar = () => {
   const userInfo = useAppSelector(selectUserInfo)
+  const { t } = useTranslation()
 
   const { navbarColors } = useNavbarTheme()
   const { classes } = useStyles({ navbarColors })
   const pageTitle = usePageTitle()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const navbarRef = useRef<HTMLDivElement>(null)
 
   const applyNavbarColors = useCallback((element: HTMLElement, colors: typeof navbarColors) => {
@@ -71,6 +79,9 @@ const GluuNavBar = () => {
     <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
       <Box className={classes.navbarContainer}>
         <Box className={classes.leftSection}>
+          <Link to={ROUTES.ROOT} className={classes.mobileLogo} aria-label={t('menus.home')}>
+            <LogoThemed width={103} height={40} variant="green" />
+          </Link>
           <GluuText
             variant="h3"
             className={classes.pageTitle}
@@ -81,33 +92,58 @@ const GluuNavBar = () => {
           </GluuText>
         </Box>
         <Box className={classes.rightSection}>
-          <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
-            <Notifications />
-          </Box>
-          {userInfo && (
+          {!isMobile && (
             <>
-              <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
-                <ThemeDropdownComponent userInfo={userInfo} />
+              <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
+                <Notifications />
               </Box>
-              <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
-                <LanguageMenu userInfo={userInfo} />
-              </Box>
+              {userInfo && (
+                <>
+                  <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
+                    <ThemeDropdownComponent userInfo={userInfo} />
+                  </Box>
+                  <Box className={`${classes.navbarItem} ${classes.languageMenuWrapper}`}>
+                    <LanguageMenu userInfo={userInfo} />
+                  </Box>
+                </>
+              )}
             </>
           )}
-          <DropdownProfile
-            renderTrigger={(isOpen: boolean) => (
-              <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
-                <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
-                <GluuText variant="span" className={classes.userName} disableThemeColor>
-                  {displayName}
-                </GluuText>
-                <Box className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}>
-                  <ChevronIcon />
+          {isMobile ? (
+            <MobileProfileDropdown
+              userInfo={userInfo}
+              renderTrigger={(isOpen: boolean) => (
+                <Box className={classes.mobileProfileTrigger}>
+                  <UserIcon size={32} className={classes.userIcon} avatarUrl={avatarUrl} />
+                  <GluuText variant="span" className={classes.mobileGreeting} disableThemeColor>
+                    {t('menus.hello', { name: displayName })}
+                  </GluuText>
+                  <Box
+                    className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}
+                  >
+                    <ChevronIcon />
+                  </Box>
                 </Box>
-              </Box>
-            )}
-            position="bottom"
-          />
+              )}
+            />
+          ) : (
+            <DropdownProfile
+              renderTrigger={(isOpen: boolean) => (
+                <Box className={`${classes.navbarItem} ${classes.userProfileContainer}`}>
+                  <UserIcon size={40} className={classes.userIcon} avatarUrl={avatarUrl} />
+                  <GluuText variant="span" className={classes.userName} disableThemeColor>
+                    {displayName}
+                  </GluuText>
+                  <Box
+                    className={`${classes.userChevron} ${isOpen ? classes.userChevronOpen : ''}`}
+                  >
+                    <ChevronIcon />
+                  </Box>
+                </Box>
+              )}
+              position="bottom"
+            />
+          )}
         </Box>
       </Box>
     </Box>

@@ -22,6 +22,7 @@ export const useNavbarTheme = () => {
 
   useEffect(() => {
     document.documentElement.style.setProperty('--theme-navbar-text', navbarColors.text)
+    document.documentElement.style.setProperty('--theme-navbar-border', navbarColors.border)
     const styleId = 'navbar-theme-colors'
     let styleElement = document.getElementById(styleId) as HTMLStyleElement | null
 
@@ -70,7 +71,7 @@ export const useNavbarTheme = () => {
         }
       }
     }
-  }, [navbarColors.text])
+  }, [navbarColors.text, navbarColors.border])
 
   return {
     currentTheme,

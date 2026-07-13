@@ -10,6 +10,7 @@ import { GluuPageContent } from '@/components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuRefreshButton } from '@/components/GluuSearchToolbar'
+import { RefreshIcon } from '@/components/SVG'
 import { useHealthStatus, useFido2HealthStatus } from './hooks'
 import ServiceStatusCard from './components/ServiceStatusCard'
 import { useStyles } from './HealthPage.style'
@@ -62,55 +63,61 @@ const HealthPage: React.FC = () => {
   return (
     <GluuLoader blocking={loading}>
       <GluuPageContent>
-        <Paper elevation={0} className={classes.healthCard}>
-          <div className={classes.header}>
-            {!isLoading && !isError && totalCount > 0 && (
-              <GluuText variant="div" className={classes.headerTitle}>
-                {t('messages.services_healthy_count', {
-                  healthyCount: healthyCount + (fido2HealthCard.status === 'up' ? 1 : 0),
-                  totalCount: totalCount + 1,
-                })}
-              </GluuText>
-            )}
-            <div className={classes.refreshButtonWrapper}>
-              <GluuRefreshButton
-                className={classes.refreshButton}
-                onClick={handleRefresh}
-                loading={loading}
-              />
-            </div>
-            <div className={classes.headerDivider} />
-          </div>
-
-          {isError && (
-            <div className={`${classes.messageBlock} ${classes.errorMessage}`}>
-              <WarningAmberOutlined className={classes.errorIcon} />
-              <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
-            </div>
-          )}
-
-          {!isLoading && !isError && services.length === 0 && (
-            <div className={`${classes.messageBlock} ${classes.infoMessage}`}>
-              <InfoOutlined className={classes.infoIcon} />
-              <GluuText variant="span" secondary>
-                {t('messages.no_services_found')}
-              </GluuText>
-            </div>
-          )}
-
-          {!isLoading && !isError && (services.length > 0 || !fido2Health.isLoading) && (
-            <div className={classes.servicesGrid}>
-              {services.map((service) => (
-                <div key={service.name} className={classes.serviceCardWrapper}>
-                  <ServiceStatusCard service={service} isDark={isDark} />
-                </div>
-              ))}
-              <div className={classes.serviceCardWrapper}>
-                <ServiceStatusCard service={fido2HealthCard} isDark={isDark} />
+        <div className={classes.mobileContentPad}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.services_health_heading')}
+          </GluuText>
+          <Paper elevation={0} className={classes.healthCard}>
+            <div className={classes.header}>
+              {!isLoading && !isError && totalCount > 0 && (
+                <GluuText variant="div" className={classes.headerTitle}>
+                  {t('messages.services_healthy_count', {
+                    healthyCount: healthyCount + (fido2HealthCard.status === 'up' ? 1 : 0),
+                    totalCount: totalCount + 1,
+                  })}
+                </GluuText>
+              )}
+              <div className={classes.refreshButtonWrapper}>
+                <GluuRefreshButton
+                  className={classes.refreshButton}
+                  onClick={handleRefresh}
+                  loading={loading}
+                  icon={<RefreshIcon width={22} height={22} className={classes.refreshIcon} />}
+                />
               </div>
+              <div className={classes.headerDivider} />
             </div>
-          )}
-        </Paper>
+
+            {isError && (
+              <div className={`${classes.messageBlock} ${classes.errorMessage}`}>
+                <WarningAmberOutlined className={classes.errorIcon} />
+                <GluuText variant="span">{t('messages.error_fetching_health_status')}</GluuText>
+              </div>
+            )}
+
+            {!isLoading && !isError && services.length === 0 && (
+              <div className={`${classes.messageBlock} ${classes.infoMessage}`}>
+                <InfoOutlined className={classes.infoIcon} />
+                <GluuText variant="span" secondary>
+                  {t('messages.no_services_found')}
+                </GluuText>
+              </div>
+            )}
+
+            {!isLoading && !isError && (services.length > 0 || !fido2Health.isLoading) && (
+              <div className={classes.servicesGrid}>
+                {services.map((service) => (
+                  <div key={service.name} className={classes.serviceCardWrapper}>
+                    <ServiceStatusCard service={service} isDark={isDark} />
+                  </div>
+                ))}
+                <div className={classes.serviceCardWrapper}>
+                  <ServiceStatusCard service={fido2HealthCard} isDark={isDark} />
+                </div>
+              </div>
+            )}
+          </Paper>
+        </div>
       </GluuPageContent>
     </GluuLoader>
   )

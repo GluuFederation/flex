@@ -15,6 +15,11 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     padding: 0,
     cursor: 'pointer',
     backgroundColor: `rgba(${hexToRgb(customColors.black)}, ${SHEET.SCRIM_OPACITY})`,
+    opacity: 0,
+    transition: `opacity ${SHEET.TRANSITION_MS}ms ease`,
+  },
+  scrimOpen: {
+    opacity: 1,
   },
   sheet: {
     position: 'fixed',
@@ -30,6 +35,12 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     borderRadius: `${BORDER_RADIUS.MOBILE_SHEET}px ${BORDER_RADIUS.MOBILE_SHEET}px 0 0`,
     boxShadow: `0px ${SHEET.SHADOW_OFFSET_Y}px ${SHEET.SHADOW_BLUR}px 0px rgba(${hexToRgb(customColors.black)}, ${SHEET.SHADOW_OPACITY})`,
     paddingBottom: `calc(${BOTTOM_NAV.HEIGHT}px + env(safe-area-inset-bottom))`,
+    transform: 'translateY(100%)',
+    transition: `transform ${SHEET.TRANSITION_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
+    willChange: 'transform',
+  },
+  sheetOpen: {
+    transform: 'translateY(0)',
   },
   header: {
     position: 'relative',
@@ -184,13 +195,27 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: SHEET.LIST_ROW_GAP,
+    gap: 0,
     width: '100%',
   },
   chevron: {
     flexShrink: 0,
     color: colors.listText,
     transition: 'transform 0.15s ease',
+  },
+  subListWrap: {
+    display: 'grid',
+    gridTemplateRows: '0fr',
+    width: '100%',
+    transition: `grid-template-rows ${SHEET.SUBLIST_TRANSITION_MS}ms ease`,
+  },
+  subListWrapOpen: {
+    gridTemplateRows: '1fr',
+  },
+  subListInner: {
+    overflow: 'hidden',
+    minHeight: 0,
+    width: '100%',
   },
   subList: {
     display: 'flex',
@@ -199,6 +224,7 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     gap: SHEET.LIST_ROW_GAP,
     width: '100%',
     paddingLeft: SHEET.SUBLIST_INDENT,
+    paddingTop: SHEET.LIST_ROW_GAP,
   },
   subListItem: {
     padding: 0,

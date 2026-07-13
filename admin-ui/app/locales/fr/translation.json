@@ -16,6 +16,7 @@
     "hide": "Masquer le mot de passe"
   },
   "languages": {
+    "language": "Langue",
     "french": "Français",
     "english": "English",
     "portuguese": "Português",
@@ -70,6 +71,7 @@
     "mau_clients": "Janvier verrouiller les clients"
   },
   "menus": {
+    "hello": "Bonjour {{name}}",
     "authentication": "Authentification",
     "adminui": "Administratrice",
     "assets": "Ressources",
@@ -1589,7 +1591,8 @@
     "add_alias": "Add New Mapping",
     "edit_alias": "Edit Mapping",
     "creation_date": "Creation Date",
-    "uma_resource_detail": "Détail de la ressource UMA"
+    "uma_resource_detail": "Détail de la ressource UMA",
+    "services_health_heading": "État des Services"
   },
   "options": {
     "admin": "ADMINISTRER",

@@ -13,22 +13,20 @@ const fromEntry = <K extends keyof WebhookEntry>(
 }
 
 export const toWebhookEntries = (entries: PagedResultEntriesItem[] | undefined): WebhookEntry[] =>
-  (entries ?? []).map(
-    (entry): WebhookEntry => ({
-      dn: fromEntry(entry, 'dn', undefined),
-      inum: fromEntry(entry, 'inum', undefined),
-      displayName: fromEntry(entry, 'displayName', ''),
-      description: fromEntry(entry, 'description', undefined),
-      url: fromEntry(entry, 'url', ''),
-      httpRequestBodyString: fromEntry(entry, 'httpRequestBodyString', undefined),
-      httpMethod: fromEntry(entry, 'httpMethod', undefined),
-      jansEnabled: fromEntry(entry, 'jansEnabled', undefined),
-      httpHeaders: fromEntry(entry, 'httpHeaders', undefined),
-      auiFeatureIds: fromEntry(entry, 'auiFeatureIds', undefined),
-      httpRequestBody: fromEntry(entry, 'httpRequestBody', undefined),
-      baseDn: fromEntry(entry, 'baseDn', undefined),
-    }),
-  )
+  (entries ?? []).map((entry): WebhookEntry => ({
+    dn: fromEntry(entry, 'dn', undefined),
+    inum: fromEntry(entry, 'inum', undefined),
+    displayName: fromEntry(entry, 'displayName', ''),
+    description: fromEntry(entry, 'description', undefined),
+    url: fromEntry(entry, 'url', ''),
+    httpRequestBodyString: fromEntry(entry, 'httpRequestBodyString', undefined),
+    httpMethod: fromEntry(entry, 'httpMethod', undefined),
+    jansEnabled: fromEntry(entry, 'jansEnabled', undefined),
+    httpHeaders: fromEntry(entry, 'httpHeaders', undefined),
+    auiFeatureIds: fromEntry(entry, 'auiFeatureIds', undefined),
+    httpRequestBody: fromEntry(entry, 'httpRequestBody', undefined),
+    baseDn: fromEntry(entry, 'baseDn', undefined),
+  }))
 
 export const HTTP_METHODS = [
   { value: 'GET', label: 'GET' },

@@ -65,6 +65,11 @@ export const MOBILE_LAYOUT = {
   PAGE_TITLE_GAP: '34px',
 } as const
 
+export const MOBILE_PAGE_PADDING_X = {
+  MD: 20,
+  SM: 15,
+} as const
+
 export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
   '&::-webkit-scrollbar': {
     width: SCROLLBAR.WIDTH,

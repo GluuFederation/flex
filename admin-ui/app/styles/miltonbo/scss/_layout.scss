@@ -17,7 +17,7 @@
         @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             left: 0;
             background: var(--theme-navbar-background, $navbar-background-color);
-            border-bottom: 1px solid $navbar-border-color;
+            border-bottom: 1px solid var(--theme-navbar-border, #{$navbar-border-color});
         }
 
         /* noscript fallback */
@@ -93,6 +93,6 @@
 
     &--only-navbar .layout__navbar {
         background: $navbar-background-color;
-        border-bottom: 1px solid $navbar-border-color;
+        border-bottom: 1px solid var(--theme-navbar-border, #{$navbar-border-color});
     }
 }

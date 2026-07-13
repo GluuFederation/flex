@@ -84,6 +84,7 @@ const ServiceStatusCard: React.FC<ServiceStatusCardProps> = memo(({ service, isD
         <div className={classes.statusBadge} data-testid={`service-status-${service.name}`}>
           <GluuBadge
             size="md"
+            className={classes.badge}
             backgroundColor={badgeColors.bg}
             textColor={badgeColors.text}
             borderColor={badgeColors.bg}

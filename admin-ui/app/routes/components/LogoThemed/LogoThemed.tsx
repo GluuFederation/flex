@@ -4,7 +4,11 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
 
-type LogoThemedProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'style'>
+type LogoVariant = 'green' | 'white'
+
+type LogoThemedProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'style'> & {
+  variant?: LogoVariant
+}
 
 const LOGO_FILTERS = {
   [THEME_DARK]: 'brightness(0) invert(1)',
@@ -12,7 +16,18 @@ const LOGO_FILTERS = {
     'brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(2476%) hue-rotate(130deg) brightness(95%) contrast(101%)',
 } as const
 
-const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...otherProps }) => {
+const VARIANT_FILTERS: Record<LogoVariant, string> = {
+  white: LOGO_FILTERS[THEME_DARK],
+  green: LOGO_FILTERS[THEME_LIGHT],
+}
+
+const LogoThemed: React.FC<LogoThemedProps> = ({
+  className,
+  width,
+  height,
+  variant,
+  ...otherProps
+}) => {
   const themeContext = use(ThemeContext)
   const currentTheme = themeContext?.state.theme || DEFAULT_THEME
 
@@ -23,9 +38,11 @@ const LogoThemed: React.FC<LogoThemedProps> = ({ className, width, height, ...ot
     return {
       width: widthValue,
       height: heightValue,
-      filter: LOGO_FILTERS[currentTheme] || LOGO_FILTERS[DEFAULT_THEME],
+      filter: variant
+        ? VARIANT_FILTERS[variant]
+        : LOGO_FILTERS[currentTheme] || LOGO_FILTERS[DEFAULT_THEME],
     }
-  }, [currentTheme, width, height])
+  }, [currentTheme, width, height, variant])
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>

@@ -14,7 +14,7 @@ import { ThemeProvider } from './Theme'
 import { GluuDropdown } from './GluuDropdown'
 import { GluuPageContent } from './GluuPageContent'
 import { GluuDynamicList } from './GluuDynamicList'
-import { ChevronIcon } from './SVG'
+import { ChevronIcon, ArrowRightIcon } from './SVG'
 import Wizard from './Wizard'
 import WizardStep from './Wizard/WizardStep'
 import ApiKey from './LicenseScreens/ApiKey'
@@ -55,6 +55,7 @@ export {
   GluuDropdown,
   GluuPageContent,
   ChevronIcon,
+  ArrowRightIcon,
   Wizard,
   WizardStep,
   ApiKey,

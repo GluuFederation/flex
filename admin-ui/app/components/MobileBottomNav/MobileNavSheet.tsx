@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type JSX,
+  type TransitionEvent as ReactTransitionEvent,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -38,6 +46,8 @@ const MobileNavSheet = ({
   const isLight = state.theme === THEME_LIGHT
   const [expandedKeys, setExpandedKeys] = useState<readonly string[]>([])
   const [drillTile, setDrillTile] = useState<SheetItem | null>(null)
+  const [renderKey, setRenderKey] = useState<SheetKey | null>(openKey)
+  const [entered, setEntered] = useState(false)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const toggleExpanded = useCallback((key: string): void => {
@@ -61,18 +71,38 @@ const MobileNavSheet = ({
   const { classes, cx } = useStyles({ colors: themeColors })
 
   useEffect(() => {
-    if (!openKey) return undefined
+    if (!openKey) {
+      setEntered(false)
+      return undefined
+    }
+    setRenderKey(openKey)
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setEntered(true))
+    })
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
+    }
+  }, [openKey])
+
+  useEffect(() => {
+    if (!renderKey) return undefined
+    closeButtonRef.current?.focus()
     const onKeyDown = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [openKey, onClose])
+  }, [renderKey, onClose])
 
-  useEffect(() => {
-    if (!openKey) return
-    closeButtonRef.current?.focus()
-  }, [openKey])
+  const handleSheetTransitionEnd = useCallback(
+    (e: ReactTransitionEvent<HTMLDivElement>): void => {
+      if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+      if (!openKey) setRenderKey(null)
+    },
+    [openKey],
+  )
 
   const isItemActive = useCallback(
     (item: SheetItem): boolean =>
@@ -103,10 +133,10 @@ const MobileNavSheet = ({
     setExpandedKeys(activeGroups)
   }, [openKey, isItemActive])
 
-  if (!openKey || typeof document === 'undefined') return null
+  if (!renderKey || typeof document === 'undefined') return null
 
-  const isMore = openKey === SHEET_KEYS.MORE
-  const section = isSectionKey(openKey) ? SECTION_MENUS[openKey] : null
+  const isMore = renderKey === SHEET_KEYS.MORE
+  const section = isSectionKey(renderKey) ? SECTION_MENUS[renderKey] : null
   const isDrilled = isMore && drillTile !== null
 
   const headerTitleKey = isDrilled
@@ -133,12 +163,13 @@ const MobileNavSheet = ({
     <>
       <button
         type="button"
-        className={classes.scrim}
+        className={cx(classes.scrim, entered && classes.scrimOpen)}
         onClick={onClose}
         aria-label={t('actions.close')}
       />
       <div
-        className={classes.sheet}
+        className={cx(classes.sheet, entered && classes.sheetOpen)}
+        onTransitionEnd={handleSheetTransitionEnd}
         role="dialog"
         aria-modal="true"
         aria-label={t(headerTitleKey)}
@@ -234,27 +265,33 @@ const MobileNavSheet = ({
                           direction={expanded ? 'up' : 'down'}
                         />
                       </button>
-                      {expanded ? (
-                        <div className={classes.subList}>
-                          {item.children.map((child) => {
-                            const childActive = isItemActive(child)
-                            return (
-                              <button
-                                key={child.key}
-                                type="button"
-                                className={cx(
-                                  classes.subListItem,
-                                  childActive && classes.listItemActive,
-                                )}
-                                aria-current={childActive ? 'page' : undefined}
-                                onClick={() => onSelect(child)}
-                              >
-                                {t(child.titleKey)}
-                              </button>
-                            )
-                          })}
+                      <div
+                        className={cx(classes.subListWrap, expanded && classes.subListWrapOpen)}
+                        aria-hidden={!expanded}
+                      >
+                        <div className={classes.subListInner}>
+                          <div className={classes.subList}>
+                            {item.children.map((child) => {
+                              const childActive = isItemActive(child)
+                              return (
+                                <button
+                                  key={child.key}
+                                  type="button"
+                                  className={cx(
+                                    classes.subListItem,
+                                    childActive && classes.listItemActive,
+                                  )}
+                                  aria-current={childActive ? 'page' : undefined}
+                                  tabIndex={expanded ? 0 : -1}
+                                  onClick={() => onSelect(child)}
+                                >
+                                  {t(child.titleKey)}
+                                </button>
+                              )
+                            })}
+                          </div>
                         </div>
-                      ) : null}
+                      </div>
                     </div>
                   )
                 }

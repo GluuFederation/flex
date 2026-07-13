@@ -1,8 +1,11 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, MOBILE_MEDIA_QUERY, MOBILE_LAYOUT } from '@/constants'
+import { SPACING, BORDER_RADIUS, MOBILE_PAGE_PADDING_X } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+
+const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+const NARROW_MEDIA_QUERY = '(max-width:350px)'
 
 interface HealthPageThemeColors {
   cardBg: string
@@ -23,14 +26,16 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
   })
 
   return {
-    // Screen-edge inset for the page on mobile. Figma insets the card 30px from
-    // each side (matching the Dashboard mobile layout); apply the same padding
-    // so the Health page lines up with the rest of the mobile design system.
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: MOBILE_LAYOUT.SCREEN_PAD,
-        paddingRight: MOBILE_LAYOUT.SCREEN_PAD,
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {
@@ -38,13 +43,13 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         display: 'block',
         fontFamily,
-        fontSize: MOBILE_LAYOUT.PAGE_TITLE_SIZE,
+        fontSize: '28px',
         fontStyle: 'normal',
         fontWeight: fontWeights.bold,
         lineHeight: 'normal',
         color: themeColors.text,
         margin: 0,
-        marginBottom: MOBILE_LAYOUT.PAGE_TITLE_GAP,
+        marginBottom: SPACING.PAGE,
       },
     },
     healthCard: {
@@ -59,6 +64,9 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        minHeight: 'auto',
+      },
     },
     header: {
       paddingTop: `${SPACING.CONTENT_PADDING}px`,
@@ -70,14 +78,28 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       alignItems: 'flex-start',
       position: 'relative',
       height: '84.5px',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        height: '58.5px',
+        alignItems: 'flex-start',
+        paddingTop: '20px',
+        paddingLeft: '28px',
+        paddingRight: '28px',
+      },
     },
     headerTitle: {
       fontFamily,
       fontWeight: fontWeights.medium,
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.md,
       lineHeight: lineHeights.tight,
       color: themeColors.text,
       margin: 0,
+      minWidth: 0,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      [`@media ${NARROW_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.base,
+      },
     },
     headerDivider: {
       position: 'absolute',
@@ -93,6 +115,13 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       top: '50%',
       transform: 'translateY(-50%)',
       zIndex: 10,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        position: 'static',
+        transform: 'none',
+        flexShrink: 0,
+        marginLeft: 'auto',
+        marginTop: `${-(32 - 22) / 2}px`,
+      },
     },
     refreshButton: {
       borderRadius: 4,
@@ -108,6 +137,21 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       fontSize: fontSizes.base,
       fontWeight: fontWeights.medium,
       lineHeight: lineHeights.relaxed,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'minWidth': 'auto !important',
+        'width': '32px !important',
+        'height': '32px !important',
+        'minHeight': '32px !important',
+        'padding': '0 !important',
+        'gap': '0 !important',
+        'fontSize': '0 !important',
+        'border': 'none !important',
+        'borderColor': 'transparent !important',
+        'backgroundColor': 'transparent !important',
+        '& svg, & .MuiSvgIcon-root': {
+          fontSize: '22px !important',
+        },
+      },
     },
     messageBlock: {
       padding: `${SPACING.CONTENT_PADDING}px`,
@@ -149,8 +193,8 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         gridTemplateColumns: '1fr',
         gap: 12,
         paddingTop: '20.5px',
-        paddingLeft: MOBILE_LAYOUT.CARD_PAD,
-        paddingRight: MOBILE_LAYOUT.CARD_PAD,
+        paddingLeft: '28.5px',
+        paddingRight: '28.5px',
         paddingBottom: '26px',
       },
     },
