@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, MOBILE_MEDIA_QUERY, MOBILE_LAYOUT } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -23,6 +23,30 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
   })
 
   return {
+    // Screen-edge inset for the page on mobile. Figma insets the card 30px from
+    // each side (matching the Dashboard mobile layout); apply the same padding
+    // so the Health page lines up with the rest of the mobile design system.
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: MOBILE_LAYOUT.SCREEN_PAD,
+        paddingRight: MOBILE_LAYOUT.SCREEN_PAD,
+        boxSizing: 'border-box',
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: MOBILE_LAYOUT.PAGE_TITLE_SIZE,
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.text,
+        margin: 0,
+        marginBottom: MOBILE_LAYOUT.PAGE_TITLE_GAP,
+      },
+    },
     healthCard: {
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,
@@ -120,6 +144,14 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       gap: SPACING.CARD_GAP,
       [theme.breakpoints.down('sm')]: {
         gridTemplateColumns: '1fr',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gridTemplateColumns: '1fr',
+        gap: 12,
+        paddingTop: '20.5px',
+        paddingLeft: MOBILE_LAYOUT.CARD_PAD,
+        paddingRight: MOBILE_LAYOUT.CARD_PAD,
+        paddingBottom: '26px',
       },
     },
     serviceCardWrapper: {

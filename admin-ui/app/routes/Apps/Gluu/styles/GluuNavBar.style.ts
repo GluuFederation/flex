@@ -1,5 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
+
+export { MOBILE_MEDIA_QUERY }
 
 interface NavbarColors {
   background: string

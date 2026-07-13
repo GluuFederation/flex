@@ -1,12 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
-import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
+import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
   getScrollbarStyles,
   MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
   MODAL,
   OPACITY,
 } from '@/constants'
@@ -30,6 +31,11 @@ const BUTTON_MIN_HEIGHT = '40px'
 const BUTTON_PADDING = '8px 28px'
 
 const SCROLL_VIEWPORT_PADDING = 24
+
+// Figma insets the dialog content 25px, with the title starting 20px from the top.
+const MOBILE_CONTENT_PAD = 25
+const MOBILE_CONTENT_PAD_TOP = 20
+const MOBILE_CONTENT_GAP = 14
 
 const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
 const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
@@ -70,6 +76,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       padding: 0,
       boxSizing: 'border-box',
       overflow: 'visible',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
+      },
     },
     contentArea: {
       display: 'flex',
@@ -77,6 +86,10 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       flex: 1,
       padding: `${CONTENT_BUTTONS_PADDING}px`,
       gap: CONTENT_GAP,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: `${MOBILE_CONTENT_PAD_TOP}px ${MOBILE_CONTENT_PAD}px ${MOBILE_CONTENT_PAD}px`,
+        gap: MOBILE_CONTENT_GAP,
+      },
     },
     overlay: {
       position: 'fixed',
@@ -102,6 +115,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       textAlign: 'left',
       wordWrap: 'break-word',
       overflowWrap: 'break-word',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes['2xl'],
+        lineHeight: lineHeights.snug,
+        paddingBottom: 0,
+      },
     },
     description: {
       margin: 0,
@@ -237,6 +255,15 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     yesButton: {
       minHeight: BUTTON_MIN_HEIGHT,
       padding: BUTTON_PADDING,
+      // GluuButton writes its colors to an inline `style` attribute.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        backgroundColor: `${customColors.mobileNavActive} !important`,
+        borderColor: `${customColors.mobileNavActive} !important`,
+        borderRadius: `${BORDER_RADIUS.SMALL}px !important`,
+        fontSize: `${fontSizes.base} !important`,
+        fontWeight: `${fontWeights.bold} !important`,
+        letterSpacing: `${letterSpacing.button} !important`,
+      },
     },
     noButton: {
       minHeight: BUTTON_MIN_HEIGHT,

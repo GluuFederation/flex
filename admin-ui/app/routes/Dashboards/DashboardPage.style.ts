@@ -1,12 +1,12 @@
 import customColors from '@/customColors'
-import { OPACITY } from '@/constants'
+import { OPACITY, MOBILE_MEDIA_QUERY, MOBILE_LAYOUT } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
-export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+export { MOBILE_MEDIA_QUERY }
 
 interface DashboardThemeColors {
   cardBg: string
@@ -29,6 +29,35 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
   })
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: MOBILE_LAYOUT.SCREEN_PAD,
+        paddingRight: MOBILE_LAYOUT.SCREEN_PAD,
+        boxSizing: 'border-box',
+      },
+    },
+    mobilePageTitle: {
+      fontFamily,
+      fontSize: MOBILE_LAYOUT.PAGE_TITLE_SIZE,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.bold,
+      lineHeight: 'normal',
+      color: isDark ? customColors.white : themeColors.text,
+      margin: 0,
+      // Dashboard's heading sits closer to its card than Health/License do.
+      marginBottom: '26px',
+    },
+    summarySectionTitle: {
+      fontFamily,
+      fontSize: fontSizes.content,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: '22px',
+      color: isDark ? customColors.white : themeColors.text,
+      margin: 0,
+      marginTop: '32px',
+      marginBottom: '20px',
+    },
     flex: {
       flexGrow: 1,
       display: 'flex',

@@ -1,7 +1,7 @@
 import { ROUTES } from '@/helpers/navigation'
-import { MOBILE_BOTTOM_NAV_HEIGHT } from '@/constants/ui'
+import { MOBILE_BOTTOM_NAV_HEIGHT, MOBILE_MEDIA_QUERY } from '@/constants/ui'
 
-export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+export { MOBILE_MEDIA_QUERY }
 
 export const PRIMARY_TAB_DEFS = [
   {

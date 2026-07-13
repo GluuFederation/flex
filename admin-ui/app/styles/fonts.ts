@@ -36,6 +36,7 @@ export const lineHeights = {
   tight: '22px',
   base: '24px',
   relaxed: '28px',
+  snug: '30px',
   loose: '32px',
   XLose: '36px',
   XXLoose: '40px',
