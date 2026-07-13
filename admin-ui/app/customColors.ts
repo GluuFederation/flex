@@ -109,11 +109,6 @@ const customColors = {
 
   mobileSheetTitleDark: '#e1e5ea',
 
-  mobileDropdownBorderLight: '#cfcfcf',
-  mobileDropdownDividerLight: '#c7c7c7',
-  mobileDropdownBorderDark: '#3a628c',
-  mobileDropdownDividerDark: '#4a72a0',
-
   // Other
   darkBorderGradientBase: '#00d5e6',
   ribbonShadowColor: '#1a237e',

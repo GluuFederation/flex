@@ -25,9 +25,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
       width: 172,
       boxSizing: 'border-box',
       backgroundColor: tc.menu.background,
-      border: `1.5px solid ${
-        isDark ? customColors.mobileDropdownBorderDark : customColors.mobileDropdownBorderLight
-      }`,
+      border: `1.5px solid ${tc.borderColor}`,
       borderRadius: 10,
       boxShadow: MENU_SHADOW,
       padding: '12px',
@@ -82,9 +80,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
     divider: {
       height: 0,
       border: 'none',
-      borderTop: `1px solid ${
-        isDark ? customColors.mobileDropdownDividerDark : customColors.mobileDropdownDividerLight
-      }`,
+      borderTop: `1px solid ${tc.borderColor}`,
       margin: '12px 0',
       width: '100%',
     },
