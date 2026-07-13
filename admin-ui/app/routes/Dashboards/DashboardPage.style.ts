@@ -1,5 +1,5 @@
 import customColors from '@/customColors'
-import { OPACITY, MOBILE_PAGE_PADDING_X } from '@/constants'
+import { OPACITY, MOBILE_PAGE_PADDING_X, SPACING } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -33,6 +33,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
         paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
       },
       [theme.breakpoints.down('sm')]: {
@@ -48,7 +49,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: 'normal',
       color: isDark ? customColors.white : themeColors.text,
       margin: 0,
-      marginBottom: '26px',
+      marginBottom: SPACING.PAGE,
     },
     summarySectionTitle: {
       fontFamily,

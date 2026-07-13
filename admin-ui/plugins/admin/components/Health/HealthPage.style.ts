@@ -30,6 +30,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
         paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
       },
       [theme.breakpoints.down('sm')]: {
@@ -48,7 +49,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         lineHeight: 'normal',
         color: themeColors.text,
         margin: 0,
-        marginBottom: '34px',
+        marginBottom: SPACING.PAGE,
       },
     },
     healthCard: {
