@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -22,6 +23,7 @@ import { SHEET_ICON_BY_KEY } from './sheetIcons'
 import {
   MORE_TILE_DEFS,
   SECTION_MENUS,
+  SHEET,
   SHEET_KEYS,
   isSectionKey,
   type SheetItem,
@@ -49,6 +51,8 @@ const MobileNavSheet = ({
   const [renderKey, setRenderKey] = useState<SheetKey | null>(openKey)
   const [entered, setEntered] = useState(false)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const prevHeightRef = useRef<number | null>(null)
 
   const toggleExpanded = useCallback((key: string): void => {
     setExpandedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
@@ -72,19 +76,39 @@ const MobileNavSheet = ({
 
   useEffect(() => {
     if (!openKey) {
+      const node = sheetRef.current
+      if (node) {
+        node.style.height = ''
+        node.style.transition = ''
+      }
+      prevHeightRef.current = null
       setEntered(false)
-      return undefined
+      return
     }
+    prevHeightRef.current = sheetRef.current?.offsetHeight ?? null
     setRenderKey(openKey)
-    let inner = 0
-    const outer = requestAnimationFrame(() => {
-      inner = requestAnimationFrame(() => setEntered(true))
-    })
-    return () => {
-      cancelAnimationFrame(outer)
-      cancelAnimationFrame(inner)
-    }
   }, [openKey])
+
+  useLayoutEffect(() => {
+    if (!openKey || !renderKey || entered) return undefined
+    void sheetRef.current?.offsetHeight
+    const raf = requestAnimationFrame(() => setEntered(true))
+    return () => cancelAnimationFrame(raf)
+  }, [openKey, renderKey, entered])
+
+  useLayoutEffect(() => {
+    const node = sheetRef.current
+    const prev = prevHeightRef.current
+    prevHeightRef.current = null
+    if (!node || !entered || prev === null) return
+    const target = node.offsetHeight
+    if (prev === target) return
+    node.style.transition = 'none'
+    node.style.height = `${prev}px`
+    void node.offsetHeight
+    node.style.transition = `height ${SHEET.TRANSITION_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`
+    node.style.height = `${target}px`
+  }, [renderKey, entered])
 
   useEffect(() => {
     if (!renderKey) return undefined
@@ -98,7 +122,16 @@ const MobileNavSheet = ({
 
   const handleSheetTransitionEnd = useCallback(
     (e: ReactTransitionEvent<HTMLDivElement>): void => {
-      if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+      if (e.target !== e.currentTarget) return
+      if (e.propertyName === 'height') {
+        const node = sheetRef.current
+        if (node) {
+          node.style.height = ''
+          node.style.transition = ''
+        }
+        return
+      }
+      if (e.propertyName !== 'transform') return
       if (!openKey) setRenderKey(null)
     },
     [openKey],
@@ -168,6 +201,7 @@ const MobileNavSheet = ({
         aria-label={t('actions.close')}
       />
       <div
+        ref={sheetRef}
         className={cx(classes.sheet, entered && classes.sheetOpen)}
         onTransitionEnd={handleSheetTransitionEnd}
         role="dialog"

@@ -37,6 +37,10 @@ const MOBILE_CONTENT_PAD = 25
 const MOBILE_CONTENT_PAD_TOP = 20
 const MOBILE_CONTENT_GAP = 14
 
+// Figma reason textarea: 15px horizontal / 20px top inner inset.
+const MOBILE_TEXTAREA_PADDING_X = 15
+const MOBILE_TEXTAREA_PADDING_Y = 20
+
 const CONTENT_BUTTONS_PADDING = CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5
 const CHECKBOX_LABEL_GAP_ADJUST = MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1
 const BORDER_RADIUS_SMALL_ADJUST = BORDER_RADIUS.SMALL - 2
@@ -182,6 +186,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       '&::placeholder': {
         color: themeColors.textMuted,
         opacity: OPACITY.FULL,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: `${MOBILE_TEXTAREA_PADDING_Y}px ${MOBILE_TEXTAREA_PADDING_X}px`,
       },
     },
     errorMessage: {

@@ -47,7 +47,7 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     display: 'flex',
     alignItems: 'center',
     gap: SHEET.HEADER_GAP,
-    padding: SHEET.HEADER_PADDING,
+    padding: `${SHEET.HEADER_PADDING_TOP}px ${BOTTOM_NAV.PADDING_X}px ${SHEET.HEADER_PADDING_BOTTOM}px`,
     borderBottom: `1px solid ${colors.border}`,
   },
   headerIcon: {
@@ -119,7 +119,7 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     display: 'grid',
     gridTemplateColumns: `repeat(${SHEET.GRID_COLUMNS}, 1fr)`,
     rowGap: SHEET.GRID_ROW_GAP,
-    padding: SHEET.GRID_PADDING,
+    padding: `${SHEET.GRID_PADDING_TOP}px ${BOTTOM_NAV.PADDING_X}px ${SHEET.GRID_PADDING_BOTTOM}px`,
   },
   tile: {
     display: 'flex',
@@ -168,7 +168,7 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: SHEET.LIST_ROW_GAP,
-    padding: `${SHEET.LIST_PADDING_Y}px ${SHEET.LIST_PADDING_X}px`,
+    padding: `${SHEET.LIST_PADDING_Y}px ${BOTTOM_NAV.PADDING_X}px`,
   },
   listItem: {
     display: 'flex',

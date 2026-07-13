@@ -94,10 +94,17 @@ const buildTextFieldSx = (
   'maxWidth': '100%',
   'boxSizing': 'border-box',
   ...(common as SxProps<Theme>),
+  // On short screens the calendar icon squeezes the date text and clips it;
+  // hide the adornment so the full date shows (the field still opens on tap).
+  '& .MuiInputAdornment-root': {
+    [HIDE_ICON_QUERY]: { display: 'none' },
+  },
   '& .MuiInputBase-root, & .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
     ...(inputHeight != null ? { height: inputHeight, minHeight: inputHeight } : {}),
+    // With the calendar icon hidden on mobile, center the date in the freed space.
+    [HIDE_ICON_QUERY]: { justifyContent: 'center' },
   },
   '& .MuiInputBase-input, & .MuiPickersInputBase-sectionContent, & .MuiPickersSectionList-sectionContent':
     {
@@ -105,7 +112,11 @@ const buildTextFieldSx = (
       'fontSize': fontSizes.base,
       'color': tc.inputTextColor,
       '&::placeholder': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
+      [HIDE_ICON_QUERY]: { textAlign: 'center' },
     },
+  '& .MuiPickersInputBase-sectionsContainer': {
+    [HIDE_ICON_QUERY]: { justifyContent: 'center', flexGrow: 0 },
+  },
   '& .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
   },
@@ -119,6 +130,10 @@ const buildTextFieldSx = (
     },
   },
 })
+
+// Below this width the calendar icon is dropped and the date is centered in the
+// freed space; above it the icon stays and the date is left-aligned as usual.
+const HIDE_ICON_QUERY = '@media (max-width:480px)'
 
 const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 
