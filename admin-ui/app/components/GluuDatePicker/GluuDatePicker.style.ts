@@ -2,7 +2,13 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { getLoadingOverlayRgba } from '@/customColors'
-import { getHoverOpacity, getDividerOpacity, OPACITY, BORDER_RADIUS } from '@/constants'
+import {
+  getHoverOpacity,
+  getDividerOpacity,
+  OPACITY,
+  BORDER_RADIUS,
+  EXTRA_SMALL_MAX_MEDIA_QUERY,
+} from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { PickerThemeColors, GluuDatePickerStyleParams } from './types'
@@ -133,7 +139,7 @@ const buildTextFieldSx = (
 
 // Below this width the calendar icon is dropped and the date is centered in the
 // freed space; above it the icon stays and the date is left-aligned as usual.
-const HIDE_ICON_QUERY = '@media (max-width:480px)'
+const HIDE_ICON_QUERY = `@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`
 
 const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 

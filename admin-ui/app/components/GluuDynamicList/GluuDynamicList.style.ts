@@ -1,9 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
-import { ICON_SIZE, OPACITY } from '@/constants'
+import { ICON_SIZE, OPACITY, SMALL_MAX_MEDIA_QUERY } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import { fontSizes, fontWeights, lineHeights, letterSpacing, fontFamily } from '@/styles/fonts'
+
+// Below this width the pair rows stack (title/inputs/buttons full-width); at or
+// above it the desktop row layout is kept.
+const STACK_QUERY = `@media ${SMALL_MAX_MEDIA_QUERY}`
 
 type GluuDynamicListStyleParams = {
   isDark: boolean
@@ -41,11 +45,24 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     },
     box: dl.listBox,
     boxEmpty: dl.listBoxEmpty,
-    header: dl.listHeader,
+    header: {
+      ...dl.listHeader,
+      [STACK_QUERY]: {
+        flexDirection: 'column' as const,
+        alignItems: 'stretch' as const,
+      },
+    },
     headerEmpty: dl.listHeaderEmpty,
     title: dl.listTitle,
     body: dl.listBody,
-    row: dl.listRow,
+    row: {
+      ...dl.listRow,
+      [STACK_QUERY]: {
+        flexDirection: 'column' as const,
+        alignItems: 'stretch' as const,
+        flexWrap: 'nowrap' as const,
+      },
+    },
     singleRow: {
       ...dl.listRow,
       'flexWrap': 'nowrap',
@@ -54,7 +71,14 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
         flexWrap: 'wrap',
       },
     },
-    input: dl.listInput,
+    input: {
+      ...dl.listInput,
+      [STACK_QUERY]: {
+        flex: '1 1 100%',
+        width: '100%',
+        minWidth: 0,
+      },
+    },
     singleInput: {
       'flex': '1 1 auto',
       'width': 'auto',
@@ -77,6 +101,13 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     },
     actionBtn: {
       ...dl.listActionBtn,
+      '&&': {
+        ...dl.listActionBtn['&&'],
+        [STACK_QUERY]: {
+          width: '100%',
+          minWidth: 0,
+        },
+      },
     },
     actionBtnIcon: {
       fontSize: ICON_SIZE.SM,
@@ -103,6 +134,9 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
       'flexShrink': 0,
       'whiteSpace': 'nowrap' as const,
       'transition': 'opacity 0.15s ease-in-out',
+      [STACK_QUERY]: {
+        width: '100%',
+      },
       '&:disabled': {
         opacity: OPACITY.STRONG,
         cursor: 'not-allowed' as const,
