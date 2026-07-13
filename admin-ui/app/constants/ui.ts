@@ -52,6 +52,11 @@ export const SCROLLBAR = {
 
 export const MOBILE_BOTTOM_NAV_HEIGHT = 64
 
+export const MOBILE_PAGE_PADDING_X = {
+  MD: 20,
+  SM: 15,
+} as const
+
 export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
   '&::-webkit-scrollbar': {
     width: SCROLLBAR.WIDTH,

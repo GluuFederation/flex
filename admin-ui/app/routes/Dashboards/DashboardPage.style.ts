@@ -1,5 +1,5 @@
 import customColors from '@/customColors'
-import { OPACITY } from '@/constants'
+import { OPACITY, MOBILE_PAGE_PADDING_X } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -31,9 +31,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
   return {
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: '30px',
-        paddingRight: '30px',
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
         boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {

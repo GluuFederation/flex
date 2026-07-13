@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
+import { MOBILE_PAGE_PADDING_X } from '@/constants'
 
 export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
@@ -23,11 +24,11 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     marginTop: '-1px',
     borderBottom: `1px solid ${navbarColors.border}`,
     [theme.breakpoints.down('md')]: {
-      padding: '0px 20px',
+      padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
       height: '80px',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '0px 15px',
+      padding: `0px ${MOBILE_PAGE_PADDING_X.SM}px`,
       height: '70px',
     },
   },

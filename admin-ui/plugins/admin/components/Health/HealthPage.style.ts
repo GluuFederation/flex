@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, MOBILE_PAGE_PADDING_X } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -28,9 +28,13 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
   return {
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: '30px',
-        paddingRight: '30px',
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
         boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {
