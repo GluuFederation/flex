@@ -64,11 +64,8 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       [theme.breakpoints.down('lg')]: {
         gridTemplateColumns: 'repeat(2, 1fr)',
       },
-      [theme.breakpoints.down('sm')]: {
-        gridTemplateColumns: '1fr',
-      },
       // Figma stacks the fields, separating each with a full-width rule.
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
         gap: 0,
       },
@@ -77,10 +74,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       display: 'flex',
       flexDirection: 'column',
       gap: `${SPACING.CARD_CONTENT_GAP}px`,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        // Figma repeats fields on an 86px pitch: two flush 28px line boxes with
-        // ~15px of padding either side of the 1px rule. border-box keeps the
-        // rule from adding to the pitch and compounding down the list.
+      [theme.breakpoints.down('md')]: {
         'gap': 0,
         'boxSizing': 'border-box',
         'paddingTop': '15px',
