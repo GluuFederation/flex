@@ -87,6 +87,7 @@ export type GluuRefreshButtonProps = {
   label?: string
   loading?: boolean
   className?: string
+  icon?: ReactNode
   variant?: 'primary' | 'outlined'
   minHeight?: number
   size?: 'sm' | 'md' | 'lg'

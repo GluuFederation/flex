@@ -1,5 +1,5 @@
 import customColors from '@/customColors'
-import { OPACITY } from '@/constants'
+import { OPACITY, MOBILE_PAGE_PADDING_X, SPACING } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -29,6 +29,39 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
   })
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
+        boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
+      },
+    },
+    mobilePageTitle: {
+      fontFamily,
+      fontSize: '28px',
+      fontStyle: 'normal',
+      fontWeight: fontWeights.bold,
+      lineHeight: 'normal',
+      color: isDark ? customColors.white : themeColors.text,
+      margin: 0,
+      marginBottom: SPACING.PAGE,
+    },
+    summarySectionTitle: {
+      fontFamily,
+      fontSize: fontSizes.content,
+      fontStyle: 'normal',
+      fontWeight: fontWeights.medium,
+      lineHeight: '22px',
+      color: isDark ? customColors.white : themeColors.text,
+      margin: 0,
+      marginTop: '32px',
+      marginBottom: '20px',
+    },
     flex: {
       flexGrow: 1,
       display: 'flex',
@@ -46,6 +79,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       padding: '38.5px',
       backgroundColor: themeColors.cardBg,
       position: 'relative',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        height: 'auto',
+        minHeight: 136,
+        justifyContent: 'flex-start',
+        gap: '16px',
+        padding: '28px 29px',
+      },
     },
     summaryText: {
       fontFamily,
@@ -57,6 +97,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       position: 'absolute',
       top: '44px',
       left: '40px',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        fontSize: fontSizes.lg,
+        lineHeight: '22px',
+      },
     },
     summaryIcon: {
       height: '30px',
@@ -75,6 +122,14 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       top: '110px',
       left: '40px',
       transform: 'translateY(-50%)',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        transform: 'none',
+        fontSize: fontSizes['3xl'],
+        lineHeight: '1',
+      },
     },
     dashboardCard: {
       background: 'transparent',
@@ -155,6 +210,10 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         padding: '16px',
         height: 'auto',
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: '28px',
+        height: 'auto',
+      },
     },
     userInfoTitle: {
       fontFamily,
@@ -166,6 +225,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       color: themeColors.text,
       [theme.breakpoints.down('sm')]: {
         fontSize: fontSizes.lg,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.lg,
+        fontWeight: fontWeights.medium,
+        lineHeight: '22px',
+        marginBottom: '20px',
+        color: isDark ? customColors.white : themeColors.text,
       },
     },
     userInfoContent: {
@@ -185,11 +251,19 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         gridTemplateColumns: '1fr',
         rowGap: '20px',
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gridTemplateColumns: '1fr 1fr',
+        columnGap: '24px',
+        rowGap: '15px',
+      },
     },
     userInfoItem: {
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: 0,
+      },
     },
     userInfoText: {
       fontFamily,
@@ -198,6 +272,11 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       marginBottom: 0,
       color: themeColors.text,
       fontWeight: fontWeights.medium,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.base,
+        lineHeight: '26px',
+        color: isDark ? customColors.white : themeColors.text,
+      },
     },
     userInfoValue: {
       fontFamily,
@@ -205,6 +284,11 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: lineHeights.loose,
       color: themeColors.text,
       fontWeight: fontWeights.bold,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.md,
+        lineHeight: '26px',
+        color: isDark ? customColors.white : themeColors.text,
+      },
     },
     chartContainerTable: {
       width: 780,
@@ -265,6 +349,11 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       [theme.breakpoints.down('sm')]: {
         height: '70px',
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        height: 'auto',
+        padding: 0,
+        alignItems: 'flex-start',
+      },
     },
     topGridNoMargin: {
       marginBottom: 0,
@@ -276,14 +365,40 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: '40px',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'display': 'flex',
+        'flexWrap': 'wrap',
+        'alignItems': 'center',
+        'justifyContent': 'flex-start',
+        'columnGap': '25px',
+        'rowGap': '4px',
+        '& > :first-child': {
+          flexBasis: '100%',
+          marginBottom: '8px',
+        },
+      },
     },
     statusTitle: {
       fontFamily,
       fontSize: fontSizes.md,
+      fontStyle: 'normal',
       fontWeight: fontWeights.semiBold,
       lineHeight: lineHeights.relaxed,
       color: themeColors.text,
       whiteSpace: 'nowrap',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.base,
+      },
+    },
+    statusHeading: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontFamily,
+        fontSize: fontSizes.content,
+        fontStyle: 'normal',
+        fontWeight: fontWeights.medium,
+        lineHeight: '22px',
+        color: isDark ? customColors.white : themeColors.text,
+      },
     },
     statusItems: {
       display: 'flex',
@@ -305,12 +420,19 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flex: '0 0 auto',
       whiteSpace: 'nowrap',
       flexShrink: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: '6px',
+      },
     },
     statusDot: {
       width: 16,
       height: 16,
       borderRadius: BORDER_RADIUS.CIRCLE,
       flexShrink: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        width: 10,
+        height: 10,
+      },
     },
     statusDotActive: {
       backgroundColor: themeColors.statusActive,
@@ -361,6 +483,14 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+      [theme.breakpoints.down('md')]: {
+        padding: '20px',
+        height: 'auto',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: '28px',
+        height: 'auto',
+      },
     },
     chartTitle: {
       fontFamily,
@@ -370,6 +500,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       color: themeColors.text,
       marginBottom: '24px',
       marginTop: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.lg,
+        fontWeight: fontWeights.medium,
+        lineHeight: '22px',
+        marginBottom: '20px',
+        color: isDark ? customColors.white : themeColors.text,
+      },
     },
     chartDatePickers: {
       display: 'flex',
@@ -421,6 +558,16 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       width: '100%',
       marginTop: '8px',
       padding: '0 8px',
+      boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        alignItems: 'flex-start',
+        gap: '10px',
+        padding: 0,
+        overflow: 'hidden',
+        maxWidth: '100%',
+      },
     },
     userInfoChartRow: {
       display: 'flex',
@@ -448,18 +595,34 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       fontSize: fontSizes.sm,
       color: themeColors.text,
       flex: '0 0 auto',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        alignItems: 'flex-start',
+        width: '100%',
+        maxWidth: '100%',
+        minWidth: 0,
+      },
     },
     legendColor: {
       width: '20px',
       height: '3px',
       flexShrink: 0,
       borderRadius: BORDER_RADIUS.THIN,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginTop: '8px',
+      },
     },
     legendLabel: {
       fontFamily,
       fontSize: fontSizes.sm,
       color: themeColors.text,
       whiteSpace: 'nowrap',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flex: 1,
+        minWidth: 0,
+        whiteSpace: 'normal',
+        overflowWrap: 'anywhere',
+        wordBreak: 'break-word',
+      },
     },
   }
 })

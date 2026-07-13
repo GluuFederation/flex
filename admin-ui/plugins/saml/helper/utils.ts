@@ -136,8 +136,7 @@ export const transformToWebsiteSsoServiceProviderFormValues = (
     spMetaDataURL: configs?.spMetaDataURL,
     redirectUris: configs?.redirectUris,
     profileConfigurations: configs?.profileConfigurations as
-      | Record<string, { name: string; signResponses: string }>
-      | undefined,
+      Record<string, { name: string; signResponses: string }> | undefined,
     dn: configs?.dn,
     validationLog: configs?.validationLog,
     validationStatus: configs?.validationStatus,

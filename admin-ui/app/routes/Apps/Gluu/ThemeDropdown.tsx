@@ -1,75 +1,22 @@
-import { useMemo, useCallback, memo } from 'react'
+import { useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
-import { THEME_LIGHT, THEME_DARK, isValidTheme, type ThemeValue } from '@/context/theme/constants'
-import { logger } from '@/utils/logger'
-import { storage } from '@/utils/storage'
-import { STORAGE_KEYS } from '@/constants'
+import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
+import { useThemePersistence } from '@/hooks/useThemePersistence'
 import { useStyles } from './styles/ThemeDropdown.style'
 import type { ThemeDropdownComponentProps } from './types'
 
 export const ThemeDropdownComponent = memo<ThemeDropdownComponentProps>(({ userInfo }) => {
   const { t } = useTranslation()
-  const { state, dispatch } = useTheme()
+  const { state } = useTheme()
   const currentTheme = state.theme
   const isDark = currentTheme === THEME_DARK
   const { classes } = useStyles({ isDark })
 
-  const onChangeTheme = useCallback(
-    (value: string) => {
-      if (!isValidTheme(value)) {
-        logger.warn('Invalid theme value:', value)
-        return
-      }
-
-      const themeValue: ThemeValue = value
-
-      if (!userInfo) {
-        dispatch({ type: themeValue })
-        return
-      }
-
-      const { inum } = userInfo
-      if (!inum) {
-        dispatch({ type: themeValue })
-        return
-      }
-
-      try {
-        const existingConfig =
-          storage.getJSON<{
-            theme?: Record<string, string>
-            lang?: Record<string, string>
-          }>(STORAGE_KEYS.USER_CONFIG) ?? {}
-
-        const updatedTheme = {
-          ...(existingConfig.theme || {}),
-          [inum]: themeValue,
-        }
-
-        const newConfig = {
-          ...existingConfig,
-          lang: existingConfig.lang || {},
-          theme: updatedTheme,
-        }
-
-        storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
-      } catch (e) {
-        logger.error('Failed to parse userConfig:', e instanceof Error ? e : String(e))
-        const newConfig = {
-          lang: {},
-          theme: { [inum]: themeValue },
-        }
-        storage.setJSON(STORAGE_KEYS.USER_CONFIG, newConfig)
-      }
-
-      dispatch({ type: themeValue })
-    },
-    [userInfo, dispatch],
-  )
+  const onChangeTheme = useThemePersistence(userInfo)
 
   const options: GluuDropdownOption<string>[] = useMemo(
     () => [

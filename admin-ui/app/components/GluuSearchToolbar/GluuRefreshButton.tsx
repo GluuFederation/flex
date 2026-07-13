@@ -13,6 +13,7 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
   label,
   loading = false,
   className,
+  icon,
   variant = 'outlined',
   minHeight,
   size = 'md',
@@ -52,7 +53,11 @@ const GluuRefreshButton: React.FC<GluuRefreshButtonProps> = ({
       useOpacityOnHover={useOpacityOnHover}
       minHeight={minHeight}
     >
-      <RefreshIcon fontSize="small" className={loading ? classes.iconSpin : classes.icon} />
+      {icon ? (
+        <span className={loading ? classes.iconSpin : classes.icon}>{icon}</span>
+      ) : (
+        <RefreshIcon fontSize="small" className={loading ? classes.iconSpin : classes.icon} />
+      )}
       {displayLabel}
     </GluuButton>
   )

@@ -14,6 +14,7 @@
     "hide": "Ocultar senha"
   },
   "languages": {
+    "language": "Idioma",
     "french": "Français",
     "english": "English",
     "portuguese": "Português",
@@ -68,6 +69,7 @@
     "mau_clients": "Janeiro bloquear clientes"
   },
   "menus": {
+    "hello": "Olá {{name}}",
     "authentication": "Autenticação",
     "adminui": "Admin",
     "assets": "Recursos",
@@ -1585,7 +1587,8 @@
     "onboarding_time_graph": "Gráfico de Tempo de Integração",
     "passkey_adoption_rate": "Taxa de Adoção de Passkey",
     "passkey_authentication": "Autenticação com Passkey",
-    "passkey_metrics_dashboard": "Painel de Métricas de Passkey"
+    "passkey_metrics_dashboard": "Painel de Métricas de Passkey",
+    "services_health_heading": "Saúde dos Serviços"
   },
   "options": {
     "admin": "ADMIN",

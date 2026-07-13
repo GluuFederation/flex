@@ -35,8 +35,7 @@ export const buildAssetInitialValues = (
 ): AssetFormValues => {
   const service = getServiceFromAsset(asset)
   const rec = asset as
-    | Record<string, string | number | boolean | object | null | undefined>
-    | undefined
+    Record<string, string | number | boolean | object | null | undefined> | undefined
   const doc = asset as Document | undefined
   const fileName = toStringValue(doc?.fileName ?? rec?.displayName ?? rec?.fileName, '')
   return {

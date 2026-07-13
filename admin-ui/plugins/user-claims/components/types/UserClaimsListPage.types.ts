@@ -1,11 +1,5 @@
 type ModifiedFieldValue =
-  | string
-  | number
-  | boolean
-  | string[]
-  | number[]
-  | AttributeValidation
-  | null
+  string | number | boolean | string[] | number[] | AttributeValidation | null
 
 export type ModifiedFields = {
   [key: string]: ModifiedFieldValue

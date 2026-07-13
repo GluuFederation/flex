@@ -118,12 +118,10 @@ const WebsiteSsoServiceProviderForm = ({
   const attributesList = useMemo<ScopeOption[]>(
     () =>
       attributesData?.entries
-        ? attributesData.entries.map(
-            (item): ScopeOption => ({
-              dn: String(item?.dn || ''),
-              name: String(item?.displayName || ''),
-            }),
-          )
+        ? attributesData.entries.map((item): ScopeOption => ({
+            dn: String(item?.dn || ''),
+            name: String(item?.displayName || ''),
+          }))
         : [],
     [attributesData],
   )

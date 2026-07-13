@@ -1,5 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
+import { MOBILE_PAGE_PADDING_X } from '@/constants'
+
+export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
 interface NavbarColors {
   background: string
@@ -21,11 +24,11 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     marginTop: '-1px',
     borderBottom: `1px solid ${navbarColors.border}`,
     [theme.breakpoints.down('md')]: {
-      padding: '0px 20px',
+      padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
       height: '80px',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '0px 15px',
+      padding: `0px ${MOBILE_PAGE_PADDING_X.SM}px`,
       height: '70px',
     },
   },
@@ -50,18 +53,31 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     [theme.breakpoints.down('sm')]: {
       fontSize: fontSizes.md,
     },
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      display: 'none',
+    },
+  },
+  mobileLogo: {
+    display: 'none',
+    alignItems: 'center',
+    height: '100%',
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      display: 'flex',
+    },
   },
   navbarContainer: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    minWidth: 0,
   },
   leftSection: {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
     height: '100%',
+    flexShrink: 0,
   },
   rightSection: {
     display: 'flex',
@@ -69,6 +85,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     justifyContent: 'flex-end',
     gap: '19px',
     height: '100%',
+    minWidth: 0,
     [theme.breakpoints.down('md')]: {
       gap: '12px',
     },
@@ -144,6 +161,39 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     },
     [theme.breakpoints.down('sm')]: {
       display: 'none',
+    },
+  },
+  mobileProfileTrigger: {
+    'display': 'flex',
+    'alignItems': 'center',
+    'gap': '7px',
+    'cursor': 'pointer',
+    'height': '100%',
+    'flexShrink': 0,
+    'minWidth': 0,
+    '@media (max-width:399px)': {
+      flexShrink: 1,
+    },
+  },
+  mobileGreeting: {
+    fontFamily,
+    'fontSize': fontSizes.sm,
+    'fontWeight': fontWeights.semiBold,
+    'color': navbarColors.text,
+    'letterSpacing': '0.24px',
+    'lineHeight': 'normal',
+    'display': 'block',
+    'whiteSpace': 'nowrap',
+    'overflow': 'hidden',
+    'textOverflow': 'ellipsis',
+    'minWidth': 0,
+    'margin': 0,
+    'padding': 0,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      maxWidth: '120px',
+    },
+    '@media (max-width:399px)': {
+      maxWidth: '100px',
     },
   },
   userIcon: {

@@ -123,6 +123,41 @@ const buildTextFieldSx = (
 const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 
 const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
+  '@media (max-width:767px)': {
+    '& .MuiPaper-root': {
+      width: 'min(256px, calc(100vw - 32px))',
+      maxWidth: 'calc(100vw - 32px)',
+      boxSizing: 'border-box',
+    },
+    '& .MuiDateCalendar-root': {
+      width: '100%',
+      maxWidth: '100%',
+      height: 'auto',
+      maxHeight: 'none',
+    },
+    '& .MuiDayCalendar-slideTransition': {
+      minHeight: '180px',
+    },
+    '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
+      justifyContent: 'space-around',
+    },
+    '& .MuiPickersDay-root, & .MuiPickerDay-root': {
+      width: '28px',
+      height: '28px',
+      margin: '1px',
+      fontSize: '12px',
+    },
+    '& .MuiDayCalendar-weekDayLabel': {
+      width: '28px',
+      margin: '1px',
+      fontSize: '12px',
+    },
+    '& .MuiPickersCalendarHeader-root': {
+      paddingLeft: '12px',
+      paddingRight: '8px',
+      marginTop: '8px',
+    },
+  },
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,
