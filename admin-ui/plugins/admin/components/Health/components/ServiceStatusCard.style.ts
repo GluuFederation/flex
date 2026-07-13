@@ -34,7 +34,7 @@ const useStyles = makeStyles<{ isDark: boolean }>()((_, { isDark }) => {
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       boxSizing: 'border-box',
       border: `1px solid ${isDark ? DARK_CARD_BORDER : customColors.lightBorder}`,
       boxShadow: isDark ? 'none' : CARD_SHADOW,
