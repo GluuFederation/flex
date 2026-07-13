@@ -53,7 +53,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
         flexDirection: { xs: 'column-reverse', md: 'row' },
       }}
     >
-      <Grid sx={{ width: { xs: '100%', md: 'auto' } }}>
+      <Grid sx={{ width: { xs: '100%', md: 'auto' }, mt: { xs: 2, md: 0 } }}>
         <GluuText
           variant="h5"
           style={{

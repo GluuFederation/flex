@@ -55,9 +55,15 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       verticalAlign: 'middle',
     },
     summaryCol: {
-      marginBottom: 16,
+      'marginBottom': 16,
       [theme.breakpoints.up('md')]: {
         marginBottom: 0,
+      },
+      // Two cards per row from 1024px down (overrides reactstrap col-md-3).
+      '@media (min-width:768px) and (max-width:1024px)': {
+        flex: '0 0 50%',
+        maxWidth: '50%',
+        marginBottom: 24,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         'marginBottom': 24,
@@ -99,12 +105,6 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       lineHeight: lineHeights.tight,
       color: themeColors.text,
       textAlign: 'left',
-      [theme.breakpoints.down('lg')]: {
-        fontSize: fontSizes.sm,
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        fontSize: fontSizes.md,
-      },
     },
     summaryValue: {
       fontFamily: fontFamily,
@@ -113,12 +113,6 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       fontSize: fontSizes['3xl'],
       lineHeight: lineHeights.tight,
       textAlign: 'left',
-      [theme.breakpoints.down('lg')]: {
-        fontSize: fontSizes.xl,
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        fontSize: fontSizes['3xl'],
-      },
     },
     trendCard: {
       width: '100%',
