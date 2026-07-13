@@ -50,9 +50,10 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
       sx={{
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexDirection: { xs: 'column-reverse', md: 'row' },
       }}
     >
-      <Grid>
+      <Grid sx={{ width: { xs: '100%', md: 'auto' } }}>
         <GluuText
           variant="h5"
           style={{
@@ -61,21 +62,30 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
             fontStyle: 'normal',
             fontWeight: fontWeights.medium,
             lineHeight: lineHeights.tight,
+            margin: 0,
           }}
         >
           {t('titles.usage_token_analytics')}
         </GluuText>
       </Grid>
-      <Grid>
+      <Grid sx={{ width: { xs: '100%', md: 'auto' } }}>
         <Grid
           container
           spacing={2}
           sx={{
             alignItems: 'center',
+            flexWrap: { xs: 'wrap', md: 'nowrap' },
           }}
         >
-          <Grid>
-            <Box sx={{ display: 'flex', gap: 0 }}>
+          <Grid sx={{ width: { xs: '100%', md: 'auto' } }}>
+            <Box
+              sx={{
+                'display': 'flex',
+                'gap': 0,
+                'width': { xs: '100%', md: 'auto' },
+                '& > button': { flex: { xs: 1, md: 'none' }, minWidth: { xs: 0, md: 110 } },
+              }}
+            >
               {DATE_PRESETS.map((preset, index) => {
                 const isSelected = selectedPreset === preset.months
                 const isFirst = index === 0
@@ -102,7 +112,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               })}
             </Box>
           </Grid>
-          <Grid>
+          <Grid sx={{ flex: { xs: 1, md: 'none' }, minWidth: 0 }}>
             <GluuDatePicker
               mode="range"
               layout="row"
@@ -113,7 +123,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               onEndDateChange={onEndDateChange}
             />
           </Grid>
-          <Grid>
+          <Grid sx={{ marginLeft: { xs: 'auto', md: 0 } }}>
             <GluuButton
               backgroundColor={customColors.statusActive}
               textColor={customColors.white}

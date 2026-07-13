@@ -54,17 +54,6 @@ export const MOBILE_BOTTOM_NAV_HEIGHT = 64
 
 export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
-/** Shared geometry for the Figma 390px mobile page layouts. */
-export const MOBILE_LAYOUT = {
-  /** Screen-edge inset for a page's content. */
-  SCREEN_PAD: '30px',
-  /** Horizontal padding inside a page card (272px content in a 329px card). */
-  CARD_PAD: '28.5px',
-  /** Page heading size and its gap down to the card below. */
-  PAGE_TITLE_SIZE: '28px',
-  PAGE_TITLE_GAP: '34px',
-} as const
-
 export const MOBILE_PAGE_PADDING_X = {
   MD: 20,
   SM: 15,

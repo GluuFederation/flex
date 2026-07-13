@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-import { SPACING, MOBILE_MEDIA_QUERY, MOBILE_LAYOUT } from '@/constants'
+import { SPACING, MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -19,9 +19,14 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
   return {
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: MOBILE_LAYOUT.SCREEN_PAD,
-        paddingRight: MOBILE_LAYOUT.SCREEN_PAD,
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {
@@ -29,12 +34,12 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         display: 'block',
         fontFamily,
-        fontSize: MOBILE_LAYOUT.PAGE_TITLE_SIZE,
+        fontSize: '28px',
         fontWeight: fontWeights.bold,
         lineHeight: 'normal',
         color: themeColors.fontColor,
         margin: 0,
-        marginBottom: MOBILE_LAYOUT.PAGE_TITLE_GAP,
+        marginBottom: SPACING.PAGE,
       },
     },
     licenseCard: {
@@ -46,8 +51,8 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       position: 'relative',
       ...cardBorderStyle,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: MOBILE_LAYOUT.CARD_PAD,
-        paddingRight: MOBILE_LAYOUT.CARD_PAD,
+        paddingLeft: '28.5px',
+        paddingRight: '28.5px',
         paddingTop: 0,
         paddingBottom: '32px',
       },

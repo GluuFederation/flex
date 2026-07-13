@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, SPACING, MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -21,6 +21,32 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
   const cardBorderStyle = getCardBorderStyle({ isDark })
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
+        boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.text,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     sectionSpacing: {
       marginBottom: 24,
     },
@@ -32,6 +58,9 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       marginBottom: 16,
       [theme.breakpoints.up('md')]: {
         marginBottom: 0,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginBottom: 10,
       },
     },
     chartCol: {
@@ -52,6 +81,13 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       padding: '20px 28px',
       backgroundColor: themeColors.cardBg,
       boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        minHeight: 135,
+        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
+        padding: '30px',
+        justifyContent: 'flex-start',
+        gap: 16,
+      },
     },
     summaryText: {
       fontFamily: fontFamily,
@@ -59,8 +95,12 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       fontSize: fontSizes.md,
       lineHeight: lineHeights.tight,
       color: themeColors.text,
+      textAlign: 'left',
       [theme.breakpoints.down('lg')]: {
         fontSize: fontSizes.sm,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.md,
       },
     },
     summaryValue: {
@@ -69,8 +109,12 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       fontWeight: fontWeights.semiBold,
       fontSize: fontSizes['3xl'],
       lineHeight: lineHeights.tight,
+      textAlign: 'left',
       [theme.breakpoints.down('lg')]: {
         fontSize: fontSizes.xl,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes['3xl'],
       },
     },
     trendCard: {
@@ -81,6 +125,11 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       padding: '24px 28px',
       backgroundColor: themeColors.cardBg,
       boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
+      },
     },
     trendCardWithSpacing: {
       marginBottom: 24,
@@ -94,6 +143,9 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       color: themeColors.text,
       marginTop: 0,
       marginBottom: 16,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: 20,
+      },
     },
     emptyState: {
       display: 'flex',
