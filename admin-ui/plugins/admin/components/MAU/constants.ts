@@ -9,7 +9,7 @@ export const MAU_CACHE_CONFIG = {
 
 export const DEFAULT_DATE_RANGE_MONTHS = 3
 
-export const CHART_MARGIN = { top: 10, right: 30, left: 0, bottom: 0 } as const
+export const CHART_MARGIN = { top: 10, right: 40, left: 0, bottom: 0 } as const
 
 export const MOBILE_CHART_MARGIN = { top: 10, right: 40, left: 0, bottom: 0 } as const
 

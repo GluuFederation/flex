@@ -60,7 +60,10 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
         marginBottom: 0,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        marginBottom: 10,
+        'marginBottom': 24,
+        '&:last-child': {
+          marginBottom: 0,
+        },
       },
     },
     chartCol: {
