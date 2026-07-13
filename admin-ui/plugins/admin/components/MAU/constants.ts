@@ -9,6 +9,10 @@ export const MAU_CACHE_CONFIG = {
 
 export const DEFAULT_DATE_RANGE_MONTHS = 3
 
+export const CHART_MARGIN = { top: 10, right: 30, left: 0, bottom: 0 } as const
+
+export const MOBILE_CHART_MARGIN = { top: 10, right: 40, left: 0, bottom: 0 } as const
+
 export const DATE_PRESETS: DateRangePreset[] = [
   { labelKey: 'fields.date_preset_3m', months: 3 },
   { labelKey: 'fields.date_preset_6m', months: 6 },

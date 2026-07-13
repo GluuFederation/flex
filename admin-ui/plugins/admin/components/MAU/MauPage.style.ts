@@ -126,9 +126,13 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       backgroundColor: themeColors.cardBg,
       boxSizing: 'border-box',
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: 0,
-        paddingRight: 0,
-        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
+        'paddingLeft': 0,
+        'paddingRight': 0,
+        'borderRadius': BORDER_RADIUS.MEDIUM_SMALL,
+        '& .card-body': {
+          paddingLeft: 0,
+          paddingRight: 0,
+        },
       },
     },
     trendCardWithSpacing: {
