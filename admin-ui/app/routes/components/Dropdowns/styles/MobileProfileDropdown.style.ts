@@ -21,7 +21,17 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
     : customColors.mobileSheetTileChipLight
 
   return {
+    container: {
+      position: 'relative',
+    },
+    triggerButton: {
+      cursor: 'pointer',
+    },
     menu: {
+      position: 'absolute',
+      right: 0,
+      top: 'calc(100% + 8px)',
+      zIndex: 1200,
       width: 200,
       boxSizing: 'border-box',
       backgroundColor: tc.menu.background,

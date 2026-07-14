@@ -127,7 +127,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   const langLabel = (lang || DEFAULT_LANG).split('-')[0].toUpperCase()
 
   return (
-    <Box ref={containerRef} sx={{ position: 'relative' }}>
+    <Box ref={containerRef} className={classes.container}>
       <Box
         role="button"
         tabIndex={0}
@@ -140,7 +140,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
             setIsOpen((prev) => !prev)
           }
         }}
-        sx={{ cursor: 'pointer' }}
+        className={classes.triggerButton}
       >
         {renderTrigger(isOpen)}
       </Box>
@@ -150,7 +150,6 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
           className={`${classes.menu} ${entered ? classes.menuOpen : ''}`}
           onTransitionEnd={handleMenuTransitionEnd}
           role="menu"
-          sx={{ position: 'absolute', right: 0, top: 'calc(100% + 8px)', zIndex: 1200 }}
         >
           <div
             className={`${classes.row} ${classes.profileRow}`}

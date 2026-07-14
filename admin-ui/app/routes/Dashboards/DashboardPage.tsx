@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, use } from 'react'
+import { useState, useMemo, useCallback, use, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from '@/redux/hooks'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -388,7 +388,7 @@ const DashboardPage = () => {
                   </Paper>
                 </div>
                 <div className={classes.userInfoChartCol}>
-                  <Paper elevation={0} style={{ background: 'transparent' }}>
+                  <Paper elevation={0} className={classes.dashboardCard}>
                     <div className={classes.whiteBg}>
                       <GluuText variant="h3" className={classes.chartTitle}>
                         {t('dashboard.access_tokens_graph')}
@@ -427,7 +427,7 @@ const DashboardPage = () => {
                           <div key={config.dataKey} className={classes.legendItem}>
                             <div
                               className={classes.legendColor}
-                              style={{ backgroundColor: config.color }}
+                              style={{ '--legend-swatch-color': config.color } as CSSProperties}
                             />
                             <GluuText variant="span" className={classes.legendLabel}>
                               {t(config.translationKey)}

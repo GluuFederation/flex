@@ -20,6 +20,8 @@ interface MauStylesParams {
   isDark: boolean
 }
 
+export const getLegendWrapperStyle = (color: string) => ({ color })
+
 export const useMauStyles = makeStyles<MauStylesParams>()((
   theme: Theme,
   { themeColors, isDark },
@@ -158,6 +160,12 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    distributionEmptyState: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 250,
     },
   }
 })

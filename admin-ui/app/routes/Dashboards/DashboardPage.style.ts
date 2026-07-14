@@ -682,6 +682,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       height: '3px',
       flexShrink: 0,
       borderRadius: BORDER_RADIUS.THIN,
+      backgroundColor: 'var(--legend-swatch-color)',
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         marginTop: '8px',
       },

@@ -18,7 +18,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useMauStyles } from '../MauPage.style'
+import { useMauStyles, getLegendWrapperStyle } from '../MauPage.style'
 import type { MauChartProps } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import { getChartColors, CHART_MARGIN, MOBILE_CHART_MARGIN } from '../constants'
@@ -71,7 +71,7 @@ const TokenTrendChart: React.FC<MauChartProps> = ({ data }) => {
                 />
               )}
             />
-            <Legend wrapperStyle={{ color: themeColors.fontColor }} />
+            <Legend wrapperStyle={getLegendWrapperStyle(themeColors.fontColor)} />
             <Area
               type="monotone"
               dataKey="clientCredentials"
