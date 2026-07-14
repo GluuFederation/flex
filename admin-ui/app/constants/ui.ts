@@ -58,6 +58,8 @@ export const SMALL_MAX_MEDIA_QUERY = '(max-width:575.98px)'
 
 export const EXTRA_SMALL_MAX_MEDIA_QUERY = '(max-width:480px)'
 
+export const TINY_MAX_MEDIA_QUERY = '(max-width:379.98px)'
+
 export const TABLET_MAX_MEDIA_QUERY = '(max-width:1024px)'
 
 export const WIDE_MAX_MEDIA_QUERY = '(max-width:1400px)'

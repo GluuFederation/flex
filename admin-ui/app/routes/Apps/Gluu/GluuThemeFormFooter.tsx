@@ -99,6 +99,7 @@ const GluuThemeFormFooter = ({
       backgroundColor={buttonColors.apply.backgroundColor}
       textColor={buttonColors.apply.textColor}
       borderColor={buttonColors.apply.borderColor}
+      className={classes.footerButton}
       {...SHARED_BUTTON_PROPS}
     >
       {applyLabel}
@@ -182,6 +183,7 @@ const GluuThemeFormFooter = ({
               backgroundColor={buttonColors.back.backgroundColor}
               textColor={buttonColors.back.textColor}
               borderColor={buttonColors.back.borderColor}
+              className={classes.footerButton}
               {...SHARED_BUTTON_PROPS}
             >
               {backLabel}
@@ -205,6 +207,7 @@ const GluuThemeFormFooter = ({
                 textColor={buttonColors.cancel.textColor}
                 borderColor={buttonColors.cancel.borderColor}
                 outlined
+                className={classes.footerButton}
                 {...SHARED_BUTTON_PROPS}
               >
                 {cancelLabel}
