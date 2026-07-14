@@ -1139,6 +1139,7 @@
     "error_adding_mapping": "Failed to add mapping",
     "error_loading_mapping": "Failed to load role-permission mappings",
     "no_role_mappings_found": "No role mappings found",
+    "no_custom_parameters": "No custom parameters",
     "permissions_count_one": "{{count}} permission",
     "permissions_count_other": "{{count}} permissions",
     "no_permissions_assigned": "No permissions assigned",

@@ -19,6 +19,8 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
   items,
   mode = 'pair',
   disabled = false,
+  hideControls = false,
+  emptyStateText,
   keyPlaceholder,
   valuePlaceholder,
   addButtonLabel,
@@ -109,13 +111,25 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
               <span className={classes.title}>{title}</span>
             </GluuText>
           )}
-          <button type="button" disabled={isAddDisabled} className={classes.addBtn} onClick={onAdd}>
-            <AddIcon className={classes.addBtnIcon} />
-            {addButtonLabel}
-          </button>
+          {!hideControls && (
+            <button
+              type="button"
+              disabled={isAddDisabled}
+              className={classes.addBtn}
+              onClick={onAdd}
+            >
+              <AddIcon className={classes.addBtnIcon} />
+              {addButtonLabel}
+            </button>
+          )}
         </div>
 
         <div className={classes.body}>
+          {isEmpty && emptyStateText && (
+            <GluuText variant="span" className={classes.emptyState} disableThemeColor>
+              {emptyStateText}
+            </GluuText>
+          )}
           {items.map((item, index) => (
             <div
               key={getItemKey ? getItemKey(item, index) : (item.id ?? index)}
@@ -164,18 +178,20 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
                 />
               )}
 
-              <GluuButton
-                type="button"
-                disabled={disabled}
-                backgroundColor={themeColors.settings.removeButton.bg}
-                textColor={themeColors.settings.removeButton.text}
-                useOpacityOnHover
-                className={classes.actionBtn}
-                onClick={handleRemove(index)}
-              >
-                <DeleteIcon className={classes.actionBtnIcon} />
-                {removeButtonLabel}
-              </GluuButton>
+              {!hideControls && (
+                <GluuButton
+                  type="button"
+                  disabled={disabled}
+                  backgroundColor={themeColors.settings.removeButton.bg}
+                  textColor={themeColors.settings.removeButton.text}
+                  useOpacityOnHover
+                  className={classes.actionBtn}
+                  onClick={handleRemove(index)}
+                >
+                  <DeleteIcon className={classes.actionBtnIcon} />
+                  {removeButtonLabel}
+                </GluuButton>
+              )}
             </div>
           ))}
         </div>

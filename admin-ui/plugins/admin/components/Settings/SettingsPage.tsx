@@ -16,7 +16,8 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH, MOBILE_MEDIA_QUERY } from '@/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -65,6 +66,9 @@ const SettingsPage: React.FC = () => {
   const queryClient = useQueryClient()
 
   const { canRead: canReadSettings, canWrite: canWriteSettings } = usePermission(settingsResourceId)
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const canEditSettings = canWriteSettings && !isMobile
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -386,7 +390,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="pageSize"
-                        disabled={!canWriteSettings}
+                        disabled={!canEditSettings}
                         isDark={isDark}
                         reserveErrorSpace
                         handleChange={(e) => {
@@ -407,7 +411,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="logLevel"
-                        disabled={!canWriteSettings}
+                        disabled={!canEditSettings}
                         isDark={isDark}
                         hideChooseOption
                         reserveErrorSpace
@@ -430,7 +434,7 @@ const SettingsPage: React.FC = () => {
                         showError={Boolean(
                           formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
                         )}
-                        disabled={!canWriteSettings}
+                        disabled={!canEditSettings}
                         isDark={isDark}
                         placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
                       />
@@ -447,7 +451,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="adminui_default_acr"
-                        disabled={!canWriteSettings}
+                        disabled={!canEditSettings}
                         isDark={isDark}
                         reserveErrorSpace
                       />
@@ -472,7 +476,7 @@ const SettingsPage: React.FC = () => {
                           doc_entry="cedarSwitch"
                           lsize={12}
                           rsize={12}
-                          disabled={!canWriteSettings}
+                          disabled={!canEditSettings}
                           isDark={isDark}
                           handler={(event: React.ChangeEvent<HTMLInputElement>) => {
                             formik.setFieldValue(
@@ -492,7 +496,9 @@ const SettingsPage: React.FC = () => {
                     title={t('fields.custom_params_auth')}
                     items={additionalParameters}
                     mode="pair"
-                    disabled={!canWriteSettings}
+                    disabled={!canEditSettings}
+                    hideControls={!canEditSettings}
+                    emptyStateText={t('messages.no_custom_parameters')}
                     keyPlaceholder={t('placeholders.enter_property_key')}
                     valuePlaceholder={t('placeholders.enter_property_value')}
                     addButtonLabel={t('actions.add_property')}
@@ -507,10 +513,10 @@ const SettingsPage: React.FC = () => {
 
                   <GluuThemeFormFooter
                     showBack
-                    showCancel={canWriteSettings}
+                    showCancel={canEditSettings}
                     onCancel={handleCancel}
                     disableCancel={!isFormChanged}
-                    showApply={canWriteSettings}
+                    showApply={canEditSettings}
                     onApply={formik.handleSubmit}
                     disableApply={!isFormChanged || hasErrors || isSubmitting}
                     applyButtonType="button"

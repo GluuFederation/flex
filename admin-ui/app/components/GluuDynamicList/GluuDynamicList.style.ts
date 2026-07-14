@@ -55,6 +55,13 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     headerEmpty: dl.listHeaderEmpty,
     title: dl.listTitle,
     body: dl.listBody,
+    emptyState: {
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.medium,
+      color: themeColors.textMuted,
+      fontStyle: 'italic' as const,
+    },
     row: {
       ...dl.listRow,
       [STACK_QUERY]: {
