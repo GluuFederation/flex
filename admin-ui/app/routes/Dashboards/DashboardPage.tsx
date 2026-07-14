@@ -347,7 +347,7 @@ const DashboardPage = () => {
 
             <div className={classes.dashboardSections}>
               <div className={classes.summaryCards}>
-                {summaryData.slice(0, 3).map((data) => (
+                {summaryData.map((data) => (
                   <SummaryCard
                     key={data.text}
                     text={data.text}
