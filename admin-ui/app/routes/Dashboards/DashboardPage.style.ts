@@ -5,6 +5,10 @@ import {
   MOBILE_PAGE_PADDING_X,
   SPACING,
   TABLET_MAX_MEDIA_QUERY,
+  TABLET_BAND_MEDIA_QUERY,
+  DESKTOP_NARROW_MEDIA_QUERY,
+  STATUS_GRID_MEDIA_QUERY,
+  WIDE_MAX_MEDIA_QUERY,
 } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
@@ -25,7 +29,7 @@ interface DashboardThemeColors {
 }
 
 const STATUS_COMPACT_QUERY = TABLET_MAX_MEDIA_QUERY
-const STATUS_GRID_QUERY = '(min-width:1025px) and (max-width:1199.98px)'
+const STATUS_GRID_QUERY = STATUS_GRID_MEDIA_QUERY
 
 const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
   theme: Theme,
@@ -39,7 +43,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
 
   return {
     mobileContentPad: {
-      '@media (min-width:768px) and (max-width:1024px)': {
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
         marginTop: `-${SPACING.PAGE}px`,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
@@ -82,23 +86,23 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       display: 'block',
     },
     summary: {
-      'height': 180,
-      'width': '100%',
-      'display': 'flex',
-      'flexDirection': 'column',
+      height: 180,
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
       ...cardBorderStyle,
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': '38.5px',
-      'backgroundColor': themeColors.cardBg,
-      'position': 'relative',
-      '@media (min-width:768px) and (max-width:1024px)': {
+      borderRadius: BORDER_RADIUS.DEFAULT,
+      padding: '38.5px',
+      backgroundColor: themeColors.cardBg,
+      position: 'relative',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
         height: 'auto',
         minHeight: 120,
         justifyContent: 'flex-start',
         gap: '12px',
         padding: '24px 26px',
       },
-      '@media (min-width:1024px) and (max-width:1140px)': {
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
         height: 'auto',
         minHeight: 140,
         justifyContent: 'flex-start',
@@ -115,22 +119,22 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     summaryText: {
       fontFamily,
-      'fontWeight': fontWeights.medium,
-      'fontSize': fontSizes.xl,
-      'lineHeight': lineHeights.tight,
-      'color': themeColors.text,
-      'marginBottom': 0,
-      'position': 'absolute',
-      'top': '44px',
-      'left': '40px',
-      '@media (min-width:768px) and (max-width:1024px)': {
+      fontWeight: fontWeights.medium,
+      fontSize: fontSizes.xl,
+      lineHeight: lineHeights.tight,
+      color: themeColors.text,
+      marginBottom: 0,
+      position: 'absolute',
+      top: '44px',
+      left: '40px',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
         left: 'auto',
         fontSize: fontSizes.md,
         lineHeight: '22px',
       },
-      '@media (min-width:1024px) and (max-width:1140px)': {
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
         left: 'auto',
@@ -153,16 +157,16 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     summaryValue: {
       fontFamily,
-      'color': themeColors.text,
-      'fontWeight': fontWeights.semiBold,
-      'fontSize': fontSizes['4xl'],
-      'lineHeight': lineHeights.tight,
-      'display': 'flex',
-      'position': 'absolute',
-      'top': '110px',
-      'left': '40px',
-      'transform': 'translateY(-50%)',
-      '@media (min-width:768px) and (max-width:1024px)': {
+      color: themeColors.text,
+      fontWeight: fontWeights.semiBold,
+      fontSize: fontSizes['4xl'],
+      lineHeight: lineHeights.tight,
+      display: 'flex',
+      position: 'absolute',
+      top: '110px',
+      left: '40px',
+      transform: 'translateY(-50%)',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
         left: 'auto',
@@ -170,7 +174,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         fontSize: fontSizes['2xl'],
         lineHeight: '1',
       },
-      '@media (min-width:1024px) and (max-width:1140px)': {
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
         left: 'auto',
@@ -291,13 +295,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       },
     },
     userInfoContent: {
-      'display': 'grid',
-      'gridTemplateColumns': '1fr 1fr',
-      'columnGap': '120px',
-      'rowGap': '30px',
-      'width': '100%',
-      'maxWidth': '100%',
-      '@media (max-width:1400px)': {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      columnGap: '120px',
+      rowGap: '30px',
+      width: '100%',
+      maxWidth: '100%',
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
         columnGap: '80px',
       },
       [theme.breakpoints.down('md')]: {

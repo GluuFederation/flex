@@ -1,5 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
-import { MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X, SPACING } from '@/constants'
+import {
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
+  SPACING,
+  TABLET_COLLAPSE_BAND_MEDIA_QUERY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
 export { MOBILE_MEDIA_QUERY }
@@ -13,17 +18,17 @@ interface NavbarColors {
 
 const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarColors }) => ({
   navbarWrapper: {
-    'height': '106px',
-    'width': '100%',
-    'backgroundColor': navbarColors.background,
-    'display': 'flex',
-    'alignItems': 'center',
-    'justifyContent': 'space-between',
-    'padding': '0px 60px',
-    'position': 'relative',
-    'marginTop': '-1px',
-    'borderBottom': `1px solid ${navbarColors.border}`,
-    '@media (min-width:768px) and (max-width:991.98px)': {
+    height: '106px',
+    width: '100%',
+    backgroundColor: navbarColors.background,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0px 60px',
+    position: 'relative',
+    marginTop: '-1px',
+    borderBottom: `1px solid ${navbarColors.border}`,
+    [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
       padding: `0px ${SPACING.PAGE}px`,
     },
     [theme.breakpoints.down('md')]: {

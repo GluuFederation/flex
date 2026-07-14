@@ -60,6 +60,16 @@ export const EXTRA_SMALL_MAX_MEDIA_QUERY = '(max-width:480px)'
 
 export const TABLET_MAX_MEDIA_QUERY = '(max-width:1024px)'
 
+export const WIDE_MAX_MEDIA_QUERY = '(max-width:1400px)'
+
+export const TABLET_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1024px)'
+
+export const TABLET_COLLAPSE_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:991.98px)'
+
+export const DESKTOP_NARROW_MEDIA_QUERY = '(min-width:1025px) and (max-width:1140px)'
+
+export const STATUS_GRID_MEDIA_QUERY = '(min-width:1025px) and (max-width:1199.98px)'
+
 export const MOBILE_PAGE_PADDING_X = {
   MD: 20,
   SM: 15,

@@ -65,10 +65,12 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
     },
     singleRow: {
       ...dl.listRow,
-      'flexWrap': 'nowrap',
-      'alignItems': 'flex-start',
-      '@media (max-width: 768px)': {
-        flexWrap: 'wrap',
+      flexWrap: 'nowrap' as const,
+      alignItems: 'flex-start' as const,
+      [STACK_QUERY]: {
+        flexDirection: 'column' as const,
+        alignItems: 'stretch' as const,
+        flexWrap: 'nowrap' as const,
       },
     },
     input: {
@@ -80,10 +82,10 @@ export const useStyles = makeStyles<GluuDynamicListStyleParams>()((
       },
     },
     singleInput: {
-      'flex': '1 1 auto',
-      'width': 'auto',
-      'minWidth': 0,
-      '@media (max-width: 768px)': {
+      flex: '1 1 auto',
+      width: 'auto',
+      minWidth: 0,
+      [STACK_QUERY]: {
         flex: '1 1 100%',
         width: '100%',
       },

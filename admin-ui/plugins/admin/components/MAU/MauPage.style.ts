@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { BORDER_RADIUS, SPACING, MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants'
+import {
+  BORDER_RADIUS,
+  SPACING,
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
+  TABLET_BAND_MEDIA_QUERY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -55,12 +61,12 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       verticalAlign: 'middle',
     },
     summaryCol: {
-      'marginBottom': 16,
+      marginBottom: 16,
       [theme.breakpoints.up('md')]: {
         marginBottom: 0,
       },
       // Two cards per row from 1024px down (overrides reactstrap col-md-3).
-      '@media (min-width:768px) and (max-width:1024px)': {
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
         flex: '0 0 50%',
         maxWidth: '50%',
         marginBottom: 24,
