@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import getThemeColor, { type FormFooterColors } from '@/context/theme/config'
 import { OPACITY, SPACING } from '@/constants'
+import { MOBILE_MEDIA_QUERY } from '@/constants/ui'
 
 interface FormFooterStyleParams {
   hasRightGroup: boolean
@@ -32,18 +33,28 @@ export const useStyles = makeStyles<FormFooterStyleParams>()((_theme, { hasRight
     marginTop: SPACING.SECTION_GAP,
     paddingTop: 16,
     paddingBottom: 8,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+    },
   },
 
   leftGroup: {
     display: 'flex',
     alignItems: 'center',
     gap: 12,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      flexWrap: 'wrap',
+    },
   },
 
   rightGroup: {
     display: 'flex',
     alignItems: 'center',
     gap: 12,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      flexWrap: 'wrap',
+    },
   },
 
   centerGroup: {

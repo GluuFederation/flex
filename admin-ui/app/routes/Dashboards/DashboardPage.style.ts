@@ -78,6 +78,27 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       marginTop: '32px',
       marginBottom: '20px',
     },
+    dashboardSections: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: SPACING.SECTION_GAP,
+      },
+    },
+    summaryCards: {
+      display: 'grid',
+      gap: 16,
+      gridTemplateColumns: '1fr',
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+      },
+      [theme.breakpoints.up('md')]: {
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+      },
+    },
     flex: {
       flexGrow: 1,
       display: 'flex',
@@ -199,9 +220,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       display: 'flex',
       justifyContent: 'center',
     },
-    mobileTopSpacing: {
-      marginTop: 20,
-    },
     slider: {
       border: `5px solid ${customColors.white} `,
       borderRadius: BORDER_RADIUS.LARGE,
@@ -266,10 +284,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         padding: '20px',
         height: 'auto',
       },
-      [theme.breakpoints.down('sm')]: {
-        padding: '16px',
-        height: 'auto',
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: '28px',
         height: 'auto',
@@ -283,9 +297,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       margin: 0,
       marginBottom: '24px',
       color: themeColors.text,
-      [theme.breakpoints.down('sm')]: {
-        fontSize: fontSizes.lg,
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes.lg,
         fontWeight: fontWeights.medium,
@@ -306,10 +317,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       },
       [theme.breakpoints.down('md')]: {
         columnGap: '40px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        gridTemplateColumns: '1fr',
-        rowGap: '20px',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         gridTemplateColumns: '1fr 1fr',
@@ -403,12 +410,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       marginRight: 0,
       display: 'flex',
       alignItems: 'center',
-      [theme.breakpoints.down('md')]: {
-        minHeight: '80px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        minHeight: '70px',
-      },
       [`@media ${STATUS_COMPACT_QUERY}`]: {
         minHeight: 0,
         height: 'auto',
@@ -645,6 +646,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flexDirection: 'column',
       gap: 16,
       width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: SPACING.SECTION_GAP,
+      },
       [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
         flexDirection: 'row',
       },

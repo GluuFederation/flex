@@ -31,11 +31,9 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
       padding: `0px ${SPACING.PAGE}px`,
     },
-    [theme.breakpoints.down('md')]: {
-      height: '80px',
-    },
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
+      height: '80px',
     },
     [theme.breakpoints.down('sm')]: {
       padding: `0px ${MOBILE_PAGE_PADDING_X.SM}px`,
@@ -60,13 +58,13 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     [theme.breakpoints.down('lg')]: {
-      fontSize: fontSizes.xl,
+      fontSize: fontSizes['2xl'],
     },
     [theme.breakpoints.down('md')]: {
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.xl,
     },
     [theme.breakpoints.down('sm')]: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.lg,
     },
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       display: 'none',
@@ -194,7 +192,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
   },
   mobileGreeting: {
     fontFamily,
-    'fontSize': fontSizes.sm,
+    'fontSize': fontSizes.md,
     'fontWeight': fontWeights.semiBold,
     'color': navbarColors.text,
     'letterSpacing': '0.24px',
@@ -207,10 +205,10 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     'margin': 0,
     'padding': 0,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
-      maxWidth: '120px',
+      maxWidth: '160px',
     },
     '@media (max-width:399px)': {
-      maxWidth: '100px',
+      maxWidth: '110px',
     },
   },
   userIcon: {

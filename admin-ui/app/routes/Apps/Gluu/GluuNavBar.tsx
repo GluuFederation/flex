@@ -13,10 +13,11 @@ import type { UserInfo } from 'Redux/features/types/authTypes'
 import { LanguageMenu } from './LanguageMenu'
 import { ThemeDropdownComponent } from './ThemeDropdown'
 import { UserIcon } from './components/UserIcon'
-import { useStyles, MOBILE_MEDIA_QUERY } from './styles/GluuNavBar.style'
+import { useStyles } from './styles/GluuNavBar.style'
 import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
 import { useAppSelector } from '@/redux/hooks'
+import { TABLET_MAX_MEDIA_QUERY } from '@/constants'
 
 const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =>
   state.authReducer.userinfo
@@ -28,7 +29,7 @@ const GluuNavBar = () => {
   const { navbarColors } = useNavbarTheme()
   const { classes } = useStyles({ navbarColors })
   const pageTitle = usePageTitle()
-  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const isTabletDown = useMediaQuery(TABLET_MAX_MEDIA_QUERY)
   const navbarRef = useRef<HTMLDivElement>(null)
 
   const applyNavbarColors = useCallback((element: HTMLElement, colors: typeof navbarColors) => {
@@ -92,7 +93,7 @@ const GluuNavBar = () => {
           </GluuText>
         </Box>
         <Box className={classes.rightSection}>
-          {!isMobile && (
+          {!isTabletDown && (
             <>
               <Box className={`${classes.navbarItem} ${classes.iconButton}`}>
                 <Notifications />
@@ -109,7 +110,7 @@ const GluuNavBar = () => {
               )}
             </>
           )}
-          {isMobile ? (
+          {isTabletDown ? (
             <MobileProfileDropdown
               userInfo={userInfo}
               renderTrigger={(isOpen: boolean) => (
