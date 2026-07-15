@@ -200,6 +200,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
     },
     serviceCardWrapper: {
       minWidth: 0,
+      display: 'flex',
     },
     refreshIcon: {
       fontSize: 16,

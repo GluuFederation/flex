@@ -1,8 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
+import {
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
+  SPACING,
+  TABLET_COLLAPSE_BAND_MEDIA_QUERY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
-import { MOBILE_PAGE_PADDING_X } from '@/constants'
 
-export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+export { MOBILE_MEDIA_QUERY }
 
 interface NavbarColors {
   background: string
@@ -23,7 +28,10 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     position: 'relative',
     marginTop: '-1px',
     borderBottom: `1px solid ${navbarColors.border}`,
-    [theme.breakpoints.down('md')]: {
+    [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+      padding: `0px ${SPACING.PAGE}px`,
+    },
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
       padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
       height: '80px',
     },
@@ -44,14 +52,19 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     margin: 0,
     padding: '0px',
     lineHeight: 1,
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
+    display: 'block',
+    minWidth: 0,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    [theme.breakpoints.down('lg')]: {
+      fontSize: fontSizes['2xl'],
+    },
     [theme.breakpoints.down('md')]: {
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.xl,
     },
     [theme.breakpoints.down('sm')]: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.lg,
     },
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       display: 'none',
@@ -77,7 +90,8 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     alignItems: 'center',
     gap: '20px',
     height: '100%',
-    flexShrink: 0,
+    minWidth: 0,
+    flexShrink: 1,
   },
   rightSection: {
     display: 'flex',
@@ -86,6 +100,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     gap: '19px',
     height: '100%',
     minWidth: 0,
+    flexShrink: 0,
     [theme.breakpoints.down('md')]: {
       gap: '12px',
     },
@@ -177,7 +192,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
   },
   mobileGreeting: {
     fontFamily,
-    'fontSize': fontSizes.sm,
+    'fontSize': fontSizes.md,
     'fontWeight': fontWeights.semiBold,
     'color': navbarColors.text,
     'letterSpacing': '0.24px',
@@ -190,10 +205,10 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     'margin': 0,
     'padding': 0,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
-      maxWidth: '120px',
+      maxWidth: '160px',
     },
     '@media (max-width:399px)': {
-      maxWidth: '100px',
+      maxWidth: '110px',
     },
   },
   userIcon: {

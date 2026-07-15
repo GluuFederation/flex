@@ -25,6 +25,8 @@ import {
   chartGlobalStyles,
   CHART_CONSTANTS,
   RECHARTS_INITIAL_DIMENSION,
+  Y_AXIS_LABEL_STYLE,
+  getXAxisLabelStyle,
 } from './DashboardChart.style'
 import type { DashboardChartProps, MauStatEntry } from '../types'
 import { CHART_LEGEND_CONFIG } from '../constants'
@@ -133,11 +135,11 @@ const DashboardChart = memo(
             <XAxis
               dataKey="monthLabel"
               tick={axisTickStyle}
-              style={{ color: textColor || customColors.primaryDark, fontFamily }}
+              style={getXAxisLabelStyle(textColor || customColors.primaryDark)}
             />
             <YAxis
               tick={axisTickStyle}
-              style={{ fontFamily }}
+              style={Y_AXIS_LABEL_STYLE}
               domain={[0, maxValue]}
               ticks={yAxisTicks}
             />

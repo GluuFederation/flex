@@ -8,6 +8,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { SETTINGS } from 'Utils/ApiResources'
@@ -15,7 +16,8 @@ import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { SCRIPT_TYPES, SIMPLE_PASSWORD_AUTH, MOBILE_MEDIA_QUERY } from '@/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -64,6 +66,9 @@ const SettingsPage: React.FC = () => {
   const queryClient = useQueryClient()
 
   const { canRead: canReadSettings, canWrite: canWriteSettings } = usePermission(settingsResourceId)
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const canEditSettings = canWriteSettings && !isMobile
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -335,182 +340,189 @@ const SettingsPage: React.FC = () => {
     <GluuLoader blocking={loadingScripts || loadingConfig || isSubmitting}>
       <GluuViewWrapper canShow={canReadSettings}>
         <GluuPageContent>
-          <div className={classes.settingsCard}>
-            <div className={`${classes.content} ${classes.settingsLabels}`}>
-              {renderErrorAlert()}
-              <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
-                <div className={`${classes.formWithInputs} ${classes.fieldsGrid}`}>
-                  <div className={classes.fieldItem}>
-                    <GluuInputRow
-                      label="fields.gluuFlexVersion"
-                      name="gluuFlexVersion"
-                      type="text"
-                      lsize={12}
-                      rsize={12}
-                      value={packageJson.version}
-                      disabled={true}
-                      doc_category={SETTINGS}
-                      doc_entry="gluuCurrentVersion"
-                      isDark={isDark}
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <GluuInputRow
-                      label="fields.config_api_url"
-                      name="configApiUrl"
-                      type="text"
-                      lsize={12}
-                      rsize={12}
-                      value={configApiUrl}
-                      disabled={true}
-                      doc_category={SETTINGS}
-                      doc_entry="configApiUrl"
-                      isDark={isDark}
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <GluuSelectRow
-                      label="fields.list_paging_size"
-                      name="pagingSize"
-                      value={currentPagingSize}
-                      formik={formik}
-                      values={ROWS_PER_PAGE_OPTIONS.map((n) => String(n))}
-                      lsize={12}
-                      rsize={12}
-                      doc_category={SETTINGS}
-                      doc_entry="pageSize"
-                      disabled={!canWriteSettings}
-                      isDark={isDark}
-                      reserveErrorSpace
-                      handleChange={(e) => {
-                        const n = Number.parseInt(e.target.value, 10)
-                        if (!Number.isNaN(n)) handlePagingSizeChange(n)
-                      }}
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <GluuSelectRow
-                      label="fields.admin_ui_log_level"
-                      name="logLevel"
-                      value={currentLogLevel}
-                      formik={formik}
-                      values={[...LOG_LEVELS]}
-                      lsize={12}
-                      rsize={12}
-                      doc_category={SETTINGS}
-                      doc_entry="logLevel"
-                      disabled={!canWriteSettings}
-                      isDark={isDark}
-                      hideChooseOption
-                      reserveErrorSpace
-                      handleChange={(e) => handleLogLevelChange(e.target.value as LogLevel)}
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <GluuInputRow
-                      label="fields.sessionTimeoutInMins"
-                      name="sessionTimeoutInMins"
-                      type="number"
-                      formik={formik}
-                      lsize={12}
-                      rsize={12}
-                      value={formik.values.sessionTimeoutInMins}
-                      doc_category={SETTINGS}
-                      doc_entry="sessionTimeoutInMins"
-                      errorMessage={formik.errors.sessionTimeoutInMins}
-                      showError={Boolean(
-                        formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
-                      )}
-                      disabled={!canWriteSettings}
-                      isDark={isDark}
-                      placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <GluuSelectRow
-                      label="fields.adminui_default_acr"
-                      name="acrValues"
-                      value={formik.values.acrValues}
-                      formik={formik}
-                      values={authScripts}
-                      lsize={12}
-                      rsize={12}
-                      doc_category={SETTINGS}
-                      doc_entry="adminui_default_acr"
-                      disabled={!canWriteSettings}
-                      isDark={isDark}
-                      reserveErrorSpace
-                    />
-                  </div>
-
-                  <div className={classes.fieldItem}>
-                    <FormGroup>
-                      <GluuLabel
-                        size={12}
-                        doc_category={SETTINGS}
-                        doc_entry="cedarSwitch"
-                        label="fields.showCedarLogs?"
-                        isDark={isDark}
-                      />
-                      <GluuToggleRow
-                        isLabelVisible={false}
-                        label="fields.showCedarLogs?"
-                        name="cedarlingLogType"
-                        formik={formik}
-                        value={formik.values.cedarlingLogType === CEDARLING_LOG_TYPE.STD_OUT}
-                        doc_category={SETTINGS}
-                        doc_entry="cedarSwitch"
+          <div className={classes.mobileContentPad}>
+            <GluuText variant="h1" className={classes.mobilePageTitle}>
+              {pageTitle}
+            </GluuText>
+            <div className={classes.settingsCard}>
+              <div className={`${classes.content} ${classes.settingsLabels}`}>
+                {renderErrorAlert()}
+                <Form onSubmit={formik.handleSubmit} className={classes.formSection}>
+                  <div className={`${classes.formWithInputs} ${classes.fieldsGrid}`}>
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.gluuFlexVersion"
+                        name="gluuFlexVersion"
+                        type="text"
                         lsize={12}
                         rsize={12}
-                        disabled={!canWriteSettings}
+                        value={packageJson.version}
+                        disabled={true}
+                        doc_category={SETTINGS}
+                        doc_entry="gluuCurrentVersion"
                         isDark={isDark}
-                        handler={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          formik.setFieldValue(
-                            'cedarlingLogType',
-                            event.target.checked
-                              ? CEDARLING_LOG_TYPE.STD_OUT
-                              : CEDARLING_LOG_TYPE.OFF,
-                          )
+                      />
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.config_api_url"
+                        name="configApiUrl"
+                        type="text"
+                        lsize={12}
+                        rsize={12}
+                        value={configApiUrl}
+                        disabled={true}
+                        doc_category={SETTINGS}
+                        doc_entry="configApiUrl"
+                        isDark={isDark}
+                      />
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <GluuSelectRow
+                        label="fields.list_paging_size"
+                        name="pagingSize"
+                        value={currentPagingSize}
+                        formik={formik}
+                        values={ROWS_PER_PAGE_OPTIONS.map((n) => String(n))}
+                        lsize={12}
+                        rsize={12}
+                        doc_category={SETTINGS}
+                        doc_entry="pageSize"
+                        disabled={!canEditSettings}
+                        isDark={isDark}
+                        reserveErrorSpace
+                        handleChange={(e) => {
+                          const n = Number.parseInt(e.target.value, 10)
+                          if (!Number.isNaN(n)) handlePagingSizeChange(n)
                         }}
                       />
-                    </FormGroup>
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <GluuSelectRow
+                        label="fields.admin_ui_log_level"
+                        name="logLevel"
+                        value={currentLogLevel}
+                        formik={formik}
+                        values={[...LOG_LEVELS]}
+                        lsize={12}
+                        rsize={12}
+                        doc_category={SETTINGS}
+                        doc_entry="logLevel"
+                        disabled={!canEditSettings}
+                        isDark={isDark}
+                        hideChooseOption
+                        reserveErrorSpace
+                        handleChange={(e) => handleLogLevelChange(e.target.value as LogLevel)}
+                      />
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <GluuInputRow
+                        label="fields.sessionTimeoutInMins"
+                        name="sessionTimeoutInMins"
+                        type="number"
+                        formik={formik}
+                        lsize={12}
+                        rsize={12}
+                        value={formik.values.sessionTimeoutInMins}
+                        doc_category={SETTINGS}
+                        doc_entry="sessionTimeoutInMins"
+                        errorMessage={formik.errors.sessionTimeoutInMins}
+                        showError={Boolean(
+                          formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
+                        )}
+                        disabled={!canEditSettings}
+                        isDark={isDark}
+                        placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
+                      />
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <GluuSelectRow
+                        label="fields.adminui_default_acr"
+                        name="acrValues"
+                        value={formik.values.acrValues}
+                        formik={formik}
+                        values={authScripts}
+                        lsize={12}
+                        rsize={12}
+                        doc_category={SETTINGS}
+                        doc_entry="adminui_default_acr"
+                        disabled={!canEditSettings}
+                        isDark={isDark}
+                        reserveErrorSpace
+                      />
+                    </div>
+
+                    <div className={classes.fieldItem}>
+                      <FormGroup>
+                        <GluuLabel
+                          size={12}
+                          doc_category={SETTINGS}
+                          doc_entry="cedarSwitch"
+                          label="fields.showCedarLogs?"
+                          isDark={isDark}
+                        />
+                        <GluuToggleRow
+                          isLabelVisible={false}
+                          label="fields.showCedarLogs?"
+                          name="cedarlingLogType"
+                          formik={formik}
+                          value={formik.values.cedarlingLogType === CEDARLING_LOG_TYPE.STD_OUT}
+                          doc_category={SETTINGS}
+                          doc_entry="cedarSwitch"
+                          lsize={12}
+                          rsize={12}
+                          disabled={!canEditSettings}
+                          isDark={isDark}
+                          handler={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            formik.setFieldValue(
+                              'cedarlingLogType',
+                              event.target.checked
+                                ? CEDARLING_LOG_TYPE.STD_OUT
+                                : CEDARLING_LOG_TYPE.OFF,
+                            )
+                          }}
+                        />
+                      </FormGroup>
+                    </div>
                   </div>
-                </div>
 
-                <GluuDynamicList
-                  className={classes.customParamsSpacing}
-                  title={t('fields.custom_params_auth')}
-                  items={additionalParameters}
-                  mode="pair"
-                  disabled={!canWriteSettings}
-                  keyPlaceholder={t('placeholders.enter_property_key')}
-                  valuePlaceholder={t('placeholders.enter_property_value')}
-                  addButtonLabel={t('actions.add_property')}
-                  removeButtonLabel={t('actions.remove')}
-                  onAdd={handleAddAdditionalParameter}
-                  onChange={handleChangeAdditionalParameter}
-                  onRemove={handleRemoveAdditionalParameter}
-                  showError={showAdditionalParametersError}
-                  errorMessage={additionalParametersErrorText}
-                  getItemKey={(item, index) => item.id ?? index}
-                />
+                  <GluuDynamicList
+                    className={classes.customParamsSpacing}
+                    title={t('fields.custom_params_auth')}
+                    items={additionalParameters}
+                    mode="pair"
+                    disabled={!canEditSettings}
+                    hideControls={!canEditSettings}
+                    emptyStateText={t('messages.no_custom_parameters')}
+                    keyPlaceholder={t('placeholders.enter_property_key')}
+                    valuePlaceholder={t('placeholders.enter_property_value')}
+                    addButtonLabel={t('actions.add_property')}
+                    removeButtonLabel={t('actions.remove')}
+                    onAdd={handleAddAdditionalParameter}
+                    onChange={handleChangeAdditionalParameter}
+                    onRemove={handleRemoveAdditionalParameter}
+                    showError={showAdditionalParametersError}
+                    errorMessage={additionalParametersErrorText}
+                    getItemKey={(item, index) => item.id ?? index}
+                  />
 
-                <GluuThemeFormFooter
-                  showBack
-                  showCancel={canWriteSettings}
-                  onCancel={handleCancel}
-                  disableCancel={!isFormChanged}
-                  showApply={canWriteSettings}
-                  onApply={formik.handleSubmit}
-                  disableApply={!isFormChanged || hasErrors || isSubmitting}
-                  applyButtonType="button"
-                />
-              </Form>
+                  <GluuThemeFormFooter
+                    showBack
+                    showCancel={canEditSettings}
+                    onCancel={handleCancel}
+                    disableCancel={!isFormChanged}
+                    showApply={canEditSettings}
+                    onApply={formik.handleSubmit}
+                    disableApply={!isFormChanged || hasErrors || isSubmitting}
+                    applyButtonType="button"
+                  />
+                </Form>
+              </div>
             </div>
           </div>
         </GluuPageContent>

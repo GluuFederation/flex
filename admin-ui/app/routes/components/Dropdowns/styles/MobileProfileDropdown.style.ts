@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { fontFamily, fontWeights } from '@/styles/fonts'
+import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
 import customColors, { hexToRgb } from '@/customColors'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, type ThemeValue } from '@/context/theme/constants'
@@ -21,8 +21,18 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
     : customColors.mobileSheetTileChipLight
 
   return {
+    container: {
+      position: 'relative',
+    },
+    triggerButton: {
+      cursor: 'pointer',
+    },
     menu: {
-      width: 172,
+      position: 'absolute',
+      right: 0,
+      top: 'calc(100% + 8px)',
+      zIndex: 1200,
+      width: 200,
       boxSizing: 'border-box',
       backgroundColor: tc.menu.background,
       border: `1.5px solid ${tc.borderColor}`,
@@ -46,11 +56,11 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      minHeight: 27,
+      minHeight: 30,
     },
     rowLabel: {
       fontFamily,
-      fontSize: '13px',
+      fontSize: fontSizes.description,
       fontWeight: fontWeights.semiBold,
       lineHeight: 'normal',
       letterSpacing: '0.22px',
@@ -62,8 +72,8 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
       cursor: 'pointer',
     },
     arrowButton: {
-      width: 20,
-      height: 21,
+      width: 24,
+      height: 24,
       borderRadius: '50%',
       backgroundColor: chipBg,
       display: 'flex',
@@ -73,8 +83,8 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
       color: tc.menu.color,
     },
     arrowIcon: {
-      width: 10,
-      height: 10,
+      width: 12,
+      height: 12,
       display: 'block',
     },
     divider: {
@@ -85,29 +95,29 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
       width: '100%',
     },
     control: {
-      minWidth: 74,
-      height: 27,
+      minWidth: 86,
+      height: 30,
       boxSizing: 'border-box',
       border: `1px solid ${tc.settings.inputBorder}`,
       borderRadius: 3,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 6px',
+      padding: '0 8px',
       cursor: 'pointer',
       gap: 4,
     },
     controlText: {
       fontFamily,
-      fontSize: '12px',
+      fontSize: fontSizes.base,
       fontWeight: fontWeights.medium,
       lineHeight: '21.6px',
       color: controlTextColor,
       whiteSpace: 'nowrap',
     },
     controlIcon: {
-      'width': 8,
-      'height': 8,
+      'width': 10,
+      'height': 10,
       'flexShrink': 0,
       'display': 'flex',
       'alignItems': 'center',
@@ -120,7 +130,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
     },
     signOut: {
       marginTop: 12,
-      height: 32,
+      height: 36,
       borderRadius: 3,
       backgroundColor: chipBg,
       border: 'none',
@@ -133,7 +143,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
     },
     signOutText: {
       fontFamily,
-      fontSize: '13px',
+      fontSize: fontSizes.description,
       fontWeight: fontWeights.semiBold,
       lineHeight: '22.273px',
       color: tc.menu.color,
@@ -150,7 +160,7 @@ export const useStyles = makeStyles<StyleParams>()((_theme, { theme }) => {
         minHeight: 'auto',
         marginBottom: '2px',
         padding: '6px 9px',
-        fontSize: '12px',
+        fontSize: fontSizes.sm,
         lineHeight: '16px',
         borderRadius: 4,
       },

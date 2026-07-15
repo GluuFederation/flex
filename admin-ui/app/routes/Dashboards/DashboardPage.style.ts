@@ -1,12 +1,22 @@
 import customColors from '@/customColors'
-import { OPACITY, MOBILE_PAGE_PADDING_X, SPACING } from '@/constants'
+import {
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
+  SPACING,
+  TABLET_MAX_MEDIA_QUERY,
+  TABLET_BAND_MEDIA_QUERY,
+  DESKTOP_NARROW_MEDIA_QUERY,
+  STATUS_GRID_MEDIA_QUERY,
+  WIDE_MAX_MEDIA_QUERY,
+} from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
-export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
+export { MOBILE_MEDIA_QUERY }
 
 interface DashboardThemeColors {
   cardBg: string
@@ -17,6 +27,9 @@ interface DashboardThemeColors {
   statusCardBorder: string
   statusActive: string
 }
+
+const STATUS_COMPACT_QUERY = TABLET_MAX_MEDIA_QUERY
+const STATUS_GRID_QUERY = STATUS_GRID_MEDIA_QUERY
 
 const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
   theme: Theme,
@@ -30,6 +43,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
 
   return {
     mobileContentPad: {
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
+        marginTop: `-${SPACING.PAGE}px`,
+      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
         paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
@@ -62,6 +78,27 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       marginTop: '32px',
       marginBottom: '20px',
     },
+    dashboardSections: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: SPACING.SECTION_GAP,
+      },
+    },
+    summaryCards: {
+      display: 'grid',
+      gap: 16,
+      gridTemplateColumns: '1fr',
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+      },
+      [theme.breakpoints.up('md')]: {
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+      },
+    },
     flex: {
       flexGrow: 1,
       display: 'flex',
@@ -79,6 +116,20 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       padding: '38.5px',
       backgroundColor: themeColors.cardBg,
       position: 'relative',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
+        height: 'auto',
+        minHeight: 120,
+        justifyContent: 'flex-start',
+        gap: '12px',
+        padding: '24px 26px',
+      },
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
+        height: 'auto',
+        minHeight: 140,
+        justifyContent: 'flex-start',
+        gap: '12px',
+        padding: '24px 26px',
+      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         height: 'auto',
         minHeight: 136,
@@ -97,6 +148,20 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       position: 'absolute',
       top: '44px',
       left: '40px',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        fontSize: fontSizes.md,
+        lineHeight: '22px',
+      },
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        fontSize: fontSizes.lg,
+        lineHeight: '22px',
+      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
@@ -122,6 +187,22 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       top: '110px',
       left: '40px',
       transform: 'translateY(-50%)',
+      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        transform: 'none',
+        fontSize: fontSizes['2xl'],
+        lineHeight: '1',
+      },
+      [`@media ${DESKTOP_NARROW_MEDIA_QUERY}`]: {
+        position: 'static',
+        top: 'auto',
+        left: 'auto',
+        transform: 'none',
+        fontSize: fontSizes['3xl'],
+        lineHeight: '1',
+      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         position: 'static',
         top: 'auto',
@@ -138,9 +219,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     dashboardCardCentered: {
       display: 'flex',
       justifyContent: 'center',
-    },
-    mobileTopSpacing: {
-      marginTop: 20,
     },
     slider: {
       border: `5px solid ${customColors.white} `,
@@ -206,10 +284,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         padding: '20px',
         height: 'auto',
       },
-      [theme.breakpoints.down('sm')]: {
-        padding: '16px',
-        height: 'auto',
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: '28px',
         height: 'auto',
@@ -223,9 +297,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       margin: 0,
       marginBottom: '24px',
       color: themeColors.text,
-      [theme.breakpoints.down('sm')]: {
-        fontSize: fontSizes.lg,
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes.lg,
         fontWeight: fontWeights.medium,
@@ -235,21 +306,17 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       },
     },
     userInfoContent: {
-      'display': 'grid',
-      'gridTemplateColumns': '1fr 1fr',
-      'columnGap': '120px',
-      'rowGap': '30px',
-      'width': '100%',
-      'maxWidth': '100%',
-      '@media (max-width:1400px)': {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      columnGap: '120px',
+      rowGap: '30px',
+      width: '100%',
+      maxWidth: '100%',
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
         columnGap: '80px',
       },
       [theme.breakpoints.down('md')]: {
         columnGap: '40px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        gridTemplateColumns: '1fr',
-        rowGap: '20px',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         gridTemplateColumns: '1fr 1fr',
@@ -337,19 +404,14 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     statusSection: {
       width: '100%',
-      height: '106px',
+      minHeight: '106px',
       padding: '0px 6px',
       marginLeft: 0,
       marginRight: 0,
       display: 'flex',
       alignItems: 'center',
-      [theme.breakpoints.down('md')]: {
-        height: '80px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        height: '70px',
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
+        minHeight: 0,
         height: 'auto',
         padding: 0,
         alignItems: 'flex-start',
@@ -362,10 +424,10 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       width: '100%',
       color: themeColors.text,
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '40px',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      columnGap: '40px',
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
         'display': 'flex',
         'flexWrap': 'wrap',
         'alignItems': 'center',
@@ -386,12 +448,13 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: lineHeights.relaxed,
       color: themeColors.text,
       whiteSpace: 'nowrap',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      flexShrink: 0,
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
         fontSize: fontSizes.base,
       },
     },
     statusHeading: {
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
         fontFamily,
         fontSize: fontSizes.content,
         fontStyle: 'normal',
@@ -401,12 +464,21 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       },
     },
     statusItems: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '40px',
-      flexWrap: 'nowrap',
       flex: 1,
-      justifyContent: 'space-between',
+      minWidth: 0,
+      display: 'flex',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      columnGap: '40px',
+      rowGap: '8px',
+      [`@media ${STATUS_GRID_QUERY}`]: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+      },
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
+        columnGap: '25px',
+        rowGap: '8px',
+      },
     },
     statusIndicator: {
       fontFamily,
@@ -420,7 +492,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flex: '0 0 auto',
       whiteSpace: 'nowrap',
       flexShrink: 0,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
         gap: '6px',
       },
     },
@@ -429,7 +501,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       height: 16,
       borderRadius: BORDER_RADIUS.CIRCLE,
       flexShrink: 0,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [`@media ${STATUS_COMPACT_QUERY}`]: {
         width: 10,
         height: 10,
       },
@@ -574,6 +646,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flexDirection: 'column',
       gap: 16,
       width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gap: SPACING.SECTION_GAP,
+      },
       [`@media (min-width: ${USER_INFO_CHART_BREAKPOINT}px)`]: {
         flexDirection: 'row',
       },
@@ -607,6 +682,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       height: '3px',
       flexShrink: 0,
       borderRadius: BORDER_RADIUS.THIN,
+      backgroundColor: 'var(--legend-swatch-color)',
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         marginTop: '8px',
       },

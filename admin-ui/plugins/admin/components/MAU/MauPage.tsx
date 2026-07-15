@@ -1,7 +1,10 @@
 import React, { useState, useMemo, useCallback } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
 import { Row, Col, Alert, GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -29,6 +32,7 @@ const mauResourceId = ADMIN_UI_RESOURCES.MAU
 const MauPage: React.FC = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.mau_dashboard'))
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
   const isDark = currentTheme === THEME_DARK
@@ -120,63 +124,76 @@ const MauPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <GluuViewWrapper canShow={canViewMau}>
         <GluuPageContent>
-          <div className={mauClasses.sectionSpacing}>
-            <DateRangeSelector
-              startDate={startDate}
-              endDate={endDate}
-              selectedPreset={selectedPreset}
-              onStartDateChange={handleStartDateChange}
-              onEndDateChange={handleEndDateChange}
-              onPresetSelect={handlePresetSelect}
-              onApply={handleApply}
-              isLoading={loading}
-            />
+          <div className={mauClasses.mobileContentPad}>
+            {isMobile && (
+              <GluuText variant="h1" className={mauClasses.mobilePageTitle}>
+                {t('titles.mau_dashboard')}
+              </GluuText>
+            )}
+            <div className={mauClasses.sectionSpacing}>
+              <DateRangeSelector
+                startDate={startDate}
+                endDate={endDate}
+                selectedPreset={selectedPreset}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
+                onPresetSelect={handlePresetSelect}
+                onApply={handleApply}
+                isLoading={loading}
+              />
+            </div>
+
+            {isError && (
+              <Alert color="danger" className={mauClasses.sectionSpacing} fade={false}>
+                <WarningAmberOutlined fontSize="small" className={mauClasses.alertIcon} />
+                {t('messages.error_loading_data')}
+              </Alert>
+            )}
+
+            {!isLoading && !isError && !hasData && (
+              <Alert color="info" className={mauClasses.sectionSpacing} fade={false}>
+                <InfoOutlined fontSize="small" className={mauClasses.alertIcon} />
+                {t('messages.no_mau_data')}
+              </Alert>
+            )}
+
+            {hasData && (
+              <>
+                <Row className={mauClasses.sectionSpacing}>
+                  <Col xs={12}>
+                    <Row>
+                      {summaryCards.map((card) => (
+                        <Col
+                          key={card.text}
+                          xs={12}
+                          sm={6}
+                          md={3}
+                          className={mauClasses.summaryCol}
+                        >
+                          <DashboardSummaryCard
+                            text={card.text}
+                            value={card.value}
+                            classes={mauClasses}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Col>
+                </Row>
+
+                <MauTrendChart data={mauData} />
+
+                <Row>
+                  <Col xs={12} lg={5} className={mauClasses.chartCol}>
+                    <TokenDistributionChart summary={summary} />
+                  </Col>
+                  <Col xs={12} lg={7}>
+                    <TokenTrendChart data={mauData} />
+                  </Col>
+                </Row>
+              </>
+            )}
           </div>
-
-          {isError && (
-            <Alert color="danger" className={mauClasses.sectionSpacing} fade={false}>
-              <WarningAmberOutlined fontSize="small" className={mauClasses.alertIcon} />
-              {t('messages.error_loading_data')}
-            </Alert>
-          )}
-
-          {!isLoading && !isError && !hasData && (
-            <Alert color="info" className={mauClasses.sectionSpacing} fade={false}>
-              <InfoOutlined fontSize="small" className={mauClasses.alertIcon} />
-              {t('messages.no_mau_data')}
-            </Alert>
-          )}
-
-          {hasData && (
-            <>
-              <Row className={mauClasses.sectionSpacing}>
-                <Col xs={12}>
-                  <Row>
-                    {summaryCards.map((card) => (
-                      <Col key={card.text} xs={12} sm={6} md={3} className={mauClasses.summaryCol}>
-                        <DashboardSummaryCard
-                          text={card.text}
-                          value={card.value}
-                          classes={mauClasses}
-                        />
-                      </Col>
-                    ))}
-                  </Row>
-                </Col>
-              </Row>
-
-              <MauTrendChart data={mauData} />
-
-              <Row>
-                <Col xs={12} lg={5} className={mauClasses.chartCol}>
-                  <TokenDistributionChart summary={summary} />
-                </Col>
-                <Col xs={12} lg={7}>
-                  <TokenTrendChart data={mauData} />
-                </Col>
-              </Row>
-            </>
-          )}
         </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>

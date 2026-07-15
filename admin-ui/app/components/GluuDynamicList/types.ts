@@ -17,6 +17,8 @@ export type GluuDynamicListProps = {
   items: GluuDynamicListItem[]
   mode?: GluuDynamicListMode
   disabled?: boolean
+  hideControls?: boolean
+  emptyStateText?: string
   keyPlaceholder?: string
   valuePlaceholder: string
   addButtonLabel: string

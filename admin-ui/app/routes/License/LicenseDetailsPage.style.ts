@@ -1,7 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { SPACING } from '@/constants'
-import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
+import customColors from '@/customColors'
+import { SPACING, MOBILE_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants'
+import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface StylesParams {
@@ -13,8 +14,34 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
   const cardBorderStyle = getCardBorderStyle({ isDark })
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const dividerColor = themeColors.card.border
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
+        boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     licenseCard: {
       backgroundColor: cardBg,
       borderRadius: '16px',
@@ -23,6 +50,12 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       boxSizing: 'border-box',
       position: 'relative',
       ...cardBorderStyle,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: '28.5px',
+        paddingRight: '28.5px',
+        paddingTop: 0,
+        paddingBottom: '32px',
+      },
     },
     licenseContent: {
       display: 'grid',
@@ -31,14 +64,29 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       [theme.breakpoints.down('lg')]: {
         gridTemplateColumns: 'repeat(2, 1fr)',
       },
-      [theme.breakpoints.down('sm')]: {
+      // Figma stacks the fields, separating each with a full-width rule.
+      [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
+        gap: 0,
       },
     },
     fieldWrapper: {
       display: 'flex',
       flexDirection: 'column',
       gap: `${SPACING.CARD_CONTENT_GAP}px`,
+      [theme.breakpoints.down('md')]: {
+        'gap': 0,
+        'boxSizing': 'border-box',
+        'paddingTop': '15px',
+        'paddingBottom': '15px',
+        'borderBottom': `1px solid ${dividerColor}`,
+        '&:first-of-type': {
+          paddingTop: '19px',
+        },
+        '&:last-of-type': {
+          borderBottom: 'none',
+        },
+      },
     },
     label: {
       fontFamily,
@@ -48,6 +96,10 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       color: themeColors.textMuted,
       margin: 0,
       padding: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.base,
+        lineHeight: lineHeights.relaxed,
+      },
     },
     value: {
       fontFamily,
@@ -57,15 +109,37 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       color: themeColors.fontColor,
       margin: 0,
       padding: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.content,
+        lineHeight: lineHeights.relaxed,
+        wordBreak: 'break-word',
+      },
     },
     buttonContainer: {
       marginTop: `${SPACING.CARD_GAP}px`,
       display: 'flex',
       justifyContent: 'flex-start',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginTop: '25px',
+      },
     },
     resetButton: {
       gap: `${SPACING.CARD_CONTENT_GAP}px`,
       minWidth: 130,
+      // Figma: full-width 40px green pill, 6px radius, 14px bold label.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        width: '100% !important',
+        minWidth: '0 !important',
+        height: '40px !important',
+        minHeight: '40px !important',
+        borderRadius: '6px !important',
+        backgroundColor: `${customColors.mobileNavActive} !important`,
+        borderColor: `${customColors.mobileNavActive} !important`,
+        justifyContent: 'center !important',
+        fontSize: `${fontSizes.base} !important`,
+        fontWeight: `${fontWeights.bold} !important`,
+        letterSpacing: `${letterSpacing.button} !important`,
+      },
     },
     card: {
       backgroundColor: cardBg,

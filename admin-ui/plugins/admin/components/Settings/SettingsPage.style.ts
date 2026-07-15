@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -31,6 +37,32 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
   })
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
+        boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     settingsCard: {
       backgroundColor: settings.cardBackground,
       ...cardBorderStyle,
@@ -41,6 +73,9 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
+      },
     },
     header: {
       paddingTop: `${SPACING.CONTENT_PADDING}px`,

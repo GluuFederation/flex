@@ -117,21 +117,26 @@ const LicenseDetailsPage = () => {
       <GluuViewWrapper canShow={canReadLicense}>
         <GluuPageContent>
           {showLicenseCard ? (
-            <div className={classes.licenseCard}>
-              <div className={classes.licenseContent}>
-                {licenseFields?.map((field) => renderLicenseField(field))}
-              </div>
-              {canWriteLicense && (
-                <div className={classes.buttonContainer}>
-                  <GluuRefreshButton
-                    className={classes.resetButton}
-                    variant="primary"
-                    onClick={toggle}
-                    disabled={loading || isResetting}
-                    label={t('fields.resetLicense')}
-                  />
+            <div className={classes.mobileContentPad}>
+              <GluuText variant="h1" className={classes.mobilePageTitle}>
+                {t('menus.licenseDetails')}
+              </GluuText>
+              <div className={classes.licenseCard}>
+                <div className={classes.licenseContent}>
+                  {licenseFields?.map((field) => renderLicenseField(field))}
                 </div>
-              )}
+                {canWriteLicense && (
+                  <div className={classes.buttonContainer}>
+                    <GluuRefreshButton
+                      className={classes.resetButton}
+                      variant="primary"
+                      onClick={toggle}
+                      disabled={loading || isResetting}
+                      label={t('fields.resetLicense')}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <Card className={classes.card}>

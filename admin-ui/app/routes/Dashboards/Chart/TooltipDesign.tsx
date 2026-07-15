@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { fontFamily, fontSizes } from '@/styles/fonts'
 import customColors, { hexToRgb } from '@/customColors'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { TooltipDesignProps } from '../types'
 import { formatTooltipValue } from './utils'
+import { useStyles } from './TooltipDesign.style'
 
 const TooltipDesignComponent: React.FC<TooltipDesignProps> = ({
   payload = [],
@@ -26,24 +26,23 @@ const TooltipDesignComponent: React.FC<TooltipDesignProps> = ({
     authzCodeId: t('dashboard.authorization_code_id_token'),
   }
 
-  if (!active || payload.length === 0) return null
-
   const borderColor = isDark
     ? `rgba(${hexToRgb(customColors.white)}, 0.2)`
     : `rgba(${hexToRgb(customColors.black)}, 0.1)`
   const shadowColor = `rgba(${hexToRgb(customColors.black)}, 0.25)`
 
+  const { classes } = useStyles()
+
+  if (!active || payload.length === 0) return null
+
   return (
     <div
-      className="thumbnail"
+      className={`thumbnail ${classes.tooltip}`}
       style={{
         backgroundColor,
         color: textColor,
-        borderRadius: '8px',
-        boxShadow: `0px 4px 16px 0px ${shadowColor}`,
         border: `1px solid ${borderColor}`,
-        padding: '12px 16px',
-        minWidth: '200px',
+        boxShadow: `0px 4px 16px 0px ${shadowColor}`,
       }}
     >
       {payload.map((item, idx) => {
@@ -56,19 +55,13 @@ const TooltipDesignComponent: React.FC<TooltipDesignProps> = ({
         const displayValue = formatter
           ? formatter(normalizedValue)
           : formatTooltipValue(normalizedValue)
+        const isSpaced = payload.length > 1 && idx !== payload.length - 1
         return (
           <div
             key={`${dataKey}-${idx}`}
-            style={{
-              fontFamily,
-              fontSize: fontSizes.sm,
-              color: textColor,
-              fontWeight: 500,
-              lineHeight: '1.5',
-              marginBottom: payload.length > 1 && idx !== payload.length - 1 ? '8px' : '0',
-            }}
+            className={`${classes.item} ${isSpaced ? classes.itemSpaced : ''}`}
           >
-            <GluuText variant="span" style={{ fontWeight: 600 }}>
+            <GluuText variant="span" className={classes.itemLabel}>
               {`${label}: ${displayValue}`}
             </GluuText>
           </div>

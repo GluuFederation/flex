@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { Card, CardBody } from 'Components'
 import {
   XAxis,
@@ -19,7 +21,7 @@ import { useMauStyles } from '../MauPage.style'
 import type { MauChartProps } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
-import { getChartColors } from '../constants'
+import { getChartColors, CHART_MARGIN, MOBILE_CHART_MARGIN } from '../constants'
 import { formatMonth, formatNumber } from '../utils'
 
 const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
@@ -35,6 +37,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
     isDark,
   })
   const chartColors = useMemo(() => getChartColors(state.theme), [state.theme])
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const chartData = data.map((entry) => ({
     ...entry,
@@ -48,7 +51,7 @@ const MauTrendChart: React.FC<MauChartProps> = ({ data }) => {
           {t('titles.mau_trend')}
         </GluuText>
         <ResponsiveContainer width="100%" height={300} minHeight={300}>
-          <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <LineChart data={chartData} margin={isMobile ? MOBILE_CHART_MARGIN : CHART_MARGIN}>
             <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
             <XAxis dataKey="monthLabel" tick={{ fill: themeColors.fontColor, fontSize: 12 }} />
             <YAxis

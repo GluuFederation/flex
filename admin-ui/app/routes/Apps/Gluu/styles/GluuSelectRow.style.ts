@@ -3,6 +3,10 @@ import { alpha } from '@mui/material/styles'
 import { MAPPING_SPACING, OPACITY } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
+import {
+  createDisabledSelectInputStyles,
+  createReadOnlySelectStyles,
+} from '@/styles/disabledFieldStyles'
 
 interface GluuSelectRowStyleParams {
   themeColors: ThemeConfig
@@ -32,8 +36,11 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
       'MozAppearance': 'none',
       'appearance': 'none',
       'backgroundImage': 'none !important',
+      'color': fontColor,
+      'WebkitTextFillColor': fontColor,
       '&:has(option[value=""]:checked)': {
         color: `${alpha(fontColor, OPACITY.PLACEHOLDER)} !important`,
+        WebkitTextFillColor: alpha(fontColor, OPACITY.PLACEHOLDER),
       },
       '&:focus': {
         backgroundImage: 'none !important',
@@ -44,7 +51,12 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
         opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
+      '& option': {
+        color: fontColor,
+        WebkitTextFillColor: fontColor,
+      },
     },
+    selectReadOnly: createReadOnlySelectStyles(fontColor),
     chevronWrapper: {
       position: 'absolute',
       right: 20,
@@ -103,10 +115,7 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
           color: `${fontColor} !important`,
           caretColor: fontColor,
         },
-        '&.Mui-disabled': {
-          opacity: OPACITY.DISABLED,
-          cursor: 'not-allowed',
-        },
+        '&.Mui-disabled': createDisabledSelectInputStyles(fontColor),
       },
     },
   }

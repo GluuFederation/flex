@@ -1,7 +1,12 @@
 import customColors from '@/customColors'
 import { OPACITY } from '@/constants'
+import { fontFamily } from '@/styles/fonts'
 
 export const RECHARTS_INITIAL_DIMENSION = { width: 100, height: 100 }
+
+export const Y_AXIS_LABEL_STYLE = { fontFamily } as const
+
+export const getXAxisLabelStyle = (color: string) => ({ fontFamily, color })
 
 export const CHART_CONSTANTS = {
   MIN_MAX: 1200,

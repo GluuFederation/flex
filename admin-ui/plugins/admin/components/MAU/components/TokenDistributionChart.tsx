@@ -7,7 +7,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useMauStyles } from '../MauPage.style'
+import { useMauStyles, getLegendWrapperStyle } from '../MauPage.style'
 import type { MauSummary } from '../types'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import { getChartColors } from '../constants'
@@ -103,11 +103,11 @@ const TokenDistributionChart: React.FC<TokenDistributionChartProps> = ({ summary
                   />
                 )}
               />
-              <Legend wrapperStyle={{ color: themeColors.fontColor }} />
+              <Legend wrapperStyle={getLegendWrapperStyle(themeColors.fontColor)} />
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className={classes.emptyState} style={{ height: 250 }}>
+          <div className={classes.distributionEmptyState}>
             <GluuText variant="span" secondary>
               {t('messages.no_mau_data')}
             </GluuText>
