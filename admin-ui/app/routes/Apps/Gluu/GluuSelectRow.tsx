@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { FormGroup, Col, CustomInput } from 'Components'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { ChevronIcon } from '@/components/SVG'
 import GluuLabel from './GluuLabel'
 import GluuText from './GluuText'
@@ -9,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useStyles } from './styles/GluuSelectRow.style'
 import type { GluuSelectRowProps, SelectOption } from './types/GluuSelectRow.types'
 
@@ -60,6 +62,9 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
     inputPaddingTop: inputPaddingTop ?? 8,
     inputPaddingBottom: inputPaddingBottom ?? 8,
   })
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const isReadOnlySelect = Boolean(disabled) && isMobile
 
   const handleSelectChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -149,10 +154,12 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             name={name}
             data-testid={name}
             value={displayValue}
-            onChange={handleSelectChange}
+            onChange={isReadOnlySelect ? undefined : handleSelectChange}
             onBlur={formik.handleBlur}
-            disabled={disabled}
-            className={classes.select}
+            disabled={isReadOnlySelect ? undefined : disabled}
+            aria-disabled={isReadOnlySelect || undefined}
+            tabIndex={isReadOnlySelect ? -1 : undefined}
+            className={`${classes.select} ${isReadOnlySelect ? classes.selectReadOnly : ''}`.trim()}
           >
             {!hideChooseOption && <option value="">{t('actions.choose')}...</option>}
             {deduplicateSelectValues(resolvedValues).map((item) => {

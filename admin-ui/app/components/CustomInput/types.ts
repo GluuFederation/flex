@@ -13,4 +13,6 @@ export type CustomInputProps = {
   'onBlur'?: React.FocusEventHandler<HTMLInputElement | HTMLSelectElement>
   'children'?: React.ReactNode
   'data-testid'?: string
+  'aria-disabled'?: boolean
+  'tabIndex'?: number
 }

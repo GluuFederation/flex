@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
-import { MAPPING_SPACING, OPACITY } from '@/constants'
+import { MAPPING_SPACING, OPACITY, MOBILE_MEDIA_QUERY } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -32,8 +32,11 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
       'MozAppearance': 'none',
       'appearance': 'none',
       'backgroundImage': 'none !important',
+      'color': fontColor,
+      'WebkitTextFillColor': fontColor,
       '&:has(option[value=""]:checked)': {
         color: `${alpha(fontColor, OPACITY.PLACEHOLDER)} !important`,
+        WebkitTextFillColor: alpha(fontColor, OPACITY.PLACEHOLDER),
       },
       '&:focus': {
         backgroundImage: 'none !important',
@@ -44,6 +47,17 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
         opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
+      '& option': {
+        color: fontColor,
+        WebkitTextFillColor: fontColor,
+      },
+    },
+    selectReadOnly: {
+      color: `${fontColor} !important`,
+      WebkitTextFillColor: `${fontColor} !important`,
+      opacity: OPACITY.FULL,
+      cursor: 'default',
+      pointerEvents: 'none',
     },
     chevronWrapper: {
       position: 'absolute',
@@ -104,8 +118,15 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
           caretColor: fontColor,
         },
         '&.Mui-disabled': {
-          opacity: OPACITY.DISABLED,
-          cursor: 'not-allowed',
+          'opacity': OPACITY.DISABLED,
+          'cursor': 'not-allowed',
+          [`@media ${MOBILE_MEDIA_QUERY}`]: {
+            'opacity': OPACITY.FULL,
+            '& .MuiOutlinedInput-input': {
+              color: `${fontColor} !important`,
+              WebkitTextFillColor: `${fontColor} !important`,
+            },
+          },
         },
       },
     },
