@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
-import { OPACITY, MOBILE_MEDIA_QUERY } from '@/constants'
+import { OPACITY } from '@/constants'
+import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 
 interface GluuInputRowStyleParams {
   errorColor: string
@@ -22,15 +23,7 @@ export const useStyles = makeStyles<GluuInputRowStyleParams>()((
         outlineOffset: -2,
         borderRadius: 'inherit',
       },
-      '& input:disabled': {
-        'cursor': 'not-allowed',
-        'opacity': OPACITY.PLACEHOLDER,
-        [`@media ${MOBILE_MEDIA_QUERY}`]: {
-          opacity: OPACITY.FULL,
-          color: fontColor ?? 'inherit',
-          WebkitTextFillColor: `${fontColor ?? 'inherit'} !important`,
-        },
-      },
+      '& input:disabled': createDisabledInputStyles(fontColor ?? 'inherit'),
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
         {
           WebkitTextFillColor: fontColor ?? 'inherit',
