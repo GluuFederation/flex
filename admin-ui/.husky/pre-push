@@ -11,7 +11,7 @@ Z40=$(git hash-object -t tree /dev/null 2>/dev/null | tr 'a-f0-9' '0')
 
 UNSIGNED=""
 
-while read -r LOCAL_REF LOCAL_OID REMOTE_REF REMOTE_OID; do
+while read -r _LOCAL_REF LOCAL_OID _REMOTE_REF REMOTE_OID; do
   # Nothing to push for this ref (deletion) — skip.
   [ "$LOCAL_OID" = "$Z40" ] && continue
   [ -z "$LOCAL_OID" ] && continue

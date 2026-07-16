@@ -3,7 +3,7 @@ set +e
 
 case "$PWD" in
   */admin-ui) ;;
-  *) cd admin-ui ;;
+  *) cd admin-ui || exit 1 ;;
 esac
 
 # --- Require signed commits ---
