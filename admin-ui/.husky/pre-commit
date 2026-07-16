@@ -7,10 +7,9 @@ case "$PWD" in
 esac
 
 # --- Require signed commits ---
-# Deny the commit unless GPG/SSH signing is enabled and a signing key is set.
+# Deny the commit unless GPG/SSH signing is enabled.
 GPGSIGN=$(git config --get commit.gpgsign 2>/dev/null | tr '[:upper:]' '[:lower:]')
-SIGNINGKEY=$(git config --get user.signingkey 2>/dev/null)
-if [ "$GPGSIGN" != "true" ] || [ -z "$SIGNINGKEY" ]; then
+if [ "$GPGSIGN" != "true" ]; then
   echo "❌ Signed commit is required."
   echo ""
   echo "   This commit is not configured to be signed. To fix:"

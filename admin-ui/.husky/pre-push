@@ -36,8 +36,7 @@ done
 
 if [ -n "$UNSIGNED" ]; then
   echo "❌ Push blocked — the following commit(s) are NOT signed:"
-  # shellcheck disable=SC2059
-  printf "$UNSIGNED\n"
+  printf '%b\n' "$UNSIGNED"
   echo ""
   echo "   Sign your commits before pushing, e.g.:"
   echo "     git commit -S -s -m \"<message>\""
