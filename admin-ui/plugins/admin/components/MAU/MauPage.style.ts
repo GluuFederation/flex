@@ -46,7 +46,7 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         display: 'block',
         fontFamily,
-        fontSize: '28px',
+        fontSize: fontSizes.pageTitle,
         fontStyle: 'normal',
         fontWeight: fontWeights.bold,
         lineHeight: 'normal',

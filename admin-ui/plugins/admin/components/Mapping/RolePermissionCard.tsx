@@ -19,26 +19,31 @@ const CONTENT_ID_PREFIX = 'mapping-content-'
 const CONTENT_ID_ROLE_FALLBACK = 'role'
 const TOGGLE_KEYS = new Set(['Enter', ' '])
 const ARIA_ASSIGNED = 'assigned'
+const ARIA_NOT_ASSIGNED = 'not assigned'
 
 interface ExtendedRolePermissionCardProps extends RolePermissionCardProps {
   allPermissions: string[]
+  totalPermissions: number
   itemIndex?: number
 }
 
 const PermissionCheckbox: React.FC<{
   permission: string
+  checked: boolean
   classes: ReturnType<typeof useStyles>['classes']
-}> = React.memo(({ permission, classes }) => (
+}> = React.memo(({ permission, checked, classes }) => (
   <Box
     className={classes.permissionItem}
     role="checkbox"
-    aria-checked="true"
+    aria-checked={checked}
     aria-readonly="true"
-    aria-label={`${permission}, ${ARIA_ASSIGNED}`}
+    aria-label={`${permission}, ${checked ? ARIA_ASSIGNED : ARIA_NOT_ASSIGNED}`}
     tabIndex={0}
   >
-    <Box className={`${classes.checkbox} ${classes.checkboxChecked}`}>
-      <Check className={classes.checkIcon} aria-hidden={true} />
+    <Box
+      className={`${classes.checkbox} ${checked ? classes.checkboxChecked : classes.checkboxUnchecked}`}
+    >
+      {checked && <Check className={classes.checkIcon} aria-hidden={true} />}
     </Box>
     <GluuText variant="span" className={classes.permissionLabel} disableThemeColor>
       {permission}
@@ -49,7 +54,7 @@ const PermissionCheckbox: React.FC<{
 PermissionCheckbox.displayName = 'PermissionCheckbox'
 
 const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo(
-  ({ candidate, allPermissions, itemIndex = 0 }) => {
+  ({ candidate, allPermissions, totalPermissions, itemIndex = 0 }) => {
     const { t } = useTranslation()
     const [isExpanded, setIsExpanded] = useState(false)
 
@@ -63,8 +68,8 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
       [candidate?.permissions],
     )
 
-    const sortedPermissions = useMemo(
-      () => allPermissions.filter((p) => rolePermissions.has(p)).sort(),
+    const assignedCount = useMemo(
+      () => allPermissions.reduce((count, p) => (rolePermissions.has(p) ? count + 1 : count), 0),
       [allPermissions, rolePermissions],
     )
 
@@ -93,10 +98,15 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
 
     const permissionCheckboxes = useMemo(() => {
       if (!isExpanded) return null
-      return sortedPermissions.map((permission) => (
-        <PermissionCheckbox key={permission} permission={permission} classes={classes} />
+      return allPermissions.map((permission) => (
+        <PermissionCheckbox
+          key={permission}
+          permission={permission}
+          checked={rolePermissions.has(permission)}
+          classes={classes}
+        />
       ))
-    }, [isExpanded, sortedPermissions, classes])
+    }, [isExpanded, allPermissions, rolePermissions, classes])
 
     return (
       <Box className={classes.roleCard}>
@@ -114,7 +124,8 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
           </GluuText>
           <Box className={classes.roleHeaderRight}>
             <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
-              {t('messages.permissions_count', { count: rolePermissions.size })}
+              <span className={classes.permissionCountHighlight}>{assignedCount}</span>{' '}
+              {t('messages.out_of')} {totalPermissions} {t('messages.permission_label')}
             </GluuText>
             <ExpandMore
               className={`${classes.chevronIcon} ${isExpanded ? classes.chevronIconOpen : ''}`}
@@ -123,7 +134,7 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
         </Box>
         <Collapse in={isExpanded}>
           <Box id={contentId} className={classes.roleCardContent}>
-            {sortedPermissions.length === 0 ? (
+            {allPermissions.length === 0 ? (
               <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
                 {t('messages.no_permissions_assigned')}
               </GluuText>

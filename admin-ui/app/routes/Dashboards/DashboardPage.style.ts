@@ -59,7 +59,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     mobilePageTitle: {
       fontFamily,
-      fontSize: '28px',
+      fontSize: fontSizes.pageTitle,
       fontStyle: 'normal',
       fontWeight: fontWeights.bold,
       lineHeight: 'normal',
@@ -434,7 +434,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         'justifyContent': 'flex-start',
         'columnGap': '25px',
         'rowGap': '4px',
-        '& > :first-child': {
+        '& > :first-of-type': {
           flexBasis: '100%',
           marginBottom: '8px',
         },

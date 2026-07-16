@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { OPACITY } from '@/constants'
-import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
+import { createDisabledInputStyles } from '@/styles/mobileDisabledFieldStyles'
 
 interface GluuInputRowStyleParams {
   errorColor: string

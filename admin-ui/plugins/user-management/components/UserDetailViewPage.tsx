@@ -19,7 +19,8 @@ const UserDetailViewPage = ({ row }: RowProps) => {
     const attrs = (rowData as { customAttributes?: CustomAttrWithValues[] })?.customAttributes
     if (!Array.isArray(attrs)) return ''
     const roleAttr = attrs.find((a) => a?.name === JANS_ADMIN_UI_ROLE_ATTR) as
-      CustomAttrWithValues | undefined
+      | CustomAttrWithValues
+      | undefined
     if (!roleAttr) return ''
 
     if (Array.isArray(roleAttr.values)) {

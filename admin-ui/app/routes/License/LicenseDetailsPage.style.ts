@@ -34,7 +34,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         display: 'block',
         fontFamily,
-        fontSize: '28px',
+        fontSize: fontSizes.pageTitle,
         fontWeight: fontWeights.bold,
         lineHeight: 'normal',
         color: themeColors.fontColor,

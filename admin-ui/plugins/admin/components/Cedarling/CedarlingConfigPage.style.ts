@@ -2,24 +2,17 @@ import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import { alpha } from '@mui/material/styles'
 import {
-  BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
   OPACITY,
   SPACING,
+  MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
 } from '@/constants'
-import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
+import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import customColors from '@/customColors'
 import type { CedarlingConfigPageStyleParams } from './types'
-
-const sectionLabelBase = {
-  fontFamily,
-  fontWeight: fontWeights.semiBold,
-  fontSize: fontSizes.md,
-  lineHeight: lineHeights.normal,
-  letterSpacing: letterSpacing.normal,
-} as const
 
 const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, params) => {
   const { themeColors, isDark } = params
@@ -32,6 +25,32 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
   const textAsPlaceholder = alpha(themeColors.fontColor, OPACITY.PLACEHOLDER)
 
   return {
+    mobileContentPad: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
+        boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: fontSizes.pageTitle,
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     configCard: {
       backgroundColor: 'transparent',
       padding: 0,
@@ -46,6 +65,12 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       display: 'flex',
       flexDirection: 'column',
       width: '100%',
+    },
+    footer: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginTop: 0,
+        paddingTop: CEDARLING_CONFIG_SPACING.MOBILE_STEPS_TO_LABEL,
+      },
     },
     formMain: {
       width: '100%',
@@ -75,10 +100,16 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       fontSize: fontSizes.sm,
       lineHeight: lineHeights.tight,
       color: textAsPlaceholder,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        color: themeColors.fontColor,
+      },
     },
     alertWrapper: {
       width: '100%',
       marginBottom: CEDARLING_CONFIG_SPACING.ALERT_TO_INPUT,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginBottom: 0,
+      },
     },
     alertBox: {
       ...getCardBorderStyle({ isDark, borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS }),
@@ -112,18 +143,20 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       lineHeight: lineHeights.tight,
       color: themeColors.infoAlert.text,
     },
-    inputSection: {
-      'marginBottom': 0,
-      '& .MuiFormHelperText-root': {
-        marginLeft: 0,
-        paddingLeft: 0,
-        fontSize: fontSizes.base,
-        lineHeight: lineHeights.tight,
-      },
-    },
     uploadBox: {
       'marginTop': theme.spacing(8),
       'marginBottom': theme.spacing(1),
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'marginTop': CEDARLING_CONFIG_SPACING.MOBILE_STEPS_TO_LABEL,
+        'marginLeft': `-${CEDARLING_CONFIG_SPACING.ALERT_PADDING_LEFT - CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT}px`,
+        'marginRight': `-${CEDARLING_CONFIG_SPACING.ALERT_PADDING_RIGHT - CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT}px`,
+        '& .dropzone': {
+          minHeight: CEDARLING_CONFIG_SPACING.MOBILE_DROPZONE_MIN_HEIGHT,
+        },
+        '& .dropzone, & .dropzone *': {
+          cursor: 'not-allowed',
+        },
+      },
       '& > label': {
         paddingTop: '0 !important',
         paddingBottom: '0 !important',
@@ -161,118 +194,13 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
         margin: 0,
         width: '100%',
         textAlign: 'center',
+        [`@media ${MOBILE_MEDIA_QUERY}`]: {
+          fontSize: fontSizes.base,
+          lineHeight: lineHeights.tight,
+        },
       },
       '& .dropzone strong': {
         color: themeColors.fontColor,
-      },
-    },
-    fieldLabel: {
-      ...sectionLabelBase,
-      color: themeColors.fontColor,
-      marginBottom: CEDARLING_CONFIG_SPACING.LABEL_MB,
-    },
-    inputField: {
-      '& .MuiOutlinedInput-root': {
-        'backgroundColor': formInputBg,
-        'borderRadius': BORDER_RADIUS.SMALL,
-        'height': CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
-        '& fieldset': {
-          borderColor: isDark ? 'transparent' : customColors.borderInput,
-        },
-        '&:hover fieldset': {
-          borderColor: isDark ? 'transparent' : customColors.lightGray,
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: customColors.lightBlue,
-        },
-        '&.Mui-disabled': {
-          '& .MuiInputBase-input': {
-            'color': themeColors.fontColor,
-            'WebkitTextFillColor': themeColors.fontColor,
-            '&::placeholder': {
-              color: themeColors.textMuted,
-              opacity: OPACITY.PLACEHOLDER,
-            },
-          },
-        },
-      },
-      '& .MuiInputBase-input': {
-        'color': themeColors.fontColor,
-        fontFamily,
-        'fontSize': fontSizes.base,
-        'padding': `${CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL}px ${CEDARLING_CONFIG_SPACING.INPUT_PADDING_HORIZONTAL}px`,
-        '&::placeholder': {
-          color: themeColors.textMuted,
-          opacity: OPACITY.PLACEHOLDER,
-        },
-      },
-    },
-    radioSection: {
-      marginBottom: CEDARLING_CONFIG_SPACING.HELPER_MT,
-    },
-    radioLabel: {
-      ...sectionLabelBase,
-      color: themeColors.fontColor,
-      marginBottom: CEDARLING_CONFIG_SPACING.RADIO_LABEL_MB,
-    },
-    radio: {
-      'color': themeColors.fontColor,
-      '&.Mui-checked': {
-        'color': customColors.statusActive,
-        '& .MuiSvgIcon-root': {
-          fill: customColors.statusActive,
-          stroke: customColors.statusActive,
-          strokeWidth: '1px',
-        },
-      },
-    },
-    radioText: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.base,
-      lineHeight: lineHeights.relaxed,
-      color: isDark ? customColors.cedarTextSecondaryDark : customColors.textSecondary,
-    },
-    helperText: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.base,
-      lineHeight: lineHeights.tight,
-      color: isDark ? customColors.cedarTextSecondaryDark : customColors.cedarInfoTextLight,
-      marginTop: CEDARLING_CONFIG_SPACING.HELPER_MT,
-    },
-    inputHelperText: {
-      marginLeft: 0,
-      paddingLeft: 0,
-    },
-    fieldRow: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      [theme.breakpoints.down('sm')]: {
-        flexDirection: 'column',
-        alignItems: 'stretch',
-      },
-    },
-    disabledPolicyTooltip: {
-      fontSize: fontSizes.base,
-      lineHeight: lineHeights.tight,
-      maxWidth: CEDARLING_CONFIG_SPACING.TOOLTIP_MAX_WIDTH,
-    },
-    inputFieldWrapper: {
-      display: 'block',
-      flex: 1,
-      minWidth: 0,
-    },
-    radioGroup: {
-      gap: `${CEDARLING_CONFIG_SPACING.RADIO_GROUP_GAP}px`,
-    },
-    refreshIconButton: {
-      'marginTop': 0,
-      'color': customColors.logo,
-      '&:hover': {
-        backgroundColor: alpha(customColors.logo, 0.08),
       },
     },
     alertLink: {
@@ -282,9 +210,6 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       '&:hover': {
         textDecoration: 'underline',
       },
-    },
-    buttonSection: {
-      marginTop: CEDARLING_CONFIG_SPACING.BUTTONS_MT,
     },
   }
 })

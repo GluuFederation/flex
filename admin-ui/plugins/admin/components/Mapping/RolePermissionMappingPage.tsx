@@ -34,57 +34,67 @@ const RolePermissionMappingPage: React.FC = React.memo(() => {
   const { mapping, permissions, isLoading, isError } = useMappingData(canReadMapping)
 
   const allPermissions = useMemo(
-    () => permissions.map((p) => p.permission).filter(Boolean) as string[],
+    () => (permissions.map((p) => p.permission).filter(Boolean) as string[]).sort(),
     [permissions],
   )
 
   return (
     <GluuLoader blocking={isLoading}>
       <GluuPageContent>
-        <Box className={classes.pageWrapper}>
-          <GluuText variant="h2" className={classes.pageDescription} disableThemeColor>
-            {t('messages.role_permission_mapping_description')}
-          </GluuText>
-
-          <Box className={classes.infoAlert}>
-            <InfoOutlined className={classes.infoIcon} />
-            <GluuText variant="span" className={classes.infoText} disableThemeColor>
-              {t('documentation.mappings.note_prefix')}{' '}
-              <Link to={ROUTES.ADMIN_CEDARLING_CONFIG} className={classes.infoLink}>
-                Cedarling
-              </Link>{' '}
-              {t('documentation.mappings.note_suffix')}
-            </GluuText>
-          </Box>
-
-          {isError && (
-            <Alert severity="error" className={classes.errorAlert}>
-              {t('messages.error_loading_mapping')}
-            </Alert>
-          )}
-
-          <GluuViewWrapper canShow={canReadMapping}>
-            <Box>
-              {!isError &&
-                (mapping.length === 0 ? (
-                  <Alert severity="info" className={classes.infoEmptyState}>
-                    {t('messages.no_role_mappings_found')}
-                  </Alert>
-                ) : (
-                  mapping.map((candidate, idx) => {
-                    const roleKey = candidate?.role ?? 'role'
-                    return (
-                      <RolePermissionCard
-                        key={`${roleKey}-${idx}`}
-                        candidate={candidate}
-                        allPermissions={allPermissions}
-                        itemIndex={idx}
-                      />
-                    )
-                  })
-                ))}
+        <Box className={classes.mobileContentPad}>
+          <Box className={classes.pageWrapper}>
+            <Box className={classes.pageHeader}>
+              <GluuText variant="h1" className={classes.pageTitle} disableThemeColor>
+                {t('titles.mapping')}
+              </GluuText>
+              <GluuText variant="h2" className={classes.pageDescription} disableThemeColor>
+                {t('messages.role_permission_mapping_description')}
+              </GluuText>
             </Box>
-          </GluuViewWrapper>
+
+            <Box
+              className={`${classes.infoAlert} ${classes.infoAlertTopAligned} ${classes.sectionSpacing}`}
+            >
+              <InfoOutlined className={classes.infoIcon} />
+              <GluuText variant="span" className={classes.infoText} disableThemeColor>
+                {t('documentation.mappings.note_prefix')}{' '}
+                <Link to={ROUTES.ADMIN_CEDARLING_CONFIG} className={classes.infoLink}>
+                  Cedarling
+                </Link>{' '}
+                {t('documentation.mappings.note_suffix')}
+              </GluuText>
+            </Box>
+
+            {isError && (
+              <Alert severity="error" className={classes.errorAlert}>
+                {t('messages.error_loading_mapping')}
+              </Alert>
+            )}
+
+            <GluuViewWrapper canShow={canReadMapping}>
+              <Box>
+                {!isError &&
+                  (mapping.length === 0 ? (
+                    <Alert severity="info" className={classes.infoEmptyState}>
+                      {t('messages.no_role_mappings_found')}
+                    </Alert>
+                  ) : (
+                    mapping.map((candidate, idx) => {
+                      const roleKey = candidate?.role ?? 'role'
+                      return (
+                        <RolePermissionCard
+                          key={`${roleKey}-${idx}`}
+                          candidate={candidate}
+                          allPermissions={allPermissions}
+                          totalPermissions={allPermissions.length}
+                          itemIndex={idx}
+                        />
+                      )
+                    })
+                  ))}
+              </Box>
+            </GluuViewWrapper>
+          </Box>
         </Box>
       </GluuPageContent>
     </GluuLoader>

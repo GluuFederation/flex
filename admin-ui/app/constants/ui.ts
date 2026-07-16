@@ -77,6 +77,10 @@ export const MOBILE_PAGE_PADDING_X = {
   SM: 15,
 } as const
 
+export const NAVBAR_DESKTOP_PADDING_X = 60
+
+export const DESKTOP_MIN_MEDIA_QUERY = '(min-width:992px)'
+
 export const getScrollbarStyles = (themeColors: ThemeConfig) => ({
   '&::-webkit-scrollbar': {
     width: SCROLLBAR.WIDTH,
@@ -207,11 +211,16 @@ export const CEDARLING_CONFIG_SPACING = {
   BUTTON_OFFSET_TOP: 4,
   TOOLTIP_MAX_WIDTH: 320,
   ICON_SIZE_MD: 24,
+  MOBILE_CONTENT_PADDING_LEFT: 18,
+  MOBILE_DROPZONE_MIN_HEIGHT: 108,
+  MOBILE_STEPS_TO_LABEL: 24,
 } as const
 
 export const MAPPING_SPACING = {
   PAGE_PADDING_TOP: 53,
   ALERT_TO_CARD: 24,
+  TITLE_TO_SUBTITLE: 16,
+  HEADER_TO_INFO: 20,
   CARD_PADDING: 33,
   CARD_HEADER_HEIGHT: 56,
   CARD_BORDER_RADIUS: 6,

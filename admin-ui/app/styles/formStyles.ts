@@ -3,6 +3,7 @@ import { fontFamily, fontSizes, fontWeights, lineHeights, letterSpacing } from '
 
 type InfoAlertColors = {
   background: string
+  border: string
   icon: string
   text: string
 }
@@ -113,7 +114,7 @@ export const createFormInputAutofillStyles = (colors: InputStyleColors) => ({
 export const createInfoAlertStyles = (infoAlert: InfoAlertColors) => ({
   infoAlert: {
     backgroundColor: infoAlert.background,
-    border: 'none',
+    border: `1px solid ${infoAlert.border}`,
     borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
     padding: `${MAPPING_SPACING.INFO_ALERT_PADDING_VERTICAL}px ${MAPPING_SPACING.INFO_ALERT_PADDING_HORIZONTAL}px`,
     display: 'flex',

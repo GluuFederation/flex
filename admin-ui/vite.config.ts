@@ -203,10 +203,12 @@ type VendorChunkGroup = {
 
 const VENDOR_CHUNK_GROUPS: VendorChunkGroup[] = [
   { name: 'vendor-react', test: isVendorPackageIn(REACT_RUNTIME_PACKAGES) },
-  ...FEATURE_GROUPS.map(([name, packages]): VendorChunkGroup => ({
-    name,
-    test: isVendorPackageIn(new Set(packages)),
-  })),
+  ...FEATURE_GROUPS.map(
+    ([name, packages]): VendorChunkGroup => ({
+      name,
+      test: isVendorPackageIn(new Set(packages)),
+    }),
+  ),
   {
     name: 'vendor-orval-jans',
     test: (id: string) => id.replace(REGEX_BACKSLASH, '/').includes('/jans_config_api_orval/src/'),

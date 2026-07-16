@@ -1,0 +1,25 @@
+#!/bin/sh
+set +e
+
+# --- Require a sign-off (the `git commit -s` effect) ---
+# Blocks any commit whose message lacks a `Signed-off-by:` trailer.
+MSG_FILE="$1"
+
+if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+  echo "❌ commit-msg: could not read the commit message."
+  echo "💥 Commit blocked."
+  exit 1
+fi
+
+# Ignore comment lines (starting with #) when checking for the trailer.
+if ! grep -vE '^[[:space:]]*#' "$MSG_FILE" | grep -qE '^[[:space:]]*Signed-off-by:[[:space:]]+.+<.+@.+>'; then
+  echo "❌ Signed-off commit is required (missing 'Signed-off-by:' trailer)."
+  echo ""
+  echo "   Commit with the sign-off flag:"
+  echo "     git commit -S -s -m \"<message>\""
+  echo ""
+  echo "   ( -s adds the Signed-off-by trailer, -S GPG-signs the commit )"
+  echo ""
+  echo "💥 Commit blocked."
+  exit 1
+fi

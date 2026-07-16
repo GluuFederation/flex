@@ -40,7 +40,13 @@ export type ArrayItemSelectProps = {
 }
 
 export type PropertyValue =
-  string | number | boolean | string[] | AppConfiguration | null | undefined
+  | string
+  | number
+  | boolean
+  | string[]
+  | AppConfiguration
+  | null
+  | undefined
 
 export type JsonPropertyBuilderProps = {
   propKey: string

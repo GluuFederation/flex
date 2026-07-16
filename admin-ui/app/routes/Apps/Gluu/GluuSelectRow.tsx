@@ -14,6 +14,8 @@ import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useStyles } from './styles/GluuSelectRow.style'
 import type { GluuSelectRowProps, SelectOption } from './types/GluuSelectRow.types'
 
+const noopSelectChange = () => {}
+
 const deduplicateSelectValues = (
   values: Array<string | SelectOption>,
 ): Array<string | SelectOption> => {
@@ -85,12 +87,12 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
     return hasValue ? values : [displayValue, ...values]
   }, [values, displayValue])
 
+  const uniqueValues = useMemo(() => deduplicateSelectValues(resolvedValues), [resolvedValues])
+
   const options = useMemo(
     () =>
-      deduplicateSelectValues(resolvedValues).map((item) =>
-        typeof item === 'string' ? item : (item.label ?? item.value),
-      ),
-    [resolvedValues],
+      uniqueValues.map((item) => (typeof item === 'string' ? item : (item.label ?? item.value))),
+    [uniqueValues],
   )
 
   const content = freeSolo ? (
@@ -154,7 +156,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             name={name}
             data-testid={name}
             value={displayValue}
-            onChange={isReadOnlySelect ? undefined : handleSelectChange}
+            onChange={isReadOnlySelect ? noopSelectChange : handleSelectChange}
             onBlur={formik.handleBlur}
             disabled={isReadOnlySelect ? undefined : disabled}
             aria-disabled={isReadOnlySelect || undefined}
@@ -162,7 +164,7 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
             className={`${classes.select} ${isReadOnlySelect ? classes.selectReadOnly : ''}`.trim()}
           >
             {!hideChooseOption && <option value="">{t('actions.choose')}...</option>}
-            {deduplicateSelectValues(resolvedValues).map((item) => {
+            {uniqueValues.map((item) => {
               const optionValue = typeof item === 'string' ? item : item.value
               const optionLabel = typeof item === 'string' ? item : (item.label ?? item.value)
               return (
