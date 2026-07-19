@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
-import { Add, DeleteOutlined, Edit } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, FilterListIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -18,14 +18,23 @@ import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import { GluuButton } from '@/components/GluuButton'
+import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
+import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { FILTER_SHEET, MOBILE_MEDIA_QUERY } from '@/constants'
+import customColors from '@/customColors'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
 import { toWebhookEntries } from 'Plugins/admin/helper/webhook'
 import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
+import { useDebounce } from '@/utils/hooks'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
+
+const SEARCH_DEBOUNCE_MS = 500
 
 const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
 const SORT_COLUMN_LABELS: Record<string, string> = {
@@ -56,6 +65,11 @@ const WebhookListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false)
+  const [draftSort, setDraftSort] = useState(DEFAULT_SERVER_SORT.column)
+  const [mobileSearch, setMobileSearch] = useState('')
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const debouncedMobileSearch = useDebounce(mobileSearch, SEARCH_DEBOUNCE_MS)
 
   SetTitle(t('titles.webhooks'))
 
@@ -167,6 +181,37 @@ const WebhookListPage: React.FC = () => {
       },
     ],
     [t, serverSort.column, handleSortByFilter, sortOptions],
+  )
+
+  const handleFilterSheetOpen = useCallback(() => {
+    setDraftSort(serverSort.column)
+    setFilterSheetOpen(true)
+  }, [serverSort.column])
+
+  const handleFilterSheetClose = useCallback(() => setFilterSheetOpen(false), [])
+
+  const handleFilterSheetApply = useCallback(() => {
+    handleSortByFilter(draftSort)
+    setFilterSheetOpen(false)
+  }, [draftSort, handleSortByFilter])
+
+  useEffect(() => {
+    if (!isMobile) return
+    setPattern(debouncedMobileSearch)
+  }, [isMobile, debouncedMobileSearch])
+
+  const handleMobileSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setMobileSearch(e.target.value)
+  }, [])
+
+  const handleMobileSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== 'Enter') return
+      e.preventDefault()
+      setPattern(mobileSearch)
+      handleSearchSubmit()
+    },
+    [handleSearchSubmit, mobileSearch],
   )
 
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
@@ -324,19 +369,45 @@ const WebhookListPage: React.FC = () => {
         <GluuViewWrapper canShow={canReadWebhooks}>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
-              <GluuSearchToolbar
-                searchLabel={searchLabel}
-                searchPlaceholder={searchPlaceholder}
-                searchValue={pattern}
-                searchOnType
-                onSearch={setPattern}
-                onSearchSubmit={handleSearchSubmit}
-                filters={filters}
-                onRefresh={canReadWebhooks ? handleRefresh : undefined}
-                refreshLoading={isLoading}
-                primaryAction={primaryAction}
-                disabled={loading}
-              />
+              {isMobile ? (
+                <div className={classes.mobileSearchRow}>
+                  <input
+                    type="text"
+                    aria-label={searchPlaceholder}
+                    placeholder={searchPlaceholder}
+                    value={mobileSearch}
+                    onChange={handleMobileSearchChange}
+                    onKeyDown={handleMobileSearchKeyDown}
+                    disabled={loading}
+                    className={classes.mobileSearchInput}
+                  />
+                  <button
+                    type="button"
+                    aria-label={t('titles.filters')}
+                    aria-haspopup="dialog"
+                    aria-expanded={filterSheetOpen}
+                    className={classes.mobileFilterButton}
+                    onClick={handleFilterSheetOpen}
+                    disabled={loading}
+                  >
+                    <FilterListIcon />
+                  </button>
+                </div>
+              ) : (
+                <GluuSearchToolbar
+                  searchLabel={searchLabel}
+                  searchPlaceholder={searchPlaceholder}
+                  searchValue={pattern}
+                  searchOnType
+                  onSearch={setPattern}
+                  onSearchSubmit={handleSearchSubmit}
+                  filters={filters}
+                  onRefresh={canReadWebhooks ? handleRefresh : undefined}
+                  refreshLoading={isLoading}
+                  primaryAction={primaryAction}
+                  disabled={loading}
+                />
+              )}
             </div>
           </div>
 
@@ -353,6 +424,70 @@ const WebhookListPage: React.FC = () => {
             />
           </div>
         </GluuViewWrapper>
+        {isMobile && (
+          <MobileNavSheet
+            openKey={filterSheetOpen ? SHEET_KEYS.CUSTOM : null}
+            onClose={handleFilterSheetClose}
+            title={t('titles.filters')}
+          >
+            <div className={classes.filterSheetContent}>
+              <span className={classes.filterSheetLabel}>{`${t('fields.sort_by')}:`}</span>
+              <div
+                className={classes.filterSheetPills}
+                role="group"
+                aria-label={t('fields.sort_by')}
+              >
+                {sortOptions.map((option) => {
+                  const selected = draftSort === option.value
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={selected}
+                      className={`${classes.filterSheetPill} ${
+                        selected ? classes.filterSheetPillSelected : ''
+                      }`.trim()}
+                      onClick={() => setDraftSort(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className={classes.filterSheetButtons}>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  outlined
+                  onClick={handleFilterSheetClose}
+                  borderColor={
+                    isDarkTheme ? customColors.darkBorder : customColors.filterPillBorder
+                  }
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={700}
+                >
+                  {t('actions.cancel')}
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  onClick={handleFilterSheetApply}
+                  backgroundColor={customColors.mobileNavActive}
+                  borderColor={customColors.mobileNavActive}
+                  textColor={customColors.white}
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={700}
+                >
+                  {t('actions.apply')}
+                </GluuButton>
+              </div>
+            </div>
+          </MobileNavSheet>
+        )}
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

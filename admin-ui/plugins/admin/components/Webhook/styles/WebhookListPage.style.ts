@@ -1,10 +1,18 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  FILTER_SHEET,
+  ICON_BUTTON_SIZE,
+  ICON_SIZE,
+  INPUT,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import customColors from '@/customColors'
 
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -36,6 +44,108 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       zIndex: 2,
       isolation: 'isolate',
       pointerEvents: 'auto',
+    },
+    mobileSearchRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: SPACING.CARD_BUTTON_GAP,
+      width: '100%',
+    },
+    mobileSearchInput: {
+      'flex': 1,
+      'minWidth': 0,
+      'height': INPUT.HEIGHT,
+      'padding': `0 ${INPUT.PADDING_HORIZONTAL}px`,
+      'border': `1px solid ${isDark ? 'transparent' : themeColors.borderColor}`,
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'backgroundColor': themeColors.inputBackground,
+      'color': themeColors.fontColor,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.medium,
+      fontFamily,
+      'outline': 'none',
+      'boxSizing': 'border-box',
+      '&::placeholder': {
+        color: themeColors.fontColor,
+        opacity: OPACITY.PLACEHOLDER,
+      },
+      '&:focus, &:focus-visible': {
+        outline: 'none',
+        boxShadow: 'none',
+        borderColor: isDark ? 'transparent' : themeColors.borderColor,
+      },
+      '&:disabled': {
+        cursor: 'not-allowed',
+        opacity: OPACITY.DISABLED,
+      },
+    },
+    mobileFilterButton: {
+      'display': 'flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'flexShrink': 0,
+      'width': ICON_BUTTON_SIZE,
+      'height': ICON_BUTTON_SIZE,
+      'padding': 0,
+      'border': 'none',
+      'background': 'transparent',
+      'cursor': 'pointer',
+      'color': themeColors.fontColor,
+      '& svg': {
+        fontSize: ICON_SIZE.LG,
+      },
+      '&:disabled': {
+        cursor: 'not-allowed',
+        opacity: OPACITY.DISABLED,
+      },
+    },
+    filterSheetContent: {
+      padding: `${FILTER_SHEET.TITLE_TO_GROUP}px ${FILTER_SHEET.PADDING_X}px ${FILTER_SHEET.BODY_PADDING_BOTTOM}px`,
+    },
+    filterSheetLabel: {
+      display: 'block',
+      fontFamily,
+      fontSize: fontSizes.description,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: 'normal',
+      letterSpacing: '0.3px',
+      color: themeColors.fontColor,
+      margin: `0 0 ${FILTER_SHEET.GROUP_LABEL_MB}px`,
+    },
+    filterSheetPills: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      columnGap: FILTER_SHEET.PILL_GAP,
+      rowGap: FILTER_SHEET.PILL_ROW_GAP,
+    },
+    filterSheetPill: {
+      fontFamily,
+      fontSize: fontSizes.pill,
+      fontWeight: fontWeights.medium,
+      lineHeight: FILTER_SHEET.PILL_LINE_HEIGHT,
+      letterSpacing: '0.15px',
+      color: themeColors.fontColor,
+      backgroundColor: 'transparent',
+      border: `${FILTER_SHEET.PILL_BORDER_WIDTH}px solid ${
+        isDark ? customColors.darkBorder : customColors.filterPillBorder
+      }`,
+      borderRadius: FILTER_SHEET.PILL_RADIUS,
+      padding: `${FILTER_SHEET.PILL_PADDING_Y}px ${FILTER_SHEET.PILL_PADDING_X}px`,
+      cursor: 'pointer',
+      whiteSpace: 'nowrap',
+    },
+    filterSheetPillSelected: {
+      color: customColors.mobileNavActive,
+      borderColor: customColors.mobileNavActive,
+    },
+    filterSheetButtons: {
+      'display': 'flex',
+      'gap': FILTER_SHEET.BUTTONS_GAP,
+      'marginTop': FILTER_SHEET.BUTTONS_MT,
+      '& > *': {
+        flex: `1 1 0`,
+        minWidth: 0,
+      },
     },
     tableCard: {
       'width': '100%',
