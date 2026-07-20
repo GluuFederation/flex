@@ -43,7 +43,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         display: 'block',
         fontFamily,
-        fontSize: '28px',
+        fontSize: fontSizes.pageTitle,
         fontStyle: 'normal',
         fontWeight: fontWeights.bold,
         lineHeight: 'normal',

@@ -15,8 +15,8 @@ export const createDisabledInputStyles = (fontColor: string) => ({
 })
 
 export const createDisabledSelectInputStyles = (fontColor: string) => ({
-  'opacity': OPACITY.DISABLED,
-  'cursor': 'not-allowed' as const,
+  opacity: OPACITY.DISABLED,
+  cursor: 'not-allowed' as const,
   [`@media ${MOBILE_MEDIA_QUERY}`]: {
     'opacity': OPACITY.FULL,
     '& .MuiOutlinedInput-input': {

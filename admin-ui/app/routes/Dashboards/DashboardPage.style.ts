@@ -59,7 +59,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     mobilePageTitle: {
       fontFamily,
-      fontSize: '28px',
+      fontSize: fontSizes.pageTitle,
       fontStyle: 'normal',
       fontWeight: fontWeights.bold,
       lineHeight: 'normal',
@@ -428,16 +428,12 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       justifyContent: 'flex-start',
       columnGap: '40px',
       [`@media ${STATUS_COMPACT_QUERY}`]: {
-        'display': 'flex',
-        'flexWrap': 'wrap',
-        'alignItems': 'center',
-        'justifyContent': 'flex-start',
-        'columnGap': '25px',
-        'rowGap': '4px',
-        '& > :first-child': {
-          flexBasis: '100%',
-          marginBottom: '8px',
-        },
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        columnGap: '25px',
+        rowGap: '4px',
       },
     },
     statusTitle: {
@@ -455,6 +451,8 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     statusHeading: {
       [`@media ${STATUS_COMPACT_QUERY}`]: {
+        flexBasis: '100%',
+        marginBottom: '8px',
         fontFamily,
         fontSize: fontSizes.content,
         fontStyle: 'normal',

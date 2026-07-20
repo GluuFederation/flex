@@ -6,7 +6,7 @@ import type { ThemeConfig } from '@/context/theme/config'
 import {
   createDisabledSelectInputStyles,
   createReadOnlySelectStyles,
-} from '@/styles/disabledFieldStyles'
+} from '@/styles/mobileDisabledFieldStyles'
 
 interface GluuSelectRowStyleParams {
   themeColors: ThemeConfig

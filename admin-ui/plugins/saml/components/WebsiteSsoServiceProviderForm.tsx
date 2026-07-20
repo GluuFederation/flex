@@ -240,7 +240,7 @@ const WebsiteSsoServiceProviderForm = ({
       toggle()
       handleSubmit(formik.values, messages)
     },
-    [toggle, handleSubmit, formik],
+    [toggle, handleSubmit, formik.values],
   )
 
   const saveSelectedScopes = useCallback(
