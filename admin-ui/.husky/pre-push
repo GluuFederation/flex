@@ -19,24 +19,42 @@ while read -r _LOCAL_REF LOCAL_OID _REMOTE_REF REMOTE_OID; do
   if [ "$REMOTE_OID" = "$Z40" ] || [ -z "$REMOTE_OID" ]; then
     # New branch on the remote: check all commits reachable from LOCAL_OID
     # that aren't on any existing remote-tracking branch.
-    RANGE=$(git rev-list "$LOCAL_OID" --not --remotes 2>/dev/null)
+    RANGE=$(git rev-list "$LOCAL_OID" --not --remotes 2>&1)
   else
     # Existing branch: check only the newly pushed commits.
-    RANGE=$(git rev-list "$REMOTE_OID..$LOCAL_OID" 2>/dev/null)
+    RANGE=$(git rev-list "$REMOTE_OID..$LOCAL_OID" 2>&1)
+  fi
+  if [ $? -ne 0 ]; then
+    echo "❌ Push blocked — could not determine which commits are being pushed."
+    printf '%s\n' "$RANGE"
+    echo ""
+    echo "💥 Push rejected."
+    exit 1
   fi
 
   for COMMIT in $RANGE; do
-    SIG=$(git log -1 --format='%G?' "$COMMIT" 2>/dev/null)
+    SIG=$(git log -1 --format='%G?' "$COMMIT" 2>&1)
+    if [ $? -ne 0 ]; then
+      echo "❌ Push blocked — could not read the signature of commit $COMMIT."
+      printf '%s\n' "$SIG"
+      echo ""
+      echo "💥 Push rejected."
+      exit 1
+    fi
     if [ "$SIG" = "N" ] || [ -z "$SIG" ]; then
-      SUBJECT=$(git log -1 --format='%h %s' "$COMMIT" 2>/dev/null)
-      UNSIGNED="$UNSIGNED\n  $SUBJECT"
+      SUBJECT=$(git log -1 --format='%h %s' "$COMMIT" 2>&1)
+      if [ $? -ne 0 ]; then
+        SUBJECT="$COMMIT"
+      fi
+      UNSIGNED="$UNSIGNED
+  $SUBJECT"
     fi
   done
 done
 
 if [ -n "$UNSIGNED" ]; then
   echo "❌ Push blocked — the following commit(s) are NOT signed:"
-  printf '%b\n' "$UNSIGNED"
+  printf '%s\n' "$UNSIGNED"
   echo ""
   echo "   Sign your commits before pushing, e.g.:"
   echo "     git commit -S -s -m \"<message>\""

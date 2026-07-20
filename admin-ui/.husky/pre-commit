@@ -7,14 +7,18 @@ case "$PWD" in
 esac
 
 # --- Require signed commits ---
-# Deny the commit unless GPG/SSH signing is enabled.
+# A pre-commit hook cannot see the `-S` flag, so this gate only checks that
+# signing is *possible*: either it is automatic (commit.gpgsign=true) or a key
+# is configured for an explicit `git commit -S`. The pre-push hook verifies the
+# signature that actually landed on each commit.
 GPGSIGN=$(git config --get commit.gpgsign 2>/dev/null | tr '[:upper:]' '[:lower:]')
-if [ "$GPGSIGN" != "true" ]; then
+SIGNINGKEY=$(git config --get user.signingkey 2>/dev/null)
+if [ "$GPGSIGN" != "true" ] && [ -z "$SIGNINGKEY" ]; then
   echo "❌ Signed commit is required."
   echo ""
-  echo "   This commit is not configured to be signed. To fix:"
-  echo "     git config user.signingkey <your-key-id>"
-  echo "     git config commit.gpgsign true"
+  echo "   No signing key is configured. To fix, either:"
+  echo "     git config user.signingkey <your-key-id>   # then: git commit -S -s -m \"<message>\""
+  echo "     git config commit.gpgsign true             # or sign every commit automatically"
   echo ""
   echo "💥 Commit blocked."
   exit 1
