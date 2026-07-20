@@ -4,9 +4,9 @@ import type { ThemeConfig } from '@/context/theme/config'
 import {
   BORDER_RADIUS,
   FILTER_SHEET,
-  ICON_BUTTON_SIZE,
   ICON_SIZE,
   INPUT,
+  MOBILE_MEDIA_QUERY,
   OPACITY,
   SPACING,
 } from '@/constants'
@@ -25,7 +25,28 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: SPACING.PAGE },
+    page: {
+      fontFamily,
+      paddingTop: SPACING.PAGE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+        boxSizing: 'border-box',
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
     cellUrl: {
       wordBreak: 'break-all',
@@ -48,7 +69,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     mobileSearchRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: SPACING.CARD_BUTTON_GAP,
+      gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
     },
     mobileSearchInput: {
@@ -84,8 +105,8 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'alignItems': 'center',
       'justifyContent': 'center',
       'flexShrink': 0,
-      'width': ICON_BUTTON_SIZE,
-      'height': ICON_BUTTON_SIZE,
+      'width': ICON_SIZE.LG,
+      'height': ICON_SIZE.LG,
       'padding': 0,
       'border': 'none',
       'background': 'transparent',

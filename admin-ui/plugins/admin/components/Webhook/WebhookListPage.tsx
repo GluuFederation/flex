@@ -12,6 +12,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
+import { usePageTitle } from 'Routes/Apps/Gluu/hooks/usePageTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useGetAllWebhooks } from 'JansConfigApi'
@@ -35,6 +36,8 @@ import { useDebounce } from '@/utils/hooks'
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
 const SEARCH_DEBOUNCE_MS = 500
+
+const PAGE_TITLE_KEY = 'titles.webhooks'
 
 const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
 const SORT_COLUMN_LABELS: Record<string, string> = {
@@ -71,7 +74,8 @@ const WebhookListPage: React.FC = () => {
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const debouncedMobileSearch = useDebounce(mobileSearch, SEARCH_DEBOUNCE_MS)
 
-  SetTitle(t('titles.webhooks'))
+  SetTitle(t(PAGE_TITLE_KEY))
+  const pageTitle = usePageTitle()
 
   const { data, isLoading, refetch } = useGetAllWebhooks(
     {
@@ -367,6 +371,9 @@ const WebhookListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadWebhooks}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               {isMobile ? (

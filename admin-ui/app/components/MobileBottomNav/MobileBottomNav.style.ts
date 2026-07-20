@@ -1,17 +1,18 @@
 import { makeStyles } from 'tss-react/mui'
 import { hexToRgb } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
+import { MOBILE_PAGE_PADDING_X } from '@/constants'
 import { BOTTOM_NAV } from './constants'
 import { SHEET } from './sheetConstants'
 import type { MobileBottomNavThemeColors } from './types'
 
-const useStyles = makeStyles<{ colors: MobileBottomNavThemeColors }>()((_theme, { colors }) => ({
+const useStyles = makeStyles<{ colors: MobileBottomNavThemeColors }>()((theme, { colors }) => ({
   root: {
     position: 'fixed',
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: BOTTOM_NAV.Z_ROOT,
+    zIndex: theme.zIndex.drawer,
     display: 'flex',
     alignItems: 'stretch',
     height: BOTTOM_NAV.HEIGHT,
@@ -21,6 +22,10 @@ const useStyles = makeStyles<{ colors: MobileBottomNavThemeColors }>()((_theme, 
     boxShadow: `0px ${BOTTOM_NAV.SHADOW_OFFSET_Y}px ${BOTTOM_NAV.SHADOW_BLUR}px 0px rgba(${hexToRgb(colors.shadow)}, ${BOTTOM_NAV.SHADOW_OPACITY})`,
     paddingBottom: 'env(safe-area-inset-bottom)',
     boxSizing: 'border-box',
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: MOBILE_PAGE_PADDING_X.SM,
+      paddingRight: MOBILE_PAGE_PADDING_X.SM,
+    },
   },
   rootElevated: {
     zIndex: SHEET.Z_BAR_ELEVATED,

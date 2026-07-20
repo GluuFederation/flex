@@ -2,7 +2,6 @@ import customColors from '@/customColors'
 import {
   OPACITY,
   MOBILE_MEDIA_QUERY,
-  MOBILE_PAGE_PADDING_X,
   SPACING,
   TABLET_MAX_MEDIA_QUERY,
   TABLET_BAND_MEDIA_QUERY,
@@ -47,14 +46,8 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         marginTop: `-${SPACING.PAGE}px`,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
         marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
-      },
-      [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {

@@ -1,12 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import {
-  SPACING,
-  BORDER_RADIUS,
-  OPACITY,
-  MOBILE_MEDIA_QUERY,
-  MOBILE_PAGE_PADDING_X,
-} from '@/constants'
+import { SPACING, BORDER_RADIUS, OPACITY, MOBILE_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -39,14 +33,8 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
   return {
     mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
         marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
-      },
-      [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {
