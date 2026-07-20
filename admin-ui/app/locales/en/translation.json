@@ -1474,6 +1474,7 @@
     "audit_logs": "Admin UI Audit Log",
     "webhooks": "Webhooks",
     "edit_webhook": "Edit Webhook",
+    "view_webhook": "View Webhook",
     "edit_script": "Edit Custom Script",
     "authentication": "Authentication",
     "couchbase_authentication": "Couchbase Authentication",

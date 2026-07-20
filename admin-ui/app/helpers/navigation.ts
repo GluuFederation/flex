@@ -48,6 +48,9 @@ const ROUTES = {
   // Webhooks
   WEBHOOK_LIST: `${PLUGIN_BASE_PATHS.HOME}/webhook`,
   WEBHOOK_ADD: `${PLUGIN_BASE_PATHS.HOME}/webhook/add`,
+  WEBHOOK_VIEW: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.HOME}/webhook/view/${encodeURIComponent(inum)}`,
+  WEBHOOK_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/webhook/view/:id`,
   WEBHOOK_EDIT: (inum: string) =>
     `${PLUGIN_BASE_PATHS.HOME}/webhook/edit/${encodeURIComponent(inum)}`,
   WEBHOOK_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/webhook/edit/:id`,

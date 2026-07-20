@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
-import { Add, DeleteOutlined, Edit, FilterListIcon } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, FilterListIcon, VisibilityOutlined } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -129,6 +129,14 @@ const WebhookListPage: React.FC = () => {
   const navigateToAddPage = useCallback(() => {
     navigateToRoute(ROUTES.WEBHOOK_ADD)
   }, [navigateToRoute])
+
+  const navigateToViewPage = useCallback(
+    (rowData: WebhookEntry) => {
+      if (!rowData?.inum) return
+      navigateToRoute(ROUTES.WEBHOOK_VIEW(rowData.inum))
+    },
+    [navigateToRoute],
+  )
 
   const navigateToEditPage = useCallback(
     (rowData: WebhookEntry) => {
@@ -319,6 +327,15 @@ const WebhookListPage: React.FC = () => {
       id?: string
       onClick: (row: WebhookEntry) => void
     }> = []
+    if (isLoading) return list
+    if (!canReadWebhooks) return list
+    list.push({
+      icon: <VisibilityOutlined className={classes.viewIcon} />,
+      tooltip: t('actions.view'),
+      id: 'viewWebhook',
+      onClick: navigateToViewPage,
+    })
+    if (isMobile) return list
     if (canWriteWebhooks) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -339,7 +356,18 @@ const WebhookListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle, classes])
+  }, [
+    isLoading,
+    isMobile,
+    canReadWebhooks,
+    canWriteWebhooks,
+    canDeleteWebhooks,
+    t,
+    navigateToViewPage,
+    navigateToEditPage,
+    toggle,
+    classes,
+  ])
 
   const pagination: PaginationConfig = useMemo(
     () => ({

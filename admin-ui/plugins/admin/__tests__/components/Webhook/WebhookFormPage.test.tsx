@@ -6,7 +6,8 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { usePermission } from '@/cedarling/hooks/usePermission'
-import WebhookEditPage from 'Plugins/admin/components/Webhook/WebhookEditPage'
+import { ROUTES } from '@/helpers/navigation'
+import WebhookFormPage from 'Plugins/admin/components/Webhook/WebhookFormPage'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -35,7 +36,11 @@ jest.mock('@/cedarling/hooks/usePermission', () => ({
 
 jest.mock('Plugins/admin/components/Webhook/WebhookForm', () => ({
   __esModule: true,
-  default: () => <div data-testid="webhook-form">Webhook Form</div>,
+  default: ({ viewOnly }: { viewOnly?: boolean }) => (
+    <div data-testid="webhook-form" data-view-only={String(Boolean(viewOnly))}>
+      Webhook Form
+    </div>
+  ),
 }))
 
 const createWebhookTestStore = (): Store =>
@@ -78,32 +83,58 @@ const createWebhookTestWrapper = (store: Store, client: QueryClient) =>
 
 const usePermissionMock = usePermission as jest.MockedFunction<typeof usePermission>
 
-const renderPage = () => {
+const TEST_INUM = 'webhook-inum-1'
+
+const renderPageAt = (path: string) => {
+  window.history.pushState({}, '', path)
   const queryClient = createWebhookTestQueryClient()
   const store = createWebhookTestStore()
   const Wrapper = createWebhookTestWrapper(store, queryClient)
-  return render(<WebhookEditPage />, { wrapper: Wrapper })
+  return render(<WebhookFormPage />, { wrapper: Wrapper })
 }
 
-describe('WebhookEditPage', () => {
+describe('WebhookFormPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     usePermissionMock.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
   })
 
-  it('renders without crashing', () => {
-    renderPage()
-    expect(screen.getByTestId('webhook-form')).toBeInTheDocument()
+  describe('add route', () => {
+    it('renders an editable form when the user can write', () => {
+      renderPageAt(ROUTES.WEBHOOK_ADD)
+      expect(screen.getByTestId('webhook-form')).toHaveAttribute('data-view-only', 'false')
+    })
+
+    it('hides the form when the user cannot write', () => {
+      usePermissionMock.mockReturnValue({ canRead: true, canWrite: false, canDelete: false })
+      renderPageAt(ROUTES.WEBHOOK_ADD)
+      expect(screen.queryByTestId('webhook-form')).not.toBeInTheDocument()
+    })
   })
 
-  it('renders the WebhookForm when the user can write', () => {
-    renderPage()
-    expect(screen.getByTestId('webhook-form')).toBeInTheDocument()
+  describe('edit route', () => {
+    it('renders an editable form when the user can write', () => {
+      renderPageAt(ROUTES.WEBHOOK_EDIT(TEST_INUM))
+      expect(screen.getByTestId('webhook-form')).toHaveAttribute('data-view-only', 'false')
+    })
+
+    it('falls back to a read-only form when the user cannot write', () => {
+      usePermissionMock.mockReturnValue({ canRead: true, canWrite: false, canDelete: false })
+      renderPageAt(ROUTES.WEBHOOK_EDIT(TEST_INUM))
+      expect(screen.getByTestId('webhook-form')).toHaveAttribute('data-view-only', 'true')
+    })
   })
 
-  it('hides the WebhookForm when the user cannot write', () => {
-    usePermissionMock.mockReturnValue({ canRead: true, canWrite: false, canDelete: false })
-    renderPage()
-    expect(screen.queryByTestId('webhook-form')).not.toBeInTheDocument()
+  describe('view route', () => {
+    it('renders a read-only form even when the user can write', () => {
+      renderPageAt(ROUTES.WEBHOOK_VIEW(TEST_INUM))
+      expect(screen.getByTestId('webhook-form')).toHaveAttribute('data-view-only', 'true')
+    })
+
+    it('hides the form when the user cannot read', () => {
+      usePermissionMock.mockReturnValue({ canRead: false, canWrite: false, canDelete: false })
+      renderPageAt(ROUTES.WEBHOOK_VIEW(TEST_INUM))
+      expect(screen.queryByTestId('webhook-form')).not.toBeInTheDocument()
+    })
   })
 })

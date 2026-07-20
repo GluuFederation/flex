@@ -1557,6 +1557,7 @@
     "delete_identity_provider": "Supprimer le Fournisseur d'Identité",
     "webhooks": "Webhooks",
     "edit_webhook": "Modifier le Webhook",
+    "view_webhook": "Voir le Webhook",
     "edit_script": "Modifier le script personnalisé",
     "authentication": "Authentification",
     "filters": "Filtres",

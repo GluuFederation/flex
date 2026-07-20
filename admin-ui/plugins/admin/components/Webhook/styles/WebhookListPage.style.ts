@@ -56,6 +56,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     },
     statusBadge: { minWidth: 80 },
     httpMethodBadge: { width: 72, minWidth: 72, maxWidth: 72, boxSizing: 'border-box' },
+    viewIcon: { fontSize: ICON_SIZE.SM },
     editIcon: { fontSize: ICON_SIZE.SM },
     deleteIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },
