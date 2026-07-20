@@ -19,7 +19,7 @@ type StoreOptions = { logoutAuditSucceeded?: boolean | null }
 const makeStore = ({ logoutAuditSucceeded = null }: StoreOptions = {}) =>
   configureStore({
     reducer: combineReducers({ logoutAuditReducer: sessionReducer }),
-    preloadedState: { logoutAuditReducer: { logoutAuditSucceeded } },
+    preloadedState: { logoutAuditReducer: { logoutAuditSucceeded, landingPath: null } },
   })
 
 const renderProfile = (store = makeStore()) => {

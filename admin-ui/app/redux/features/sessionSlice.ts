@@ -3,10 +3,12 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 interface SessionState {
   logoutAuditSucceeded: boolean | null
+  landingPath: string | null
 }
 
 const initialState: SessionState = {
   logoutAuditSucceeded: null,
+  landingPath: null,
 }
 
 const sessionSlice = createSlice({
@@ -19,9 +21,12 @@ const sessionSlice = createSlice({
     auditLogoutLogsResponse: (state, action: PayloadAction<boolean>) => {
       state.logoutAuditSucceeded = action.payload
     },
+    setLandingPath: (state, action: PayloadAction<string | null>) => {
+      state.landingPath = action.payload
+    },
   },
 })
 
-export const { auditLogoutLogs, auditLogoutLogsResponse } = sessionSlice.actions
+export const { auditLogoutLogs, auditLogoutLogsResponse, setLandingPath } = sessionSlice.actions
 export default sessionSlice.reducer
 reducerRegistry.register('logoutAuditReducer', sessionSlice.reducer)

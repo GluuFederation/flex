@@ -127,6 +127,7 @@ type ProfileDetailsState = {
 // Session State (logout audit)
 type SessionState = {
   logoutAuditSucceeded: boolean | null
+  landingPath: string | null
 }
 
 // Auth server plugin state types

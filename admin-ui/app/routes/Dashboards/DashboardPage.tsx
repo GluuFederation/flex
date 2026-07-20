@@ -359,6 +359,11 @@ const DashboardPage = () => {
 
               <div className={classes.userInfoChartRow}>
                 <div className={classes.userInfoChartCol}>
+                  {isTabletDown && (
+                    <GluuText variant="div" className={classes.summarySectionTitle}>
+                      {t('dashboard.user_info')}:
+                    </GluuText>
+                  )}
                   <Paper
                     className={`${classes.dashboardCard} ${classes.dashboardCardCentered}`}
                     elevation={0}
@@ -366,10 +371,11 @@ const DashboardPage = () => {
                     <Grid className={classes.flex} container>
                       <Grid size={12}>
                         <div className={classes.userInfo}>
-                          <GluuText variant="div" className={classes.userInfoTitle}>
-                            {t('dashboard.user_info')}
-                            {isMobile ? ':' : ''}
-                          </GluuText>
+                          {!isTabletDown && (
+                            <GluuText variant="div" className={classes.userInfoTitle}>
+                              {t('dashboard.user_info')}
+                            </GluuText>
+                          )}
                           <div className={classes.userInfoContent}>
                             {userInfo.map((item) => (
                               <UserInfoItem
@@ -388,12 +394,18 @@ const DashboardPage = () => {
                   </Paper>
                 </div>
                 <div className={classes.userInfoChartCol}>
+                  {isTabletDown && (
+                    <GluuText variant="div" className={classes.summarySectionTitle}>
+                      {t('dashboard.access_tokens_graph')}:
+                    </GluuText>
+                  )}
                   <Paper elevation={0} className={classes.dashboardCard}>
                     <div className={classes.whiteBg}>
-                      <GluuText variant="h3" className={classes.chartTitle}>
-                        {t('dashboard.access_tokens_graph')}
-                        {isMobile ? ':' : ''}
-                      </GluuText>
+                      {!isTabletDown && (
+                        <GluuText variant="h3" className={classes.chartTitle}>
+                          {t('dashboard.access_tokens_graph')}
+                        </GluuText>
+                      )}
                       <div className={classes.chartDatePickers}>
                         <GluuDatePicker
                           mode="range"

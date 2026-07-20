@@ -42,9 +42,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
 
   return {
     mobileContentPad: {
-      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
-        marginTop: `-${SPACING.PAGE}px`,
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
@@ -68,8 +65,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: '22px',
       color: isDark ? customColors.white : themeColors.text,
       margin: 0,
-      marginTop: '32px',
-      marginBottom: '20px',
+      marginBottom: `${SPACING.CARD_BUTTON_GAP / 2}px`,
     },
     dashboardSections: {
       display: 'flex',
@@ -397,16 +393,15 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     statusSection: {
       width: '100%',
-      minHeight: '106px',
-      padding: '0px 6px',
+      padding: 0,
       marginLeft: 0,
       marginRight: 0,
+      marginBottom: `${SPACING.SECTION_GAP}px`,
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       [`@media ${STATUS_COMPACT_QUERY}`]: {
-        minHeight: 0,
         height: 'auto',
-        padding: 0,
+        marginBottom: `${SPACING.SECTION_GAP}px`,
         alignItems: 'flex-start',
       },
     },
@@ -427,6 +422,12 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         justifyContent: 'flex-start',
         columnGap: '25px',
         rowGap: '4px',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& > :first-child': {
+          flexBasis: '100%',
+          marginBottom: `${SPACING.CARD_CONTENT_GAP}px`,
+        },
       },
     },
     statusTitle: {
