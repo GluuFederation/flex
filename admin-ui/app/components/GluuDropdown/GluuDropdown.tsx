@@ -109,7 +109,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
     [selectedValue, multiple],
   )
 
-  const getSelectedOption = useCallback(():
+  const selectedOption = useMemo(():
     GluuDropdownOption<T> | GluuDropdownOption<T>[] | undefined => {
     if (selectedValue === undefined) return undefined
     if (multiple && Array.isArray(selectedValue)) {
@@ -202,8 +202,6 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
     }
     return style
   }, [minWidth, maxWidth, maxHeight])
-
-  const selectedOption = getSelectedOption()
 
   const renderOptions = useMemo(() => {
     if (filteredOptions.length === 0) {

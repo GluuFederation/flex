@@ -1,0 +1,66 @@
+#!/bin/sh
+set +e
+
+# --- Require signed commits on push (the `git commit -S` effect) ---
+# For every commit being pushed, ensure it carries a GPG/SSH signature.
+# A missing signature (%G? = N) blocks the push. A present-but-unverifiable
+# signature (%G? = E, e.g. signer's public key not in the local keyring) is
+# allowed, since the commit WAS signed.
+
+Z40=$(git hash-object -t tree /dev/null 2>/dev/null | tr 'a-f0-9' '0')
+
+UNSIGNED=""
+
+while read -r _LOCAL_REF LOCAL_OID _REMOTE_REF REMOTE_OID; do
+  # Nothing to push for this ref (deletion) — skip.
+  [ "$LOCAL_OID" = "$Z40" ] && continue
+  [ -z "$LOCAL_OID" ] && continue
+
+  if [ "$REMOTE_OID" = "$Z40" ] || [ -z "$REMOTE_OID" ]; then
+    # New branch on the remote: check all commits reachable from LOCAL_OID
+    # that aren't on any existing remote-tracking branch.
+    RANGE=$(git rev-list "$LOCAL_OID" --not --remotes 2>&1)
+  else
+    # Existing branch: check only the newly pushed commits.
+    RANGE=$(git rev-list "$REMOTE_OID..$LOCAL_OID" 2>&1)
+  fi
+  if [ $? -ne 0 ]; then
+    echo "❌ Push blocked — could not determine which commits are being pushed."
+    printf '%s\n' "$RANGE"
+    echo ""
+    echo "💥 Push rejected."
+    exit 1
+  fi
+
+  for COMMIT in $RANGE; do
+    SIG=$(git log -1 --format='%G?' "$COMMIT" 2>&1)
+    if [ $? -ne 0 ]; then
+      echo "❌ Push blocked — could not read the signature of commit $COMMIT."
+      printf '%s\n' "$SIG"
+      echo ""
+      echo "💥 Push rejected."
+      exit 1
+    fi
+    if [ "$SIG" = "N" ] || [ -z "$SIG" ]; then
+      SUBJECT=$(git log -1 --format='%h %s' "$COMMIT" 2>&1)
+      if [ $? -ne 0 ]; then
+        SUBJECT="$COMMIT"
+      fi
+      UNSIGNED="$UNSIGNED
+  $SUBJECT"
+    fi
+  done
+done
+
+if [ -n "$UNSIGNED" ]; then
+  echo "❌ Push blocked — the following commit(s) are NOT signed:"
+  printf '%s\n' "$UNSIGNED"
+  echo ""
+  echo "   Sign your commits before pushing, e.g.:"
+  echo "     git commit -S -s -m \"<message>\""
+  echo "   To re-sign existing commits:"
+  echo "     git rebase --exec 'git commit --amend --no-edit -S -s' <base>"
+  echo ""
+  echo "💥 Push rejected."
+  exit 1
+fi

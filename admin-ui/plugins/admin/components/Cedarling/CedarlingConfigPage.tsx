@@ -15,6 +15,8 @@ import { logger } from '@/utils/logger'
 import apiAxios from '@/redux/api/axios'
 import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { InfoOutlined } from '@/components/icons'
 import { Form } from 'Components'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
@@ -32,19 +34,27 @@ import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
+const ZIP_MIME_TYPE = 'application/zip'
+const CJAR_EXTENSION = '.cjar'
+const POLICY_STORE_FILE_NAME = `policy-store${CJAR_EXTENSION}`
+
+const POLICY_STORE_REPO_URL =
+  'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer'
+const AGAMA_LAB_URL = 'https://cloud.gluu.org/agama-lab'
+
 const CJAR_ACCEPT = {
-  'application/zip': ['.cjar'],
+  [ZIP_MIME_TYPE]: [CJAR_EXTENSION],
 }
 
 const buildPolicyStoreFileName = (): string => {
   const base = apiAxios.defaults.baseURL
   if (!base) {
-    return 'policy-store.cjar'
+    return POLICY_STORE_FILE_NAME
   }
   try {
-    return `${new URL(base).hostname}-policy-store.cjar`
+    return `${new URL(base).hostname}-${POLICY_STORE_FILE_NAME}`
   } catch {
-    return 'policy-store.cjar'
+    return POLICY_STORE_FILE_NAME
   }
 }
 
@@ -65,6 +75,8 @@ const CedarlingConfigPage: React.FC = () => {
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
 
   const { classes } = useStyles({ themeColors, isDark })
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
@@ -178,7 +190,7 @@ const CedarlingConfigPage: React.FC = () => {
 
       const bytes = Uint8Array.from(atob(responseBytes), (c) => c.charCodeAt(0))
 
-      const blob = new Blob([bytes], { type: 'application/zip' })
+      const blob = new Blob([bytes], { type: ZIP_MIME_TYPE })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -211,117 +223,119 @@ const CedarlingConfigPage: React.FC = () => {
     <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadSecurity}>
         <GluuPageContent>
-          <Box className={classes.configCard}>
-            <Form
-              className={classes.form}
-              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                e.preventDefault()
-              }}
-            >
-              <Box className={classes.formMain}>
-                <Box className={classes.formContent}>
-                  <Box className={classes.alertWrapper}>
-                    <Box className={classes.alertBox}>
-                      <InfoOutlined
-                        className={classes.alertIcon}
-                        sx={{ color: themeColors.infoAlert.text }}
-                      />
-                      <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
-                        {t('documentation.cedarlingConfig.steps')}
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point1')}{' '}
-                        <Link
-                          href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={classes.alertLink}
-                        >
-                          {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
-                        </Link>
-                        .
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point2')}{' '}
-                        <Link
-                          href="https://cloud.gluu.org/agama-lab"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={classes.alertLink}
-                        >
-                          {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
-                        </Link>
-                        .
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point3')}
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point4')}
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point5')}
-                      </GluuText>
-                      <GluuText variant="p" className={classes.alertBody} disableThemeColor>
-                        {t('documentation.cedarlingConfig.point6')}
-                      </GluuText>
+          <div className={classes.mobileContentPad}>
+            {isMobile && (
+              <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
+                {t('titles.cedarling_config')}
+              </GluuText>
+            )}
+            <Box className={classes.configCard}>
+              <Form
+                className={classes.form}
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                  e.preventDefault()
+                }}
+              >
+                <Box className={classes.formMain}>
+                  <Box className={classes.formContent}>
+                    <Box className={classes.alertWrapper}>
+                      <Box className={classes.alertBox}>
+                        <InfoOutlined
+                          className={classes.alertIcon}
+                          sx={{ color: themeColors.infoAlert.text }}
+                        />
+                        <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
+                          {t('documentation.cedarlingConfig.steps')}
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point1')}{' '}
+                          <Link
+                            href={POLICY_STORE_REPO_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={classes.alertLink}
+                          >
+                            {t('documentation.cedarlingConfig.gluuFlexAdminUiPolicyStoreDisplay')}
+                          </Link>
+                          .
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point2')}{' '}
+                          <Link
+                            href={AGAMA_LAB_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={classes.alertLink}
+                          >
+                            {t('documentation.cedarlingConfig.agamaLabPolicyDesigner')}
+                          </Link>
+                          .
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point3')}
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point4')}
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point5')}
+                        </GluuText>
+                        <GluuText variant="p" className={classes.alertBody} disableThemeColor>
+                          {t('documentation.cedarlingConfig.point6')}
+                        </GluuText>
 
-                      <Box className={classes.uploadBox}>
-                        <GluuLabel
-                          label="documentation.cedarlingConfig.title"
-                          size={12}
-                          required={canWriteSecurity}
-                          isDark={isDark}
-                        />
-                        <GluuUploadFile
-                          accept={CJAR_ACCEPT}
-                          onDrop={handleFileDrop}
-                          placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
-                          onClearFiles={handleClearFiles}
-                          disabled={!canWriteSecurity || isLoading}
-                          fileName={selectedFile?.name}
-                        />
-                        {canWriteSecurity && (
-                          <Box className={classes.requiredFooterNote}>
-                            <GluuText
-                              variant="span"
-                              className={classes.requiredAsterisk}
-                              aria-hidden
-                              disableThemeColor
-                            >
-                              *
-                            </GluuText>
-                            <GluuText
-                              variant="span"
-                              className={classes.requiredNoteText}
-                              disableThemeColor
-                            >
-                              {t('documentation.cedarlingConfig.requiredFieldNote')}
-                            </GluuText>
-                          </Box>
-                        )}
+                        <Box className={classes.uploadBox}>
+                          <GluuLabel
+                            label="fields.upload"
+                            size={12}
+                            required={canWriteSecurity}
+                            isDark={isDark}
+                          />
+                          <GluuUploadFile
+                            accept={CJAR_ACCEPT}
+                            onDrop={handleFileDrop}
+                            placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
+                            onClearFiles={handleClearFiles}
+                            disabled={isMobile || !canWriteSecurity || isLoading}
+                            fileName={selectedFile?.name}
+                          />
+                          {canWriteSecurity && (
+                            <Box component="ul" className={classes.requiredFooterNote}>
+                              <Box component="li">
+                                <GluuText
+                                  variant="span"
+                                  className={classes.requiredNoteText}
+                                  disableThemeColor
+                                >
+                                  {t('documentation.cedarlingConfig.requiredFieldNote')}
+                                </GluuText>
+                              </Box>
+                            </Box>
+                          )}
+                        </Box>
                       </Box>
                     </Box>
                   </Box>
                 </Box>
-              </Box>
 
-              <GluuThemeFormFooter
-                showBack
-                onBack={handleBack}
-                showCancel
-                cancelButtonLabel={t('documentation.cedarlingConfig.downloadPolicyStore')}
-                onCancel={handleDownload}
-                disableCancel={isLoading}
-                showApply={canWriteSecurity}
-                applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
-                onApply={handleUploadClick}
-                disableApply={!selectedFile || isLoading}
-                applyButtonType="button"
-                isLoading={isLoading}
-              />
-            </Form>
-          </Box>
+                <GluuThemeFormFooter
+                  className={classes.footer}
+                  showBack
+                  onBack={handleBack}
+                  showCancel={!isMobile}
+                  cancelButtonLabel={t('documentation.cedarlingConfig.downloadPolicyStore')}
+                  onCancel={handleDownload}
+                  disableCancel={isLoading}
+                  showApply={!isMobile && canWriteSecurity}
+                  applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
+                  onApply={handleUploadClick}
+                  disableApply={!selectedFile || isLoading}
+                  applyButtonType="button"
+                  isLoading={isLoading}
+                />
+              </Form>
+            </Box>
+          </div>
         </GluuPageContent>
       </GluuViewWrapper>
 

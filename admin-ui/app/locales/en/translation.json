@@ -1524,7 +1524,7 @@
     "jwk_keys": "JWK keys",
     "jans_json_property": "Auth Server Properties",
     "mapping": "Role/Permission Mapping",
-    "cedarling_config": "Cedarling Configuration",
+    "cedarling_config": "Cedarling Configuration Policy Store",
     "modules_properties": "Module Properties",
     "oauth_server_status_title": "OAuth server status",
     "oidc_clients": "OIDC Clients",
@@ -2359,6 +2359,9 @@
       "selectFileFirst": "Please select a .cjar file first",
       "auditPolicyStoreUploaded": "Policy store uploaded",
       "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
+      "auditPolicyStoreUrlUpdated": "Policy store URL updated",
+      "policyStoreUrlInvalidError": "Please enter a valid URL",
+      "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
       "uploadConfirmTitle": "Confirm Policy Store Upload",
       "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI."
     },
