@@ -54,8 +54,7 @@ const ScimPage: React.FC = () => {
       onMutate: async (variables: { data?: JsonPatch[] }) => {
         await queryClient.cancelQueries({ queryKey: getGetScimConfigQueryKey() })
         const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey()) as
-          | AppConfiguration3
-          | undefined
+          AppConfiguration3 | undefined
         if (previousConfig) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
             return (variables.data ?? []).reduce(

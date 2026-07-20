@@ -300,22 +300,16 @@ const CedarlingConfigPage: React.FC = () => {
                             fileName={selectedFile?.name}
                           />
                           {canWriteSecurity && (
-                            <Box className={classes.requiredFooterNote}>
-                              <GluuText
-                                variant="span"
-                                className={classes.requiredAsterisk}
-                                aria-hidden
-                                disableThemeColor
-                              >
-                                *
-                              </GluuText>
-                              <GluuText
-                                variant="span"
-                                className={classes.requiredNoteText}
-                                disableThemeColor
-                              >
-                                {t('documentation.cedarlingConfig.requiredFieldNote')}
-                              </GluuText>
+                            <Box component="ul" className={classes.requiredFooterNote}>
+                              <Box component="li">
+                                <GluuText
+                                  variant="span"
+                                  className={classes.requiredNoteText}
+                                  disableThemeColor
+                                >
+                                  {t('documentation.cedarlingConfig.requiredFieldNote')}
+                                </GluuText>
+                              </Box>
                             </Box>
                           )}
                         </Box>

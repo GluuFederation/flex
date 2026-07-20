@@ -82,18 +82,14 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       flexDirection: 'column',
     },
     requiredFooterNote: {
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: 6,
+      listStyle: 'disc',
+      listStylePosition: 'inside',
       marginTop: theme.spacing(0.5),
       marginBottom: 0,
-      paddingLeft: theme.spacing(0.5),
-    },
-    requiredAsterisk: {
-      color: textAsPlaceholder,
-      fontWeight: fontWeights.bold,
-      lineHeight: lineHeights.tight,
-      flexShrink: 0,
+      paddingLeft: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        listStyle: 'none',
+      },
     },
     requiredNoteText: {
       fontFamily,
@@ -102,6 +98,7 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       color: textAsPlaceholder,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         color: themeColors.fontColor,
+        lineHeight: lineHeights.normal,
       },
     },
     alertWrapper: {
@@ -119,10 +116,17 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       position: 'relative',
       width: '100%',
       boxSizing: 'border-box',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: CEDARLING_CONFIG_SPACING.MOBILE_ALERT_PADDING_LEFT,
+        paddingRight: CEDARLING_CONFIG_SPACING.MOBILE_ALERT_PADDING_RIGHT,
+      },
     },
     alertIcon: {
       position: 'absolute',
       left: CEDARLING_CONFIG_SPACING.ALERT_ICON_LEFT,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        left: CEDARLING_CONFIG_SPACING.MOBILE_ALERT_ICON_LEFT,
+      },
       top: CEDARLING_CONFIG_SPACING.ALERT_ICON_TOP,
       width: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
       height: CEDARLING_CONFIG_SPACING.ICON_SIZE_MD,
@@ -148,8 +152,14 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
       'marginBottom': theme.spacing(1),
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         'marginTop': CEDARLING_CONFIG_SPACING.MOBILE_STEPS_TO_LABEL,
-        'marginLeft': `-${CEDARLING_CONFIG_SPACING.ALERT_PADDING_LEFT - CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT}px`,
-        'marginRight': `-${CEDARLING_CONFIG_SPACING.ALERT_PADDING_RIGHT - CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT}px`,
+        'marginLeft': -(
+          CEDARLING_CONFIG_SPACING.MOBILE_ALERT_PADDING_LEFT -
+          CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT
+        ),
+        'marginRight': -(
+          CEDARLING_CONFIG_SPACING.MOBILE_ALERT_PADDING_RIGHT -
+          CEDARLING_CONFIG_SPACING.MOBILE_CONTENT_PADDING_LEFT
+        ),
         '& .dropzone': {
           minHeight: CEDARLING_CONFIG_SPACING.MOBILE_DROPZONE_MIN_HEIGHT,
         },
