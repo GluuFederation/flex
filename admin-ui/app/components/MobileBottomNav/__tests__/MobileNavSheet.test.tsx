@@ -119,14 +119,13 @@ describe('MobileNavSheet', () => {
     expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ path: '/home/health' }))
   })
 
-  it('renders Security as a collapsed expandable row (children hidden, does not navigate)', () => {
+  it('renders Security as a collapsed expandable row (children inert, does not navigate)', () => {
     const onSelect = jest.fn()
     render(<MobileNavSheet openKey="home" onClose={noop} onSelect={onSelect} />)
-    const security = screen.getByRole('button', { name: /menus.security/ })
+    const security = screen.getByRole('button', { name: 'menus.security' })
     expect(security).toHaveAttribute('aria-expanded', 'false')
-    expect(
-      screen.queryByRole('button', { name: 'menus.securityDropdown.mapping' }),
-    ).not.toBeInTheDocument()
+    const child = screen.getByRole('button', { name: 'menus.securityDropdown.mapping' })
+    expect(child.closest('[inert]')).not.toBeNull()
     fireEvent.click(security)
     expect(security).toHaveAttribute('aria-expanded', 'true')
     expect(onSelect).not.toHaveBeenCalled()
@@ -135,9 +134,9 @@ describe('MobileNavSheet', () => {
   it('reveals Security children on expand and selects a child on tap', () => {
     const onSelect = jest.fn()
     render(<MobileNavSheet openKey="home" onClose={noop} onSelect={onSelect} />)
-    fireEvent.click(screen.getByRole('button', { name: /menus.security/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'menus.security' }))
     const child = screen.getByRole('button', { name: 'menus.securityDropdown.mapping' })
-    expect(child).toBeInTheDocument()
+    expect(child.closest('[inert]')).toBeNull()
     fireEvent.click(child)
     expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ path: '/home/mapping' }))
   })
