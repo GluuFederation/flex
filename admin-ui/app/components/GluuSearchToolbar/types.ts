@@ -60,6 +60,7 @@ type GluuSearchToolbarBaseProps = {
   dateRangeSlot?: ReactNode
   onRefresh?: () => void
   primaryAction?: PrimaryActionDef
+  actionsLabel?: string
   refreshLoading?: boolean
   refreshButtonVariant?: 'primary' | 'outlined'
   disabled?: boolean

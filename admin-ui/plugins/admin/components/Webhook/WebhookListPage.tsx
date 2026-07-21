@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
-import { Add, DeleteOutlined, Edit } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -18,6 +18,8 @@ import { useGetAllWebhooks } from 'JansConfigApi'
 import { useDeleteWebhookWithAudit } from './hooks'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY, TOOLBAR } from '@/constants'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { WebhookEntry } from './types'
@@ -26,6 +28,8 @@ import { useStyles } from './styles/WebhookListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
+
+const PAGE_TITLE_KEY = 'titles.webhooks'
 
 const SORT_COLUMNS = ['inum', 'displayName', 'url', 'httpMethod', 'jansEnabled'] as const
 const SORT_COLUMN_LABELS: Record<string, string> = {
@@ -56,8 +60,10 @@ const WebhookListPage: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<WebhookEntry | null>(null)
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
-  SetTitle(t('titles.webhooks'))
+  SetTitle(t(PAGE_TITLE_KEY))
+  const pageTitle = t(PAGE_TITLE_KEY)
 
   const { data, isLoading, refetch } = useGetAllWebhooks(
     {
@@ -112,6 +118,14 @@ const WebhookListPage: React.FC = () => {
     navigateToRoute(ROUTES.WEBHOOK_ADD)
   }, [navigateToRoute])
 
+  const navigateToViewPage = useCallback(
+    (rowData: WebhookEntry) => {
+      if (!rowData?.inum) return
+      navigateToRoute(ROUTES.WEBHOOK_VIEW(rowData.inum))
+    },
+    [navigateToRoute],
+  )
+
   const navigateToEditPage = useCallback(
     (rowData: WebhookEntry) => {
       if (!rowData?.inum) return
@@ -163,7 +177,7 @@ const WebhookListPage: React.FC = () => {
         value: serverSort.column,
         options: sortOptions,
         onChange: handleSortByFilter,
-        width: 180,
+        width: TOOLBAR.CONTROL_WIDTH,
       },
     ],
     [t, serverSort.column, handleSortByFilter, sortOptions],
@@ -270,6 +284,15 @@ const WebhookListPage: React.FC = () => {
       id?: string
       onClick: (row: WebhookEntry) => void
     }> = []
+    if (isLoading) return list
+    if (!canReadWebhooks) return list
+    list.push({
+      icon: <VisibilityOutlined className={classes.viewIcon} />,
+      tooltip: t('actions.view'),
+      id: 'viewWebhook',
+      onClick: navigateToViewPage,
+    })
+    if (isMobile) return list
     if (canWriteWebhooks) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -290,7 +313,18 @@ const WebhookListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWriteWebhooks, canDeleteWebhooks, t, navigateToEditPage, toggle, classes])
+  }, [
+    isLoading,
+    isMobile,
+    canReadWebhooks,
+    canWriteWebhooks,
+    canDeleteWebhooks,
+    t,
+    navigateToViewPage,
+    navigateToEditPage,
+    toggle,
+    classes,
+  ])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -322,6 +356,9 @@ const WebhookListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadWebhooks}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -335,6 +372,7 @@ const WebhookListPage: React.FC = () => {
                 onRefresh={canReadWebhooks ? handleRefresh : undefined}
                 refreshLoading={isLoading}
                 primaryAction={primaryAction}
+                actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}
               />
             </div>

@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type JSX,
+  type ReactNode,
   type TransitionEvent as ReactTransitionEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -18,6 +19,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_LIGHT } from '@/context/theme/constants'
 import { ChevronIcon } from '../SVG'
+import { MOBILE_SHEET_HEIGHT_VAR } from '@/constants'
 import { useStyles } from './MobileNavSheet.style'
 import { SHEET_ICON_BY_KEY } from './sheetIcons'
 import {
@@ -34,13 +36,19 @@ import type { MobileNavSheetThemeColors } from './types'
 type MobileNavSheetProps = {
   openKey: SheetKey | null
   onClose: () => void
-  onSelect: (item: SheetItem) => void
+  onSelect?: (item: SheetItem) => void
+  /** Custom sheet content. When provided, it replaces the navigation tiles. */
+  children?: ReactNode
+  /** Sheet heading. Defaults to the navigation title for the open key. */
+  title?: string
 }
 
 const MobileNavSheet = ({
   openKey,
   onClose,
   onSelect,
+  children,
+  title,
 }: MobileNavSheetProps): JSX.Element | null => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -110,6 +118,22 @@ const MobileNavSheet = ({
     node.style.height = `${target}px`
   }, [renderKey, entered])
 
+  useLayoutEffect(() => {
+    const node = sheetRef.current
+    if (!renderKey || !node || typeof document === 'undefined') return undefined
+    const root = document.documentElement
+    const update = (): void => {
+      root.style.setProperty(MOBILE_SHEET_HEIGHT_VAR, `${node.offsetHeight}px`)
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(node)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty(MOBILE_SHEET_HEIGHT_VAR)
+    }
+  }, [renderKey, entered])
+
   useEffect(() => {
     if (!renderKey) return undefined
     closeButtonRef.current?.focus()
@@ -159,6 +183,10 @@ const MobileNavSheet = ({
       return
     }
     setDrillTile(null)
+    if (!isSectionKey(openKey)) {
+      setExpandedKeys([])
+      return
+    }
     const menu = SECTION_MENUS[openKey]
     const activeGroups = (menu?.items ?? [])
       .filter((item) => item.children?.some((child) => isItemActive(child)))
@@ -177,11 +205,14 @@ const MobileNavSheet = ({
     : isMore
       ? 'menus.allCategory'
       : (section?.titleKey ?? '')
-  const headerIcon = isDrilled
-    ? SHEET_ICON_BY_KEY[drillTile?.iconKey ?? '']
-    : isMore
-      ? null
-      : SHEET_ICON_BY_KEY[section?.iconKey ?? '']
+  const headerIcon = children
+    ? null
+    : isDrilled
+      ? SHEET_ICON_BY_KEY[drillTile?.iconKey ?? '']
+      : isMore
+        ? null
+        : SHEET_ICON_BY_KEY[section?.iconKey ?? '']
+  const headerTitle = title ?? t(headerTitleKey)
 
   const handleTileClick = (tile: SheetItem): void => {
     if (tile.children?.length) {
@@ -189,7 +220,7 @@ const MobileNavSheet = ({
       return
     }
     if (!tile.path) return
-    onSelect(tile)
+    onSelect?.(tile)
   }
 
   return createPortal(
@@ -202,11 +233,15 @@ const MobileNavSheet = ({
       />
       <div
         ref={sheetRef}
-        className={cx(classes.sheet, entered && classes.sheetOpen)}
+        className={cx(
+          classes.sheet,
+          !!children && classes.sheetFlush,
+          entered && classes.sheetOpen,
+        )}
         onTransitionEnd={handleSheetTransitionEnd}
         role="dialog"
         aria-modal="true"
-        aria-label={t(headerTitleKey)}
+        aria-label={headerTitle}
         data-testid="mobile-nav-sheet"
       >
         <div className={classes.header}>
@@ -225,7 +260,7 @@ const MobileNavSheet = ({
             className={cx(classes.headerTitle, isMore && !isDrilled && classes.headerTitleMuted)}
             data-testid="mobile-nav-sheet-title"
           >
-            {t(headerTitleKey)}
+            {headerTitle}
           </span>
           <button
             ref={closeButtonRef}
@@ -239,7 +274,9 @@ const MobileNavSheet = ({
         </div>
 
         <div className={classes.body}>
-          {isDrilled ? (
+          {children ? (
+            children
+          ) : isDrilled ? (
             <div className={classes.list}>
               {drillTile?.children?.map((child) => {
                 const childActive = isItemActive(child)
@@ -249,7 +286,7 @@ const MobileNavSheet = ({
                     type="button"
                     className={cx(classes.listItem, childActive && classes.listItemActive)}
                     aria-current={childActive ? 'page' : undefined}
-                    onClick={() => onSelect(child)}
+                    onClick={() => onSelect?.(child)}
                   >
                     {t(child.titleKey)}
                   </button>
@@ -317,7 +354,7 @@ const MobileNavSheet = ({
                                   )}
                                   aria-current={childActive ? 'page' : undefined}
                                   tabIndex={expanded ? 0 : -1}
-                                  onClick={() => onSelect(child)}
+                                  onClick={() => onSelect?.(child)}
                                 >
                                   {t(child.titleKey)}
                                 </button>
@@ -337,7 +374,7 @@ const MobileNavSheet = ({
                     type="button"
                     className={cx(classes.listItem, active && classes.listItemActive)}
                     aria-current={active ? 'page' : undefined}
-                    onClick={() => onSelect(item)}
+                    onClick={() => onSelect?.(item)}
                   >
                     {t(item.titleKey)}
                   </button>

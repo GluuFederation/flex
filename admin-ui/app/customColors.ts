@@ -23,6 +23,7 @@ const customColors = {
   lightBorder: '#efefef',
   darkBorder: '#193f66',
   borderInput: '#ebebeb',
+  filterPillBorder: '#dbe2ea',
 
   // Text
   textSecondary: '#425466',

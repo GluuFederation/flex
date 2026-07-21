@@ -10,4 +10,3 @@ const safeParseUserConfig = (): UserConfig =>
   storage.getJSON<UserConfig>(STORAGE_KEYS.USER_CONFIG) ?? {}
 
 export { safeParseUserConfig }
-export type { UserConfig }

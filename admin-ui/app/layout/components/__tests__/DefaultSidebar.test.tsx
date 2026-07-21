@@ -3,8 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { DefaultSidebar } from '../DefaultSidebar'
 
 type CedarState = { initialized: boolean; cedarFailedStatusAfterMaxTries: boolean }
-type SidebarState = { cedarPermissions: CedarState }
-type Selector = (state: SidebarState) => CedarState
+type SidebarState = {
+  cedarPermissions: CedarState
+  logoutAuditReducer: { landingPath: string | null }
+}
+type Selector = (state: SidebarState) => CedarState | string | null
 
 // Drive the cedarPermissions slice directly so the three loader branches can be
 // exercised in isolation from the real store wiring.
@@ -32,6 +35,7 @@ jest.mock('Routes/Apps/Gluu/GluuAppSidebar', () => ({
 jest.mock('@/components/GluuSpinner', () => ({ GluuSpinner: () => <div data-testid="spinner" /> }))
 jest.mock('react-router-dom', () => ({
   Link: ({ children }: PropsWithChildren) => <a>{children}</a>,
+  useLocation: () => ({ pathname: '/' }),
 }))
 jest.mock('../DefaultSidebar.style', () => ({
   useStyles: () => ({
@@ -42,7 +46,9 @@ jest.mock('@/helpers/navigation', () => ({ ROUTES: { ROOT: '/' } }))
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }))
 
 const setCedarState = (state: CedarState) => {
-  mockSelector.mockImplementation((fn: Selector) => fn({ cedarPermissions: state }))
+  mockSelector.mockImplementation((fn: Selector) =>
+    fn({ cedarPermissions: state, logoutAuditReducer: { landingPath: '/home/dashboard' } }),
+  )
 }
 
 describe('DefaultSidebar', () => {

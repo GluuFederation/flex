@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
-import { fontFamily } from '@/styles/fonts'
+import { fontFamily, fontWeights } from '@/styles/fonts'
 import customColors from '@/customColors'
 
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -17,7 +17,28 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: SPACING.PAGE },
+    page: {
+      fontFamily,
+      paddingTop: SPACING.PAGE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+        boxSizing: 'border-box',
+      },
+    },
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
     cellUrl: {
       wordBreak: 'break-all',
@@ -27,6 +48,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     },
     statusBadge: { minWidth: 80 },
     httpMethodBadge: { width: 72, minWidth: 72, maxWidth: 72, boxSizing: 'border-box' },
+    viewIcon: { fontSize: ICON_SIZE.SM },
     editIcon: { fontSize: ICON_SIZE.SM },
     deleteIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },

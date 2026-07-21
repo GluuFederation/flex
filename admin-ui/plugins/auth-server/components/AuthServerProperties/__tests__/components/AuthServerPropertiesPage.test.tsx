@@ -52,7 +52,10 @@ jest.mock('../../../Authentication/Acrs/hooks', () => ({
 
 jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({ navigateBack: jest.fn() }),
-  ROUTES: { HOME_DASHBOARD: '/home' },
+  ROUTES: {
+    HOME_DASHBOARD: '/home',
+    PLUGIN_BASE_PATHS: { HOME: '/home', AUTH_SERVER: '/auth-server', USER_MANAGEMENT: '/users' },
+  },
 }))
 
 const clientPermissions = [

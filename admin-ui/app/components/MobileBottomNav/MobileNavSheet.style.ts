@@ -39,6 +39,10 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     transition: `transform ${SHEET.TRANSITION_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`,
     willChange: 'transform',
   },
+  // Nav sheets sit above the bottom bar and must clear it; content sheets overlay it.
+  sheetFlush: {
+    paddingBottom: 'env(safe-area-inset-bottom)',
+  },
   sheetOpen: {
     transform: 'translateY(0)',
   },

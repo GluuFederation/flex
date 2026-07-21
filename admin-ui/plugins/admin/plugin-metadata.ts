@@ -20,12 +20,10 @@ const CedarlingConfigPage = createLazyRoute(
   () => import('./components/Cedarling/CedarlingConfigPage'),
 )
 const WebhookListPage = createLazyRoute(() => import('./components/Webhook/WebhookListPage'))
-const WebhookAddPage = createLazyRoute(() => import('./components/Webhook/WebhookAddPage'))
-const WebhookEditPage = createLazyRoute(() => import('./components/Webhook/WebhookEditPage'))
+const WebhookFormPage = createLazyRoute(() => import('./components/Webhook/WebhookFormPage'))
 const AuditListPage = createLazyRoute(() => import('../admin/components/Audit/AuditListPage'))
 const JansAssetListPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetListPage'))
-const JansAssetAddPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetAddPage'))
-const JansAssetEditPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetEditPage'))
+const JansAssetFormPageLazy = createLazyRoute(() => import('./components/Assets/JansAssetFormPage'))
 
 const pluginMetadata = {
   menus: [
@@ -148,13 +146,19 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
-      component: WebhookAddPage,
+      component: WebhookFormPage,
       path: ROUTES.WEBHOOK_ADD,
       action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
     },
     {
-      component: WebhookEditPage,
+      component: WebhookFormPage,
+      path: ROUTES.WEBHOOK_VIEW_TEMPLATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Webhooks,
+    },
+    {
+      component: WebhookFormPage,
       path: ROUTES.WEBHOOK_EDIT_TEMPLATE,
       action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Webhooks,
@@ -166,13 +170,19 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
-      component: JansAssetAddPageLazy,
+      component: JansAssetFormPageLazy,
       path: ROUTES.ASSET_ADD,
       action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
-      component: JansAssetEditPageLazy,
+      component: JansAssetFormPageLazy,
+      path: ROUTES.ASSET_VIEW_TEMPLATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
+    },
+    {
+      component: JansAssetFormPageLazy,
       path: ROUTES.ASSET_EDIT_TEMPLATE,
       action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Assets,

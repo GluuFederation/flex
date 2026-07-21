@@ -2,7 +2,12 @@ import React, { use, useEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from '@/context/theme/themeContext'
 import getThemeColor, { themeConfig } from '@/context/theme/config'
 import customColors, { getCustomColorsAsCssVars, getLoadingOverlayRgba } from '@/customColors'
-import { getListHoverOpacity, SCROLLBAR, MOBILE_BOTTOM_NAV_HEIGHT } from '@/constants'
+import {
+  getListHoverOpacity,
+  SCROLLBAR,
+  MOBILE_BOTTOM_NAV_HEIGHT,
+  MOBILE_PAGE_PADDING_X,
+} from '@/constants'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import type { LayoutContentProps } from './types'
 
@@ -43,6 +48,8 @@ const LayoutContent: React.FC<LayoutContentProps> & { layoutPartName: string } =
       '--theme-scrollbar-height': `${SCROLLBAR.HEIGHT}px`,
       '--theme-scrollbar-radius': `${SCROLLBAR.BORDER_RADIUS}px`,
       '--mobile-bottom-nav-height': `${MOBILE_BOTTOM_NAV_HEIGHT}px`,
+      '--mobile-content-padding-x': `${MOBILE_PAGE_PADDING_X.MD}px`,
+      '--mobile-content-padding-x-sm': `${MOBILE_PAGE_PADDING_X.SM}px`,
       '--theme-sidebar-background': themeColors.menu.background,
       '--theme-navbar-background': themeColors.navbar.background,
       '--theme-navbar-border': themeColors.navbar.border,

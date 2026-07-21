@@ -43,6 +43,7 @@ import type {
   ShortCodesConfig,
   HttpHeader,
   WebhookEntry,
+  WebhookFormProps,
 } from './types'
 
 const toFeatureIds = (features: AuiFeature[]): string[] =>
@@ -51,7 +52,7 @@ const toFeatureIds = (features: AuiFeature[]): string[] =>
 const haveFeaturesChanged = (a: AuiFeature[], b: AuiFeature[]): boolean =>
   !isEqual(toFeatureIds(a), toFeatureIds(b))
 
-const WebhookForm: React.FC = () => {
+const WebhookForm: React.FC<WebhookFormProps> = ({ viewOnly = false }) => {
   const { id } = useParams<{ id?: string }>()
   const { t, i18n } = useTranslation()
   const { navigateBack } = useAppNavigation()
@@ -444,6 +445,7 @@ const WebhookForm: React.FC = () => {
                   )
                 }
                 isDark={isDark}
+                disabled={viewOnly}
                 placeholder={getFieldPlaceholder(t, 'fields.webhook_name')}
               />
             </div>
@@ -460,7 +462,7 @@ const WebhookForm: React.FC = () => {
                 doc_category={WEBHOOK}
                 doc_entry="aui_feature_ids"
                 isDark={isDark}
-                disabled={featuresLoading}
+                disabled={viewOnly || featuresLoading}
                 showError={!!featureError}
                 errorMessage={featureError}
               />
@@ -503,10 +505,11 @@ const WebhookForm: React.FC = () => {
                     handleSelectShortcode={(code) =>
                       handleSelectShortcode(code, WEBHOOK_FIELDS.URL)
                     }
-                    disabled={!formikValues.url?.trim()}
+                    disabled={viewOnly || !formikValues.url?.trim()}
                   />
                 }
                 isDark={isDark}
+                disabled={viewOnly}
                 placeholder={getFieldPlaceholder(t, 'fields.webhook_url')}
               />
             </div>
@@ -530,6 +533,7 @@ const WebhookForm: React.FC = () => {
                   )
                 }
                 isDark={isDark}
+                disabled={viewOnly}
               />
             </div>
             <div className={classes.descriptionEnabledRow}>
@@ -545,6 +549,7 @@ const WebhookForm: React.FC = () => {
                   doc_entry="description"
                   placeholder={t('placeholders.webhook_description')}
                   isDark={isDark}
+                  disabled={viewOnly}
                 />
               </div>
               <div className={classes.fieldItem}>
@@ -561,6 +566,7 @@ const WebhookForm: React.FC = () => {
                     name="jansEnabled"
                     formik={formik}
                     value={Boolean(formikValues.jansEnabled)}
+                    disabled={viewOnly}
                   />
                 </FormGroup>
               </div>
@@ -580,18 +586,20 @@ const WebhookForm: React.FC = () => {
                     doc_entry="http_headers"
                     isDark={isDark}
                   />
-                  <GluuButton
-                    type="button"
-                    backgroundColor={themeColors.settings.addPropertyButton.bg}
-                    textColor={themeColors.settings.addPropertyButton.text}
-                    useOpacityOnHover
-                    className={classes.headersActionBtn}
-                    onClick={addHeader}
-                    disabled={!canAddHeader}
-                  >
-                    <Add fontSize="small" />
-                    {t('actions.add_header')}
-                  </GluuButton>
+                  {!viewOnly && (
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.settings.addPropertyButton.bg}
+                      textColor={themeColors.settings.addPropertyButton.text}
+                      useOpacityOnHover
+                      className={classes.headersActionBtn}
+                      onClick={addHeader}
+                      disabled={!canAddHeader}
+                    >
+                      <Add fontSize="small" />
+                      {t('actions.add_header')}
+                    </GluuButton>
+                  )}
                 </div>
                 <div className={classes.headersBody}>
                   {(formikValues.httpHeaders || []).map((header, index) => (
@@ -604,6 +612,7 @@ const WebhookForm: React.FC = () => {
                         }
                         placeholder={t('placeholders.enter_header_key')}
                         className={classes.headersInput}
+                        disabled={viewOnly}
                       />
                       <Input
                         name={`httpHeaders.${index}.value`}
@@ -613,18 +622,21 @@ const WebhookForm: React.FC = () => {
                         }
                         placeholder={t('placeholders.enter_key_value')}
                         className={classes.headersInput}
+                        disabled={viewOnly}
                       />
-                      <GluuButton
-                        type="button"
-                        backgroundColor={themeColors.settings.removeButton.bg}
-                        textColor={themeColors.settings.removeButton.text}
-                        useOpacityOnHover
-                        className={classes.headersActionBtn}
-                        onClick={() => removeHeader(index)}
-                      >
-                        <DeleteOutline fontSize="small" />
-                        {t('actions.remove')}
-                      </GluuButton>
+                      {!viewOnly && (
+                        <GluuButton
+                          type="button"
+                          backgroundColor={themeColors.settings.removeButton.bg}
+                          textColor={themeColors.settings.removeButton.text}
+                          useOpacityOnHover
+                          className={classes.headersActionBtn}
+                          onClick={() => removeHeader(index)}
+                        >
+                          <DeleteOutline fontSize="small" />
+                          {t('actions.remove')}
+                        </GluuButton>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -664,10 +676,12 @@ const WebhookForm: React.FC = () => {
                     }
                     placeholder=""
                     isDark={isDark}
+                    readOnly={viewOnly}
                     shortcode={
                       <ShortcodePopover
                         codes={featureShortcodes}
                         buttonWrapperClassName={classes.editorShortcode}
+                        disabled={viewOnly}
                         handleSelectShortcode={(code) =>
                           handleSelectShortcode(code, WEBHOOK_FIELDS.HTTP_REQUEST_BODY, true)
                         }
@@ -678,18 +692,27 @@ const WebhookForm: React.FC = () => {
               </div>
             )}
           </div>
-          <GluuThemeFormFooter
-            showBack
-            onBack={handleBack}
-            showCancel
-            onCancel={handleCancel}
-            disableCancel={!isFormChanged}
-            showApply
-            onApply={formik.handleSubmit}
-            disableApply={!isFormChanged || !formik.isValid}
-            applyButtonType="button"
-            isLoading={isLoading}
-          />
+          {viewOnly ? (
+            <GluuThemeFormFooter
+              showBack
+              onBack={handleBack}
+              showCancel={false}
+              showApply={false}
+            />
+          ) : (
+            <GluuThemeFormFooter
+              showBack
+              onBack={handleBack}
+              showCancel
+              onCancel={handleCancel}
+              disableCancel={!isFormChanged}
+              showApply
+              onApply={formik.handleSubmit}
+              disableApply={!isFormChanged || !formik.isValid}
+              applyButtonType="button"
+              isLoading={isLoading}
+            />
+          )}
         </Form>
         <GluuCommitDialog
           handler={closeCommitDialog}

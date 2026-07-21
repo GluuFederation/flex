@@ -18,6 +18,7 @@ import { useNavbarTheme } from './hooks/useNavbarTheme'
 import { usePageTitle } from './hooks/usePageTitle'
 import { useAppSelector } from '@/redux/hooks'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
+import { useSamePathGuard } from '@/hooks/useSamePathGuard'
 
 const selectUserInfo = (state: { authReducer: { userinfo: UserInfo | null } }) =>
   state.authReducer.userinfo
@@ -31,6 +32,9 @@ const GluuNavBar = () => {
   const pageTitle = usePageTitle()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const navbarRef = useRef<HTMLDivElement>(null)
+  const landingPath = useAppSelector((state) => state.logoutAuditReducer.landingPath)
+  const logoPath = landingPath ?? ROUTES.ROOT
+  const handleLogoClick = useSamePathGuard(logoPath)
 
   const applyNavbarColors = useCallback((element: HTMLElement, colors: typeof navbarColors) => {
     element.style.setProperty('background-color', colors.background, 'important')
@@ -80,7 +84,12 @@ const GluuNavBar = () => {
     <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
       <Box className={classes.navbarContainer}>
         <Box className={classes.leftSection}>
-          <Link to={ROUTES.ROOT} className={classes.mobileLogo} aria-label={t('menus.home')}>
+          <Link
+            to={logoPath}
+            className={classes.mobileLogo}
+            aria-label={t('menus.home')}
+            onClick={handleLogoClick}
+          >
             <LogoThemed width={103} height={40} variant="green" />
           </Link>
           <GluuText

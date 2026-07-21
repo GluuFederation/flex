@@ -62,3 +62,7 @@ export type ShortCodesConfig = {
     fields: ShortcodeField[]
   }
 }
+
+export type WebhookFormProps = {
+  viewOnly?: boolean
+}

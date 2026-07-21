@@ -6,7 +6,8 @@
     "plugins/PluginReducersResolver.ts",
     "plugins/PluginListenersResolver.ts",
     "script/*.ts",
-    "plugins/user-claims/__tests__/cedarTestHelpers.ts"
+    "plugins/user-claims/__tests__/cedarTestHelpers.ts",
+    "plugins/admin/__tests__/components/Assets/Asset/assetCedarTestConstants.ts"
   ],
   "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
   "ignoreDependencies": ["babel-preset-jest", "markdownlint-cli2"],

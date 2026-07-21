@@ -1,7 +1,9 @@
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -32,6 +34,7 @@ const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProp
     a.layout === b.layout &&
     a.labelAsTitle === b.labelAsTitle &&
     a.showTime === b.showTime &&
+    a.forceIcon === b.forceIcon &&
     a.startDateLabel === b.startDateLabel &&
     a.endDateLabel === b.endDateLabel &&
     a.inputHeight === b.inputHeight &&
@@ -67,6 +70,7 @@ const GluuDatePicker = memo(
       backgroundColor: props.backgroundColor,
       inputHeight: props.inputHeight,
       labelShrink,
+      forceIcon: props.forceIcon,
     })
 
     if (isRange) {
@@ -81,10 +85,17 @@ const GluuDatePicker = memo(
       )
     }
 
-    const SinglePicker = props.showTime ? DateTimePicker : DatePicker
-    const effectiveSlotProps = props.showTime
-      ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
-      : slotProps
+    const SinglePicker = props.showTime
+      ? props.forceIcon
+        ? DesktopDateTimePicker
+        : DateTimePicker
+      : props.forceIcon
+        ? DesktopDatePicker
+        : DatePicker
+    const effectiveSlotProps =
+      props.showTime && !props.forceIcon
+        ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
+        : slotProps
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <SinglePicker
@@ -120,6 +131,7 @@ const GluuDatePicker = memo(
       (prev.labelShrink ?? true) === (next.labelShrink ?? true) &&
       (prev.dateFormat ?? prev.format) === (next.dateFormat ?? next.format) &&
       prev.showTime === next.showTime &&
+      prev.forceIcon === next.forceIcon &&
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
@@ -141,6 +153,7 @@ const GluuDatePickerRange = memo(
     layout = 'grid',
     labelAsTitle = false,
     showTime = false,
+    forceIcon = false,
     startDateLabel: startDateLabelProp,
     endDateLabel: endDateLabelProp,
     displayFormat,
@@ -167,8 +180,9 @@ const GluuDatePickerRange = memo(
         ? (startDateLabelProp ?? defaultLabel)
         : (endDateLabelProp ?? defaultLabel)
       if (showTime) {
+        const TimePickerComponent = forceIcon ? DesktopDateTimePicker : DateTimePicker
         return (
-          <DateTimePicker
+          <TimePickerComponent
             {...pickerCommon}
             label={labelAsTitle ? '' : label}
             value={isStart ? startDate : endDate}
@@ -179,8 +193,9 @@ const GluuDatePickerRange = memo(
           />
         )
       }
+      const PickerComponent = forceIcon ? DesktopDatePicker : DatePicker
       return (
-        <DatePicker
+        <PickerComponent
           {...pickerCommon}
           label={labelAsTitle ? '' : label}
           value={isStart ? startDate : endDate}

@@ -76,9 +76,16 @@
         // content isn't hidden behind it (bar height + safe-area inset). The
         // height comes from --mobile-bottom-nav-height, bridged at runtime from
         // MOBILE_BOTTOM_NAV_HEIGHT in constants; the 64px fallback matches it.
+        // Horizontal padding is bridged from MOBILE_PAGE_PADDING_X so page
+        // content lines up with the navbar logo and the bottom navigation bar.
         @media (max-width: 767px) {
-            padding: 0.5rem;
+            padding: 0.5rem var(--mobile-content-padding-x, 20px);
             padding-bottom: calc(var(--mobile-bottom-nav-height, 64px) + env(safe-area-inset-bottom) + 0.5rem);
+        }
+
+        @media (max-width: 599.98px) {
+            padding-left: var(--mobile-content-padding-x-sm, 15px);
+            padding-right: var(--mobile-content-padding-x-sm, 15px);
         }
     }
 

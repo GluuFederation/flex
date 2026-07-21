@@ -5,7 +5,8 @@ import { ROUTES } from '@/helpers/navigation'
 import { logger } from '@/utils/logger'
 import GluuErrorScreen from 'Routes/Apps/Gluu/GluuErrorScreen'
 import logUiCrash from '@/utils/logUiCrash'
-import { useAppSelector } from '@/redux/hooks'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks'
+import { setLandingPath } from '@/redux/features/sessionSlice'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
@@ -56,6 +57,14 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
 
 const LandingRedirect = () => {
   const { path, loading } = useFirstAuthorizedPath()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (path) {
+      dispatch(setLandingPath(path))
+    }
+  }, [path, dispatch])
+
   if (loading) {
     return <GluuLoader blocking />
   }

@@ -5,12 +5,13 @@ import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
   getHoverOpacity,
-  OPACITY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
+import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 
@@ -27,6 +28,8 @@ const MARGIN_ZERO_IMPORTANT = '0 !important'
 const OUTLINE_NONE = 'none'
 const GAP_SM = 12
 const ALERT_ICON_SIZE = 20
+const ALERT_LINE_HEIGHT = 28
+const ALERT_ICON_TOP_OFFSET = (ALERT_LINE_HEIGHT - ALERT_ICON_SIZE) / 2
 const EDITOR_FALLBACK_MIN_HEIGHT = 120
 const ERROR_SPACE = 20
 
@@ -85,7 +88,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       borderRadius: MAPPING_SPACING.INFO_ALERT_BORDER_RADIUS,
       padding: '12px 16px',
       display: DISPLAY_FLEX,
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: GAP_SM,
       color: infoText,
       width: WIDTH_FULL,
@@ -96,6 +99,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       flexShrink: 0,
       color: infoText,
       fontSize: ALERT_ICON_SIZE,
+      marginTop: ALERT_ICON_TOP_OFFSET,
     },
     alertText: {
       fontFamily: fontFamily,
@@ -136,11 +140,12 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       },
       [theme.breakpoints.down('md')]: {
         flexDirection: FLEX_DIRECTION_COLUMN,
+        gap: 0,
       },
     },
     headersBox: {
       ...dl.listBox,
-      'marginTop': SPACING.SECTION_GAP,
+      'marginTop': ERROR_SPACE,
       '&& input, && input:focus, && input:active, && input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
@@ -157,7 +162,14 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
     headersHeaderEmpty: dl.listHeaderEmpty,
     headersBody: dl.listBody,
     headersRow: dl.listRow,
-    headersInput: { ...dl.listInput, maxWidth: '50%' },
+    headersInput: {
+      ...dl.listInput,
+      maxWidth: '50%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flex: '1 1 100%',
+        maxWidth: '100%',
+      },
+    },
     headersActionBtn: dl.listActionBtn,
     headersError: dl.listError,
     extraPaddingTop: {
@@ -273,9 +285,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       '& input:disabled, & select:disabled, & .custom-select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
+        ...createDisabledInputStyles(themeColors.fontColor),
       },
       '& input::placeholder': {
         color: themeColors.textMuted,

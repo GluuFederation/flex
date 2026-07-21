@@ -10,10 +10,14 @@ import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/helpers/navigation'
 import { useStyles } from './DefaultSidebar.style'
 import { GluuSpinner } from '@/components/GluuSpinner'
+import { useSamePathGuard } from '@/hooks/useSamePathGuard'
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
   const { classes } = useStyles()
+  const landingPath = useAppSelector((state) => state.logoutAuditReducer.landingPath)
+  const brandPath = landingPath ?? ROUTES.ROOT
+  const handleBrandClick = useSamePathGuard(brandPath)
 
   const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
     (state) => state.cedarPermissions,
@@ -34,7 +38,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
     <Sidebar>
       <div className="sidebar__hide-slim">
         <div className="sidebar__section">
-          <Link to={ROUTES.ROOT} className="sidebar__brand">
+          <Link to={brandPath} className="sidebar__brand" onClick={handleBrandClick}>
             <LogoThemed />
           </Link>
         </div>

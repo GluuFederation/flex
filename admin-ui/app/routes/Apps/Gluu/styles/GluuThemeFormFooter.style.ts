@@ -9,6 +9,7 @@ import {
 
 interface FormFooterStyleParams {
   hasRightGroup: boolean
+  backOnly: boolean
 }
 
 export const STEP_NAV_SIZES = {
@@ -27,82 +28,93 @@ export const BUTTON_STYLES = {
   letterSpacing: '0.28px',
 }
 
-export const useStyles = makeStyles<FormFooterStyleParams>()((_theme, { hasRightGroup }) => ({
-  footerWrapper: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: hasRightGroup ? 'space-between' : 'flex-start',
-    gap: 12,
-    marginTop: SPACING.SECTION_GAP,
-    paddingTop: 16,
-    paddingBottom: 8,
-    [`@media ${MOBILE_MEDIA_QUERY}`]: {
-      justifyContent: 'flex-start',
-      flexWrap: 'nowrap',
+export const useStyles = makeStyles<FormFooterStyleParams>()(
+  (_theme, { hasRightGroup, backOnly }) => ({
+    footerWrapper: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: hasRightGroup ? 'space-between' : 'flex-start',
+      gap: 12,
+      marginTop: SPACING.SECTION_GAP,
+      paddingTop: 16,
+      paddingBottom: 8,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        justifyContent: 'flex-start',
+        flexWrap: 'nowrap',
+      },
+      [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
+        flexWrap: 'wrap',
+      },
     },
-    [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
-      flexWrap: 'wrap',
+
+    leftGroup: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        ...(backOnly && { width: '100%' }),
+      },
     },
-  },
 
-  leftGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-
-  rightGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-
-  footerButton: {
-    whiteSpace: 'nowrap' as const,
-    flexShrink: 0,
-    [`@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`]: {
-      padding: `${BUTTON_STYLES.paddingY}px 16px !important`,
+    rightGroup: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
     },
-  },
 
-  centerGroup: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 4,
-  },
+    footerButton: {
+      whiteSpace: 'nowrap' as const,
+      flexShrink: 0,
+      [`@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`]: {
+        padding: `${BUTTON_STYLES.paddingY}px 16px !important`,
+      },
+    },
 
-  stepNavButton: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: STEP_NAV_SIZES.buttonSize,
-    minHeight: STEP_NAV_SIZES.buttonSize,
-    padding: 0,
-    background: 'none',
-    border: 'none',
-    borderRadius: 6,
-    cursor: 'pointer',
-    transition: 'opacity 0.15s ease',
-  },
+    footerButtonBlock: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        minWidth: 120,
+      },
+    },
 
-  stepNavButtonDisabled: {
-    opacity: OPACITY.DISABLED,
-    cursor: 'not-allowed',
-  },
+    centerGroup: {
+      position: 'absolute',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 4,
+    },
 
-  stepNavLabel: {
-    fontSize: STEP_NAV_SIZES.labelFontSize,
-    fontWeight: 500,
-    userSelect: 'none' as const,
-    whiteSpace: 'nowrap' as const,
-    minWidth: 60,
-    textAlign: 'center' as const,
-  },
-}))
+    stepNavButton: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: STEP_NAV_SIZES.buttonSize,
+      minHeight: STEP_NAV_SIZES.buttonSize,
+      padding: 0,
+      background: 'none',
+      border: 'none',
+      borderRadius: 6,
+      cursor: 'pointer',
+      transition: 'opacity 0.15s ease',
+    },
+
+    stepNavButtonDisabled: {
+      opacity: OPACITY.DISABLED,
+      cursor: 'not-allowed',
+    },
+
+    stepNavLabel: {
+      fontSize: STEP_NAV_SIZES.labelFontSize,
+      fontWeight: 500,
+      userSelect: 'none' as const,
+      whiteSpace: 'nowrap' as const,
+      minWidth: 60,
+      textAlign: 'center' as const,
+    },
+  }),
+)
 
 export const getButtonColors = (theme: string): FormFooterColors => {
   const colors = getThemeColor(theme)

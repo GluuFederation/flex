@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -72,8 +72,10 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 describe('WebhookListPage', () => {
-  it('renders the webhook list page with search', () => {
+  it('renders the webhook list page with search', async () => {
     render(<WebhookListPage />, { wrapper: Wrapper })
-    expect(screen.getByText(/Webhooks/i)).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { hidden: true })).toHaveTextContent('Webhooks'),
+    )
   })
 })

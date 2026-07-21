@@ -4,9 +4,10 @@ import { MAPPING_SPACING, OPACITY } from '@/constants'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
+  createDisabledInputStyles,
   createDisabledSelectInputStyles,
   createReadOnlySelectStyles,
-} from '@/styles/mobileDisabledFieldStyles'
+} from '@/styles/disabledFieldStyles'
 
 interface GluuSelectRowStyleParams {
   themeColors: ThemeConfig
@@ -47,10 +48,7 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
         outline: 'none',
         boxShadow: 'none',
       },
-      '&:disabled': {
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
-      },
+      '&:disabled': createDisabledInputStyles(fontColor),
       '& option': {
         color: fontColor,
         WebkitTextFillColor: fontColor,

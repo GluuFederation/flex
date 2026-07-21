@@ -2,8 +2,12 @@ import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   BORDER_RADIUS,
+  EXTRA_SMALL_MAX_MEDIA_QUERY,
   getHoverOpacity,
   getLoadingOverlayOpacity,
+  ICON_BUTTON_SIZE,
+  ICON_SIZE,
+  MOBILE_MEDIA_QUERY,
   OPACITY,
   SPACING,
 } from '@/constants'
@@ -13,6 +17,14 @@ import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 const EXPAND_BUTTON_SIZE = 32
 export const TABLE_MIN_WIDTH = 1024
 export const TABLE_RESPONSIVE_BREAKPOINT = 1200
+
+export const DEFAULT_COLUMN_ALIGN = 'center' as const
+
+export const ALIGN_TO_JUSTIFY = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+} as const
 
 interface GluuTableStyleParams {
   isDark: boolean
@@ -44,6 +56,14 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       width: '100%',
       maxWidth: '100%',
       minWidth: 0,
+      // Claw back part of the surrounding card's padding so the table and its
+      // pagination row get the full width on narrow screens.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginLeft: -SPACING.CARD_CONTENT_GAP,
+        marginRight: -SPACING.CARD_CONTENT_GAP,
+        width: `calc(100% + ${SPACING.CARD_CONTENT_GAP * 2}px)`,
+        maxWidth: `calc(100% + ${SPACING.CARD_CONTENT_GAP * 2}px)`,
+      },
     },
     borderWrapper: {
       width: '100%',
@@ -151,12 +171,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     sortableHeader: {
       'cursor': 'pointer',
+      'position': 'relative',
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'flex-start',
       'width': '100%',
-      'padding': '14px 16px',
-      'paddingRight': 20,
+      'padding': '14px 20px',
       'boxSizing': 'border-box',
       'background': 'none',
       'border': 'none',
@@ -174,7 +194,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     sortIconWrap: {
-      marginLeft: 10,
+      position: 'absolute',
+      right: 16,
+      top: '50%',
+      marginTop: -7,
       flexShrink: 0,
       display: 'inline-flex',
       alignItems: 'center',
@@ -267,7 +290,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     actionsCell: {
       display: 'flex',
       gap: '8px',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     actionButton: {
       'background': 'none',
@@ -313,6 +337,20 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       color: themeColors.fontColor,
       flexWrap: 'wrap',
       lineHeight: '28px',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'justifyContent': 'center',
+        'flexWrap': 'nowrap',
+        'gap': SPACING.CARD_CONTENT_GAP,
+        'fontSize': fontSizes.pill,
+        'padding': `${SPACING.CARD_BUTTON_GAP}px ${SPACING.CARD_CONTENT_GAP}px`,
+        '& > span': {
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        },
+      },
+      [`@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.sm,
+      },
     },
     paginationSelectWrap: {
       position: 'relative',
@@ -332,6 +370,11 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'cursor': 'pointer',
       'appearance': 'none',
       'outline': 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.pill,
+        padding: `4px ${SPACING.CARD_PADDING + SPACING.CARD_CONTENT_GAP * 2}px 4px 4px`,
+        minHeight: 'auto',
+      },
       '&:focus-visible': {
         outline: 'none',
         boxShadow: `0 0 0 2px ${paginationAccent}`,
@@ -348,6 +391,14 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     paginationButton: {
       minWidth: 40,
       minHeight: 40,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        minWidth: ICON_BUTTON_SIZE,
+        minHeight: ICON_BUTTON_SIZE,
+      },
+      [`@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`]: {
+        minWidth: ICON_SIZE.LG,
+        minHeight: ICON_SIZE.LG,
+      },
       padding: 0,
       display: 'inline-flex',
       alignItems: 'center',
@@ -368,6 +419,17 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       display: 'inline-flex',
       alignItems: 'center',
       gap: 0,
+      flexShrink: 0,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'gap': 0,
+        '& > button': {
+          minWidth: ICON_SIZE.LG,
+          minHeight: ICON_SIZE.LG,
+          width: ICON_SIZE.LG,
+          height: ICON_SIZE.LG,
+          padding: 0,
+        },
+      },
     },
     emptyRow: {
       textAlign: 'center',

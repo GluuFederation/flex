@@ -26,6 +26,7 @@ export type GluuDatePickerStyleParams = {
   backgroundColor?: string
   inputHeight?: number
   labelShrink?: boolean
+  forceIcon?: boolean
 }
 
 type GluuDatePickerBase = {
@@ -35,6 +36,7 @@ type GluuDatePickerBase = {
   backgroundColor?: string
   inputHeight?: number
   showTime?: boolean
+  forceIcon?: boolean
 }
 
 export type GluuDatePickerSingleProps = GluuDatePickerBase & {

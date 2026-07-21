@@ -13,6 +13,10 @@ export type AssetFormValues = Record<
   baseDn?: string
 }
 
+export type AssetFormProps = {
+  viewOnly?: boolean
+}
+
 export type FileDropHandler = (files: File[]) => void
 
 export type FileClearHandler = () => void

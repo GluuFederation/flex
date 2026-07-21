@@ -10,6 +10,7 @@ export const fontWeights = {
 export const fontSizes = {
   'xs': '10px',
   'sm': '12px',
+  'pill': '13px',
   'base': '14px',
   'description': '15px',
   'md': '16px',

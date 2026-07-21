@@ -5,13 +5,16 @@ export const SHEET_KEYS = {
   AUTH_SERVER: 'auth-server',
   USERS: 'users',
   MORE: 'more',
+  /** Opens the sheet with caller-supplied content instead of a navigation menu. */
+  CUSTOM: 'custom',
 } as const
 
 export type SheetKey = (typeof SHEET_KEYS)[keyof typeof SHEET_KEYS]
 
-export type SectionKey = Exclude<SheetKey, typeof SHEET_KEYS.MORE>
+export type SectionKey = Exclude<SheetKey, typeof SHEET_KEYS.MORE | typeof SHEET_KEYS.CUSTOM>
 
-export const isSectionKey = (key: SheetKey): key is SectionKey => key !== SHEET_KEYS.MORE
+export const isSectionKey = (key: SheetKey): key is SectionKey =>
+  key !== SHEET_KEYS.MORE && key !== SHEET_KEYS.CUSTOM
 
 export type SheetItem = {
   key: string

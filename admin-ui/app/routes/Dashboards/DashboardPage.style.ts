@@ -2,7 +2,6 @@ import customColors from '@/customColors'
 import {
   OPACITY,
   MOBILE_MEDIA_QUERY,
-  MOBILE_PAGE_PADDING_X,
   SPACING,
   TABLET_MAX_MEDIA_QUERY,
   TABLET_BAND_MEDIA_QUERY,
@@ -28,9 +27,6 @@ interface DashboardThemeColors {
   statusActive: string
 }
 
-const STATUS_COMPACT_QUERY = TABLET_MAX_MEDIA_QUERY
-const STATUS_GRID_QUERY = STATUS_GRID_MEDIA_QUERY
-
 const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolean }>()((
   theme: Theme,
   params,
@@ -43,18 +39,9 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
 
   return {
     mobileContentPad: {
-      [`@media ${TABLET_BAND_MEDIA_QUERY}`]: {
-        marginTop: `-${SPACING.PAGE}px`,
-      },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
         marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
-      },
-      [theme.breakpoints.down('sm')]: {
-        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
-        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: {
@@ -75,8 +62,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       lineHeight: '22px',
       color: isDark ? customColors.white : themeColors.text,
       margin: 0,
-      marginTop: '32px',
-      marginBottom: '20px',
+      marginBottom: `${SPACING.CARD_BUTTON_GAP / 2}px`,
     },
     dashboardSections: {
       display: 'flex',
@@ -404,17 +390,14 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     statusSection: {
       width: '100%',
-      minHeight: '106px',
-      padding: '0px 6px',
+      padding: 0,
       marginLeft: 0,
       marginRight: 0,
+      marginBottom: `${SPACING.SECTION_GAP}px`,
       display: 'flex',
-      alignItems: 'center',
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
-        minHeight: 0,
+      alignItems: 'flex-start',
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         height: 'auto',
-        padding: 0,
-        alignItems: 'flex-start',
       },
     },
     topGridNoMargin: {
@@ -427,13 +410,19 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
       columnGap: '40px',
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'flex-start',
         columnGap: '25px',
         rowGap: '4px',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& > :first-child': {
+          flexBasis: '100%',
+          marginBottom: `${SPACING.CARD_CONTENT_GAP}px`,
+        },
       },
     },
     statusTitle: {
@@ -445,12 +434,12 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       color: themeColors.text,
       whiteSpace: 'nowrap',
       flexShrink: 0,
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         fontSize: fontSizes.base,
       },
     },
     statusHeading: {
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         flexBasis: '100%',
         marginBottom: '8px',
         fontFamily,
@@ -469,11 +458,11 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       alignItems: 'center',
       columnGap: '40px',
       rowGap: '8px',
-      [`@media ${STATUS_GRID_QUERY}`]: {
+      [`@media ${STATUS_GRID_MEDIA_QUERY}`]: {
         display: 'grid',
         gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
       },
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         columnGap: '25px',
         rowGap: '8px',
       },
@@ -490,7 +479,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       flex: '0 0 auto',
       whiteSpace: 'nowrap',
       flexShrink: 0,
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         gap: '6px',
       },
     },
@@ -499,7 +488,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       height: 16,
       borderRadius: BORDER_RADIUS.CIRCLE,
       flexShrink: 0,
-      [`@media ${STATUS_COMPACT_QUERY}`]: {
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         width: 10,
         height: 10,
       },

@@ -7,7 +7,13 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
-import { useStyles, TABLE_MIN_WIDTH, TABLE_RESPONSIVE_BREAKPOINT } from './GluuTable.style'
+import {
+  useStyles,
+  TABLE_MIN_WIDTH,
+  TABLE_RESPONSIVE_BREAKPOINT,
+  DEFAULT_COLUMN_ALIGN,
+  ALIGN_TO_JUSTIFY,
+} from './GluuTable.style'
 import { T_KEYS, EMPTY_CELL_PLACEHOLDER } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
@@ -515,7 +521,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                         width: effectiveWidths[id],
                         ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
                         ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
-                        textAlign: col.align || 'left',
+                        textAlign: col.align || DEFAULT_COLUMN_ALIGN,
                       }}
                     >
                       {isSortable ? (
@@ -526,6 +532,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                               ? `${classes.sortableHeader} ${classes.sortableHeaderActive}`
                               : classes.sortableHeader
                           }
+                          style={{
+                            justifyContent: ALIGN_TO_JUSTIFY[col.align || DEFAULT_COLUMN_ALIGN],
+                          }}
                           onClick={() => handleSort(id)}
                         >
                           {col.label}
@@ -649,7 +658,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                                 width: effectiveWidths[id],
                                 ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
                                 ...(parseMaxWidth(col) != null && { maxWidth: parseMaxWidth(col) }),
-                                textAlign: col.align || 'left',
+                                textAlign: col.align || DEFAULT_COLUMN_ALIGN,
                               }}
                             >
                               {col.render ? (
