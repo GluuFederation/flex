@@ -11,6 +11,7 @@ export type GluuAutocompleteProps = {
   onChange: (value: string[]) => void
   onBlur?: () => void
   disabled?: boolean
+  viewOnly?: boolean
   placeholder?: string
   /** When true, allow typing a value not in options and adding it */
   allowCustom?: boolean

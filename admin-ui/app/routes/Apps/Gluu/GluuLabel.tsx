@@ -62,7 +62,6 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
                   place="right"
                 />
                 <HelpOutline
-                  tabIndex={-1}
                   style={{
                     width: 18,
                     height: 18,

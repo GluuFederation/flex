@@ -1,6 +1,13 @@
 import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, OPACITY, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+  SPACING,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import customColors, { hexToRgb } from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createFormGroupOverrides, createFormLabelStyles } from '@/styles/formStyles'
@@ -26,6 +33,7 @@ export const createPropertiesPageStyles = (
     : inputBorderColor
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(fontColor),
     searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative' as const,
@@ -50,6 +58,12 @@ export const createPropertiesPageStyles = (
     },
     formContent: {
       'padding': SPACING.CONTENT_PADDING,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'padding': `${SPACING.PAGE}px 0`,
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
+          pointerEvents: 'none' as const,
+        },
+      },
       ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),
       '& .form-group > label': {
@@ -163,6 +177,11 @@ export const createPropertiesPageStyles = (
       'paddingLeft': SPACING.CONTENT_PADDING,
       'paddingRight': SPACING.CONTENT_PADDING,
       'paddingBottom': SPACING.CONTENT_PADDING,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingBottom: SPACING.PAGE,
+      },
       '& hr, & .MuiDivider-root': {
         display: 'none !important',
       },

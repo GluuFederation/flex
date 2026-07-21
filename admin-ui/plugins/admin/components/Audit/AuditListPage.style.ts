@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   BORDER_RADIUS,
@@ -25,6 +26,7 @@ const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
     page: {
       fontFamily,
     },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',

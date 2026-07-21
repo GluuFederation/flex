@@ -2,6 +2,8 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { Check as CheckIcon, Close as CloseIcon, HelpOutline } from '@/components/icons'
 import { ChevronIcon } from '@/components/SVG'
 import GluuTooltip from './GluuTooltip'
@@ -29,6 +31,7 @@ const GluuAutocomplete = ({
   onChange,
   onBlur,
   disabled = false,
+  viewOnly = false,
   placeholder,
   allowCustom = false,
   onSearch,
@@ -51,6 +54,8 @@ const GluuAutocomplete = ({
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = React.useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const hideControls = viewOnly || isMobile
   const { classes } = useStyles({
     themeColors,
     allowCustom,
@@ -58,6 +63,7 @@ const GluuAutocomplete = ({
     contrastOptionHover,
     withWrapper,
     compactSelectionSpacing,
+    hideControls,
   })
 
   const resolvedHelperText = helperText ?? t('messages.multi_select_hint')
@@ -183,7 +189,6 @@ const GluuAutocomplete = ({
                 place="right"
               />
               <HelpOutline
-                tabIndex={-1}
                 className={classes.helpIcon}
                 data-tooltip-id={doc_entry}
                 data-for={doc_entry}
@@ -192,137 +197,140 @@ const GluuAutocomplete = ({
           )}
         </div>
       )}
-      <div className={classes.controls}>
-        <div className={classes.autocompleteWrapper}>
-          <Autocomplete
-            multiple
-            loading={isLoading}
-            loadingText={`${t('messages.loading')}...`}
-            noOptionsText={t('messages.no_data_available')}
-            clearText={t('actions.clear')}
-            closeText={t('actions.close')}
-            openText={t('actions.choose')}
-            openOnFocus
-            inputValue={inputValue}
-            onInputChange={(_e, val, reason) => {
-              if (reason !== 'reset') {
-                setInputValue(val)
-                onSearch?.(val)
-              }
-            }}
-            options={autocompleteOptions}
-            value={selectedItems}
-            isOptionEqualToValue={(option, val) => option === val}
-            onChange={handleChange}
-            onBlur={onBlur}
-            onClose={() => {
-              lockedPlacementRef.current = null
-            }}
-            disabled={disabled}
-            disableClearable
-            disableCloseOnSelect
-            disablePortal
-            className={classes.autocompleteRoot}
-            slotProps={popperSlotProps}
-            forcePopupIcon
-            popupIcon={<ChevronIcon width={20} height={20} direction="down" />}
-            filterOptions={filterOptions}
-            getOptionLabel={(option) => getDisplayLabel(option)}
-            renderOption={(props, option) => {
-              const isNewSelection =
-                typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX)
-              const selected = selectedItems.includes(option)
-              return (
-                <li {...props} key={option}>
-                  {!isNewSelection && (
-                    <span
-                      aria-hidden
-                      className={
-                        selected
-                          ? `${classes.optionCheckbox} ${classes.optionCheckboxChecked}`
-                          : classes.optionCheckbox
-                      }
-                    >
-                      {selected && <CheckIcon />}
-                    </span>
-                  )}
-                  {isNewSelection ? (
-                    <>
-                      <GluuText disableThemeColor className={classes.newSelectionPrefix}>
-                        {t('placeholders.new_selection')}:&nbsp;
-                      </GluuText>
-                      <GluuText disableThemeColor className={classes.newSelectionValue}>
-                        {option.slice(NEW_SELECTION_PREFIX.length)}
-                      </GluuText>
-                    </>
-                  ) : (
-                    <span className={classes.optionLabel}>{getDisplayLabel(option)}</span>
-                  )}
-                </li>
-              )
-            }}
-            renderInput={(params) => {
-              const { slotProps: paramsSlotProps, ...restParams } = params
-              const paramsInputProps = paramsSlotProps.htmlInput
-              const paramsInputComponentProps = paramsSlotProps.input
-              return (
-                <TextField
-                  {...restParams}
-                  placeholder={placeholder ?? t('placeholders.search_here')}
-                  size="small"
-                  fullWidth
-                  slotProps={{
-                    htmlInput: {
-                      ...paramsInputProps,
-                      onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (allowCustom && e.key === 'Enter') {
-                          const trimmed = inputValue.trim()
-                          if (
-                            trimmed &&
-                            !optionValues.some(
-                              (o) => getDisplayLabel(o).toLowerCase() === trimmed.toLowerCase(),
-                            ) &&
-                            !selectedItems.some(
-                              (s) => getDisplayLabel(s).toLowerCase() === trimmed.toLowerCase(),
-                            )
-                          ) {
-                            e.preventDefault()
-                            onChange([...selectedItems, trimmed])
-                            setInputValue('')
-                            e.currentTarget.blur()
-                            return
-                          }
+      {!viewOnly && (
+        <div className={classes.controls}>
+          <div className={classes.autocompleteWrapper}>
+            <Autocomplete
+              multiple
+              loading={isLoading}
+              loadingText={`${t('messages.loading')}...`}
+              noOptionsText={t('messages.no_data_available')}
+              clearText={t('actions.clear')}
+              closeText={t('actions.close')}
+              openText={t('actions.choose')}
+              openOnFocus
+              inputValue={inputValue}
+              onInputChange={(_e, val, reason) => {
+                if (reason !== 'reset') {
+                  setInputValue(val)
+                  onSearch?.(val)
+                }
+              }}
+              options={autocompleteOptions}
+              value={selectedItems}
+              isOptionEqualToValue={(option, val) => option === val}
+              onChange={handleChange}
+              onBlur={onBlur}
+              onClose={() => {
+                lockedPlacementRef.current = null
+              }}
+              disabled={disabled}
+              disableClearable
+              disableCloseOnSelect
+              disablePortal
+              className={classes.autocompleteRoot}
+              slotProps={popperSlotProps}
+              forcePopupIcon
+              popupIcon={<ChevronIcon width={20} height={20} direction="down" />}
+              filterOptions={filterOptions}
+              getOptionLabel={(option) => getDisplayLabel(option)}
+              renderOption={(props, option) => {
+                const isNewSelection =
+                  typeof option === 'string' && option.startsWith(NEW_SELECTION_PREFIX)
+                const selected = selectedItems.includes(option)
+                return (
+                  <li {...props} key={option}>
+                    {!isNewSelection && (
+                      <span
+                        aria-hidden
+                        className={
+                          selected
+                            ? `${classes.optionCheckbox} ${classes.optionCheckboxChecked}`
+                            : classes.optionCheckbox
                         }
-                        paramsInputProps?.onKeyDown?.(e)
+                      >
+                        {selected && <CheckIcon />}
+                      </span>
+                    )}
+                    {isNewSelection ? (
+                      <>
+                        <GluuText disableThemeColor className={classes.newSelectionPrefix}>
+                          {t('placeholders.new_selection')}:&nbsp;
+                        </GluuText>
+                        <GluuText disableThemeColor className={classes.newSelectionValue}>
+                          {option.slice(NEW_SELECTION_PREFIX.length)}
+                        </GluuText>
+                      </>
+                    ) : (
+                      <span className={classes.optionLabel}>{getDisplayLabel(option)}</span>
+                    )}
+                  </li>
+                )
+              }}
+              renderInput={(params) => {
+                const { slotProps: paramsSlotProps, ...restParams } = params
+                const paramsInputProps = paramsSlotProps.htmlInput
+                const paramsInputComponentProps = paramsSlotProps.input
+                return (
+                  <TextField
+                    {...restParams}
+                    placeholder={placeholder ?? t('placeholders.search_here')}
+                    size="small"
+                    fullWidth
+                    slotProps={{
+                      htmlInput: {
+                        ...paramsInputProps,
+                        onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                          if (allowCustom && e.key === 'Enter') {
+                            const trimmed = inputValue.trim()
+                            if (
+                              trimmed &&
+                              !optionValues.some(
+                                (o) => getDisplayLabel(o).toLowerCase() === trimmed.toLowerCase(),
+                              ) &&
+                              !selectedItems.some(
+                                (s) => getDisplayLabel(s).toLowerCase() === trimmed.toLowerCase(),
+                              )
+                            ) {
+                              e.preventDefault()
+                              onChange([...selectedItems, trimmed])
+                              setInputValue('')
+                              e.currentTarget.blur()
+                              return
+                            }
+                          }
+                          paramsInputProps?.onKeyDown?.(e)
+                        },
                       },
-                    },
-                    input: {
-                      ...paramsInputComponentProps,
-                      endAdornment: (
-                        <>
-                          {inputValue && (
-                            <button
-                              type="button"
-                              onClick={() => setInputValue('')}
-                              className={classes.endIconButton}
-                              aria-label={t('actions.clear')}
-                            >
-                              <CloseIcon />
-                            </button>
-                          )}
-                          {paramsInputComponentProps?.endAdornment}
-                        </>
-                      ),
-                    },
-                  }}
-                />
-              )
-            }}
-            renderValue={() => null}
-          />
+                      input: {
+                        ...paramsInputComponentProps,
+                        endAdornment: (
+                          <>
+                            {inputValue && (
+                              <button
+                                type="button"
+                                onClick={() => setInputValue('')}
+                                className={classes.endIconButton}
+                                aria-label={t('actions.clear')}
+                              >
+                                <CloseIcon />
+                              </button>
+                            )}
+                            {paramsInputComponentProps?.endAdornment}
+                          </>
+                        ),
+                      },
+                    }}
+                  />
+                )
+              }}
+              renderValue={() => null}
+            />
+          </div>
         </div>
-      </div>
+      )}
       {resolvedHelperText &&
+        !viewOnly &&
         !showError &&
         !(hideHelperWhenSelected && selectedItems.length > 0) && (
           <GluuText disableThemeColor className={classes.helperText}>
@@ -336,18 +344,20 @@ const GluuAutocomplete = ({
               <GluuText disableThemeColor className={classes.tagLabel}>
                 {getDisplayLabel(item)}
               </GluuText>
-              <button
-                type="button"
-                className={classes.tagRemove}
-                onClick={() => {
-                  const next = selectedItems.filter((x) => x !== item)
-                  onChange(next)
-                  onBlur?.()
-                }}
-                aria-label={t('actions.remove')}
-              >
-                <CloseIcon />
-              </button>
+              {!hideControls && (
+                <button
+                  type="button"
+                  className={classes.tagRemove}
+                  onClick={() => {
+                    const next = selectedItems.filter((x) => x !== item)
+                    onChange(next)
+                    onBlur?.()
+                  }}
+                  aria-label={t('actions.remove')}
+                >
+                  <CloseIcon />
+                </button>
+              )}
             </span>
           ))}
         </div>

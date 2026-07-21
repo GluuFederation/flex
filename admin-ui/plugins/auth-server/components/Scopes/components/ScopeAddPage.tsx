@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import ScopeForm from './ScopeForm'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -56,6 +57,9 @@ const ScopeAddPage: React.FC = () => {
   return (
     <GluuPageContent>
       <GluuLoader blocking={loading}>
+        <GluuText variant="h1" className={classes.mobilePageTitle}>
+          {t('messages.add_scope')}
+        </GluuText>
         <GluuAlert
           severity="error"
           message={errorMessage || t('messages.error_in_saving')}

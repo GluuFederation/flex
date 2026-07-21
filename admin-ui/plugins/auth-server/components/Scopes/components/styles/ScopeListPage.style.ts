@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
+import { createMobilePageTitleStyle } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import { BORDER_RADIUS, ICON_SIZE, MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily, fontWeights, lineHeights } from '@/styles/fonts'
@@ -20,7 +21,15 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: SPACING.PAGE },
+    page: {
+      fontFamily,
+      paddingTop: SPACING.PAGE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+        boxSizing: 'border-box',
+      },
+    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     cellDescription: {
       display: 'block',
       minWidth: 0,
@@ -32,6 +41,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       color: themeColors.fontColor,
     },
     scopeTypeBadge: { minWidth: SCOPE_TYPE_MIN_WIDTH },
+    viewIcon: { fontSize: ICON_SIZE.SM },
     editIcon: { fontSize: ICON_SIZE.SM },
     deleteIcon: { fontSize: ICON_SIZE.SM },
     addIcon: { fontSize: ICON_SIZE.MD },

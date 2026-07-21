@@ -17,6 +17,16 @@ import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 const EXPAND_BUTTON_SIZE = 32
 export const TABLE_MIN_WIDTH = 1024
 export const TABLE_RESPONSIVE_BREAKPOINT = 1200
+export const MOBILE_TABLE_MIN_WIDTH = 560
+export const MIN_COL_WIDTH = 60
+export const EMPTY_TABLE_ESTIMATE = 15
+export const COLUMN_MIN_PCT = 10
+export const COLUMN_MAX_PCT = 30
+export const AUTO_COL_MIN_PX = 100
+export const AUTO_COL_MAX_PX = 520
+export const MOBILE_AUTO_COL_MAX_PX = 200
+export const AUTO_COL_CHAR_PX = 8
+export const AUTO_COL_PADDING_PX = 32
 
 export const DEFAULT_COLUMN_ALIGN = 'center' as const
 

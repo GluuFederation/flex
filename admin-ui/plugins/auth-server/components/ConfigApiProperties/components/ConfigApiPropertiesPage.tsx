@@ -123,6 +123,9 @@ const ConfigApiPropertiesPage = (): JSX.Element => {
     <GluuLoader blocking={loading}>
       <GluuViewWrapper canShow={canReadConfigApi}>
         <GluuPageContent>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.config_api_configuration')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar

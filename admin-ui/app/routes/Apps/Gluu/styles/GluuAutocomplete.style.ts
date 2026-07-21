@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { CEDARLING_CONFIG_SPACING, ICON_BUTTON_SIZE, MAPPING_SPACING, OPACITY } from '@/constants'
+import {
+  CEDARLING_CONFIG_SPACING,
+  ICON_BUTTON_SIZE,
+  MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+} from '@/constants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import applicationStyle from './applicationStyle'
 
@@ -11,6 +17,7 @@ interface GluuAutocompleteStyleParams {
   contrastOptionHover?: boolean
   withWrapper?: boolean
   compactSelectionSpacing?: boolean
+  hideControls?: boolean
 }
 
 export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
@@ -22,6 +29,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
     contrastOptionHover,
     withWrapper = true,
     compactSelectionSpacing = false,
+    hideControls = false,
   },
 ) => {
   const settings = themeColors.settings
@@ -76,6 +84,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       'alignItems': 'center',
       '@media (max-width: 900px)': {
         gridTemplateColumns: '1fr',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'none',
       },
     },
     autocompleteWrapper: {
@@ -435,7 +446,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       },
     },
     tags: {
-      marginTop: compactSelectionSpacing ? 6 : 12,
+      marginTop: hideControls ? 8 : compactSelectionSpacing ? 6 : 12,
       display: 'flex',
       gap: compactSelectionSpacing ? 8 : 10,
       flexWrap: 'wrap',
@@ -444,7 +455,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       display: 'inline-flex',
       alignItems: 'center',
       gap: 6,
-      padding: '4px 4px 4px 10px',
+      padding: hideControls ? '4px 10px' : '4px 4px 4px 10px',
       borderRadius: 999,
       backgroundColor: themeColors.badges.statusActiveBg,
       color: themeColors.badges.statusActive,
@@ -502,6 +513,9 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       color: fontColor,
       margin: `4px 2px`,
       fontSize: fontSizes.sm,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'none',
+      },
     },
     removeFieldButton: {
       ...(applicationStyle.removableInputRow as object),

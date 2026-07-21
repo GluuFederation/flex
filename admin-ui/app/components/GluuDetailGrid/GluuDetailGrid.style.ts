@@ -1,5 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
-import { SPACING } from '@/constants'
+import { MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
+
+const MOBILE_DETAIL_COL_MIN = 160
 
 export const useStyles = makeStyles()((theme) => ({
   detailGrid: {
@@ -11,8 +13,8 @@ export const useStyles = makeStyles()((theme) => ({
     [theme.breakpoints.down('lg')]: {
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     },
-    [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '1fr',
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      gridTemplateColumns: `repeat(auto-fit, minmax(${MOBILE_DETAIL_COL_MIN}px, 1fr))`,
     },
   },
   detailItem: {

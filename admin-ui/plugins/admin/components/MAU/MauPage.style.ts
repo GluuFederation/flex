@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
 import { BORDER_RADIUS, SPACING, MOBILE_MEDIA_QUERY, TABLET_BAND_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -29,20 +30,7 @@ export const useMauStyles = makeStyles<MauStylesParams>()((
         boxSizing: 'border-box',
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: fontSizes.pageTitle,
-        fontStyle: 'normal',
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.text,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.text),
     sectionSpacing: {
       marginBottom: 24,
     },

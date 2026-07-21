@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -32,20 +33,7 @@ const useStyles = makeStyles<{ themeColors: HealthPageThemeColors; isDark: boole
         boxSizing: 'border-box',
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: fontSizes.pageTitle,
-        fontStyle: 'normal',
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.text,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.text),
     healthCard: {
       backgroundColor: themeColors.cardBg,
       ...cardBorderStyle,

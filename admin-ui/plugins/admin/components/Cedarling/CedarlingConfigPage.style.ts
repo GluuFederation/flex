@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
 import { alpha } from '@mui/material/styles'
 import {
@@ -37,20 +38,7 @@ const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, pa
         paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: fontSizes.pageTitle,
-        fontStyle: 'normal',
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.fontColor,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     configCard: {
       backgroundColor: 'transparent',
       padding: 0,

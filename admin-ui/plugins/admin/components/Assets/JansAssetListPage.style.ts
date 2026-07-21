@@ -1,9 +1,10 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
-import { fontFamily, fontWeights } from '@/styles/fonts'
+import { fontFamily } from '@/styles/fonts'
 
 interface AssetListPageStylesParams {
   isDark: boolean
@@ -26,20 +27,7 @@ export const useStyles = makeStyles<AssetListPageStylesParams>()((_, { isDark, t
         boxSizing: 'border-box',
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: '28px',
-        fontStyle: 'normal',
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.fontColor,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     cellFileName: {
       color: themeColors.fontColor,
       fontWeight: 500,

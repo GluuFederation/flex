@@ -91,6 +91,9 @@ const ROUTES = {
   AUTH_SERVER_SCOPE_EDIT: (inum: string) =>
     `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scope/edit/${encodeURIComponent(inum)}`,
   AUTH_SERVER_SCOPE_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scope/edit/:id`,
+  AUTH_SERVER_SCOPE_VIEW: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scope/view/${encodeURIComponent(inum)}`,
+  AUTH_SERVER_SCOPE_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scope/view/:id`,
 
   // Configuration
   AUTH_SERVER_CONFIG_PROPERTIES: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/config/properties`,

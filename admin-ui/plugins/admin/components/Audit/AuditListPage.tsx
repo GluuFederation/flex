@@ -336,6 +336,9 @@ const AuditListPage: React.FC = () => {
     <GluuLoader blocking={isLoading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadAuditLogs}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t(T_KEYS.TITLE_AUDIT_LOGS)}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar

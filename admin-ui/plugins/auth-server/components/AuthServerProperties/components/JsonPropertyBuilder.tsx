@@ -16,6 +16,8 @@ import { REGEX_LEADING_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
 import { useStyles } from '../../../common/JsonPropertyBuilder.style'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import type {
   JsonPropertyBuilderProps,
   AccordionWithSubComponents,
@@ -171,6 +173,7 @@ const JsonPropertyBuilder = ({
 }: JsonPropertyBuilderProps): JSX.Element => {
   const { t, i18n } = useTranslation()
   const { classes } = useStyles()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const [show, setShow] = useState<boolean>(true)
 
   const getLocalizedLabelKey = useCallback(
@@ -412,7 +415,7 @@ const JsonPropertyBuilder = ({
           <AccordionBody>
             {paired.map(([leftItem, rightItem]) => (
               <FormGroup row key={`pair-${leftItem.index}-${rightItem?.index ?? 'none'}`}>
-                <Col sm={6}>
+                <Col sm={12} md={6}>
                   <ArrayItemSelect
                     index={leftItem.index}
                     values={leftItem.nestedValue}
@@ -424,7 +427,7 @@ const JsonPropertyBuilder = ({
                     allowCustom={!schema?.items?.enum}
                   />
                 </Col>
-                <Col sm={6}>
+                <Col sm={12} md={6}>
                   {rightItem && (
                     <ArrayItemSelect
                       index={rightItem.index}
@@ -485,7 +488,7 @@ const JsonPropertyBuilder = ({
             <AccordionHeader>
               <div className={classes.accordionHeaderRow}>
                 <GluuText variant="span">{t(getLocalizedLabelKey(propKey))}</GluuText>
-                {parentIsArray && (
+                {parentIsArray && !isMobile && (
                   <GluuButton
                     type="button"
                     className="remove-btn"

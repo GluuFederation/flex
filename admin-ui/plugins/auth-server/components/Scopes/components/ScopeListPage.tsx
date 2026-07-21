@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use, useCallback, useMemo, memo } from 'react'
-import { Add, DeleteOutlined, Edit } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { Link } from 'react-router-dom'
 import { useAppDispatch } from '@/redux/hooks'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -28,6 +28,8 @@ import { useScopes, useScopeActions, invalidateScopeQueries } from '../hooks'
 import { toScopeJsonRecord } from '../helper/utils'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useDebounce } from '@/utils/hooks/useDebounce'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { SCOPE } from 'Utils/ApiResources'
@@ -86,6 +88,7 @@ const ScopeListPage: React.FC = () => {
 
   const [modal, setModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<Scope | null>(null)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const startIndex = useMemo(() => pageNumber * limit, [pageNumber, limit])
 
@@ -137,6 +140,15 @@ const ScopeListPage: React.FC = () => {
     (row: ScopeTableRow) => {
       if (row.inum) {
         navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(row.inum))
+      }
+    },
+    [navigateToRoute],
+  )
+
+  const handleView = useCallback(
+    (row: ScopeTableRow) => {
+      if (row.inum) {
+        navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_VIEW(row.inum))
       }
     },
     [navigateToRoute],
@@ -367,6 +379,14 @@ const ScopeListPage: React.FC = () => {
       id?: string
       onClick: (row: ScopeTableRow) => void
     }> = []
+    if (!canRead) return list
+    list.push({
+      icon: <VisibilityOutlined className={classes.viewIcon} />,
+      tooltip: t('actions.view'),
+      id: 'viewScope',
+      onClick: handleView,
+    })
+    if (isMobile) return list
     if (canWrite) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -384,7 +404,17 @@ const ScopeListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWrite, canDelete, t, handleEdit, handleDeleteClick, classes])
+  }, [
+    isMobile,
+    canRead,
+    canWrite,
+    canDelete,
+    t,
+    handleView,
+    handleEdit,
+    handleDeleteClick,
+    classes,
+  ])
 
   // Pagination
   const effectivePage = useMemo(() => {
@@ -559,6 +589,9 @@ const ScopeListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.scopes')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -571,7 +604,7 @@ const ScopeListPage: React.FC = () => {
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
                 refreshLoading={isLoading}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
                 disabled={loading}
               />
             </div>
