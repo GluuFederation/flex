@@ -12,7 +12,6 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
-import { usePageTitle } from 'Routes/Apps/Gluu/hooks/usePageTitle'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useGetAllWebhooks } from 'JansConfigApi'
@@ -64,7 +63,7 @@ const WebhookListPage: React.FC = () => {
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   SetTitle(t(PAGE_TITLE_KEY))
-  const pageTitle = usePageTitle()
+  const pageTitle = t(PAGE_TITLE_KEY)
 
   const { data, isLoading, refetch } = useGetAllWebhooks(
     {

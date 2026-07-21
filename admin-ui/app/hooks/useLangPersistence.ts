@@ -72,4 +72,4 @@ const useLangPersistence = (inum?: string) => {
   return { lang, changeLanguage }
 }
 
-export { useLangPersistence, getInitialLang }
+export { useLangPersistence }

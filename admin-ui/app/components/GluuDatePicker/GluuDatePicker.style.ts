@@ -2,13 +2,14 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { SystemStyleObject } from '@mui/system'
-import { getLoadingOverlayRgba } from '@/customColors'
+import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import {
   getHoverOpacity,
   getDividerOpacity,
   OPACITY,
   BORDER_RADIUS,
   EXTRA_SMALL_MAX_MEDIA_QUERY,
+  MOBILE_MEDIA_QUERY,
   MOBILE_SHEET_HEIGHT_VAR,
 } from '@/constants'
 import { SHEET } from '@/components/MobileBottomNav/sheetConstants'
@@ -194,7 +195,7 @@ const buildPopperMobileSx = (): SystemStyleObject<Theme> => ({
   },
 })
 
-const buildForcedDockSx = (tc: PickerThemeColors): SystemStyleObject<Theme> => ({
+const buildForcedDockSx = (): SystemStyleObject<Theme> => ({
   'position': 'fixed !important',
   'left': '0 !important',
   'right': '0 !important',
@@ -207,7 +208,7 @@ const buildForcedDockSx = (tc: PickerThemeColors): SystemStyleObject<Theme> => (
     content: '""',
     position: 'fixed',
     inset: 0,
-    backgroundColor: getLoadingOverlayRgba(tc.selectedBg, SHEET.SCRIM_OPACITY),
+    backgroundColor: getLoadingOverlayRgba(customColors.black, SHEET.SCRIM_OPACITY),
     zIndex: -1,
     pointerEvents: 'none',
   },
@@ -271,8 +272,8 @@ const buildForcedDockMobileSx = (): SystemStyleObject<Theme> => ({
 })
 
 const buildPopperSx = (tc: PickerThemeColors, forceIcon?: boolean): SxProps<Theme> => ({
-  ...(forceIcon ? { zIndex: FORCED_POPPER_Z_INDEX, ...buildForcedDockSx(tc) } : {}),
-  '@media (max-width:767px)': forceIcon ? buildForcedDockMobileSx() : buildPopperMobileSx(),
+  ...(forceIcon ? { zIndex: FORCED_POPPER_Z_INDEX, ...buildForcedDockSx() } : {}),
+  [`@media ${MOBILE_MEDIA_QUERY}`]: forceIcon ? buildForcedDockMobileSx() : buildPopperMobileSx(),
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,

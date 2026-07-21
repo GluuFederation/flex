@@ -130,7 +130,8 @@ const JansAssetListPage: React.FC = () => {
   const handleRefresh = useCallback(() => {
     setPageNumber(0)
     setPattern('')
-  }, [setPageNumber])
+    refetch()
+  }, [setPageNumber, refetch])
 
   const toggle = useCallback(() => setModal((prev) => !prev), [])
 

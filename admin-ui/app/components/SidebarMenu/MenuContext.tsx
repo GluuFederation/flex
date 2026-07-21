@@ -8,4 +8,4 @@ const MenuContext = React.createContext<SidebarMenuContext>({
   removeEntry: () => {},
 })
 
-export { MenuContext, type SidebarMenuContext }
+export { MenuContext }

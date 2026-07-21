@@ -398,8 +398,6 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       alignItems: 'flex-start',
       [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         height: 'auto',
-        marginBottom: `${SPACING.SECTION_GAP}px`,
-        alignItems: 'flex-start',
       },
     },
     topGridNoMargin: {

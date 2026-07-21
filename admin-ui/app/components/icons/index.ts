@@ -23,7 +23,6 @@ export { default as HighlightOffOutlined } from '@mui/icons-material/HighlightOf
 export { default as Info } from '@mui/icons-material/Info'
 export { default as InfoOutlined } from '@mui/icons-material/InfoOutlined'
 export { default as LockOpenIcon } from '@mui/icons-material/LockOpen'
-export { default as MoreVert } from '@mui/icons-material/MoreVert'
 export { default as RefreshIcon } from '@mui/icons-material/Refresh'
 export { default as Remove } from '@mui/icons-material/Remove'
 export { default as SearchIcon } from '@mui/icons-material/Search'

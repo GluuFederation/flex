@@ -173,6 +173,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   }, [filters])
   const closeSheet = useCallback(() => setSheetOpen(false), [])
   const applySheet = useCallback(() => {
+    if (showBuiltInDateRange && dateValidation.invalid) return
     filters?.forEach((f) => {
       const next = draftFilters[f.key]
       if (next !== undefined && next !== f.value) f.onChange(next)
@@ -182,7 +183,15 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
       onSearchSubmit?.(localSearch)
     }
     setSheetOpen(false)
-  }, [filters, draftFilters, showBuiltInDateRange, onSearch, onSearchSubmit, localSearch])
+  }, [
+    filters,
+    draftFilters,
+    showBuiltInDateRange,
+    dateValidation.invalid,
+    onSearch,
+    onSearchSubmit,
+    localSearch,
+  ])
   const handleSheetAction = useCallback((action?: () => void) => {
     setSheetOpen(false)
     action?.()
@@ -321,6 +330,29 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                   )}
                 </div>
               )}
+              {showBuiltInDateRange &&
+                (dateValidation.isStartAfterEnd || dateValidation.hasOnlyOne) && (
+                  <div className={classes.validationRow}>
+                    {dateValidation.isStartAfterEnd && (
+                      <GluuText
+                        variant="span"
+                        disableThemeColor
+                        className={classes.validationError}
+                      >
+                        {t('messages.start_date_after_end')}
+                      </GluuText>
+                    )}
+                    {dateValidation.hasOnlyOne && (
+                      <GluuText
+                        variant="span"
+                        disableThemeColor
+                        className={classes.validationWarning}
+                      >
+                        {t('messages.both_dates_required')}
+                      </GluuText>
+                    )}
+                  </div>
+                )}
               {showSheetFilters && (
                 <div className={classes.sheetButtonRow}>
                   <GluuButton
@@ -341,6 +373,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                     type="button"
                     size="md"
                     block
+                    disabled={showBuiltInDateRange && dateValidation.invalid}
                     onClick={applySheet}
                     backgroundColor={sheetAccent.backgroundColor}
                     borderColor={sheetAccent.backgroundColor}
