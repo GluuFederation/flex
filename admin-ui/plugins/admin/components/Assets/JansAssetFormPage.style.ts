@@ -5,6 +5,7 @@ import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
   ICON_SIZE,
   OPACITY,
 } from '@/constants'
@@ -43,6 +44,20 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     CEDARLING_CONFIG_SPACING.INPUT_HEIGHT - 2 * CEDARLING_CONFIG_SPACING.INPUT_PADDING_VERTICAL - 2
 
   return {
+    mobilePageTitle: {
+      display: 'none',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        display: 'block',
+        fontFamily,
+        fontSize: '28px',
+        fontStyle: 'normal',
+        fontWeight: fontWeights.bold,
+        lineHeight: 'normal',
+        color: themeColors.fontColor,
+        margin: 0,
+        marginBottom: SPACING.PAGE,
+      },
+    },
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,
@@ -106,6 +121,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       minWidth: 0,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
+        rowGap: SPACING.SECTION_GAP,
       },
     },
     descriptionEnabledRow: {
@@ -125,7 +141,17 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
     fieldItem: {
       'width': WIDTH_FULL,
       'minWidth': 0,
+      'position': 'relative',
       'boxSizing': BOX_SIZING_BORDER,
+      [theme.breakpoints.down('md')]: {
+        '& [data-field-error]': {
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          margin: 0,
+          lineHeight: 1.2,
+        },
+      },
       '& .form-group': {
         display: DISPLAY_FLEX,
         flexDirection: FLEX_DIRECTION_COLUMN,
@@ -167,6 +193,9 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
       'paddingTop': 0,
       'paddingBottom': SPACING.CARD_CONTENT_GAP,
       'boxSizing': BOX_SIZING_BORDER,
+      [theme.breakpoints.down('md')]: {
+        paddingBottom: 0,
+      },
       '& .form-group': {
         marginBottom: 0,
       },

@@ -17,6 +17,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ASSET } from 'Utils/ApiResources'
 import {
   AssetFormValues,
+  AssetFormProps,
   AcceptFileTypes,
   RouteParams,
   FileDropHandler,
@@ -34,7 +35,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './JansAssetFormPage.style'
 import { T_KEYS } from './constants'
 
-const AssetForm: React.FC = () => {
+const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
   const { id } = useParams<RouteParams>()
   const { data: assetResponse, isLoading: isLoadingAsset } = useGetAssetByInum(id ?? '', {
     query: { enabled: !!id },
@@ -179,7 +180,8 @@ const AssetForm: React.FC = () => {
                 placeholder={t(T_KEYS.PLACEHOLDER_ASSET_UPLOAD)}
                 onDrop={handleFileDrop}
                 onClearFiles={handleClearFiles}
-                disabled={false}
+                disabled={viewOnly}
+                showClearButton={!viewOnly}
                 fileName={id ? formik.values.fileName || null : null}
               />
             </div>
@@ -203,6 +205,7 @@ const AssetForm: React.FC = () => {
               placeholder={t(T_KEYS.PLACEHOLDER_ENTER_HERE)}
               errorMessage={formik.errors.fileName}
               showError={Boolean(formik.errors.fileName && formik.touched.fileName)}
+              disabled={viewOnly}
               isDark={isDark}
             />
           </div>
@@ -225,6 +228,7 @@ const AssetForm: React.FC = () => {
               doc_category={ASSET}
               doc_entry="jansService"
               isDark={isDark}
+              disabled={viewOnly}
               required
               showError={Boolean(formik.errors.service && formik.touched.service)}
               errorMessage={
@@ -248,6 +252,7 @@ const AssetForm: React.FC = () => {
                 rsize={12}
                 name="description"
                 placeholder={t(T_KEYS.PLACEHOLDER_ENTER_HERE)}
+                disabled={viewOnly}
                 isDark={isDark}
               />
             </div>
@@ -266,23 +271,28 @@ const AssetForm: React.FC = () => {
                     name="enabled"
                     formik={formik}
                     value={Boolean(formik.values.enabled)}
+                    disabled={viewOnly}
                   />
                 </div>
               </FormGroup>
             </div>
           </div>
         </div>
-        <GluuThemeFormFooter
-          showBack
-          onBack={handleBack}
-          showCancel
-          onCancel={handleCancel}
-          disableCancel={!isFormChanged}
-          showApply
-          onApply={formik.handleSubmit}
-          disableApply={!isFormChanged || !formik.isValid}
-          applyButtonType="button"
-        />
+        {viewOnly ? (
+          <GluuThemeFormFooter showBack onBack={handleBack} showCancel={false} showApply={false} />
+        ) : (
+          <GluuThemeFormFooter
+            showBack
+            onBack={handleBack}
+            showCancel
+            onCancel={handleCancel}
+            disableCancel={!isFormChanged}
+            showApply
+            onApply={formik.handleSubmit}
+            disableApply={!isFormChanged || !formik.isValid}
+            applyButtonType="button"
+          />
+        )}
       </Form>
       <GluuCommitDialog
         handler={closeCommitDialog}

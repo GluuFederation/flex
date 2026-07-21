@@ -73,7 +73,7 @@ export const useStyles = makeStyles<FormFooterStyleParams>()(
 
     footerButtonBlock: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        minWidth: '50%',
+        minWidth: 120,
       },
     },
 

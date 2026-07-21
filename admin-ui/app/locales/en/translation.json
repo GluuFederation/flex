@@ -1448,6 +1448,7 @@
     "assets": "Jans Assets",
     "asset_add": "New Jans Asset",
     "asset_edit": "Edit Jans Asset",
+    "asset_view": "View Jans Asset",
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",

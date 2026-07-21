@@ -39,7 +39,11 @@ jest.mock('@/cedarling/hooks/usePermission', () => ({
 
 jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({ navigateToRoute: jest.fn() }),
-  ROUTES: { SAML_IDP_EDIT: 'saml-idp-edit', SAML_IDP_ADD: 'saml-idp-add' },
+  ROUTES: {
+    SAML_IDP_EDIT: 'saml-idp-edit',
+    SAML_IDP_ADD: 'saml-idp-add',
+    PLUGIN_BASE_PATHS: { HOME: '/home', AUTH_SERVER: '/auth-server', USER_MANAGEMENT: '/users' },
+  },
 }))
 
 jest.mock('Routes/Apps/Gluu/GluuDialog', () => ({

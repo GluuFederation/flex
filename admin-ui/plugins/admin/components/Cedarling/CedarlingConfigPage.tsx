@@ -284,35 +284,37 @@ const CedarlingConfigPage: React.FC = () => {
                           {t('documentation.cedarlingConfig.point6')}
                         </GluuText>
 
-                        <Box className={classes.uploadBox}>
-                          <GluuLabel
-                            label="fields.upload"
-                            size={12}
-                            required={canWriteSecurity}
-                            isDark={isDark}
-                          />
-                          <GluuUploadFile
-                            accept={CJAR_ACCEPT}
-                            onDrop={handleFileDrop}
-                            placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
-                            onClearFiles={handleClearFiles}
-                            disabled={isMobile || !canWriteSecurity || isLoading}
-                            fileName={selectedFile?.name}
-                          />
-                          {canWriteSecurity && (
-                            <Box component="ul" className={classes.requiredFooterNote}>
-                              <Box component="li">
-                                <GluuText
-                                  variant="span"
-                                  className={classes.requiredNoteText}
-                                  disableThemeColor
-                                >
-                                  {t('documentation.cedarlingConfig.requiredFieldNote')}
-                                </GluuText>
+                        {!isMobile && (
+                          <Box className={classes.uploadBox}>
+                            <GluuLabel
+                              label="fields.upload"
+                              size={12}
+                              required={canWriteSecurity}
+                              isDark={isDark}
+                            />
+                            <GluuUploadFile
+                              accept={CJAR_ACCEPT}
+                              onDrop={handleFileDrop}
+                              placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
+                              onClearFiles={handleClearFiles}
+                              disabled={!canWriteSecurity || isLoading}
+                              fileName={selectedFile?.name}
+                            />
+                            {canWriteSecurity && (
+                              <Box component="ul" className={classes.requiredFooterNote}>
+                                <Box component="li">
+                                  <GluuText
+                                    variant="span"
+                                    className={classes.requiredNoteText}
+                                    disableThemeColor
+                                  >
+                                    {t('documentation.cedarlingConfig.requiredFieldNote')}
+                                  </GluuText>
+                                </Box>
                               </Box>
-                            </Box>
-                          )}
-                        </Box>
+                            )}
+                          </Box>
+                        )}
                       </Box>
                     </Box>
                   </Box>

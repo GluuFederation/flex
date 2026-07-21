@@ -44,6 +44,8 @@ const ROUTES = {
   ASSET_ADD: `${PLUGIN_BASE_PATHS.HOME}/asset/add`,
   ASSET_EDIT: (inum: string) => `${PLUGIN_BASE_PATHS.HOME}/asset/edit/${encodeURIComponent(inum)}`,
   ASSET_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/asset/edit/:id`,
+  ASSET_VIEW: (inum: string) => `${PLUGIN_BASE_PATHS.HOME}/asset/view/${encodeURIComponent(inum)}`,
+  ASSET_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/asset/view/:id`,
 
   // Webhooks
   WEBHOOK_LIST: `${PLUGIN_BASE_PATHS.HOME}/webhook`,

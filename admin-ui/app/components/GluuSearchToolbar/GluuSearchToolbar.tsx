@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
-import { SearchIcon } from '@/components/icons'
+import { FilterListIcon, RefreshIcon, SearchIcon, SegmentIcon } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -8,7 +9,10 @@ import { GluuButton } from '@/components/GluuButton'
 import { ChevronIcon } from '@/components/SVG'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
 import GluuRefreshButton from './GluuRefreshButton'
+import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
+import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
+import { FILTER_SHEET, MOBILE_MEDIA_QUERY } from '@/constants'
 import {
   DATE_FORMATS,
   createDate,
@@ -134,6 +138,184 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     }),
     [themeColors],
   )
+
+  const sheetAccent = useMemo(
+    () => ({
+      backgroundColor: themeColors.badges?.filledBadgeBg ?? themeColors.fontColor,
+      textColor: themeColors.badges?.filledBadgeText ?? themeColors.background,
+    }),
+    [themeColors],
+  )
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const hasFilters = (filters?.length ?? 0) > 0
+  const directRefresh = !hasFilters && !primaryAction && !!onRefresh
+  const showTrigger = hasFilters || !!primaryAction || !!onRefresh
+  const useCompactMobile =
+    isMobile && !selectOptions && !dateInputs?.length && !showBuiltInDateRange && !dateRangeSlot
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [draftFilters, setDraftFilters] = useState<Record<string, string>>({})
+
+  const openSheet = useCallback(() => {
+    if (filters?.length) {
+      setDraftFilters(Object.fromEntries(filters.map((f) => [f.key, f.value])))
+    }
+    setSheetOpen(true)
+  }, [filters])
+  const closeSheet = useCallback(() => setSheetOpen(false), [])
+  const applySheetFilters = useCallback(() => {
+    filters?.forEach((f) => {
+      const next = draftFilters[f.key]
+      if (next !== undefined && next !== f.value) f.onChange(next)
+    })
+    setSheetOpen(false)
+  }, [filters, draftFilters])
+  const handleSheetAction = useCallback((action?: () => void) => {
+    setSheetOpen(false)
+    action?.()
+  }, [])
+
+  if (useCompactMobile) {
+    return (
+      <div className={classes.container}>
+        <div className={classes.mobileRow}>
+          <input
+            type="text"
+            aria-label={effectivePlaceholder}
+            placeholder={effectivePlaceholder}
+            value={localSearch}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+            disabled={disabled}
+            className={classes.mobileInput}
+          />
+          {showTrigger && (
+            <button
+              type="button"
+              aria-label={
+                hasFilters
+                  ? t('titles.filters')
+                  : directRefresh
+                    ? t('actions.refresh')
+                    : t('fields.actions')
+              }
+              aria-haspopup={directRefresh ? undefined : 'dialog'}
+              aria-expanded={directRefresh ? undefined : sheetOpen}
+              className={classes.mobileTrigger}
+              onClick={directRefresh ? onRefresh : openSheet}
+              disabled={disabled}
+            >
+              {hasFilters ? <FilterListIcon /> : directRefresh ? <RefreshIcon /> : <SegmentIcon />}
+            </button>
+          )}
+        </div>
+        {!directRefresh && (
+          <MobileNavSheet
+            openKey={sheetOpen ? SHEET_KEYS.CUSTOM : null}
+            onClose={closeSheet}
+            title={hasFilters ? t('titles.filters') : t('fields.actions')}
+          >
+            <div className={classes.sheetContent}>
+              {filters?.map((filter) => (
+                <div key={filter.key} className={classes.sheetGroup}>
+                  <span className={classes.sheetLabel}>{filter.label}</span>
+                  <div className={classes.sheetPills} role="group" aria-label={filter.label}>
+                    {filter.options.map((option) => {
+                      const selected = draftFilters[filter.key] === option.value
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={selected}
+                          className={`${classes.sheetPill} ${
+                            selected ? classes.sheetPillSelected : ''
+                          }`.trim()}
+                          onClick={() =>
+                            setDraftFilters((prev) => ({ ...prev, [filter.key]: option.value }))
+                          }
+                        >
+                          {option.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+              {!hasFilters && (onRefresh || primaryAction) && (
+                <div className={classes.sheetActions}>
+                  {onRefresh && (
+                    <GluuButton
+                      type="button"
+                      size="md"
+                      block
+                      outlined
+                      onClick={() => handleSheetAction(onRefresh)}
+                      borderColor={themeColors.borderColor}
+                      borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                      minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                      fontWeight={700}
+                    >
+                      <RefreshIcon className={classes.sheetButtonIcon} />
+                      {t('actions.refresh')}
+                    </GluuButton>
+                  )}
+                  {primaryAction && (
+                    <GluuButton
+                      type="button"
+                      size="md"
+                      block
+                      disabled={primaryDisabled}
+                      onClick={() => handleSheetAction(primaryAction.onClick)}
+                      backgroundColor={sheetAccent.backgroundColor}
+                      borderColor={sheetAccent.backgroundColor}
+                      textColor={sheetAccent.textColor}
+                      borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                      minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                      fontWeight={700}
+                    >
+                      {primaryAction.icon}
+                      {primaryAction.label}
+                    </GluuButton>
+                  )}
+                </div>
+              )}
+              {hasFilters && (
+                <div className={classes.sheetButtonRow}>
+                  <GluuButton
+                    type="button"
+                    size="md"
+                    block
+                    outlined
+                    onClick={closeSheet}
+                    borderColor={themeColors.borderColor}
+                    borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                    minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                    fontWeight={700}
+                  >
+                    {t('actions.cancel')}
+                  </GluuButton>
+                  <GluuButton
+                    type="button"
+                    size="md"
+                    block
+                    onClick={applySheetFilters}
+                    backgroundColor={sheetAccent.backgroundColor}
+                    borderColor={sheetAccent.backgroundColor}
+                    textColor={sheetAccent.textColor}
+                    borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                    minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                    fontWeight={700}
+                  >
+                    {t('actions.apply')}
+                  </GluuButton>
+                </div>
+              )}
+            </div>
+          </MobileNavSheet>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={classes.container}>

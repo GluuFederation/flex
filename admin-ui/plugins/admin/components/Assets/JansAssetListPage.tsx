@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react'
-import { Add, DeleteOutlined, Edit } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -11,9 +11,11 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
+import { usePageTitle } from 'Routes/Apps/Gluu/hooks/usePageTitle'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useQueryClient } from '@tanstack/react-query'
-import { useGetAllAssets, getGetAllAssetsQueryKey, type Document } from 'JansConfigApi'
+import { useGetAllAssets, type Document } from 'JansConfigApi'
 import { useDeleteAssetWithAudit } from './hooks'
 import { formatDate } from '@/utils/dayjsUtils'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -23,7 +25,6 @@ import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import customColors from '@/customColors'
 import { useStyles } from './JansAssetListPage.style'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { logger } from '@/utils/logger'
 import { T_KEYS } from './constants'
 
@@ -31,7 +32,6 @@ const LIMIT_OPTIONS = getRowsPerPageOptions()
 const ASSET_RESOURCE_ID = ADMIN_UI_RESOURCES.Assets
 
 const JansAssetListPage: React.FC = () => {
-  const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const {
     canRead: canReadAssets,
@@ -68,8 +68,10 @@ const JansAssetListPage: React.FC = () => {
   const [pattern, setPattern] = useState('')
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState<Document | null>(null)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   SetTitle(t(T_KEYS.TITLE_ASSETS))
+  const pageTitle = usePageTitle()
 
   const { data, isLoading, isFetching, refetch } = useGetAllAssets(
     {
@@ -100,8 +102,6 @@ const JansAssetListPage: React.FC = () => {
 
   const { deleteAsset, isLoading: isDeleting } = useDeleteAssetWithAudit()
 
-  const toggle = useCallback(() => setModal((prev) => !prev), [])
-
   const navigateToAddPage = useCallback(() => {
     navigateToRoute(ROUTES.ASSET_ADD)
   }, [navigateToRoute])
@@ -114,6 +114,14 @@ const JansAssetListPage: React.FC = () => {
     [navigateToRoute],
   )
 
+  const navigateToViewPage = useCallback(
+    (rowData: Document) => {
+      if (!rowData?.inum) return
+      navigateToRoute(ROUTES.ASSET_VIEW(rowData.inum))
+    },
+    [navigateToRoute],
+  )
+
   const handleSearchSubmit = useCallback(() => {
     setPageNumber(0)
     refetch()
@@ -122,9 +130,9 @@ const JansAssetListPage: React.FC = () => {
   const handleRefresh = useCallback(() => {
     setPageNumber(0)
     setPattern('')
-    const refreshParams = { limit, pattern: undefined, startIndex: 0 }
-    invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey(refreshParams))
-  }, [queryClient, limit])
+  }, [setPageNumber])
+
+  const toggle = useCallback(() => setModal((prev) => !prev), [])
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -237,6 +245,14 @@ const JansAssetListPage: React.FC = () => {
       id?: string
       onClick: (row: Document) => void
     }> = []
+    if (!canReadAssets) return list
+    list.push({
+      icon: <VisibilityOutlined className={classes.viewIcon} />,
+      tooltip: t(T_KEYS.ACTION_VIEW),
+      id: 'viewAsset',
+      onClick: navigateToViewPage,
+    })
+    if (isMobile) return list
     if (canWriteAssets) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -257,7 +273,17 @@ const JansAssetListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWriteAssets, canDeleteAssets, t, navigateToEditPage, toggle, classes])
+  }, [
+    isMobile,
+    canReadAssets,
+    canWriteAssets,
+    canDeleteAssets,
+    t,
+    navigateToViewPage,
+    navigateToEditPage,
+    toggle,
+    classes,
+  ])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -289,6 +315,9 @@ const JansAssetListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadAssets}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -299,7 +328,8 @@ const JansAssetListPage: React.FC = () => {
                 onSearch={setPattern}
                 onSearchSubmit={handleSearchSubmit}
                 onRefresh={canReadAssets ? handleRefresh : undefined}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
+                actionsLabel={`${t(T_KEYS.FIELD_ACTIONS)}:`}
                 disabled={loading}
               />
             </div>
@@ -308,7 +338,7 @@ const JansAssetListPage: React.FC = () => {
           <div className={classes.tableCard}>
             <GluuTable<Document>
               columns={columns}
-              data={assets || []}
+              data={assets}
               loading={false}
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
