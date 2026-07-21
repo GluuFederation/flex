@@ -140,11 +140,12 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
       },
       [theme.breakpoints.down('md')]: {
         flexDirection: FLEX_DIRECTION_COLUMN,
+        gap: 0,
       },
     },
     headersBox: {
       ...dl.listBox,
-      'marginTop': SPACING.SECTION_GAP,
+      'marginTop': ERROR_SPACE,
       '&& input, && input:focus, && input:active, && input:disabled': {
         backgroundColor: `${headersInputBg} !important`,
         border: `1px solid ${headersBorderColor} !important`,
