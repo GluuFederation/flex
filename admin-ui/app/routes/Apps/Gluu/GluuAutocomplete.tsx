@@ -370,7 +370,7 @@ const GluuAutocomplete = ({
     </div>
   )
 
-  if (onRemoveField) {
+  if (onRemoveField && !hideControls) {
     return (
       <div className={classes.wrapper}>
         <div className={classes.cardWrapper}>{content}</div>
