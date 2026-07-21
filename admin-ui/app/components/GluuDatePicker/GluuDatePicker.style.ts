@@ -266,8 +266,14 @@ const buildForcedDockMobileSx = (): SystemStyleObject<Theme> => ({
   '& .MuiMultiSectionDigitalClockSection-item': {
     width: '34px',
     minWidth: '34px',
+    height: '34px',
+    minHeight: '34px',
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: '13px',
-    borderRadius: `${BORDER_RADIUS.SMALL}px`,
+    borderRadius: '50%',
   },
 })
 
@@ -395,10 +401,18 @@ const buildPopperSx = (tc: PickerThemeColors, forceIcon?: boolean): SxProps<Them
     '& .MuiMultiSectionDigitalClock-root': {
       backgroundColor: tc.popupBg,
       borderTop: `1px solid ${tc.borderColor}`,
+      maxHeight: `${DOCKED_CLOCK_MAX_HEIGHT}px`,
     },
     '& .MuiMultiSectionDigitalClockSection-root': {
       'borderRight': `1px solid ${tc.borderColor}`,
+      'maxHeight': '100%',
       '&:last-child': { borderRight: 'none' },
+    },
+    '& .MuiDayCalendar-monthContainer': {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
     },
     '& .MuiMultiSectionDigitalClockSection-item': {
       'color': tc.inputTextColor,
