@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import type { SxProps, Theme } from '@mui/material/styles'
+import type { SystemStyleObject } from '@mui/system'
 import { getLoadingOverlayRgba } from '@/customColors'
 import {
   getHoverOpacity,
@@ -8,7 +9,9 @@ import {
   OPACITY,
   BORDER_RADIUS,
   EXTRA_SMALL_MAX_MEDIA_QUERY,
+  MOBILE_SHEET_HEIGHT_VAR,
 } from '@/constants'
+import { SHEET } from '@/components/MobileBottomNav/sheetConstants'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { PickerThemeColors, GluuDatePickerStyleParams } from './types'
@@ -95,6 +98,7 @@ const buildTextFieldSx = (
   tc: PickerThemeColors,
   common: PickerSxObject,
   inputHeight?: number,
+  forceIcon?: boolean,
 ): SxProps<Theme> => ({
   'width': '100%',
   'maxWidth': '100%',
@@ -103,14 +107,14 @@ const buildTextFieldSx = (
   // On short screens the calendar icon squeezes the date text and clips it;
   // hide the adornment so the full date shows (the field still opens on tap).
   '& .MuiInputAdornment-root': {
-    [HIDE_ICON_QUERY]: { display: 'none' },
+    ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { display: 'none' } }),
   },
   '& .MuiInputBase-root, & .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
     ...(inputHeight != null ? { height: inputHeight, minHeight: inputHeight } : {}),
     // With the calendar icon hidden on mobile, center the date in the freed space.
-    [HIDE_ICON_QUERY]: { justifyContent: 'center' },
+    ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { justifyContent: 'center' } }),
   },
   '& .MuiInputBase-input, & .MuiPickersInputBase-sectionContent, & .MuiPickersSectionList-sectionContent':
     {
@@ -118,10 +122,10 @@ const buildTextFieldSx = (
       'fontSize': fontSizes.base,
       'color': tc.inputTextColor,
       '&::placeholder': { color: tc.placeholderColor, opacity: OPACITY.PLACEHOLDER },
-      [HIDE_ICON_QUERY]: { textAlign: 'center' },
+      ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { textAlign: 'center' } }),
     },
   '& .MuiPickersInputBase-sectionsContainer': {
-    [HIDE_ICON_QUERY]: { justifyContent: 'center', flexGrow: 0 },
+    ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { justifyContent: 'center', flexGrow: 0 } }),
   },
   '& .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
@@ -143,42 +147,132 @@ const HIDE_ICON_QUERY = `@media ${EXTRA_SMALL_MAX_MEDIA_QUERY}`
 
 const POPUP_BOX_SHADOW = '0 8px 24px rgba(0, 0, 0, 0.18)'
 
-const buildPopperSx = (tc: PickerThemeColors): SxProps<Theme> => ({
-  '@media (max-width:767px)': {
-    '& .MuiPaper-root': {
-      width: 'min(256px, calc(100vw - 32px))',
-      maxWidth: 'calc(100vw - 32px)',
-      boxSizing: 'border-box',
-    },
-    '& .MuiDateCalendar-root': {
-      width: '100%',
-      maxWidth: '100%',
-      height: 'auto',
-      maxHeight: 'none',
-    },
-    '& .MuiDayCalendar-slideTransition': {
-      minHeight: '180px',
-    },
-    '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
-      justifyContent: 'space-around',
-    },
-    '& .MuiPickersDay-root, & .MuiPickerDay-root': {
-      width: '28px',
-      height: '28px',
-      margin: '1px',
-      fontSize: '12px',
-    },
-    '& .MuiDayCalendar-weekDayLabel': {
-      width: '28px',
-      margin: '1px',
-      fontSize: '12px',
-    },
-    '& .MuiPickersCalendarHeader-root': {
-      paddingLeft: '12px',
-      paddingRight: '8px',
-      marginTop: '8px',
-    },
+const FORCED_POPPER_Z_INDEX = 10010
+
+const DOCKED_CLOCK_MAX_HEIGHT = 336
+
+const FORCED_POPPER_MODIFIERS = [
+  { name: 'flip', enabled: false },
+  { name: 'preventOverflow', enabled: false },
+  { name: 'offset', enabled: false },
+  { name: 'computeStyles', options: { adaptive: false } },
+]
+
+const buildPopperMobileSx = (): SystemStyleObject<Theme> => ({
+  '& .MuiPaper-root': {
+    width: 'min(256px, calc(100vw - 32px))',
+    maxWidth: 'calc(100vw - 32px)',
+    boxSizing: 'border-box',
   },
+  '& .MuiDateCalendar-root': {
+    width: '100%',
+    maxWidth: '100%',
+    height: 'auto',
+    maxHeight: 'none',
+  },
+  '& .MuiDayCalendar-slideTransition': {
+    minHeight: '180px',
+  },
+  '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
+    justifyContent: 'space-around',
+  },
+  '& .MuiPickersDay-root, & .MuiPickerDay-root': {
+    width: '28px',
+    height: '28px',
+    margin: '1px',
+    fontSize: '12px',
+  },
+  '& .MuiDayCalendar-weekDayLabel': {
+    width: '28px',
+    margin: '1px',
+    fontSize: '12px',
+  },
+  '& .MuiPickersCalendarHeader-root': {
+    paddingLeft: '12px',
+    paddingRight: '8px',
+    marginTop: '8px',
+  },
+})
+
+const buildForcedDockSx = (tc: PickerThemeColors): SystemStyleObject<Theme> => ({
+  'position': 'fixed !important',
+  'left': '0 !important',
+  'right': '0 !important',
+  'top': 'auto !important',
+  'bottom': `var(${MOBILE_SHEET_HEIGHT_VAR}, 0px) !important`,
+  'transform': 'none !important',
+  'width': '100vw !important',
+  'maxWidth': '100vw !important',
+  '&::before': {
+    content: '""',
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: getLoadingOverlayRgba(tc.selectedBg, SHEET.SCRIM_OPACITY),
+    zIndex: -1,
+    pointerEvents: 'none',
+  },
+})
+
+const buildForcedDockMobileSx = (): SystemStyleObject<Theme> => ({
+  '& .MuiPaper-root': {
+    width: '100%',
+    maxWidth: '100vw',
+    margin: 0,
+    maxHeight: `calc(100vh - var(${MOBILE_SHEET_HEIGHT_VAR}, 0px))`,
+    borderRadius: `${BORDER_RADIUS.MOBILE_SHEET}px !important`,
+    boxSizing: 'border-box',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  '& .MuiDateCalendar-root': {
+    width: '238px',
+    maxWidth: '238px',
+  },
+  '& .MuiDayCalendar-monthContainer': {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+  },
+  '& .MuiMultiSectionDigitalClock-root': {
+    maxHeight: `${DOCKED_CLOCK_MAX_HEIGHT}px`,
+  },
+  '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
+    justifyContent: 'space-around',
+  },
+  '& .MuiPickersDay-root, & .MuiPickerDay-root': {
+    width: '28px',
+    height: '28px',
+    margin: '1px',
+    fontSize: '12px',
+  },
+  '& .MuiDayCalendar-weekDayLabel': {
+    width: '28px',
+    margin: '1px',
+    fontSize: '12px',
+  },
+  '& .MuiPickersCalendarHeader-root': {
+    paddingLeft: '12px',
+    paddingRight: '4px',
+    marginTop: '8px',
+  },
+  '& .MuiMultiSectionDigitalClockSection-root': {
+    'width': '42px',
+    'maxHeight': '100%',
+    'scrollbarWidth': 'none',
+    '&::-webkit-scrollbar': { display: 'none' },
+  },
+  '& .MuiMultiSectionDigitalClockSection-item': {
+    width: '34px',
+    minWidth: '34px',
+    fontSize: '13px',
+    borderRadius: `${BORDER_RADIUS.SMALL}px`,
+  },
+})
+
+const buildPopperSx = (tc: PickerThemeColors, forceIcon?: boolean): SxProps<Theme> => ({
+  ...(forceIcon ? { zIndex: FORCED_POPPER_Z_INDEX, ...buildForcedDockSx(tc) } : {}),
+  '@media (max-width:767px)': forceIcon ? buildForcedDockMobileSx() : buildPopperMobileSx(),
   '& .MuiPaper-root': {
     'backgroundColor': tc.popupBg,
     'color': tc.inputTextColor,
@@ -355,6 +449,7 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
     backgroundColor,
     inputHeight,
     labelShrink = true,
+    forceIcon = false,
   } = params
   const pickerTheme = useMemo(
     () => buildPickerThemeColors(themeColors, isDark, textColor, backgroundColor),
@@ -364,8 +459,8 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
 
   const sx = useMemo(() => {
     const common = buildCommonInputStyles(pickerTheme)
-    const textFieldSx = buildTextFieldSx(pickerTheme, common, inputHeight)
-    const popperSx = buildPopperSx(pickerTheme)
+    const textFieldSx = buildTextFieldSx(pickerTheme, common, inputHeight, forceIcon)
+    const popperSx = buildPopperSx(pickerTheme, forceIcon)
     const datePickerSx = buildDatePickerRootSx(pickerTheme, common)
     const paperSx: SxProps<Theme> = {
       backgroundColor: pickerTheme.popupBg,
@@ -381,9 +476,13 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
         slotProps: { inputLabel: { shrink: labelShrink } },
         sx: textFieldSx,
       },
-      popper: { sx: popperSx },
+      popper: {
+        sx: popperSx,
+        ...(forceIcon ? { modifiers: FORCED_POPPER_MODIFIERS } : {}),
+      },
       desktopPaper: { sx: paperSx },
       paper: { sx: paperSx },
+      ...(forceIcon ? { actionBar: { actions: [] } } : {}),
     }
     return {
       textFieldSx,
@@ -391,7 +490,7 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
       datePickerSx,
       slotProps,
     }
-  }, [pickerTheme, inputHeight, labelShrink])
+  }, [pickerTheme, inputHeight, labelShrink, forceIcon])
 
   return {
     classes,

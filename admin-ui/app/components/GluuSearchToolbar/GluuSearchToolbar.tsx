@@ -12,7 +12,7 @@ import GluuRefreshButton from './GluuRefreshButton'
 import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
 import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
-import { FILTER_SHEET, MOBILE_MEDIA_QUERY } from '@/constants'
+import { FILTER_SHEET, MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
 import {
   DATE_FORMATS,
   createDate,
@@ -147,12 +147,21 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     [themeColors],
   )
 
+  const sheetCancel = useMemo(
+    () => ({
+      textColor: themeColors.formFooter?.cancel?.textColor ?? themeColors.fontColor,
+      borderColor: themeColors.formFooter?.cancel?.borderColor ?? themeColors.borderColor,
+    }),
+    [themeColors],
+  )
+
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const hasFilters = (filters?.length ?? 0) > 0
-  const directRefresh = !hasFilters && !primaryAction && !!onRefresh
-  const showTrigger = hasFilters || !!primaryAction || !!onRefresh
-  const useCompactMobile =
-    isMobile && !selectOptions && !dateInputs?.length && !showBuiltInDateRange && !dateRangeSlot
+  const hasDateRange = showBuiltInDateRange
+  const showSheetFilters = hasFilters || hasDateRange
+  const directRefresh = !showSheetFilters && !primaryAction && !!onRefresh
+  const showTrigger = showSheetFilters || !!primaryAction || !!onRefresh
+  const useCompactMobile = isMobile && !selectOptions && !dateInputs?.length && !dateRangeSlot
   const [sheetOpen, setSheetOpen] = useState(false)
   const [draftFilters, setDraftFilters] = useState<Record<string, string>>({})
 
@@ -163,17 +172,41 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     setSheetOpen(true)
   }, [filters])
   const closeSheet = useCallback(() => setSheetOpen(false), [])
-  const applySheetFilters = useCallback(() => {
+  const applySheet = useCallback(() => {
     filters?.forEach((f) => {
       const next = draftFilters[f.key]
       if (next !== undefined && next !== f.value) f.onChange(next)
     })
+    if (showBuiltInDateRange) {
+      onSearch?.(localSearch)
+      onSearchSubmit?.(localSearch)
+    }
     setSheetOpen(false)
-  }, [filters, draftFilters])
+  }, [filters, draftFilters, showBuiltInDateRange, onSearch, onSearchSubmit, localSearch])
   const handleSheetAction = useCallback((action?: () => void) => {
     setSheetOpen(false)
     action?.()
   }, [])
+
+  const dateRangePicker = showBuiltInDateRange ? (
+    <GluuDatePicker
+      mode="range"
+      layout={isMobile ? 'grid' : (dateRange.layout ?? DEFAULT_LAYOUT)}
+      forceIcon={isMobile}
+      labelAsTitle={dateRange.labelAsTitle ?? true}
+      inputHeight={dateRange.inputHeight ?? DEFAULT_INPUT_HEIGHT}
+      dateFormat={dateRange.dateFormat ?? DATE_FORMATS.DATE_PICKER_DISPLAY}
+      startDate={dateRange.startDate ?? DEFAULT_DATES.start}
+      endDate={dateRange.endDate ?? DEFAULT_DATES.end}
+      onStartDateChange={dateRange.onStartDateChange}
+      onEndDateChange={dateRange.onEndDateChange}
+      onStartDateAccept={dateRange.onStartDateAccept}
+      onEndDateAccept={dateRange.onEndDateAccept}
+      showTime={dateRange.showTime}
+      textColor={themeColors.fontColor}
+      backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card?.background}
+    />
+  ) : null
 
   if (useCompactMobile) {
     return (
@@ -193,7 +226,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
             <button
               type="button"
               aria-label={
-                hasFilters
+                showSheetFilters
                   ? t('titles.filters')
                   : directRefresh
                     ? t('actions.refresh')
@@ -205,7 +238,13 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
               onClick={directRefresh ? onRefresh : openSheet}
               disabled={disabled}
             >
-              {hasFilters ? <FilterListIcon /> : directRefresh ? <RefreshIcon /> : <SegmentIcon />}
+              {showSheetFilters ? (
+                <FilterListIcon />
+              ) : directRefresh ? (
+                <RefreshIcon />
+              ) : (
+                <SegmentIcon />
+              )}
             </button>
           )}
         </div>
@@ -213,9 +252,10 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
           <MobileNavSheet
             openKey={sheetOpen ? SHEET_KEYS.CUSTOM : null}
             onClose={closeSheet}
-            title={hasFilters ? t('titles.filters') : t('fields.actions')}
+            title={showSheetFilters ? t('titles.filters') : t('fields.actions')}
           >
             <div className={classes.sheetContent}>
+              {dateRangePicker && <div className={classes.sheetGroup}>{dateRangePicker}</div>}
               {filters?.map((filter) => (
                 <div key={filter.key} className={classes.sheetGroup}>
                   <span className={classes.sheetLabel}>{filter.label}</span>
@@ -241,7 +281,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                   </div>
                 </div>
               ))}
-              {!hasFilters && (onRefresh || primaryAction) && (
+              {!showSheetFilters && (onRefresh || primaryAction) && (
                 <div className={classes.sheetActions}>
                   {onRefresh && (
                     <GluuButton
@@ -272,6 +312,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                       borderRadius={FILTER_SHEET.BUTTON_RADIUS}
                       minHeight={FILTER_SHEET.BUTTON_HEIGHT}
                       fontWeight={700}
+                      useOpacityOnHover
+                      hoverOpacity={OPACITY.OVERLAY}
                     >
                       {primaryAction.icon}
                       {primaryAction.label}
@@ -279,7 +321,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                   )}
                 </div>
               )}
-              {hasFilters && (
+              {showSheetFilters && (
                 <div className={classes.sheetButtonRow}>
                   <GluuButton
                     type="button"
@@ -287,7 +329,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                     block
                     outlined
                     onClick={closeSheet}
-                    borderColor={themeColors.borderColor}
+                    textColor={sheetCancel.textColor}
+                    borderColor={sheetCancel.borderColor}
                     borderRadius={FILTER_SHEET.BUTTON_RADIUS}
                     minHeight={FILTER_SHEET.BUTTON_HEIGHT}
                     fontWeight={700}
@@ -298,13 +341,15 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                     type="button"
                     size="md"
                     block
-                    onClick={applySheetFilters}
+                    onClick={applySheet}
                     backgroundColor={sheetAccent.backgroundColor}
                     borderColor={sheetAccent.backgroundColor}
                     textColor={sheetAccent.textColor}
                     borderRadius={FILTER_SHEET.BUTTON_RADIUS}
                     minHeight={FILTER_SHEET.BUTTON_HEIGHT}
                     fontWeight={700}
+                    useOpacityOnHover
+                    hoverOpacity={OPACITY.OVERLAY}
                   >
                     {t('actions.apply')}
                   </GluuButton>
@@ -424,25 +469,8 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
         )
       })}
 
-      {showBuiltInDateRange ? (
-        <div className={classes.dateRangeSlot}>
-          <GluuDatePicker
-            mode="range"
-            layout={dateRange.layout ?? DEFAULT_LAYOUT}
-            labelAsTitle={dateRange.labelAsTitle ?? true}
-            inputHeight={dateRange.inputHeight ?? DEFAULT_INPUT_HEIGHT}
-            dateFormat={dateRange.dateFormat ?? DATE_FORMATS.DATE_PICKER_DISPLAY}
-            startDate={dateRange.startDate ?? DEFAULT_DATES.start}
-            endDate={dateRange.endDate ?? DEFAULT_DATES.end}
-            onStartDateChange={dateRange.onStartDateChange}
-            onEndDateChange={dateRange.onEndDateChange}
-            onStartDateAccept={dateRange.onStartDateAccept}
-            onEndDateAccept={dateRange.onEndDateAccept}
-            showTime={dateRange.showTime}
-            textColor={themeColors.fontColor}
-            backgroundColor={themeColors.settings?.cardBackground ?? themeColors.card?.background}
-          />
-        </div>
+      {dateRangePicker ? (
+        <div className={classes.dateRangeSlot}>{dateRangePicker}</div>
       ) : (
         dateRangeSlot && <div className={classes.dateRangeSlot}>{dateRangeSlot}</div>
       )}

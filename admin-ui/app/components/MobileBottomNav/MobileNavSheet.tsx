@@ -19,6 +19,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_LIGHT } from '@/context/theme/constants'
 import { ChevronIcon } from '../SVG'
+import { MOBILE_SHEET_HEIGHT_VAR } from '@/constants'
 import { useStyles } from './MobileNavSheet.style'
 import { SHEET_ICON_BY_KEY } from './sheetIcons'
 import {
@@ -115,6 +116,22 @@ const MobileNavSheet = ({
     void node.offsetHeight
     node.style.transition = `height ${SHEET.TRANSITION_MS}ms cubic-bezier(0.32, 0.72, 0, 1)`
     node.style.height = `${target}px`
+  }, [renderKey, entered])
+
+  useLayoutEffect(() => {
+    const node = sheetRef.current
+    if (!renderKey || !node || typeof document === 'undefined') return undefined
+    const root = document.documentElement
+    const update = (): void => {
+      root.style.setProperty(MOBILE_SHEET_HEIGHT_VAR, `${node.offsetHeight}px`)
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(node)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty(MOBILE_SHEET_HEIGHT_VAR)
+    }
   }, [renderKey, entered])
 
   useEffect(() => {

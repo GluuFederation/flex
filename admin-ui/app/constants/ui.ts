@@ -115,6 +115,8 @@ export const SPACING = {
   FORM_FOOTER_GAP: 30,
 } as const
 
+export const MOBILE_SHEET_HEIGHT_VAR = '--mobile-sheet-height'
+
 export const BORDER_RADIUS = {
   DEFAULT: 16,
   LARGE: 24,

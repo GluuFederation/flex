@@ -211,6 +211,7 @@ const AuditListPage: React.FC = () => {
         key: 'log',
         label: t(T_KEYS.FIELD_LOG_ENTRY),
         width: 'auto',
+        align: 'left' as const,
         sortable: false,
         render: (
           _value: AuditRow[keyof AuditRow],
