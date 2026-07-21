@@ -183,6 +183,7 @@ export const TOOLTIP = {
 export const TOOLBAR = {
   MIN_WIDTH: 130,
   SEARCH_MIN_WIDTH: 220,
+  CONTROL_WIDTH: 180,
 } as const
 
 export const FILTER_POPOVER = {

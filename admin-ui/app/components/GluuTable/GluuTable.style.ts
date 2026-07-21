@@ -18,6 +18,14 @@ const EXPAND_BUTTON_SIZE = 32
 export const TABLE_MIN_WIDTH = 1024
 export const TABLE_RESPONSIVE_BREAKPOINT = 1200
 
+export const DEFAULT_COLUMN_ALIGN = 'center' as const
+
+export const ALIGN_TO_JUSTIFY = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+} as const
+
 interface GluuTableStyleParams {
   isDark: boolean
   themeColors: ThemeConfig
@@ -163,12 +171,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     sortableHeader: {
       'cursor': 'pointer',
+      'position': 'relative',
       'display': 'flex',
       'alignItems': 'center',
       'justifyContent': 'flex-start',
       'width': '100%',
-      'padding': '14px 16px',
-      'paddingRight': 20,
+      'padding': '14px 20px',
       'boxSizing': 'border-box',
       'background': 'none',
       'border': 'none',
@@ -186,7 +194,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     sortIconWrap: {
-      marginLeft: 10,
+      position: 'absolute',
+      right: 16,
+      top: '50%',
+      marginTop: -7,
       flexShrink: 0,
       display: 'inline-flex',
       alignItems: 'center',
@@ -279,7 +290,8 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     actionsCell: {
       display: 'flex',
       gap: '8px',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     actionButton: {
       'background': 'none',

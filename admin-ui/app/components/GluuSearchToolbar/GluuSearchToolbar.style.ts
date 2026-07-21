@@ -1,7 +1,15 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
-import { BORDER_RADIUS, INPUT, ICON_SIZE, OPACITY, TOOLBAR } from '@/constants'
+import {
+  BORDER_RADIUS,
+  INPUT,
+  ICON_SIZE,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+  TABLET_COLLAPSE_BAND_MEDIA_QUERY,
+  TOOLBAR,
+} from '@/constants'
 
 export const DEFAULT_INPUT_HEIGHT = INPUT.HEIGHT
 
@@ -40,8 +48,16 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       'gap': BORDER_RADIUS.SMALL,
       'minWidth': 0,
       '@media (max-width: 1200px)': {
-        flex: '0 1 220px',
-        minWidth: 180,
+        flex: '0 1 auto',
+        minWidth: TOOLBAR.CONTROL_WIDTH,
+      },
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        flex: '1 1 0',
+        minWidth: 0,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flex: '1 1 100%',
+        minWidth: 0,
       },
     },
     fieldGroupSearch: {
@@ -52,8 +68,16 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
         ? { width: searchFieldWidth, flex: '0 0 auto' as const }
         : { flex: 1, minWidth: TOOLBAR.SEARCH_MIN_WIDTH }),
       '@media (max-width: 1200px)': {
-        flex: '1 1 260px',
-        minWidth: 200,
+        flex: '2 1 45%',
+        minWidth: TOOLBAR.SEARCH_MIN_WIDTH,
+      },
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        flex: '1 1 100%',
+        minWidth: 0,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flex: '1 1 100%',
+        minWidth: 0,
       },
     },
     fieldLabel: {
@@ -112,6 +136,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       alignItems: 'center',
       color: inputColor,
       width: '100%',
+      maxWidth: '100%',
     },
     filterSelect: {
       'height': inputHeightPx,
@@ -172,29 +197,55 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       position: 'relative',
       zIndex: 0,
     },
+    actionsGroup: {
+      'display': 'flex',
+      'flexDirection': 'column',
+      'gap': BORDER_RADIUS.SMALL,
+      'marginLeft': 'auto',
+      'minWidth': 0,
+      '@media (max-width: 1200px)': {
+        marginLeft: 0,
+        flex: '0 0 auto',
+      },
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        flex: '2 1 0',
+        minWidth: 0,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        flex: '1 1 100%',
+      },
+    },
     buttonGroup: {
       'display': 'flex',
       'gap': 10,
       'alignItems': 'flex-end',
-      'marginLeft': 'auto',
       'position': 'relative',
       'zIndex': 20,
       'pointerEvents': 'auto',
       'isolation': 'isolate',
       'flexWrap': 'wrap',
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        flexWrap: 'nowrap',
+      },
       '@media (max-width: 1200px)': {
-        marginLeft: 0,
-        flex: '0 1 auto',
         justifyContent: 'flex-start',
       },
     },
     toolbarButton: {
-      'minWidth': TOOLBAR.MIN_WIDTH,
-      'position': 'relative',
-      'zIndex': 20,
-      'pointerEvents': 'auto',
-      '@media (max-width: 1200px)': {
-        minWidth: 110,
+      minWidth: TOOLBAR.CONTROL_WIDTH,
+      flex: '0 0 auto',
+      position: 'relative',
+      zIndex: 20,
+      pointerEvents: 'auto',
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        'flex': '1 1 0',
+        'minWidth': 0,
+        'whiteSpace': 'nowrap',
+        '& > span': {
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        },
       },
     },
     validationRow: {

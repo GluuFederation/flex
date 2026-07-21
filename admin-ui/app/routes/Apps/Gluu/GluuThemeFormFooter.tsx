@@ -57,6 +57,7 @@ const GluuThemeFormFooter = ({
     const hasAnyButton = Boolean(showBack) || Boolean(showCancel) || Boolean(showApply)
     const hasThreeButtons = Boolean(showBack) && Boolean(showCancel) && Boolean(showApply)
     const hasRightGroup = hasThreeButtons || (!!showCancel && !showApply)
+    const backOnly = Boolean(showBack) && !showCancel && !showApply
 
     return {
       showBack: Boolean(showBack),
@@ -65,10 +66,14 @@ const GluuThemeFormFooter = ({
       hasAnyButton,
       hasThreeButtons,
       hasRightGroup,
+      backOnly,
     }
   }, [showBack, showCancel, showApply])
 
-  const { classes } = useStyles({ hasRightGroup: buttonStates.hasRightGroup })
+  const { classes } = useStyles({
+    hasRightGroup: buttonStates.hasRightGroup,
+    backOnly: buttonStates.backOnly,
+  })
   const buttonColors = useMemo(() => getButtonColors(theme), [theme])
 
   const handleBackClick = useCallback(() => {
@@ -183,7 +188,7 @@ const GluuThemeFormFooter = ({
               backgroundColor={buttonColors.back.backgroundColor}
               textColor={buttonColors.back.textColor}
               borderColor={buttonColors.back.borderColor}
-              className={classes.footerButton}
+              className={`${classes.footerButton} ${buttonStates.backOnly ? classes.footerButtonBlock : ''}`}
               {...SHARED_BUTTON_PROPS}
             >
               {backLabel}

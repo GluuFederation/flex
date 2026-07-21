@@ -60,6 +60,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     dateRangeSlot,
     onRefresh,
     primaryAction,
+    actionsLabel,
     refreshLoading = false,
     refreshButtonVariant = 'outlined',
     disabled = false,
@@ -264,35 +265,42 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
         dateRangeSlot && <div className={classes.dateRangeSlot}>{dateRangeSlot}</div>
       )}
 
-      <div className={classes.buttonGroup}>
-        {onRefresh && (
-          <GluuRefreshButton
-            className={classes.toolbarButton}
-            onClick={onRefresh}
-            loading={refreshLoading}
-            variant={refreshButtonVariant}
-            minHeight={DEFAULT_INPUT_HEIGHT}
-            disabled={refreshDisabled}
-          />
+      <div className={classes.actionsGroup}>
+        {actionsLabel && (onRefresh || primaryAction) && (
+          <GluuText variant="span" className={classes.fieldLabel} disableThemeColor>
+            {actionsLabel}
+          </GluuText>
         )}
+        <div className={classes.buttonGroup}>
+          {onRefresh && (
+            <GluuRefreshButton
+              className={classes.toolbarButton}
+              onClick={onRefresh}
+              loading={refreshLoading}
+              variant={refreshButtonVariant}
+              minHeight={DEFAULT_INPUT_HEIGHT}
+              disabled={refreshDisabled}
+            />
+          )}
 
-        {primaryAction && (
-          <GluuButton
-            type="button"
-            className={classes.toolbarButton}
-            disabled={primaryDisabled}
-            onClick={handlePrimaryClick}
-            size="md"
-            minHeight={DEFAULT_INPUT_HEIGHT}
-            backgroundColor={primaryButtonColors.backgroundColor}
-            textColor={primaryButtonColors.textColor}
-            borderColor={primaryButtonColors.backgroundColor}
-            useOpacityOnHover
-          >
-            {primaryAction.icon ?? <SearchIcon className={classes.searchIconSvg} />}
-            {primaryAction.label}
-          </GluuButton>
-        )}
+          {primaryAction && (
+            <GluuButton
+              type="button"
+              className={classes.toolbarButton}
+              disabled={primaryDisabled}
+              onClick={handlePrimaryClick}
+              size="md"
+              minHeight={DEFAULT_INPUT_HEIGHT}
+              backgroundColor={primaryButtonColors.backgroundColor}
+              textColor={primaryButtonColors.textColor}
+              borderColor={primaryButtonColors.backgroundColor}
+              useOpacityOnHover
+            >
+              {primaryAction.icon ?? <SearchIcon className={classes.searchIconSvg} />}
+              {primaryAction.label}
+            </GluuButton>
+          )}
+        </div>
       </div>
 
       {showBuiltInDateRange && (dateValidation.isStartAfterEnd || dateValidation.hasOnlyOne) && (

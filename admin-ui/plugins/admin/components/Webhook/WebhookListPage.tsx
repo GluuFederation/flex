@@ -23,7 +23,7 @@ import { GluuButton } from '@/components/GluuButton'
 import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
 import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { FILTER_SHEET, MOBILE_MEDIA_QUERY } from '@/constants'
+import { FILTER_SHEET, MOBILE_MEDIA_QUERY, TOOLBAR } from '@/constants'
 import customColors from '@/customColors'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
@@ -189,7 +189,7 @@ const WebhookListPage: React.FC = () => {
         value: serverSort.column,
         options: sortOptions,
         onChange: handleSortByFilter,
-        width: 180,
+        width: TOOLBAR.CONTROL_WIDTH,
       },
     ],
     [t, serverSort.column, handleSortByFilter, sortOptions],
@@ -440,6 +440,7 @@ const WebhookListPage: React.FC = () => {
                   onRefresh={canReadWebhooks ? handleRefresh : undefined}
                   refreshLoading={isLoading}
                   primaryAction={primaryAction}
+                  actionsLabel={`${t('fields.actions')}:`}
                   disabled={loading}
                 />
               )}
