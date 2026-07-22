@@ -3,6 +3,16 @@ import GluuAutocomplete from '../GluuAutocomplete'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import type { AutocompleteOption } from '../types/GluuAutocomplete.types'
 
+let mockIsMobile = false
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: () => mockIsMobile,
+}))
+
+afterEach(() => {
+  mockIsMobile = false
+})
+
 const NAME = 'servers'
 const LABEL = 'Servers'
 
@@ -88,4 +98,30 @@ it('renders the error message when showError is set', () => {
 it('disables the input when disabled is set', () => {
   renderComponent({ disabled: true })
   expect(screen.getByRole('combobox')).toBeDisabled()
+})
+
+it('in viewOnly hides the input, helper text, and every remove control but keeps selected values', () => {
+  const options: AutocompleteOption[] = [{ value: 'dn-1', label: 'First Server' }]
+  renderComponent({
+    viewOnly: true,
+    value: ['dn-1'],
+    options,
+    onRemoveField: jest.fn(),
+    helperText: 'Pick some items',
+  })
+  expect(screen.getByText('First Server')).toBeInTheDocument()
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+  expect(screen.queryByText('Pick some items')).not.toBeInTheDocument()
+  expect(screen.queryAllByRole('button')).toHaveLength(0)
+})
+
+it('on mobile hides the tag-remove and field-remove buttons while keeping the value and input', () => {
+  mockIsMobile = true
+  const options: AutocompleteOption[] = [{ value: 'dn-1', label: 'First Server' }]
+  renderComponent({ value: ['dn-1'], options, onRemoveField: jest.fn() })
+  expect(screen.getByText('First Server')).toBeInTheDocument()
+  expect(screen.getByRole('combobox')).toBeInTheDocument()
+  const tag = screen.getByTitle('First Server')
+  expect(within(tag).queryByRole('button')).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument()
 })
