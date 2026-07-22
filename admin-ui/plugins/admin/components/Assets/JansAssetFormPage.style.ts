@@ -234,13 +234,15 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
           outline: OUTLINE_NONE,
           boxShadow: OUTLINE_NONE,
         },
-      '& input:not(.MuiInputBase-input):disabled, & select:disabled, & .custom-select:disabled': {
-        backgroundColor: `${formInputBg} !important`,
-        border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
-      },
+      '& input:not(.MuiInputBase-input):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled':
+        {
+          backgroundColor: `${formInputBg} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          color: `${themeColors.fontColor} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          opacity: `${OPACITY.DISABLED} !important`,
+          cursor: 'not-allowed',
+        },
       '& input:not(.MuiInputBase-input)::placeholder': {
         color: themeColors.textMuted,
       },

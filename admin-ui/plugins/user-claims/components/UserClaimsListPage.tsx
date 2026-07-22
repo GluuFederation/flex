@@ -75,6 +75,7 @@ const UserClaimsListPage: React.FC = () => {
   const {
     data: attributesData,
     isLoading,
+    isFetching,
     isError,
     error,
   } = useAttributes({
@@ -237,6 +238,7 @@ const UserClaimsListPage: React.FC = () => {
         options: statusOptions,
         onChange: handleStatusChange,
         width: 140,
+        defaultValue: 'all',
       },
       {
         key: 'sortBy',
@@ -245,6 +247,7 @@ const UserClaimsListPage: React.FC = () => {
         options: sortByOptions,
         onChange: handleSortByChange,
         width: 180,
+        defaultValue: 'none',
       },
     ],
     [t, status, statusOptions, sortBy, sortByOptions, handleStatusChange, handleSortByChange],
@@ -438,8 +441,8 @@ const UserClaimsListPage: React.FC = () => {
   )
 
   const loading = useMemo(
-    () => isLoading || deleteAttributeMutation.isPending,
-    [isLoading, deleteAttributeMutation.isPending],
+    () => isFetching || deleteAttributeMutation.isPending,
+    [isFetching, deleteAttributeMutation.isPending],
   )
 
   return (

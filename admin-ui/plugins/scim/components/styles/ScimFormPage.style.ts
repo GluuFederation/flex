@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import {
   SPACING,
@@ -157,8 +156,9 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       '& input:disabled, & select:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${alpha(themeColors.fontColor, OPACITY.PLACEHOLDER)} !important`,
-        opacity: OPACITY.DISABLED,
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {

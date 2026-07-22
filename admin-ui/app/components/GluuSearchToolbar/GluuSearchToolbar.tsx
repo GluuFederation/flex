@@ -23,7 +23,7 @@ import {
 import type { Dayjs } from '@/utils/dayjsUtils'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useStyles, DEFAULT_INPUT_HEIGHT } from './GluuSearchToolbar.style'
-import type { GluuSearchToolbarProps } from './types'
+import type { FilterDef, GluuSearchToolbarProps } from './types'
 
 const DEFAULT_LAYOUT = 'row' as const
 
@@ -74,7 +74,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useStyles({ themeColors, isDark, searchFieldWidth })
+  const { classes, cx } = useStyles({ themeColors, isDark, searchFieldWidth })
 
   const effectivePlaceholder =
     searchPlaceholder ?? t(PLACEHOLDER_KEY, { defaultValue: 'Search pattern' })
@@ -172,19 +172,28 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     setSheetOpen(true)
   }, [filters])
   const closeSheet = useCallback(() => setSheetOpen(false), [])
+  const commitFilters = useCallback(
+    (resolveValue: (filter: FilterDef) => string | undefined) => {
+      filters?.forEach((f) => {
+        const next = resolveValue(f)
+        if (next !== undefined && next !== f.value) f.onChange(next)
+      })
+      setSheetOpen(false)
+    },
+    [filters],
+  )
+  const cancelSheet = useCallback(() => {
+    commitFilters((f) => f.defaultValue)
+  }, [commitFilters])
   const applySheet = useCallback(() => {
     if (showBuiltInDateRange && dateValidation.invalid) return
-    filters?.forEach((f) => {
-      const next = draftFilters[f.key]
-      if (next !== undefined && next !== f.value) f.onChange(next)
-    })
+    commitFilters((f) => draftFilters[f.key])
     if (showBuiltInDateRange) {
       onSearch?.(localSearch)
       onSearchSubmit?.(localSearch)
     }
-    setSheetOpen(false)
   }, [
-    filters,
+    commitFilters,
     draftFilters,
     showBuiltInDateRange,
     dateValidation.invalid,
@@ -276,9 +285,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                           key={option.value}
                           type="button"
                           aria-pressed={selected}
-                          className={`${classes.sheetPill} ${
-                            selected ? classes.sheetPillSelected : ''
-                          }`.trim()}
+                          className={cx(classes.sheetPill, selected && classes.sheetPillSelected)}
                           onClick={() =>
                             setDraftFilters((prev) => ({ ...prev, [filter.key]: option.value }))
                           }
@@ -360,7 +367,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
                     size="md"
                     block
                     outlined
-                    onClick={closeSheet}
+                    onClick={cancelSheet}
                     textColor={sheetCancel.textColor}
                     borderColor={sheetCancel.borderColor}
                     borderRadius={FILTER_SHEET.BUTTON_RADIUS}
@@ -439,7 +446,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
               onChange={handleSearchChange}
               onKeyDown={handleKeyDown}
               disabled={disabled}
-              className={`${classes.searchInput}${disabled ? ` ${classes.searchInputDisabled}` : ''}`}
+              className={cx(classes.searchInput, disabled && classes.searchInputDisabled)}
               aria-label={searchLabel ?? effectivePlaceholder ?? 'search'}
             />
           </div>

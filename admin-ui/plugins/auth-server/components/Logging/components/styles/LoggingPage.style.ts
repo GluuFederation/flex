@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
@@ -66,7 +65,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
         boxShadow: 'none',
       },
       '& select:disabled, & .custom-select:disabled, & .form-control:disabled': {
-        backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${fontColor} !important`,
         opacity: OPACITY.DISABLED,

@@ -140,7 +140,7 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
     },
     sheetPillSelected: {
       color: accentColor,
-      borderColor: accentColor,
+      border: `${FILTER_SHEET.PILL_BORDER_WIDTH}px solid ${accentColor}`,
     },
     sheetActions: {
       display: 'flex',

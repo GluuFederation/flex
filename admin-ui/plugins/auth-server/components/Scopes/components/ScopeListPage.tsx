@@ -106,7 +106,7 @@ const ScopeListPage: React.FC = () => {
     [limit, startIndex, debouncedPattern, scopeType, sortBy],
   )
 
-  const { data: scopesResponse, isLoading, refetch } = useScopes(scopesQueryParams)
+  const { data: scopesResponse, isLoading, isFetching, refetch } = useScopes(scopesQueryParams)
 
   const deleteScope = useDeleteOauthScopesByInum({
     mutation: {
@@ -131,7 +131,6 @@ const ScopeListPage: React.FC = () => {
 
   SetTitle(t('titles.scopes'))
 
-  // Navigation handlers
   const handleAdd = useCallback(() => {
     navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_ADD)
   }, [navigateToRoute])
@@ -154,7 +153,6 @@ const ScopeListPage: React.FC = () => {
     [navigateToRoute],
   )
 
-  // Delete handlers
   const handleDeleteClick = useCallback((row: ScopeTableRow) => {
     setItemToDelete(row as Scope)
     setModal(true)
@@ -187,7 +185,6 @@ const ScopeListPage: React.FC = () => {
     [itemToDelete, deleteScope, logScopeDeletion, dispatch],
   )
 
-  // Filter/search handlers
   const handlePatternSearch = useCallback(
     (value: string) => {
       setPattern(value)
@@ -239,7 +236,6 @@ const ScopeListPage: React.FC = () => {
     [setLimit, setPageNumber],
   )
 
-  // Filter definitions
   const scopeTypeOptions = useMemo(
     () => [
       { value: '', label: t('options.all') },
@@ -269,6 +265,7 @@ const ScopeListPage: React.FC = () => {
         options: scopeTypeOptions,
         onChange: handleScopeTypeChange,
         width: 180,
+        defaultValue: '',
       },
       {
         key: 'sortBy',
@@ -277,6 +274,7 @@ const ScopeListPage: React.FC = () => {
         options: sortOptions,
         onChange: handleSortByChange,
         width: 180,
+        defaultValue: DEFAULT_SCOPE_SORT_BY,
       },
     ],
     [
@@ -303,7 +301,6 @@ const ScopeListPage: React.FC = () => {
     [t, handleAdd, canWrite, classes],
   )
 
-  // Table columns
   const columns: ColumnDef<ScopeTableRow>[] = useMemo(
     () => [
       {
@@ -371,7 +368,6 @@ const ScopeListPage: React.FC = () => {
     [t, classes, badgeStyles],
   )
 
-  // Table actions
   const actions = useMemo(() => {
     const list: Array<{
       icon: React.ReactNode
@@ -416,7 +412,6 @@ const ScopeListPage: React.FC = () => {
     classes,
   ])
 
-  // Pagination
   const effectivePage = useMemo(() => {
     const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
     return Math.min(pageNumber, maxPage)
@@ -445,7 +440,6 @@ const ScopeListPage: React.FC = () => {
     [],
   )
 
-  // Expandable row detail
   const detailLabelStyle = useMemo(
     () => ({ color: themeColors.fontColor }),
     [themeColors.fontColor],
@@ -564,7 +558,6 @@ const ScopeListPage: React.FC = () => {
     [getScopeDetailFields, detailLabelStyle],
   )
 
-  // Delete dialog
   const deleteDialogLabel = useMemo(
     () =>
       itemToDelete
@@ -581,8 +574,8 @@ const ScopeListPage: React.FC = () => {
   }, [pattern, scopes.length, t])
 
   const loading = useMemo(
-    () => isLoading || deleteScope.isPending,
-    [isLoading, deleteScope.isPending],
+    () => isFetching || deleteScope.isPending,
+    [isFetching, deleteScope.isPending],
   )
 
   return (

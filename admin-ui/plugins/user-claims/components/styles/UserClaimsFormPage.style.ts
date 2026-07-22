@@ -219,7 +219,8 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: OPACITY.DISABLED,
+          WebkitTextFillColor: 'var(--theme-input-color) !important',
+          opacity: `${OPACITY.FULL} !important`,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

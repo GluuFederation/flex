@@ -144,9 +144,9 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       '& input:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.textMuted} !important`,
-        WebkitTextFillColor: `${themeColors.textMuted} !important`,
-        opacity: `${OPACITY.DISABLED} !important`,
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
     },
@@ -238,7 +238,8 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: `${OPACITY.DISABLED} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          opacity: `${OPACITY.FULL} !important`,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

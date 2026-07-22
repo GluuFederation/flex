@@ -65,7 +65,7 @@ const WebhookListPage: React.FC = () => {
   SetTitle(t(PAGE_TITLE_KEY))
   const pageTitle = t(PAGE_TITLE_KEY)
 
-  const { data, isLoading, refetch } = useGetAllWebhooks(
+  const { data, isLoading, isFetching, refetch } = useGetAllWebhooks(
     {
       limit,
       pattern: pattern || undefined,
@@ -76,6 +76,7 @@ const WebhookListPage: React.FC = () => {
     {
       query: {
         enabled: canReadWebhooks,
+        staleTime: 0,
       },
     },
   )
@@ -178,6 +179,7 @@ const WebhookListPage: React.FC = () => {
         options: sortOptions,
         onChange: handleSortByFilter,
         width: TOOLBAR.CONTROL_WIDTH,
+        defaultValue: DEFAULT_SERVER_SORT.column,
       },
     ],
     [t, serverSort.column, handleSortByFilter, sortOptions],
@@ -350,7 +352,7 @@ const WebhookListPage: React.FC = () => {
     return t('messages.no_data')
   }, [pattern, totalItems, t])
 
-  const loading = isLoading || isDeleting
+  const loading = isFetching || isDeleting
 
   return (
     <GluuLoader blocking={loading}>

@@ -96,7 +96,9 @@ export const createPropertiesPageStyles = (
           opacity: OPACITY.PLACEHOLDER,
         },
         '&:disabled': {
-          opacity: OPACITY.DISABLED,
+          color: `${fontColor} !important`,
+          WebkitTextFillColor: `${fontColor} !important`,
+          opacity: `${OPACITY.FULL} !important`,
           cursor: 'not-allowed',
         },
       },

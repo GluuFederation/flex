@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import {
   SPACING,
@@ -210,10 +209,11 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
           boxShadow: 'none !important',
         },
       '& input:disabled, & select:disabled': {
-        backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
