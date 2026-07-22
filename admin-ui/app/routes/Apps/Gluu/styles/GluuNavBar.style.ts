@@ -4,6 +4,8 @@ import {
   MOBILE_PAGE_PADDING_X,
   SPACING,
   TABLET_COLLAPSE_BAND_MEDIA_QUERY,
+  NAVBAR_TITLE_LG_MEDIA_QUERY,
+  NAVBAR_TITLE_MD_MEDIA_QUERY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
@@ -22,7 +24,7 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '0px 60px',
+    padding: `0px 60px 0px ${SPACING.PAGE}px`,
     position: 'relative',
     marginTop: '-1px',
     borderBottom: `1px solid ${navbarColors.border}`,
@@ -55,14 +57,11 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    [theme.breakpoints.down('lg')]: {
-      fontSize: fontSizes['2xl'],
+    [`@media ${NAVBAR_TITLE_LG_MEDIA_QUERY}`]: {
+      fontSize: fontSizes['2.5xl'],
     },
-    [theme.breakpoints.down('md')]: {
-      fontSize: fontSizes.xl,
-    },
-    [theme.breakpoints.down('sm')]: {
-      fontSize: fontSizes.lg,
+    [`@media ${NAVBAR_TITLE_MD_MEDIA_QUERY}`]: {
+      fontSize: fontSizes.pageTitle,
     },
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       display: 'none',

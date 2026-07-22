@@ -1,7 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -73,6 +79,7 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
     (isDark ? customColors.darkBorder : customColors.borderInput)
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,
@@ -97,6 +104,11 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
       flexDirection: 'column',
       gap: 0,
       width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
+          pointerEvents: 'none' as const,
+        },
+      },
     },
     fieldsGrid: {
       display: 'grid',
@@ -108,6 +120,9 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
       minWidth: 0,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        rowGap: SPACING.SECTION_GAP,
       },
     },
     fieldItem: {
@@ -123,6 +138,11 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
       '& [data-field-error]': {
         position: 'absolute',
         fontSize: `${fontSizes.sm} !important`,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
       },
     },
     fieldItemRelative: {

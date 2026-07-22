@@ -63,6 +63,10 @@ export const TINY_MAX_MEDIA_QUERY = '(max-width:379.98px)'
 
 export const TABLET_MAX_MEDIA_QUERY = '(max-width:1024px)'
 
+export const NAVBAR_TITLE_LG_MEDIA_QUERY = '(max-width:1200px)'
+
+export const NAVBAR_TITLE_MD_MEDIA_QUERY = '(max-width:992px)'
+
 export const WIDE_MAX_MEDIA_QUERY = '(max-width:1400px)'
 
 export const TABLET_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1024px)'

@@ -1,7 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
-import { SPACING, BORDER_RADIUS, MAPPING_SPACING, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  MAPPING_SPACING,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { fontSizes, fontWeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import {
@@ -28,6 +35,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
   const inputColors = { inputBg: formInputBg, inputBorderColor, fontColor, textMuted }
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(fontColor),
     pageCard: {
       backgroundColor: cardBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
@@ -108,6 +116,11 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       '& textarea': {
         height: 'auto',
         overflow: 'auto',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& textarea': {
+          resize: 'none' as const,
+        },
       },
       '& input:focus, & input:focus-visible, & input:active, & textarea:focus, & textarea:focus-visible':
         {

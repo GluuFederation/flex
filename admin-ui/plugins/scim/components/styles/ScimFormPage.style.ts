@@ -1,7 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import {
@@ -37,6 +43,7 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   }
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       'backgroundColor': `${cardBg} !important`,
       ...getCardBorderStyle({ isDark }),
@@ -65,6 +72,11 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       flexDirection: 'column',
       gap: 0,
       width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
+          pointerEvents: 'none' as const,
+        },
+      },
     },
     fieldsGrid: {
       display: 'grid',
@@ -77,6 +89,9 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        rowGap: SPACING.SECTION_GAP,
+      },
     },
     fieldItem: {
       'width': '100%',
@@ -88,6 +103,11 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         position: 'relative',
         paddingBottom: ERROR_SPACE,
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
+      },
     },
     fieldItemFullWidth: {
       'width': '100%',
@@ -98,6 +118,11 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
         ...formGroupBase['& .form-group [class*="col"]'],
         position: 'relative',
         paddingBottom: ERROR_SPACE,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
       },
     },
     togglesRow: {

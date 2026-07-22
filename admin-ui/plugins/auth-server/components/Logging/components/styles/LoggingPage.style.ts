@@ -2,7 +2,14 @@ import { makeStyles } from 'tss-react/mui'
 import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
-import { SPACING, BORDER_RADIUS, OPACITY, CEDARLING_CONFIG_SPACING } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  CEDARLING_CONFIG_SPACING,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createFormGroupOverrides, createFormLabelStyles } from '@/styles/formStyles'
 
@@ -24,6 +31,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(fontColor),
     pageCard: {
       backgroundColor: cardBg,
       borderRadius: BORDER_RADIUS.DEFAULT,
@@ -31,8 +39,13 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       padding: SPACING.CARD_PADDING,
     },
     formContent: {
-      ...createFormGroupOverrides({ columnPaddingBottom: 20 }),
+      ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
+          pointerEvents: 'none' as const,
+        },
+      },
       '& select, & .custom-select, & .form-control': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
@@ -64,7 +77,7 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
+      rowGap: SPACING.SECTION_GAP,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
       },

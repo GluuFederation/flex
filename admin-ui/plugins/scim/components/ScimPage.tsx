@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { Card, CardBody } from 'Components'
 import { GluuPageContent } from '@/components'
 import ScimConfiguration from './ScimConfiguration'
@@ -136,6 +137,9 @@ const ScimPage: React.FC = () => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadScim}>
         <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.scim_management')}
+          </GluuText>
           <Card className={classes.formCard}>
             <CardBody className={classes.content}>
               <ScimConfiguration

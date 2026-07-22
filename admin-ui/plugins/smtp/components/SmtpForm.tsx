@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Form, FormGroup } from 'Components'
 import GluuToggle from 'Routes/Apps/Gluu/GluuToggle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -16,7 +17,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { adminUiFeatures, OPACITY } from '@/constants'
+import { adminUiFeatures, OPACITY, MOBILE_MEDIA_QUERY } from '@/constants'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SmtpFormValues, SmtpFormProps } from 'Plugins/smtp/types'
@@ -45,6 +46,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
@@ -523,7 +525,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
             </FormGroup>
           </div>
 
-          {!readOnly && (
+          {!readOnly && !isMobile && (
             <div className={classes.testButtonRow}>
               <GluuButton
                 type="button"
@@ -546,10 +548,10 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
         <GluuThemeFormFooter
           showBack
           onBack={handleNavigateBack}
-          showCancel={!readOnly}
+          showCancel={!readOnly && !isMobile}
           onCancel={handleCancel}
           disableCancel={!formik.dirty}
-          showApply={!readOnly}
+          showApply={!readOnly && !isMobile}
           onApply={handleApply}
           disableApply={!formik.isValid || !formik.dirty}
           applyButtonType="button"

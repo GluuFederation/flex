@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, memo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Formik, FormikProps } from 'formik'
 import { Form } from 'Components'
 import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
@@ -15,7 +16,7 @@ import { HelpOutline } from '@/components/icons'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -44,6 +45,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const [modal, setModal] = useState<boolean>(false)
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
@@ -505,10 +507,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
               <GluuThemeFormFooter
                 showBack={!hideButtons?.back}
                 onBack={handleBack}
-                showCancel={!hideButtons?.save}
+                showCancel={!hideButtons?.save && !isMobile}
                 onCancel={() => handleCancel(formik)}
                 disableCancel={!formHasChanged}
-                showApply={!hideButtons?.save}
+                showApply={!hideButtons?.save && !isMobile}
                 applyButtonType="submit"
                 disableApply={!canApply}
                 isLoading={false}

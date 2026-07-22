@@ -107,6 +107,9 @@ const UserClaimsEditPage = (): JSX.Element => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
         <GluuLoader blocking={isBlocking}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.edit_attribute', { defaultValue: 'Edit User Claim' })}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm

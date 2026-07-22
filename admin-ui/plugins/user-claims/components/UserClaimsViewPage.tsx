@@ -83,6 +83,9 @@ const UserClaimsViewPage = (): JSX.Element => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
         <GluuLoader blocking={isLoading}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.view_attribute', { defaultValue: 'View User Claim' })}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm

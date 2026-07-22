@@ -1,5 +1,11 @@
 import { makeStyles } from 'tss-react/mui'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createFormGroupOverrides } from '@/styles/formStyles'
@@ -25,6 +31,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,
@@ -42,6 +49,12 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle, & [role="combobox"]':
+          {
+            pointerEvents: 'none' as const,
+          },
+      },
     },
     formGrid: {
       display: 'grid',
@@ -49,12 +62,19 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gridTemplateColumns: '1fr',
+        rowGap: SPACING.SECTION_GAP,
+      },
     },
     formGridFullSpan: {
       gridColumn: '1 / -1',
     },
     autocompleteField: {
       marginBottom: ERROR_SPACE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginBottom: 0,
+      },
     },
     outerLabel: {
       'display': 'flex',
@@ -106,6 +126,11 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]:has([data-field-error])': {
+          paddingBottom: 0,
+        },
+      },
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',
@@ -113,6 +138,11 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         paddingBottom: 12,
         paddingLeft: 0,
         paddingRight: 0,
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
       },
       '& input, & input:disabled': {
         backgroundColor: 'var(--theme-input-bg) !important',
@@ -126,6 +156,9 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       'minWidth': 0,
       'boxSizing': 'border-box' as const,
       'paddingBottom': 18,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: 0,
+      },
       ...createFormGroupOverrides(),
       '& .form-group > label': {
         ...createFormGroupOverrides()['& .form-group > label'],

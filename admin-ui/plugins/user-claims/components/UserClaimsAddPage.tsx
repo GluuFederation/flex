@@ -5,6 +5,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
@@ -71,6 +72,9 @@ const UserClaimsAddPage = (): JSX.Element => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canWrite}>
         <GluuLoader blocking={createMutation.isPending}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('fields.add_attribute', { defaultValue: 'Add User Claim' })}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm item={defaultAttribute as AttributeItem} customOnSubmit={onSubmit} />

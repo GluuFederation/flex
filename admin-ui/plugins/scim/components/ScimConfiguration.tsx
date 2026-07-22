@@ -1,9 +1,10 @@
 import { useFormik, FormikProps } from 'formik'
 import React, { useState, useCallback, useMemo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
 import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { getScimConfigurationSchema } from '../helper'
 import { transformToFormValues, buildScimChangedFieldOperations } from '../helper'
@@ -19,6 +20,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   classes,
 }) => {
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const [modal, setModal] = useState<boolean>(false)
   const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
 
@@ -83,8 +85,8 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
       <GluuThemeFormFooter
         showBack
-        showCancel
-        showApply={canWriteScim}
+        showCancel={!isMobile}
+        showApply={canWriteScim && !isMobile}
         onApply={toggle}
         onCancel={handleCancel}
         disableCancel={!formik.dirty}
