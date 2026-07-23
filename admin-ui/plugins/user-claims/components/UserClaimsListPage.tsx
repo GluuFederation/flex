@@ -463,7 +463,7 @@ const UserClaimsListPage: React.FC = () => {
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
                 refreshLoading={isFetching}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
                 actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}
                 className={classes.searchToolbar}

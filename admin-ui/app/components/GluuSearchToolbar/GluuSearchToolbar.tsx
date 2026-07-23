@@ -229,7 +229,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
 
   if (useCompactMobile) {
     return (
-      <div className={classes.container}>
+      <div className={cx(classes.container, className)}>
         <div className={classes.mobileRow}>
           <input
             type="text"
