@@ -112,7 +112,7 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         paddingRight: 0,
       },
       '& .form-group [class*="col"]:has([data-field-error])': {
-        paddingBottom: 20,
+        paddingBottom: ERROR_SPACE,
       },
       '& [data-field-error]': {
         position: 'absolute',
@@ -127,8 +127,10 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
         cursor: 'not-allowed',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        // Errors are absolutely positioned and reserve no height, so the base
+        // bottom padding must stay to keep them clear of the next field.
         '& .form-group [class*="col"]:has([data-field-error])': {
-          paddingBottom: 0,
+          paddingBottom: ERROR_SPACE,
         },
       },
     },

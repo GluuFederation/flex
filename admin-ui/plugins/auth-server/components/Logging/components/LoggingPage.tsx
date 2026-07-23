@@ -197,6 +197,7 @@ const LoggingPage = (): React.ReactElement => {
                               ? t(formik.errors.loggingLevel as string)
                               : undefined
                           }
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -219,6 +220,7 @@ const LoggingPage = (): React.ReactElement => {
                               ? t(formik.errors.loggingLayout as string)
                               : undefined
                           }
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -234,6 +236,7 @@ const LoggingPage = (): React.ReactElement => {
                           doc_category={JSON_CONFIG}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -249,6 +252,7 @@ const LoggingPage = (): React.ReactElement => {
                           value={formik.values.disableJdkLogger}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -264,26 +268,25 @@ const LoggingPage = (): React.ReactElement => {
                           value={formik.values.enabledOAuthAuditLogging}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                     </div>
                   </div>
 
-                  {canWriteLogging && (
-                    <GluuThemeFormFooter
-                      showBack
-                      onBack={handleBack}
-                      backButtonLabel={t('actions.back')}
-                      showCancel={!isMobile}
-                      onCancel={() => formik.resetForm()}
-                      disableCancel={!formik.dirty}
-                      showApply={!isMobile}
-                      onApply={formik.handleSubmit}
-                      disableApply={!formik.isValid || !formik.dirty}
-                      applyButtonType="button"
-                      isLoading={loading}
-                    />
-                  )}
+                  <GluuThemeFormFooter
+                    showBack
+                    onBack={handleBack}
+                    backButtonLabel={t('actions.back')}
+                    showCancel={canWriteLogging && !isMobile}
+                    onCancel={() => formik.resetForm()}
+                    disableCancel={!formik.dirty}
+                    showApply={canWriteLogging && !isMobile}
+                    onApply={formik.handleSubmit}
+                    disableApply={!formik.isValid || !formik.dirty}
+                    applyButtonType="button"
+                    isLoading={loading}
+                  />
                 </Form>
               )}
             </Formik>

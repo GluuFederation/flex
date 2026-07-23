@@ -376,13 +376,16 @@ const ScopeListPage: React.FC = () => {
       onClick: (row: ScopeTableRow) => void
     }> = []
     if (!canRead) return list
-    list.push({
-      icon: <VisibilityOutlined className={classes.viewIcon} />,
-      tooltip: t('actions.view'),
-      id: 'viewScope',
-      onClick: handleView,
-    })
-    if (isMobile) return list
+    if (isMobile) {
+      // Mobile has no row primaryAction, so View is the only way in.
+      list.push({
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
+        tooltip: t('actions.view'),
+        id: 'viewScope',
+        onClick: handleView,
+      })
+      return list
+    }
     if (canWrite) {
       list.push({
         icon: <Edit className={classes.editIcon} />,

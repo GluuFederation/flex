@@ -501,6 +501,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             onChange={(vals) => patchHandler({ op: 'replace', path: `/${propKey}`, value: vals })}
             options={arrayMultiSelectOptions[propKey] || []}
             allowCustom
+            disabled={isMobile}
           />
         )
       }
@@ -516,6 +517,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             handler={patchHandler}
             lSize={12}
             formResetKey={resetKey}
+            disabled={isMobile}
           />
         )
       }
@@ -534,6 +536,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             rsize={12}
             doc_category="json_properties"
             doc_entry={model.propKey}
+            disabled={isMobile}
           />
         )
       }
@@ -553,6 +556,7 @@ const AuthServerPropertiesPage: React.FC = () => {
           path={`/${model.propKey}`}
           showSaveButtons={false}
           placeholder={getFieldPlaceholder(t, model.label)}
+          disabled={isMobile}
         />
       )
     },
@@ -563,6 +567,7 @@ const AuthServerPropertiesPage: React.FC = () => {
       loggingLevelFormikAdapters,
       resetKey,
       t,
+      isMobile,
     ],
   )
 
@@ -637,6 +642,8 @@ const AuthServerPropertiesPage: React.FC = () => {
               <Form
                 onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   e.preventDefault()
+                  // Mobile is view-only, so never open the commit dialog.
+                  if (isMobile) return
                   toggle()
                 }}
                 className={classes.form}
@@ -662,6 +669,7 @@ const AuthServerPropertiesPage: React.FC = () => {
                               options={authScripts}
                               path={DEFAULT_ACR_PATH}
                               showSaveButtons={false}
+                              disabled={isMobile}
                             />
                           </div>
                           <div className={classes.fieldItem}>

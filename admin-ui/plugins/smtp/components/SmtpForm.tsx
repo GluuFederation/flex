@@ -47,6 +47,9 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const dispatch = useAppDispatch()
   const { navigateBack } = useAppNavigation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  // Mobile is a view-only layout, so treat it as read-only for every
+  // control, handler and commit path, not just for action visibility.
+  const isReadOnly = readOnly || isMobile
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
@@ -84,9 +87,9 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   }, [allowSmtpKeystoreEdit, loadingConfig])
 
   const toggle = useCallback(() => {
-    if (readOnly) return
+    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [readOnly])
+  }, [isReadOnly])
 
   const initialValues: SmtpFormValues = useMemo(() => transformToFormValues(item), [item])
   const smtpValidationSchema = useMemo(() => getSmtpValidationSchema(t), [t])
@@ -94,7 +97,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   const formik = useFormik<SmtpFormValues>({
     initialValues,
     onSubmit: () => {
-      if (readOnly) return
+      if (isReadOnly) return
       setCommitOperations(buildSmtpChangedFieldOperations(initialValues, formik.values, t))
       toggle()
     },
@@ -123,7 +126,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
 
   const submitForm = useCallback(
     async (userMessage: string) => {
-      if (readOnly) return
+      if (isReadOnly) return
       const errors = await formik.validateForm()
       if (Object.keys(errors).length > 0) {
         const touched: Record<string, boolean> = {}
@@ -145,11 +148,11 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
       }
       handleSubmit(toSmtpConfiguration(trimmedValues), userMessage)
     },
-    [readOnly, formik, handleSubmit, t, dispatch],
+    [isReadOnly, formik, handleSubmit, t, dispatch],
   )
 
   const testSmtpConfig = useCallback(() => {
-    if (readOnly) return
+    if (isReadOnly) return
     if (formik.isValid) {
       onTestSmtp({
         sign: true,
@@ -159,7 +162,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
     } else {
       dispatch(updateToast(true, 'error', t('messages.mandatory_fields_required')))
     }
-  }, [readOnly, formik.isValid, onTestSmtp, t, dispatch])
+  }, [isReadOnly, formik.isValid, onTestSmtp, t, dispatch])
 
   const keystoreTooltip = useCallback(
     (fieldLabel: string) =>
@@ -180,7 +183,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
 
   return (
     <>
-      {!readOnly && !optimisticKeystoreEdit && (
+      {!isReadOnly && !optimisticKeystoreEdit && (
         <>
           <GluuTooltip
             tooltipOnly
@@ -231,7 +234,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               showError={formik.touched.host && !!formik.errors.host}
               errorMessage={formik.errors.host as string}
               required
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="host"
@@ -250,7 +253,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               errorMessage={formik.errors.port as string}
               type="number"
               required
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="port"
@@ -270,7 +273,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               showError={formik.touched.connect_protection && !!formik.errors.connect_protection}
               errorMessage={formik.errors.connect_protection as string}
               required
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="connect_protection"
@@ -287,7 +290,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               showError={formik.touched.from_name && !!formik.errors.from_name}
               errorMessage={formik.errors.from_name as string}
               required
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="from_name"
@@ -306,7 +309,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               showError={formik.touched.from_email_address && !!formik.errors.from_email_address}
               errorMessage={formik.errors.from_email_address as string}
               required
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="from_email_address"
@@ -327,7 +330,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               }
               errorMessage={formik.errors.smtp_authentication_account_username as string}
               required={formik.values.requires_authentication}
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="smtp_authentication_account_username"
@@ -350,7 +353,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               errorMessage={formik.errors.smtp_authentication_account_password as string}
               type="password"
               required={formik.values.requires_authentication}
-              disabled={readOnly}
+              disabled={isReadOnly}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="smtp_authentication_account_password"
@@ -367,13 +370,13 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               rsize={12}
               showError={formik.touched.key_store && !!formik.errors.key_store}
               errorMessage={formik.errors.key_store as string}
-              disabled={readOnly || !optimisticKeystoreEdit}
+              disabled={isReadOnly || !optimisticKeystoreEdit}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store"
               placeholder={getFieldPlaceholder(t, 'fields.key_store')}
             />
-            {!readOnly && !optimisticKeystoreEdit && (
+            {!isReadOnly && !optimisticKeystoreEdit && (
               <div
                 className={classes.keystoreOverlay}
                 data-tooltip-id="keystoreDisabled-key_store"
@@ -392,13 +395,13 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
               errorMessage={formik.errors.key_store_password as string}
               type="password"
-              disabled={readOnly || !optimisticKeystoreEdit}
+              disabled={isReadOnly || !optimisticKeystoreEdit}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store_password"
               placeholder={getFieldPlaceholder(t, 'fields.key_store_password')}
             />
-            {!readOnly && !optimisticKeystoreEdit && (
+            {!isReadOnly && !optimisticKeystoreEdit && (
               <div
                 className={classes.keystoreOverlay}
                 data-tooltip-id="keystoreDisabled-key_store_password"
@@ -415,13 +418,13 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               rsize={12}
               showError={formik.touched.key_store_alias && !!formik.errors.key_store_alias}
               errorMessage={formik.errors.key_store_alias as string}
-              disabled={readOnly || !optimisticKeystoreEdit}
+              disabled={isReadOnly || !optimisticKeystoreEdit}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="key_store_alias"
               placeholder={getFieldPlaceholder(t, 'fields.key_store_alias')}
             />
-            {!readOnly && !optimisticKeystoreEdit && (
+            {!isReadOnly && !optimisticKeystoreEdit && (
               <div
                 className={classes.keystoreOverlay}
                 data-tooltip-id="keystoreDisabled-key_store_alias"
@@ -439,13 +442,13 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               rsize={12}
               showError={formik.touched.signing_algorithm && !!formik.errors.signing_algorithm}
               errorMessage={formik.errors.signing_algorithm as string}
-              disabled={readOnly || !optimisticKeystoreEdit}
+              disabled={isReadOnly || !optimisticKeystoreEdit}
               isDark={isDark}
               doc_category={smtpConstants.DOC_CATEGORY}
               doc_entry="signing_algorithm"
               placeholder={getFieldPlaceholder(t, 'fields.signing_algorithm')}
             />
-            {!readOnly && !optimisticKeystoreEdit && (
+            {!isReadOnly && !optimisticKeystoreEdit && (
               <div
                 className={classes.keystoreOverlay}
                 data-tooltip-id="keystoreDisabled-signing_algorithm"
@@ -466,7 +469,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 name="trust_host"
                 formik={formik}
                 value={Boolean(formik.values.trust_host)}
-                disabled={readOnly}
+                disabled={isReadOnly}
               />
             </FormGroup>
           </div>
@@ -501,7 +504,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                       )
                     }
                   }}
-                  disabled={readOnly || loadingConfig}
+                  disabled={isReadOnly || loadingConfig}
                 />
               </GluuLoader>
             </FormGroup>
@@ -520,12 +523,12 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 name="requires_authentication"
                 formik={formik}
                 value={Boolean(formik.values.requires_authentication)}
-                disabled={readOnly}
+                disabled={isReadOnly}
               />
             </FormGroup>
           </div>
 
-          {!readOnly && !isMobile && (
+          {!isReadOnly && (
             <div className={classes.testButtonRow}>
               <GluuButton
                 type="button"
@@ -548,17 +551,17 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
         <GluuThemeFormFooter
           showBack
           onBack={handleNavigateBack}
-          showCancel={!readOnly && !isMobile}
+          showCancel={!isReadOnly}
           onCancel={handleCancel}
           disableCancel={!formik.dirty}
-          showApply={!readOnly && !isMobile}
+          showApply={!isReadOnly}
           onApply={handleApply}
           disableApply={!formik.isValid || !formik.dirty}
           applyButtonType="button"
           isLoading={formik.isSubmitting ?? false}
         />
 
-        {!readOnly && (
+        {!isReadOnly && (
           <GluuCommitDialog
             feature={adminUiFeatures.smtp_configuration_edit}
             handler={toggle}

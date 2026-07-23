@@ -13,6 +13,7 @@ const DefaultAcrInput = ({
   handler,
   options,
   path,
+  disabled = false,
 }: DefaultAcrInputProps): ReactElement => {
   const [data, setData] = useState<string>(value ?? '')
 
@@ -60,6 +61,7 @@ const DefaultAcrInput = ({
       required={required}
       doc_category="json_properties"
       doc_entry={name}
+      disabled={disabled}
     />
   )
 }

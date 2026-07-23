@@ -80,7 +80,9 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
 
   const validationSchema = useAttributeValidationSchema(validation)
 
-  const isViewMode = useMemo(() => hideButtons?.save === true, [hideButtons])
+  // Mobile is a view-only layout, so treat it as view mode for every control
+  // and for submission, not just for action visibility.
+  const isViewMode = useMemo(() => hideButtons?.save === true || isMobile, [hideButtons, isMobile])
 
   const toggleModal = useCallback(() => {
     setModal((prev) => !prev)
@@ -103,6 +105,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
 
   const submitForm = useCallback(
     (userMessage: string, formikValues: AttributeFormValues): void => {
+      if (isViewMode) return
       handleAttributeSubmit({
         values: formikValues,
         item,
@@ -111,7 +114,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
         validationEnabled: validation,
       })
     },
-    [item, customOnSubmit, validation],
+    [item, customOnSubmit, validation, isViewMode],
   )
 
   // Uses navigateBack with explicit fallback to attributes list (conforms to global navigation policy)
@@ -142,6 +145,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
       validateOnChange={true}
       validateOnBlur={true}
       onSubmit={(values) => {
+        if (isViewMode) return
         if (!isCreateMode) {
           const modified = computeModifiedFields(initialValues, values)
           setCommitOperations(
@@ -507,10 +511,10 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
               <GluuThemeFormFooter
                 showBack={!hideButtons?.back}
                 onBack={handleBack}
-                showCancel={!hideButtons?.save && !isMobile}
+                showCancel={!isViewMode}
                 onCancel={() => handleCancel(formik)}
                 disableCancel={!formHasChanged}
-                showApply={!hideButtons?.save && !isMobile}
+                showApply={!isViewMode}
                 applyButtonType="submit"
                 disableApply={!canApply}
                 isLoading={false}

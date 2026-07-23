@@ -21,12 +21,16 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 }) => {
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  // Mobile is a view-only layout, so treat it as read-only for every control
+  // and submission path, not just for action visibility.
+  const isReadOnly = !canWriteScim || isMobile
   const [modal, setModal] = useState<boolean>(false)
   const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
 
   const toggle = useCallback((): void => {
+    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [])
+  }, [isReadOnly])
 
   const initialFormValues = useMemo(
     () => transformToFormValues(scimConfiguration),
@@ -47,12 +51,13 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   const submitForm = useCallback(
     async (userMessage: string): Promise<void> => {
+      if (isReadOnly) return
       await handleSubmit({
         ...formik.values,
         action_message: userMessage,
       })
     },
-    [handleSubmit, formik.values],
+    [handleSubmit, formik.values, isReadOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -78,6 +83,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
               formik={formik}
               fieldItemClass={classes.fieldItem}
               fieldItemFullWidthClass={classes.fieldItemFullWidth}
+              disabled={isReadOnly}
             />
           ))}
         </div>
@@ -85,8 +91,8 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
       <GluuThemeFormFooter
         showBack
-        showCancel={!isMobile}
-        showApply={canWriteScim && !isMobile}
+        showCancel={!isReadOnly}
+        showApply={!isReadOnly}
         onApply={toggle}
         onCancel={handleCancel}
         disableCancel={!formik.dirty}

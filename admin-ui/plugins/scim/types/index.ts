@@ -73,4 +73,5 @@ export type ScimFieldRendererProps = {
   formik: FormikProps<ScimFormValues>
   fieldItemClass: string
   fieldItemFullWidthClass: string
+  disabled?: boolean
 }
