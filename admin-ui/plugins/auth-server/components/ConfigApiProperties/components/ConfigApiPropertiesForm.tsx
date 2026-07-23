@@ -14,6 +14,8 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { FormikTouched } from 'formik'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
@@ -57,6 +59,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     [themeState?.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
@@ -476,10 +479,10 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
               showBack
               onBack={handleBack}
               backButtonLabel={t('actions.back')}
-              showCancel
+              showCancel={!isMobile}
               onCancel={handleCancel}
               disableCancel={!hasChanges}
-              showApply
+              showApply={!isMobile}
               disableApply={!hasChanges || (patches.length === 0 && !formik.isValid)}
               applyButtonType="submit"
             />

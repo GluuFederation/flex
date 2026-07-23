@@ -1,5 +1,11 @@
 import { makeStyles } from 'tss-react/mui'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MAPPING_SPACING, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
+  SPACING,
+} from '@/constants'
 
 const sharedInputStyles = {
   '& input, & select, & .custom-select, & .form-control': {
@@ -69,6 +75,9 @@ export const useStyles = makeStyles()(() => ({
   },
   accordionSpacing: {
     marginBottom: SPACING.CARD_CONTENT_GAP,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      marginBottom: 0,
+    },
   },
   removeButtonIcon: {
     fontSize: '16px',
@@ -87,6 +96,9 @@ export const useStyles = makeStyles()(() => ({
     width: '100%',
     alignItems: 'start',
     paddingTop: 0,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      gridTemplateColumns: '1fr',
+    },
   },
   objectFieldItem: {
     minWidth: 0,

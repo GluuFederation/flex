@@ -419,7 +419,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         rowGap: '4px',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        '& > :first-child': {
+        '& > span:first-of-type': {
           flexBasis: '100%',
           marginBottom: `${SPACING.CARD_CONTENT_GAP}px`,
         },

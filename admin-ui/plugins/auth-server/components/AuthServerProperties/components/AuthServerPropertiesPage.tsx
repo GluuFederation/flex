@@ -74,6 +74,8 @@ import type {
 } from '../types'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { UserAction } from 'Utils/types'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 
 const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
 const createUserAction = (): UserAction => ({
@@ -97,6 +99,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     [themeState?.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { canRead: canReadProperties, canWrite: canWriteProperties } =
     usePermission(propertiesResourceId)
   const { logAcrUpdate } = useAcrAudit()
@@ -613,6 +616,9 @@ const AuthServerPropertiesPage: React.FC = () => {
     >
       <GluuViewWrapper canShow={canReadProperties}>
         <GluuPageContent>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.jans_json_property')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -690,10 +696,10 @@ const AuthServerPropertiesPage: React.FC = () => {
                       showBack
                       onBack={handleBack}
                       backButtonLabel={t('actions.back')}
-                      showCancel
+                      showCancel={!isMobile}
                       onCancel={handleCancel}
                       disableCancel={!hasChanges}
-                      showApply
+                      showApply={!isMobile}
                       disableApply={!hasChanges}
                       applyButtonType="button"
                       onApply={toggle}

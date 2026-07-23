@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 import { SPACING, MOBILE_MEDIA_QUERY } from '@/constants'
@@ -23,19 +24,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
         boxSizing: 'border-box',
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: fontSizes.pageTitle,
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.fontColor,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     licenseCard: {
       backgroundColor: cardBg,
       borderRadius: '16px',

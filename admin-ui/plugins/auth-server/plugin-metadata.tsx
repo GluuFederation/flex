@@ -157,6 +157,12 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Scopes,
     },
     {
+      component: ScopeEditPage,
+      path: ROUTES.AUTH_SERVER_SCOPE_VIEW_TEMPLATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Scopes,
+    },
+    {
       component: PropertiesPage,
       path: ROUTES.AUTH_SERVER_CONFIG_PROPERTIES,
       action: CEDAR_ACTIONS.READ,

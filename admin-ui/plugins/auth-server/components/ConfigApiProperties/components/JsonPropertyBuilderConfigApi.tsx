@@ -22,6 +22,8 @@ import {
   ERROR_TEXT_STYLE,
 } from './styles'
 import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import type { JsonPropertyBuilderConfigApiProps, AccordionWithSubComponents } from '../types'
 import type { JsonPatch } from 'JansConfigApi'
 import {
@@ -66,6 +68,7 @@ const JsonPropertyBuilderConfigApi = ({
 }: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t, i18n } = useTranslation()
   const { classes } = useStyles()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const [show, setShow] = useState(true)
 
   const getLocalizedLabelKey = useCallback(
@@ -396,7 +399,7 @@ const JsonPropertyBuilderConfigApi = ({
             <AccordionHeader>
               <div className={classes.accordionHeaderRow}>
                 <GluuText variant="span">{displayLabel}</GluuText>
-                {parentIsArray && (
+                {parentIsArray && !isMobile && (
                   <GluuButton
                     type="button"
                     className="remove-btn"

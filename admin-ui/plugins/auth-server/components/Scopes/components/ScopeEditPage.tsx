@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useMatch } from 'react-router-dom'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { ROUTES } from '@/helpers/navigation'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import ScopeForm from './ScopeForm'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -21,7 +25,11 @@ import SetTitle from 'Utils/SetTitle'
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
 
-  SetTitle(t('messages.edit_scope'))
+  const { canWrite } = usePermission(ADMIN_UI_RESOURCES.Scopes)
+  const viewMatch = useMatch(ROUTES.AUTH_SERVER_SCOPE_VIEW_TEMPLATE)
+  const viewOnly = !!viewMatch || !canWrite
+
+  SetTitle(t(viewOnly ? 'titles.view_scope' : 'messages.edit_scope'))
 
   const { id } = useParams<{ id: string }>()
 
@@ -100,6 +108,9 @@ const ScopeEditPage: React.FC = () => {
   return (
     <GluuPageContent>
       <GluuLoader blocking={loading}>
+        <GluuText variant="h1" className={classes.mobilePageTitle}>
+          {t(viewOnly ? 'titles.view_scope' : 'messages.edit_scope')}
+        </GluuText>
         <GluuAlert severity="error" message={displayError} show={!!displayError} />
         <div className={classes.formCard}>
           <div className={classes.content}>
@@ -110,6 +121,7 @@ const ScopeEditPage: React.FC = () => {
               handleSubmit={handleSubmit}
               modifiedFields={modifiedFields}
               setModifiedFields={setModifiedFields}
+              viewOnly={viewOnly}
             />
           </div>
         </div>

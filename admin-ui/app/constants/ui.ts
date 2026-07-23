@@ -1,3 +1,4 @@
+import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
 export const OPACITY = {
@@ -270,3 +271,18 @@ export const MAPPING_SPACING = {
   INFO_ICON_SIZE: 24,
   CONTENT_PADDING_TOP: 27,
 } as const
+
+export const createMobilePageTitleStyle = (fontColor: string) => ({
+  display: 'none' as const,
+  [`@media ${MOBILE_MEDIA_QUERY}`]: {
+    display: 'block' as const,
+    fontFamily,
+    fontSize: fontSizes.pageTitle,
+    fontStyle: 'normal' as const,
+    fontWeight: fontWeights.bold,
+    lineHeight: 'normal' as const,
+    color: fontColor,
+    margin: 0,
+    marginBottom: SPACING.PAGE,
+  },
+})

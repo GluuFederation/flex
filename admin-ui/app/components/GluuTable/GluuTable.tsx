@@ -11,44 +11,48 @@ import {
   useStyles,
   TABLE_MIN_WIDTH,
   TABLE_RESPONSIVE_BREAKPOINT,
+  MOBILE_TABLE_MIN_WIDTH,
+  MIN_COL_WIDTH,
+  EMPTY_TABLE_ESTIMATE,
+  COLUMN_MIN_PCT,
+  COLUMN_MAX_PCT,
+  AUTO_COL_MIN_PX,
+  AUTO_COL_MAX_PX,
+  MOBILE_AUTO_COL_MAX_PX,
+  AUTO_COL_CHAR_PX,
+  AUTO_COL_PADDING_PX,
   DEFAULT_COLUMN_ALIGN,
   ALIGN_TO_JUSTIFY,
 } from './GluuTable.style'
 import { T_KEYS, EMPTY_CELL_PLACEHOLDER } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
-import { ICON_SIZE } from '@/constants'
+import { ICON_SIZE, MOBILE_MEDIA_QUERY } from '@/constants'
 import {
   getDefaultPagingSize,
   getRowsPerPageOptions,
   PAGING_SIZE_CHANGED_EVENT,
 } from '@/utils/pagingUtils'
 
-const MIN_COL_WIDTH = 60
-const EMPTY_TABLE_ESTIMATE = 15
-const COLUMN_MIN_PCT = 10
-const COLUMN_MAX_PCT = 30
-const AUTO_COL_MIN_PX = 100
-const AUTO_COL_MAX_PX = 520
-const AUTO_COL_CHAR_PX = 8
-const AUTO_COL_PADDING_PX = 32
 const TABLE_RESPONSIVE_QUERY = `(max-width: ${TABLE_RESPONSIVE_BREAKPOINT - 1}px)`
 
-const useIsBelowResponsiveBreakpoint = (): boolean => {
-  const [isBelow, setIsBelow] = useState<boolean>(() => {
+const useMediaMatch = (query: string): boolean => {
+  const [matches, setMatches] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
-    return window.matchMedia(TABLE_RESPONSIVE_QUERY).matches
+    return window.matchMedia(query).matches
   })
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const mql = window.matchMedia(TABLE_RESPONSIVE_QUERY)
-    const onChange = (e: MediaQueryListEvent) => setIsBelow(e.matches)
-    setIsBelow(mql.matches)
+    const mql = window.matchMedia(query)
+    const onChange = (e: MediaQueryListEvent) => setMatches(e.matches)
+    setMatches(mql.matches)
     mql.addEventListener('change', onChange)
     return () => mql.removeEventListener('change', onChange)
-  }, [])
-  return isBelow
+  }, [query])
+  return matches
 }
+
+const useIsBelowResponsiveBreakpoint = (): boolean => useMediaMatch(TABLE_RESPONSIVE_QUERY)
 
 const parseMinWidth = (col: { minWidth?: string | number }): string | number | undefined => {
   const mw = col.minWidth
@@ -122,6 +126,7 @@ const computeContentBasedWidths = <T,>(
 const computeContentBasedPixelWidths = <T,>(
   columns: { key: ColumnKey<T>; id?: string; label: string }[],
   data: T[],
+  maxPx: number,
 ): Record<string, number> => {
   if (columns.length === 0) return {}
   return Object.fromEntries(
@@ -138,7 +143,7 @@ const computeContentBasedPixelWidths = <T,>(
         maxLen = Math.max(maxLen, EMPTY_TABLE_ESTIMATE)
       }
       const px = Math.round(maxLen * AUTO_COL_CHAR_PX + AUTO_COL_PADDING_PX)
-      const clamped = Math.max(AUTO_COL_MIN_PX, Math.min(AUTO_COL_MAX_PX, px))
+      const clamped = Math.max(AUTO_COL_MIN_PX, Math.min(maxPx, px))
       return [colId(col), clamped]
     }),
   )
@@ -204,10 +209,16 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   }, [data, sortState, columns])
 
   const isBelowResponsiveBreakpoint = useIsBelowResponsiveBreakpoint()
+  const isMobileViewport = useMediaMatch(MOBILE_MEDIA_QUERY)
   const computedWidths = useMemo(() => computeContentBasedWidths(columns, data), [columns, data])
   const computedPixelWidths = useMemo(
-    () => computeContentBasedPixelWidths(columns, data),
-    [columns, data],
+    () =>
+      computeContentBasedPixelWidths(
+        columns,
+        data,
+        isMobileViewport ? MOBILE_AUTO_COL_MAX_PX : AUTO_COL_MAX_PX,
+      ),
+    [columns, data, isMobileViewport],
   )
   const effectiveWidths = useMemo(() => {
     const out: Record<string, string> = {}
@@ -223,7 +234,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
         out[id] = `${resized}%`
         continue
       }
-      if (isBelowResponsiveBreakpoint) {
+      if (isMobileViewport) {
         const autoPx = computedPixelWidths[id]
         out[id] =
           autoPx != null ? `${autoPx}px` : (computedWidths[id] ?? `${100 / columns.length}%`)
@@ -232,13 +243,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
       }
     }
     return out
-  }, [
-    columns,
-    resizedColumnWidths,
-    computedWidths,
-    computedPixelWidths,
-    isBelowResponsiveBreakpoint,
-  ])
+  }, [columns, resizedColumnWidths, computedWidths, computedPixelWidths, isMobileViewport])
 
   const { classes } = useStyles({ isDark, themeColors, stickyHeader })
 
@@ -361,7 +366,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     for (const col of columns) {
       if (typeof col.width === 'number') {
         sum += col.width
-      } else if (isBelowResponsiveBreakpoint) {
+      } else if (isMobileViewport) {
         sum += computedPixelWidths[colId(col)] ?? AUTO_COL_MIN_PX
       } else {
         sum += AUTO_COL_MIN_PX
@@ -373,7 +378,8 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     if (actions?.length) {
       sum += Math.max(100, actions.length * 40 + 16)
     }
-    return isBelowResponsiveBreakpoint ? Math.max(sum, TABLE_MIN_WIDTH) : sum
+    if (!isBelowResponsiveBreakpoint) return sum
+    return Math.max(sum, isMobileViewport ? MOBILE_TABLE_MIN_WIDTH : TABLE_MIN_WIDTH)
   }, [
     columns,
     expandable,
@@ -381,6 +387,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     actions,
     computedPixelWidths,
     isBelowResponsiveBreakpoint,
+    isMobileViewport,
   ])
 
   const toggleRow = useCallback((key: string | number) => {

@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
+import { createMobilePageTitleStyle } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, ICON_SIZE, MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
-import { fontFamily, fontWeights } from '@/styles/fonts'
+import { fontFamily } from '@/styles/fonts'
 import customColors from '@/customColors'
 
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -25,20 +26,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
         boxSizing: 'border-box',
       },
     },
-    mobilePageTitle: {
-      display: 'none',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        display: 'block',
-        fontFamily,
-        fontSize: '28px',
-        fontStyle: 'normal',
-        fontWeight: fontWeights.bold,
-        lineHeight: 'normal',
-        color: themeColors.fontColor,
-        margin: 0,
-        marginBottom: SPACING.PAGE,
-      },
-    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     cellDisplayName: { color: themeColors.fontColor, fontWeight: 500 },
     cellUrl: {
       wordBreak: 'break-all',

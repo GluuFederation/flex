@@ -338,7 +338,7 @@ const MobileNavSheet = ({
                       </button>
                       <div
                         className={cx(classes.subListWrap, expanded && classes.subListWrapOpen)}
-                        aria-hidden={!expanded}
+                        inert={!expanded}
                       >
                         <div className={classes.subListInner}>
                           <div className={classes.subList}>

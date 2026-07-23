@@ -10,6 +10,7 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { ROUTES } from '@/helpers/navigation'
 import SetTitle from 'Utils/SetTitle'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import WebhookForm from './WebhookForm'
 import { useStyles } from './styles/WebhookFormPage.style'
 
@@ -40,6 +41,9 @@ const WebhookFormPage: React.FC = () => {
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={viewOnly ? canReadWebhooks : canWriteWebhooks}>
+        <GluuText variant="h1" className={classes.mobilePageTitle}>
+          {t(titleKey)}
+        </GluuText>
         <div className={classes.formCard}>
           <div className={classes.content}>
             <WebhookForm viewOnly={viewOnly} />

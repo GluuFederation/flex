@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
 import {
   SPACING,
@@ -60,6 +61,7 @@ export const useStyles = makeStyles<WebhookFormPageStylesParams>()((
   })
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,

@@ -18,6 +18,7 @@ export type ScopeFormProps = {
   handleSubmit: (data: string) => void
   modifiedFields: ModifiedFields
   setModifiedFields: (fields: ModifiedFields) => void
+  viewOnly?: boolean
 }
 
 export type ScopeTableRow = ScopeWithClients

@@ -64,7 +64,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
         {t(labelKey)}:{required && <span className={classes.outerLabelStar}>&nbsp;*</span>}
       </span>
       <GluuTooltip tooltipOnly doc_entry={docEntry} doc_category={ATTRIBUTE} place="right" />
-      <HelpOutline tabIndex={-1} data-tooltip-id={docEntry} data-for={docEntry} />
+      <HelpOutline data-tooltip-id={docEntry} data-for={docEntry} />
     </div>
   )
 

@@ -52,6 +52,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   handleSubmit,
   modifiedFields,
   setModifiedFields,
+  viewOnly = false,
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -282,6 +283,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     errorMessage={formikProps.errors.id ? t(formikProps.errors.id) : undefined}
                     showError={!!(formikProps.errors.id && formikProps.touched.id)}
                     required
+                    disabled={viewOnly}
                     handleChange={(e) => {
                       setModifiedFields({
                         ...modifiedFields,
@@ -309,6 +311,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       !!(formikProps.errors.displayName && formikProps.touched.displayName)
                     }
                     required
+                    disabled={viewOnly}
                     handleChange={(e) => {
                       setModifiedFields({
                         ...modifiedFields,
@@ -330,6 +333,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     doc_entry="description"
                     placeholder={getFieldPlaceholder(t, 'fields.description')}
                     rows={3}
+                    disabled={viewOnly}
                     handleChange={(e) => {
                       setModifiedFields({
                         ...modifiedFields,
@@ -372,6 +376,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       }
                       showError={!!(formikProps.errors.scopeType && formikProps.touched.scopeType)}
                       required
+                      disabled={viewOnly}
                       handleChange={(
                         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
                       ) => {
@@ -396,6 +401,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       rsize={12}
                       value={formikProps.values.attributes?.showInConfigurationEndpoint}
                       doc_category={SCOPE}
+                      disabled={viewOnly}
                       handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setModifiedFields({
                           ...modifiedFields,
@@ -416,6 +422,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       rsize={12}
                       value={formikProps.values.defaultScope}
                       doc_category={SCOPE}
+                      disabled={viewOnly}
                       handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setModifiedFields({
                           ...modifiedFields,
@@ -441,6 +448,8 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
+                      disabled={viewOnly}
+                      viewOnly={viewOnly}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
@@ -464,6 +473,8 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_category={SCOPE}
                       doc_entry="dynamicScopeScripts"
                       helperText={t('placeholders.typeahead_holder_message')}
+                      disabled={viewOnly}
+                      viewOnly={viewOnly}
                     />
                     {formikProps.errors.dynamicScopeScripts &&
                       formikProps.touched.dynamicScopeScripts && (
@@ -488,6 +499,8 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       doc_entry="claims"
                       placeholder={t('placeholders.search_claims')}
                       helperText={t('placeholders.typeahead_holder_message')}
+                      disabled={viewOnly}
+                      viewOnly={viewOnly}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
                       <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
@@ -543,6 +556,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         doc_entry="umaAuthorizationPolicies"
                         helperText={t('placeholders.typeahead_holder_message')}
                         disabled={scope.inum ? true : false}
+                        viewOnly={viewOnly}
                       />
                       {formikProps.errors.umaAuthorizationPolicies &&
                         formikProps.touched.umaAuthorizationPolicies && (
@@ -672,10 +686,10 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
               <GluuThemeFormFooter
                 showBack={true}
                 onBack={handleNavigateBack}
-                showCancel={true}
+                showCancel={!viewOnly}
                 onCancel={handleCancel}
                 disableCancel={!hasActualChanges(formikProps.values, initialFormValues)}
-                showApply={true}
+                showApply={!viewOnly}
                 applyButtonType="button"
                 onApply={() => {
                   formikProps.setTouched(

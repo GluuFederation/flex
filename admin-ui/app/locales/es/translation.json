@@ -1478,6 +1478,7 @@
     "audit_logs": "Admin UI Registros de Auditoría",
     "webhooks": "Webhooks",
     "edit_webhook": "Editar Webhook",
+    "view_scope": "Ver Ámbito",
     "view_webhook": "Ver Webhook",
     "edit_script": "Editar Script Personalizado",
     "authentication": "Autenticación",

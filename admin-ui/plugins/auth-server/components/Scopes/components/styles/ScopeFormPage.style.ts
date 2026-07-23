@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { createMobilePageTitleStyle } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
@@ -30,6 +31,7 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,
@@ -58,7 +60,11 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
       [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
-        gridTemplateColumns: '1fr',
+        'gridTemplateColumns': '1fr',
+        'rowGap': SPACING.SECTION_GAP,
+        '& + &': {
+          marginTop: SPACING.SECTION_GAP,
+        },
       },
     },
     accordionSpacing: {
@@ -104,6 +110,17 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         position: 'absolute',
         fontSize: `${fontSizes.sm} !important`,
       },
+      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
+        '& [data-field-error]': {
+          top: '100%',
+          left: 0,
+          margin: 0,
+          lineHeight: 1.2,
+        },
+      },
       '& .input-group': {
         margin: 0,
       },
@@ -118,6 +135,9 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
     },
     autocompleteField: {
       marginBottom: 20,
+      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+        marginBottom: 0,
+      },
     },
     inumFullWidth: {
       'gridColumn': '1 / -1',
@@ -164,6 +184,12 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         maxWidth: '100%',
         paddingLeft: 0,
         paddingRight: 0,
+        paddingBottom: 20,
+      },
+      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
       },
       '& .react-toggle--disabled': {
         opacity: `${OPACITY.DISABLED} !important`,
