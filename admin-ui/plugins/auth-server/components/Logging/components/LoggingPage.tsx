@@ -78,6 +78,14 @@ const LoggingPage = (): React.ReactElement => {
     setShowCommitDialog(false)
   }, [])
 
+  // Resizing below the mobile breakpoint discards any in-flight commit.
+  useEffect(() => {
+    if (isMobile) {
+      setShowCommitDialog(false)
+      setPendingValues(null)
+    }
+  }, [isMobile])
+
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.AUTH_SERVER_CONFIG_PROPERTIES)
   }, [navigateBack])
@@ -118,6 +126,9 @@ const LoggingPage = (): React.ReactElement => {
 
   const handleSubmit = useCallback(
     (values: LoggingFormValues): void => {
+      // Mobile is view-only, so never open the commit dialog.
+      if (isMobile) return
+
       if (!logging) {
         logger.warn('Cannot submit: logging data not loaded')
         return
@@ -133,11 +144,13 @@ const LoggingPage = (): React.ReactElement => {
       setPendingValues({ mergedValues, changedFields })
       openCommitDialog()
     },
-    [logging, openCommitDialog],
+    [logging, openCommitDialog, isMobile],
   )
 
   const handleAccept = useCallback(
     async (userMessage: string): Promise<void> => {
+      // Blocks a dialog opened on desktop from mutating after a resize to mobile.
+      if (isMobile) return
       if (!pendingValues) return
 
       const { mergedValues, changedFields } = pendingValues
@@ -158,7 +171,7 @@ const LoggingPage = (): React.ReactElement => {
         dispatch(updateToast(true, 'error', t('messages.error_processing_request')))
       }
     },
-    [pendingValues, updateLoggingMutation, closeCommitDialog, dispatch, t],
+    [pendingValues, updateLoggingMutation, closeCommitDialog, dispatch, t, isMobile],
   )
 
   return (
@@ -292,12 +305,14 @@ const LoggingPage = (): React.ReactElement => {
             </Formik>
           </div>
 
-          <GluuCommitDialog
-            handler={closeCommitDialog}
-            modal={showCommitDialog}
-            onAccept={handleAccept}
-            operations={commitDialogOperations}
-          />
+          {!isMobile && (
+            <GluuCommitDialog
+              handler={closeCommitDialog}
+              modal={showCommitDialog}
+              onAccept={handleAccept}
+              operations={commitDialogOperations}
+            />
+          )}
         </GluuViewWrapper>
       </GluuPageContent>
     </GluuLoader>

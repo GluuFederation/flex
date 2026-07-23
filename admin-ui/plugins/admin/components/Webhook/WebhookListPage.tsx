@@ -372,7 +372,7 @@ const WebhookListPage: React.FC = () => {
                 onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canReadWebhooks ? handleRefresh : undefined}
-                refreshLoading={isLoading}
+                refreshLoading={isFetching}
                 primaryAction={primaryAction}
                 actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}

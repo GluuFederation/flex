@@ -73,6 +73,14 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
   )
 
   const [modal, setModal] = useState(false)
+
+  // Entering read-only (e.g. resizing to mobile) discards any in-flight commit,
+  // so the conditionally rendered dialog cannot restore stale state on return.
+  useEffect(() => {
+    if (isReadOnly) {
+      setModal(false)
+    }
+  }, [isReadOnly])
   const [commitOperations, setCommitOperations] = useState<
     ReturnType<typeof buildSmtpChangedFieldOperations>
   >([])

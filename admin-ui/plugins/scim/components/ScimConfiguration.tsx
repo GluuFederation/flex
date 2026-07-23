@@ -1,5 +1,5 @@
 import { useFormik, FormikProps } from 'formik'
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
@@ -25,6 +25,13 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   // and submission path, not just for action visibility.
   const isReadOnly = !canWriteScim || isMobile
   const [modal, setModal] = useState<boolean>(false)
+
+  // Entering read-only (e.g. resizing to mobile) discards any in-flight commit.
+  useEffect(() => {
+    if (isReadOnly) {
+      setModal(false)
+    }
+  }, [isReadOnly])
   const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
 
   const toggle = useCallback((): void => {
