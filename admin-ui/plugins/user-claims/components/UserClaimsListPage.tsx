@@ -74,7 +74,6 @@ const UserClaimsListPage: React.FC = () => {
 
   const {
     data: attributesData,
-    isLoading,
     isFetching,
     isError,
     error,
@@ -463,9 +462,11 @@ const UserClaimsListPage: React.FC = () => {
                 onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
-                refreshLoading={isLoading}
+                refreshLoading={isFetching}
                 primaryAction={primaryAction}
+                actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}
+                className={classes.searchToolbar}
               />
             </div>
           </div>

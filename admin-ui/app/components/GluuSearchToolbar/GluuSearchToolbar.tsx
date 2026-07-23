@@ -68,6 +68,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     refreshLoading = false,
     refreshButtonVariant = 'outlined',
     disabled = false,
+    className,
   } = props
 
   const { t } = useTranslation()
@@ -403,7 +404,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={cx(classes.container, className)}>
       <div className={classes.fieldGroupSearch}>
         {searchLabel && (
           <GluuText variant="span" className={classes.fieldLabel} disableThemeColor>

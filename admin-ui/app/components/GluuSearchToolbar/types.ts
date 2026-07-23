@@ -66,6 +66,8 @@ type GluuSearchToolbarBaseProps = {
   refreshLoading?: boolean
   refreshButtonVariant?: 'primary' | 'outlined'
   disabled?: boolean
+  /** Optional class on the toolbar root, for page-specific layout overrides. */
+  className?: string
 }
 
 type GluuSearchToolbarInputProps = GluuSearchToolbarBaseProps & {

@@ -1,4 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
+import type { Theme } from '@mui/material/styles'
 import {
   SPACING,
   BORDER_RADIUS,
@@ -22,7 +23,7 @@ const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const ERROR_SPACE = 20
 export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
-  _,
+  theme: Theme,
   { isDark, themeColors },
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
@@ -62,8 +63,12 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      // Collapse to one column on tablet as well, so fields are not squeezed
+      // into ~370px each in portrait. Matches the Webhook form.
+      [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
         rowGap: SPACING.SECTION_GAP,
       },
     },
