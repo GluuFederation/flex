@@ -6,6 +6,7 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -39,6 +40,9 @@ const KeysPage: React.FC = () => {
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadKeys}>
+        <GluuText variant="h1" className={classes.mobilePageTitle}>
+          {t('titles.public_keys')}
+        </GluuText>
         <div className={classes.pageCard}>
           <JwkListPage classes={classes} />
         </div>

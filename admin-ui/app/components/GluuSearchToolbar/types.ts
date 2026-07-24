@@ -13,6 +13,8 @@ export type FilterDef = {
   options: FilterOption[]
   onChange: (value: string) => void
   width?: string | number
+  /** Value the sheet's Cancel resets this filter to. When omitted, Cancel only discards edits. */
+  defaultValue?: string
 }
 
 type DateInputDef = {
@@ -64,6 +66,8 @@ type GluuSearchToolbarBaseProps = {
   refreshLoading?: boolean
   refreshButtonVariant?: 'primary' | 'outlined'
   disabled?: boolean
+  /** Optional class on the toolbar root, for page-specific layout overrides. */
+  className?: string
 }
 
 type GluuSearchToolbarInputProps = GluuSearchToolbarBaseProps & {

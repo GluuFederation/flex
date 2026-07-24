@@ -67,6 +67,9 @@ export const useStyles = makeStyles<GluuSelectRowStyleParams>()((
       color: fontColor,
       zIndex: 6,
     },
+    chevronDisabled: {
+      opacity: OPACITY.DISABLED,
+    },
     error: {
       display: 'block',
       color: customColors.accentRed,

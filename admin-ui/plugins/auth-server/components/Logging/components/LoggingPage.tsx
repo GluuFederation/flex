@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Form } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -6,6 +7,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import {
@@ -27,6 +29,7 @@ import type { PendingValues } from '../types'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { GluuPageContent } from '@/components'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
@@ -47,6 +50,7 @@ const LoggingPage = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const { canRead: canReadLogging, canWrite: canWriteLogging } = usePermission(LOGGING_RESOURCE_ID)
   const { navigateBack } = useAppNavigation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { data: logging, isLoading: queryLoading } = useLoggingConfig()
   const updateLoggingMutation = useUpdateLoggingConfig()
@@ -73,6 +77,14 @@ const LoggingPage = (): React.ReactElement => {
   const closeCommitDialog = useCallback(() => {
     setShowCommitDialog(false)
   }, [])
+
+  // Resizing below the mobile breakpoint discards any in-flight commit.
+  useEffect(() => {
+    if (isMobile) {
+      setShowCommitDialog(false)
+      setPendingValues(null)
+    }
+  }, [isMobile])
 
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.AUTH_SERVER_CONFIG_PROPERTIES)
@@ -114,6 +126,9 @@ const LoggingPage = (): React.ReactElement => {
 
   const handleSubmit = useCallback(
     (values: LoggingFormValues): void => {
+      // Mobile is view-only, so never open the commit dialog.
+      if (isMobile) return
+
       if (!logging) {
         logger.warn('Cannot submit: logging data not loaded')
         return
@@ -129,11 +144,13 @@ const LoggingPage = (): React.ReactElement => {
       setPendingValues({ mergedValues, changedFields })
       openCommitDialog()
     },
-    [logging, openCommitDialog],
+    [logging, openCommitDialog, isMobile],
   )
 
   const handleAccept = useCallback(
     async (userMessage: string): Promise<void> => {
+      // Blocks a dialog opened on desktop from mutating after a resize to mobile.
+      if (isMobile) return
       if (!pendingValues) return
 
       const { mergedValues, changedFields } = pendingValues
@@ -154,13 +171,16 @@ const LoggingPage = (): React.ReactElement => {
         dispatch(updateToast(true, 'error', t('messages.error_processing_request')))
       }
     },
-    [pendingValues, updateLoggingMutation, closeCommitDialog, dispatch, t],
+    [pendingValues, updateLoggingMutation, closeCommitDialog, dispatch, t, isMobile],
   )
 
   return (
     <GluuLoader blocking={loading}>
       <GluuPageContent>
         <GluuViewWrapper canShow={canReadLogging}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.logging', 'Logging')}
+          </GluuText>
           <div className={classes.pageCard}>
             <Formik
               initialValues={initialValues}
@@ -190,6 +210,7 @@ const LoggingPage = (): React.ReactElement => {
                               ? t(formik.errors.loggingLevel as string)
                               : undefined
                           }
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -212,6 +233,7 @@ const LoggingPage = (): React.ReactElement => {
                               ? t(formik.errors.loggingLayout as string)
                               : undefined
                           }
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -227,6 +249,7 @@ const LoggingPage = (): React.ReactElement => {
                           doc_category={JSON_CONFIG}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -242,6 +265,7 @@ const LoggingPage = (): React.ReactElement => {
                           value={formik.values.disableJdkLogger}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                       <div className={classes.fieldItem}>
@@ -257,37 +281,38 @@ const LoggingPage = (): React.ReactElement => {
                           value={formik.values.enabledOAuthAuditLogging}
                           formik={formik}
                           isDark={isDark}
+                          disabled={isMobile}
                         />
                       </div>
                     </div>
                   </div>
 
-                  {canWriteLogging && (
-                    <GluuThemeFormFooter
-                      showBack
-                      onBack={handleBack}
-                      backButtonLabel={t('actions.back')}
-                      showCancel
-                      onCancel={() => formik.resetForm()}
-                      disableCancel={!formik.dirty}
-                      showApply
-                      onApply={formik.handleSubmit}
-                      disableApply={!formik.isValid || !formik.dirty}
-                      applyButtonType="button"
-                      isLoading={loading}
-                    />
-                  )}
+                  <GluuThemeFormFooter
+                    showBack
+                    onBack={handleBack}
+                    backButtonLabel={t('actions.back')}
+                    showCancel={canWriteLogging && !isMobile}
+                    onCancel={() => formik.resetForm()}
+                    disableCancel={!formik.dirty}
+                    showApply={canWriteLogging && !isMobile}
+                    onApply={formik.handleSubmit}
+                    disableApply={!formik.isValid || !formik.dirty}
+                    applyButtonType="button"
+                    isLoading={loading}
+                  />
                 </Form>
               )}
             </Formik>
           </div>
 
-          <GluuCommitDialog
-            handler={closeCommitDialog}
-            modal={showCommitDialog}
-            onAccept={handleAccept}
-            operations={commitDialogOperations}
-          />
+          {!isMobile && (
+            <GluuCommitDialog
+              handler={closeCommitDialog}
+              modal={showCommitDialog}
+              onAccept={handleAccept}
+              operations={commitDialogOperations}
+            />
+          )}
         </GluuViewWrapper>
       </GluuPageContent>
     </GluuLoader>

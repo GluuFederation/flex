@@ -16,9 +16,18 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
   formik,
   fieldItemClass,
   fieldItemFullWidthClass,
+  disabled: disabledOverride = false,
 }) => {
   const { t } = useTranslation()
-  const { name, label, type, disabled = false, selectOptions, colSize = 12 } = config
+  const {
+    name,
+    label,
+    type,
+    disabled: configDisabled = false,
+    selectOptions,
+    colSize = 12,
+  } = config
+  const disabled = configDisabled || disabledOverride
 
   const value = formik.values[name]
   const error = formik.errors[name]

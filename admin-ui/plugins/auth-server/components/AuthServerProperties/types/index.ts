@@ -26,6 +26,7 @@ export type StringArrayFieldProps = {
   handler: (patch: JsonPatch) => void
   formResetKey: number
   allowCustom?: boolean
+  disabled?: boolean
 }
 
 export type ArrayItemSelectProps = {
@@ -37,10 +38,17 @@ export type ArrayItemSelectProps = {
   handler: (patch: JsonPatch) => void
   formResetKey: number
   allowCustom?: boolean
+  disabled?: boolean
 }
 
 export type PropertyValue =
-  string | number | boolean | string[] | AppConfiguration | null | undefined
+  | string
+  | number
+  | boolean
+  | string[]
+  | AppConfiguration
+  | null
+  | undefined
 
 export type JsonPropertyBuilderProps = {
   propKey: string
@@ -73,6 +81,7 @@ export type DefaultAcrInputProps = {
   options: (string | DefaultAcrInputOption)[]
   path: string
   showSaveButtons?: boolean
+  disabled?: boolean
 }
 
 export type AcrPutOperation = {

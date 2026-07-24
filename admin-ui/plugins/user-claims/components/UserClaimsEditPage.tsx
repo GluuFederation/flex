@@ -40,7 +40,9 @@ const UserClaimsEditPage = (): JSX.Element => {
 
   const { canRead } = usePermission(attributeResourceId)
 
-  SetTitle(t('titles.edit_attribute', { defaultValue: 'Edit User Claim' }))
+  const pageTitle = t('titles.edit_attribute', { defaultValue: 'Edit User Claim' })
+
+  SetTitle(pageTitle)
 
   const inum = gid || ''
 
@@ -89,6 +91,9 @@ const UserClaimsEditPage = (): JSX.Element => {
     return (
       <GluuPageContent>
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <Alert severity="error">
@@ -107,6 +112,9 @@ const UserClaimsEditPage = (): JSX.Element => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
         <GluuLoader blocking={isBlocking}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm

@@ -40,7 +40,9 @@ const UserClaimsViewPage = (): JSX.Element => {
 
   const { canRead } = usePermission(attributeResourceId)
 
-  SetTitle(t('titles.view_attribute', { defaultValue: 'View User Claim' }))
+  const pageTitle = t('titles.view_attribute', { defaultValue: 'View User Claim' })
+
+  SetTitle(pageTitle)
 
   const inum = gid || ''
 
@@ -65,6 +67,9 @@ const UserClaimsViewPage = (): JSX.Element => {
     return (
       <GluuPageContent>
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <Alert severity="error">
@@ -83,6 +88,9 @@ const UserClaimsViewPage = (): JSX.Element => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canRead}>
         <GluuLoader blocking={isLoading}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <UserClaimsForm

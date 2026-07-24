@@ -2,6 +2,7 @@ import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { FormikProps } from 'formik'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
@@ -191,6 +192,9 @@ const SmtpEditPage = () => {
       )}
       <GluuViewWrapper canShow={canReadSmtp}>
         <GluuLoader blocking={isBlocking}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('menus.stmp_management')}
+          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <SmtpForm

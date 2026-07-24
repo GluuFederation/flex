@@ -1,5 +1,7 @@
 import React, { useState, use, useCallback, useMemo, memo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
@@ -7,6 +9,7 @@ import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -42,6 +45,7 @@ const UserClaimsListPage: React.FC = () => {
   const { navigateToRoute } = useAppNavigation()
 
   const { canRead, canWrite, canDelete } = usePermission(attributeResourceId)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const theme = use(ThemeContext)
   const { themeColors, isDarkTheme } = useMemo(() => {
@@ -70,7 +74,7 @@ const UserClaimsListPage: React.FC = () => {
 
   const {
     data: attributesData,
-    isLoading,
+    isFetching,
     isError,
     error,
   } = useAttributes({
@@ -233,6 +237,7 @@ const UserClaimsListPage: React.FC = () => {
         options: statusOptions,
         onChange: handleStatusChange,
         width: 140,
+        defaultValue: 'all',
       },
       {
         key: 'sortBy',
@@ -241,6 +246,7 @@ const UserClaimsListPage: React.FC = () => {
         options: sortByOptions,
         onChange: handleSortByChange,
         width: 180,
+        defaultValue: 'none',
       },
     ],
     [t, status, statusOptions, sortBy, sortByOptions, handleStatusChange, handleSortByChange],
@@ -304,20 +310,22 @@ const UserClaimsListPage: React.FC = () => {
       onClick: (row: JansAttribute) => void
     }> = []
 
-    if (canWrite) {
-      list.push({
-        icon: <Edit className={classes.editIcon} />,
-        tooltip: t('tooltips.edit_attribute'),
-        id: 'editAttribute',
-        onClick: handleEdit,
-      })
-    }
     if (canRead) {
       list.push({
         icon: <VisibilityOutlined className={classes.viewIcon} />,
         tooltip: t('tooltips.view_attribute'),
         id: 'viewAttribute',
         onClick: handleView,
+      })
+    }
+    if (isMobile) return list
+
+    if (canWrite) {
+      list.unshift({
+        icon: <Edit className={classes.editIcon} />,
+        tooltip: t('tooltips.edit_attribute'),
+        id: 'editAttribute',
+        onClick: handleEdit,
       })
     }
     if (canDelete) {
@@ -329,7 +337,17 @@ const UserClaimsListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWrite, canRead, canDelete, t, handleEdit, handleView, handleDeleteClick, classes])
+  }, [
+    canWrite,
+    canRead,
+    canDelete,
+    isMobile,
+    t,
+    handleEdit,
+    handleView,
+    handleDeleteClick,
+    classes,
+  ])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -422,14 +440,17 @@ const UserClaimsListPage: React.FC = () => {
   )
 
   const loading = useMemo(
-    () => isLoading || deleteAttributeMutation.isPending,
-    [isLoading, deleteAttributeMutation.isPending],
+    () => isFetching || deleteAttributeMutation.isPending,
+    [isFetching, deleteAttributeMutation.isPending],
   )
 
   return (
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.all_user_claims')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -441,9 +462,11 @@ const UserClaimsListPage: React.FC = () => {
                 onSearchSubmit={handleSearchSubmit}
                 filters={filters}
                 onRefresh={canRead ? handleRefresh : undefined}
-                refreshLoading={isLoading}
-                primaryAction={primaryAction}
+                refreshLoading={isFetching}
+                primaryAction={isMobile ? undefined : primaryAction}
+                actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}
+                className={classes.searchToolbar}
               />
             </div>
           </div>

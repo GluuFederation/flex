@@ -2,7 +2,13 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  ICON_SIZE,
+  SPACING,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
@@ -20,6 +26,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     page: { fontFamily, paddingTop: SPACING.PAGE },
     cellText: {
       color: themeColors.fontColor,
@@ -38,6 +45,49 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       isolation: 'isolate',
       pointerEvents: 'auto',
     },
+    // This page has two filters (Status + Sort By) where most list pages have
+    // one, so below 1200px the shared toolbar's fixed control width leaves the
+    // action buttons no room and clips the last one. Scoped to this page only.
+    searchToolbar: {
+      // The shared toolbar is fluid, but it assumes one filter. This page has
+      // two, so filters + actions are three items competing for one row and the
+      // buttons get squeezed into an ellipsis. Give the actions their own row
+      // and keep everything else stretching, matching the Webhook behaviour.
+      // Selectors are doubled (&&) because the shared rules have equal
+      // specificity and would otherwise win on injection order.
+      '@media (max-width: 1200px)': {
+        // Filters share their row evenly, as the shared toolbar intends.
+        '&& > div:has(> div > select)': {
+          flex: '1 1 0',
+          minWidth: 0,
+        },
+        // The filter definitions set a fixed pixel width, which lands as an
+        // inline style on the select wrapper and stops it stretching. Release
+        // it here so the filters fill their row like the buttons below.
+        '&& > div:has(> div > select) > div': {
+          width: '100% !important',
+        },
+        '&& > div:has(> div > button)': {
+          flex: '1 1 100%',
+          minWidth: 0,
+        },
+        // Stretch the buttons across that row so no dead space is left beside
+        // them; with a full row they never need to truncate.
+        '&& > div:has(> div > button) > div': {
+          width: '100%',
+        },
+        '&& button': {
+          flex: '1 1 0',
+          minWidth: 0,
+          whiteSpace: 'nowrap',
+        },
+        '&& button > span': {
+          minWidth: 0,
+          overflow: 'visible',
+          textOverflow: 'clip',
+        },
+      },
+    },
     tableCard: {
       'width': '100%',
       'maxWidth': '100%',
@@ -52,6 +102,9 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'boxSizing': 'border-box',
       '& table td': { verticalAlign: 'middle' },
       '& table th': { verticalAlign: 'middle' },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& table td': { verticalAlign: 'top' },
+      },
     },
     expandedGrid: {
       display: 'grid',

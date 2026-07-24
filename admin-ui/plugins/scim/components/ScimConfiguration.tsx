@@ -1,9 +1,10 @@
 import { useFormik, FormikProps } from 'formik'
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
 import GluuWebhookCommitDialog from 'Routes/Apps/Gluu/GluuWebhookCommitDialog'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { getScimConfigurationSchema } from '../helper'
 import { transformToFormValues, buildScimChangedFieldOperations } from '../helper'
@@ -19,12 +20,24 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
   classes,
 }) => {
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  // Mobile is a view-only layout, so treat it as read-only for every control
+  // and submission path, not just for action visibility.
+  const isReadOnly = !canWriteScim || isMobile
   const [modal, setModal] = useState<boolean>(false)
+
+  // Entering read-only (e.g. resizing to mobile) discards any in-flight commit.
+  useEffect(() => {
+    if (isReadOnly) {
+      setModal(false)
+    }
+  }, [isReadOnly])
   const validationSchema = useMemo(() => getScimConfigurationSchema(t), [t])
 
   const toggle = useCallback((): void => {
+    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [])
+  }, [isReadOnly])
 
   const initialFormValues = useMemo(
     () => transformToFormValues(scimConfiguration),
@@ -45,12 +58,13 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   const submitForm = useCallback(
     async (userMessage: string): Promise<void> => {
+      if (isReadOnly) return
       await handleSubmit({
         ...formik.values,
         action_message: userMessage,
       })
     },
-    [handleSubmit, formik.values],
+    [handleSubmit, formik.values, isReadOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -76,6 +90,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
               formik={formik}
               fieldItemClass={classes.fieldItem}
               fieldItemFullWidthClass={classes.fieldItemFullWidth}
+              disabled={isReadOnly}
             />
           ))}
         </div>
@@ -83,8 +98,8 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
       <GluuThemeFormFooter
         showBack
-        showCancel
-        showApply={canWriteScim}
+        showCancel={!isReadOnly}
+        showApply={!isReadOnly}
         onApply={toggle}
         onCancel={handleCancel}
         disableCancel={!formik.dirty}

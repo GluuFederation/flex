@@ -31,7 +31,7 @@ export const useAttributes = (params?: GetAttributesParams) => {
   return useGetAttributes<GetAttributesQueryResult, Error>(params, {
     query: {
       enabled: hasSession === true,
-      staleTime: ATTRIBUTE_CACHE_CONFIG.STALE_TIME,
+      staleTime: 0,
       gcTime: ATTRIBUTE_CACHE_CONFIG.GC_TIME,
       retry: false,
     },

@@ -23,6 +23,9 @@ const INPUT_PADDING_HORIZONTAL = 21
 const SELECT_ARROW_SPACE = 44
 const LABEL_MARGIN_BOTTOM = 2
 const MOBILE_BREAKPOINT = 768
+const MOBILE_ERROR_LINE_HEIGHT = 1.2
+// Two lines of 12px error text (12 * 1.2 * 2), so a wrapped message clears the next field.
+const MOBILE_ERROR_RESERVED_SPACE = 29
 
 export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
@@ -114,11 +117,17 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         '& .form-group [class*="col"]': {
           paddingBottom: 0,
         },
+        // The error is absolutely positioned at the col's bottom edge, so it
+        // reserves no height. Margin (not padding) keeps that edge put while
+        // making room below for a wrapped, multi-line message.
+        '& .form-group [class*="col"]:has([data-field-error])': {
+          marginBottom: MOBILE_ERROR_RESERVED_SPACE,
+        },
         '& [data-field-error]': {
           top: '100%',
           left: 0,
           margin: 0,
-          lineHeight: 1.2,
+          lineHeight: MOBILE_ERROR_LINE_HEIGHT,
         },
       },
       '& .input-group': {
@@ -144,9 +153,9 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       '& input:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
-        color: `${themeColors.textMuted} !important`,
-        WebkitTextFillColor: `${themeColors.textMuted} !important`,
-        opacity: `${OPACITY.DISABLED} !important`,
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
     },
@@ -238,7 +247,8 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
-          opacity: `${OPACITY.DISABLED} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          opacity: `${OPACITY.FULL} !important`,
           cursor: 'not-allowed',
         },
       '& input:not([type="checkbox"]).is-valid, & input:not([type="checkbox"]).is-invalid, & select.is-valid, & select.is-invalid, & textarea.is-valid, & textarea.is-invalid':

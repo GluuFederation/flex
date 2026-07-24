@@ -66,6 +66,7 @@ const ArrayItemSelect = React.memo(
     handler,
     formResetKey,
     allowCustom,
+    disabled = false,
   }: ArrayItemSelectProps) => {
     return (
       <GluuAutocomplete
@@ -76,6 +77,7 @@ const ArrayItemSelect = React.memo(
         onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
         allowCustom={allowCustom}
+        disabled={disabled}
       />
     )
   },
@@ -91,6 +93,7 @@ export const NumberField = React.memo(
     lSize,
     formResetKey,
     docCategory = 'json_properties',
+    disabled = false,
   }: {
     propKey: string
     value: number
@@ -100,6 +103,7 @@ export const NumberField = React.memo(
     lSize: number
     formResetKey: number
     docCategory?: string
+    disabled?: boolean
   }) => {
     const [localValue, setLocalValue] = useState<number>(value)
 
@@ -128,6 +132,7 @@ export const NumberField = React.memo(
         doc_category={docCategory}
         doc_entry={propKey}
         handleChange={handleChange}
+        disabled={disabled}
       />
     )
   },
@@ -143,6 +148,7 @@ const StringArrayField = React.memo(
     handler,
     formResetKey,
     allowCustom,
+    disabled = false,
   }: StringArrayFieldProps) => {
     return (
       <GluuAutocomplete
@@ -153,6 +159,7 @@ const StringArrayField = React.memo(
         onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
         allowCustom={allowCustom}
+        disabled={disabled}
       />
     )
   },
@@ -298,6 +305,7 @@ const JsonPropertyBuilder = ({
           parentIsArray={parentIsArray}
           path={path}
           showSaveButtons={false}
+          disabled={isMobile}
         />
         {renderError()}
       </>
@@ -322,6 +330,7 @@ const JsonPropertyBuilder = ({
           doc_entry={propKey}
           showError={fieldTouched && typeof fieldError === 'string'}
           errorMessage={typeof fieldError === 'string' ? fieldError : undefined}
+          disabled={isMobile}
         />
       )
     }
@@ -341,6 +350,7 @@ const JsonPropertyBuilder = ({
           path={path}
           showSaveButtons={false}
           placeholder={getFieldPlaceholder(t, getLocalizedLabelKey(propKey))}
+          disabled={isMobile}
         />
         {renderError()}
       </>
@@ -358,6 +368,7 @@ const JsonPropertyBuilder = ({
           handler={handler}
           lSize={lSize}
           formResetKey={formResetKey}
+          disabled={isMobile}
         />
         {renderError()}
       </>
@@ -382,6 +393,7 @@ const JsonPropertyBuilder = ({
           handler={handler}
           formResetKey={formResetKey}
           allowCustom={!schema?.items?.enum}
+          disabled={isMobile}
         />
         {renderError()}
       </>
@@ -425,6 +437,7 @@ const JsonPropertyBuilder = ({
                     handler={handler}
                     formResetKey={formResetKey}
                     allowCustom={!schema?.items?.enum}
+                    disabled={isMobile}
                   />
                 </Col>
                 <Col sm={12} md={6}>
@@ -438,6 +451,7 @@ const JsonPropertyBuilder = ({
                       handler={handler}
                       formResetKey={formResetKey}
                       allowCustom={!schema?.items?.enum}
+                      disabled={isMobile}
                     />
                   )}
                 </Col>

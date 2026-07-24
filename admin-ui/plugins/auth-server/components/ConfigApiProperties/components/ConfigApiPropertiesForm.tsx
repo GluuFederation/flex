@@ -80,7 +80,8 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   })
 
   const handleFormSubmit = useCallback(async () => {
-    if (patches.length === 0) {
+    // Mobile is view-only, so never open the commit dialog from a form submit.
+    if (isMobile || patches.length === 0) {
       return
     }
 
@@ -93,7 +94,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     }
 
     setModal(true)
-  }, [patches, formik.validateForm, formik.isValid])
+  }, [patches, formik.validateForm, formik.isValid, isMobile])
 
   useEffect(() => {
     const configChanged =
@@ -384,6 +385,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   )
 
   const readOnlySet = useMemo(() => new Set(READ_ONLY_FIELDS), [])
+  // Mobile is a view-only layout, so fields are disabled to be semantically
+  // non-editable for keyboard and assistive tech, not just unclickable.
+  const isFieldDisabled = (key: string) => isMobile || readOnlySet.has(key)
 
   return (
     <>
@@ -399,7 +403,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     lSize={12}
                     handler={patchHandler}
                     doc_category="config_api_properties"
-                    disabled={readOnlySet.has(leftKey)}
+                    disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
                     touched={formik.touched}
                   />
@@ -414,7 +418,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       lSize={12}
                       handler={patchHandler}
                       doc_category="config_api_properties"
-                      disabled={readOnlySet.has(rightKey)}
+                      disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
                       touched={formik.touched}
                     />
@@ -432,7 +436,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     lSize={12}
                     handler={patchHandler}
                     doc_category="config_api_properties"
-                    disabled={readOnlySet.has(leftKey)}
+                    disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
                     touched={formik.touched}
                   />
@@ -447,7 +451,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       lSize={12}
                       handler={patchHandler}
                       doc_category="config_api_properties"
-                      disabled={readOnlySet.has(rightKey)}
+                      disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
                       touched={formik.touched}
                     />
@@ -464,7 +468,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                   lSize={6}
                   handler={patchHandler}
                   doc_category="config_api_properties"
-                  disabled={readOnlySet.has(propKey)}
+                  disabled={isFieldDisabled(propKey)}
                   errors={formik.errors}
                   touched={formik.touched}
                 />

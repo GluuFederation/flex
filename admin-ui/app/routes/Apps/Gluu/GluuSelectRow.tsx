@@ -174,7 +174,12 @@ const GluuSelectRow: React.FC<GluuSelectRowProps> = ({
               )
             })}
           </CustomInput>
-          <span className={classes.chevronWrapper} aria-hidden>
+          <span
+            className={`${classes.chevronWrapper}${
+              disabled || isReadOnlySelect ? ` ${classes.chevronDisabled}` : ''
+            }`}
+            aria-hidden
+          >
             <ChevronIcon width={20} height={20} direction="down" />
           </span>
         </div>
