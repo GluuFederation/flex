@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, SPACING, createMobilePageTitleStyle } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
@@ -19,6 +19,7 @@ export const useStyles = makeStyles<SsaFormPageStylesParams>()((_, { isDark, the
       fontFamily,
       paddingTop: SPACING.PAGE,
     },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       width: '100%',
       backgroundColor: cardBg,

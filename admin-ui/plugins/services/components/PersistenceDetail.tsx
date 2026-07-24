@@ -6,6 +6,7 @@ import SetTitle from 'Utils/SetTitle'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import { GluuPageContent } from 'Components'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -25,7 +26,8 @@ const PersistenceDetail = () => {
 
   const { canRead: canReadPersistence } = usePermission(ADMIN_UI_RESOURCES.Persistence)
 
-  SetTitle(t('menus.persistence'))
+  const pageTitle = t('menus.persistence')
+  SetTitle(pageTitle)
 
   const { data: persistenceData, isLoading } = useGetPropertiesPersistence({
     query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadPersistence },
@@ -37,6 +39,9 @@ const PersistenceDetail = () => {
     <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadPersistence}>
         <GluuPageContent>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.persistenceCard}>
             <div className={`${classes.content} ${classes.formLabels} ${classes.formWithInputs}`}>
               <div className={classes.fieldsGrid}>

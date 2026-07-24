@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import SetTitle from 'Utils/SetTitle'
 import { SSA } from 'Utils/ApiResources'
 import { useTheme } from '@/context/theme/themeContext'
@@ -18,7 +20,7 @@ import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
-import { BORDER_RADIUS } from '@/constants'
+import { BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { GluuBadge } from '@/components/GluuBadge'
 import { JsonViewerDialog } from '../../JsonViewer'
@@ -63,8 +65,10 @@ const SsaListPage: React.FC = () => {
   const isDark = selectedTheme === THEME_DARK
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
-  SetTitle(t('titles.ssa_management'))
+  const pageTitle = t('titles.ssa_management')
+  SetTitle(pageTitle)
 
   const { data: items = [], isLoading: loading } = useGetAllSsas()
   const downloadSsaJwtMutation = useGetSsaJwt()
@@ -271,6 +275,9 @@ const SsaListPage: React.FC = () => {
       })
     }
 
+    // Mobile is view-only, so the destructive action is not offered there.
+    if (isMobile) return list
+
     if (canDeleteSsa) {
       list.push({
         icon: <DeleteOutlined className={classes.actionIcon} />,
@@ -285,6 +292,7 @@ const SsaListPage: React.FC = () => {
 
     return list
   }, [
+    isMobile,
     canReadSsa,
     canWriteSsa,
     canDeleteSsa,
@@ -427,6 +435,9 @@ const SsaListPage: React.FC = () => {
     <GluuLoader blocking={loading || isDeleting || downloadSsaJwtMutation.isPending}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canReadSsa}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -435,8 +446,9 @@ const SsaListPage: React.FC = () => {
                 searchValue={pattern}
                 searchOnType
                 onSearch={setPattern}
-                onRefresh={canReadSsa ? handleRefresh : undefined}
-                primaryAction={primaryAction}
+                onRefresh={!isMobile && canReadSsa ? handleRefresh : undefined}
+                primaryAction={isMobile ? undefined : primaryAction}
+                actionsLabel={`${t('fields.actions')}:`}
               />
             </div>
           </div>

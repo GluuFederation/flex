@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
 import SetTitle from 'Utils/SetTitle'
 import { useGetProperties } from 'JansConfigApi'
@@ -30,7 +31,8 @@ const SsaAddPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  SetTitle(t('titles.ssa_management'))
+  const pageTitle = t('titles.ssa_management')
+  SetTitle(pageTitle)
 
   const { data: configuration, isLoading } = useGetProperties()
   const customAttributes = useMemo(
@@ -69,6 +71,9 @@ const SsaAddPage: React.FC = () => {
   return (
     <GluuPageContent>
       <div className={classes.page}>
+        <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
+          {pageTitle}
+        </GluuText>
         <div className={classes.formCard}>
           <GluuLoader blocking={isLoading || isSubmitting}>
             <SsaForm

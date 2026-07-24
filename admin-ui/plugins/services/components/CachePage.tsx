@@ -12,7 +12,9 @@ import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
 import CacheMemcached from './CacheMemcached'
 import { useFormik } from 'formik'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { CACHE } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
@@ -44,7 +46,7 @@ import {
   CacheConfigurationCacheProviderType,
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
-import type { CacheFormValues, CacheProviderType } from './types'
+import type { CacheFormValues, CacheProviderType, CacheSubComponentBaseProps } from './types'
 import {
   isInMemoryCache,
   isMemcachedCache,
@@ -55,6 +57,19 @@ import {
 } from '../helper'
 import { useStyles } from './styles/CachePage.style'
 import { queryDefaults } from '@/utils/queryUtils'
+
+const PROVIDER_SECTIONS: Record<
+  CacheProviderType,
+  { titleKey: string; Fields: React.FC<CacheSubComponentBaseProps> }
+> = {
+  IN_MEMORY: { titleKey: 'fields.in_memory_configuration', Fields: CacheInMemory },
+  MEMCACHED: { titleKey: 'fields.memcached_configuration', Fields: CacheMemcached },
+  REDIS: { titleKey: 'fields.redis_configuration', Fields: CacheRedis },
+  NATIVE_PERSISTENCE: {
+    titleKey: 'fields.native_persistence_configuration',
+    Fields: CacheNative,
+  },
+}
 
 const CachePage: React.FC = () => {
   const { t } = useTranslation()
@@ -72,6 +87,18 @@ const CachePage: React.FC = () => {
   const [modal, setModal] = useState(false)
 
   const { canRead: canReadCache, canWrite: canWriteCache } = usePermission(ADMIN_UI_RESOURCES.Cache)
+
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  // Mobile is a view-only layout, so treat it as read-only for every control
+  // and submission path, not just for action visibility.
+  const isReadOnly = !canWriteCache || isMobile
+
+  // Entering read-only (e.g. resizing to mobile) discards any in-flight commit.
+  useEffect(() => {
+    if (isReadOnly) {
+      setModal(false)
+    }
+  }, [isReadOnly])
 
   const pageTitle = t('fields.cache_configuration')
   SetTitle(pageTitle)
@@ -200,7 +227,7 @@ const CachePage: React.FC = () => {
     initialValues,
     enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
-      if (!canWriteCache) return
+      if (isReadOnly) return
 
       try {
         if (isNativePersistenceCache(values)) {
@@ -287,16 +314,13 @@ const CachePage: React.FC = () => {
   })
 
   const toggle = useCallback(() => {
+    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [])
+  }, [isReadOnly])
 
   const handleCancel = useCallback(() => {
     formik.resetForm()
   }, [formik])
-
-  const handleApply = useCallback(() => {
-    toggle()
-  }, [toggle])
 
   const commitOperations = useMemo(
     () => buildCacheChangedFieldOperations(initialValues, formik.values, t),
@@ -305,12 +329,13 @@ const CachePage: React.FC = () => {
 
   const submitForm = useCallback(
     (_userMessage: string) => {
+      if (isReadOnly) return
       formik.handleSubmit()
     },
-    [formik],
+    [formik, isReadOnly],
   )
 
-  const cacheProviderType = formik.values.cacheProviderType
+  const providerSection = PROVIDER_SECTIONS[formik.values.cacheProviderType]
 
   const renderSectionTitle = (title: string) => (
     <div className={classes.sectionHeader}>
@@ -324,12 +349,15 @@ const CachePage: React.FC = () => {
     <GluuLoader blocking={loading || isMutating}>
       <GluuViewWrapper canShow={canReadCache}>
         <GluuPageContent>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
           <div className={classes.cacheCard}>
             <div className={`${classes.content} ${classes.formLabels}`}>
               <Form
                 onSubmit={(e) => {
                   e.preventDefault()
-                  handleApply()
+                  toggle()
                 }}
                 className={classes.formSection}
               >
@@ -347,76 +375,37 @@ const CachePage: React.FC = () => {
                       rsize={12}
                       doc_category={CACHE}
                       doc_entry="cacheProviderType"
+                      // Stays interactive on mobile: it only switches which
+                      // provider's settings are shown, and nothing below it can
+                      // be edited or submitted from there anyway.
                       disabled={!canWriteCache}
                       isDark={isDark}
                     />
                   </div>
                 </div>
 
-                {cacheProviderType === 'IN_MEMORY' && (
+                {providerSection && (
                   <div
                     className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
                   >
-                    {renderSectionTitle(`${t('fields.in_memory_configuration')}:`)}
-                    <CacheInMemory
+                    {renderSectionTitle(`${t(providerSection.titleKey)}:`)}
+                    <providerSection.Fields
                       formik={formik}
                       classes={classes}
                       isDark={isDark}
-                      disabled={!canWriteCache}
-                    />
-                  </div>
-                )}
-
-                {cacheProviderType === 'MEMCACHED' && (
-                  <div
-                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
-                  >
-                    {renderSectionTitle(`${t('fields.memcached_configuration')}:`)}
-                    <CacheMemcached
-                      formik={formik}
-                      classes={classes}
-                      isDark={isDark}
-                      disabled={!canWriteCache}
-                    />
-                  </div>
-                )}
-
-                {cacheProviderType === 'REDIS' && (
-                  <div
-                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
-                  >
-                    {renderSectionTitle(`${t('fields.redis_configuration')}:`)}
-                    <CacheRedis
-                      formik={formik}
-                      classes={classes}
-                      isDark={isDark}
-                      disabled={!canWriteCache}
-                    />
-                  </div>
-                )}
-
-                {cacheProviderType === 'NATIVE_PERSISTENCE' && (
-                  <div
-                    className={`${classes.sectionBox} ${classes.formWithInputs} ${classes.formLabels}`}
-                  >
-                    {renderSectionTitle(`${t('fields.native_persistence_configuration')}:`)}
-                    <CacheNative
-                      formik={formik}
-                      classes={classes}
-                      isDark={isDark}
-                      disabled={!canWriteCache}
+                      disabled={isReadOnly}
                     />
                   </div>
                 )}
 
                 <GluuThemeFormFooter
                   showBack
-                  showCancel={canWriteCache}
+                  showCancel={!isReadOnly}
                   onCancel={handleCancel}
                   disableCancel={!formik.dirty}
-                  showApply={canWriteCache}
-                  onApply={handleApply}
-                  disableApply={!formik.isValid || !formik.dirty || !canWriteCache}
+                  showApply={!isReadOnly}
+                  onApply={toggle}
+                  disableApply={!formik.isValid || !formik.dirty}
                   applyButtonType="button"
                 />
               </Form>

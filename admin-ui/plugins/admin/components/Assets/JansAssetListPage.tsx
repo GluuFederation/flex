@@ -328,7 +328,7 @@ const JansAssetListPage: React.FC = () => {
                 searchOnType
                 onSearch={setPattern}
                 onSearchSubmit={handleSearchSubmit}
-                onRefresh={canReadAssets ? handleRefresh : undefined}
+                onRefresh={!isMobile && canReadAssets ? handleRefresh : undefined}
                 primaryAction={isMobile ? undefined : primaryAction}
                 actionsLabel={`${t(T_KEYS.FIELD_ACTIONS)}:`}
                 disabled={loading}

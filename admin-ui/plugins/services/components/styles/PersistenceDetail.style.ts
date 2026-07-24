@@ -1,11 +1,15 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
-import customColors from '@/customColors'
 
 interface PersistenceDetailStylesParams {
   isDark: boolean
@@ -29,6 +33,7 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     persistenceCard: {
       backgroundColor: settings?.cardBackground ?? themeColors.card.background,
       ...cardBorderStyle,
@@ -58,6 +63,9 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
       minWidth: 0,
       [theme.breakpoints.down('md')]: {
         gridTemplateColumns: '1fr',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        rowGap: SPACING.SECTION_GAP,
       },
     },
     fieldItem: {
@@ -107,6 +115,13 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
         position: 'absolute',
         fontSize: `${fontSizes.sm} !important`,
       },
+      // The page is read-only, so no validation error can appear here and the
+      // space reserved for one would only add a gap between fields on mobile.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
+      },
     },
     formLabels: {
       '& label, & label h5, & label h5 span, & label .MuiSvgIcon-root': {
@@ -145,10 +160,11 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
           boxShadow: 'none !important',
         },
       '& input:disabled, & select:disabled': {
-        backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
@@ -161,12 +177,6 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
         backgroundColor: `${formInputBg} !important`,
         transition: 'background-color 5000s ease-in-out 0s',
       },
-    },
-    divider: {
-      height: 1,
-      backgroundColor: isDark ? customColors.darkBorder : customColors.lightBorder,
-      border: 'none',
-      margin: 0,
     },
   }
 })

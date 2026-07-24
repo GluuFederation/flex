@@ -240,7 +240,7 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
           border: `1px solid ${inputBorderColor} !important`,
           color: `${themeColors.fontColor} !important`,
           WebkitTextFillColor: `${themeColors.fontColor} !important`,
-          opacity: `${OPACITY.DISABLED} !important`,
+          opacity: `${OPACITY.FULL} !important`,
           cursor: 'not-allowed',
         },
       '& input:not(.MuiInputBase-input)::placeholder': {

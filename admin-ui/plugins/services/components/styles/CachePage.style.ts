@@ -1,7 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  OPACITY,
+  MOBILE_MEDIA_QUERY,
+  TINY_MAX_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
@@ -20,6 +26,7 @@ const LABEL_MARGIN_BOTTOM = 2
 const ERROR_SPACE = 12
 const SECTION_BOX_TOP_PADDING = 12
 const SECTION_HEADER_MB = 16
+const TINY_HELP_ICON_SIZE = 16
 
 export const useStyles = makeStyles<CachePageStylesParams>()((
   theme: Theme,
@@ -33,7 +40,23 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
   const sectionBoxBg = formInputBg
   const sectionInputBg = settings?.cardBackground ?? themeColors.card.background
 
+  const twoColumnGrid = {
+    display: 'grid' as const,
+    gridTemplateColumns: '1fr 1fr',
+    columnGap: SPACING.SECTION_GAP,
+    rowGap: SPACING.CARD_CONTENT_GAP,
+    width: '100%',
+    alignItems: 'start' as const,
+    [theme.breakpoints.down('md')]: {
+      gridTemplateColumns: '1fr',
+    },
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      rowGap: SPACING.SECTION_GAP,
+    },
+  }
+
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     cacheCard: {
       backgroundColor: settings?.cardBackground ?? themeColors.card.background,
       ...cardBorderStyle,
@@ -63,6 +86,18 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         lineHeight: `${lineHeights.normal} !important`,
         margin: '0 !important',
       },
+      // On the narrowest phones the label fills the field width, leaving no room
+      // for the trailing help icon, which then wraps to its own line. The icon
+      // is sized by an inline style, hence !important.
+      [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
+        '& label, & label h5, & label h5 span': {
+          fontSize: `${fontSizes.sm} !important`,
+        },
+        '& label .MuiSvgIcon-root': {
+          width: `${TINY_HELP_ICON_SIZE}px !important`,
+          height: `${TINY_HELP_ICON_SIZE}px !important`,
+        },
+      },
     },
     formSection: {
       'display': 'flex',
@@ -73,16 +108,8 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       },
     },
     fieldsGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      alignItems: 'start',
+      ...twoColumnGrid,
       minWidth: 0,
-      [theme.breakpoints.down('md')]: {
-        gridTemplateColumns: '1fr',
-      },
     },
     fieldItem: {
       'width': '100%',
@@ -131,6 +158,13 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         position: 'absolute',
         fontSize: `${fontSizes.sm} !important`,
       },
+      // Nothing is editable on mobile, so no validation errors can appear and
+      // the space reserved for them would only add a gap between fields.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& .form-group [class*="col"]': {
+          paddingBottom: 0,
+        },
+      },
     },
     fieldItemFullWidth: {
       width: '100%',
@@ -162,10 +196,11 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
           boxShadow: 'none !important',
         },
       '& input:disabled, & select:disabled': {
-        backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
+        backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
       '& input::placeholder': {
@@ -186,6 +221,13 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       'padding': `${SECTION_BOX_TOP_PADDING}px ${SPACING.CARD_PADDING}px ${SPACING.CARD_PADDING}px`,
       'width': '100%',
       'boxSizing': 'border-box',
+      // Scoped to the provider panels rather than the whole form so the provider
+      // select above them stays tappable on mobile.
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
+          pointerEvents: 'none' as const,
+        },
+      },
       '& input, & input:focus, & input:focus-visible, & input:active, & input:disabled, & .form-control:focus':
         {
           backgroundColor: `${sectionInputBg} !important`,
@@ -196,7 +238,9 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
           color: `${themeColors.fontColor} !important`,
         },
       '& input:disabled': {
-        opacity: OPACITY.DISABLED,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
+        cursor: 'not-allowed',
       },
       '& select, & select:focus, & select:focus-visible, & select:active, & select:disabled, & .custom-select':
         {
@@ -207,7 +251,10 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
           boxShadow: 'none !important',
         },
       '& select:disabled, & .custom-select:disabled': {
-        opacity: OPACITY.DISABLED,
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
+        cursor: 'not-allowed',
       },
     },
     sectionHeader: {
@@ -227,16 +274,6 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
       margin: 0,
       padding: 0,
     },
-    sectionGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      columnGap: SPACING.SECTION_GAP,
-      rowGap: SPACING.CARD_CONTENT_GAP,
-      width: '100%',
-      alignItems: 'start',
-      [theme.breakpoints.down('md')]: {
-        gridTemplateColumns: '1fr',
-      },
-    },
+    sectionGrid: twoColumnGrid,
   }
 })
