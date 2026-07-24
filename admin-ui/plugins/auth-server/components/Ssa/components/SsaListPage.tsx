@@ -67,6 +67,15 @@ const SsaListPage: React.FC = () => {
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
+  // Delete is not offered on mobile, so resizing into it discards any pending
+  // confirmation rather than leaving the dialog actionable.
+  useEffect(() => {
+    if (isMobile) {
+      setModal(false)
+      setDeleteData(null)
+    }
+  }, [isMobile])
+
   const pageTitle = t('titles.ssa_management')
   SetTitle(pageTitle)
 
@@ -98,7 +107,10 @@ const SsaListPage: React.FC = () => {
   const totalItems = filteredRows.length
   const { classes, cx } = useStyles({ isDark, themeColors })
 
-  const toggle = useCallback((): void => setModal((prev) => !prev), [])
+  const toggle = useCallback((): void => {
+    if (isMobile) return
+    setModal((prev) => !prev)
+  }, [isMobile])
 
   const handleRefresh = useCallback((): void => {
     setPattern('')
@@ -149,7 +161,7 @@ const SsaListPage: React.FC = () => {
 
   const submitForm = useCallback(
     async (userMessage: string) => {
-      if (!deleteData) return
+      if (isMobile || !deleteData) return
       try {
         await revokeSsa(deleteData.ssa.jti, userMessage, {
           jti: deleteData.ssa.jti,
@@ -160,7 +172,7 @@ const SsaListPage: React.FC = () => {
         logger.error('Delete SSA failed:', error instanceof Error ? error : String(error))
       }
     },
-    [deleteData, revokeSsa],
+    [deleteData, revokeSsa, isMobile],
   )
 
   const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
