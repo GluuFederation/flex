@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  ICON_SIZE,
+  MOBILE_MEDIA_QUERY,
+  SPACING,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, lineHeights } from '@/styles/fonts'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
@@ -21,7 +27,12 @@ export const useStyles = makeStyles<SsaListPageStylesParams>()((_, { isDark, the
     page: {
       fontFamily,
       paddingTop: SPACING.PAGE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+        boxSizing: 'border-box' as const,
+      },
     },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     searchCard: createSearchCardStyle({ cardBg, isDark }),
     searchCardContent: {
       position: 'relative',

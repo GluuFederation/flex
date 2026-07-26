@@ -70,6 +70,15 @@ const JansAssetListPage: React.FC = () => {
   const [deleteData, setDeleteData] = useState<Document | null>(null)
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
+  // Delete is not offered on mobile, so resizing into it discards any pending
+  // confirmation rather than leaving the dialog actionable.
+  useEffect(() => {
+    if (isMobile) {
+      setModal(false)
+      setDeleteData(null)
+    }
+  }, [isMobile])
+
   SetTitle(t(T_KEYS.TITLE_ASSETS))
   const pageTitle = usePageTitle()
 
@@ -328,7 +337,7 @@ const JansAssetListPage: React.FC = () => {
                 searchOnType
                 onSearch={setPattern}
                 onSearchSubmit={handleSearchSubmit}
-                onRefresh={canReadAssets ? handleRefresh : undefined}
+                onRefresh={!isMobile && canReadAssets ? handleRefresh : undefined}
                 primaryAction={isMobile ? undefined : primaryAction}
                 actionsLabel={`${t(T_KEYS.FIELD_ACTIONS)}:`}
                 disabled={loading}

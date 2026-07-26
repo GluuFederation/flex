@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, OPACITY, SPACING } from '@/constants'
+import { BORDER_RADIUS, SPACING } from '@/constants'
 import { fontFamily, fontSizes } from '@/styles/fonts'
 import {
   createFormGroupOverrides,
@@ -9,6 +9,7 @@ import {
   createFormInputFocusStyles,
   createFormInputAutofillStyles,
 } from '@/styles/formStyles'
+import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 
 type SsaFormStylesParams = {
   isDark: boolean
@@ -56,10 +57,8 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       '& input:focus, & input:active, & select:focus, & select:active, & textarea:focus, & textarea:active, & .custom-select:focus, & .custom-select:active, & .form-control:focus, & .form-control:active':
         createFormInputFocusStyles(inputColors),
 
-      '& input:disabled, & select:disabled, & textarea:disabled, & .custom-select:disabled': {
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
-      },
+      '& input:disabled, & select:disabled, & textarea:disabled, & .custom-select:disabled':
+        createDisabledInputStyles(themeColors.fontColor),
 
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
         createFormInputAutofillStyles(inputColors),
@@ -174,9 +173,14 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       '& .MuiInputBase-root': {
         backgroundColor: `${inputBg} !important`,
       },
+      // The picker renders its value in section spans rather than an input, so the
+      // solid disabled colour has to be applied there too.
       '& .MuiPickersInputBase-root.Mui-disabled': {
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
+        ...createDisabledInputStyles(themeColors.fontColor),
+        '& .MuiPickersInputBase-sectionContent, & .MuiPickersSectionList-sectionContent': {
+          color: `${themeColors.fontColor} !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        },
       },
       '& .MuiInputLabel-root, & .MuiPickersInputBase-root .MuiInputLabel-root': {
         display: 'none',
