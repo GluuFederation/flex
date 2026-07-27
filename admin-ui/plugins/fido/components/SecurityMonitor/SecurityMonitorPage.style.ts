@@ -1,9 +1,11 @@
 import { makeStyles } from 'tss-react/mui'
+import { hexToRgb } from '@/customColors'
 import {
   BORDER_RADIUS,
   createMobilePageTitleStyle,
   FILTER_SHEET,
   ICON_SIZE,
+  KPI_DELTA_BADGE,
   MOBILE_MEDIA_QUERY,
   OPACITY,
   SEGMENTED_CONTROL,
@@ -14,6 +16,8 @@ import {
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { SecurityStylesParams } from './types'
+
+const KPI_VALUE_UNIT_GAP = 2
 
 const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
@@ -169,6 +173,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
+      justifyContent: 'center',
       gap: SUMMARY_CARD.CONTENT_GAP,
       [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         minHeight: 0,
@@ -191,29 +196,66 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontFamily: fontFamily,
       fontSize: fontSizes['4xl'],
       fontWeight: fontWeights.semiBold,
-      lineHeight: lineHeights.tight,
+      lineHeight: lineHeights.normal,
       margin: 0,
       [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         fontSize: fontSizes['2xl'],
       },
     },
+    kpiValueUnit: {
+      fontSize: fontSizes['2xl'],
+      fontWeight: fontWeights.medium,
+      marginLeft: KPI_VALUE_UNIT_GAP,
+      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.md,
+      },
+    },
     kpiCaption: {
       fontFamily,
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.base,
+      lineHeight: lineHeights.tight,
       color: themeColors.fontColor,
       opacity: OPACITY.PLACEHOLDER,
       margin: 0,
-      marginTop: 'auto',
     },
-    kpiDeltaArrow: {
+    kpiDeltaRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: SPACING.CARD_CONTENT_GAP,
+      flexWrap: 'wrap' as const,
+      margin: 0,
+    },
+    kpiDeltaBadge: {
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'gap': KPI_DELTA_BADGE.ICON_GAP,
+      'padding': `${KPI_DELTA_BADGE.PADDING_Y}px ${KPI_DELTA_BADGE.PADDING_X}px`,
+      'borderRadius': BORDER_RADIUS.LARGE,
+      'fontFamily': fontFamily,
+      'fontSize': fontSizes.base,
+      'fontWeight': fontWeights.semiBold,
+      'lineHeight': lineHeights.tight,
+      '& svg': {
+        fontSize: ICON_SIZE.SM,
+      },
+    },
+    kpiDeltaNeutral: {
       color: themeColors.fontColor,
-      opacity: OPACITY.FULL,
-      fontWeight: fontWeights.bold,
+      backgroundColor: `rgba(${hexToRgb(themeColors.fontColor)}, ${OPACITY.HOVER_LIGHT})`,
+      opacity: OPACITY.PLACEHOLDER,
+    },
+    kpiDeltaGood: {
+      color: themeColors.badges.statusActive,
+      backgroundColor: `rgba(${hexToRgb(themeColors.badges.statusActive)}, ${OPACITY.HOVER_DARK})`,
+    },
+    kpiDeltaBad: {
+      color: themeColors.badges.statusInactive,
+      backgroundColor: `rgba(${hexToRgb(themeColors.badges.statusInactive)}, ${OPACITY.HOVER_DARK})`,
     },
     kpiChips: {
       display: 'flex',
       flexWrap: 'wrap' as const,
-      gap: SPACING.CARD_CONTENT_GAP,
+      gap: SUMMARY_CARD.CONTENT_GAP,
     },
     toggleGroup: {
       'display': 'flex',

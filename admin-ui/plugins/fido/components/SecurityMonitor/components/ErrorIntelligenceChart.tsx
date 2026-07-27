@@ -1,11 +1,7 @@
 import React, { useMemo } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
-import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
+import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import { SECURITY_CHART_HEIGHT } from '../constants'
 import SecurityChartCard from './SecurityChartCard'
@@ -13,9 +9,7 @@ import type { ErrorCategoryChartProps } from '../types'
 
 const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { renderTooltip } = useChartTheme()
 
   const legend = useMemo(
     () =>
@@ -28,8 +22,6 @@ const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) =
 
   const chartData = useMemo(() => [...slices], [slices])
   const leadSlice = slices[0]
-
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
   return (
     <SecurityChartCard
@@ -65,17 +57,7 @@ const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) =
                 <Cell key={slice.category} fill={slice.color} />
               ))}
             </Pie>
-            <Tooltip
-              content={({ payload, active }) => (
-                <TooltipDesign
-                  payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
-                  active={active}
-                  backgroundColor={cardBg}
-                  textColor={themeColors.fontColor}
-                  isDark={isDark}
-                />
-              )}
-            />
+            <Tooltip content={renderTooltip} />
           </PieChart>
         </ResponsiveContainer>
       </div>

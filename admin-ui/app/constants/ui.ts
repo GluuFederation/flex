@@ -281,6 +281,17 @@ export const SEGMENTED_CONTROL = {
   BORDER_OVERLAP: -1,
 } as const
 
+export const CHART_AXIS = {
+  GRID_DASH: '3 3',
+  TICK_FONT_SIZE: 12,
+} as const
+
+export const KPI_DELTA_BADGE = {
+  PADDING_X: 10,
+  PADDING_Y: 4,
+  ICON_GAP: 4,
+} as const
+
 export const SUMMARY_CARD = {
   MIN_HEIGHT: 180,
   PADDING_VERTICAL: 32,

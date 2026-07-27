@@ -10,11 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
-import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
+import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import { SECURITY_CHART_FILL_OPACITY, SECURITY_CHART_HEIGHT } from '../constants'
 import { findPeakSpike, getSecurityPalette, spikeRatio } from '../utils'
@@ -23,10 +19,8 @@ import type { FailureSpikeTimelineProps } from '../types'
 
 const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
+  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const isDark = state.theme === THEME_DARK
 
   const peak = useMemo(() => findPeakSpike(series), [series])
 
@@ -39,8 +33,6 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
   )
 
   const chartData = useMemo(() => [...series], [series])
-
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
   return (
     <SecurityChartCard
@@ -61,25 +53,10 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
           initialDimension={RECHARTS_INITIAL_DIMENSION}
         >
           <ComposedChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 11, fill: themeColors.fontColor }}
-              interval={0}
-              minTickGap={4}
-            />
-            <YAxis tick={{ fontSize: 11, fill: themeColors.fontColor }} allowDecimals={false} />
-            <Tooltip
-              content={({ payload, active }) => (
-                <TooltipDesign
-                  payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
-                  active={active}
-                  backgroundColor={cardBg}
-                  textColor={themeColors.fontColor}
-                  isDark={isDark}
-                />
-              )}
-            />
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="label" tick={axisTick} interval={0} minTickGap={4} />
+            <YAxis tick={axisTick} allowDecimals={false} />
+            <Tooltip content={renderTooltip} />
             <Area
               type="monotone"
               dataKey="failures"

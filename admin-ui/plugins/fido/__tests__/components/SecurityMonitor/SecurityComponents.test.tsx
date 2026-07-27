@@ -205,9 +205,44 @@ describe('SecurityKpiStrip', () => {
 
     expect(screen.getByText('3')).toBeInTheDocument()
     expect(screen.getByText('1,240')).toBeInTheDocument()
-    expect(screen.getByText('87%')).toBeInTheDocument()
+    expect(screen.getByText('87')).toBeInTheDocument()
+    expect(screen.getByText('%')).toBeInTheDocument()
     expect(screen.getByText('2')).toBeInTheDocument()
-    expect(screen.getByText('1 critical · 1 warning — derived from graph')).toBeInTheDocument()
+    expect(screen.getByText('1 critical · 1 warning')).toBeInTheDocument()
+  })
+
+  it('shows each delta as a value badge beside its caption', () => {
+    render(<SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />, {
+      wrapper: Wrapper,
+    })
+
+    expect(screen.getByText('83')).toBeInTheDocument()
+    expect(screen.getByText('vs baseline')).toBeInTheDocument()
+    expect(screen.getByText('7')).toBeInTheDocument()
+    expect(screen.getAllByText('vs previous period')).toHaveLength(2)
+  })
+
+  it('stays neutral instead of alarming when every metric is zero', () => {
+    const quiet: SecurityKpiSummary = {
+      ...summary,
+      failures: { ...summary.failures, [KPI_PERIODS.TODAY]: 0 },
+      anomalies: { ...summary.anomalies, [ANOMALY_GRANULARITIES.HOURLY]: 0 },
+      failureDelta: {
+        ...summary.failureDelta,
+        [KPI_PERIODS.TODAY]: { value: 0, isIncrease: true },
+      },
+      anomaliesDelta: {
+        ...summary.anomaliesDelta,
+        [ANOMALY_GRANULARITIES.HOURLY]: { value: 0, isIncrease: true },
+      },
+    }
+
+    render(<SecurityKpiStrip summary={quiet} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />, {
+      wrapper: Wrapper,
+    })
+
+    expect(screen.getAllByText('0').length).toBeGreaterThan(0)
+    expect(screen.getAllByTestId('TrendingUpIcon').length).toBeGreaterThan(0)
   })
 
   it('lists the flagged IP addresses as chips', () => {
@@ -234,7 +269,7 @@ describe('SecurityKpiStrip', () => {
 
     expect(screen.getByText('47')).toBeInTheDocument()
     expect(screen.getByText('18,340')).toBeInTheDocument()
-    expect(screen.getByText('93%')).toBeInTheDocument()
+    expect(screen.getByText('93')).toBeInTheDocument()
   })
 })
 

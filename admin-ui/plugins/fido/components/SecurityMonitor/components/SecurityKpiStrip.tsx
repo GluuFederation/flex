@@ -7,13 +7,8 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import { KPI_PERIOD_GRANULARITY, THREAT_LEVELS } from '../constants'
 import { countByThreatLevel, getSecurityPalette } from '../utils'
-import type { KpiDeltaLabelProps, SecurityKpiStripProps } from '../types'
-
-const DeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, className, arrowClassName }) => (
-  <p className={className}>
-    <span className={arrowClassName}>{delta.isIncrease ? '↑' : '↓'}</span> {label}
-  </p>
-)
+import KpiDeltaLabel from './KpiDeltaLabel'
+import type { SecurityKpiStripProps } from '../types'
 
 const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspiciousIps, period }) => {
   const { t } = useTranslation()
@@ -34,37 +29,55 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
   const failureDelta = summary.failureDelta[period]
   const successDelta = summary.successRateDelta[period]
 
+  const anomalyCount = summary.anomalies[anomalyGranularity]
+  const failureCount = summary.failures[period]
+  const successRate = summary.successRate[period]
+
+  const alertColor = (value: number, activeColor: string) =>
+    value > 0 ? activeColor : themeColors.fontColor
+
   return (
     <div className={classes.kpiGrid}>
       <div className={classes.kpiCard}>
         <p className={classes.kpiLabel}>{t('fields.anomalies_captured')}</p>
-        <p className={classes.kpiValue} style={{ color: palette.chart.failures }}>
-          {summary.anomalies[anomalyGranularity]}
+        <p
+          className={classes.kpiValue}
+          style={{ color: alertColor(anomalyCount, palette.chart.failures) }}
+        >
+          {anomalyCount}
         </p>
-        <DeltaLabel
-          delta={anomalyDelta}
-          className={classes.kpiCaption}
-          arrowClassName={classes.kpiDeltaArrow}
-          label={t('fields.delta_vs_previous', { value: anomalyDelta.value })}
-        />
+        <KpiDeltaLabel delta={anomalyDelta} label={t('fields.delta_vs_previous')} />
       </div>
 
       <div className={classes.kpiCard}>
         <p className={classes.kpiLabel}>{t('fields.auth_failures')}</p>
-        <p className={classes.kpiValue} style={{ color: palette.chart.failures }}>
-          {summary.failures[period].toLocaleString()}
+        <p
+          className={classes.kpiValue}
+          style={{ color: alertColor(failureCount, palette.chart.failures) }}
+        >
+          {failureCount.toLocaleString()}
         </p>
-        <DeltaLabel
-          delta={failureDelta}
-          className={classes.kpiCaption}
-          arrowClassName={classes.kpiDeltaArrow}
-          label={t('fields.delta_vs_baseline', { value: `${failureDelta.value}%` })}
-        />
+        <KpiDeltaLabel delta={failureDelta} label={t('fields.delta_vs_baseline')} />
+      </div>
+
+      <div className={classes.kpiCard}>
+        <p className={classes.kpiLabel}>{t('fields.auth_success_rate')}</p>
+        <p
+          className={classes.kpiValue}
+          style={{ color: alertColor(successRate, palette.chart.success) }}
+        >
+          {successRate}
+          <span className={classes.kpiValueUnit}>%</span>
+        </p>
+        <KpiDeltaLabel delta={successDelta} label={t('fields.delta_vs_previous')} increaseIsGood />
       </div>
 
       <div className={classes.kpiCard}>
         <p className={classes.kpiLabel}>{t('fields.suspicious_ips')}</p>
-        <p className={classes.kpiValue} style={{ color: palette.chart.suspicious }}>
+        <p
+          className={classes.kpiValue}
+          style={{ color: alertColor(suspiciousIps.length, palette.chart.suspicious) }}
+        >
           {suspiciousIps.length}
         </p>
         <p className={classes.kpiCaption}>
@@ -89,19 +102,6 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
             </GluuBadge>
           ))}
         </div>
-      </div>
-
-      <div className={classes.kpiCard}>
-        <p className={classes.kpiLabel}>{t('fields.auth_success_rate')}</p>
-        <p className={classes.kpiValue} style={{ color: palette.chart.success }}>
-          {summary.successRate[period]}%
-        </p>
-        <DeltaLabel
-          delta={successDelta}
-          className={classes.kpiCaption}
-          arrowClassName={classes.kpiDeltaArrow}
-          label={t('fields.delta_points_vs_previous', { value: successDelta.value })}
-        />
       </div>
     </div>
   )

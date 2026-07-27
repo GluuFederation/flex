@@ -10,11 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
-import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
+import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import { SECURITY_CHART_HEIGHT, THREAT_LEVELS } from '../constants'
 import { countByThreatLevel, getSecurityPalette, takeTopIpsByFailure } from '../utils'
@@ -23,10 +19,8 @@ import type { FailureBurstByIpProps } from '../types'
 
 const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
+  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const isDark = state.theme === THEME_DARK
 
   const data = useMemo(
     () =>
@@ -53,8 +47,6 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
     [t, palette.threatLevels],
   )
 
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-
   return (
     <SecurityChartCard
       title={t('titles.threat_origins')}
@@ -76,29 +68,10 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
             layout="vertical"
             margin={{ top: 12, right: 24, bottom: 8, left: 24 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
-            <XAxis
-              type="number"
-              allowDecimals={false}
-              tick={{ fontSize: 11, fill: themeColors.fontColor }}
-            />
-            <YAxis
-              type="category"
-              dataKey="ipAddress"
-              width={130}
-              tick={{ fontSize: 11, fill: themeColors.fontColor }}
-            />
-            <Tooltip
-              content={({ payload, active }) => (
-                <TooltipDesign
-                  payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
-                  active={active}
-                  backgroundColor={cardBg}
-                  textColor={themeColors.fontColor}
-                  isDark={isDark}
-                />
-              )}
-            />
+            <CartesianGrid {...gridProps} />
+            <XAxis type="number" allowDecimals={false} tick={axisTick} />
+            <YAxis type="category" dataKey="ipAddress" width={130} tick={axisTick} />
+            <Tooltip content={renderTooltip} />
             <Bar dataKey="failures" name={t('fields.auth_failures')} isAnimationActive={false}>
               {data.map((item) => (
                 <Cell key={item.ipAddress} fill={item.color} />

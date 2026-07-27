@@ -190,8 +190,7 @@ type AnomalyBannerProps = {
 type KpiDeltaLabelProps = {
   delta: KpiDelta
   label: string
-  className: string
-  arrowClassName: string
+  increaseIsGood?: boolean
 }
 
 type SecurityKpiStripProps = {

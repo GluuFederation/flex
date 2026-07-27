@@ -9,11 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
-import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
-import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
+import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import { SECURITY_CHART_FILL_OPACITY, SECURITY_CHART_HEIGHT } from '../constants'
 import { getSecurityPalette } from '../utils'
@@ -24,10 +20,8 @@ const PERCENT_DOMAIN: [number, number] = [0, 100]
 
 const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
+  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const isDark = state.theme === THEME_DARK
 
   const legend = useMemo(
     () => [
@@ -38,8 +32,6 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
   )
 
   const chartData = useMemo(() => [...trend.points], [trend.points])
-
-  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
   return (
     <SecurityChartCard
@@ -60,20 +52,10 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
           initialDimension={RECHARTS_INITIAL_DIMENSION}
         >
           <AreaChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.borderColor} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: themeColors.fontColor }} />
-            <YAxis domain={PERCENT_DOMAIN} tick={{ fontSize: 11, fill: themeColors.fontColor }} />
-            <Tooltip
-              content={({ payload, active }) => (
-                <TooltipDesign
-                  payload={payload as ReadonlyArray<TooltipPayloadItem> | undefined}
-                  active={active}
-                  backgroundColor={cardBg}
-                  textColor={themeColors.fontColor}
-                  isDark={isDark}
-                />
-              )}
-            />
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="label" tick={axisTick} />
+            <YAxis domain={PERCENT_DOMAIN} tick={axisTick} />
+            <Tooltip content={renderTooltip} />
             <Area
               type="monotone"
               stackId="devices"
