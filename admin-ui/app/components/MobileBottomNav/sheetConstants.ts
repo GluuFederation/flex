@@ -59,6 +59,11 @@ export const MORE_TILE_DEFS: readonly SheetItem[] = [
     children: [
       { key: 'fido-configuration', titleKey: 'menus.configuration', path: ROUTES.FIDO_BASE },
       { key: 'fido-metrics', titleKey: 'menus.metrics', path: ROUTES.FIDO_METRICS },
+      {
+        key: 'fido-security-monitor',
+        titleKey: 'menus.security_monitor',
+        path: ROUTES.FIDO_SECURITY_MONITOR,
+      },
     ],
   },
   {

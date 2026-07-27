@@ -34,6 +34,18 @@ export const HEATMAP_COLOR_STOPS = [
   { stop: 1, color: customColors.heatmapStop5 },
 ] as const
 
+export const METRICS_ENTRIES_PAGE_SIZE = 200
+
+export const METRIC_OPERATION_TYPES = {
+  AUTHENTICATION: 'AUTHENTICATION',
+  REGISTRATION: 'REGISTRATION',
+} as const
+
+export const METRIC_STATUS = {
+  SUCCESS: 'SUCCESS',
+  FAILURE: 'FAILURE',
+} as const
+
 export const AGGREGATION_TYPES = ['hourly', 'daily', 'weekly', 'monthly'] as const
 export type AggregationType = (typeof AGGREGATION_TYPES)[number]
 
