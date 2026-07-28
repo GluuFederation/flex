@@ -10,7 +10,10 @@ import {
   ANOMALY_KINDS,
   ATTACK_PATTERNS,
   BASELINE_WINDOW_DAYS,
+  CHART_SCAFFOLD,
+  CHART_TICK_COUNT,
   CRITICAL_IP_RATIO_THRESHOLD,
+  DEVICE_TREND_DAYS,
   DROP_OFF_ALERT_RATE,
   SPIKE_RATIO_THRESHOLD,
   SUSPICIOUS_IP_MIN_FAILURES,
@@ -27,11 +30,13 @@ import type {
   AnomalyChip,
   AnomalySummary,
   AttackPattern,
+  CountAxis,
   DeviceTrend,
   DeviceTrendPoint,
   DropOffPoint,
   ErrorCategorySlice,
   FailureSpikePoint,
+  IpBarScaffoldPoint,
   IpFailureStat,
   KpiDelta,
   PeriodTotals,
@@ -332,7 +337,6 @@ const buildErrorCategorySlices = (
 
 const buildVelocityMatrix = (
   entries: readonly MetricsEntry[],
-  t: SecurityTranslate,
   limit = TOP_USER_LIMIT,
 ): VelocityMatrix => {
   const bucketCount = Math.ceil(HOURS_IN_DAY / VELOCITY_BUCKET_HOURS)
@@ -380,7 +384,7 @@ const buildVelocityMatrix = (
   })
 
   return {
-    rows: rows.length ? rows : [t('fields.no_data')],
+    rows,
     cols,
     cells: cells.length ? cells : [cols.map(() => ({ value: 0, isAnomalous: false }))],
     anomalousUsers: cells.filter((row) => row.some((cell) => cell.isAnomalous)).length,
@@ -499,9 +503,68 @@ const buildAnomalySummary = (
   return { count: chips.length, chips }
 }
 
+const HOUR_LABEL_LENGTH = 2
+
+const buildCountAxis = (maxValue: number, tickCount: number = CHART_TICK_COUNT): CountAxis => {
+  const intervals = Math.max(1, tickCount - 1)
+  const top = maxValue > 0 ? maxValue : CHART_SCAFFOLD.EMPTY_COUNT_MAX
+  const step = Math.ceil(top / intervals)
+
+  return {
+    domain: [0, step * intervals],
+    ticks: Array.from({ length: intervals + 1 }, (_, index) => index * step),
+  }
+}
+
+const buildDayLabels = (count: number, format: string, base?: number): string[] =>
+  Array.from({ length: count }, (_, index) =>
+    createDate(base)
+      .subtract(count - 1 - index, 'day')
+      .format(format),
+  )
+
+const buildHourScaffold = (): FailureSpikePoint[] =>
+  Array.from({ length: HOURS_IN_DAY }, (_, hour) => ({
+    label: String(hour).padStart(HOUR_LABEL_LENGTH, '0'),
+    timestamp: hour,
+    failures: 0,
+    baseline: 0,
+    isSpike: false,
+  }))
+
+const buildDropOffScaffold = (base?: number): DropOffPoint[] =>
+  buildDayLabels(CHART_SCAFFOLD.DROP_OFF_DAYS, 'ddd', base).map((label) => ({
+    label,
+    successRate: 0,
+    failureRate: 0,
+    dropOffRate: 0,
+  }))
+
+const buildDeviceScaffold = (base?: number): DeviceTrendPoint[] =>
+  buildDayLabels(DEVICE_TREND_DAYS, 'MMM-DD', base).map((label) => ({
+    label,
+    platform: 0,
+    crossPlatform: 0,
+  }))
+
+const buildIpScaffold = (): IpBarScaffoldPoint[] =>
+  Array.from({ length: CHART_SCAFFOLD.BAR_ROWS }, (_, index) => ({
+    ipAddress: ' '.repeat(index + 1),
+    failures: 0,
+  }))
+
+const buildVelocityScaffoldRows = (): string[] =>
+  Array.from({ length: CHART_SCAFFOLD.VELOCITY_ROWS }, (_, index) => ' '.repeat(index + 1))
+
 export {
   aggregateIpFailures,
   buildAnomalySummary,
+  buildCountAxis,
+  buildDeviceScaffold,
+  buildDropOffScaffold,
+  buildHourScaffold,
+  buildIpScaffold,
+  buildVelocityScaffoldRows,
   buildDeviceTrend,
   buildDropOffSeries,
   buildErrorCategorySlices,

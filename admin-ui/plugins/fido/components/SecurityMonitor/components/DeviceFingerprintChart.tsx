@@ -11,16 +11,27 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
-import { SECURITY_CHART_FILL_OPACITY, SECURITY_CHART_HEIGHT } from '../constants'
-import { getSecurityPalette } from '../utils'
+import {
+  CHART_EMPTY_INSET,
+  CHART_PERCENT_DOMAIN,
+  CHART_PERCENT_TICKS,
+  SECURITY_CHART_FILL_OPACITY,
+} from '../constants'
+import { buildDeviceScaffold, getSecurityPalette } from '../utils'
+import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
 import type { DeviceShiftChartProps } from '../types'
 
-const PERCENT_DOMAIN: [number, number] = [0, 100]
+const AXIS_EMPTY_INSET = {
+  top: CHART_EMPTY_INSET.TOP_MARGIN,
+  bottom: CHART_EMPTY_INSET.AXIS_HEIGHT,
+  left: CHART_EMPTY_INSET.AXIS_WIDTH,
+}
 
 const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
   const { t } = useTranslation()
-  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { classes } = useSecurityStyles({ isDark, themeColors })
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
 
   const legend = useMemo(
@@ -31,7 +42,11 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
     [t, palette.chart],
   )
 
-  const chartData = useMemo(() => [...trend.points], [trend.points])
+  const isEmpty = trend.points.length === 0
+  const chartData = useMemo(
+    () => (isEmpty ? buildDeviceScaffold() : [...trend.points]),
+    [trend.points, isEmpty],
+  )
 
   return (
     <SecurityChartCard
@@ -42,10 +57,11 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
       }
       statusColor={palette.chart.platform}
       legend={legend}
-      isEmpty={trend.points.length === 0}
+      isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
+      emptyInset={AXIS_EMPTY_INSET}
     >
-      <div style={{ width: '100%', height: SECURITY_CHART_HEIGHT }}>
+      <div className={classes.chartCanvas}>
         <ResponsiveContainer
           width="100%"
           height="100%"
@@ -54,8 +70,8 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
           <AreaChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
             <CartesianGrid {...gridProps} />
             <XAxis dataKey="label" tick={axisTick} />
-            <YAxis domain={PERCENT_DOMAIN} tick={axisTick} />
-            <Tooltip content={renderTooltip} />
+            <YAxis domain={CHART_PERCENT_DOMAIN} ticks={CHART_PERCENT_TICKS} tick={axisTick} />
+            {isEmpty ? null : <Tooltip content={renderTooltip} />}
             <Area
               type="monotone"
               stackId="devices"

@@ -12,12 +12,16 @@ import {
   SPACING,
   SUMMARY_CARD,
   TABLET_MAX_MEDIA_QUERY,
+  WIDE_MAX_MEDIA_QUERY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
+import { CHART_EMPTY_INSET, SECURITY_CHART_HEIGHT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { SecurityStylesParams } from './types'
 
 const KPI_VALUE_UNIT_GAP = 2
+
+const CHART_CARD_PADDING_X = 28
 
 const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
@@ -155,7 +159,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       gap: SPACING.CARD_BUTTON_GAP,
       width: '100%',
       marginBottom: SPACING.CARD_GAP,
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
         gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
@@ -175,6 +179,9 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       flexDirection: 'column' as const,
       justifyContent: 'center',
       gap: SUMMARY_CARD.CONTENT_GAP,
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
+        padding: `${SUMMARY_CARD.PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
+      },
       [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         minHeight: 0,
         padding: `${SPACING.CONTENT_PADDING}px ${SPACING.CARD_PADDING}px`,
@@ -276,12 +283,15 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       'backgroundColor': cardBg,
       ...cardBorderStyle,
       'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': '24px 28px',
+      'padding': `${SPACING.CARD_PADDING}px ${CHART_CARD_PADDING_X}px`,
       'boxSizing': 'border-box' as const,
       'height': '100%',
       'position': 'relative' as const,
       '& svg:focus, & svg *:focus': {
         outline: 'none',
+      },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: `${SPACING.CARD_BUTTON_GAP}px ${SPACING.CARD_BUTTON_GAP}px`,
       },
     },
     chartHeader: {
@@ -304,10 +314,14 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontSize: fontSizes.xl,
       lineHeight: lineHeights.tight,
       color: themeColors.fontColor,
+      margin: 0,
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.content,
+      },
     },
     chartSubtitle: {
       fontFamily,
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.base,
       color: themeColors.fontColor,
       opacity: OPACITY.PLACEHOLDER,
       marginTop: 4,
@@ -317,7 +331,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       gap: SPACING.CARD_GAP,
       marginBottom: SPACING.CARD_GAP,
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
         gridTemplateColumns: 'minmax(0, 1fr)',
       },
     },
@@ -336,7 +350,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       alignItems: 'center',
       gap: SPACING.CARD_CONTENT_GAP,
       fontFamily,
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.base,
       color: themeColors.fontColor,
     },
     legendDot: {
@@ -355,10 +369,11 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       borderCollapse: 'separate' as const,
       borderSpacing: 4,
       fontFamily,
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.base,
       color: themeColors.fontColor,
     },
     velocityCorner: {
+      width: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
       textAlign: 'left' as const,
       fontWeight: fontWeights.medium,
       padding: '4px 8px',
@@ -372,6 +387,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       opacity: OPACITY.PLACEHOLDER,
     },
     velocityRowLabel: {
+      width: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
       textAlign: 'left' as const,
       fontWeight: fontWeights.regular,
       padding: '4px 8px',
@@ -384,17 +400,39 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       color: themeColors.chart.cellText,
       minWidth: 64,
     },
+    chartCardBody: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      height: '100%',
+    },
+    chartCanvas: {
+      width: '100%',
+      height: SECURITY_CHART_HEIGHT,
+    },
+    chartBody: {
+      position: 'relative' as const,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'center',
+      flex: '0 0 auto',
+      minWidth: 0,
+    },
     emptyState: {
+      position: 'absolute' as const,
+      inset: 0,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: 200,
+      pointerEvents: 'none' as const,
+      zIndex: 1,
       fontFamily,
-      fontSize: fontSizes.base,
+      fontSize: fontSizes.lg,
+      fontWeight: fontWeights.medium,
       color: themeColors.fontColor,
-      opacity: OPACITY.PLACEHOLDER,
-      backgroundColor: themeColors.lightBackground,
       borderRadius: BORDER_RADIUS.SMALL_MEDIUM,
+    },
+    emptyStateCompact: {
+      fontSize: fontSizes.md,
     },
   }
 })

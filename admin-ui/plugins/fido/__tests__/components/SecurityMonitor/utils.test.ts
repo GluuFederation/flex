@@ -1,10 +1,16 @@
 import {
   aggregateIpFailures,
   buildAnomalySummary,
+  buildCountAxis,
+  buildDeviceScaffold,
   buildDeviceTrend,
+  buildDropOffScaffold,
   buildDropOffSeries,
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
+  buildHourScaffold,
+  buildIpScaffold,
+  buildVelocityScaffoldRows,
   buildVelocityMatrix,
   countByThreatLevel,
   countSpikes,
@@ -239,14 +245,11 @@ describe('SecurityMonitor utils', () => {
 
   describe('buildVelocityMatrix', () => {
     it('buckets attempts into six four-hour windows per user', () => {
-      const matrix = buildVelocityMatrix(
-        [
-          authEntry({ username: 'alice', timestamp: '2024-01-01T10:00:00' }),
-          authEntry({ username: 'alice', timestamp: '2024-01-01T11:30:00' }),
-          authEntry({ username: 'bob', timestamp: '2024-01-01T17:00:00' }),
-        ],
-        t,
-      )
+      const matrix = buildVelocityMatrix([
+        authEntry({ username: 'alice', timestamp: '2024-01-01T10:00:00' }),
+        authEntry({ username: 'alice', timestamp: '2024-01-01T11:30:00' }),
+        authEntry({ username: 'bob', timestamp: '2024-01-01T17:00:00' }),
+      ])
 
       expect(matrix.cols).toEqual(['00-04', '04-08', '08-12', '12-16', '16-20', '20-24'])
       expect(matrix.rows).toEqual(['alice', 'bob'])
@@ -263,17 +266,17 @@ describe('SecurityMonitor utils', () => {
         ),
       ]
 
-      const matrix = buildVelocityMatrix(entries, t)
+      const matrix = buildVelocityMatrix(entries)
 
       expect(matrix.cells[0]![4]!.isAnomalous).toBe(true)
       expect(matrix.cells[0]![0]!.isAnomalous).toBe(false)
       expect(matrix.anomalousUsers).toBe(1)
     })
 
-    it('falls back to a placeholder row when there is no data', () => {
-      const matrix = buildVelocityMatrix([], t)
+    it('returns no rows when there is no data', () => {
+      const matrix = buildVelocityMatrix([])
 
-      expect(matrix.rows).toEqual(['fields.no_data'])
+      expect(matrix.rows).toEqual([])
       expect(matrix.cells[0]!.every((cell) => cell.value === 0)).toBe(true)
     })
   })
@@ -385,6 +388,56 @@ describe('SecurityMonitor utils', () => {
       const summary = buildAnomalySummary([], [], [], t)
 
       expect(summary).toEqual({ count: 0, chips: [] })
+    })
+  })
+
+  describe('chart scaffolds', () => {
+    it('builds a full 24 hour axis with zeroed values', () => {
+      const scaffold = buildHourScaffold()
+
+      expect(scaffold).toHaveLength(24)
+      expect(scaffold[0]?.label).toBe('00')
+      expect(scaffold[23]?.label).toBe('23')
+      expect(scaffold.every((point) => point.failures === 0 && point.baseline === 0)).toBe(true)
+    })
+
+    it('builds day axes ending on the base date', () => {
+      const base = new Date('2026-07-28T10:00:00Z').getTime()
+
+      expect(buildDropOffScaffold(base)).toHaveLength(7)
+      expect(buildDeviceScaffold(base)).toHaveLength(14)
+      expect(buildDeviceScaffold(base).at(-1)?.label).toBe('Jul-28')
+    })
+
+    it('builds unique blank rows for category axes', () => {
+      const bars = buildIpScaffold()
+      const rows = buildVelocityScaffoldRows()
+
+      expect(bars).toHaveLength(5)
+      expect(new Set(bars.map((bar) => bar.ipAddress)).size).toBe(bars.length)
+      expect(bars.every((bar) => bar.failures === 0)).toBe(true)
+      expect(new Set(rows).size).toBe(rows.length)
+    })
+  })
+
+  describe('buildCountAxis', () => {
+    it('keeps tick gaps uniform for any maximum', () => {
+      const cases = [0, 1, 7, 19, 143]
+
+      cases.forEach((max) => {
+        const axis = buildCountAxis(max)
+        const gaps = axis.ticks.slice(1).map((tick, index) => tick - axis.ticks[index]!)
+
+        expect(new Set(gaps).size).toBe(1)
+        expect(axis.ticks[0]).toBe(0)
+        expect(axis.domain).toEqual([0, axis.ticks.at(-1)])
+        expect(axis.domain[1]).toBeGreaterThanOrEqual(max)
+        expect(axis.ticks.every(Number.isInteger)).toBe(true)
+      })
+    })
+
+    it('falls back to a readable range when there is no data', () => {
+      expect(buildCountAxis(0).ticks).toEqual([0, 2, 4, 6, 8, 10])
     })
   })
 })

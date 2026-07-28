@@ -1,25 +1,33 @@
 import React, { useMemo } from 'react'
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
-import { SECURITY_CHART_HEIGHT, THREAT_LEVELS } from '../constants'
-import { countByThreatLevel, getSecurityPalette, takeTopIpsByFailure } from '../utils'
+import { CHART_EMPTY_INSET, THREAT_LEVELS } from '../constants'
+import {
+  buildCountAxis,
+  buildIpScaffold,
+  countByThreatLevel,
+  getSecurityPalette,
+  takeTopIpsByFailure,
+} from '../utils'
+import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
 import type { FailureBurstByIpProps } from '../types'
 
+const IP_LABEL_WIDTH = 130
+
+const BAR_EMPTY_INSET = {
+  top: CHART_EMPTY_INSET.TOP_MARGIN,
+  bottom: CHART_EMPTY_INSET.AXIS_HEIGHT,
+  left: CHART_EMPTY_INSET.BAR_LEFT_MARGIN,
+  right: CHART_EMPTY_INSET.BAR_LEFT_MARGIN,
+}
+
 const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
   const { t } = useTranslation()
-  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { classes } = useSecurityStyles({ isDark, themeColors })
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
 
   const data = useMemo(
@@ -28,9 +36,17 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
         ipAddress: stat.ipAddress,
         failures: stat.failures,
         targetedUsers: stat.targetedUsers,
-        color: palette.threatLevels[stat.threatLevel],
+        fill: palette.threatLevels[stat.threatLevel],
       })),
     [ipStats, palette.threatLevels],
+  )
+
+  const isEmpty = data.length === 0
+  const chartData = useMemo(() => (isEmpty ? buildIpScaffold() : data), [data, isEmpty])
+
+  const countAxis = useMemo(
+    () => buildCountAxis(chartData.reduce((max, item) => Math.max(max, item.failures), 0)),
+    [chartData],
   )
 
   const criticalCount = useMemo(
@@ -54,29 +70,37 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
       statusLabel={criticalCount ? t('fields.critical_ips', { total: criticalCount }) : undefined}
       accentColor={criticalCount ? palette.threatLevels[THREAT_LEVELS.CRITICAL] : undefined}
       legend={legend}
-      isEmpty={data.length === 0}
+      isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
+      emptyInset={BAR_EMPTY_INSET}
     >
-      <div style={{ width: '100%', height: SECURITY_CHART_HEIGHT }}>
+      <div className={classes.chartCanvas}>
         <ResponsiveContainer
           width="100%"
           height="100%"
           initialDimension={RECHARTS_INITIAL_DIMENSION}
         >
           <BarChart
-            data={data}
+            data={chartData}
             layout="vertical"
             margin={{ top: 12, right: 24, bottom: 8, left: 24 }}
           >
             <CartesianGrid {...gridProps} />
-            <XAxis type="number" allowDecimals={false} tick={axisTick} />
-            <YAxis type="category" dataKey="ipAddress" width={130} tick={axisTick} />
-            <Tooltip content={renderTooltip} />
-            <Bar dataKey="failures" name={t('fields.auth_failures')} isAnimationActive={false}>
-              {data.map((item) => (
-                <Cell key={item.ipAddress} fill={item.color} />
-              ))}
-            </Bar>
+            <XAxis
+              type="number"
+              allowDecimals={false}
+              tick={axisTick}
+              domain={countAxis.domain}
+              ticks={countAxis.ticks}
+            />
+            <YAxis
+              type="category"
+              dataKey="ipAddress"
+              width={isEmpty ? 0 : IP_LABEL_WIDTH}
+              tick={axisTick}
+            />
+            {isEmpty ? null : <Tooltip content={renderTooltip} />}
+            <Bar dataKey="failures" name={t('fields.auth_failures')} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
       </div>

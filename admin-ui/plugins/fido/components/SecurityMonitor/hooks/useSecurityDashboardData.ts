@@ -118,7 +118,7 @@ const useSecurityDashboardData = (
   }, [selectedUserId, authEntries, userEntriesQuery.data])
 
   const velocityMatrix = useMemo(
-    () => buildVelocityMatrix(velocityEntries, translate),
+    () => buildVelocityMatrix(velocityEntries),
     [velocityEntries, translate],
   )
 

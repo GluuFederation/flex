@@ -6,10 +6,15 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
-import { ALL_USERS_OPTION } from '../constants'
-import { getSecurityPalette } from '../utils'
+import { ALL_USERS_OPTION, CHART_EMPTY_INSET } from '../constants'
+import { buildVelocityScaffoldRows, getSecurityPalette } from '../utils'
 import SecurityChartCard from './SecurityChartCard'
 import type { VelocityHeatmapProps } from '../types'
+
+const VELOCITY_EMPTY_INSET = {
+  top: CHART_EMPTY_INSET.VELOCITY_HEADER_HEIGHT,
+  left: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
+}
 
 const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
   matrix,
@@ -42,6 +47,10 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
   const selectedLabel = selectedUserId === ALL_USERS_OPTION ? t('fields.all_users') : selectedUserId
 
   const isEmpty = matrix.cells.every((row) => row.every((cell) => cell.value === 0))
+  const rows = useMemo(
+    () => (matrix.rows.length ? matrix.rows : buildVelocityScaffoldRows()),
+    [matrix.rows],
+  )
 
   return (
     <SecurityChartCard
@@ -68,6 +77,7 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
       }
       isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
+      emptyInset={VELOCITY_EMPTY_INSET}
     >
       <div className={classes.tableWrapper}>
         <table className={classes.velocityTable}>
@@ -84,7 +94,7 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
             </tr>
           </thead>
           <tbody>
-            {matrix.rows.map((row, rowIndex) => (
+            {rows.map((row, rowIndex) => (
               <tr key={row}>
                 <th className={classes.velocityRowLabel} scope="row">
                   {row}

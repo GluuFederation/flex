@@ -68,7 +68,7 @@ const GluuErrorScreen = ({ error }: FallbackProps) => {
               minHeight={40}
               padding="0 28px"
               useOpacityOnHover
-              style={{ letterSpacing: '0.28px' }}
+              className={classes.actionButton}
               onClick={() => window.location.assign(basePath)}
             >
               <ArrowBack className={classes.buttonIcon} />
@@ -81,7 +81,7 @@ const GluuErrorScreen = ({ error }: FallbackProps) => {
               fontWeight={700}
               minHeight={40}
               padding="0 28px"
-              style={{ letterSpacing: '0.28px' }}
+              className={classes.actionButton}
               onClick={() => window.open(EXTERNAL_LINKS.SUPPORT, '_blank', 'noopener,noreferrer')}
             >
               <OpenInNew className={classes.buttonIconSmall} />

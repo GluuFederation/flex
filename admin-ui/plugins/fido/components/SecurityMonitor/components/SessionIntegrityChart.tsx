@@ -12,19 +12,27 @@ import { useTranslation } from 'react-i18next'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import {
+  CHART_EMPTY_INSET,
+  CHART_PERCENT_DOMAIN,
+  CHART_PERCENT_TICKS,
   DROP_OFF_ALERT_RATE,
   SECURITY_CHART_FILL_OPACITY,
-  SECURITY_CHART_HEIGHT,
 } from '../constants'
-import { findDropOffPeak, getSecurityPalette } from '../utils'
+import { buildDropOffScaffold, findDropOffPeak, getSecurityPalette } from '../utils'
+import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
 import type { DropOffChartProps } from '../types'
 
-const PERCENT_DOMAIN: [number, number] = [0, 100]
+const AXIS_EMPTY_INSET = {
+  top: CHART_EMPTY_INSET.TOP_MARGIN,
+  bottom: CHART_EMPTY_INSET.AXIS_HEIGHT,
+  left: CHART_EMPTY_INSET.AXIS_WIDTH,
+}
 
 const SessionIntegrityChart: React.FC<DropOffChartProps> = ({ series }) => {
   const { t } = useTranslation()
-  const { themeColors, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { classes } = useSecurityStyles({ isDark, themeColors })
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
 
   const peak = useMemo(() => findDropOffPeak(series), [series])
@@ -39,7 +47,11 @@ const SessionIntegrityChart: React.FC<DropOffChartProps> = ({ series }) => {
     [t, palette.chart],
   )
 
-  const chartData = useMemo(() => [...series], [series])
+  const isEmpty = series.length === 0
+  const chartData = useMemo(
+    () => (isEmpty ? buildDropOffScaffold() : [...series]),
+    [series, isEmpty],
+  )
 
   return (
     <SecurityChartCard
@@ -53,10 +65,11 @@ const SessionIntegrityChart: React.FC<DropOffChartProps> = ({ series }) => {
       statusColor={palette.chart.suspicious}
       accentColor={hasAlert ? palette.chart.suspicious : undefined}
       legend={legend}
-      isEmpty={series.length === 0}
+      isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
+      emptyInset={AXIS_EMPTY_INSET}
     >
-      <div style={{ width: '100%', height: SECURITY_CHART_HEIGHT }}>
+      <div className={classes.chartCanvas}>
         <ResponsiveContainer
           width="100%"
           height="100%"
@@ -65,8 +78,8 @@ const SessionIntegrityChart: React.FC<DropOffChartProps> = ({ series }) => {
           <AreaChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
             <CartesianGrid {...gridProps} />
             <XAxis dataKey="label" tick={axisTick} />
-            <YAxis domain={PERCENT_DOMAIN} tick={axisTick} />
-            <Tooltip content={renderTooltip} />
+            <YAxis domain={CHART_PERCENT_DOMAIN} ticks={CHART_PERCENT_TICKS} tick={axisTick} />
+            {isEmpty ? null : <Tooltip content={renderTooltip} />}
             <Area
               type="monotone"
               stackId="rates"

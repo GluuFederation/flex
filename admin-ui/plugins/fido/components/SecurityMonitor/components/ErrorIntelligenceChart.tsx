@@ -1,15 +1,16 @@
 import React, { useMemo } from 'react'
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
-import { SECURITY_CHART_HEIGHT } from '../constants'
+import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
 import type { ErrorCategoryChartProps } from '../types'
 
 const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) => {
   const { t } = useTranslation()
-  const { renderTooltip } = useChartTheme()
+  const { themeColors, isDark, renderTooltip } = useChartTheme()
+  const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const legend = useMemo(
     () =>
@@ -20,7 +21,14 @@ const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) =
     [slices],
   )
 
-  const chartData = useMemo(() => [...slices], [slices])
+  const isEmpty = slices.length === 0
+  const chartData = useMemo(
+    () =>
+      isEmpty
+        ? [{ category: '', count: 1, share: 0, fill: themeColors.borderColor }]
+        : slices.map((slice) => ({ ...slice, fill: slice.color })),
+    [slices, isEmpty, themeColors.borderColor],
+  )
   const leadSlice = slices[0]
 
   return (
@@ -33,10 +41,11 @@ const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) =
           : undefined
       }
       legend={legend}
-      isEmpty={slices.length === 0}
+      isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
+      emptyCompact
     >
-      <div style={{ width: '100%', height: SECURITY_CHART_HEIGHT }}>
+      <div className={classes.chartCanvas}>
         <ResponsiveContainer
           width="100%"
           height="100%"
@@ -49,15 +58,11 @@ const ErrorIntelligenceChart: React.FC<ErrorCategoryChartProps> = ({ slices }) =
               nameKey="category"
               cx="50%"
               cy="50%"
-              innerRadius="55%"
-              outerRadius="80%"
+              innerRadius="58%"
+              outerRadius="92%"
               isAnimationActive={false}
-            >
-              {chartData.map((slice) => (
-                <Cell key={slice.category} fill={slice.color} />
-              ))}
-            </Pie>
-            <Tooltip content={renderTooltip} />
+            />
+            {isEmpty ? null : <Tooltip content={renderTooltip} />}
           </PieChart>
         </ResponsiveContainer>
       </div>

@@ -184,6 +184,7 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
     },
     changePasswordButton: {
       display: 'inline-flex',
+      gap: SPACING.CARD_CONTENT_GAP,
       height: 44,
       padding: '8px 20px',
       justifyContent: 'center',

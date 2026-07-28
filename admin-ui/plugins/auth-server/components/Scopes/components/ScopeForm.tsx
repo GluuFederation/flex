@@ -656,10 +656,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
                         <Col sm={8}>
                           {scope?.attributes?.spontaneousClientScopes?.map((item, index) => (
-                            <div
-                              style={{ maxWidth: 140, overflow: 'auto' }}
-                              key={`scope-${index}-${item}`}
-                            >
+                            <div className={classes.badgeScrollBox} key={`scope-${index}-${item}`}>
                               <Badge style={badgeStyle}>{item}</Badge>
                             </div>
                           ))}

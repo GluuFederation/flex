@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Card, CardBody } from 'Components'
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -30,17 +30,17 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
       {
         name: t('fields.success_rate'),
         value: toPercent(errorsData?.successRate),
-        color: METRICS_CHART_COLORS.successRate,
+        fill: METRICS_CHART_COLORS.successRate,
       },
       {
         name: t('fields.error_rate'),
         value: toPercent(errorsData?.failureRate),
-        color: METRICS_CHART_COLORS.errorRate,
+        fill: METRICS_CHART_COLORS.errorRate,
       },
       {
         name: t('fields.drop_off_rate'),
         value: toPercent(errorsData?.dropOffRate),
-        color: METRICS_CHART_COLORS.dropOffRate,
+        fill: METRICS_CHART_COLORS.dropOffRate,
       },
     ],
     [t, errorsData],
@@ -61,7 +61,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
     const pct = `${(percent * 100).toFixed(0)}%`
 
     return (
-      <text x={x} y={y} fill={entry.color} textAnchor={anchor} fontSize={13} fontWeight="700">
+      <text x={x} y={y} fill={entry.fill} textAnchor={anchor} fontSize={13} fontWeight="700">
         <tspan x={x} dy="-8">
           {entry.name}
         </tspan>
@@ -93,7 +93,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke={entry.color}
+        stroke={entry.fill}
         strokeWidth={1.5}
       />
     )
@@ -101,41 +101,19 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
 
   return (
     <Card className={`${classes.chartCard} h-100`}>
-      <CardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 16,
-            marginBottom: 4,
-          }}
-        >
-          <GluuText variant="div" className={classes.chartTitle} style={{ margin: 0 }}>
+      <CardBody className={classes.chartCardBody}>
+        <div className={classes.authChartHeader}>
+          <GluuText variant="div" className={classes.chartTitle}>
             {t('titles.passkey_authentication')}
           </GluuText>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              flexShrink: 0,
-              paddingTop: 2,
-            }}
-          >
+          <div className={classes.authChartLegend}>
             {data.map((entry) => (
-              <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div key={entry.name} className={classes.authChartLegendItem}>
                 <span
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: entry.color,
-                    flexShrink: 0,
-                    display: 'inline-block',
-                  }}
+                  className={classes.authChartLegendDot}
+                  style={{ backgroundColor: entry.fill }}
                 />
-                <span style={{ fontSize: 12, color: entry.color, whiteSpace: 'nowrap' }}>
+                <span className={classes.adoptionLegendLabel} style={{ color: entry.fill }}>
                   {entry.name} {entry.value}%
                 </span>
               </div>
@@ -143,7 +121,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
           </div>
         </div>
 
-        <div style={{ flex: 1, minHeight: 320 }}>
+        <div className={classes.authChartCanvas}>
           <ResponsiveContainer
             width="100%"
             height="100%"
@@ -161,11 +139,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
                 label={renderLabel}
                 labelLine={renderLabelLine}
                 isAnimationActive={false}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
+              />
               <Tooltip
                 content={({ payload, active }) => (
                   <TooltipDesign

@@ -42,6 +42,23 @@ type IpFailureStat = {
   pattern: AttackPattern
 }
 
+type ChartEmptyInset = {
+  top?: number
+  right?: number
+  bottom?: number
+  left?: number
+}
+
+type CountAxis = {
+  domain: [number, number]
+  ticks: number[]
+}
+
+type IpBarScaffoldPoint = {
+  ipAddress: string
+  failures: number
+}
+
 type DropOffPoint = {
   label: string
   successRate: number
@@ -157,6 +174,8 @@ type SecurityChartCardProps = {
   legend?: readonly SecurityLegendItem[]
   isEmpty?: boolean
   emptyLabel?: string
+  emptyInset?: ChartEmptyInset
+  emptyCompact?: boolean
   accentColor?: string
   headerExtra?: ReactNode
   children?: ReactNode
@@ -257,6 +276,8 @@ export type {
   AnomalyGranularity,
   AnomalySummary,
   AttackPattern,
+  ChartEmptyInset,
+  CountAxis,
   DeviceShiftChartProps,
   DeviceTrend,
   DeviceTrendPoint,
@@ -267,6 +288,7 @@ export type {
   FailureBurstByIpProps,
   FailureSpikePoint,
   FailureSpikeTimelineProps,
+  IpBarScaffoldPoint,
   IpFailureStat,
   KpiDelta,
   KpiDeltaLabelProps,

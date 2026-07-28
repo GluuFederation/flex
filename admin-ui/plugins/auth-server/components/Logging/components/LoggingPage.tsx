@@ -65,7 +65,7 @@ const LoggingPage = (): React.ReactElement => {
     }),
     [themeState?.theme],
   )
-  const { classes } = useStyles({ isDark, themeColors })
+  const { classes, cx } = useStyles({ isDark, themeColors })
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState<PendingValues | null>(null)
@@ -190,7 +190,7 @@ const LoggingPage = (): React.ReactElement => {
             >
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit} style={FORM_STYLE}>
-                  <div className={classes.formContent} style={{ flex: 1 }}>
+                  <div className={cx(classes.formContent, classes.formContentFill)}>
                     <div className={classes.fieldsGrid}>
                       <div className={classes.fieldItem}>
                         <GluuSelectRow

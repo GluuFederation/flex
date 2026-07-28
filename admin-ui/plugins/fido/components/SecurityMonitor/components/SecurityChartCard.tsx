@@ -16,6 +16,8 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
   legend,
   isEmpty,
   emptyLabel,
+  emptyInset,
+  emptyCompact,
   accentColor,
   headerExtra,
   children,
@@ -23,17 +25,17 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useSecurityStyles({ isDark, themeColors })
+  const { classes, cx } = useSecurityStyles({ isDark, themeColors })
 
   return (
     <Card
       className={`${classes.chartCard} h-100`}
       style={accentColor ? { borderColor: accentColor } : undefined}
     >
-      <CardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <CardBody className={classes.chartCardBody}>
         <div className={classes.chartHeader}>
           <div>
-            <GluuText variant="div" className={classes.chartTitle} style={{ margin: 0 }}>
+            <GluuText variant="div" className={classes.chartTitle}>
               {title}
             </GluuText>
             {subtitle ? <div className={classes.chartSubtitle}>{subtitle}</div> : null}
@@ -61,7 +63,17 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
             ))}
           </div>
         ) : null}
-        {isEmpty ? <div className={classes.emptyState}>{emptyLabel}</div> : children}
+        <div className={classes.chartBody}>
+          {children}
+          {isEmpty ? (
+            <div
+              className={cx(classes.emptyState, emptyCompact && classes.emptyStateCompact)}
+              style={emptyInset}
+            >
+              {emptyLabel}
+            </div>
+          ) : null}
+        </div>
       </CardBody>
     </Card>
   )

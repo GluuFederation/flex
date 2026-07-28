@@ -66,6 +66,9 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
     justifyContent: 'center',
     marginTop: theme.spacing(4),
   },
+  actionButton: {
+    letterSpacing: letterSpacing.button,
+  },
   buttonIcon: {
     fontSize: 18,
   },
