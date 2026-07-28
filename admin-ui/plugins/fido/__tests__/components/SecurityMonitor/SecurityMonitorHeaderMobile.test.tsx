@@ -26,7 +26,6 @@ const renderHeader = (
       anomalies={anomalies}
       period={KPI_PERIODS.TODAY}
       onPeriodChange={jest.fn()}
-      isFetching={false}
       onRefresh={jest.fn()}
       onExport={jest.fn()}
       {...overrides}

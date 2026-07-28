@@ -16,6 +16,7 @@ jest.mock('@/cedarling/utility', () => ({
 }))
 
 jest.mock('Plugins/fido/components/SecurityMonitor/hooks', () => ({
+  ...jest.requireActual('Plugins/fido/components/SecurityMonitor/hooks'),
   useSecurityDashboardData: jest.fn(),
 }))
 
@@ -186,7 +187,7 @@ describe('SecurityMonitorPage', () => {
     fireEvent.click(screen.getByText('Behavioral Patterns'))
     fireEvent.click(screen.getByTestId('velocity-heatmap'))
 
-    expect(useSecurityDashboardData).toHaveBeenLastCalledWith(expect.any(Number), 'alice')
+    expect(useSecurityDashboardData).toHaveBeenLastCalledWith(expect.any(Number), 'alice', 'today')
   })
 
   it('exports the current data as CSV', () => {

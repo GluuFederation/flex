@@ -78,7 +78,7 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
         >
           <ComposedChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
             <CartesianGrid {...gridProps} />
-            <XAxis dataKey="label" tick={axisTick} interval={0} minTickGap={4} />
+            <XAxis dataKey="label" tick={axisTick} interval="preserveStartEnd" minTickGap={4} />
             <YAxis
               tick={axisTick}
               allowDecimals={false}

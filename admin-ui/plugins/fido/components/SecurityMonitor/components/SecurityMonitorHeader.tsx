@@ -6,11 +6,9 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { DownloadIcon, FilterListIcon, RefreshIcon } from '@/components/icons'
 import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
 import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
 import { FILTER_SHEET, MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
 import { fontWeights } from '@/styles/fonts'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import { KPI_PERIOD_ORDER } from '../constants'
 import AnomalyBanner from './AnomalyBanner'
@@ -21,14 +19,11 @@ const SecurityMonitorHeader: React.FC<SecurityMonitorHeaderProps> = ({
   anomalies,
   period,
   onPeriodChange,
-  isFetching,
   onRefresh,
   onExport,
 }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { themeColors, isDark } = useSecurityTheme()
   const { classes, cx } = useSecurityStyles({ isDark, themeColors })
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
@@ -150,7 +145,6 @@ const SecurityMonitorHeader: React.FC<SecurityMonitorHeaderProps> = ({
                 size="md"
                 block
                 outlined
-                loading={isFetching}
                 onClick={handleSheetRefresh}
                 textColor={themeColors.fontColor}
                 borderColor={themeColors.borderColor}
@@ -226,7 +220,6 @@ const SecurityMonitorHeader: React.FC<SecurityMonitorHeaderProps> = ({
           <GluuButton
             type="button"
             size="md"
-            loading={isFetching}
             onClick={onRefresh}
             backgroundColor={accentColor}
             textColor={accentTextColor}

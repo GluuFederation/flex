@@ -4,6 +4,7 @@ import {
   buildCountAxis,
   buildDeviceScaffold,
   buildDeviceTrend,
+  buildSecurityExportRows,
   buildDropOffScaffold,
   buildDropOffSeries,
   buildErrorCategorySlices,
@@ -13,6 +14,7 @@ import {
   buildVelocityScaffoldRows,
   buildVelocityMatrix,
   countByThreatLevel,
+  countSequenceSpikes,
   countSpikes,
   filterSuspiciousIps,
   findDropOffPeak,
@@ -31,6 +33,10 @@ import {
   THREAT_LEVELS,
 } from 'Plugins/fido/components/SecurityMonitor/constants'
 import { createDate } from '@/utils/dayjsUtils'
+import type {
+  SecurityDashboardData,
+  SecurityTranslate,
+} from 'Plugins/fido/components/SecurityMonitor/types'
 import type { AggregationEntry, MetricsEntry } from 'Plugins/fido/components/Metrics/types'
 
 const t = (key: string, options?: Record<string, string | number>) =>
@@ -184,7 +190,7 @@ describe('SecurityMonitor utils', () => {
   })
 
   describe('buildDropOffSeries', () => {
-    it('derives success, failure and drop-off percentages labelled by weekday', () => {
+    it('derives success, failure and drop-off percentages labelled by date', () => {
       const series = buildDropOffSeries([
         {
           startTime: '2024-01-01T10:00:00',
@@ -195,7 +201,7 @@ describe('SecurityMonitor utils', () => {
       ])
 
       expect(series[0]).toEqual({
-        label: 'Mon',
+        label: 'Jan-01',
         successRate: 60,
         failureRate: 20,
         dropOffRate: 20,
@@ -213,7 +219,7 @@ describe('SecurityMonitor utils', () => {
 
     it('finds the worst drop-off point', () => {
       const peak = findDropOffPeak([
-        { label: 'Mon', successRate: 90, failureRate: 5, dropOffRate: 5 },
+        { label: 'Jan-01', successRate: 90, failureRate: 5, dropOffRate: 5 },
         { label: 'Fri', successRate: 50, failureRate: 20, dropOffRate: 30 },
       ])
 
@@ -347,6 +353,16 @@ describe('SecurityMonitor utils', () => {
         countSpikes([hourly('2024-01-01T10:00:00Z', 10), hourly('2024-01-02T10:00:00Z', 30)]),
       ).toBe(1)
     })
+
+    it('counts sequence spikes where buckets have no same-hour history', () => {
+      const monthly = [
+        hourly('2024-01-01T00:00:00Z', 10),
+        hourly('2024-02-01T00:00:00Z', 12),
+        hourly('2024-03-01T00:00:00Z', 40),
+      ]
+      expect(countSpikes(monthly)).toBe(0)
+      expect(countSequenceSpikes(monthly)).toBe(1)
+    })
   })
 
   describe('buildAnomalySummary', () => {
@@ -438,6 +454,219 @@ describe('SecurityMonitor utils', () => {
 
     it('falls back to a readable range when there is no data', () => {
       expect(buildCountAxis(0).ticks).toEqual([0, 2, 4, 6, 8, 10])
+    })
+  })
+
+  describe('buildVelocityMatrix anomaly rule', () => {
+    const attempt = (username: string, hour: number): MetricsEntry => ({
+      username,
+      timestamp: `2024-01-01T${String(hour).padStart(2, '0')}:10:00`,
+      status: 'SUCCESS',
+    })
+
+    const burst = (username: string, hour: number, times: number): MetricsEntry[] =>
+      Array.from({ length: times }, () => attempt(username, hour))
+
+    it('flags a block that sits above the user own mean plus two deviations', () => {
+      const entries = [
+        ...burst('a.morgan', 1, 4),
+        ...burst('a.morgan', 5, 5),
+        ...burst('a.morgan', 9, 4),
+        ...burst('a.morgan', 13, 30),
+      ]
+
+      const matrix = buildVelocityMatrix(entries, 8, 10)
+
+      expect(matrix.cells[0]![3]!.isAnomalous).toBe(true)
+      expect(matrix.cells[0]![1]!.isAnomalous).toBe(false)
+      expect(matrix.anomalousUsers).toBe(1)
+    })
+
+    it('keeps an erratic user unflagged because their own spread is already wide', () => {
+      const entries = [
+        ...burst('b.chen', 1, 2),
+        ...burst('b.chen', 5, 30),
+        ...burst('b.chen', 9, 1),
+        ...burst('b.chen', 13, 25),
+        ...burst('b.chen', 17, 28),
+      ]
+
+      const matrix = buildVelocityMatrix(entries, 8, 10)
+
+      expect(matrix.cells[0]!.some((cell) => cell.isAnomalous)).toBe(false)
+    })
+
+    it('respects a raised floor so a wide window does not flag ordinary traffic', () => {
+      const entries = [...burst('c.ruiz', 1, 1), ...burst('c.ruiz', 13, 30)]
+
+      expect(buildVelocityMatrix(entries, 8, 20).cells[0]![3]!.isAnomalous).toBe(true)
+      expect(buildVelocityMatrix(entries, 8, 600).cells[0]![3]!.isAnomalous).toBe(false)
+    })
+  })
+
+  describe('buildDropOffSeries labels', () => {
+    const daily = (startTime: string): AggregationEntry => ({
+      startTime,
+      authenticationAttempts: 100,
+      authenticationSuccesses: 80,
+      authenticationFailures: 15,
+    })
+
+    it('labels every point with a calendar date so days never collide', () => {
+      const series = buildDropOffSeries([
+        daily('2024-01-01T00:00:00'),
+        daily('2024-01-08T00:00:00'),
+      ])
+
+      expect(series.map((point) => point.label)).toEqual(['Jan-01', 'Jan-08'])
+    })
+
+    it('accepts an explicit format override', () => {
+      expect(buildDropOffSeries([daily('2024-01-01T00:00:00')], 'ddd')[0]?.label).toBe('Mon')
+    })
+  })
+
+  describe('buildSecurityExportRows', () => {
+    const translate = ((key: string) => key) as SecurityTranslate
+
+    const emptyData = {
+      anomalies: { count: 0, chips: [] },
+      summary: {
+        failures: { today: 12, last_7_days: 0, this_month: 0 },
+        attempts: { today: 100, last_7_days: 0, this_month: 0 },
+        successRate: { today: 88, last_7_days: 0, this_month: 0 },
+        failureDelta: {
+          today: { value: 0, isIncrease: false },
+          last_7_days: { value: 0, isIncrease: false },
+          this_month: { value: 0, isIncrease: false },
+        },
+        successRateDelta: {
+          today: { value: 0, isIncrease: false },
+          last_7_days: { value: 0, isIncrease: false },
+          this_month: { value: 0, isIncrease: false },
+        },
+        anomalies: { hourly: 3, daily: 0, monthly: 0 },
+        anomaliesDelta: {
+          hourly: { value: 0, isIncrease: false },
+          daily: { value: 0, isIncrease: false },
+          monthly: { value: 0, isIncrease: false },
+        },
+      },
+      spikeSeries: [],
+      dropOffSeries: [],
+      ipStats: [],
+      suspiciousIps: [],
+      errorSlices: [],
+      velocityMatrix: { rows: [], cols: [], cells: [], anomalousUsers: 0 },
+      deviceTrend: { points: [], shiftDayLabel: null },
+      userIds: [],
+      isLoading: false,
+      isFetching: false,
+    } as SecurityDashboardData
+
+    it('skips zero-value velocity cells so the file carries only real activity', () => {
+      const data: SecurityDashboardData = {
+        ...emptyData,
+        velocityMatrix: {
+          rows: ['a.morgan'],
+          cols: ['00-04', '04-08'],
+          cells: [
+            [
+              { value: 0, isAnomalous: false },
+              { value: 6, isAnomalous: false },
+            ],
+          ],
+          anomalousUsers: 0,
+        },
+      }
+
+      const velocityRows = buildSecurityExportRows(data, translate, 'today', 'hourly').filter(
+        (row) => row[0] === 'titles.velocity_watch',
+      )
+
+      expect(velocityRows).toEqual([
+        [
+          'titles.velocity_watch',
+          'a.morgan 04-08',
+          'fields.authentication_attempts',
+          6,
+          'fields.unit_count',
+        ],
+      ])
+    })
+
+    it('returns nothing when no chart series carry data', () => {
+      expect(buildSecurityExportRows(emptyData, translate, 'today', 'hourly')).toEqual([])
+    })
+
+    it('prefixes the KPI summary before every chart series', () => {
+      const data: SecurityDashboardData = {
+        ...emptyData,
+        spikeSeries: [{ label: '03', timestamp: 1, failures: 48, baseline: 5, isSpike: true }],
+        deviceTrend: {
+          points: [{ label: 'Jul-27', platform: 54, crossPlatform: 46 }],
+          shiftDayLabel: null,
+        },
+        velocityMatrix: {
+          rows: ['a.morgan'],
+          cols: ['00-04'],
+          cells: [[{ value: 28, isAnomalous: true }]],
+          anomalousUsers: 1,
+        },
+      }
+
+      const rows = buildSecurityExportRows(data, translate, 'today', 'hourly')
+
+      expect(rows.slice(0, 5).map((row) => [row[2], row[3], row[4]])).toEqual([
+        ['fields.anomalies_captured', 3, 'fields.unit_count'],
+        ['fields.auth_failures', 12, 'fields.unit_count'],
+        ['fields.agg_auth_attempts', 100, 'fields.unit_count'],
+        ['fields.auth_success_rate', 88, 'fields.unit_percent'],
+        ['fields.suspicious_ips', 0, 'fields.unit_count'],
+      ])
+
+      expect(rows).toContainEqual([
+        'titles.attack_pulse',
+        '03',
+        'fields.auth_failures',
+        48,
+        'fields.unit_count',
+      ])
+      expect(rows).toContainEqual([
+        'titles.attack_pulse',
+        '03',
+        'fields.rolling_baseline',
+        5,
+        'fields.unit_count',
+      ])
+      expect(rows).toContainEqual([
+        'titles.attack_pulse',
+        '03',
+        'fields.spike_detected',
+        'actions.yes',
+        'fields.unit_flag',
+      ])
+      expect(rows).toContainEqual([
+        'titles.velocity_watch',
+        'a.morgan 00-04',
+        'fields.authentication_attempts',
+        28,
+        'fields.unit_count',
+      ])
+      expect(rows).toContainEqual([
+        'titles.velocity_watch',
+        'a.morgan 00-04',
+        'fields.anomalous',
+        'actions.yes',
+        'fields.unit_flag',
+      ])
+      expect(rows).toContainEqual([
+        'titles.device_fingerprint_shift',
+        'Jul-27',
+        'fields.cross_platform',
+        46,
+        'fields.unit_percent',
+      ])
     })
   })
 })

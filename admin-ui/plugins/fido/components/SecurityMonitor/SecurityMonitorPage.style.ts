@@ -393,6 +393,10 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       padding: '4px 8px',
       whiteSpace: 'nowrap' as const,
     },
+    velocityLabelCollapsed: {
+      width: 0,
+      padding: 0,
+    },
     velocityCell: {
       textAlign: 'center' as const,
       padding: '10px 8px',

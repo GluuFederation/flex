@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Card, CardBody } from 'Components'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { getBadgeBackground } from '../utils'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { SecurityChartCardProps } from '../types'
 
@@ -22,10 +21,14 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
   headerExtra,
   children,
 }) => {
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { themeColors, isDark } = useSecurityTheme()
   const { classes, cx } = useSecurityStyles({ isDark, themeColors })
+  const statusTone = statusColor ?? themeColors.badges.statusInactive
+  const statusBackground = getBadgeBackground(
+    statusTone,
+    isDark,
+    themeColors.badges.statusInactiveBg,
+  )
 
   return (
     <Card
@@ -43,11 +46,7 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
           <div className={classes.chartHeaderRight}>
             {headerExtra}
             {statusLabel ? (
-              <GluuBadge
-                pill
-                backgroundColor={themeColors.badges.statusInactiveBg}
-                textColor={statusColor ?? themeColors.badges.statusInactive}
-              >
+              <GluuBadge pill backgroundColor={statusBackground} textColor={statusTone}>
                 {statusLabel}
               </GluuBadge>
             ) : null}

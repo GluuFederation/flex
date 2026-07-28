@@ -1,16 +1,12 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { GluuButton } from '@/components/GluuButton'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
 import { getSegmentedButtonStyle } from '@/constants'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { PeriodToggleProps } from '../types'
 
 const PeriodToggle: React.FC<PeriodToggleProps> = ({ options, value, onChange, ariaLabel }) => {
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { theme, themeColors, isDark } = useSecurityTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const unselectedBg = themeColors.dashboard.supportCard ?? themeColors.menu.background
@@ -23,7 +19,7 @@ const PeriodToggle: React.FC<PeriodToggleProps> = ({ options, value, onChange, a
           <GluuButton
             key={option.value}
             type="button"
-            theme={state.theme}
+            theme={theme}
             aria-label={option.label}
             outlined={!isSelected}
             backgroundColor={isSelected ? themeColors.inputBackground : unselectedBg}

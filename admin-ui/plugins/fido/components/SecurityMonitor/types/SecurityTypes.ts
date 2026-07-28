@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { ThemeConfig } from '@/context/theme/config'
-import type { MetricsDateRange } from '../../Metrics/types'
+import type { ThemeValue } from '@/context/theme/constants'
+import type { AggregationTypeParam, MetricsDateRange } from '../../Metrics/types'
 import type {
   ANOMALY_GRANULARITIES,
   ANOMALY_KINDS,
@@ -197,7 +198,6 @@ type SecurityMonitorHeaderProps = {
   anomalies: AnomalySummary
   period: KpiPeriod
   onPeriodChange: (period: KpiPeriod) => void
-  isFetching: boolean
   onRefresh: () => void
   onExport: () => void
 }
@@ -260,6 +260,22 @@ type SecurityDashboardData = {
   isFetching: boolean
 }
 
+type SecurityExportRow = readonly [
+  section: string,
+  label: string,
+  measure: string,
+  value: string | number,
+  unit: string,
+]
+
+type SecurityExportRows = readonly SecurityExportRow[]
+
+type SecurityTheme = {
+  theme: ThemeValue
+  themeColors: ThemeConfig
+  isDark: boolean
+}
+
 type SecurityRanges = {
   hourlyWithBaseline: MetricsDateRange
   today: MetricsDateRange
@@ -268,6 +284,12 @@ type SecurityRanges = {
   monthWithPrevious: MetricsDateRange
   lastTwelveMonths: MetricsDateRange
   ipWindow: MetricsDateRange
+  primary: MetricsDateRange
+  pulse: MetricsDateRange
+  dropOff: MetricsDateRange
+  pulseAggregation: AggregationTypeParam
+  pulseLabelFormat: string
+  dropOffLabelFormat: string
 }
 
 export type {
@@ -305,6 +327,9 @@ export type {
   SecurityPaletteSource,
   SecurityRanges,
   SecurityStylesParams,
+  SecurityExportRow,
+  SecurityExportRows,
+  SecurityTheme,
   SecurityTranslate,
   ThreatLevel,
   VelocityCell,

@@ -120,7 +120,6 @@ describe('SecurityMonitorHeader', () => {
         anomalies={clearAnomalies}
         period={KPI_PERIODS.TODAY}
         onPeriodChange={jest.fn()}
-        isFetching={false}
         onRefresh={jest.fn()}
         onExport={jest.fn()}
         {...overrides}
@@ -288,7 +287,7 @@ describe('VelocityWatchHeatmap', () => {
     expect(screen.getByText('00-04')).toBeInTheDocument()
     expect(screen.getByText('20-24')).toBeInTheDocument()
     expect(screen.getByText('142')).toBeInTheDocument()
-    expect(screen.getByText('1 users anomalous')).toBeInTheDocument()
+    expect(screen.getByText('1 user anomalous')).toBeInTheDocument()
   })
 
   it('offers an all-users option plus every seen user', () => {

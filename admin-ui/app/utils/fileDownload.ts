@@ -4,10 +4,14 @@ const downloadTextFile = (content: string, fileName: string, mimeType: string): 
   const link = document.createElement('a')
   link.href = objectUrl
   link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(objectUrl)
+
+  try {
+    document.body.appendChild(link)
+    link.click()
+  } finally {
+    link.remove()
+    URL.revokeObjectURL(objectUrl)
+  }
 }
 
 export { downloadTextFile }

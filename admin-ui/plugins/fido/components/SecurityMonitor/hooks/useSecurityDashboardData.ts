@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createDate } from '@/utils/dayjsUtils'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
 import { METRIC_OPERATION_TYPES } from '../../Metrics/constants'
 import {
   useAggregationMetrics,
@@ -17,6 +15,8 @@ import {
   ANOMALY_GRANULARITIES,
   KPI_PERIODS,
   SECURITY_ENTRIES_LIMIT,
+  TOP_USER_LIMIT,
+  VELOCITY_ANOMALY_MIN_ATTEMPTS,
 } from '../constants'
 import {
   aggregateIpFailures,
@@ -26,52 +26,64 @@ import {
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
   buildVelocityMatrix,
+  countSequenceSpikes,
   countSpikes,
   filterSuspiciousIps,
   getSecurityPalette,
   percentDelta,
+  resolveIdentity,
   pointDelta,
   sliceEntriesByRange,
   successRateOf,
   sumAggregation,
 } from '../utils'
 import { useSecurityRanges } from './useSecurityRanges'
-import type { SecurityDashboardData, SecurityKpiSummary, SecurityTranslate } from '../types'
+import { useSecurityTheme } from './useSecurityTheme'
+import type {
+  KpiPeriod,
+  SecurityDashboardData,
+  SecurityKpiSummary,
+  SecurityTranslate,
+} from '../types'
 
 const useSecurityDashboardData = (
   nowValue: number,
   selectedUserId: string,
+  period: KpiPeriod,
 ): SecurityDashboardData => {
   const { t } = useTranslation()
   const translate = t as SecurityTranslate
-  const ranges = useSecurityRanges(nowValue)
-  const { state: themeState } = useTheme()
-  const palette = useMemo(
-    () => getSecurityPalette(getThemeColor(themeState.theme)),
-    [themeState.theme],
-  )
+  const ranges = useSecurityRanges(nowValue, period)
+  const { themeColors } = useSecurityTheme()
+  const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
 
   const hourlyQuery = useAggregationMetrics('Hourly', ranges.hourlyWithBaseline)
   const dailyQuery = useAggregationMetrics('Daily', ranges.monthWithPrevious)
+  const pulseQuery = useAggregationMetrics(ranges.pulseAggregation, ranges.pulse)
   const deviceQuery = useAggregationMetrics('Daily', ranges.deviceTrend)
   const monthlyQuery = useAggregationMetrics('Monthly', ranges.lastTwelveMonths)
-  const errorsQuery = useErrorsAnalytics(ranges.today)
+  const errorsQuery = useErrorsAnalytics(ranges.primary)
   const devicesQuery = useDevicesAnalytics(ranges.deviceTrend)
   const ipEntriesQuery = useMetricsEntries(ranges.ipWindow, { limit: SECURITY_ENTRIES_LIMIT })
   const authEntriesQuery = useMetricsEntriesByOperation(
     METRIC_OPERATION_TYPES.AUTHENTICATION,
-    ranges.today,
+    ranges.primary,
     { limit: SECURITY_ENTRIES_LIMIT },
   )
   const userEntriesQuery = useMetricsEntriesByUser(
     selectedUserId === ALL_USERS_OPTION ? '' : selectedUserId,
-    ranges.today,
+    ranges.primary,
     { limit: SECURITY_ENTRIES_LIMIT },
   )
 
   const spikeSeries = useMemo(
-    () => buildFailureSpikeSeries(hourlyQuery.data?.entries ?? [], ranges.today.startDate),
-    [hourlyQuery.data, ranges.today.startDate],
+    () =>
+      buildFailureSpikeSeries(
+        pulseQuery.data?.entries ?? [],
+        ranges.primary.startDate,
+        ranges.pulseLabelFormat,
+      ),
+    [pulseQuery.data, ranges.primary.startDate, ranges.pulseLabelFormat],
   )
 
   const dropOffSeries = useMemo(
@@ -79,11 +91,12 @@ const useSecurityDashboardData = (
       buildDropOffSeries(
         sliceEntriesByRange(
           dailyQuery.data?.entries ?? [],
-          ranges.lastSevenDays.startDate,
-          ranges.lastSevenDays.endDate,
+          ranges.dropOff.startDate,
+          ranges.dropOff.endDate,
         ),
+        ranges.dropOffLabelFormat,
       ),
-    [dailyQuery.data, ranges.lastSevenDays],
+    [dailyQuery.data, ranges.dropOff, ranges.dropOffLabelFormat],
   )
 
   const ipStats = useMemo(
@@ -105,7 +118,7 @@ const useSecurityDashboardData = (
       Array.from(
         new Set(
           authEntries
-            .map((entry) => entry.username ?? entry.userId)
+            .map((entry) => resolveIdentity(entry))
             .filter((identity): identity is string => !!identity),
         ),
       ).sort((a, b) => a.localeCompare(b)),
@@ -117,9 +130,14 @@ const useSecurityDashboardData = (
     return userEntriesQuery.data?.entries ?? []
   }, [selectedUserId, authEntries, userEntriesQuery.data])
 
+  const velocityMinAttempts = useMemo(() => {
+    const days = Math.max(1, ranges.primary.endDate.diff(ranges.primary.startDate, 'day') + 1)
+    return VELOCITY_ANOMALY_MIN_ATTEMPTS * days
+  }, [ranges.primary])
+
   const velocityMatrix = useMemo(
-    () => buildVelocityMatrix(velocityEntries),
-    [velocityEntries, translate],
+    () => buildVelocityMatrix(velocityEntries, TOP_USER_LIMIT, velocityMinAttempts),
+    [velocityEntries, velocityMinAttempts],
   )
 
   const deviceTrend = useMemo(
@@ -177,7 +195,7 @@ const useSecurityDashboardData = (
     const dailyAnomaliesPrevious = countSpikes(
       sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
     )
-    const monthlyAnomalies = countSpikes(monthlyEntries)
+    const monthlyAnomalies = countSequenceSpikes(monthlyEntries)
 
     return {
       failures: {
@@ -219,12 +237,14 @@ const useSecurityDashboardData = (
   }, [dailyQuery.data, hourlyQuery.data, monthlyQuery.data, ranges])
 
   const isLoading =
+    pulseQuery.isLoading ||
     hourlyQuery.isLoading ||
     dailyQuery.isLoading ||
     ipEntriesQuery.isLoading ||
     authEntriesQuery.isLoading
 
   const isFetching =
+    pulseQuery.isFetching ||
     hourlyQuery.isFetching ||
     dailyQuery.isFetching ||
     deviceQuery.isFetching ||

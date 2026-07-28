@@ -2,9 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuDropdown } from '@/components/GluuDropdown'
 import { GluuButton } from '@/components/GluuButton'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import { ALL_USERS_OPTION, CHART_EMPTY_INSET } from '../constants'
 import { buildVelocityScaffoldRows, getSecurityPalette } from '../utils'
@@ -13,7 +11,6 @@ import type { VelocityHeatmapProps } from '../types'
 
 const VELOCITY_EMPTY_INSET = {
   top: CHART_EMPTY_INSET.VELOCITY_HEADER_HEIGHT,
-  left: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
 }
 
 const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
@@ -23,11 +20,9 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
   onSelectUser,
 }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
+  const { themeColors, isDark } = useSecurityTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const isDark = state.theme === THEME_DARK
-  const { classes } = useSecurityStyles({ isDark, themeColors })
+  const { classes, cx } = useSecurityStyles({ isDark, themeColors })
 
   const options = useMemo(
     () => [
@@ -58,7 +53,7 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
       subtitle={t('fields.velocity_watch_subtitle')}
       statusLabel={
         matrix.anomalousUsers
-          ? t('fields.users_anomalous', { total: matrix.anomalousUsers })
+          ? t('fields.users_anomalous', { count: matrix.anomalousUsers })
           : undefined
       }
       accentColor={matrix.anomalousUsers ? palette.velocityCells.anomalous : undefined}
@@ -83,8 +78,11 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
         <table className={classes.velocityTable}>
           <thead>
             <tr>
-              <th className={classes.velocityCorner} scope="col">
-                {t('fields.user')}
+              <th
+                className={cx(classes.velocityCorner, isEmpty && classes.velocityLabelCollapsed)}
+                scope="col"
+              >
+                {isEmpty ? '' : t('fields.user')}
               </th>
               {matrix.cols.map((col) => (
                 <th key={col} className={classes.velocityHeadCell} scope="col">
@@ -96,7 +94,13 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
           <tbody>
             {rows.map((row, rowIndex) => (
               <tr key={row}>
-                <th className={classes.velocityRowLabel} scope="row">
+                <th
+                  className={cx(
+                    classes.velocityRowLabel,
+                    isEmpty && classes.velocityLabelCollapsed,
+                  )}
+                  scope="row"
+                >
                   {row}
                 </th>
                 {matrix.cols.map((col, colIndex) => {
@@ -112,6 +116,11 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
                       key={col}
                       className={classes.velocityCell}
                       style={{ backgroundColor: background }}
+                      aria-label={
+                        cell?.isAnomalous
+                          ? t('fields.velocity_cell_anomalous', { count: value, window: col })
+                          : undefined
+                      }
                     >
                       {value || ''}
                     </td>

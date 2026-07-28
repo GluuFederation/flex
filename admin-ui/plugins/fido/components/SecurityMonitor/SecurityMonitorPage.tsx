@@ -13,9 +13,6 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { CSV_MIME_TYPE, toCsv } from '@/utils/csv'
 import { downloadTextFile } from '@/utils/fileDownload'
 import { createDate } from '@/utils/dayjsUtils'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
 import { useSecurityStyles } from './SecurityMonitorPage.style'
 import {
   AttackPulseChart,
@@ -27,8 +24,9 @@ import {
   ThreatOriginsChart,
   VelocityWatchHeatmap,
 } from './components'
-import { useSecurityDashboardData } from './hooks'
-import { ALL_USERS_OPTION, KPI_PERIODS } from './constants'
+import { useSecurityDashboardData, useSecurityTheme } from './hooks'
+import { buildSecurityExportRows } from './utils'
+import { ALL_USERS_OPTION, KPI_PERIODS, KPI_PERIOD_GRANULARITY } from './constants'
 import type { KpiPeriod } from './types'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
@@ -41,9 +39,7 @@ const SecurityMonitorPage: React.FC = () => {
 
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
-  const { state: themeState } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
-  const isDark = themeState.theme === THEME_DARK
+  const { themeColors, isDark } = useSecurityTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const { canRead: canView } = usePermission(SECURITY_RESOURCE_ID)
@@ -52,7 +48,8 @@ const SecurityMonitorPage: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<string>(ALL_USERS_OPTION)
   const [period, setPeriod] = useState<KpiPeriod>(KPI_PERIODS.TODAY)
 
-  const data = useSecurityDashboardData(nowValue, selectedUserId)
+  const data = useSecurityDashboardData(nowValue, selectedUserId, period)
+  const anomalyGranularity = KPI_PERIOD_GRANULARITY[period]
 
   const handleRefresh = useCallback(() => {
     setNowValue(createDate().valueOf())
@@ -60,26 +57,7 @@ const SecurityMonitorPage: React.FC = () => {
   }, [queryClient])
 
   const handleExport = useCallback(() => {
-    const rows: (string | number)[][] = [
-      ...data.spikeSeries.map((point) => [
-        t('fields.auth_failures'),
-        point.label,
-        point.failures,
-        point.baseline,
-      ]),
-      ...data.ipStats.map((stat) => [
-        t('fields.ip_address'),
-        stat.ipAddress,
-        stat.failures,
-        stat.failureRate,
-      ]),
-      ...data.errorSlices.map((slice) => [
-        t('fields.error_category'),
-        slice.category,
-        slice.count,
-        slice.share,
-      ]),
-    ]
+    const rows = buildSecurityExportRows(data, t, period, anomalyGranularity)
 
     if (!rows.length) {
       dispatch(updateToast(true, 'error', t('messages.no_data_to_export')))
@@ -87,7 +65,13 @@ const SecurityMonitorPage: React.FC = () => {
     }
 
     const csv = toCsv(
-      [t('fields.metric'), t('fields.label'), t('fields.value'), t('fields.secondary_value')],
+      [
+        t('fields.export_section'),
+        t('fields.label'),
+        t('fields.export_measure'),
+        t('fields.value'),
+        t('fields.export_unit'),
+      ],
       rows,
     )
     downloadTextFile(
@@ -95,7 +79,21 @@ const SecurityMonitorPage: React.FC = () => {
       `passkey-security-monitor-${createDate(nowValue).format('YYYYMMDD-HHmm')}.csv`,
       CSV_MIME_TYPE,
     )
-  }, [data.spikeSeries, data.ipStats, data.errorSlices, dispatch, t, nowValue])
+  }, [
+    data.summary,
+    data.spikeSeries,
+    data.dropOffSeries,
+    data.ipStats,
+    data.errorSlices,
+    data.velocityMatrix,
+    data.deviceTrend,
+    data.suspiciousIps,
+    t,
+    period,
+    anomalyGranularity,
+    dispatch,
+    nowValue,
+  ])
 
   const handleSelectUser = useCallback((userId: string) => {
     setSelectedUserId(userId)
@@ -151,18 +149,29 @@ const SecurityMonitorPage: React.FC = () => {
           return null
       }
     },
-    [tabNames, classes, data, selectedUserId, handleSelectUser],
+    [
+      tabNames,
+      classes,
+      data.spikeSeries,
+      data.dropOffSeries,
+      data.ipStats,
+      data.errorSlices,
+      data.velocityMatrix,
+      data.userIds,
+      data.deviceTrend,
+      selectedUserId,
+      handleSelectUser,
+    ],
   )
 
   return (
-    <GluuLoader blocking={data.isLoading}>
+    <GluuLoader blocking={data.isLoading || data.isFetching}>
       <GluuViewWrapper canShow={canView}>
         <GluuPageContent>
           <SecurityMonitorHeader
             anomalies={data.anomalies}
             period={period}
             onPeriodChange={setPeriod}
-            isFetching={data.isFetching}
             onRefresh={handleRefresh}
             onExport={handleExport}
           />

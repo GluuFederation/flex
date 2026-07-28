@@ -1,21 +1,17 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuBadge } from '@/components/GluuBadge'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import { KPI_PERIOD_GRANULARITY, THREAT_LEVELS } from '../constants'
-import { countByThreatLevel, getSecurityPalette } from '../utils'
+import { countByThreatLevel, getBadgeBackground, getSecurityPalette } from '../utils'
 import KpiDeltaLabel from './KpiDeltaLabel'
 import type { SecurityKpiStripProps } from '../types'
 
 const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspiciousIps, period }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
+  const { themeColors, isDark } = useSecurityTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const isDark = state.theme === THEME_DARK
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const anomalyGranularity = KPI_PERIOD_GRANULARITY[period]
@@ -44,7 +40,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
           className={classes.kpiValue}
           style={{ color: alertColor(anomalyCount, palette.chart.failures) }}
         >
-          {anomalyCount}
+          {anomalyCount.toLocaleString()}
         </p>
         <KpiDeltaLabel delta={anomalyDelta} label={t('fields.delta_vs_previous')} />
       </div>
@@ -78,7 +74,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
           className={classes.kpiValue}
           style={{ color: alertColor(suspiciousIps.length, palette.chart.suspicious) }}
         >
-          {suspiciousIps.length}
+          {suspiciousIps.length.toLocaleString()}
         </p>
         <p className={classes.kpiCaption}>
           {t('fields.suspicious_ips_breakdown', {
@@ -91,11 +87,13 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
             <GluuBadge
               key={stat.ipAddress}
               pill
-              backgroundColor={
+              backgroundColor={getBadgeBackground(
+                palette.threatLevels[stat.threatLevel],
+                isDark,
                 stat.threatLevel === THREAT_LEVELS.CRITICAL
                   ? palette.statusBg.inactive
-                  : palette.statusBg.active
-              }
+                  : palette.statusBg.active,
+              )}
               textColor={palette.threatLevels[stat.threatLevel]}
             >
               {stat.ipAddress}

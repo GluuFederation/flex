@@ -1,15 +1,11 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { TrendingDownIcon, TrendingUpIcon } from '@/components/icons'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { KpiDeltaLabelProps } from '../types'
 
 const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, increaseIsGood = false }) => {
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { themeColors, isDark } = useSecurityTheme()
   const { classes, cx } = useSecurityStyles({ isDark, themeColors })
 
   const isFlat = delta.value === 0

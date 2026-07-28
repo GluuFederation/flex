@@ -1,20 +1,22 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GluuBadge } from '@/components/GluuBadge'
-import { useTheme } from '@/context/theme/themeContext'
-import getThemeColor from '@/context/theme/config'
-import { THEME_DARK } from '@/context/theme/constants'
+import { getBadgeBackground } from '../utils'
+import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { AnomalyBannerProps } from '../types'
 
 const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
   const { t } = useTranslation()
-  const { state } = useTheme()
-  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
-  const isDark = state.theme === THEME_DARK
+  const { themeColors, isDark } = useSecurityTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const hasAnomalies = anomalies.count > 0
+  const chipBackground = getBadgeBackground(
+    themeColors.badges.statusInactive,
+    isDark,
+    themeColors.badges.statusInactiveBg,
+  )
 
   return (
     <div className={classes.anomalySummary} role="status">
@@ -25,7 +27,7 @@ const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
         <GluuBadge
           key={chip.kind}
           pill
-          backgroundColor={themeColors.badges.statusInactiveBg}
+          backgroundColor={chipBackground}
           textColor={themeColors.badges.statusInactive}
         >
           {chip.label}

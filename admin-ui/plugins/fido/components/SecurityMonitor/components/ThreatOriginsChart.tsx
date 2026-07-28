@@ -99,7 +99,7 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
               width={isEmpty ? 0 : IP_LABEL_WIDTH}
               tick={axisTick}
             />
-            {isEmpty ? null : <Tooltip content={renderTooltip} />}
+            {isEmpty ? null : <Tooltip content={renderTooltip} cursor={false} />}
             <Bar dataKey="failures" name={t('fields.auth_failures')} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>

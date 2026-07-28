@@ -47,6 +47,7 @@ describe('isMoreMenuPath', () => {
 
   it('is true for a route belonging to a tile child (FIDO/Services)', () => {
     expect(isMoreMenuPath('/fido/metrics')).toBe(true)
+    expect(isMoreMenuPath('/fido/security-monitor')).toBe(true)
     expect(isMoreMenuPath('/config/persistence')).toBe(true)
   })
 

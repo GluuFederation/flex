@@ -1,3 +1,5 @@
+import { alpha } from '@mui/material/styles'
+import { OPACITY } from '@/constants'
 import { createDate, type Dayjs } from '@/utils/dayjsUtils'
 import { METRIC_STATUS } from '../Metrics/constants'
 import type {
@@ -12,9 +14,13 @@ import {
   BASELINE_WINDOW_DAYS,
   CHART_SCAFFOLD,
   CHART_TICK_COUNT,
+  CRITICAL_IP_FAILURE_RATIO,
   CRITICAL_IP_RATIO_THRESHOLD,
   DEVICE_TREND_DAYS,
   DROP_OFF_ALERT_RATE,
+  HIGH_IP_FAILURE_MULTIPLIER,
+  HIGH_IP_FAILURE_RATIO,
+  CHART_LABEL_FORMATS,
   SPIKE_RATIO_THRESHOLD,
   SUSPICIOUS_IP_MIN_FAILURES,
   SUSPICIOUS_IP_MIN_FAILURE_RATE,
@@ -23,11 +29,12 @@ import {
   TOP_IP_LIMIT,
   TOP_USER_LIMIT,
   VELOCITY_ANOMALY_MIN_ATTEMPTS,
-  VELOCITY_ANOMALY_RATIO,
+  VELOCITY_ANOMALY_SIGMA,
   VELOCITY_BUCKET_HOURS,
 } from './constants'
 import type {
   AnomalyChip,
+  AnomalyGranularity,
   AnomalySummary,
   AttackPattern,
   CountAxis,
@@ -39,9 +46,13 @@ import type {
   IpBarScaffoldPoint,
   IpFailureStat,
   KpiDelta,
+  KpiPeriod,
   PeriodTotals,
   SecurityPalette,
   SecurityPaletteSource,
+  SecurityDashboardData,
+  SecurityExportRow,
+  SecurityExportRows,
   SecurityTranslate,
   ThreatLevel,
   VelocityCell,
@@ -49,8 +60,6 @@ import type {
 } from './types'
 
 const HOURS_IN_DAY = 24
-
-const MS_IN_DAY = 24 * 60 * 60 * 1000
 
 const PLATFORM_KEY_HINT = 'platform'
 
@@ -63,6 +72,9 @@ const toCount = (value: number | null | undefined): number =>
 
 const roundTo = (value: number, digits = 2): number => Number(value.toFixed(digits))
 
+const resolveIdentity = (entry: MetricsEntry): string | null =>
+  entry.username ?? entry.userId ?? null
+
 const entryStartDate = (entry: AggregationEntry): Dayjs | null => {
   const raw = entry.startTime ?? entry.period
   if (!raw) return null
@@ -73,6 +85,7 @@ const entryStartDate = (entry: AggregationEntry): Dayjs | null => {
 const buildFailureSpikeSeries = (
   entries: readonly AggregationEntry[],
   from?: Dayjs | null,
+  labelFormat: string = CHART_LABEL_FORMATS.HOURLY,
 ): FailureSpikePoint[] => {
   const points = entries
     .map((entry) => {
@@ -83,9 +96,9 @@ const buildFailureSpikeSeries = (
     .filter((point): point is { date: Dayjs; failures: number } => point !== null)
     .sort((a, b) => a.date.valueOf() - b.date.valueOf())
 
-  const failuresByHour = new Map<number, number>()
+  const failuresByBucket = new Map<number, number>()
   points.forEach((point) => {
-    failuresByHour.set(point.date.valueOf(), point.failures)
+    failuresByBucket.set(point.date.valueOf(), point.failures)
   })
 
   const fromValue = from ? from.valueOf() : Number.NEGATIVE_INFINITY
@@ -96,7 +109,7 @@ const buildFailureSpikeSeries = (
       const timestamp = point.date.valueOf()
       const history: number[] = []
       for (let day = 1; day <= BASELINE_WINDOW_DAYS; day += 1) {
-        const previous = failuresByHour.get(timestamp - day * MS_IN_DAY)
+        const previous = failuresByBucket.get(point.date.subtract(day, 'day').valueOf())
         if (previous !== undefined) history.push(previous)
       }
       const baseline = history.length
@@ -104,7 +117,7 @@ const buildFailureSpikeSeries = (
         : 0
 
       return {
-        label: point.date.format('HH'),
+        label: point.date.format(labelFormat),
         timestamp,
         failures: point.failures,
         baseline,
@@ -124,14 +137,17 @@ const findPeakSpike = (series: readonly FailureSpikePoint[]): FailureSpikePoint 
 const spikeRatio = (point: FailureSpikePoint): number =>
   point.baseline > 0 ? Math.round(point.failures / point.baseline) : 0
 
-const classifyThreatLevel = (stat: { failures: number; failureRate: number }): ThreatLevel => {
+const classifyThreatLevel = (stat: { failures: number; failureRatio: number }): ThreatLevel => {
   if (
     stat.failures >= SUSPICIOUS_IP_MIN_FAILURES * CRITICAL_IP_RATIO_THRESHOLD &&
-    stat.failureRate >= 0.8
+    stat.failureRatio >= CRITICAL_IP_FAILURE_RATIO
   ) {
     return THREAT_LEVELS.CRITICAL
   }
-  if (stat.failures >= SUSPICIOUS_IP_MIN_FAILURES * 2 && stat.failureRate >= 0.6) {
+  if (
+    stat.failures >= SUSPICIOUS_IP_MIN_FAILURES * HIGH_IP_FAILURE_MULTIPLIER &&
+    stat.failureRatio >= HIGH_IP_FAILURE_RATIO
+  ) {
     return THREAT_LEVELS.HIGH
   }
   if (stat.failures >= SUSPICIOUS_IP_MIN_FAILURES) return THREAT_LEVELS.MEDIUM
@@ -181,7 +197,7 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
     if (entry.status === METRIC_STATUS.FAILURE) bucket.failures += 1
     if (entry.status === METRIC_STATUS.SUCCESS) bucket.successes += 1
 
-    const identity = entry.userId ?? entry.username
+    const identity = resolveIdentity(entry)
     if (identity) bucket.users.add(identity)
 
     if (entry.timestamp) {
@@ -197,17 +213,17 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
 
   return Array.from(buckets.entries())
     .map(([ipAddress, bucket]) => {
-      const failureRate = bucket.attempts ? bucket.failures / bucket.attempts : 0
+      const failureRatio = bucket.attempts ? bucket.failures / bucket.attempts : 0
       return {
         ipAddress,
         failures: bucket.failures,
         successes: bucket.successes,
         attempts: bucket.attempts,
-        failureRate: roundTo(failureRate * 100),
+        failureRate: roundTo(failureRatio * 100),
         targetedUsers: bucket.users.size,
         firstSeen: Number.isFinite(bucket.firstSeen) ? bucket.firstSeen : 0,
         lastSeen: bucket.lastSeen,
-        threatLevel: classifyThreatLevel({ failures: bucket.failures, failureRate }),
+        threatLevel: classifyThreatLevel({ failures: bucket.failures, failureRatio }),
         pattern: classifyAttackPattern({
           targetedUsers: bucket.users.size,
           successes: bucket.successes,
@@ -231,7 +247,10 @@ const filterSuspiciousIps = (stats: readonly IpFailureStat[]): IpFailureStat[] =
 const countByThreatLevel = (stats: readonly IpFailureStat[], level: ThreatLevel): number =>
   stats.filter((stat) => stat.threatLevel === level).length
 
-const buildDropOffSeries = (entries: readonly AggregationEntry[]): DropOffPoint[] =>
+const buildDropOffSeries = (
+  entries: readonly AggregationEntry[],
+  labelFormat: string = CHART_LABEL_FORMATS.DAILY,
+): DropOffPoint[] =>
   entries
     .map((entry) => {
       const date = entryStartDate(entry)
@@ -243,7 +262,7 @@ const buildDropOffSeries = (entries: readonly AggregationEntry[]): DropOffPoint[
 
       return {
         timestamp: date.valueOf(),
-        label: date.format('ddd'),
+        label: date.format(labelFormat),
         successRate: attempts ? roundTo((successes / attempts) * 100) : 0,
         failureRate: attempts ? roundTo((failures / attempts) * 100) : 0,
         dropOffRate: attempts ? roundTo((dropOffs / attempts) * 100) : 0,
@@ -314,14 +333,15 @@ const getSecurityPalette = (themeColors: SecurityPaletteSource): SecurityPalette
   }
 }
 
+const getBadgeBackground = (tone: string, isDark: boolean, lightBackground: string): string =>
+  isDark ? alpha(tone, OPACITY.ERROR_BG_DARK) : lightBackground
+
 const buildErrorCategorySlices = (
   errors: ErrorsAnalyticsResponse | undefined,
   colors: readonly string[],
 ): ErrorCategorySlice[] => {
-  const source = {
-    ...readCountRecord(errors?.errorCategories),
-    ...readCountRecord(errors?.errorCounts),
-  }
+  const categories = readCountRecord(errors?.errorCategories)
+  const source = Object.keys(categories).length ? categories : readCountRecord(errors?.errorCounts)
   const items = Object.entries(source).filter(([, count]) => count > 0)
   const total = items.reduce((sum, [, count]) => sum + count, 0)
 
@@ -335,16 +355,119 @@ const buildErrorCategorySlices = (
     }))
 }
 
+const buildSecurityExportRows = (
+  data: SecurityDashboardData,
+  t: SecurityTranslate,
+  period: KpiPeriod,
+  granularity: AnomalyGranularity,
+): SecurityExportRows => {
+  const { velocityMatrix } = data
+  const count = t('fields.unit_count')
+  const percent = t('fields.unit_percent')
+  const flag = t('fields.unit_flag')
+  const yes = t('actions.yes')
+
+  const attackPulse = t('titles.attack_pulse')
+  const outcomes = t('titles.session_integrity_monitor')
+  const origins = t('titles.threat_origins')
+  const errorTypes = t('titles.error_intelligence')
+  const velocity = t('titles.velocity_watch')
+  const devices = t('titles.device_fingerprint_shift')
+
+  const series: SecurityExportRow[] = [
+    ...data.spikeSeries.flatMap((point): SecurityExportRow[] => [
+      [attackPulse, point.label, t('fields.auth_failures'), point.failures, count],
+      [attackPulse, point.label, t('fields.rolling_baseline'), point.baseline, count],
+      ...(point.isSpike
+        ? ([
+            [attackPulse, point.label, t('fields.spike_detected'), yes, flag],
+          ] as SecurityExportRow[])
+        : []),
+    ]),
+    ...data.dropOffSeries.flatMap((point): SecurityExportRow[] => [
+      [outcomes, point.label, t('fields.success_rate'), point.successRate, percent],
+      [outcomes, point.label, t('fields.failure_rate'), point.failureRate, percent],
+      [outcomes, point.label, t('fields.drop_off_rate'), point.dropOffRate, percent],
+    ]),
+    ...data.ipStats.flatMap((stat): SecurityExportRow[] => [
+      [origins, stat.ipAddress, t('fields.auth_failures'), stat.failures, count],
+      [origins, stat.ipAddress, t('fields.failure_rate'), stat.failureRate, percent],
+      [origins, stat.ipAddress, t('fields.targeted_users'), stat.targetedUsers, count],
+      [
+        origins,
+        stat.ipAddress,
+        t('fields.threat_level'),
+        t(`fields.threat_level_${stat.threatLevel}`),
+        flag,
+      ],
+    ]),
+    ...data.errorSlices.flatMap((slice): SecurityExportRow[] => [
+      [errorTypes, slice.category, t('fields.errors'), slice.count, count],
+      [errorTypes, slice.category, t('fields.share'), slice.share, percent],
+    ]),
+    ...velocityMatrix.rows.flatMap((user, rowIndex) =>
+      velocityMatrix.cols.flatMap((col, colIndex): SecurityExportRow[] => {
+        const cell = velocityMatrix.cells[rowIndex]?.[colIndex]
+        if (!cell?.value) return []
+        const label = `${user} ${col}`
+        return [
+          [velocity, label, t('fields.authentication_attempts'), cell.value, count],
+          ...(cell.isAnomalous
+            ? ([[velocity, label, t('fields.anomalous'), yes, flag]] as SecurityExportRow[])
+            : []),
+        ]
+      }),
+    ),
+    ...data.deviceTrend.points.flatMap((point): SecurityExportRow[] => [
+      [devices, point.label, t('fields.platform'), point.platform, percent],
+      [devices, point.label, t('fields.cross_platform'), point.crossPlatform, percent],
+    ]),
+  ]
+
+  if (!series.length) return []
+
+  const summary = t('fields.export_summary')
+  const periodLabel = t(`fields.period_${period}`)
+
+  return [
+    [
+      summary,
+      periodLabel,
+      t('fields.anomalies_captured'),
+      data.summary.anomalies[granularity],
+      count,
+    ],
+    [summary, periodLabel, t('fields.auth_failures'), data.summary.failures[period], count],
+    [summary, periodLabel, t('fields.agg_auth_attempts'), data.summary.attempts[period], count],
+    [
+      summary,
+      periodLabel,
+      t('fields.auth_success_rate'),
+      data.summary.successRate[period],
+      percent,
+    ],
+    [summary, periodLabel, t('fields.suspicious_ips'), data.suspiciousIps.length, count],
+    ...series,
+  ]
+}
+
+const standardDeviation = (values: readonly number[], mean: number): number => {
+  if (!values.length) return 0
+  const variance = values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length
+  return Math.sqrt(variance)
+}
+
 const buildVelocityMatrix = (
   entries: readonly MetricsEntry[],
   limit = TOP_USER_LIMIT,
+  minAttempts = VELOCITY_ANOMALY_MIN_ATTEMPTS,
 ): VelocityMatrix => {
   const bucketCount = Math.ceil(HOURS_IN_DAY / VELOCITY_BUCKET_HOURS)
   const perUser = new Map<string, number[]>()
   const totals = new Map<string, number>()
 
   entries.forEach((entry) => {
-    const identity = entry.username ?? entry.userId
+    const identity = resolveIdentity(entry)
     if (!identity || !entry.timestamp) return
     const parsed = createDate(entry.timestamp)
     if (!parsed.isValid()) return
@@ -364,15 +487,15 @@ const buildVelocityMatrix = (
   const cells: VelocityCell[][] = rows.map((identity) => {
     const row = perUser.get(identity) ?? new Array<number>(bucketCount).fill(0)
     return row.map((value, index) => {
-      const others = row.filter((other, otherIndex) => otherIndex !== index && other > 0)
+      const others = row.filter((_, otherIndex) => otherIndex !== index)
       const othersMean = others.length
         ? others.reduce((sum, other) => sum + other, 0) / others.length
         : 0
+      const threshold = othersMean + VELOCITY_ANOMALY_SIGMA * standardDeviation(others, othersMean)
+
       return {
         value,
-        isAnomalous:
-          value >= VELOCITY_ANOMALY_MIN_ATTEMPTS &&
-          (othersMean === 0 || value >= othersMean * VELOCITY_ANOMALY_RATIO),
+        isAnomalous: value >= minAttempts && value > threshold,
       }
     })
   })
@@ -476,6 +599,24 @@ const pointDelta = (current: number, previous: number): KpiDelta => {
 const countSpikes = (entries: readonly AggregationEntry[]): number =>
   buildFailureSpikeSeries(entries).filter((point) => point.isSpike).length
 
+const countSequenceSpikes = (entries: readonly AggregationEntry[]): number => {
+  const points = entries
+    .map((entry) => {
+      const date = entryStartDate(entry)
+      if (!date) return null
+      return { timestamp: date.valueOf(), failures: toCount(entry.authenticationFailures) }
+    })
+    .filter((point): point is { timestamp: number; failures: number } => point !== null)
+    .sort((a, b) => a.timestamp - b.timestamp)
+
+  return points.filter((point, index) => {
+    const history = points.slice(Math.max(0, index - BASELINE_WINDOW_DAYS), index)
+    if (!history.length) return false
+    const baseline = history.reduce((sum, item) => sum + item.failures, 0) / history.length
+    return baseline > 0 && point.failures >= baseline * SPIKE_RATIO_THRESHOLD
+  }).length
+}
+
 const buildAnomalySummary = (
   spikeSeries: readonly FailureSpikePoint[],
   suspiciousIps: readonly IpFailureStat[],
@@ -566,16 +707,20 @@ export {
   buildIpScaffold,
   buildVelocityScaffoldRows,
   buildDeviceTrend,
+  buildSecurityExportRows,
   buildDropOffSeries,
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
   buildVelocityMatrix,
   countByThreatLevel,
+  countSequenceSpikes,
   countSpikes,
   filterSuspiciousIps,
   findDropOffPeak,
   findPeakSpike,
+  getBadgeBackground,
   getSecurityPalette,
+  resolveIdentity,
   percentDelta,
   pointDelta,
   sliceEntriesByRange,
