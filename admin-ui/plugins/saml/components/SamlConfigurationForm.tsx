@@ -101,7 +101,7 @@ const SamlConfigurationForm: React.FC = () => {
   )
 
   const handleFormSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
       formikHandleSubmit()
     },

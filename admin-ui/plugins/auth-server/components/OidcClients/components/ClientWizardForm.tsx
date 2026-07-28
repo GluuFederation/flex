@@ -376,7 +376,7 @@ const ClientWizardForm = ({
   )
 
   const onKeyDown = (keyEvent: React.KeyboardEvent<HTMLFormElement>) => {
-    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+    if (keyEvent.key === 'Enter') {
       keyEvent.preventDefault()
     }
   }

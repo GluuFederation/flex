@@ -98,7 +98,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   }, [formik])
 
   const handleFormSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (readOnly) {
         return

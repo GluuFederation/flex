@@ -180,7 +180,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
   const grantTypesPlaceholder = useMemo(() => getFieldPlaceholder(t, 'fields.grant_types'), [t])
 
   const handleFormSubmit = useCallback(
-    (e: React.FormEvent) => {
+    (e: React.SyntheticEvent) => {
       e.preventDefault()
       formik.handleSubmit()
     },

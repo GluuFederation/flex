@@ -42,6 +42,13 @@ if [ -z "$STAGED_FILES" ] && [ -z "$STAGED_SCRIPT_FILES" ]; then
 fi
 
 CPUS=$(nproc 2>/dev/null || sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
+
+# Call the local binaries directly: `npx` re-resolves the package on every call,
+# which costs ~0.2s a time and dominates the run once it is paid per file.
+BIN=./node_modules/.bin
+CACHE_DIR=node_modules/.cache
+mkdir -p "$CACHE_DIR"
+
 FILE_COUNT=$(printf '%s\n' "$STAGED_FILES" | grep -c . || true)
 SCRIPT_COUNT=$(printf '%s\n' "$STAGED_SCRIPT_FILES" | grep -c . || true)
 MD_COUNT=$(printf '%s\n' "$STAGED_MD_FILES" | grep -c . || true)
@@ -49,7 +56,7 @@ FILE_COUNT=${FILE_COUNT:-0}
 SCRIPT_COUNT=${SCRIPT_COUNT:-0}
 MD_COUNT=${MD_COUNT:-0}
 
-echo "🔍 Running prettier / eslint / tsc / markdownlint in parallel across $CPUS workers..."
+echo "🔍 Running prettier / eslint / deprecations / tsc / markdownlint in parallel across $CPUS workers..."
 
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -58,80 +65,81 @@ PRETTIER_OUT="$TMP_DIR/prettier.txt"
 ESLINT_OUT="$TMP_DIR/eslint.txt"
 TSC_OUT="$TMP_DIR/tsc.txt"
 MDLINT_OUT="$TMP_DIR/mdlint.txt"
+DEPRECATED_OUT="$TMP_DIR/deprecated.txt"
 
 # --- Prettier: fan staged files across $CPUS parallel processes ---
 # Writes one line per offending file: "<file>\t<hunk-count>"
 run_prettier() {
   if [ "$FILE_COUNT" -eq 0 ]; then return 0; fi
-  BATCH=$(( (FILE_COUNT + CPUS - 1) / CPUS ))
-  PRETTIER_TMP_DIR="$TMP_DIR/prettier_parts"
-  mkdir -p "$PRETTIER_TMP_DIR"
+  OFFENDERS="$TMP_DIR/prettier_offenders.txt"
+  PRETTIER_ERRORS="$TMP_DIR/prettier_errors.txt"
   printf '%s\n' "$STAGED_FILES" | tr '\n' '\0' | \
-    xargs -0 -P "$CPUS" -n "$BATCH" sh -c \
-      '
-      EXIT_CODE=0
-      OUT_FILE="'"$PRETTIER_TMP_DIR"'/$$.txt"
-      : > "$OUT_FILE"
-      for file in "$@"; do
-        TMP_FORMATTED=$(mktemp)
-        if ! npx prettier "$file" > "$TMP_FORMATTED" 2>/dev/null; then
-          printf "%s\t1\n" "$file" >> "$OUT_FILE"
-          EXIT_CODE=1
-          rm -f "$TMP_FORMATTED"
-          continue
-        fi
-        if ! cmp -s "$file" "$TMP_FORMATTED"; then
-          HUNKS=$(diff "$file" "$TMP_FORMATTED" 2>/dev/null | grep -cE "^[0-9]+(,[0-9]+)?[acd][0-9]+" || true)
-          [ -z "$HUNKS" ] || [ "$HUNKS" -eq 0 ] && HUNKS=1
-          printf "%s\t%s\n" "$file" "$HUNKS" >> "$OUT_FILE"
-          EXIT_CODE=1
-        fi
-        rm -f "$TMP_FORMATTED"
-      done
-      exit $EXIT_CODE
-      ' _
-  PRETTIER_EXIT=$?
-  cat "$PRETTIER_TMP_DIR"/*.txt > "$PRETTIER_OUT" 2>/dev/null || true
-  return $PRETTIER_EXIT
+    xargs -0 "$BIN/prettier" --list-different > "$OFFENDERS" 2> "$PRETTIER_ERRORS"
+  # Files prettier cannot parse are reported on stderr as "[error] <file>: ..."
+  # and never reach stdout, so fold them into the offender list or they'd pass.
+  sed -n 's/^\[error\] \([^:]*\):.*/\1/p' "$PRETTIER_ERRORS" | sort -u >> "$OFFENDERS"
+  if [ ! -s "$OFFENDERS" ]; then return 0; fi
+  : > "$PRETTIER_OUT"
+  while read -r file; do
+    [ -z "$file" ] && continue
+    TMP_FORMATTED=$(mktemp)
+    if ! "$BIN/prettier" "$file" > "$TMP_FORMATTED" 2>/dev/null; then
+      printf "%s\t1\n" "$file" >> "$PRETTIER_OUT"
+      rm -f "$TMP_FORMATTED"
+      continue
+    fi
+    HUNKS=$(diff "$file" "$TMP_FORMATTED" 2>/dev/null | grep -cE "^[0-9]+(,[0-9]+)?[acd][0-9]+" || true)
+    [ -z "$HUNKS" ] || [ "$HUNKS" -eq 0 ] && HUNKS=1
+    printf "%s\t%s\n" "$file" "$HUNKS" >> "$PRETTIER_OUT"
+    rm -f "$TMP_FORMATTED"
+  done < "$OFFENDERS"
+  return 1
 }
 
-# --- ESLint: fan staged JS/TS files across $CPUS parallel processes ---
+# --- ESLint: one process, results cached between runs ---
 run_eslint() {
   if [ "$SCRIPT_COUNT" -eq 0 ]; then return 0; fi
-  BATCH=$(( (SCRIPT_COUNT + CPUS - 1) / CPUS ))
-  ESLINT_TMP_DIR="$TMP_DIR/eslint_parts"
-  mkdir -p "$ESLINT_TMP_DIR"
   printf '%s\n' "$STAGED_SCRIPT_FILES" | tr '\n' '\0' | \
-    xargs -0 -P "$CPUS" -n "$BATCH" sh -c \
-      'npx eslint --max-warnings=0 "$@" > "'"$ESLINT_TMP_DIR"'/$$.txt" 2>&1' _
-  ESLINT_EXIT=$?
-  cat "$ESLINT_TMP_DIR"/*.txt > "$ESLINT_OUT" 2>/dev/null || true
-  return $ESLINT_EXIT
+    xargs -0 "$BIN/eslint" --max-warnings=0 \
+      --cache --cache-location "$CACHE_DIR/eslint-precommit" > "$ESLINT_OUT" 2>&1
+  return $?
+}
+
+# --- Deprecated APIs: type-aware ESLint pass over staged JS/TS files ---
+run_deprecation_check() {
+  if [ "$SCRIPT_COUNT" -eq 0 ]; then return 0; fi
+  printf '%s\n' "$STAGED_SCRIPT_FILES" | tr '\n' '\0' | \
+    xargs -0 "$BIN/eslint" --no-config-lookup -c eslint.deprecation.cjs --no-warn-ignored \
+      --cache --cache-location "$CACHE_DIR/eslint-deprecation" > "$DEPRECATED_OUT" 2>&1
+  return $?
 }
 
 # --- TypeScript: whole-project check (can't be per-file) ---
 run_tsc() {
-  npx tsc --noEmit > "$TSC_OUT" 2>&1
+  "$BIN/tsc" --noEmit --incremental \
+    --tsBuildInfoFile "$CACHE_DIR/tsc-precommit.tsbuildinfo" > "$TSC_OUT" 2>&1
 }
 
 # --- markdownlint-cli2: run on staged .md files only ---
 run_mdlint() {
   if [ "$MD_COUNT" -eq 0 ]; then return 0; fi
   printf '%s\n' "$STAGED_MD_FILES" | tr '\n' '\0' | \
-    xargs -0 npx markdownlint-cli2 > "$MDLINT_OUT" 2>&1
+    xargs -0 "$BIN/markdownlint-cli2" > "$MDLINT_OUT" 2>&1
   return $?
 }
 
-# Launch all four simultaneously
-run_prettier & PID_PRETTIER=$!
-run_eslint   & PID_ESLINT=$!
-run_tsc      & PID_TSC=$!
-run_mdlint   & PID_MDLINT=$!
+# Launch all five simultaneously
+run_prettier           & PID_PRETTIER=$!
+run_eslint             & PID_ESLINT=$!
+run_deprecation_check  & PID_DEPRECATED=$!
+run_tsc                & PID_TSC=$!
+run_mdlint             & PID_MDLINT=$!
 
-wait $PID_PRETTIER; EXIT_PRETTIER=$? || true
-wait $PID_ESLINT;   EXIT_ESLINT=$? || true
-wait $PID_TSC;      EXIT_TSC=$? || true
-wait $PID_MDLINT;   EXIT_MDLINT=$? || true
+wait $PID_PRETTIER;   EXIT_PRETTIER=$? || true
+wait $PID_ESLINT;     EXIT_ESLINT=$? || true
+wait $PID_DEPRECATED; EXIT_DEPRECATED=$? || true
+wait $PID_TSC;        EXIT_TSC=$? || true
+wait $PID_MDLINT;     EXIT_MDLINT=$? || true
 
 # --- Format per-tool output ---
 
@@ -178,6 +186,34 @@ print_eslint_failures() {
   echo "❌ ESLint — lint errors"
 }
 
+# Deprecation pass uses the same stylish format as ESLint
+print_deprecated_failures() {
+  if [ ! -s "$DEPRECATED_OUT" ]; then return; fi
+  REPO_ROOT=$(pwd)
+  awk -v root="$REPO_ROOT/" '
+    /^\// && /\.(js|jsx|ts|tsx)$/ {
+      file = $0
+      sub("^" root, "", file)
+      counts[file] = 0
+      order[++n] = file
+      next
+    }
+    /^[[:space:]]+[0-9]+:[0-9]+/ {
+      if (file != "") counts[file]++
+      next
+    }
+    /^$/ { file = "" }
+    END {
+      for (i = 1; i <= n; i++) {
+        f = order[i]
+        if (counts[f] > 0) printf "  %s (%d)\n", f, counts[f]
+      }
+    }
+  ' "$DEPRECATED_OUT"
+  echo ""
+  echo "❌ Deprecations — deprecated APIs in use"
+}
+
 # tsc output: "<file>(line,col): error TSnnnn: message"
 print_tsc_failures() {
   if [ ! -s "$TSC_OUT" ]; then return; fi
@@ -191,12 +227,13 @@ print_tsc_failures() {
   echo "❌ TypeScript — type errors"
 }
 
-# markdownlint-cli2 output: "<file>:line[:col] MDxxxx/rule message"
+# markdownlint-cli2 output: "<file>:line[:col] error MDxxxx/rule message"
+# (older releases omit the "error" word, so both shapes are matched)
 print_mdlint_failures() {
   if [ ! -s "$MDLINT_OUT" ]; then return; fi
   awk -F: '
-    /:[0-9]+:[0-9]+ MD[0-9]+\// { counts[$1]++; next }
-    /:[0-9]+ MD[0-9]+\// { counts[$1]++ }
+    /:[0-9]+:[0-9]+ (error )?MD[0-9]+\// { counts[$1]++; next }
+    /:[0-9]+ (error )?MD[0-9]+\// { counts[$1]++ }
     END {
       for (f in counts) printf "  %s (%d)\n", f, counts[f]
     }
@@ -223,6 +260,16 @@ fi
 
 echo ""
 
+if [ "$SCRIPT_COUNT" -eq 0 ]; then
+  echo "✅ Deprecations : no JS/TS files staged"
+elif [ $EXIT_DEPRECATED -eq 0 ]; then
+  echo "✅ Deprecations : no deprecated APIs in use"
+else
+  print_deprecated_failures
+fi
+
+echo ""
+
 if [ $EXIT_TSC -eq 0 ]; then
   echo "✅ TypeScript : no type errors"
 else
@@ -239,7 +286,8 @@ else
   print_mdlint_failures
 fi
 
-if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
+if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_DEPRECATED -ne 0 ] ||
+   [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
   echo ""
   echo "💥 Commit blocked. Fix the errors above and try again."
   exit 1
