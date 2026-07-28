@@ -19,7 +19,7 @@ const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, increaseIsG
   return (
     <p className={classes.kpiDeltaRow}>
       <span className={cx(classes.kpiDeltaBadge, toneClass)}>
-        {delta.isIncrease ? <TrendingUpIcon /> : <TrendingDownIcon />}
+        {isFlat ? null : delta.isIncrease ? <TrendingUpIcon /> : <TrendingDownIcon />}
         {delta.value}
       </span>
       <span className={classes.kpiCaption}>{label}</span>

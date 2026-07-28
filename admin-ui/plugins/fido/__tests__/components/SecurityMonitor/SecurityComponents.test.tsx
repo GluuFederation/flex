@@ -6,7 +6,6 @@ import SecurityKpiStrip from 'Plugins/fido/components/SecurityMonitor/components
 import SecurityMonitorHeader from 'Plugins/fido/components/SecurityMonitor/components/SecurityMonitorHeader'
 import VelocityWatchHeatmap from 'Plugins/fido/components/SecurityMonitor/components/VelocityWatchHeatmap'
 import {
-  ALL_USERS_OPTION,
   ANOMALY_GRANULARITIES,
   ANOMALY_KINDS,
   ATTACK_PATTERNS,
@@ -234,6 +233,10 @@ describe('SecurityKpiStrip', () => {
         ...summary.anomaliesDelta,
         [ANOMALY_GRANULARITIES.HOURLY]: { value: 0, isIncrease: true },
       },
+      successRateDelta: {
+        ...summary.successRateDelta,
+        [KPI_PERIODS.TODAY]: { value: 0, isIncrease: false },
+      },
     }
 
     render(<SecurityKpiStrip summary={quiet} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />, {
@@ -241,7 +244,8 @@ describe('SecurityKpiStrip', () => {
     })
 
     expect(screen.getAllByText('0').length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('TrendingUpIcon').length).toBeGreaterThan(0)
+    expect(screen.queryAllByTestId('TrendingUpIcon')).toHaveLength(0)
+    expect(screen.queryAllByTestId('TrendingDownIcon')).toHaveLength(0)
   })
 
   it('lists the flagged IP addresses as chips', () => {
@@ -274,33 +278,11 @@ describe('SecurityKpiStrip', () => {
 
 describe('VelocityWatchHeatmap', () => {
   it('renders four-hour buckets with the attempt counts', () => {
-    render(
-      <VelocityWatchHeatmap
-        matrix={matrix}
-        userIds={['user_001', 'user_003']}
-        selectedUserId={ALL_USERS_OPTION}
-        onSelectUser={jest.fn()}
-      />,
-      { wrapper: Wrapper },
-    )
+    render(<VelocityWatchHeatmap matrix={matrix} />, { wrapper: Wrapper })
 
     expect(screen.getByText('00-04')).toBeInTheDocument()
     expect(screen.getByText('20-24')).toBeInTheDocument()
     expect(screen.getByText('142')).toBeInTheDocument()
     expect(screen.getByText('1 user anomalous')).toBeInTheDocument()
-  })
-
-  it('offers an all-users option plus every seen user', () => {
-    render(
-      <VelocityWatchHeatmap
-        matrix={matrix}
-        userIds={['user_001', 'user_003']}
-        selectedUserId={ALL_USERS_OPTION}
-        onSelectUser={jest.fn()}
-      />,
-      { wrapper: Wrapper },
-    )
-
-    expect(screen.getByRole('button', { name: 'User' })).toHaveTextContent('All users')
   })
 })

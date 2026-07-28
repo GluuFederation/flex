@@ -5,7 +5,6 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import SecurityMonitorPage from 'Plugins/fido/components/SecurityMonitor/SecurityMonitorPage'
-import { ALL_USERS_OPTION } from 'Plugins/fido/components/SecurityMonitor/constants'
 
 jest.mock('@/cedarling/hooks/usePermission', () => ({
   usePermission: jest.fn(() => ({ canRead: true, canWrite: false, canDelete: false })),
@@ -58,17 +57,7 @@ jest.mock('Plugins/fido/components/SecurityMonitor/components', () => ({
   ),
   SessionIntegrityChart: () => <div data-testid="session-integrity-chart" />,
   ThreatOriginsChart: () => <div data-testid="threat-origins-chart" />,
-  VelocityWatchHeatmap: ({
-    selectedUserId,
-    onSelectUser,
-  }: {
-    selectedUserId: string
-    onSelectUser: (userId: string) => void
-  }) => (
-    <button type="button" data-testid="velocity-heatmap" onClick={() => onSelectUser('alice')}>
-      {selectedUserId}
-    </button>
-  ),
+  VelocityWatchHeatmap: () => <div data-testid="velocity-heatmap" />,
 }))
 
 const { useSecurityDashboardData } = jest.requireMock(
@@ -177,17 +166,8 @@ describe('SecurityMonitorPage', () => {
 
     fireEvent.click(screen.getByText('Behavioral Patterns'))
 
-    expect(screen.getByTestId('velocity-heatmap')).toHaveTextContent(ALL_USERS_OPTION)
+    expect(screen.getByTestId('velocity-heatmap')).toBeInTheDocument()
     expect(screen.getByTestId('device-fingerprint-chart')).toBeInTheDocument()
-  })
-
-  it('passes the picked user back into the dashboard query', () => {
-    render(<SecurityMonitorPage />, { wrapper: Wrapper })
-
-    fireEvent.click(screen.getByText('Behavioral Patterns'))
-    fireEvent.click(screen.getByTestId('velocity-heatmap'))
-
-    expect(useSecurityDashboardData).toHaveBeenLastCalledWith(expect.any(Number), 'alice', 'today')
   })
 
   it('exports the current data as CSV', () => {

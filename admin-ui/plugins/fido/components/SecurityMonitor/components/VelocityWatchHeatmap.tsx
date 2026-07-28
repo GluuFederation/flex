@@ -1,10 +1,8 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GluuDropdown } from '@/components/GluuDropdown'
-import { GluuButton } from '@/components/GluuButton'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
-import { ALL_USERS_OPTION, CHART_EMPTY_INSET } from '../constants'
+import { CHART_EMPTY_INSET } from '../constants'
 import { buildVelocityScaffoldRows, getSecurityPalette } from '../utils'
 import SecurityChartCard from './SecurityChartCard'
 import type { VelocityHeatmapProps } from '../types'
@@ -13,33 +11,11 @@ const VELOCITY_EMPTY_INSET = {
   top: CHART_EMPTY_INSET.VELOCITY_HEADER_HEIGHT,
 }
 
-const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
-  matrix,
-  userIds,
-  selectedUserId,
-  onSelectUser,
-}) => {
+const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({ matrix }) => {
   const { t } = useTranslation()
   const { themeColors, isDark } = useSecurityTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
-  const { classes, cx } = useSecurityStyles({ isDark, themeColors })
-
-  const options = useMemo(
-    () => [
-      { value: ALL_USERS_OPTION, label: t('fields.all_users') },
-      ...userIds.map((userId) => ({ value: userId, label: userId })),
-    ],
-    [userIds, t],
-  )
-
-  const handleSelect = useCallback(
-    (value: string | number | boolean) => {
-      onSelectUser(String(value))
-    },
-    [onSelectUser],
-  )
-
-  const selectedLabel = selectedUserId === ALL_USERS_OPTION ? t('fields.all_users') : selectedUserId
+  const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const isEmpty = matrix.cells.every((row) => row.every((cell) => cell.value === 0))
   const rows = useMemo(
@@ -57,19 +33,6 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
           : undefined
       }
       accentColor={matrix.anomalousUsers ? palette.velocityCells.anomalous : undefined}
-      headerExtra={
-        <GluuDropdown
-          options={options}
-          selectedValue={selectedUserId}
-          onSelect={handleSelect}
-          minWidth={200}
-          trigger={
-            <GluuButton type="button" size="sm" aria-label={t('fields.user')}>
-              {selectedLabel}
-            </GluuButton>
-          }
-        />
-      }
       isEmpty={isEmpty}
       emptyLabel={t('fields.no_data')}
       emptyInset={VELOCITY_EMPTY_INSET}
@@ -78,11 +41,8 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
         <table className={classes.velocityTable}>
           <thead>
             <tr>
-              <th
-                className={cx(classes.velocityCorner, isEmpty && classes.velocityLabelCollapsed)}
-                scope="col"
-              >
-                {isEmpty ? '' : t('fields.user')}
+              <th className={classes.velocityRowIdentity} scope="col">
+                {t('fields.user')}
               </th>
               {matrix.cols.map((col) => (
                 <th key={col} className={classes.velocityHeadCell} scope="col">
@@ -94,13 +54,7 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
           <tbody>
             {rows.map((row, rowIndex) => (
               <tr key={row}>
-                <th
-                  className={cx(
-                    classes.velocityRowLabel,
-                    isEmpty && classes.velocityLabelCollapsed,
-                  )}
-                  scope="row"
-                >
+                <th className={classes.velocityRowIdentity} scope="row">
                   {row}
                 </th>
                 {matrix.cols.map((col, colIndex) => {
@@ -116,6 +70,15 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({
                       key={col}
                       className={classes.velocityCell}
                       style={{ backgroundColor: background }}
+                      title={
+                        value
+                          ? t('fields.velocity_cell_tooltip', {
+                              user: row,
+                              window: col,
+                              count: value,
+                            })
+                          : undefined
+                      }
                       aria-label={
                         cell?.isAnomalous
                           ? t('fields.velocity_cell_anomalous', { count: value, window: col })

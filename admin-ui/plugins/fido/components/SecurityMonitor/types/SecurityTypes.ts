@@ -236,9 +236,6 @@ type ErrorCategoryChartProps = {
 
 type VelocityHeatmapProps = {
   matrix: VelocityMatrix
-  userIds: readonly string[]
-  selectedUserId: string
-  onSelectUser: (userId: string) => void
 }
 
 type DeviceShiftChartProps = {
@@ -255,7 +252,6 @@ type SecurityDashboardData = {
   errorSlices: readonly ErrorCategorySlice[]
   velocityMatrix: VelocityMatrix
   deviceTrend: DeviceTrend
-  userIds: readonly string[]
   isLoading: boolean
   isFetching: boolean
 }

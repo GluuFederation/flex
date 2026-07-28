@@ -360,6 +360,7 @@ const buildSecurityExportRows = (
   t: SecurityTranslate,
   period: KpiPeriod,
   granularity: AnomalyGranularity,
+  ipWindowLabel: string,
 ): SecurityExportRows => {
   const { velocityMatrix } = data
   const count = t('fields.unit_count')
@@ -446,7 +447,7 @@ const buildSecurityExportRows = (
       data.summary.successRate[period],
       percent,
     ],
-    [summary, periodLabel, t('fields.suspicious_ips'), data.suspiciousIps.length, count],
+    [summary, ipWindowLabel, t('fields.suspicious_ips'), data.suspiciousIps.length, count],
     ...series,
   ]
 }

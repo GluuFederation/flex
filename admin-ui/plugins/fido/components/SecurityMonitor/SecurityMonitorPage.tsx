@@ -26,7 +26,7 @@ import {
 } from './components'
 import { useSecurityDashboardData, useSecurityTheme } from './hooks'
 import { buildSecurityExportRows } from './utils'
-import { ALL_USERS_OPTION, KPI_PERIODS, KPI_PERIOD_GRANULARITY } from './constants'
+import { KPI_PERIODS, KPI_PERIOD_GRANULARITY } from './constants'
 import type { KpiPeriod } from './types'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
@@ -45,10 +45,9 @@ const SecurityMonitorPage: React.FC = () => {
   const { canRead: canView } = usePermission(SECURITY_RESOURCE_ID)
 
   const [nowValue, setNowValue] = useState(() => createDate().valueOf())
-  const [selectedUserId, setSelectedUserId] = useState<string>(ALL_USERS_OPTION)
   const [period, setPeriod] = useState<KpiPeriod>(KPI_PERIODS.TODAY)
 
-  const data = useSecurityDashboardData(nowValue, selectedUserId, period)
+  const data = useSecurityDashboardData(nowValue, period)
   const anomalyGranularity = KPI_PERIOD_GRANULARITY[period]
 
   const handleRefresh = useCallback(() => {
@@ -57,7 +56,9 @@ const SecurityMonitorPage: React.FC = () => {
   }, [queryClient])
 
   const handleExport = useCallback(() => {
-    const rows = buildSecurityExportRows(data, t, period, anomalyGranularity)
+    const ipWindowLabel =
+      period === KPI_PERIODS.TODAY ? t('fields.ip_window_last_hour') : t(`fields.period_${period}`)
+    const rows = buildSecurityExportRows(data, t, period, anomalyGranularity, ipWindowLabel)
 
     if (!rows.length) {
       dispatch(updateToast(true, 'error', t('messages.no_data_to_export')))
@@ -95,10 +96,6 @@ const SecurityMonitorPage: React.FC = () => {
     nowValue,
   ])
 
-  const handleSelectUser = useCallback((userId: string) => {
-    setSelectedUserId(userId)
-  }, [])
-
   const tabNames = useMemo(
     () => [
       t('fields.security_tab_live_threats', { total: data.anomalies.count }),
@@ -133,12 +130,7 @@ const SecurityMonitorPage: React.FC = () => {
           return (
             <>
               <div className={classes.fullWidthRow}>
-                <VelocityWatchHeatmap
-                  matrix={data.velocityMatrix}
-                  userIds={data.userIds}
-                  selectedUserId={selectedUserId}
-                  onSelectUser={handleSelectUser}
-                />
+                <VelocityWatchHeatmap matrix={data.velocityMatrix} />
               </div>
               <div className={classes.fullWidthRow}>
                 <DeviceFingerprintChart trend={data.deviceTrend} />
@@ -157,10 +149,7 @@ const SecurityMonitorPage: React.FC = () => {
       data.ipStats,
       data.errorSlices,
       data.velocityMatrix,
-      data.userIds,
       data.deviceTrend,
-      selectedUserId,
-      handleSelectUser,
     ],
   )
 

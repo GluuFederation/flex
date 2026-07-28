@@ -11,7 +11,12 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { toApiDatetime } from '@/utils/dayjsUtils'
 import { AXIOS_INSTANCE } from 'Orval'
-import { METRICS_CACHE_CONFIG, METRICS_ENTRIES_PAGE_SIZE } from '../constants'
+import {
+  AGGREGATION_BUCKET_UNITS,
+  AGGREGATION_LIMIT_BOUNDS,
+  METRICS_CACHE_CONFIG,
+  METRICS_ENTRIES_PAGE_SIZE,
+} from '../constants'
 import type {
   AdoptionMetricsParams,
   AdoptionMetricsResponse,
@@ -225,7 +230,7 @@ const useAggregationMetrics = (
     aggregationType,
     start_date: dateRange ? formatDateForApi(dateRange.startDate) : '',
     end_date: dateRange ? formatDateForApi(dateRange.endDate) : '',
-    limit: 50,
+    limit: bucketsInRange(aggregationType, dateRange),
     startIndex: 0,
   }
 
@@ -262,6 +267,18 @@ const useAggregationMetrics = (
 
   useErrorToast(query, queryKey)
   return query
+}
+
+const bucketsInRange = (
+  aggregationType: AggregationTypeParam,
+  dateRange: MetricsDateRange | null,
+): number => {
+  if (!dateRange) return AGGREGATION_LIMIT_BOUNDS.MIN
+  const span = dateRange.endDate.diff(
+    dateRange.startDate,
+    AGGREGATION_BUCKET_UNITS[aggregationType],
+  )
+  return Math.min(AGGREGATION_LIMIT_BOUNDS.MAX, Math.max(AGGREGATION_LIMIT_BOUNDS.MIN, span + 2))
 }
 
 const buildEntriesParams = (

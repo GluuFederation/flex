@@ -529,7 +529,7 @@ describe('SecurityMonitor utils', () => {
   describe('buildSecurityExportRows', () => {
     const translate = ((key: string) => key) as SecurityTranslate
 
-    const emptyData = {
+    const emptyData: SecurityDashboardData = {
       anomalies: { count: 0, chips: [] },
       summary: {
         failures: { today: 12, last_7_days: 0, this_month: 0 },
@@ -559,10 +559,9 @@ describe('SecurityMonitor utils', () => {
       errorSlices: [],
       velocityMatrix: { rows: [], cols: [], cells: [], anomalousUsers: 0 },
       deviceTrend: { points: [], shiftDayLabel: null },
-      userIds: [],
       isLoading: false,
       isFetching: false,
-    } as SecurityDashboardData
+    }
 
     it('skips zero-value velocity cells so the file carries only real activity', () => {
       const data: SecurityDashboardData = {
@@ -580,9 +579,13 @@ describe('SecurityMonitor utils', () => {
         },
       }
 
-      const velocityRows = buildSecurityExportRows(data, translate, 'today', 'hourly').filter(
-        (row) => row[0] === 'titles.velocity_watch',
-      )
+      const velocityRows = buildSecurityExportRows(
+        data,
+        translate,
+        'today',
+        'hourly',
+        'fields.ip_window_last_hour',
+      ).filter((row) => row[0] === 'titles.velocity_watch')
 
       expect(velocityRows).toEqual([
         [
@@ -596,7 +599,15 @@ describe('SecurityMonitor utils', () => {
     })
 
     it('returns nothing when no chart series carry data', () => {
-      expect(buildSecurityExportRows(emptyData, translate, 'today', 'hourly')).toEqual([])
+      expect(
+        buildSecurityExportRows(
+          emptyData,
+          translate,
+          'today',
+          'hourly',
+          'fields.ip_window_last_hour',
+        ),
+      ).toEqual([])
     })
 
     it('prefixes the KPI summary before every chart series', () => {
@@ -615,7 +626,13 @@ describe('SecurityMonitor utils', () => {
         },
       }
 
-      const rows = buildSecurityExportRows(data, translate, 'today', 'hourly')
+      const rows = buildSecurityExportRows(
+        data,
+        translate,
+        'today',
+        'hourly',
+        'fields.ip_window_last_hour',
+      )
 
       expect(rows.slice(0, 5).map((row) => [row[2], row[3], row[4]])).toEqual([
         ['fields.anomalies_captured', 3, 'fields.unit_count'],

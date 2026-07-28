@@ -8,10 +8,8 @@ import {
   useErrorsAnalytics,
   useMetricsEntries,
   useMetricsEntriesByOperation,
-  useMetricsEntriesByUser,
 } from '../../Metrics/hooks'
 import {
-  ALL_USERS_OPTION,
   ANOMALY_GRANULARITIES,
   KPI_PERIODS,
   SECURITY_ENTRIES_LIMIT,
@@ -31,7 +29,6 @@ import {
   filterSuspiciousIps,
   getSecurityPalette,
   percentDelta,
-  resolveIdentity,
   pointDelta,
   sliceEntriesByRange,
   successRateOf,
@@ -46,11 +43,7 @@ import type {
   SecurityTranslate,
 } from '../types'
 
-const useSecurityDashboardData = (
-  nowValue: number,
-  selectedUserId: string,
-  period: KpiPeriod,
-): SecurityDashboardData => {
+const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): SecurityDashboardData => {
   const { t } = useTranslation()
   const translate = t as SecurityTranslate
   const ranges = useSecurityRanges(nowValue, period)
@@ -70,12 +63,6 @@ const useSecurityDashboardData = (
     ranges.primary,
     { limit: SECURITY_ENTRIES_LIMIT },
   )
-  const userEntriesQuery = useMetricsEntriesByUser(
-    selectedUserId === ALL_USERS_OPTION ? '' : selectedUserId,
-    ranges.primary,
-    { limit: SECURITY_ENTRIES_LIMIT },
-  )
-
   const spikeSeries = useMemo(
     () =>
       buildFailureSpikeSeries(
@@ -113,31 +100,14 @@ const useSecurityDashboardData = (
 
   const authEntries = useMemo(() => authEntriesQuery.data?.entries ?? [], [authEntriesQuery.data])
 
-  const userIds = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          authEntries
-            .map((entry) => resolveIdentity(entry))
-            .filter((identity): identity is string => !!identity),
-        ),
-      ).sort((a, b) => a.localeCompare(b)),
-    [authEntries],
-  )
-
-  const velocityEntries = useMemo(() => {
-    if (selectedUserId === ALL_USERS_OPTION) return authEntries
-    return userEntriesQuery.data?.entries ?? []
-  }, [selectedUserId, authEntries, userEntriesQuery.data])
-
   const velocityMinAttempts = useMemo(() => {
     const days = Math.max(1, ranges.primary.endDate.diff(ranges.primary.startDate, 'day') + 1)
     return VELOCITY_ANOMALY_MIN_ATTEMPTS * days
   }, [ranges.primary])
 
   const velocityMatrix = useMemo(
-    () => buildVelocityMatrix(velocityEntries, TOP_USER_LIMIT, velocityMinAttempts),
-    [velocityEntries, velocityMinAttempts],
+    () => buildVelocityMatrix(authEntries, TOP_USER_LIMIT, velocityMinAttempts),
+    [authEntries, velocityMinAttempts],
   )
 
   const deviceTrend = useMemo(
@@ -196,6 +166,13 @@ const useSecurityDashboardData = (
       sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
     )
     const monthlyAnomalies = countSequenceSpikes(monthlyEntries)
+    const monthlyAnomaliesPrevious = countSequenceSpikes(
+      sliceEntriesByRange(
+        monthlyEntries,
+        ranges.lastTwelveMonths.startDate,
+        thisMonthStart.subtract(1, 'millisecond'),
+      ),
+    )
 
     return {
       failures: {
@@ -231,7 +208,7 @@ const useSecurityDashboardData = (
       anomaliesDelta: {
         [ANOMALY_GRANULARITIES.HOURLY]: pointDelta(hourlyAnomaliesToday, hourlyAnomaliesYesterday),
         [ANOMALY_GRANULARITIES.DAILY]: pointDelta(dailyAnomalies, dailyAnomaliesPrevious),
-        [ANOMALY_GRANULARITIES.MONTHLY]: pointDelta(monthlyAnomalies, 0),
+        [ANOMALY_GRANULARITIES.MONTHLY]: pointDelta(monthlyAnomalies, monthlyAnomaliesPrevious),
       },
     }
   }, [dailyQuery.data, hourlyQuery.data, monthlyQuery.data, ranges])
@@ -252,8 +229,7 @@ const useSecurityDashboardData = (
     errorsQuery.isFetching ||
     devicesQuery.isFetching ||
     ipEntriesQuery.isFetching ||
-    authEntriesQuery.isFetching ||
-    userEntriesQuery.isFetching
+    authEntriesQuery.isFetching
 
   return {
     anomalies,
@@ -265,7 +241,6 @@ const useSecurityDashboardData = (
     errorSlices,
     velocityMatrix,
     deviceTrend,
-    userIds,
     isLoading,
     isFetching,
   }

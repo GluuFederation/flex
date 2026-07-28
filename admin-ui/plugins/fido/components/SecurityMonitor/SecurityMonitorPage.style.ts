@@ -15,7 +15,7 @@ import {
   WIDE_MAX_MEDIA_QUERY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { CHART_EMPTY_INSET, SECURITY_CHART_HEIGHT } from './constants'
+import { SECURITY_CHART_HEIGHT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { SecurityStylesParams } from './types'
 
@@ -372,12 +372,16 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontSize: fontSizes.base,
       color: themeColors.fontColor,
     },
-    velocityCorner: {
-      width: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
-      textAlign: 'left' as const,
-      fontWeight: fontWeights.medium,
-      padding: '4px 8px',
+    velocityRowIdentity: {
+      position: 'absolute' as const,
+      width: 1,
+      height: 1,
+      padding: 0,
+      margin: -1,
+      overflow: 'hidden' as const,
+      clip: 'rect(0 0 0 0)',
       whiteSpace: 'nowrap' as const,
+      border: 0,
     },
     velocityHeadCell: {
       textAlign: 'center' as const,
@@ -385,17 +389,6 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       padding: '4px 8px',
       whiteSpace: 'nowrap' as const,
       opacity: OPACITY.PLACEHOLDER,
-    },
-    velocityRowLabel: {
-      width: CHART_EMPTY_INSET.VELOCITY_LABEL_WIDTH,
-      textAlign: 'left' as const,
-      fontWeight: fontWeights.regular,
-      padding: '4px 8px',
-      whiteSpace: 'nowrap' as const,
-    },
-    velocityLabelCollapsed: {
-      width: 0,
-      padding: 0,
     },
     velocityCell: {
       textAlign: 'center' as const,
