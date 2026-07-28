@@ -377,7 +377,7 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   }, [filteredEntries])
 
   const handleFormSubmitEvent = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       handleFormSubmit()
     },

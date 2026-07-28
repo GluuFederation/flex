@@ -201,7 +201,7 @@ const PasswordChangeModal = ({
   }, [passwordFormik, toggle])
 
   const handleFormSubmit = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       passwordFormik.handleSubmit()
     },
@@ -300,12 +300,12 @@ const PasswordChangeModal = ({
                       name="userPassword"
                       type={showPassword ? 'text' : 'password'}
                       className={formClasses.fieldInput}
-                      style={{ paddingRight: 44 }}
                       value={passwordFormik.values.userPassword}
                       onChange={passwordFormik.handleChange}
                       onBlur={passwordFormik.handleBlur}
                       placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
                       autoComplete="new-password"
+                      style={{ paddingRight: 44 }}
                     />
                     <button
                       type="button"
@@ -338,12 +338,12 @@ const PasswordChangeModal = ({
                       name="userConfirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
                       className={formClasses.fieldInput}
-                      style={{ paddingRight: 44 }}
                       value={passwordFormik.values.userConfirmPassword}
                       onChange={passwordFormik.handleChange}
                       onBlur={passwordFormik.handleBlur}
                       placeholder={t('placeholders.enter_here', { defaultValue: 'Enter Here' })}
                       autoComplete="new-password"
+                      style={{ paddingRight: 44 }}
                     />
                     <button
                       type="button"

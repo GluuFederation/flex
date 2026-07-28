@@ -104,7 +104,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   }, [formik])
 
   const handleFormSubmit = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (readOnly) {
         return

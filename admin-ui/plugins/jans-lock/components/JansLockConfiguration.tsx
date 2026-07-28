@@ -53,7 +53,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   }, [formik])
 
   const handleFormSubmit = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>): void => {
+    (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault()
       formik.handleSubmit()
     },

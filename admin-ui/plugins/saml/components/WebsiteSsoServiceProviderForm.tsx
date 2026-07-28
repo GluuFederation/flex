@@ -316,7 +316,7 @@ const WebsiteSsoServiceProviderForm = ({
   }, [formik, initialValues])
 
   const handleFormSubmit = useCallback(
-    async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       if (formik.values.spMetaDataSourceType?.toLowerCase() === 'file') {

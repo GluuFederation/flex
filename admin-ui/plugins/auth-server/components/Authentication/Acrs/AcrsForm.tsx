@@ -1,11 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  type ReactElement,
-  type SyntheticEvent,
-} from 'react'
+import { useState, useCallback, useMemo, useRef, type ReactElement, type FormEvent } from 'react'
 import { useFormik, type FormikProps } from 'formik'
 import { Add, DeleteOutline } from '@/components/icons'
 import { Form, Input, FormGroup, Col } from 'Components'
@@ -168,7 +161,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
 
   return (
     <Form
-      onSubmit={(e: SyntheticEvent<HTMLFormElement>) => {
+      onSubmit={(e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         formik.handleSubmit()
       }}

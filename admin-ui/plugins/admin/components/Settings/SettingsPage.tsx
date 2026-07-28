@@ -221,6 +221,7 @@ const SettingsPage: React.FC = () => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (!isFormChanged) return
       e.preventDefault()
+      e.returnValue = ''
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)

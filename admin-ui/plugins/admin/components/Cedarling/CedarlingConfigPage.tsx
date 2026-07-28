@@ -232,7 +232,7 @@ const CedarlingConfigPage: React.FC = () => {
             <Box className={classes.configCard}>
               <Form
                 className={classes.form}
-                onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) => {
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   e.preventDefault()
                 }}
               >
