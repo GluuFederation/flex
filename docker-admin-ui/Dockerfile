@@ -70,7 +70,9 @@ RUN case "${ADMIN_UI_VERSION}" in \
         v*|nightly) RELEASE_TAG="${ADMIN_UI_VERSION}" ;; \
         *) RELEASE_TAG="admin-ui-${ADMIN_UI_VERSION}" ;; \
     esac \
-    && wget -q https://github.com/GluuFederation/flex/releases/download/${RELEASE_TAG}/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+    && { wget -q https://github.com/GluuFederation/flex/releases/download/${RELEASE_TAG}/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+         || { echo "Admin UI asset not found for ${RELEASE_TAG}; falling back to admin-ui-main"; \
+              wget -q https://github.com/GluuFederation/flex/releases/download/admin-ui-main/admin-ui-main-built.tar.gz -O /tmp/admin-ui.tar.gz; }; } \
     && mkdir -p /opt/flex/admin-ui \
     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
     && rm -rf /tmp/admin-ui.tar.gz
