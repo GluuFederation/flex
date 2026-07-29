@@ -183,6 +183,9 @@ jobs:
           npm install --legacy-peer-deps --no-audit --no-fund --foreground-scripts --loglevel http
           # resolve orval's internal ajv dependency conflict on this toolchain
           npm install ajv@^8 --save-dev --legacy-peer-deps --no-audit --no-fund
+          # npm run api needs openapi-generator-cli, which is not a devDependency
+          # on this branch (the Jenkins host had it installed globally)
+          npm install @openapitools/openapi-generator-cli --save-dev --legacy-peer-deps --no-audit --no-fund
 
           # generate the openapi-generator client (file: dep is symlinked, so the
           # regenerated package is picked up in place) and the orval client
