@@ -1,16 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { Card, CardBody } from 'Components'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -88,8 +78,8 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   const donutData = useMemo(
     () => [
-      { value: adoptionPasskeyRate, color: METRICS_CHART_COLORS.adoptionRate },
-      { value: 100 - adoptionPasskeyRate, color: themeColors.chart.donutEmptyColor },
+      { value: adoptionPasskeyRate, fill: METRICS_CHART_COLORS.adoptionRate },
+      { value: 100 - adoptionPasskeyRate, fill: themeColors.chart.donutEmptyColor },
     ],
     [adoptionPasskeyRate, themeColors],
   )
@@ -350,11 +340,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                         dataKey="value"
                         strokeWidth={0}
                         isAnimationActive={false}
-                      >
-                        {donutData.map((entry, index) => (
-                          <Cell key={`donut-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className={classes.adoptionDonutCenter}>

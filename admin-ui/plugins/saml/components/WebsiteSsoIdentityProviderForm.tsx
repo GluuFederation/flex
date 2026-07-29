@@ -240,7 +240,7 @@ const WebsiteSsoIdentityProviderForm = ({
   }, [formik, initialValues])
 
   const handleFormSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (
         !formik.values.metaDataFile &&
