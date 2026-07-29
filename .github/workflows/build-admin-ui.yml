@@ -186,6 +186,9 @@ jobs:
           # npm run api needs openapi-generator-cli, which is not a devDependency
           # on this branch (the Jenkins host had it installed globally)
           npm install @openapitools/openapi-generator-cli --save-dev --legacy-peer-deps --no-audit --no-fund
+          # styled-components is imported by the app but only reached node_modules
+          # via automatic peer-dep installs, which --legacy-peer-deps disables
+          npm install styled-components@^6 --save --legacy-peer-deps --no-audit --no-fund
 
           # generate the openapi-generator client (file: dep is symlinked, so the
           # regenerated package is picked up in place) and the orval client
