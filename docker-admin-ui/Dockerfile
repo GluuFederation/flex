@@ -61,7 +61,7 @@ WORKDIR /
 # Admin UI
 # ========
 
-ENV ADMIN_UI_VERSION=main
+ENV ADMIN_UI_VERSION=5.16.0
 ENV GLUU_BUILD_DATE='2025-11-06 18:51'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
