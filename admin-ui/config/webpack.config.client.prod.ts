@@ -12,8 +12,7 @@ import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
 import { readFileSync } from 'fs'
 
-// Set __dirname to point to the config directory for file path resolution
-const __dirname = path.join(process.cwd(), 'config')
+const configDir = path.join(process.cwd(), 'config')
 
 dotenv.config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -24,7 +23,7 @@ const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.c
 const API_BASE_URL = process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
 const prodPolicyStoreJson: PolicyStoreConfig = JSON.parse(
-  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'), 'utf-8'),
+  readFileSync(path.resolve(configDir, '../app/cedarling/config/policy-store-prod.json'), 'utf-8'),
 )
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
@@ -126,16 +125,16 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     modules: ['node_modules', config.srcDir],
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      '@': path.resolve(__dirname, '../app'),
-      'Components': path.resolve(__dirname, '../app/components'),
-      'Context': path.resolve(__dirname, '../app/context'),
-      'Images': path.resolve(__dirname, '../app/images'),
-      'JansConfigApi': path.resolve(__dirname, '../jans_config_api_orval/src/JansConfigApi.ts'),
-      'Plugins': path.resolve(__dirname, '../plugins'),
-      'Redux': path.resolve(__dirname, '../app/redux'),
-      'Routes': path.resolve(__dirname, '../app/routes'),
-      'Styles': path.resolve(__dirname, '../app/styles'),
-      'Utils': path.resolve(__dirname, '../app/utils'),
+      '@': path.resolve(configDir, '../app'),
+      'Components': path.resolve(configDir, '../app/components'),
+      'Context': path.resolve(configDir, '../app/context'),
+      'Images': path.resolve(configDir, '../app/images'),
+      'JansConfigApi': path.resolve(configDir, '../jans_config_api_orval/src/JansConfigApi.ts'),
+      'Plugins': path.resolve(configDir, '../plugins'),
+      'Redux': path.resolve(configDir, '../app/redux'),
+      'Routes': path.resolve(configDir, '../app/routes'),
+      'Styles': path.resolve(configDir, '../app/styles'),
+      'Utils': path.resolve(configDir, '../app/utils'),
     },
   },
   plugins: [
@@ -162,7 +161,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       template: config.srcHtmlLayout,
       inject: 'body',
       title: 'AdminUI',
-      favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
+      favicon: path.resolve(configDir, '../app/images/favicons/favicon.ico'),
     }),
     new MiniCssExtractPlugin(),
     new webpack.DefinePlugin({
@@ -183,8 +182,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         include: [
           config.srcDir,
           config.pluginsDir,
-          path.resolve(__dirname, '../jans_config_api_orval'),
-          path.resolve(__dirname, '..'), // Include root directory for api-client.ts
+          path.resolve(configDir, '../jans_config_api_orval'),
+          path.resolve(configDir, '..'), // Include root directory for api-client.ts
         ],
         exclude: /(node_modules|\.test\.(ts|tsx)$)/,
         use: 'babel-loader',
