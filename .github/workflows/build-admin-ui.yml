@@ -163,10 +163,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: admin-ui
+        timeout-minutes: 45
         run: |
           node --version
-          npm cache clean --force
-          npm cache verify
           rm -rf node_modules jans_config_api jans_config_api_orval package-lock.json
 
           # package.json declares "jans_config_api": "file:jans_config_api", a client
@@ -176,9 +175,14 @@ jobs:
           mkdir -p jans_config_api
           echo '{"name":"jans_config_api","version":"1.0.0"}' > jans_config_api/package.json
 
-          npm install --legacy-peer-deps
+          # git hooks are pointless in CI and the prepare script (npx husky install)
+          # can stall npm install; drop it for this run only
+          npm pkg delete scripts.prepare
+
+          # --loglevel http surfaces fetch activity so a hang is attributable
+          npm install --legacy-peer-deps --no-audit --no-fund --foreground-scripts --loglevel http
           # resolve orval's internal ajv dependency conflict on this toolchain
-          npm install ajv@^8 --save-dev --legacy-peer-deps
+          npm install ajv@^8 --save-dev --legacy-peer-deps --no-audit --no-fund
 
           # generate the openapi-generator client (file: dep is symlinked, so the
           # regenerated package is picked up in place) and the orval client
