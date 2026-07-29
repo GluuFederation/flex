@@ -303,6 +303,36 @@ rdbm_installer = RDBMInstaller()
 
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
+admin_ui_releases_base_url = 'https://github.com/GluuFederation/flex/releases/download'
+
+
+def get_admin_ui_bin_url():
+    """Resolves the Admin UI built asset URL on GitHub Releases.
+
+    Assets are published by .github/workflows/build-admin-ui.yml as
+    admin-ui-<version>-built.tar.gz where <version> is either a flex tag
+    (attached to that tag's release) or a branch name (attached to the
+    admin-ui-<branch> release). Falls back to the main branch build when
+    no release asset exists for the requested branch.
+    """
+    version = app_versions['NODE_MODULES_BRANCH'].replace('/', '-')
+
+    if version.startswith('v') or version == 'nightly':
+        release_tag = version
+    else:
+        release_tag = 'admin-ui-' + version
+
+    url = '{0}/{1}/admin-ui-{2}-built.tar.gz'.format(admin_ui_releases_base_url, release_tag, version)
+
+    try:
+        request.urlopen(request.Request(url, method='HEAD'), timeout=30)
+        return url
+    except Exception:
+        fallback_url = '{0}/admin-ui-main/admin-ui-main-built.tar.gz'.format(admin_ui_releases_base_url)
+        if url != fallback_url:
+            print("Admin UI asset was not found at {}, falling back to {}".format(url, fallback_url))
+        return fallback_url
+
 
 class flex_installer(JettyInstaller):
 
@@ -320,7 +350,7 @@ class flex_installer(JettyInstaller):
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
-        self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
+        self.adimin_ui_bin_url = get_admin_ui_bin_url()
         self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/v0.0.0/admin_ui_2_0.cjar'
         self.policy_store_cjar_path = os.path.join(self.templates_dir, 'policy-store.cjar')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
