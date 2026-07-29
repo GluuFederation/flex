@@ -3,9 +3,13 @@ name: Build Admin UI
 # Replaces the legacy Jenkins gluu-admin-ui job (https://jenkins.gluu.org/npm/admin_ui/).
 # - Builds admin-ui assets from any branch/tag/commit (build_ref input).
 # - Optionally runs tests.
-# - Release refs (main / v* tags): publishes tarballs to GitHub Releases and GitHub Maven (packages).
-# - Feature branches: defaults to deploying on an ephemeral easycloud DigitalOcean VM
-#   (publishing must be explicitly selected).
+# - Runnable standalone (workflow_dispatch) or as a reusable step (workflow_call) —
+#   activate-nightly-build.yml calls it first so admin-ui assets land on the nightly
+#   release before packages/docker fan out off the nightly tag.
+# - main -> overwrites assets on the rolling `nightly` release (no new release).
+# - v* tags -> the tag's release. release_tag input -> an existing release (e.g. 5.16.0).
+# - Feature branches: default to deploying on an ephemeral easycloud DO VM; publishing
+#   is opt-in (publish=true or comment_on_pr) and also targets the shared nightly release.
 
 on:
   workflow_dispatch:
@@ -51,11 +55,88 @@ on:
           - 'true'
           - 'false'
         default: auto
+      release_tag:
+        description: 'Existing release to upload assets to (e.g. nightly, 5.16.0). Must already exist. Empty = derive (main -> nightly).'
+        required: false
+        type: string
+        default: ''
+      comment_on_pr:
+        description: 'Comment the published asset links on the branch open PR (implies publishing to the nightly release).'
+        required: false
+        type: boolean
+        default: false
       flex_branch:
         description: 'Flex branch installed on the ephemeral VM via flex-linux-setup (backing jans-config-api).'
         required: false
         type: string
         default: 'main'
+      easycloud_ref:
+        description: 'Ref of GluuFederation/easycloud to check out for the VM deploy. Empty = default branch.'
+        required: false
+        type: string
+        default: ''
+      termination_in:
+        description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
+        required: false
+        type: string
+        default: '6h'
+  workflow_call:
+    inputs:
+      build_ref:
+        description: 'Branch, tag, or commit to build. Empty = ref the workflow runs from.'
+        required: false
+        type: string
+        default: ''
+      run_tests:
+        description: 'Run tests before building'
+        required: false
+        type: boolean
+        default: true
+      build_env:
+        description: 'Build environment (npm run build:<env>)'
+        required: false
+        type: string
+        default: prod
+      version_name:
+        description: 'Version name for assets. Empty = derived (tag name, or branch name).'
+        required: false
+        type: string
+        default: ''
+      publish:
+        description: 'Publish assets. auto = only on main or v* tags; true/false to force.'
+        required: false
+        type: string
+        default: auto
+      deploy:
+        description: 'Deploy to an ephemeral easycloud DO VM. auto = only on feature branches.'
+        required: false
+        type: string
+        default: auto
+      release_tag:
+        description: 'Existing release to upload assets to. Must already exist unless recreate_release is set.'
+        required: false
+        type: string
+        default: ''
+      recreate_release:
+        description: 'Delete+recreate release_tag before uploading (nightly semantics).'
+        required: false
+        type: boolean
+        default: false
+      comment_on_pr:
+        description: 'Comment the published asset links on the branch open PR.'
+        required: false
+        type: boolean
+        default: false
+      flex_branch:
+        description: 'Flex branch installed on the ephemeral VM via flex-linux-setup.'
+        required: false
+        type: string
+        default: 'main'
+      easycloud_ref:
+        description: 'Ref of GluuFederation/easycloud to check out for the VM deploy. Empty = default branch.'
+        required: false
+        type: string
+        default: ''
       termination_in:
         description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
         required: false
@@ -82,6 +163,8 @@ jobs:
       do_deploy: ${{ steps.meta.outputs.do_deploy }}
       is_tag: ${{ steps.meta.outputs.is_tag }}
       sha: ${{ steps.meta.outputs.sha }}
+      release_tag: ${{ steps.meta.outputs.release_tag }}
+      require_existing: ${{ steps.meta.outputs.require_existing }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,6 +181,9 @@ jobs:
           INPUT_VERSION: ${{ inputs.version_name }}
           INPUT_PUBLISH: ${{ inputs.publish }}
           INPUT_DEPLOY: ${{ inputs.deploy }}
+          INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
+          INPUT_RECREATE: ${{ inputs.recreate_release }}
+          INPUT_COMMENT: ${{ inputs.comment_on_pr }}
         run: |
           REF="${BUILD_REF:-$FALLBACK_REF}"
 
@@ -111,24 +197,49 @@ jobs:
             IS_RELEASE_REF=true
           fi
 
-          # Branch builds use a stable version (no sha) so flex_setup.py can derive
-          # a deterministic download URL per branch; assets are clobbered per build.
-          if [ -n "$INPUT_VERSION" ]; then
-            VERSION="$INPUT_VERSION"
-          elif [ "$IS_TAG" = "true" ]; then
-            VERSION="$REF"
-          else
-            VERSION="$(echo "$REF" | tr '/' '-')"
-          fi
-          # sanitize for maven/release asset names
-          VERSION=$(echo "$VERSION" | tr -cd 'a-zA-Z0-9._-')
-
+          # Publishing: auto = release refs only; explicit true/false overrides.
+          # Requesting a PR comment or a release recreate implies publishing.
           DO_PUBLISH=false
           case "$INPUT_PUBLISH" in
             true)  DO_PUBLISH=true ;;
             false) DO_PUBLISH=false ;;
             *)     DO_PUBLISH=$IS_RELEASE_REF ;;
           esac
+          if [ "$INPUT_COMMENT" = "true" ] || [ "$INPUT_RECREATE" = "true" ]; then
+            DO_PUBLISH=true
+          fi
+
+          # Resolve the target release and the asset/version identifier together, so
+          # tarball names (admin-ui-<version>-*.tar.gz) are deterministic PER RELEASE
+          # and clobber cleanly. Consumers (flex_setup.py get_admin_ui_bin_url,
+          # docker-admin-ui/Dockerfile) derive the asset name from the release tag.
+          REQUIRE_EXISTING=false
+          if [ -n "$INPUT_RELEASE_TAG" ]; then
+            # explicit target release (e.g. build 5.16.0-patch -> upload to 5.16.0)
+            RELEASE_TAG="$INPUT_RELEASE_TAG"
+            VERSION="${RELEASE_TAG#admin-ui-}"
+            # must already exist, unless we are (re)creating it (nightly)
+            if [ "$INPUT_RECREATE" = "true" ]; then REQUIRE_EXISTING=false; else REQUIRE_EXISTING=true; fi
+          elif [ "$IS_TAG" = "true" ]; then
+            RELEASE_TAG="$REF"
+            VERSION="$REF"
+          elif [ "$REF" = "main" ] || [ "$DO_PUBLISH" = "true" ]; then
+            # main, or a forced feature-branch publish/comment -> shared rolling nightly release
+            RELEASE_TAG="nightly"
+            VERSION="nightly"
+          else
+            # legacy fallback: standalone feature build with no publish
+            VERSION="$(echo "$REF" | tr '/' '-')"
+            RELEASE_TAG="admin-ui-$VERSION"
+          fi
+
+          # explicit version_name override wins only when no explicit release_tag was
+          # given (a release_tag pins the version for consumer-side determinism).
+          if [ -n "$INPUT_VERSION" ] && [ -z "$INPUT_RELEASE_TAG" ]; then
+            VERSION="$INPUT_VERSION"
+          fi
+          # sanitize for maven/release asset names
+          VERSION=$(echo "$VERSION" | tr -cd 'a-zA-Z0-9._-')
 
           DO_DEPLOY=false
           case "$INPUT_DEPLOY" in
@@ -144,8 +255,10 @@ jobs:
             echo "do_publish=$DO_PUBLISH"
             echo "do_deploy=$DO_DEPLOY"
             echo "sha=$(git rev-parse HEAD)"
+            echo "release_tag=$RELEASE_TAG"
+            echo "require_existing=$REQUIRE_EXISTING"
           } >> "$GITHUB_OUTPUT"
-          echo "Building ref=$REF version=$VERSION publish=$DO_PUBLISH deploy=$DO_DEPLOY"
+          echo "Building ref=$REF version=$VERSION release=$RELEASE_TAG publish=$DO_PUBLISH deploy=$DO_DEPLOY require_existing=$REQUIRE_EXISTING"
 
       - name: Ensure .nvmrc
         run: |
@@ -224,6 +337,9 @@ jobs:
       REF_NAME: ${{ needs.build.outputs.ref_name }}
       IS_TAG: ${{ needs.build.outputs.is_tag }}
       BUILD_SHA: ${{ needs.build.outputs.sha }}
+      RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+      REQUIRE_EXISTING: ${{ needs.build.outputs.require_existing }}
+      RECREATE_RELEASE: ${{ inputs.recreate_release }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -240,28 +356,35 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
         run: |
-          if [ "$IS_TAG" = "true" ]; then
-            TAG="$REF_NAME"
-          else
-            TAG="admin-ui-$VERSION_NAME"
-          fi
+          TAG="$RELEASE_TAG"
 
-          if ! gh release view "$TAG" >/dev/null 2>&1; then
+          if [ "$RECREATE_RELEASE" = "true" ]; then
+            # nightly semantics: recreate the release+tag fresh, targeting the built ref.
+            # gh (authenticated with the PAT via GH_TOKEN) also removes the tag with
+            # --cleanup-tag; recreating with the PAT re-pushes the nightly tag, which
+            # is what fans out to build-packages.yml and docker_build_image.yml.
+            echo "Recreating release $TAG targeting $REF_NAME"
+            gh release delete "$TAG" --cleanup-tag --yes || echo "$TAG did not exist"
+            gh release create "$TAG" \
+              --generate-notes --prerelease --title "$TAG" --target "$REF_NAME"
+          elif [ "$REQUIRE_EXISTING" = "true" ]; then
+            # explicit release_tag: it must already exist; never create it here
+            if ! gh release view "$TAG" >/dev/null 2>&1; then
+              echo "::error::Target release '$TAG' does not exist. Create it first or drop the release_tag input." >&2
+              exit 1
+            fi
+          elif ! gh release view "$TAG" >/dev/null 2>&1; then
             gh release create "$TAG" \
               --title "Admin UI $VERSION_NAME" \
               --notes "Admin UI build assets for $VERSION_NAME (commit $BUILD_SHA)" \
               --target "$BUILD_SHA" \
               --prerelease
           fi
+
           gh release upload "$TAG" \
             "admin-ui-$VERSION_NAME-built.tar.gz" \
             "admin-ui-$VERSION_NAME-node_modules.tar.gz" \
             --clobber
-          # keep the release notes pointing at the commit that produced the current assets
-          if [ "$IS_TAG" != "true" ]; then
-            gh release edit "$TAG" \
-              --notes "Admin UI build assets for $VERSION_NAME (commit $BUILD_SHA, built $(date -u +%Y-%m-%dT%H:%M:%SZ))"
-          fi
           echo "Uploaded assets to release $TAG"
 
       - name: Setup Java/Maven
@@ -318,6 +441,28 @@ jobs:
             -Durl="$REPO_URL" \
             -DgeneratePom=false
 
+      - name: Comment assets on PR
+        if: inputs.comment_on_pr
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+        run: |
+          # find the open PR whose head is the built branch (no event payload on dispatch/call)
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$REF_NAME" --state open \
+                 --json number --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then
+            echo "No open PR found for head '$REF_NAME'; skipping comment"
+            exit 0
+          fi
+          BASE="https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG"
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$(cat <<EOF
+          🛠️ Admin UI assets for \`$REF_NAME\` (commit \`$BUILD_SHA\`) published to the **$RELEASE_TAG** release:
+
+          - built: [\`admin-ui-$VERSION_NAME-built.tar.gz\`]($BASE/admin-ui-$VERSION_NAME-built.tar.gz)
+          - node_modules: [\`admin-ui-$VERSION_NAME-node_modules.tar.gz\`]($BASE/admin-ui-$VERSION_NAME-node_modules.tar.gz)
+          EOF
+          )"
+          echo "Commented on PR #$PR"
+
   deploy:
     needs: build
     if: needs.build.outputs.do_deploy == 'true'
@@ -329,6 +474,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: GluuFederation/easycloud
+          ref: ${{ inputs.easycloud_ref }}
           token: ${{ secrets.MOWORKFLOWTOKEN }}
           fetch-depth: 0
 
@@ -436,18 +582,31 @@ jobs:
           IP: ${{ steps.create_env.outputs.ip }}
         run: |
           SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $IDENTIFIER/private.pem root@$IP"
-          # flex-linux-setup runs via cloud-init; wait for jans-config-api to come up
+          # flex-linux-setup (via cloud-init) installs jans-auth + jans-config-api as
+          # host Jetty systemd services; the config-api becoming active means Flex is up.
+          # A full install (Java + DB + maven jars) realistically needs ~15-20 min.
           for i in $(seq 1 60); do
-            STATUS=$($SSH "systemctl is-active jans-config-api" 2>/dev/null || true)
-            echo "jans-config-api: ${STATUS:-not-started} ($i/60)"
-            if [ "$STATUS" = "active" ]; then
+            CONFIG_API=$($SSH "systemctl is-active jans-config-api" 2>/dev/null || true)
+            AUTH=$($SSH "systemctl is-active jans-auth" 2>/dev/null || true)
+            echo "jans-config-api=${CONFIG_API:-none} jans-auth=${AUTH:-none} ($i/60)"
+            if [ "$CONFIG_API" = "active" ]; then
               echo "Flex is up"
               exit 0
             fi
+            # Detect the wrong-installer case early: if the config-api unit does not
+            # exist AND a jans docker container is running, the VM booted the legacy
+            # monolith (easycloud main pre-#7570), not flex-linux-setup.
+            if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1; then
+              if $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
+                echo "::warning::VM is running the legacy docker monolith, not flex-linux-setup." >&2
+                echo "::warning::Merge easycloud #7570 or pass easycloud_ref=flex-linux-setup-installer." >&2
+                break
+              fi
+            fi
             sleep 60
           done
-          echo "Flex install did not finish in time; continuing with deploy anyway" >&2
-          $SSH "tail -50 /var/log/flex-setup.log /var/log/cloud-init-output.log" || true
+          echo "jans-config-api not active; continuing with deploy anyway" >&2
+          $SSH "tail -50 /var/log/flex-setup.log /var/log/cloud-init-output.log 2>/dev/null" || true
 
       - name: Deploy admin-ui to VM
         env:

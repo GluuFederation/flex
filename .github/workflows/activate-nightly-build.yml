@@ -10,36 +10,32 @@ on:
   schedule:
     - cron: "0 23 * * *"
 permissions:
-  contents: read
+  contents: write
+  packages: write
 
 jobs:
-  publish_binary_packages:
+  # Build the admin-ui assets AND (re)create the rolling `nightly` release+tag as the
+  # first step of the nightly. Because build-admin-ui's build job finishes before its
+  # publish job recreates+pushes the `nightly` tag, admin-ui assets are on the release
+  # before the tag push fans out to build-packages.yml / docker_build_image.yml (the
+  # latter pulls admin-ui-nightly-built.tar.gz for the admin-ui image).
+  #
+  # NOTE for DevOps: this replaces the previous inline `set nightly version` step. A
+  # reusable-workflow caller job cannot run steps, so the step-security/harden-runner
+  # egress audit that used to guard this workflow no longer applies here. If that guard
+  # must be retained, keep the nightly recreate inline in a normal job and instead call
+  # build-admin-ui with recreate_release=false (accepts a seconds-wide race vs docker,
+  # covered by the admin-ui-main fallback in docker-admin-ui/Dockerfile).
+  nightly_admin_ui:
+    uses: ./.github/workflows/build-admin-ui.yml
     permissions:
-      contents: read
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
-      with:
-        egress-policy: audit
-
-    - name: Checkout
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      with:
-        token: ${{ secrets.MOWORKFLOWTOKEN }}
-
-    - name: set nightly version
-      id: nightly
-      continue-on-error: false
-      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-      env:
-        GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
-        TARGET_BRANCH: ${{ github.event.inputs.branch }}
-      run: |
-        NIGHTLY_VERSION="nightly"
-        gh release delete "${NIGHTLY_VERSION}" --cleanup-tag --yes || echo "${NIGHTLY_VERSION} does not exist"
-        git push --delete origin "${NIGHTLY_VERSION}" || echo "${NIGHTLY_VERSION} tag does not exist"
-        if [ -z "$TARGET_BRANCH" ]; then
-          TARGET_BRANCH="main"
-        fi
-        gh release create "${NIGHTLY_VERSION}" --generate-notes --prerelease --title "${NIGHTLY_VERSION}" --target "${TARGET_BRANCH}"
+      contents: write
+      packages: write
+    with:
+      build_ref: ${{ github.event.inputs.branch || 'main' }}
+      run_tests: false
+      publish: 'true'
+      deploy: 'false'
+      release_tag: nightly
+      recreate_release: true
+    secrets: inherit
