@@ -12,7 +12,7 @@ import config from './../config.js'
 import dotenv from 'dotenv'
 import { readFileSync } from 'fs'
 
-const __dirname = path.join(process.cwd(), 'config')
+const configDir = path.join(process.cwd(), 'config')
 
 dotenv.config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env.local',
@@ -22,7 +22,7 @@ const BASE_PATH: string = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL: string = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
 const devPolicyStoreJson: PolicyStoreConfig = JSON.parse(
-  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-dev.json'), 'utf-8'),
+  readFileSync(path.resolve(configDir, '../app/cedarling/config/policy-store-dev.json'), 'utf-8'),
 )
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
@@ -154,7 +154,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       title: 'AdminUI',
       inject: 'body',
       template: config.srcHtmlLayout,
-      favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
+      favicon: path.resolve(configDir, '../app/images/favicons/favicon.ico'),
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -174,8 +174,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         include: [
           config.srcDir,
           config.pluginsDir,
-          path.resolve(__dirname, '../jans_config_api_orval'),
-          path.resolve(__dirname, '..'), // Include root directory for api-client.ts
+          path.resolve(configDir, '../jans_config_api_orval'),
+          path.resolve(configDir, '..'), // Include root directory for api-client.ts
         ],
         exclude: /(node_modules|\.test\.(ts|tsx)$)/,
         use: 'babel-loader',
