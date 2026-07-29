@@ -165,7 +165,9 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     const dailyAnomaliesPrevious = countSpikes(
       sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
     )
-    const monthlyAnomalies = countSequenceSpikes(monthlyEntries)
+    const monthlyAnomalies = countSequenceSpikes(
+      sliceEntriesByRange(monthlyEntries, ranges.lastTwelveMonths.startDate, todayEnd),
+    )
     const monthlyAnomaliesPrevious = countSequenceSpikes(
       sliceEntriesByRange(
         monthlyEntries,
