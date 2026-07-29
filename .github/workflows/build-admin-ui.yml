@@ -1,15 +1,7 @@
 name: Build Admin UI
 
-# Replaces the legacy Jenkins gluu-admin-ui job (https://jenkins.gluu.org/npm/admin_ui/).
-# - Builds admin-ui assets from any branch/tag/commit (build_ref input).
-# - Optionally runs tests.
-# - Runnable standalone (workflow_dispatch) or as a reusable step (workflow_call) —
-#   activate-nightly-build.yml calls it first so admin-ui assets land on the nightly
-#   release before packages/docker fan out off the nightly tag.
-# - main -> overwrites assets on the rolling `nightly` release (no new release).
-# - v* tags -> the tag's release. release_tag input -> an existing release (e.g. 5.16.0).
-# - Feature branches: default to deploying on an ephemeral easycloud DO VM; publishing
-#   is opt-in (publish=true or comment_on_pr) and also targets the shared nightly release.
+# Builds admin-ui assets and publishes them to a GitHub release + Maven, or deploys
+# them to an ephemeral easycloud VM. Runnable standalone or via workflow_call.
 
 on:
   workflow_dispatch:
@@ -123,7 +115,7 @@ on:
         type: boolean
         default: false
       comment_on_pr:
-        description: 'Comment the published asset links on the branch open PR.'
+        description: 'Comment the published asset links on the branch open PR (implies publishing to the nightly release).'
         required: false
         type: boolean
         default: false
@@ -142,6 +134,15 @@ on:
         required: false
         type: string
         default: '6h'
+    secrets:
+      MOWORKFLOWTOKEN:
+        required: false
+      DO_TOKEN:
+        required: false
+      MOAUTO_GPG_PRIVATE_KEY:
+        required: false
+      MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE:
+        required: false
 
 permissions:
   contents: read
@@ -197,48 +198,36 @@ jobs:
             IS_RELEASE_REF=true
           fi
 
-          # Publishing: auto = release refs only; explicit true/false overrides.
-          # Requesting a PR comment or a release recreate implies publishing.
           DO_PUBLISH=false
           case "$INPUT_PUBLISH" in
             true)  DO_PUBLISH=true ;;
             false) DO_PUBLISH=false ;;
             *)     DO_PUBLISH=$IS_RELEASE_REF ;;
           esac
-          if [ "$INPUT_COMMENT" = "true" ] || [ "$INPUT_RECREATE" = "true" ]; then
+          if [ "$INPUT_COMMENT" = "true" ] || [ "$INPUT_RECREATE" = "true" ] || [ -n "$INPUT_RELEASE_TAG" ]; then
             DO_PUBLISH=true
           fi
 
-          # Resolve the target release and the asset/version identifier together, so
-          # tarball names (admin-ui-<version>-*.tar.gz) are deterministic PER RELEASE
-          # and clobber cleanly. Consumers (flex_setup.py get_admin_ui_bin_url,
-          # docker-admin-ui/Dockerfile) derive the asset name from the release tag.
+          # Asset/version identifier tracks the target release so tarball names clobber.
           REQUIRE_EXISTING=false
           if [ -n "$INPUT_RELEASE_TAG" ]; then
-            # explicit target release (e.g. build 5.16.0-patch -> upload to 5.16.0)
             RELEASE_TAG="$INPUT_RELEASE_TAG"
             VERSION="${RELEASE_TAG#admin-ui-}"
-            # must already exist, unless we are (re)creating it (nightly)
             if [ "$INPUT_RECREATE" = "true" ]; then REQUIRE_EXISTING=false; else REQUIRE_EXISTING=true; fi
           elif [ "$IS_TAG" = "true" ]; then
             RELEASE_TAG="$REF"
             VERSION="$REF"
           elif [ "$REF" = "main" ] || [ "$DO_PUBLISH" = "true" ]; then
-            # main, or a forced feature-branch publish/comment -> shared rolling nightly release
             RELEASE_TAG="nightly"
             VERSION="nightly"
           else
-            # legacy fallback: standalone feature build with no publish
             VERSION="$(echo "$REF" | tr '/' '-')"
             RELEASE_TAG="admin-ui-$VERSION"
           fi
 
-          # explicit version_name override wins only when no explicit release_tag was
-          # given (a release_tag pins the version for consumer-side determinism).
           if [ -n "$INPUT_VERSION" ] && [ -z "$INPUT_RELEASE_TAG" ]; then
             VERSION="$INPUT_VERSION"
           fi
-          # sanitize for maven/release asset names
           VERSION=$(echo "$VERSION" | tr -cd 'a-zA-Z0-9._-')
 
           DO_DEPLOY=false
@@ -359,16 +348,11 @@ jobs:
           TAG="$RELEASE_TAG"
 
           if [ "$RECREATE_RELEASE" = "true" ]; then
-            # nightly semantics: recreate the release+tag fresh, targeting the built ref.
-            # gh (authenticated with the PAT via GH_TOKEN) also removes the tag with
-            # --cleanup-tag; recreating with the PAT re-pushes the nightly tag, which
-            # is what fans out to build-packages.yml and docker_build_image.yml.
             echo "Recreating release $TAG targeting $REF_NAME"
             gh release delete "$TAG" --cleanup-tag --yes || echo "$TAG did not exist"
             gh release create "$TAG" \
               --generate-notes --prerelease --title "$TAG" --target "$REF_NAME"
           elif [ "$REQUIRE_EXISTING" = "true" ]; then
-            # explicit release_tag: it must already exist; never create it here
             if ! gh release view "$TAG" >/dev/null 2>&1; then
               echo "::error::Target release '$TAG' does not exist. Create it first or drop the release_tag input." >&2
               exit 1
@@ -412,8 +396,7 @@ jobs:
 
           REPO_URL="https://maven.pkg.github.com/${GITHUB_REPOSITORY}"
 
-          # branch builds are repeated on the same version; use SNAPSHOT so
-          # GitHub Maven accepts re-deploys (release versions are immutable)
+          # SNAPSHOT so re-deploys on the same branch version are accepted
           MAVEN_VERSION="$VERSION_NAME"
           if [ "$IS_TAG" != "true" ]; then
             MAVEN_VERSION="$VERSION_NAME-SNAPSHOT"
@@ -446,7 +429,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
         run: |
-          # find the open PR whose head is the built branch (no event payload on dispatch/call)
           PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$REF_NAME" --state open \
                  --json number --jq '.[0].number // empty')
           if [ -z "$PR" ]; then
@@ -582,9 +564,7 @@ jobs:
           IP: ${{ steps.create_env.outputs.ip }}
         run: |
           SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $IDENTIFIER/private.pem root@$IP"
-          # flex-linux-setup (via cloud-init) installs jans-auth + jans-config-api as
-          # host Jetty systemd services; the config-api becoming active means Flex is up.
-          # A full install (Java + DB + maven jars) realistically needs ~15-20 min.
+          # full install (Java + DB + maven jars) realistically needs ~15-20 min
           for i in $(seq 1 60); do
             CONFIG_API=$($SSH "systemctl is-active jans-config-api" 2>/dev/null || true)
             AUTH=$($SSH "systemctl is-active jans-auth" 2>/dev/null || true)
@@ -593,9 +573,7 @@ jobs:
               echo "Flex is up"
               exit 0
             fi
-            # Detect the wrong-installer case early: if the config-api unit does not
-            # exist AND a jans docker container is running, the VM booted the legacy
-            # monolith (easycloud main pre-#7570), not flex-linux-setup.
+            # legacy monolith (unit missing + jans container running) is not flex-linux-setup
             if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1; then
               if $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
                 echo "::warning::VM is running the legacy docker monolith, not flex-linux-setup." >&2
@@ -629,8 +607,7 @@ jobs:
             echo "window.apiBaseUrl = API_BASE_URL;"
           } > env-config.js
 
-          # flex-linux-setup serves admin UI via apache from /var/www/html/admin;
-          # replace its assets with this build (same as the legacy Jenkins deploy)
+          # apache serves admin UI from /var/www/html/admin; replace with this build
           ssh $SSH_OPTS "root@$IP" 'rm -rf /var/www/html/admin && mkdir -p /var/www/html/admin'
           scp $SSH_OPTS -r dist/* "root@$IP:/var/www/html/admin/"
           scp $SSH_OPTS env-config.js "root@$IP:/var/www/html/admin/"

@@ -10,22 +10,11 @@ on:
   schedule:
     - cron: "0 23 * * *"
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 jobs:
-  # Build the admin-ui assets AND (re)create the rolling `nightly` release+tag as the
-  # first step of the nightly. Because build-admin-ui's build job finishes before its
-  # publish job recreates+pushes the `nightly` tag, admin-ui assets are on the release
-  # before the tag push fans out to build-packages.yml / docker_build_image.yml (the
-  # latter pulls admin-ui-nightly-built.tar.gz for the admin-ui image).
-  #
-  # NOTE for DevOps: this replaces the previous inline `set nightly version` step. A
-  # reusable-workflow caller job cannot run steps, so the step-security/harden-runner
-  # egress audit that used to guard this workflow no longer applies here. If that guard
-  # must be retained, keep the nightly recreate inline in a normal job and instead call
-  # build-admin-ui with recreate_release=false (accepts a seconds-wide race vs docker,
-  # covered by the admin-ui-main fallback in docker-admin-ui/Dockerfile).
+  # Builds admin-ui and recreates the nightly release+tag first, so its assets are on
+  # the release before the nightly tag fans out to build-packages / docker_build_image.
   nightly_admin_ui:
     uses: ./.github/workflows/build-admin-ui.yml
     permissions:
@@ -38,4 +27,8 @@ jobs:
       deploy: 'false'
       release_tag: nightly
       recreate_release: true
-    secrets: inherit
+    secrets:
+      MOWORKFLOWTOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+      DO_TOKEN: ${{ secrets.DO_TOKEN }}
+      MOAUTO_GPG_PRIVATE_KEY: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY }}
+      MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE }}
