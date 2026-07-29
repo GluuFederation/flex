@@ -63,8 +63,7 @@ on:
         default: '6h'
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 env:
   DO_REGION: nyc1
@@ -89,6 +88,7 @@ jobs:
         with:
           ref: ${{ inputs.build_ref || github.ref }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Resolve version and flags
         id: meta
@@ -216,6 +216,9 @@ jobs:
     needs: build
     if: needs.build.outputs.do_publish == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write   # GitHub Maven publish uses GITHUB_TOKEN; releases use MOWORKFLOWTOKEN
     env:
       VERSION_NAME: ${{ needs.build.outputs.version }}
       REF_NAME: ${{ needs.build.outputs.ref_name }}
@@ -224,6 +227,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Download assets
         uses: actions/download-artifact@v4
@@ -373,20 +378,24 @@ jobs:
         id: create_env
         env:
           GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          DO_TOKEN: ${{ secrets.DO_TOKEN }}
+          BOT_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          TERMINATION_IN: ${{ inputs.termination_in }}
+          FLEX_BRANCH: ${{ inputs.flex_branch }}
         run: |
           bash ./automation/create_ephemerals_envs.sh \
             "unused" \
-            "${{ secrets.DO_TOKEN }}" \
+            "$DO_TOKEN" \
             "" \
             "" \
-            "${{ secrets.MOWORKFLOWTOKEN }}" \
+            "$BOT_TOKEN" \
             "do vm" \
             "" \
-            "${{ inputs.termination_in }}" \
+            "$TERMINATION_IN" \
             "$DO_REGION" \
             "$DO_VM_IMAGE" \
             "$DO_VM_SIZE" \
-            "${{ inputs.flex_branch }}" \
+            "$FLEX_BRANCH" \
             "$JANS_PERSISTENCE" \
             ""
 
@@ -471,6 +480,7 @@ jobs:
         env:
           HOST: ${{ steps.create_env.outputs.host }}
           IP: ${{ steps.create_env.outputs.ip }}
+          TERMINATION_IN: ${{ inputs.termination_in }}
         run: |
           {
             echo "## Admin UI deployed"
@@ -478,7 +488,7 @@ jobs:
             echo "- **URL:** https://$HOST/admin"
             echo "- **IP:** $IP"
             echo "- **Version:** $VERSION_NAME"
-            echo "- **VM terminates in:** ${{ inputs.termination_in }}"
+            echo "- **VM terminates in:** $TERMINATION_IN"
             echo "- **Admin password:** stored on the VM at /root/flex_admin_password"
             echo ""
             echo "Private key: see the easycloud PR / bot_reporter channel (standard easycloud flow)."

@@ -350,7 +350,8 @@ class flex_installer(JettyInstaller):
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
-        self.adimin_ui_bin_url = get_admin_ui_bin_url()
+        # resolved lazily (network request) only when Admin UI assets are needed
+        self.adimin_ui_bin_url = ''
         self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/v0.0.0/admin_ui_2_0.cjar'
         self.policy_store_cjar_path = os.path.join(self.templates_dir, 'policy-store.cjar')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
@@ -372,6 +373,11 @@ class flex_installer(JettyInstaller):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
         self.source_files = []
+
+    def resolve_admin_ui_bin_url(self):
+        if not self.adimin_ui_bin_url:
+            self.adimin_ui_bin_url = get_admin_ui_bin_url()
+        return self.adimin_ui_bin_url
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
@@ -400,7 +406,7 @@ class flex_installer(JettyInstaller):
                 (
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
-                (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
+                (self.resolve_admin_ui_bin_url(), os.path.join(Config.dist_jans_dir, os.path.basename(self.resolve_admin_ui_bin_url()))),
                 (self.policy_store_cjar_url, self.policy_store_cjar_path),
             ]
 
@@ -478,7 +484,7 @@ class flex_installer(JettyInstaller):
 
     def unpack_gluu_admin_ui_archive(self):
 
-        admin_ui_bin_archive = os.path.basename(self.adimin_ui_bin_url)
+        admin_ui_bin_archive = os.path.basename(self.resolve_admin_ui_bin_url())
 
         if os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
             print("Backing up previous installation")
