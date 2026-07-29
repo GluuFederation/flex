@@ -640,7 +640,7 @@ const AuthServerPropertiesPage: React.FC = () => {
           <Card className={classes.pageCard}>
             <CardBody>
               <Form
-                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) => {
                   e.preventDefault()
                   // Mobile is view-only, so never open the commit dialog.
                   if (isMobile) return

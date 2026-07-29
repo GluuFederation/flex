@@ -254,7 +254,7 @@ const Aliases = ({
   )
 
   const handleFormSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
+    (event: React.SyntheticEvent<HTMLFormElement>) => {
       event.preventDefault()
       formik.handleSubmit(event)
     },

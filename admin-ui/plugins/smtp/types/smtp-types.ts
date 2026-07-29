@@ -37,7 +37,7 @@ export type SmtpFormProps = {
   handleSubmit: (data: SmtpConfiguration, userMessage: string) => void
   allowSmtpKeystoreEdit: boolean
   onTestSmtp: (testData: SmtpTest) => void
-  formikRef?: React.MutableRefObject<FormikProps<SmtpFormValues> | null>
+  formikRef?: React.RefObject<FormikProps<SmtpFormValues> | null>
   readOnly: boolean
   testButtonEnabled: boolean
 }
