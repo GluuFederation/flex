@@ -154,13 +154,15 @@ print_prettier_failures() {
   echo "❌ Prettier — formatting issues"
 }
 
-# ESLint default (stylish) format:
+# ESLint default (stylish) format, shared by the lint and deprecation passes:
 #   /abs/path/file.ts
 #     1:7  error  message  rule
 #     2:1  error  message  rule
 #   <blank>
-print_eslint_failures() {
-  if [ ! -s "$ESLINT_OUT" ]; then return; fi
+print_lint_style_failures() {
+  out_file="$1"
+  summary="$2"
+  if [ ! -s "$out_file" ]; then return; fi
   REPO_ROOT=$(pwd)
   awk -v root="$REPO_ROOT/" '
     /^\// && /\.(js|jsx|ts|tsx)$/ {
@@ -181,37 +183,17 @@ print_eslint_failures() {
         if (counts[f] > 0) printf "  %s (%d)\n", f, counts[f]
       }
     }
-  ' "$ESLINT_OUT"
+  ' "$out_file"
   echo ""
-  echo "❌ ESLint — lint errors"
+  echo "$summary"
 }
 
-# Deprecation pass uses the same stylish format as ESLint
+print_eslint_failures() {
+  print_lint_style_failures "$ESLINT_OUT" "❌ ESLint — lint errors"
+}
+
 print_deprecated_failures() {
-  if [ ! -s "$DEPRECATED_OUT" ]; then return; fi
-  REPO_ROOT=$(pwd)
-  awk -v root="$REPO_ROOT/" '
-    /^\// && /\.(js|jsx|ts|tsx)$/ {
-      file = $0
-      sub("^" root, "", file)
-      counts[file] = 0
-      order[++n] = file
-      next
-    }
-    /^[[:space:]]+[0-9]+:[0-9]+/ {
-      if (file != "") counts[file]++
-      next
-    }
-    /^$/ { file = "" }
-    END {
-      for (i = 1; i <= n; i++) {
-        f = order[i]
-        if (counts[f] > 0) printf "  %s (%d)\n", f, counts[f]
-      }
-    }
-  ' "$DEPRECATED_OUT"
-  echo ""
-  echo "❌ Deprecations — deprecated APIs in use"
+  print_lint_style_failures "$DEPRECATED_OUT" "❌ Deprecations — deprecated APIs in use"
 }
 
 # tsc output: "<file>(line,col): error TSnnnn: message"

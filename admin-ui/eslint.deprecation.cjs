@@ -1,5 +1,6 @@
 const tsParser = require('@typescript-eslint/parser')
 const tsPlugin = require('@typescript-eslint/eslint-plugin')
+const noDeprecatedImport = require('./script/eslint-rules/no-deprecated-import.cjs')
 
 module.exports = [
   {
@@ -17,7 +18,13 @@ module.exports = [
       parser: tsParser,
       parserOptions: { projectService: true, tsconfigRootDir: __dirname },
     },
-    plugins: { '@typescript-eslint': tsPlugin },
-    rules: { '@typescript-eslint/no-deprecated': 'error' },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      'local': { rules: { 'no-deprecated-import': noDeprecatedImport } },
+    },
+    rules: {
+      '@typescript-eslint/no-deprecated': 'error',
+      'local/no-deprecated-import': 'error',
+    },
   },
 ]

@@ -24,6 +24,14 @@ const relative = (filePath: string): string => filePath.replace(`${process.cwd()
 
 const symbolOf = (message: string): string => SYMBOL_PATTERN.exec(message)?.[1] ?? message
 
+const parseResults = (raw: string): LintResult[] | null => {
+  try {
+    return JSON.parse(raw) as LintResult[]
+  } catch {
+    return null
+  }
+}
+
 void (() => {
   console.log(cyan('▶ Scanning app/ and plugins/ for deprecated APIs...') + '\n')
 
@@ -35,13 +43,14 @@ void (() => {
   )
 
   const stdout = proc.stdout?.trim()
-  if (!stdout) {
+  const results = stdout ? parseResults(stdout) : null
+
+  if (!results) {
     console.log(red('Could not run the deprecation scan.'))
     console.log(proc.stderr ?? '')
     process.exit(1)
   }
 
-  const results = JSON.parse(stdout) as LintResult[]
   const findings = results.flatMap((result) =>
     result.messages.map((message) => ({
       file: relative(result.filePath),
