@@ -48,7 +48,7 @@ on:
           - 'false'
         default: auto
       release_tag:
-        description: 'Existing release to upload assets to (e.g. nightly, 5.16.0). Must already exist. Empty = derive (main -> nightly).'
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0) — the only forms consumers resolve. Must already exist. Empty = derive (main -> nightly).'
         required: false
         type: string
         default: ''
@@ -105,7 +105,7 @@ on:
         type: string
         default: auto
       release_tag:
-        description: 'Existing release to upload assets to. Must already exist unless recreate_release is set.'
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0). Must already exist unless recreate_release is set.'
         required: false
         type: string
         default: ''
@@ -318,6 +318,11 @@ jobs:
     needs: build
     if: needs.build.outputs.do_publish == 'true'
     runs-on: ubuntu-latest
+    # serialize runs mutating the same release (delete/create/upload) so concurrent
+    # publishes to e.g. nightly can't clobber each other mid-flight
+    concurrency:
+      group: admin-ui-release-${{ needs.build.outputs.release_tag }}
+      cancel-in-progress: false
     permissions:
       contents: read
       packages: write   # GitHub Maven publish uses GITHUB_TOKEN; releases use MOWORKFLOWTOKEN
@@ -574,9 +579,9 @@ jobs:
             # legacy monolith (unit missing + jans container running) is not flex-linux-setup
             if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1 \
                && $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
-              echo "::error::VM is running the legacy docker monolith, not flex-linux-setup." >&2
-              echo "::error::Merge easycloud #7570 or pass easycloud_ref=flex-linux-setup-installer." >&2
-              break
+              echo "::error::VM is running the legacy docker monolith, not flex-linux-setup;" >&2
+              echo "::error::check the easycloud jans.sh.tpl or pass a fixed easycloud_ref." >&2
+              exit 1
             fi
             sleep 60
           done

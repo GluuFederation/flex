@@ -312,27 +312,21 @@ def get_admin_ui_bin_url():
     Assets are published by .github/workflows/build-admin-ui.yml: v* tag builds
     attach admin-ui-<tag>-built.tar.gz to that tag's release; everything else
     (main, nightly, branches) lands on the rolling `nightly` release as
-    admin-ui-nightly-built.tar.gz. Falls back to nightly when the tag asset
-    is missing.
+    admin-ui-nightly-built.tar.gz. Each version maps to exactly one release: a
+    missing v* asset is surfaced as an error (never silently downgraded to
+    nightly).
     """
     version = app_versions['NODE_MODULES_BRANCH'].replace('/', '-')
 
     if version.startswith('v'):
-        release_tag = version
-    else:
-        release_tag = 'nightly'
-        version = 'nightly'
-
-    url = '{0}/{1}/admin-ui-{2}-built.tar.gz'.format(admin_ui_releases_base_url, release_tag, version)
-
-    try:
-        request.urlopen(request.Request(url, method='HEAD'), timeout=30)
+        url = '{0}/{1}/admin-ui-{1}-built.tar.gz'.format(admin_ui_releases_base_url, version)
+        try:
+            request.urlopen(request.Request(url, method='HEAD'), timeout=30)
+        except Exception as e:
+            raise RuntimeError("Admin UI release asset not found at {}: {}".format(url, e))
         return url
-    except Exception:
-        fallback_url = '{0}/nightly/admin-ui-nightly-built.tar.gz'.format(admin_ui_releases_base_url)
-        if url != fallback_url:
-            print("Admin UI asset was not found at {}, falling back to {}".format(url, fallback_url))
-        return fallback_url
+
+    return '{0}/nightly/admin-ui-nightly-built.tar.gz'.format(admin_ui_releases_base_url)
 
 
 class flex_installer(JettyInstaller):
