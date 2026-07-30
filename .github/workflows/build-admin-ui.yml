@@ -48,7 +48,7 @@ on:
           - 'false'
         default: auto
       release_tag:
-        description: 'Existing release to upload assets to (e.g. nightly, 5.16.0). Must already exist. Empty = derive (main -> nightly).'
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0) — the only forms consumers resolve. Must already exist. Empty = derive (main -> nightly).'
         required: false
         type: string
         default: ''
@@ -105,7 +105,7 @@ on:
         type: string
         default: auto
       release_tag:
-        description: 'Existing release to upload assets to. Must already exist unless recreate_release is set.'
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0). Must already exist unless recreate_release is set.'
         required: false
         type: string
         default: ''
@@ -318,6 +318,11 @@ jobs:
     needs: build
     if: needs.build.outputs.do_publish == 'true'
     runs-on: ubuntu-latest
+    # serialize runs mutating the same release (delete/create/upload) so concurrent
+    # publishes to e.g. nightly can't clobber each other mid-flight
+    concurrency:
+      group: admin-ui-release-${{ needs.build.outputs.release_tag }}
+      cancel-in-progress: false
     permissions:
       contents: read
       packages: write   # GitHub Maven publish uses GITHUB_TOKEN; releases use MOWORKFLOWTOKEN
@@ -558,33 +563,40 @@ jobs:
 
       - name: Wait for Flex install
         if: inputs.flex_branch != ''
-        continue-on-error: true
         env:
           IDENTIFIER: ${{ steps.create_env.outputs.identifier }}
           IP: ${{ steps.create_env.outputs.ip }}
         run: |
           SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $IDENTIFIER/private.pem root@$IP"
-          # full install (Java + DB + maven jars) realistically needs ~15-20 min
-          for i in $(seq 1 60); do
+          for i in $(seq 1 10); do
             CONFIG_API=$($SSH "systemctl is-active jans-config-api" 2>/dev/null || true)
             AUTH=$($SSH "systemctl is-active jans-auth" 2>/dev/null || true)
-            echo "jans-config-api=${CONFIG_API:-none} jans-auth=${AUTH:-none} ($i/60)"
+            echo "jans-config-api=${CONFIG_API:-none} jans-auth=${AUTH:-none} ($i/10)"
             if [ "$CONFIG_API" = "active" ]; then
               echo "Flex is up"
               exit 0
             fi
             # legacy monolith (unit missing + jans container running) is not flex-linux-setup
-            if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1; then
-              if $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
-                echo "::warning::VM is running the legacy docker monolith, not flex-linux-setup." >&2
-                echo "::warning::Merge easycloud #7570 or pass easycloud_ref=flex-linux-setup-installer." >&2
-                break
-              fi
+            if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1 \
+               && $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
+              echo "::error::VM is running the legacy docker monolith, not flex-linux-setup;" >&2
+              echo "::error::check the easycloud jans.sh.tpl or pass a fixed easycloud_ref." >&2
+              exit 1
             fi
             sleep 60
           done
-          echo "jans-config-api not active; continuing with deploy anyway" >&2
-          $SSH "tail -50 /var/log/flex-setup.log /var/log/cloud-init-output.log 2>/dev/null" || true
+          echo "::group::VM diagnostics (jans-config-api never became active)"
+          $SSH '
+            echo "### cloud-init status";      cloud-init status --long 2>/dev/null || true
+            echo "### failed units";           systemctl --failed --no-pager || true
+            echo "### jans units";             systemctl status jans-config-api jans-auth --no-pager 2>&1 | tail -40 || true
+            echo "### log files";              ls -la /var/log/flex-setup.log /var/log/flex-certbot.log /var/log/cloud-init-output.log 2>&1 || true
+            echo "### flex-setup.log tail";     tail -100 /var/log/flex-setup.log 2>/dev/null || echo "(absent)"
+            echo "### cloud-init-output tail";  tail -150 /var/log/cloud-init-output.log 2>/dev/null || echo "(absent)"
+          ' || true
+          echo "::endgroup::"
+          echo "::error::Flex did not become ready in time; failing the deploy." >&2
+          exit 1
 
       - name: Deploy admin-ui to VM
         env:
