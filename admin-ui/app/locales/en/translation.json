@@ -1212,7 +1212,11 @@
     "auth_error_no_code": "Unable to get authorization code",
     "mau_loading": "Loading statistics...",
     "vs_previous_period": "vs previous period",
-    "no_valid_role_logout": "The logged-in user does not have a valid role. You will be logged out in {{seconds}} seconds."
+    "no_valid_role_logout": "The logged-in user does not have a valid role. You will be logged out in {{seconds}} seconds.",
+    "logging_level_required": "Logging level is required",
+    "logging_level_invalid": "Invalid logging level",
+    "logging_layout_required": "Logging layout is required",
+    "logging_layout_invalid": "Invalid logging layout"
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",
@@ -1291,7 +1295,21 @@
     "field_invalid_url": "{{field}} must be a valid URL",
     "field_invalid_number": "{{field}} must be a valid integer",
     "field_must_be_positive": "{{field}} must be at least 1",
-    "field_invalid_regex": "{{field}} must be a valid regular expression"
+    "field_invalid_regex": "{{field}} must be a valid regular expression",
+    "field_required": "{{field}} is required",
+    "field_must_be_number": "{{field}} must be a number",
+    "field_must_be_integer": "{{field}} must be an integer",
+    "field_min_value": "{{field}} must be at least {{min}}",
+    "field_max_value": "{{field}} must not exceed {{max}}",
+    "field_invalid_value": "Invalid {{field}}",
+    "field_min_items": "At least one {{field}} is required",
+    "must_not_exceed": "Must not exceed {{max}}",
+    "cors_preflight_max_age_max": "Must not exceed 24 hours (86400 seconds)",
+    "min_one_approved_issuer": "At least one approved issuer is required",
+    "min_one_scope": "At least one scope is required",
+    "min_one_asset_type": "At least one type is required",
+    "min_one_service_module": "At least one service module is required",
+    "api_protection_type_invalid": "Invalid API protection type. Supported type is {{type}}"
   },
   "tooltips": {
     "insert_shortcode": "Insert shortcode",
@@ -1639,7 +1657,9 @@
     "log_layout_text": "Text",
     "log_layout_json": "JSON",
     "jwt": "JWT",
-    "reference": "Reference"
+    "reference": "Reference",
+    "expired": "EXPIRED",
+    "register": "REGISTER"
   },
   "documentation": {
     "fido": {

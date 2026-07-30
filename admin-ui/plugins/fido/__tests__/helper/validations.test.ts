@@ -2,8 +2,13 @@ import {
   isLastKeyValueComplete,
   isLastStringEntryComplete,
   isLastMetadataServerComplete,
-  validationSchema,
+  getFidoValidationSchemas,
 } from 'Plugins/fido/helper/validations'
+
+import type { TFunction } from 'i18next'
+
+const t = ((key: string) => key) as TFunction
+const validationSchema = getFidoValidationSchemas(t)
 
 describe('fido validations', () => {
   describe('isLastKeyValueComplete', () => {

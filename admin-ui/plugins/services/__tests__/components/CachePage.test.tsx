@@ -52,6 +52,16 @@ const mockNativeConfig = {
 }
 
 jest.mock('JansConfigApi', () => ({
+  RedisConfigurationRedisProviderType: {
+    STANDALONE: 'STANDALONE',
+    CLUSTER: 'CLUSTER',
+    SHARDED: 'SHARDED',
+    SENTINEL: 'SENTINEL',
+  },
+  MemcachedConfigurationConnectionFactoryType: {
+    DEFAULT: 'DEFAULT',
+    BINARY: 'BINARY',
+  },
   useGetConfigCache: jest.fn(() => ({
     data: { cacheProviderType: 'IN_MEMORY' },
     isLoading: false,

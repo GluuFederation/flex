@@ -1,6 +1,7 @@
+import type { CacheConfigurationCacheProviderType } from 'JansConfigApi'
 import type { FormikProps } from 'formik'
 
-export type CacheProviderType = 'IN_MEMORY' | 'MEMCACHED' | 'REDIS' | 'NATIVE_PERSISTENCE'
+export type CacheProviderType = CacheConfigurationCacheProviderType
 
 export type InMemoryCacheFormValues = {
   cacheProviderType: 'IN_MEMORY'

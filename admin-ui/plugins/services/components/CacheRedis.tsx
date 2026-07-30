@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -7,10 +8,12 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheRedisProps } from './types'
-import { REDIS_PROVIDER_OPTIONS } from '../helper'
+import { getRedisProviderOptions } from '../helper'
 
 const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
   const { t } = useTranslation()
+
+  const redisProviderOptions = useMemo(() => getRedisProviderOptions(), [])
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -19,7 +22,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           name="redisProviderType"
           value={formik.values.redisProviderType || ''}
           formik={formik}
-          values={REDIS_PROVIDER_OPTIONS}
+          values={redisProviderOptions}
           lsize={12}
           rsize={12}
           doc_category={CACHE}

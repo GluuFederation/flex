@@ -19,7 +19,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 
 import {
-  validationSchema,
+  getFidoValidationSchemas,
   transformToFormValues,
   buildChangedFieldOperations,
   fidoConstants,
@@ -65,10 +65,12 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     fidoConstants.STATIC,
   ) as StaticConfigFormValues
 
+  const fidoValidationSchemas = useMemo(() => getFidoValidationSchemas(t), [t])
+
   const formik = useFormik<StaticConfigFormValues>({
     initialValues,
     onSubmit: readOnly ? () => undefined : toggle,
-    validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
+    validationSchema: fidoValidationSchemas.staticConfigValidationSchema,
     validateOnMount: true,
   })
 
@@ -79,12 +81,12 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       const snapshot = JSON.stringify(fidoConfiguration.fido2Configuration)
       if (snapshot !== configSnapshot.current) {
         configSnapshot.current = snapshot
-        formik.resetForm({
-          values: transformToFormValues(
-            fidoConfiguration.fido2Configuration,
-            fidoConstants.STATIC,
-          ) as StaticConfigFormValues,
-        })
+        const nextValues = transformToFormValues(
+          fidoConfiguration.fido2Configuration,
+          fidoConstants.STATIC,
+        ) as StaticConfigFormValues
+        formik.resetForm({ values: nextValues })
+        void formik.validateForm(nextValues)
       }
     }
   }, [fidoConfiguration])
@@ -423,9 +425,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   </GluuButton>
                 </div>
               ))}
-              {showPartiesError && (
-                <div className={classes.propsError}>{t(partiesError as string)}</div>
-              )}
+              {showPartiesError && <div className={classes.propsError}>{partiesError}</div>}
             </div>
           </div>
 
@@ -477,9 +477,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   </GluuButton>
                 </div>
               ))}
-              {showAlgorithmsError && (
-                <div className={classes.propsError}>{t(algorithmsError as string)}</div>
-              )}
+              {showAlgorithmsError && <div className={classes.propsError}>{algorithmsError}</div>}
             </div>
           </div>
 
@@ -539,9 +537,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   </GluuButton>
                 </div>
               ))}
-              {showServersError && (
-                <div className={classes.propsError}>{t(serversError as string)}</div>
-              )}
+              {showServersError && <div className={classes.propsError}>{serversError}</div>}
             </div>
           </div>
 

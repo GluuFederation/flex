@@ -48,6 +48,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     initialValues: initialFormValues,
     validationSchema,
     onSubmit: toggle,
+    validateOnMount: true,
     enableReinitialize: true,
   })
 

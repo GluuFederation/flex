@@ -64,7 +64,6 @@ const JsonPropertyBuilderConfigApi = ({
   parent,
   disabled = false,
   errors,
-  touched,
 }: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t, i18n } = useTranslation()
   const { classes } = useStyles()
@@ -120,11 +119,6 @@ const JsonPropertyBuilderConfigApi = ({
     return getIn(errors, formikPath)
   }, [errors, formikPath])
 
-  const fieldTouched = useMemo(() => {
-    if (!touched) return false
-    return getIn(touched, formikPath) === true
-  }, [touched, formikPath])
-
   const removeHandler = useCallback(() => {
     if (!show) {
       return
@@ -140,7 +134,7 @@ const JsonPropertyBuilderConfigApi = ({
   }, [path, handler, show])
 
   const renderError = useCallback(() => {
-    if (!fieldTouched || !fieldError) return null
+    if (!fieldError) return null
     if (typeof fieldError === 'object' && fieldError !== null) return null
     return (
       <div style={ERROR_CONTAINER_STYLE}>
@@ -158,7 +152,7 @@ const JsonPropertyBuilderConfigApi = ({
         </FormGroup>
       </div>
     )
-  }, [fieldTouched, fieldError, lSize])
+  }, [fieldError, lSize])
 
   const selectFormikAdapter = useMemo(
     () => ({
@@ -242,7 +236,7 @@ const JsonPropertyBuilderConfigApi = ({
           doc_category={doc_category}
           doc_entry={tooltipPropKey || propKey}
           disabled={disabled}
-          showError={fieldTouched && typeof fieldError === 'string'}
+          showError={typeof fieldError === 'string'}
           errorMessage={typeof fieldError === 'string' ? fieldError : undefined}
         />
       )
@@ -371,7 +365,6 @@ const JsonPropertyBuilderConfigApi = ({
                   doc_category={doc_category}
                   disabled={disabled}
                   errors={errors}
-                  touched={touched}
                 />
               )
             })
@@ -458,7 +451,6 @@ const JsonPropertyBuilderConfigApi = ({
                           doc_category={doc_category}
                           disabled={disabled}
                           errors={errors}
-                          touched={touched}
                         />
                       </div>
                     )

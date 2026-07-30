@@ -1219,7 +1219,11 @@
     "no_scope_in_spontaneous_client": "Aucune donnée de portée spontanée pour ce client",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added"
+    "all_attributes_added": "All attributes have been added",
+    "logging_level_required": "Le niveau de journalisation est obligatoire",
+    "logging_level_invalid": "Niveau de journalisation non valide",
+    "logging_layout_required": "Le format de journalisation est obligatoire",
+    "logging_layout_invalid": "Format de journalisation non valide"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -1298,7 +1302,21 @@
     "field_invalid_url": "{{field}} doit être une URL valide",
     "field_invalid_number": "{{field}} doit être un entier valide",
     "field_must_be_positive": "{{field}} doit être au moins 1",
-    "field_invalid_regex": "{{field}} doit être une expression régulière valide"
+    "field_invalid_regex": "{{field}} doit être une expression régulière valide",
+    "field_required": "{{field}} est obligatoire",
+    "field_must_be_number": "{{field}} doit être un nombre",
+    "field_must_be_integer": "{{field}} doit être un nombre entier",
+    "field_min_value": "{{field}} doit être au minimum {{min}}",
+    "field_max_value": "{{field}} ne doit pas dépasser {{max}}",
+    "field_invalid_value": "{{field}} n’est pas valide",
+    "field_min_items": "Au moins une valeur est requise pour {{field}}",
+    "must_not_exceed": "Ne doit pas dépasser {{max}}",
+    "cors_preflight_max_age_max": "Ne doit pas dépasser 24 heures (86400 secondes)",
+    "min_one_approved_issuer": "Au moins un émetteur approuvé est requis",
+    "min_one_scope": "Au moins une portée est requise",
+    "min_one_asset_type": "Au moins un type est requis",
+    "min_one_service_module": "Au moins un module de service est requis",
+    "api_protection_type_invalid": "Type de protection d'API non valide. Le type pris en charge est {{type}}"
   },
   "tooltips": {
     "insert_shortcode": "Insérer un shortcode",
@@ -1647,7 +1665,9 @@
     "log_layout_text": "Texte",
     "log_layout_json": "JSON",
     "jwt": "JWT",
-    "reference": "Référence"
+    "reference": "Référence",
+    "expired": "EXPIRÉ",
+    "register": "INSCRIPTION"
   },
   "documentation": {
     "fido": {

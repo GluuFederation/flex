@@ -1,3 +1,8 @@
+import {
+  CacheConfigurationCacheProviderType,
+  RedisConfigurationRedisProviderType,
+  MemcachedConfigurationConnectionFactoryType,
+} from 'JansConfigApi'
 import type { CacheFormValues } from '../components/types'
 
 type CacheFieldLabel = { key: keyof CacheFormValues; label: string }
@@ -45,21 +50,27 @@ export const CACHE_FIELD_LABELS_BY_PROVIDER: Record<string, CacheFieldLabel[]> =
   NATIVE_PERSISTENCE: [...COMMON_FIELDS, ...NATIVE_PERSISTENCE_FIELDS],
 }
 
-export const CACHE_PROVIDER_OPTIONS = [
-  { value: 'IN_MEMORY', label: 'In Memory' },
-  { value: 'MEMCACHED', label: 'Memcached' },
-  { value: 'REDIS', label: 'Redis' },
-  { value: 'NATIVE_PERSISTENCE', label: 'Native Persistence' },
-]
+const titleCase = (value: string) =>
+  value
+    .toLowerCase()
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
 
-export const REDIS_PROVIDER_OPTIONS = [
-  { value: 'STANDALONE', label: 'Standalone' },
-  { value: 'CLUSTER', label: 'Cluster' },
-  { value: 'SHARDED', label: 'Sharded' },
-  { value: 'SENTINEL', label: 'Sentinel' },
-]
+export const getCacheProviderOptions = () =>
+  Object.values(CacheConfigurationCacheProviderType).map((value) => ({
+    value,
+    label: titleCase(value),
+  }))
 
-export const CONNECTION_FACTORY_OPTIONS = [
-  { value: 'DEFAULT', label: 'Default' },
-  { value: 'BINARY', label: 'Binary' },
-]
+export const getRedisProviderOptions = () =>
+  Object.values(RedisConfigurationRedisProviderType).map((value) => ({
+    value,
+    label: titleCase(value),
+  }))
+
+export const getConnectionFactoryOptions = () =>
+  Object.values(MemcachedConfigurationConnectionFactoryType).map((value) => ({
+    value,
+    label: titleCase(value),
+  }))

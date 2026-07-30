@@ -1,5 +1,5 @@
 export {
-  validationSchema,
+  getFidoValidationSchemas,
   isLastKeyValueComplete,
   isLastStringEntryComplete,
   isLastMetadataServerComplete,

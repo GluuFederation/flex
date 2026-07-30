@@ -18,7 +18,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 
 import {
   fidoConstants,
-  validationSchema,
+  getFidoValidationSchemas,
   transformToFormValues,
   buildChangedFieldOperations,
   isLastStringEntryComplete,
@@ -59,10 +59,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     [fidoConfiguration],
   )
 
+  const fidoValidationSchemas = useMemo(() => getFidoValidationSchemas(t), [t])
+
   const formik = useFormik<DynamicConfigFormValues>({
     initialValues,
     onSubmit: readOnly ? () => undefined : toggle,
-    validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
+    validationSchema: fidoValidationSchemas.dynamicConfigValidationSchema,
     validateOnMount: true,
   })
 
@@ -73,12 +75,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
       const snapshot = JSON.stringify(fidoConfiguration)
       if (snapshot !== configSnapshot.current) {
         configSnapshot.current = snapshot
-        formik.resetForm({
-          values: transformToFormValues(
-            fidoConfiguration,
-            fidoConstants.DYNAMIC,
-          ) as DynamicConfigFormValues,
-        })
+        const nextValues = transformToFormValues(
+          fidoConfiguration,
+          fidoConstants.DYNAMIC,
+        ) as DynamicConfigFormValues
+        formik.resetForm({ values: nextValues })
+        void formik.validateForm(nextValues)
       }
     }
   }, [fidoConfiguration])
@@ -411,9 +413,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                   </GluuButton>
                 </div>
               ))}
-              {showObjectClassError && (
-                <div className={classes.propsError}>{t(objectClassError as string)}</div>
-              )}
+              {showObjectClassError && <div className={classes.propsError}>{objectClassError}</div>}
             </div>
           </div>
         </div>

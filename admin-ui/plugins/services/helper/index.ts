@@ -1,6 +1,6 @@
 export {
-  CACHE_PROVIDER_OPTIONS,
-  REDIS_PROVIDER_OPTIONS,
-  CONNECTION_FACTORY_OPTIONS,
+  getCacheProviderOptions,
+  getRedisProviderOptions,
+  getConnectionFactoryOptions,
 } from './constants'
 export * from './utils'
