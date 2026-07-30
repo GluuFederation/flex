@@ -65,14 +65,15 @@ ENV ADMIN_UI_VERSION=main
 ENV GLUU_BUILD_DATE='2025-11-06 18:51'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
-# tag builds (v*/nightly) attach to that release; branch builds go to admin-ui-<branch>.
+# v* tag builds attach to that tag's release; everything else (main, nightly, branches)
+# lands on the rolling `nightly` release as admin-ui-nightly-*.tar.gz.
 RUN case "${ADMIN_UI_VERSION}" in \
-        v*|nightly) RELEASE_TAG="${ADMIN_UI_VERSION}" ;; \
-        *) RELEASE_TAG="admin-ui-${ADMIN_UI_VERSION}" ;; \
+        v*) RELEASE_TAG="${ADMIN_UI_VERSION}"; ASSET_VERSION="${ADMIN_UI_VERSION}" ;; \
+        *) RELEASE_TAG="nightly"; ASSET_VERSION="nightly" ;; \
     esac \
-    && { wget -q https://github.com/GluuFederation/flex/releases/download/${RELEASE_TAG}/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
-         || { echo "Admin UI asset not found for ${RELEASE_TAG}; falling back to admin-ui-main"; \
-              wget -q https://github.com/GluuFederation/flex/releases/download/admin-ui-main/admin-ui-main-built.tar.gz -O /tmp/admin-ui.tar.gz; }; } \
+    && { wget -q https://github.com/GluuFederation/flex/releases/download/${RELEASE_TAG}/admin-ui-${ASSET_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+         || { echo "Admin UI asset not found for ${RELEASE_TAG}; falling back to nightly"; \
+              wget -q https://github.com/GluuFederation/flex/releases/download/nightly/admin-ui-nightly-built.tar.gz -O /tmp/admin-ui.tar.gz; }; } \
     && mkdir -p /opt/flex/admin-ui \
     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
     && rm -rf /tmp/admin-ui.tar.gz

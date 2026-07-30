@@ -309,18 +309,19 @@ admin_ui_releases_base_url = 'https://github.com/GluuFederation/flex/releases/do
 def get_admin_ui_bin_url():
     """Resolves the Admin UI built asset URL on GitHub Releases.
 
-    Assets are published by .github/workflows/build-admin-ui.yml as
-    admin-ui-<version>-built.tar.gz where <version> is either a flex tag
-    (attached to that tag's release) or a branch name (attached to the
-    admin-ui-<branch> release). Falls back to the main branch build when
-    no release asset exists for the requested branch.
+    Assets are published by .github/workflows/build-admin-ui.yml: v* tag builds
+    attach admin-ui-<tag>-built.tar.gz to that tag's release; everything else
+    (main, nightly, branches) lands on the rolling `nightly` release as
+    admin-ui-nightly-built.tar.gz. Falls back to nightly when the tag asset
+    is missing.
     """
     version = app_versions['NODE_MODULES_BRANCH'].replace('/', '-')
 
-    if version.startswith('v') or version == 'nightly':
+    if version.startswith('v'):
         release_tag = version
     else:
-        release_tag = 'admin-ui-' + version
+        release_tag = 'nightly'
+        version = 'nightly'
 
     url = '{0}/{1}/admin-ui-{2}-built.tar.gz'.format(admin_ui_releases_base_url, release_tag, version)
 
@@ -328,7 +329,7 @@ def get_admin_ui_bin_url():
         request.urlopen(request.Request(url, method='HEAD'), timeout=30)
         return url
     except Exception:
-        fallback_url = '{0}/admin-ui-main/admin-ui-main-built.tar.gz'.format(admin_ui_releases_base_url)
+        fallback_url = '{0}/nightly/admin-ui-nightly-built.tar.gz'.format(admin_ui_releases_base_url)
         if url != fallback_url:
             print("Admin UI asset was not found at {}, falling back to {}".format(url, fallback_url))
         return fallback_url
