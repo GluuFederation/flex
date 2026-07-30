@@ -146,6 +146,8 @@ const SamlConfigurationForm: React.FC = () => {
                   value={formik.values.selectedIdp}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  invalid={Boolean(formik.errors.selectedIdp)}
+                  error={formik.errors.selectedIdp}
                 >
                   <option value="">{t('Choose')}...</option>
                   <option value="keycloak">Keycloak</option>

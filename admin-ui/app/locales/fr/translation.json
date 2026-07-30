@@ -1219,7 +1219,7 @@
     "no_scope_in_spontaneous_client": "Aucune donnée de portée spontanée pour ce client",
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
-    "all_attributes_added": "All attributes have been added",
+    "all_attributes_added": "Tous les attributs ont été ajoutés",
     "logging_level_required": "Le niveau de journalisation est obligatoire",
     "logging_level_invalid": "Niveau de journalisation non valide",
     "logging_layout_required": "Le format de journalisation est obligatoire",

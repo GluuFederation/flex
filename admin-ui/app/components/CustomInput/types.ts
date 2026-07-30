@@ -12,6 +12,8 @@ export type CustomInputProps = {
   'onChange'?: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>
   'onBlur'?: React.FocusEventHandler<HTMLInputElement | HTMLSelectElement>
   'children'?: React.ReactNode
+  'invalid'?: boolean
+  'error'?: string
   'data-testid'?: string
   'aria-disabled'?: boolean
   'tabIndex'?: number
