@@ -8,26 +8,30 @@ import type {
   WebsiteSsoServiceProviderFormValues,
 } from '../types'
 
-export const samlConfigurationValidationSchema: Yup.ObjectSchema<SamlConfigurationFormValues> =
-  Yup.object({
-    enabled: Yup.boolean().required('Enabled field is required.'),
+export const getSamlConfigurationValidationSchema = (
+  t: TFunction,
+): Yup.ObjectSchema<SamlConfigurationFormValues> => {
+  const required = (label: string) => t('validation_messages.field_required', { field: t(label) })
+
+  return Yup.object({
+    enabled: Yup.boolean().required(required('fields.enabled')),
     selectedIdp: Yup.string().when('enabled', {
       is: true,
       then: (schema) =>
-        schema
-          .required('Selected IdP is required when SAML is enabled.')
-          .min(1, 'Selected IdP cannot be empty when SAML is enabled.'),
+        schema.required(required('fields.selected_idp')).min(1, required('fields.selected_idp')),
       otherwise: (schema) => schema,
     }),
     ignoreValidation: Yup.boolean(),
     applicationName: Yup.string(),
   }) as Yup.ObjectSchema<SamlConfigurationFormValues>
+}
 
 // Helper function to create required field when metadata file is not imported
 const requiredWhenMetadataNotImported = (t: TFunction, fieldKey: string) =>
   Yup.string().when('metaDataFileImportedFlag', {
     is: (value: boolean) => value === false,
-    then: () => Yup.string().required(`${t(fieldKey)} is Required!`),
+    then: () =>
+      Yup.string().required(t('validation_messages.field_required', { field: t(fieldKey) })),
     otherwise: () => Yup.string(),
   })
 
@@ -61,9 +65,11 @@ export const websiteSsoIdentityProviderValidationSchema = (
   t: TFunction,
 ): Yup.ObjectSchema<WebsiteSsoIdentityProviderFormValues> =>
   Yup.object().shape({
-    name: noSpacesValidation(t, 'fields.name').required(`${t('fields.name')} is Required!`),
+    name: noSpacesValidation(t, 'fields.name').required(
+      t('validation_messages.field_required', { field: t('fields.name') }),
+    ),
     displayName: noSpacesValidation(t, 'fields.displayName').required(
-      `${t('fields.displayName')} is Required!`,
+      t('validation_messages.field_required', { field: t('fields.displayName') }),
     ),
     description: Yup.string().nullable(),
     enabled: Yup.boolean().required(),
@@ -106,7 +112,9 @@ export const websiteSsoIdentityProviderValidationSchema = (
       .when('metaDataFileImportedFlag', ([value], schema) =>
         value === false
           ? schema
-              .required(`${t('fields.idp_entity_id')} is Required!`)
+              .required(
+                t('validation_messages.field_required', { field: t('fields.idp_entity_id') }),
+              )
               .test(
                 'not-empty',
                 t('errors.cannot_be_empty', { field: t('fields.idp_entity_id') }),
@@ -133,28 +141,36 @@ export const websiteSsoIdentityProviderValidationSchema = (
 const requiredWhenManualTest = (t: TFunction, fieldKey: string) =>
   Yup.string()
     .nullable()
-    .test('required-when-manual', `${t(fieldKey)} is Required!`, function (value) {
-      // Access parent form values through Yup's context
-      const parent = this.from?.[1]?.value as { spMetaDataSourceType?: string } | undefined
-      const isManual = parent?.spMetaDataSourceType?.toLowerCase() === 'manual'
-      if (isManual && (!value || value.trim() === '')) {
-        return false
-      }
-      return true
-    })
+    .test(
+      'required-when-manual',
+      t('validation_messages.field_required', { field: t(fieldKey) }),
+      function (value) {
+        // Access parent form values through Yup's context
+        const parent = this.from?.[1]?.value as { spMetaDataSourceType?: string } | undefined
+        const isManual = parent?.spMetaDataSourceType?.toLowerCase() === 'manual'
+        if (isManual && (!value || value.trim() === '')) {
+          return false
+        }
+        return true
+      },
+    )
 
 export const websiteSsoServiceProviderValidationSchema = (
   t: TFunction,
 ): Yup.ObjectSchema<WebsiteSsoServiceProviderFormValues> =>
   Yup.object().shape({
     displayName: noSpacesValidation(t, 'fields.displayName').required(
-      `${t('fields.displayName')} is Required!`,
+      t('validation_messages.field_required', { field: t('fields.displayName') }),
     ),
-    name: noSpacesValidation(t, 'fields.name').required(`${t('fields.name')} is Required!`),
+    name: noSpacesValidation(t, 'fields.name').required(
+      t('validation_messages.field_required', { field: t('fields.name') }),
+    ),
     spLogoutURL: Yup.string()
       .nullable()
       .concat(urlValidation(t, 'fields.service_provider_logout_url')),
-    spMetaDataSourceType: Yup.string().required(`${t('fields.metadata_location')} is Required!`),
+    spMetaDataSourceType: Yup.string().required(
+      t('validation_messages.field_required', { field: t('fields.metadata_location') }),
+    ),
     metaDataFileImportedFlag: Yup.boolean(),
     metaDataFile: Yup.mixed().when('spMetaDataSourceType', {
       is: (val: string) => val?.toLowerCase() === 'file',

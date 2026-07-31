@@ -1215,7 +1215,11 @@
     "fido2_metrics_health_down": "O serviço de métricas está indisponível no momento.",
     "fido2_metrics_health_status": "Métricas Fido2",
     "fido2_metrics_health_unknown": "Não foi possível determinar o status do serviço de métricas.",
-    "fido2_metrics_health_up": "O serviço de métricas está funcionando normalmente."
+    "fido2_metrics_health_up": "O serviço de métricas está funcionando normalmente.",
+    "logging_level_required": "O nível de log é obrigatório",
+    "logging_level_invalid": "Nível de log inválido",
+    "logging_layout_required": "O formato de log é obrigatório",
+    "logging_layout_invalid": "Formato de log inválido"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -1294,7 +1298,21 @@
     "field_invalid_url": "{{field}} deve ser uma URL válida",
     "field_invalid_number": "{{field}} deve ser um número inteiro válido",
     "field_must_be_positive": "{{field}} deve ser pelo menos 1",
-    "field_invalid_regex": "{{field}} deve ser uma expressão regular válida"
+    "field_invalid_regex": "{{field}} deve ser uma expressão regular válida",
+    "field_required": "{{field}} é obrigatório",
+    "field_must_be_number": "{{field}} deve ser um número",
+    "field_must_be_integer": "{{field}} deve ser um número inteiro",
+    "field_min_value": "{{field}} deve ser no mínimo {{min}}",
+    "field_max_value": "{{field}} não deve exceder {{max}}",
+    "field_invalid_value": "{{field}} não é válido",
+    "field_min_items": "É necessário pelo menos um valor em {{field}}",
+    "must_not_exceed": "Não deve exceder {{max}}",
+    "cors_preflight_max_age_max": "Não deve exceder 24 horas (86400 segundos)",
+    "min_one_approved_issuer": "É necessário pelo menos um emissor aprovado",
+    "min_one_scope": "É necessário pelo menos um escopo",
+    "min_one_asset_type": "É necessário pelo menos um tipo",
+    "min_one_service_module": "É necessário pelo menos um módulo de serviço",
+    "api_protection_type_invalid": "Tipo de proteção de API inválido. O tipo suportado é {{type}}"
   },
   "tooltips": {
     "insert_shortcode": "Inserir código de atalho",
@@ -1643,7 +1661,9 @@
     "log_layout_text": "Texto",
     "log_layout_json": "JSON",
     "jwt": "JWT",
-    "reference": "Referência"
+    "reference": "Referência",
+    "expired": "EXPIRADO",
+    "register": "REGISTRO"
   },
   "documentation": {
     "fido": {

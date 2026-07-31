@@ -1,3 +1,4 @@
+import type { AnyObject, ObjectSchema } from 'yup'
 import { AppConfiguration1 } from 'JansConfigApi'
 
 // Form values for Dynamic Configuration
@@ -75,3 +76,8 @@ export type FidoFormValuePrimitive =
   | string[]
   | Array<{ key: string; value: string }>
   | Array<{ url: string; rootCert: string }>
+
+export type FidoValidationSchemas = {
+  dynamicConfigValidationSchema: ObjectSchema<AnyObject>
+  staticConfigValidationSchema: ObjectSchema<AnyObject>
+}

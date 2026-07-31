@@ -14,6 +14,7 @@ import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { HelpOutline } from '@/components/icons'
 import { ATTRIBUTE } from 'Utils/ApiResources'
+import { getAttributeStatusOptions } from '../constants'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
@@ -44,6 +45,11 @@ const USAGE_TYPE_OPTIONS: AutocompleteOption[] = [{ value: 'openid', label: 'Ope
 const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
+
+  const statusOptions = useMemo(
+    () => getAttributeStatusOptions().map(({ value, labelKey }) => ({ value, label: t(labelKey) })),
+    [t],
+  )
   const { navigateBack } = useAppNavigation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const [modal, setModal] = useState<boolean>(false)
@@ -251,10 +257,7 @@ const UserClaimsForm = memo(function UserClaimsForm(props: AttributeFormProps) {
                     value={formik.values.status}
                     doc_category={ATTRIBUTE}
                     doc_entry="status"
-                    values={[
-                      { value: 'active', label: t('options.active') },
-                      { value: 'inactive', label: t('options.inactive') },
-                    ]}
+                    values={statusOptions}
                     errorMessage={formik.errors.status ? t(formik.errors.status) : undefined}
                     showError={!!(formik.errors.status && formik.touched.status)}
                     disabled={isViewMode}

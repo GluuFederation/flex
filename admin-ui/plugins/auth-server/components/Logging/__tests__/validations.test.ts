@@ -1,4 +1,8 @@
-import { loggingValidationSchema } from 'Plugins/auth-server/components/Logging/validations'
+import { getLoggingValidationSchema } from 'Plugins/auth-server/components/Logging/validations'
+import type { TFunction } from 'i18next'
+
+const t = ((key: string) => key) as TFunction
+const loggingValidationSchema = getLoggingValidationSchema(t)
 
 const validValues = {
   loggingLevel: 'INFO',
@@ -32,20 +36,20 @@ describe('loggingValidationSchema', () => {
   it('rejects an unknown logging level', async () => {
     await expect(
       loggingValidationSchema.validate({ ...validValues, loggingLevel: 'VERBOSE' }),
-    ).rejects.toThrow('Invalid logging level')
+    ).rejects.toThrow('messages.logging_level_invalid')
   })
 
   it('rejects an unknown logging layout', async () => {
     await expect(
       loggingValidationSchema.validate({ ...validValues, loggingLayout: 'xml' }),
-    ).rejects.toThrow('Invalid logging layout')
+    ).rejects.toThrow('messages.logging_layout_invalid')
   })
 
   it('requires the logging level', async () => {
     const { loggingLevel, ...rest } = validValues
     void loggingLevel
     await expect(loggingValidationSchema.validate(rest)).rejects.toThrow(
-      'Logging level is required',
+      'messages.logging_level_required',
     )
   })
 
@@ -53,7 +57,7 @@ describe('loggingValidationSchema', () => {
     const { loggingLayout, ...rest } = validValues
     void loggingLayout
     await expect(loggingValidationSchema.validate(rest)).rejects.toThrow(
-      'Logging layout is required',
+      'messages.logging_layout_required',
     )
   })
 

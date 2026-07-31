@@ -74,6 +74,12 @@ jest.mock('@/cedarling/utility', () => {
 })
 
 jest.mock('JansConfigApi', () => ({
+  JansAttributeStatus: {
+    active: 'active',
+    inactive: 'inactive',
+    expired: 'expired',
+    register: 'register',
+  },
   getGetAttributesQueryKey: jest.fn(() => ['attributes']),
   useGetWebhooksByFeatureId: jest.fn(() => ({
     data: [],

@@ -46,6 +46,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
     enableReinitialize: true,
     onSubmit: () => toggle(),
     validationSchema,
+    validateOnMount: true,
   })
 
   const handleCancel = useCallback(() => {

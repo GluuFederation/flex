@@ -1,13 +1,16 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { CACHE } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheMemcachedProps } from './types'
-import { CONNECTION_FACTORY_OPTIONS } from '../helper'
+import { getConnectionFactoryOptions } from '../helper'
 
 const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedProps) => {
   const { t } = useTranslation()
+
+  const connectionFactoryOptions = useMemo(() => getConnectionFactoryOptions(), [])
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -31,7 +34,7 @@ const CacheMemcached = ({ formik, classes, isDark, disabled }: CacheMemcachedPro
           name="connectionFactoryType"
           value={formik.values.connectionFactoryType || ''}
           formik={formik}
-          values={CONNECTION_FACTORY_OPTIONS}
+          values={connectionFactoryOptions}
           lsize={12}
           rsize={12}
           doc_category={CACHE}

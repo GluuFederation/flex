@@ -53,7 +53,7 @@ import {
   isRedisCache,
   isNativePersistenceCache,
   buildCacheChangedFieldOperations,
-  CACHE_PROVIDER_OPTIONS,
+  getCacheProviderOptions,
 } from '../helper'
 import { useStyles } from './styles/CachePage.style'
 import { queryDefaults } from '@/utils/queryUtils'
@@ -73,6 +73,8 @@ const PROVIDER_SECTIONS: Record<
 
 const CachePage: React.FC = () => {
   const { t } = useTranslation()
+
+  const cacheProviderOptions = useMemo(() => getCacheProviderOptions(), [])
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logCacheUpdate } = useCacheAudit()
@@ -370,14 +372,11 @@ const CachePage: React.FC = () => {
                       name="cacheProviderType"
                       value={formik.values.cacheProviderType}
                       formik={formik}
-                      values={CACHE_PROVIDER_OPTIONS}
+                      values={cacheProviderOptions}
                       lsize={12}
                       rsize={12}
                       doc_category={CACHE}
                       doc_entry="cacheProviderType"
-                      // Stays interactive on mobile: it only switches which
-                      // provider's settings are shown, and nothing below it can
-                      // be edited or submitted from there anyway.
                       disabled={!canWriteCache}
                       isDark={isDark}
                     />
