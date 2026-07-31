@@ -483,6 +483,11 @@ jobs:
     needs: build
     if: needs.build.outputs.do_deploy == 'true'
     runs-on: ubuntu-latest
+    # serialize deploys to the same BYO target VM; ephemeral runs (no target_ip)
+    # create their own VM, so key each run uniquely to keep them independent
+    concurrency:
+      group: admin-ui-deploy-${{ inputs.target_ip != '' && inputs.target_ip || github.run_id }}
+      cancel-in-progress: false
     env:
       VERSION_NAME: ${{ needs.build.outputs.version }}
     steps:
@@ -580,9 +585,10 @@ jobs:
           echo "VM created: $HOST ($IP)"
 
       - name: Report VM access to Zulip
+        id: report_zulip
         if: inputs.target_ip == '' && steps.create_env.outputs.MSG != ''
         continue-on-error: true
-        uses: zulip/github-actions-zulip/send-message@v1
+        uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5  # v1
         with:
           api-key: ${{ secrets.ZULIP_API_KEY }}
           email: "git-gluu@gluu.org"
@@ -602,6 +608,16 @@ jobs:
         run: |
           if [ -z "$SSH_KEY" ]; then
             echo "::error::target_ip is set but the ADMIN_UI_DEPLOY_SSH_KEY secret is empty." >&2
+            exit 1
+          fi
+          # validate before use: reject anything that isn't a bare IP / hostname
+          # (blocks shell metacharacters, quotes, whitespace, control chars)
+          if ! printf '%s' "$TARGET_IP" | grep -Eq '^[0-9a-fA-F.:]+$'; then
+            echo "::error::target_ip '$TARGET_IP' is not a valid IPv4/IPv6 address." >&2
+            exit 1
+          fi
+          if [ -n "$TARGET_HOST" ] && ! printf '%s' "$TARGET_HOST" | grep -Eq '^[A-Za-z0-9.-]+$'; then
+            echo "::error::target_host '$TARGET_HOST' is not a valid hostname." >&2
             exit 1
           fi
           mkdir -p byo
@@ -678,12 +694,16 @@ jobs:
 
           tar -xzf "admin-ui-$VERSION_NAME-built.tar.gz"
 
-          # env-config.js pointing at the VM's jans-config-api
+          # env-config.js pointing at the VM's jans-config-api. Values are emitted as
+          # JSON-encoded (hence JS-safe) string literals via jq so host/IP can never
+          # break out of the string context.
           CONFIG_API_HOST="https://$HOST/jans-config-api"
           ADMIN_UI_ENDPOINT="$CONFIG_API_HOST/admin-ui"
+          CONFIG_API_JSON=$(jq -n --arg v "$CONFIG_API_HOST" '$v')
+          ADMIN_UI_JSON=$(jq -n --arg v "$ADMIN_UI_ENDPOINT" '$v')
           {
-            echo "const CONFIG_API_BASE_URL = \"$CONFIG_API_HOST\";"
-            echo "const API_BASE_URL = \"$ADMIN_UI_ENDPOINT\";"
+            echo "const CONFIG_API_BASE_URL = ${CONFIG_API_JSON};"
+            echo "const API_BASE_URL = ${ADMIN_UI_JSON};"
             echo "window.configApiBaseUrl = CONFIG_API_BASE_URL;"
             echo "window.apiBaseUrl = API_BASE_URL;"
           } > env-config.js
@@ -699,6 +719,7 @@ jobs:
           IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
           TERMINATION_IN: ${{ inputs.termination_in }}
           BYO: ${{ inputs.target_ip != '' }}
+          ZULIP_OUTCOME: ${{ steps.report_zulip.outcome }}
         run: |
           {
             echo "## Admin UI deployed"
@@ -710,7 +731,11 @@ jobs:
               echo "- **VM terminates in:** $TERMINATION_IN"
               echo "- **Admin password:** stored on the VM at /root/flex_admin_password"
               echo ""
-              echo "SSH key + connection details were sent to Zulip #bot_reporter (topic admin-ui-deployments) and the easycloud env PR."
+              if [ "$ZULIP_OUTCOME" = "success" ]; then
+                echo "SSH key + connection details were posted to Zulip #bot_reporter (topic admin-ui-deployments)."
+              else
+                echo "Zulip report was not confirmed (outcome: ${ZULIP_OUTCOME:-skipped}) — retrieve the SSH key from the easycloud env PR raised by this run, or the 'Report VM access to Zulip' step log."
+              fi
             else
               echo ""
               echo "Deployed to the caller-supplied target VM (ADMIN_UI_DEPLOY_SSH_KEY)."
