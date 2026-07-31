@@ -324,44 +324,6 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               placeholder={getFieldPlaceholder(t, 'fields.from_email_address')}
             />
           </div>
-          <div className={classes.fieldItem}>
-            <GluuInputRow
-              label="fields.smtp_user_name"
-              name="smtp_authentication_account_username"
-              value={formik.values.smtp_authentication_account_username || ''}
-              formik={formik}
-              lsize={12}
-              rsize={12}
-              showError={!!formik.errors.smtp_authentication_account_username}
-              errorMessage={formik.errors.smtp_authentication_account_username as string}
-              required={formik.values.requires_authentication}
-              disabled={isReadOnly}
-              isDark={isDark}
-              doc_category={smtpConstants.DOC_CATEGORY}
-              doc_entry="smtp_authentication_account_username"
-              placeholder={getFieldPlaceholder(t, 'fields.smtp_user_name')}
-            />
-          </div>
-
-          <div className={classes.fieldItem}>
-            <GluuInputRow
-              label="fields.smtp_user_password"
-              name="smtp_authentication_account_password"
-              value={formik.values.smtp_authentication_account_password || ''}
-              formik={formik}
-              lsize={12}
-              rsize={12}
-              showError={!!formik.errors.smtp_authentication_account_password}
-              errorMessage={formik.errors.smtp_authentication_account_password as string}
-              type="password"
-              required={formik.values.requires_authentication}
-              disabled={isReadOnly}
-              isDark={isDark}
-              doc_category={smtpConstants.DOC_CATEGORY}
-              doc_entry="smtp_authentication_account_password"
-              placeholder={getFieldPlaceholder(t, 'fields.smtp_user_password')}
-            />
-          </div>
           <div className={`${classes.fieldItem} ${classes.fieldItemRelative}`}>
             <GluuInputRow
               label="fields.key_store"
@@ -457,7 +419,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               />
             )}
           </div>
-          <div className={classes.fieldItem}>
+          <div className={`${classes.fieldItem} ${classes.toggleItem}`}>
             <FormGroup>
               <GluuLabel
                 label="fields.trust_host"
@@ -476,7 +438,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
             </FormGroup>
           </div>
 
-          <div className={classes.fieldItem}>
+          <div className={`${classes.fieldItem} ${classes.toggleItem}`}>
             <FormGroup>
               <GluuLabel
                 label="fields.allow_keystore_edit"
@@ -511,7 +473,7 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
               </GluuLoader>
             </FormGroup>
           </div>
-          <div className={classes.fieldItem}>
+          <div className={`${classes.fieldItem} ${classes.toggleItem}`}>
             <FormGroup>
               <GluuLabel
                 label="fields.requires_authentication"
@@ -528,6 +490,44 @@ const SmtpForm = (props: Readonly<SmtpFormProps>) => {
                 disabled={isReadOnly}
               />
             </FormGroup>
+          </div>
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label="fields.smtp_user_name"
+              name="smtp_authentication_account_username"
+              value={formik.values.smtp_authentication_account_username || ''}
+              formik={formik}
+              lsize={12}
+              rsize={12}
+              showError={!!formik.errors.smtp_authentication_account_username}
+              errorMessage={formik.errors.smtp_authentication_account_username as string}
+              required={formik.values.requires_authentication}
+              disabled={isReadOnly}
+              isDark={isDark}
+              doc_category={smtpConstants.DOC_CATEGORY}
+              doc_entry="smtp_authentication_account_username"
+              placeholder={getFieldPlaceholder(t, 'fields.smtp_user_name')}
+            />
+          </div>
+
+          <div className={classes.fieldItem}>
+            <GluuInputRow
+              label="fields.smtp_user_password"
+              name="smtp_authentication_account_password"
+              value={formik.values.smtp_authentication_account_password || ''}
+              formik={formik}
+              lsize={12}
+              rsize={12}
+              showError={!!formik.errors.smtp_authentication_account_password}
+              errorMessage={formik.errors.smtp_authentication_account_password as string}
+              type="password"
+              required={formik.values.requires_authentication}
+              disabled={isReadOnly}
+              isDark={isDark}
+              doc_category={smtpConstants.DOC_CATEGORY}
+              doc_entry="smtp_authentication_account_password"
+              placeholder={getFieldPlaceholder(t, 'fields.smtp_user_password')}
+            />
           </div>
 
           {!isReadOnly && (
