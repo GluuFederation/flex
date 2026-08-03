@@ -77,6 +77,11 @@ on:
         required: false
         type: string
         default: ''
+      target_ssh_port:
+        description: 'SSH port for the target VM (used with target_ip).'
+        required: false
+        type: string
+        default: '22'
       termination_in:
         description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
         required: false
@@ -149,6 +154,11 @@ on:
         required: false
         type: string
         default: ''
+      target_ssh_port:
+        description: 'SSH port for the target VM (used with target_ip).'
+        required: false
+        type: string
+        default: '22'
       termination_in:
         description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
         required: false
@@ -604,6 +614,7 @@ jobs:
         env:
           TARGET_IP: ${{ inputs.target_ip }}
           TARGET_HOST: ${{ inputs.target_host }}
+          TARGET_SSH_PORT: ${{ inputs.target_ssh_port }}
           SSH_KEY: ${{ secrets.ADMIN_UI_DEPLOY_SSH_KEY }}
         run: |
           if [ -z "$SSH_KEY" ]; then
@@ -620,6 +631,11 @@ jobs:
             echo "::error::target_host '$TARGET_HOST' is not a valid hostname." >&2
             exit 1
           fi
+          PORT="${TARGET_SSH_PORT:-22}"
+          if ! printf '%s' "$PORT" | grep -Eq '^[0-9]+$' || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+            echo "::error::target_ssh_port '$PORT' is not a valid port (1-65535)." >&2
+            exit 1
+          fi
           mkdir -p byo
           printf '%s\n' "$SSH_KEY" > byo/private.pem
           chmod 600 byo/private.pem
@@ -627,17 +643,19 @@ jobs:
             echo "ip=$TARGET_IP"
             echo "host=${TARGET_HOST:-$TARGET_IP}"
             echo "pem=byo/private.pem"
+            echo "port=$PORT"
           } >> "$GITHUB_OUTPUT"
-          echo "Deploying to existing target $TARGET_IP (host ${TARGET_HOST:-$TARGET_IP})"
+          echo "Deploying to existing target $TARGET_IP:$PORT (host ${TARGET_HOST:-$TARGET_IP})"
 
       - name: Wait for SSH
         env:
           PEM: ${{ steps.create_env.outputs.pem || steps.byo.outputs.pem }}
           IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
+          PORT: ${{ steps.byo.outputs.port || '22' }}
         run: |
           chmod 600 "$PEM"
           for i in $(seq 1 30); do
-            if ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i "$PEM" "root@$IP" true 2>/dev/null; then
+            if ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p "$PORT" -i "$PEM" "root@$IP" true 2>/dev/null; then
               echo "SSH is up"
               exit 0
             fi
@@ -689,8 +707,12 @@ jobs:
           PEM: ${{ steps.create_env.outputs.pem || steps.byo.outputs.pem }}
           IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
           HOST: ${{ steps.create_env.outputs.host || steps.byo.outputs.host }}
+          PORT: ${{ steps.byo.outputs.port || '22' }}
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $PEM"
+          # ssh takes -p, scp takes -P
+          COMMON_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $PEM"
+          SSH_OPTS="$COMMON_OPTS -p $PORT"
+          SCP_OPTS="$COMMON_OPTS -P $PORT"
 
           tar -xzf "admin-ui-$VERSION_NAME-built.tar.gz"
 
@@ -710,8 +732,8 @@ jobs:
 
           # apache serves admin UI from /var/www/html/admin; replace with this build
           ssh $SSH_OPTS "root@$IP" 'rm -rf /var/www/html/admin && mkdir -p /var/www/html/admin'
-          scp $SSH_OPTS -r dist/* "root@$IP:/var/www/html/admin/"
-          scp $SSH_OPTS env-config.js "root@$IP:/var/www/html/admin/"
+          scp $SCP_OPTS -r dist/* "root@$IP:/var/www/html/admin/"
+          scp $SCP_OPTS env-config.js "root@$IP:/var/www/html/admin/"
 
       - name: Summary
         env:
