@@ -569,7 +569,11 @@ prepare_traefik_files
 prepare_flex_configuration "$GLUU_FQDN"
 prepare_compose_files "$GLUU_FQDN" "$GLUU_PERSISTENCE" "$GLUU_VERSION" "$EXT_IP" "$LOG_TARGET" "$LOG_LEVEL"
 
-docker compose -f "$basedir/compose.yaml" up -d
+if [[ -f "$basedir/compose.override.yaml" ]]; then
+    docker compose -f "$basedir/compose.yaml" -f "$basedir/compose.override.yaml" up -d
+else
+    docker compose -f "$basedir/compose.yaml" up -d
+fi
 echo "[I] Flex is starting up!"
 echo "[I] To check the progress, run 'docker compose logs -f' in a separate terminal"
 echo "[I] Checking if Flex is ready to accept requests (expected time ~3–5 minutes) ..."
