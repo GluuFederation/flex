@@ -242,6 +242,12 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
         opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
       },
+      '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':
+        {
+          WebkitBoxShadow: `0 0 0 100px ${sectionInputBg} inset !important`,
+          WebkitTextFillColor: `${themeColors.fontColor} !important`,
+          transition: 'background-color 5000s ease-in-out 0s',
+        },
       '& select, & select:focus, & select:focus-visible, & select:active, & select:disabled, & .custom-select':
         {
           backgroundColor: `${sectionInputBg} !important`,
