@@ -26,8 +26,10 @@ const MEMCACHED_FIELDS: CacheFieldLabel[] = [
 const REDIS_FIELDS: CacheFieldLabel[] = [
   { key: 'redisProviderType', label: 'fields.redis_provider_type' },
   { key: 'servers', label: 'fields.servers' },
+  { key: 'username', label: 'fields.username' },
   { key: 'sentinelMasterGroupName', label: 'fields.sentinel_master_group_name' },
   { key: 'sslTrustStoreFilePath', label: 'fields.ssl_trust_store_file_path' },
+  { key: 'sslKeyStoreFilePath', label: 'fields.ssl_key_store_file_path' },
   { key: 'redisDefaultPutExpiration', label: 'fields.default_put_expiration' },
   { key: 'useSSL', label: 'fields.use_ssl' },
   { key: 'maxIdleConnections', label: 'fields.max_idle_connections' },

@@ -21,9 +21,13 @@ export type RedisCacheFormValues = {
   cacheProviderType: 'REDIS'
   redisProviderType?: string
   servers?: string
+  username?: string
   password?: string
   sentinelMasterGroupName?: string
   sslTrustStoreFilePath?: string
+  sslTrustStorePassword?: string
+  sslKeyStoreFilePath?: string
+  sslKeyStorePassword?: string
   redisDefaultPutExpiration?: number
   useSSL?: boolean
   maxIdleConnections?: number
@@ -56,9 +60,13 @@ export type CacheFormValues = {
   connectionFactoryType?: string
   redisProviderType?: string
   servers?: string
+  username?: string
   password?: string
   sentinelMasterGroupName?: string
   sslTrustStoreFilePath?: string
+  sslTrustStorePassword?: string
+  sslKeyStoreFilePath?: string
+  sslKeyStorePassword?: string
   redisDefaultPutExpiration?: number
   useSSL?: boolean
   maxIdleConnections?: number
