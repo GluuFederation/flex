@@ -1,7 +1,10 @@
-import type { CacheConfigurationCacheProviderType } from 'JansConfigApi'
+import type { CacheConfigurationCacheProviderType, RedisConfiguration } from 'JansConfigApi'
 import type { FormikProps } from 'formik'
 
 export type CacheProviderType = CacheConfigurationCacheProviderType
+export type RedisConfigurationPayload = RedisConfiguration & {
+  username?: string
+}
 
 export type InMemoryCacheFormValues = {
   cacheProviderType: 'IN_MEMORY'
