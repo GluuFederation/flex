@@ -1,8 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
-import { BORDER_RADIUS, ICON_SIZE, OPACITY } from '@/constants'
-import { fontFamily } from '@/styles/fonts'
+import { BORDER_RADIUS, ICON_SIZE, MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
+import { fontFamily, fontSizes } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface User2FADevicesModalStylesParams {
@@ -70,12 +70,20 @@ export const useStyles = makeStyles<User2FADevicesModalStylesParams>()((
       margin: 0,
       padding: '8px 32px 24px 32px',
       textAlign: 'left' as const,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        fontSize: fontSizes.pageTitle,
+        lineHeight: 'normal' as const,
+        padding: '4px 16px 16px 16px',
+      },
     },
     modalContent: {
       backgroundColor: modalBg,
       color: themeColors.fontColor,
       padding: 24,
       borderRadius: `0 0 ${BORDER_RADIUS.DEFAULT}px ${BORDER_RADIUS.DEFAULT}px`,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        padding: 12,
+      },
     },
     tableWrapper: {
       '& > div, & > div > div:last-child': {
