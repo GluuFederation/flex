@@ -27,7 +27,8 @@ import type { CustomScript } from 'JansConfigApi'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import type { ScriptError, DisplayValue } from './types/customScript'
-import { BORDER_RADIUS } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import {
   DEFAULT_SCRIPT_TYPE,
   SORT_COLUMNS,
@@ -64,6 +65,7 @@ const CustomScriptListPage: React.FC = () => {
     }
   }, [theme?.state?.theme])
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
@@ -143,6 +145,13 @@ const CustomScriptListPage: React.FC = () => {
     [deleteMutation, dispatch, t],
   )
 
+  useEffect(() => {
+    if (isMobile) {
+      setModal(false)
+      setItemToDelete(null)
+    }
+  }, [isMobile])
+
   const handleResetAndRefetch = useCallback(() => {
     setPageNumber(0)
     refetch()
@@ -196,7 +205,8 @@ const CustomScriptListPage: React.FC = () => {
         value: scriptType,
         options: scriptTypeOptions,
         onChange: handleTypeChange,
-        width: 220,
+        width: 180,
+        defaultValue: DEFAULT_SCRIPT_TYPE,
       },
       {
         key: 'sortBy',
@@ -205,6 +215,7 @@ const CustomScriptListPage: React.FC = () => {
         options: sortOptions,
         onChange: handleSortByFilter,
         width: 180,
+        defaultValue: DEFAULT_SORT_BY,
       },
     ],
     [t, scriptType, scriptTypeOptions, sortBy, sortOptions, handleTypeChange, handleSortByFilter],
@@ -320,6 +331,19 @@ const CustomScriptListPage: React.FC = () => {
       id?: string
       onClick: (row: ScriptTableRow) => void
     }> = []
+
+    const viewAction = {
+      icon: <VisibilityOutlined className={classes.viewIcon} />,
+      tooltip: t('messages.view_script_details'),
+      id: 'viewScript',
+      onClick: handleView,
+    }
+
+    if (isMobile) {
+      if (canRead) list.push(viewAction)
+      return list
+    }
+
     if (canWrite) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -329,12 +353,7 @@ const CustomScriptListPage: React.FC = () => {
       })
     }
     if (canRead) {
-      list.push({
-        icon: <VisibilityOutlined className={classes.viewIcon} />,
-        tooltip: t('messages.view_script_details'),
-        id: 'viewScript',
-        onClick: handleView,
-      })
+      list.push(viewAction)
     }
     if (canDelete) {
       list.push({
@@ -345,7 +364,17 @@ const CustomScriptListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWrite, canRead, canDelete, t, handleEdit, handleView, handleDeleteClick, classes])
+  }, [
+    isMobile,
+    canWrite,
+    canRead,
+    canDelete,
+    t,
+    handleEdit,
+    handleView,
+    handleDeleteClick,
+    classes,
+  ])
 
   const effectivePage = useMemo(() => {
     const maxPage = totalItems > 0 ? Math.max(0, Math.ceil(totalItems / limit) - 1) : 0
@@ -505,6 +534,9 @@ const CustomScriptListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.scripts')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -517,7 +549,8 @@ const CustomScriptListPage: React.FC = () => {
                 filters={filters}
                 onRefresh={canRead ? handleResetAndRefetch : undefined}
                 refreshLoading={isLoading || loadingTypes}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
+                compactActionLabels
                 disabled={loading}
               />
             </div>

@@ -123,6 +123,10 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
       flexWrap: 'wrap',
       columnGap: FILTER_SHEET.PILL_GAP,
       rowGap: FILTER_SHEET.PILL_ROW_GAP,
+      maxHeight: `min(${FILTER_SHEET.PILLS_MAX_HEIGHT}px, 50vh)`,
+      overflowY: 'auto',
+      overscrollBehavior: 'contain',
+      paddingRight: FILTER_SHEET.PILLS_SCROLL_PADDING_RIGHT,
     },
     sheetPill: {
       fontFamily,
@@ -362,6 +366,22 @@ export const useStyles = makeStyles<GluuSearchToolbarStyleParams>()((
           minWidth: 0,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+        },
+      },
+    },
+    toolbarButtonCompact: {
+      [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
+        'whiteSpace': 'normal !important' as 'normal',
+        'overflowWrap': 'break-word',
+        'textAlign': 'center',
+        'overflow': 'hidden',
+        'fontSize': `${TOOLBAR.TIGHT_BUTTON_FONT_SIZE}px !important`,
+        'lineHeight': `${TOOLBAR.TIGHT_BUTTON_LINE_HEIGHT} !important`,
+        'padding': `${TOOLBAR.TIGHT_BUTTON_PADDING_Y}px ${TOOLBAR.TIGHT_BUTTON_PADDING_X}px !important`,
+        'gap': `${TOOLBAR.TIGHT_BUTTON_GAP}px !important`,
+        '& svg': {
+          fontSize: `${TOOLBAR.TIGHT_BUTTON_ICON_SIZE}px !important`,
+          flexShrink: 0,
         },
       },
     },
