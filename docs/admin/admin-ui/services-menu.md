@@ -61,11 +61,15 @@ to understand how fine tune these parameters for the particular usecase.
 |Name|Description|
 |----|-----------|
 |Redis Provider Type| Type of Redis deployment: e.g. `STANDALONE`, `CLUSTERED`, `SHARDED`, `SENTINEL`.|
+|Username | User name of redis server |
 |Server Details| Redis server address(es), comma‑separated (e.g.`server1:8080 server2:8081`) |
 |Use SSL| Enable SSL communication between Gluu Flex Server and Redis cache  |
 Password| Redis server password |
 |Sentinel Master Group Name| When using sentinel mode, name of the master group. <br> Required for sentinel setups so the client knows which master to use.|
 |SSL Trust Store File Path| Path to trust store file when SSL is used.<br> To provide certificate chain/trust anchors to trust the Redis server’s certificate.|
+|SSL Trust Store Password|SSL trust store password value |
+|SSL Key Store File Path|Path to key store file|
+|SSL Key Store Password| SSL key stored password value|
 |Default Put Expiration| Default expiration time for objects put into cache (seconds).|
 |Max Retry Attempts| Maximum attempts to retry operations in case of failure.|
 |So Timeout| With this option set to a non-zero timeout, a read() call on the InputStream associated with this Socket will block for only this amount of time. If the timeout expires, a java.net.SocketTimeoutException is raised, though the Socket is still valid. The option must be enabled prior to entering the blocking operation to have effect. The timeout must be > 0. A timeout of zero is interpreted as an infinite timeout.|
