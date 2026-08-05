@@ -639,6 +639,18 @@ jobs:
           mkdir -p byo
           printf '%s\n' "$SSH_KEY" > byo/private.pem
           chmod 600 byo/private.pem
+          # A key stored with literal "\n" (backslash-n) instead of real newlines is the
+          # most common breakage; repair it, then confirm the key actually parses.
+          if ! ssh-keygen -y -f byo/private.pem >/dev/null 2>&1 && grep -q '\\n' byo/private.pem; then
+            echo "Key contained literal \\n; converting to real newlines"
+            printf '%b' "$SSH_KEY" > byo/private.pem
+            chmod 600 byo/private.pem
+          fi
+          if ! ssh-keygen -y -f byo/private.pem >/dev/null 2>&1; then
+            echo "::error::ADMIN_UI_DEPLOY_SSH_KEY did not parse as a private key (lines=$(wc -l < byo/private.pem)). Store the raw PEM with real newlines — not base64, not backslash-escaped, no passphrase." >&2
+            exit 1
+          fi
+          echo "SSH private key parsed OK"
           {
             echo "ip=$TARGET_IP"
             echo "host=${TARGET_HOST:-$TARGET_IP}"
@@ -662,7 +674,8 @@ jobs:
             echo "Waiting for SSH ($i/30)..."
             sleep 20
           done
-          echo "SSH never came up" >&2
+          echo "SSH never came up; last verbose attempt (handshake only, no key material):" >&2
+          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p "$PORT" -i "$PEM" "root@$IP" true 2>&1 | tail -25 >&2 || true
           exit 1
 
       - name: Wait for Flex install
