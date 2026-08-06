@@ -11,7 +11,7 @@ This guide covers installing Flex through the Rancher Marketplace.
 
 ## Install Rancher
 
-For a stable, production-ready environment that natively supports Persistent Volumes (PVs), install Rancher on a dedicated Kubernetes cluster using Helm. Follow the official [Rancher Helm Installation Guide](https://ranchermanager.docs.rancher.com/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster).
+For a stable, production-ready environment that natively supports Persistent Volumes (PVs), install Rancher on a dedicated Kubernetes cluster using Helm. Follow the official [Rancher Helm Installation Guide](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/).
 
 !!! tip "Testing/Dev Alternative"
 
