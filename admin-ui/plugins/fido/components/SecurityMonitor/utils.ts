@@ -228,7 +228,8 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
 
   return Array.from(buckets.entries())
     .map(([ipAddress, bucket]) => {
-      const failures = bucket.failures || Math.max(0, bucket.attempts - bucket.successes)
+      const inferredFailures = Math.max(0, bucket.attempts - bucket.successes - bucket.failures)
+      const failures = bucket.failures + inferredFailures
       const failureRatio = bucket.attempts ? failures / bucket.attempts : 0
       return {
         ipAddress,

@@ -133,6 +133,21 @@ describe('SecurityMonitor utils', () => {
       expect(stats[0]!.failureRate).toBeCloseTo(66.67, 1)
     })
 
+    it('counts both explicit and inferred failures for the same IP', () => {
+      const stats = aggregateIpFailures([
+        authEntry({ ipAddress: '10.0.0.3', userId: 'alice', status: 'FAILED' }),
+        authEntry({ ipAddress: '10.0.0.3', userId: 'bob', status: 'ATTEMPT' }),
+      ])
+
+      expect(stats[0]).toMatchObject({
+        ipAddress: '10.0.0.3',
+        failures: 2,
+        successes: 0,
+        attempts: 2,
+      })
+      expect(stats[0]!.failureRate).toBe(100)
+    })
+
     it('skips entries without an IP address', () => {
       expect(aggregateIpFailures([authEntry({ userId: 'alice' })])).toEqual([])
     })
