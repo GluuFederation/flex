@@ -12,7 +12,7 @@ import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from '@/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useStyles } from './styles/SamlPage.style'
-import { samlConfigurationValidationSchema, transformToFormValues } from '../helper'
+import { getSamlConfigurationValidationSchema, transformToFormValues } from '../helper'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useSamlConfiguration, useUpdateSamlConfiguration } from './hooks'
 import type { SamlConfigurationFormValues } from '../types'
@@ -39,6 +39,11 @@ const SamlConfigurationForm: React.FC = () => {
   }, [])
 
   const initialValues = useMemo(() => transformToFormValues(configuration), [configuration])
+
+  const samlConfigurationValidationSchema = useMemo(
+    () => getSamlConfigurationValidationSchema(t),
+    [t],
+  )
 
   const formik = useFormik<SamlConfigurationFormValues>({
     initialValues,
@@ -141,6 +146,8 @@ const SamlConfigurationForm: React.FC = () => {
                   value={formik.values.selectedIdp}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  invalid={Boolean(formik.errors.selectedIdp)}
+                  error={formik.errors.selectedIdp}
                 >
                   <option value="">{t('Choose')}...</option>
                   <option value="keycloak">Keycloak</option>

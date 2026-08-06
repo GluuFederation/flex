@@ -23,7 +23,7 @@ import {
   READ_ONLY_FIELDS,
   updateValuesAfterRemoval,
   applyRemovePatchToValues,
-  configApiPropertiesSchema,
+  getConfigApiPropertiesSchema,
 } from '../utils'
 import {
   toPairs,
@@ -70,12 +70,15 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   const previousConfigurationRef = useRef<ApiAppConfiguration | null>(null)
   const processingRemovalsRef = useRef<Set<string>>(new Set())
 
+  const configApiPropertiesSchema = useMemo(() => getConfigApiPropertiesSchema(t), [t])
+
   const formik = useFormik<ApiAppConfiguration>({
     initialValues: configuration,
     validationSchema: configApiPropertiesSchema,
     enableReinitialize: true,
     validateOnChange: true,
     validateOnBlur: true,
+    validateOnMount: true,
     onSubmit: () => {},
   })
 
@@ -405,7 +408,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     doc_category="config_api_properties"
                     disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
-                    touched={formik.touched}
                   />
                 </div>
                 <div className={classes.fieldItem}>
@@ -420,7 +422,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       doc_category="config_api_properties"
                       disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
-                      touched={formik.touched}
                     />
                   )}
                 </div>
@@ -438,7 +439,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     doc_category="config_api_properties"
                     disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
-                    touched={formik.touched}
                   />
                 </div>
                 <div className={classes.fieldItem}>
@@ -453,7 +453,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       doc_category="config_api_properties"
                       disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
-                      touched={formik.touched}
                     />
                   )}
                 </div>
@@ -470,7 +469,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                   doc_category="config_api_properties"
                   disabled={isFieldDisabled(propKey)}
                   errors={formik.errors}
-                  touched={formik.touched}
                 />
               </div>
             ))}

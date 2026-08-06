@@ -23,14 +23,13 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
 
   const value = formik.values[name]
   const error = formik.errors[name]
-  const touched = formik.touched[name]
 
   const itemClass = useMemo(
     () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
     [colSize, fieldItemFullWidthClass, fieldItemClass],
   )
   const isDisabled = useMemo(() => disabled || viewOnly, [disabled, viewOnly])
-  const showError = useMemo(() => !!(error && touched), [error, touched])
+  const showError = useMemo(() => !!error, [error])
   const resolvedPlaceholder = useMemo(
     () => (placeholder ? t(placeholder) : undefined),
     [placeholder, t],

@@ -1,6 +1,6 @@
 export { nameIDPolicyFormat } from './constants'
 export {
-  samlConfigurationValidationSchema,
+  getSamlConfigurationValidationSchema,
   websiteSsoIdentityProviderValidationSchema,
   websiteSsoServiceProviderValidationSchema,
 } from './validations'

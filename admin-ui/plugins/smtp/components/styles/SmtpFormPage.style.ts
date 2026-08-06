@@ -147,6 +147,12 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
     fieldItemRelative: {
       position: 'relative',
     },
+    toggleItem: {
+      paddingBottom: ERROR_SPACE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: 0,
+      },
+    },
     fieldItemFullWidth: {
       width: '100%',
       gridColumn: '1 / -1',

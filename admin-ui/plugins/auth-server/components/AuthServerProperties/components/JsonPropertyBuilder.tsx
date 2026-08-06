@@ -175,7 +175,6 @@ const JsonPropertyBuilder = ({
   schema,
   isRenamedKey = false,
   errors,
-  touched,
   formResetKey = 0,
 }: JsonPropertyBuilderProps): JSX.Element => {
   const { t, i18n } = useTranslation()
@@ -218,13 +217,7 @@ const JsonPropertyBuilder = ({
     return getIn(errors, formikPathSegments)
   }, [errors, formikPathSegments])
 
-  const fieldTouched = useMemo(() => {
-    if (!touched) return false
-    return getIn(touched, formikPathSegments) === true
-  }, [touched, formikPathSegments])
-
   const renderError = useCallback(() => {
-    if (!fieldTouched) return null
     if (!fieldError) return null
 
     let errorMessage: string | null
@@ -262,7 +255,7 @@ const JsonPropertyBuilder = ({
         </FormGroup>
       </div>
     )
-  }, [fieldTouched, fieldError, lSize, classes])
+  }, [fieldError, lSize, classes])
 
   const removeHandler = useCallback(() => {
     const patch: JsonPatch = {
@@ -328,7 +321,7 @@ const JsonPropertyBuilder = ({
           rsize={lSize}
           doc_category="json_properties"
           doc_entry={propKey}
-          showError={fieldTouched && typeof fieldError === 'string'}
+          showError={typeof fieldError === 'string'}
           errorMessage={typeof fieldError === 'string' ? fieldError : undefined}
           disabled={isMobile}
         />
@@ -483,7 +476,6 @@ const JsonPropertyBuilder = ({
                 parentIsArray={true}
                 path={path}
                 errors={errors}
-                touched={touched}
                 formResetKey={formResetKey}
               />
             ))
@@ -548,7 +540,6 @@ const JsonPropertyBuilder = ({
                           parentIsArray={false}
                           path={path}
                           errors={errors}
-                          touched={touched}
                           formResetKey={formResetKey}
                         />
                       </div>

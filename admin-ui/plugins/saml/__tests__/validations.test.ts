@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next'
 import {
-  samlConfigurationValidationSchema,
+  getSamlConfigurationValidationSchema,
   websiteSsoIdentityProviderValidationSchema,
   websiteSsoServiceProviderValidationSchema,
 } from 'Plugins/saml/helper/validations'
@@ -8,6 +8,8 @@ import {
 // The factory schemas only use t() to build message strings; echo the key so
 // assertions match on identity. Interpolated fields render as "<key> is Required!".
 const t = ((key: string) => key) as TFunction
+
+const samlConfigurationValidationSchema = getSamlConfigurationValidationSchema(t)
 
 describe('samlConfigurationValidationSchema', () => {
   it('accepts a disabled configuration without a selected IdP', async () => {
@@ -19,7 +21,7 @@ describe('samlConfigurationValidationSchema', () => {
   it('requires a selected IdP when SAML is enabled', async () => {
     await expect(
       samlConfigurationValidationSchema.validate({ enabled: true, selectedIdp: '' }),
-    ).rejects.toThrow('Selected IdP is required when SAML is enabled.')
+    ).rejects.toThrow('validation_messages.field_required')
   })
 
   it('accepts an enabled configuration with a selected IdP', async () => {
@@ -90,7 +92,7 @@ describe('websiteSsoServiceProviderValidationSchema', () => {
 
   it('requires the metadata source type', async () => {
     await expect(schema.validate({ ...validSp, spMetaDataSourceType: '' })).rejects.toThrow(
-      'fields.metadata_location is Required!',
+      'validation_messages.field_required',
     )
   })
 

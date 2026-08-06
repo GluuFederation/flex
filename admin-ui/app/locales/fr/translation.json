@@ -1288,7 +1288,12 @@
     "ssa_entity": "SSA",
     "no_attributes_found": "No attributes found",
     "all_attributes_added": "All attributes have been added",
-    "fetching_data": "Récupération des données..."
+    "fetching_data": "Récupération des données...",
+    "all_attributes_added": "Tous les attributs ont été ajoutés",
+    "logging_level_required": "Le niveau de journalisation est obligatoire",
+    "logging_level_invalid": "Niveau de journalisation non valide",
+    "logging_layout_required": "Le format de journalisation est obligatoire",
+    "logging_layout_invalid": "Format de journalisation non valide"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -1367,7 +1372,21 @@
     "field_invalid_url": "{{field}} doit être une URL valide",
     "field_invalid_number": "{{field}} doit être un entier valide",
     "field_must_be_positive": "{{field}} doit être au moins 1",
-    "field_invalid_regex": "{{field}} doit être une expression régulière valide"
+    "field_invalid_regex": "{{field}} doit être une expression régulière valide",
+    "field_required": "{{field}} est obligatoire",
+    "field_must_be_number": "{{field}} doit être un nombre",
+    "field_must_be_integer": "{{field}} doit être un nombre entier",
+    "field_min_value": "{{field}} doit être au minimum {{min}}",
+    "field_max_value": "{{field}} ne doit pas dépasser {{max}}",
+    "field_invalid_value": "{{field}} n’est pas valide",
+    "field_min_items": "Au moins une valeur est requise pour {{field}}",
+    "must_not_exceed": "Ne doit pas dépasser {{max}}",
+    "cors_preflight_max_age_max": "Ne doit pas dépasser 24 heures (86400 secondes)",
+    "min_one_approved_issuer": "Au moins un émetteur approuvé est requis",
+    "min_one_scope": "Au moins une portée est requise",
+    "min_one_asset_type": "Au moins un type est requis",
+    "min_one_service_module": "Au moins un module de service est requis",
+    "api_protection_type_invalid": "Type de protection d'API non valide. Le type pris en charge est {{type}}"
   },
   "tooltips": {
     "insert_shortcode": "Insérer un shortcode",
@@ -1723,7 +1742,9 @@
     "log_layout_text": "Texte",
     "log_layout_json": "JSON",
     "jwt": "JWT",
-    "reference": "Référence"
+    "reference": "Référence",
+    "expired": "EXPIRÉ",
+    "register": "INSCRIPTION"
   },
   "documentation": {
     "fido": {
@@ -1858,10 +1879,14 @@
       "nativeDefaultPutExpiration": "Valeur du délai d'expiration de la mise en cache native.",
       "connectionFactoryType": "Le type de fabrique de connexion Memcached.",
       "redisProviderType": "Type de connexion Redis.",
+      "username": "Nom d'utilisateur Redis.",
       "password": "Mot de passe Redis.",
       "sentinelMasterGroupName": "Nom du groupe principal Sentinel (requis si le type de connexion SENTINEL est sélectionné).",
       "useSSL": "Activer la communication SSL entre le serveur Gluu et le cache Redis.",
       "sslTrustStoreFilePath": "Chemin du répertoire du magasin de confiance.",
+      "sslTrustStorePassword": "Mot de passe du magasin de confiance.",
+      "sslKeyStoreFilePath": "Chemin du répertoire du magasin de clés.",
+      "sslKeyStorePassword": "Mot de passe du magasin de clés.",
       "maxIdleConnections": "Le plafond du nombre d'instances inactives dans la piscine. Si l'inactivité maximale est réglée trop basse sur des systèmes fortement chargés, il est possible de voir des objets être détruits et presque immédiatement de nouveaux objets être créés.",
       "maxTotalConnections": "Le nombre maximal d'instances de connexion dans la piscine.",
       "connectionTimeout": "Délai de connexion.",

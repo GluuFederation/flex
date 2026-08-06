@@ -15,6 +15,8 @@ import {
   getGetUserQueryKey,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
@@ -46,6 +48,7 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const isDark = selectedTheme === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
@@ -248,14 +251,17 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
   )
 
   const actions: ActionDef<DeviceData>[] = useMemo(
-    () => [
-      {
-        icon: <DeleteOutlined className={classes.actionIcon} />,
-        tooltip: t('actions.delete'),
-        onClick: handleRemove2Fa,
-      },
-    ],
-    [classes.actionIcon, t, handleRemove2Fa],
+    () =>
+      isMobile
+        ? []
+        : [
+            {
+              icon: <DeleteOutlined className={classes.actionIcon} />,
+              tooltip: t('actions.delete'),
+              onClick: handleRemove2Fa,
+            },
+          ],
+    [isMobile, classes.actionIcon, t, handleRemove2Fa],
   )
 
   const handleRowsPerPageChange = useCallback((newSize: number) => {

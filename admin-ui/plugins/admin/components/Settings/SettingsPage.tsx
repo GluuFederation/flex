@@ -200,6 +200,7 @@ const SettingsPage: React.FC = () => {
       }
     },
     validationSchema,
+    validateOnMount: true,
   })
 
   const { resetForm } = formik
@@ -430,9 +431,7 @@ const SettingsPage: React.FC = () => {
                         doc_category={SETTINGS}
                         doc_entry="sessionTimeoutInMins"
                         errorMessage={formik.errors.sessionTimeoutInMins}
-                        showError={Boolean(
-                          formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins,
-                        )}
+                        showError={Boolean(formik.errors.sessionTimeoutInMins)}
                         disabled={!canEditSettings}
                         isDark={isDark}
                         placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}

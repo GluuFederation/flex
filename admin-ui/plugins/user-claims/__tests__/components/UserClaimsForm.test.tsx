@@ -73,6 +73,12 @@ jest.mock('react-router-dom', () => ({
 }))
 
 jest.mock('JansConfigApi', () => ({
+  JansAttributeStatus: {
+    active: 'active',
+    inactive: 'inactive',
+    expired: 'expired',
+    register: 'register',
+  },
   usePostAttributes: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   usePutAttributes: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
   getGetAttributesQueryKey: jest.fn(() => ['attributes']),

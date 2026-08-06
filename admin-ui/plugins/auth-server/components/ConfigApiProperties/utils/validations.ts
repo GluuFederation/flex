@@ -1,8 +1,13 @@
 import * as Yup from 'yup'
+import type { TFunction } from 'i18next'
 import type { ApiAppConfiguration } from '../types'
 import { LOG_LEVELS, LOG_LAYOUTS } from '../../Logging/utils'
 
-const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnySchema> = {
+const API_PROTECTION_TYPE = 'OAuth2'
+
+const getConfigApiPropertiesSchemaShape = (
+  t: TFunction,
+): Record<keyof ApiAppConfiguration, Yup.AnySchema> => ({
   serviceName: Yup.string().nullable(),
   configOauthEnabled: Yup.boolean().nullable(),
   disableLoggerTimer: Yup.boolean().nullable(),
@@ -13,22 +18,30 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
   returnEncryptedClientSecretInResponse: Yup.boolean().nullable(),
   apiApprovedIssuer: Yup.array()
     .of(Yup.string())
-    .min(1, 'At least one approved issuer is required')
+    .min(1, t('validation_messages.min_one_approved_issuer'))
     .nullable(),
   apiProtectionType: Yup.string()
-    .oneOf(['OAuth2'], 'Invalid API protection type. Supported type is OAuth2')
+    .test(
+      'api-protection-type',
+      t('validation_messages.api_protection_type_invalid', { type: API_PROTECTION_TYPE }),
+      (value) => !value || value.toLowerCase() === API_PROTECTION_TYPE.toLowerCase(),
+    )
     .nullable(),
   apiClientId: Yup.string().nullable(),
   apiClientPassword: Yup.string().nullable(),
   endpointInjectionEnabled: Yup.boolean().nullable(),
-  authIssuerUrl: Yup.string().url('Invalid URL format').nullable(),
-  authOpenidConfigurationUrl: Yup.string().url('Invalid URL format').nullable(),
-  authOpenidIntrospectionUrl: Yup.string().url('Invalid URL format').nullable(),
-  authOpenidTokenUrl: Yup.string().url('Invalid URL format').nullable(),
-  authOpenidRevokeUrl: Yup.string().url('Invalid URL format').nullable(),
+  authIssuerUrl: Yup.string().url(t('validation_messages.invalid_url_format')).nullable(),
+  authOpenidConfigurationUrl: Yup.string()
+    .url(t('validation_messages.invalid_url_format'))
+    .nullable(),
+  authOpenidIntrospectionUrl: Yup.string()
+    .url(t('validation_messages.invalid_url_format'))
+    .nullable(),
+  authOpenidTokenUrl: Yup.string().url(t('validation_messages.invalid_url_format')).nullable(),
+  authOpenidRevokeUrl: Yup.string().url(t('validation_messages.invalid_url_format')).nullable(),
   exclusiveAuthScopes: Yup.array()
     .of(Yup.string())
-    .min(1, 'At least one scope is required')
+    .min(1, t('validation_messages.min_one_scope'))
     .nullable(),
   corsConfigurationFilters: Yup.array()
     .of(
@@ -47,18 +60,18 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
             const num = Number(value)
             return isNaN(num) ? null : num
           })
-          .min(0, 'Must be non-negative')
-          .max(86400, 'Must not exceed 24 hours (86400 seconds)')
+          .min(0, t('validation_messages.must_be_non_negative'))
+          .max(86400, t('validation_messages.cors_preflight_max_age_max'))
           .nullable(),
         corsRequestDecorate: Yup.boolean().nullable(),
       }),
     )
     .nullable(),
   loggingLevel: Yup.string()
-    .oneOf([...LOG_LEVELS], 'Invalid logging level')
+    .oneOf([...LOG_LEVELS], t('messages.logging_level_invalid'))
     .nullable(),
   loggingLayout: Yup.string()
-    .oneOf([...LOG_LAYOUTS], 'Invalid logging layout')
+    .oneOf([...LOG_LAYOUTS], t('messages.logging_layout_invalid'))
     .nullable(),
   disableJdkLogger: Yup.boolean().nullable(),
   disableExternalLoggerConfiguration: Yup.boolean().nullable(),
@@ -70,8 +83,8 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
       const num = Number(value)
       return isNaN(num) ? null : num
     })
-    .min(0, 'Must be non-negative')
-    .max(10000, 'Must not exceed 10000')
+    .min(0, t('validation_messages.must_be_non_negative'))
+    .max(10000, t('validation_messages.must_not_exceed', { max: 10000 }))
     .nullable(),
   acrExclusionList: Yup.array().of(Yup.string()).nullable(),
   userExclusionAttributes: Yup.array().of(Yup.string()).nullable(),
@@ -120,18 +133,22 @@ const configApiPropertiesSchemaShape: Record<keyof ApiAppConfiguration, Yup.AnyS
       .of(
         Yup.object({
           directory: Yup.string().nullable(),
-          type: Yup.array().of(Yup.string()).min(1, 'At least one type is required').nullable(),
+          type: Yup.array()
+            .of(Yup.string())
+            .min(1, t('validation_messages.min_one_asset_type'))
+            .nullable(),
           description: Yup.string().nullable(),
           jansServiceModule: Yup.array()
             .of(Yup.string())
-            .min(1, 'At least one service module is required')
+            .min(1, t('validation_messages.min_one_service_module'))
             .nullable(),
         }),
       )
       .nullable(),
   }).nullable(),
-}
+})
 
-export const configApiPropertiesSchema = Yup.object().shape(
-  configApiPropertiesSchemaShape,
-) as Yup.ObjectSchema<ApiAppConfiguration>
+const getConfigApiPropertiesSchema = (t: TFunction) =>
+  Yup.object().shape(getConfigApiPropertiesSchemaShape(t)) as Yup.ObjectSchema<ApiAppConfiguration>
+
+export { getConfigApiPropertiesSchema }

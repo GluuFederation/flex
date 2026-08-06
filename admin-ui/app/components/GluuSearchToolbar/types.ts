@@ -65,6 +65,7 @@ type GluuSearchToolbarBaseProps = {
   actionsLabel?: string
   refreshLoading?: boolean
   refreshButtonVariant?: 'primary' | 'outlined'
+  compactActionLabels?: boolean
   disabled?: boolean
   /** Optional class on the toolbar root, for page-specific layout overrides. */
   className?: string

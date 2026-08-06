@@ -303,6 +303,31 @@ rdbm_installer = RDBMInstaller()
 
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
+admin_ui_releases_base_url = 'https://github.com/GluuFederation/flex/releases/download'
+
+
+def get_admin_ui_bin_url():
+    """Resolves the Admin UI built asset URL on GitHub Releases.
+
+    Assets are published by .github/workflows/build-admin-ui.yml: v* tag builds
+    attach admin-ui-<tag>-built.tar.gz to that tag's release; everything else
+    (main, nightly, branches) lands on the rolling `nightly` release as
+    admin-ui-nightly-built.tar.gz. Each version maps to exactly one release: a
+    missing v* asset is surfaced as an error (never silently downgraded to
+    nightly).
+    """
+    version = app_versions['NODE_MODULES_BRANCH'].replace('/', '-')
+
+    if version.startswith('v'):
+        url = '{0}/{1}/admin-ui-{1}-built.tar.gz'.format(admin_ui_releases_base_url, version)
+        try:
+            request.urlopen(request.Request(url, method='HEAD'), timeout=30)
+        except Exception as e:
+            raise RuntimeError("Admin UI release asset not found at {}: {}".format(url, e))
+        return url
+
+    return '{0}/nightly/admin-ui-nightly-built.tar.gz'.format(admin_ui_releases_base_url)
+
 
 class flex_installer(JettyInstaller):
 
@@ -320,7 +345,8 @@ class flex_installer(JettyInstaller):
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
-        self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
+        # resolved lazily (network request) only when Admin UI assets are needed
+        self.adimin_ui_bin_url = ''
         self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/v0.0.0/admin_ui_2_0.cjar'
         self.policy_store_cjar_path = os.path.join(self.templates_dir, 'policy-store.cjar')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
@@ -342,6 +368,11 @@ class flex_installer(JettyInstaller):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
         self.source_files = []
+
+    def resolve_admin_ui_bin_url(self):
+        if not self.adimin_ui_bin_url:
+            self.adimin_ui_bin_url = get_admin_ui_bin_url()
+        return self.adimin_ui_bin_url
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
@@ -370,7 +401,7 @@ class flex_installer(JettyInstaller):
                 (
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
-                (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
+                (self.resolve_admin_ui_bin_url(), os.path.join(Config.dist_jans_dir, os.path.basename(self.resolve_admin_ui_bin_url()))),
                 (self.policy_store_cjar_url, self.policy_store_cjar_path),
             ]
 
@@ -448,7 +479,7 @@ class flex_installer(JettyInstaller):
 
     def unpack_gluu_admin_ui_archive(self):
 
-        admin_ui_bin_archive = os.path.basename(self.adimin_ui_bin_url)
+        admin_ui_bin_archive = os.path.basename(self.resolve_admin_ui_bin_url())
 
         if os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
             print("Backing up previous installation")
