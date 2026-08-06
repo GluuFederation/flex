@@ -42,6 +42,11 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
     [t, palette.chart],
   )
 
+  const splitLabel = useMemo(() => {
+    if (!trend.split) return undefined
+    return `${t('fields.platform')} ${trend.split.platform}% · ${t('fields.cross_platform')} ${trend.split.crossPlatform}%`
+  }, [trend.split, t])
+
   const isEmpty = trend.points.length === 0
   const chartData = useMemo(
     () => (isEmpty ? buildDeviceScaffold() : [...trend.points]),
@@ -53,7 +58,7 @@ const DeviceFingerprintChart: React.FC<DeviceShiftChartProps> = ({ trend }) => {
       title={t('titles.device_fingerprint_shift')}
       subtitle={t('fields.device_fingerprint_subtitle')}
       statusLabel={
-        trend.shiftDayLabel ? t('fields.shift_detected', { day: trend.shiftDayLabel }) : undefined
+        trend.shiftDayLabel ? t('fields.shift_detected', { day: trend.shiftDayLabel }) : splitLabel
       }
       statusColor={palette.chart.platform}
       legend={legend}

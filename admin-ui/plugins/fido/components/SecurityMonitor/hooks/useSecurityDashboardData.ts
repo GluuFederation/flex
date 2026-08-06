@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createDate } from '@/utils/dayjsUtils'
 import { METRIC_OPERATION_TYPES } from '../../Metrics/constants'
@@ -6,9 +6,9 @@ import {
   useAggregationMetrics,
   useDevicesAnalytics,
   useErrorsAnalytics,
-  useMetricsEntries,
   useMetricsEntriesByOperation,
 } from '../../Metrics/hooks'
+import type { AggregationEntry } from '../../Metrics/types'
 import {
   ANOMALY_GRANULARITIES,
   KPI_PERIODS,
@@ -32,6 +32,7 @@ import {
   pointDelta,
   sliceEntriesByRange,
   successRateOf,
+  mergeTodayFromHourly,
   sumAggregation,
 } from '../utils'
 import { useSecurityRanges } from './useSecurityRanges'
@@ -57,39 +58,51 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   const monthlyQuery = useAggregationMetrics('Monthly', ranges.lastTwelveMonths)
   const errorsQuery = useErrorsAnalytics(ranges.primary)
   const devicesQuery = useDevicesAnalytics(ranges.deviceTrend)
-  const ipEntriesQuery = useMetricsEntries(ranges.ipWindow, { limit: SECURITY_ENTRIES_LIMIT })
   const authEntriesQuery = useMetricsEntriesByOperation(
     METRIC_OPERATION_TYPES.AUTHENTICATION,
     ranges.primary,
     { limit: SECURITY_ENTRIES_LIMIT },
   )
+  const hourlyEntries = useMemo(() => hourlyQuery.data?.entries ?? [], [hourlyQuery.data])
+
+  const withToday = useCallback(
+    (entries: readonly AggregationEntry[]) =>
+      mergeTodayFromHourly(entries, hourlyEntries, ranges.today.startDate, ranges.today.endDate),
+    [hourlyEntries, ranges.today.startDate, ranges.today.endDate],
+  )
+
+  const dailyEntries = useMemo(
+    () => withToday(dailyQuery.data?.entries ?? []),
+    [dailyQuery.data, withToday],
+  )
+
+  const deviceEntries = useMemo(
+    () => withToday(deviceQuery.data?.entries ?? []),
+    [deviceQuery.data, withToday],
+  )
+
+  const pulseEntries = useMemo(() => {
+    const entries = pulseQuery.data?.entries ?? []
+    return ranges.pulseAggregation === 'Hourly' ? entries : withToday(entries)
+  }, [pulseQuery.data, ranges.pulseAggregation, withToday])
+
   const spikeSeries = useMemo(
-    () =>
-      buildFailureSpikeSeries(
-        pulseQuery.data?.entries ?? [],
-        ranges.primary.startDate,
-        ranges.pulseLabelFormat,
-      ),
-    [pulseQuery.data, ranges.primary.startDate, ranges.pulseLabelFormat],
+    () => buildFailureSpikeSeries(pulseEntries, ranges.primary.startDate, ranges.pulseLabelFormat),
+    [pulseEntries, ranges.primary.startDate, ranges.pulseLabelFormat],
   )
 
   const dropOffSeries = useMemo(
     () =>
       buildDropOffSeries(
-        sliceEntriesByRange(
-          dailyQuery.data?.entries ?? [],
-          ranges.dropOff.startDate,
-          ranges.dropOff.endDate,
-        ),
+        sliceEntriesByRange(dailyEntries, ranges.dropOff.startDate, ranges.dropOff.endDate),
         ranges.dropOffLabelFormat,
       ),
-    [dailyQuery.data, ranges.dropOff, ranges.dropOffLabelFormat],
+    [dailyEntries, ranges.dropOff, ranges.dropOffLabelFormat],
   )
 
-  const ipStats = useMemo(
-    () => aggregateIpFailures(ipEntriesQuery.data?.entries ?? []),
-    [ipEntriesQuery.data],
-  )
+  const authEntries = useMemo(() => authEntriesQuery.data?.entries ?? [], [authEntriesQuery.data])
+
+  const ipStats = useMemo(() => aggregateIpFailures(authEntries), [authEntries])
 
   const suspiciousIps = useMemo(() => filterSuspiciousIps(ipStats), [ipStats])
 
@@ -97,8 +110,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     () => buildErrorCategorySlices(errorsQuery.data, palette.errorCategories),
     [errorsQuery.data, palette.errorCategories],
   )
-
-  const authEntries = useMemo(() => authEntriesQuery.data?.entries ?? [], [authEntriesQuery.data])
 
   const velocityMinAttempts = useMemo(() => {
     const days = Math.max(1, ranges.primary.endDate.diff(ranges.primary.startDate, 'day') + 1)
@@ -111,8 +122,8 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   )
 
   const deviceTrend = useMemo(
-    () => buildDeviceTrend(deviceQuery.data?.entries ?? []),
-    [deviceQuery.data],
+    () => buildDeviceTrend(deviceEntries, devicesQuery.data),
+    [deviceEntries, devicesQuery.data],
   )
 
   const anomalies = useMemo(
@@ -121,7 +132,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   )
 
   const summary = useMemo<SecurityKpiSummary>(() => {
-    const dailyEntries = dailyQuery.data?.entries ?? []
     const { startDate: monthStart } = ranges.monthWithPrevious
     const todayStart = ranges.today.startDate
     const todayEnd = ranges.today.endDate
@@ -129,12 +139,9 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     const thisMonthStart = createDate(todayStart).startOf('month')
 
     const today = sumAggregation(sliceEntriesByRange(dailyEntries, todayStart, todayEnd))
+    const yesterdayEnd = todayStart.subtract(1, 'millisecond')
     const yesterday = sumAggregation(
-      sliceEntriesByRange(
-        dailyEntries,
-        todayStart.subtract(1, 'day'),
-        todayStart.subtract(1, 'millisecond'),
-      ),
+      sliceEntriesByRange(dailyEntries, todayStart.subtract(1, 'day'), yesterdayEnd),
     )
     const week = sumAggregation(sliceEntriesByRange(dailyEntries, weekStart, todayEnd))
     const previousWeek = sumAggregation(
@@ -149,7 +156,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
       sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
     )
 
-    const hourlyEntries = hourlyQuery.data?.entries ?? []
     const monthlyEntries = monthlyQuery.data?.entries ?? []
     const hourlyAnomaliesToday = countSpikes(
       sliceEntriesByRange(hourlyEntries, todayStart, todayEnd),
@@ -219,7 +225,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     pulseQuery.isLoading ||
     hourlyQuery.isLoading ||
     dailyQuery.isLoading ||
-    ipEntriesQuery.isLoading ||
     authEntriesQuery.isLoading
 
   const isFetching =
@@ -230,7 +235,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     monthlyQuery.isFetching ||
     errorsQuery.isFetching ||
     devicesQuery.isFetching ||
-    ipEntriesQuery.isFetching ||
     authEntriesQuery.isFetching
 
   return {

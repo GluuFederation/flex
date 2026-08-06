@@ -4,7 +4,6 @@ import {
   BASELINE_WINDOW_DAYS,
   CHART_LABEL_FORMATS,
   DEVICE_TREND_DAYS,
-  IP_WINDOW_HOURS,
   KPI_PERIODS,
 } from '../constants'
 import type { KpiPeriod, SecurityRanges } from '../types'
@@ -27,7 +26,6 @@ const useSecurityRanges = (nowValue: number, period: KpiPeriod): SecurityRanges 
       endDate: endOfToday,
     }
     const thisMonth = { startDate: now.startOf('month'), endDate: endOfToday }
-    const ipWindow = { startDate: now.subtract(IP_WINDOW_HOURS, 'hour'), endDate: now }
 
     const isToday = period === KPI_PERIODS.TODAY
     const primary = period === KPI_PERIODS.THIS_MONTH ? thisMonth : isToday ? today : lastSevenDays
@@ -48,7 +46,6 @@ const useSecurityRanges = (nowValue: number, period: KpiPeriod): SecurityRanges 
         startDate: now.subtract(MONTHS_IN_YEAR, 'month').startOf('month'),
         endDate: endOfToday,
       },
-      ipWindow: isToday ? ipWindow : primary,
       primary,
       pulse: {
         startDate: primary.startDate.subtract(BASELINE_WINDOW_DAYS, 'day'),

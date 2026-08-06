@@ -41,7 +41,7 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({ matrix }) => {
         <table className={classes.velocityTable}>
           <thead>
             <tr>
-              <th className={classes.velocityRowIdentity} scope="col">
+              <th className={classes.velocityHeadIdentity} scope="col">
                 {t('fields.user')}
               </th>
               {matrix.cols.map((col) => (
@@ -54,7 +54,11 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({ matrix }) => {
           <tbody>
             {rows.map((row, rowIndex) => (
               <tr key={row}>
-                <th className={classes.velocityRowIdentity} scope="row">
+                <th
+                  className={classes.velocityRowIdentity}
+                  scope="row"
+                  title={row.trim() || undefined}
+                >
                   {row}
                 </th>
                 {matrix.cols.map((col, colIndex) => {

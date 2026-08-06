@@ -56,8 +56,7 @@ const SecurityMonitorPage: React.FC = () => {
   }, [queryClient])
 
   const handleExport = useCallback(() => {
-    const ipWindowLabel =
-      period === KPI_PERIODS.TODAY ? t('fields.ip_window_last_hour') : t(`fields.period_${period}`)
+    const ipWindowLabel = t(`fields.period_${period}`)
     const rows = buildSecurityExportRows(data, t, period, anomalyGranularity, ipWindowLabel)
 
     if (!rows.length) {

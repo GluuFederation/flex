@@ -1,6 +1,6 @@
 import { alpha } from '@mui/material/styles'
 import { OPACITY } from '@/constants'
-import { createDate, type Dayjs } from '@/utils/dayjsUtils'
+import { createDate, DATE_FORMATS, type Dayjs } from '@/utils/dayjsUtils'
 import { METRIC_STATUS } from '../Metrics/constants'
 import type {
   AggregationEntry,
@@ -38,6 +38,7 @@ import type {
   AnomalySummary,
   AttackPattern,
   CountAxis,
+  DeviceSplit,
   DeviceTrend,
   DeviceTrendPoint,
   DropOffPoint,
@@ -74,6 +75,20 @@ const roundTo = (value: number, digits = 2): number => Number(value.toFixed(digi
 
 const resolveIdentity = (entry: MetricsEntry): string | null =>
   entry.username ?? entry.userId ?? null
+
+const FAILURE_STATUSES: ReadonlySet<string> = new Set([METRIC_STATUS.FAILURE, 'FAILED', 'ERROR'])
+
+const isSuccessEntry = (entry: MetricsEntry): boolean =>
+  entry.status?.toUpperCase() === METRIC_STATUS.SUCCESS
+
+const isFailureEntry = (entry: MetricsEntry): boolean => {
+  const status = entry.status?.toUpperCase()
+  if (status) {
+    if (FAILURE_STATUSES.has(status)) return true
+    if (status === METRIC_STATUS.SUCCESS) return false
+  }
+  return Boolean(entry.errorReason ?? entry.errorCategory)
+}
 
 const entryStartDate = (entry: AggregationEntry): Dayjs | null => {
   const raw = entry.startTime ?? entry.period
@@ -194,8 +209,8 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
     }
 
     bucket.attempts += 1
-    if (entry.status === METRIC_STATUS.FAILURE) bucket.failures += 1
-    if (entry.status === METRIC_STATUS.SUCCESS) bucket.successes += 1
+    if (isFailureEntry(entry)) bucket.failures += 1
+    else if (isSuccessEntry(entry)) bucket.successes += 1
 
     const identity = resolveIdentity(entry)
     if (identity) bucket.users.add(identity)
@@ -213,17 +228,18 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
 
   return Array.from(buckets.entries())
     .map(([ipAddress, bucket]) => {
-      const failureRatio = bucket.attempts ? bucket.failures / bucket.attempts : 0
+      const failures = bucket.failures || Math.max(0, bucket.attempts - bucket.successes)
+      const failureRatio = bucket.attempts ? failures / bucket.attempts : 0
       return {
         ipAddress,
-        failures: bucket.failures,
+        failures,
         successes: bucket.successes,
         attempts: bucket.attempts,
         failureRate: roundTo(failureRatio * 100),
         targetedUsers: bucket.users.size,
         firstSeen: Number.isFinite(bucket.firstSeen) ? bucket.firstSeen : 0,
         lastSeen: bucket.lastSeen,
-        threatLevel: classifyThreatLevel({ failures: bucket.failures, failureRatio }),
+        threatLevel: classifyThreatLevel({ failures, failureRatio }),
         pattern: classifyAttackPattern({
           targetedUsers: bucket.users.size,
           successes: bucket.successes,
@@ -340,9 +356,10 @@ const buildErrorCategorySlices = (
   errors: ErrorsAnalyticsResponse | undefined,
   colors: readonly string[],
 ): ErrorCategorySlice[] => {
-  const categories = readCountRecord(errors?.errorCategories)
-  const source = Object.keys(categories).length ? categories : readCountRecord(errors?.errorCounts)
-  const items = Object.entries(source).filter(([, count]) => count > 0)
+  const source = [errors?.errorCategories, errors?.topErrors, errors?.errorCounts]
+    .map(readCountRecord)
+    .find((record) => Object.keys(record).length)
+  const items = Object.entries(source ?? {}).filter(([, count]) => count > 0)
   const total = items.reduce((sum, [, count]) => sum + count, 0)
 
   return items
@@ -520,7 +537,29 @@ const isPlatformKey = (key: string): boolean => {
   return normalised.includes(PLATFORM_KEY_HINT) && !normalised.includes(CROSS_PLATFORM_KEY_HINT)
 }
 
-const buildDeviceTrend = (entries: readonly AggregationEntry[]): DeviceTrend => {
+const buildAuthenticatorSplit = (devices?: DevicesAnalyticsResponse): DeviceSplit | null => {
+  const authenticators = readCountRecord(devices?.authenticatorTypes)
+  const counts = Object.keys(authenticators).length
+    ? authenticators
+    : readCountRecord(devices?.deviceTypes)
+  let total = 0
+  let platform = 0
+  Object.entries(counts).forEach(([key, value]) => {
+    total += value
+    if (isPlatformKey(key)) platform += value
+  })
+  if (!total) return null
+
+  return {
+    platform: roundTo((platform / total) * 100),
+    crossPlatform: roundTo(((total - platform) / total) * 100),
+  }
+}
+
+const buildDeviceTrend = (
+  entries: readonly AggregationEntry[],
+  devices?: DevicesAnalyticsResponse,
+): DeviceTrend => {
   const points: DeviceTrendPoint[] = entries
     .map((entry) => {
       const date = entryStartDate(entry)
@@ -556,7 +595,7 @@ const buildDeviceTrend = (entries: readonly AggregationEntry[]): DeviceTrend => 
     }
   }
 
-  return { points, shiftDayLabel }
+  return { points, shiftDayLabel, split: buildAuthenticatorSplit(devices) }
 }
 
 const sumAggregation = (entries: readonly AggregationEntry[]): PeriodTotals =>
@@ -568,6 +607,65 @@ const sumAggregation = (entries: readonly AggregationEntry[]): PeriodTotals =>
     }),
     { attempts: 0, successes: 0, failures: 0 },
   )
+
+const AGGREGATION_COUNTER_KEYS = [
+  'authenticationAttempts',
+  'authenticationSuccesses',
+  'authenticationFailures',
+  'registrationAttempts',
+  'registrationSuccesses',
+  'registrationFailures',
+  'fallbackEvents',
+] as const
+
+const foldEntriesIntoDay = (
+  entries: readonly AggregationEntry[],
+  dayStart: Dayjs,
+): AggregationEntry | null => {
+  if (!entries.length) return null
+
+  const folded: AggregationEntry = {
+    aggregationType: 'Daily',
+    startTime: dayStart.format(DATE_FORMATS.API_DATETIME),
+    period: dayStart.format(DATE_FORMATS.DATE_ONLY),
+  }
+
+  const counters: Record<string, number> = {}
+  const deviceTypes: Record<string, number> = {}
+  let uniqueUsers = 0
+
+  entries.forEach((entry) => {
+    AGGREGATION_COUNTER_KEYS.forEach((key) => {
+      counters[key] = (counters[key] ?? 0) + toCount(entry[key])
+    })
+    uniqueUsers = Math.max(uniqueUsers, toCount(entry.uniqueUsers))
+    Object.entries(readCountRecord(entry.deviceTypes)).forEach(([key, value]) => {
+      deviceTypes[key] = (deviceTypes[key] ?? 0) + value
+    })
+  })
+
+  AGGREGATION_COUNTER_KEYS.forEach((key) => {
+    folded[key] = counters[key] ?? 0
+  })
+  folded.uniqueUsers = uniqueUsers
+  if (Object.keys(deviceTypes).length) folded.deviceTypes = deviceTypes
+
+  return folded
+}
+
+const mergeTodayFromHourly = (
+  dailyEntries: readonly AggregationEntry[],
+  hourlyEntries: readonly AggregationEntry[],
+  todayStart: Dayjs,
+  todayEnd: Dayjs,
+): readonly AggregationEntry[] => {
+  if (sliceEntriesByRange(dailyEntries, todayStart, todayEnd).length) return dailyEntries
+  const folded = foldEntriesIntoDay(
+    sliceEntriesByRange(hourlyEntries, todayStart, todayEnd),
+    todayStart,
+  )
+  return folded ? [...dailyEntries, folded] : dailyEntries
+}
 
 const successRateOf = (totals: { attempts: number; successes: number }): number =>
   totals.attempts ? roundTo((totals.successes / totals.attempts) * 100) : 0
@@ -707,6 +805,7 @@ export {
   buildHourScaffold,
   buildIpScaffold,
   buildVelocityScaffoldRows,
+  buildAuthenticatorSplit,
   buildDeviceTrend,
   buildSecurityExportRows,
   buildDropOffSeries,
@@ -727,6 +826,7 @@ export {
   sliceEntriesByRange,
   spikeRatio,
   successRateOf,
+  mergeTodayFromHourly,
   sumAggregation,
   takeTopIpsByFailure,
 }

@@ -558,7 +558,7 @@ describe('SecurityMonitor utils', () => {
       suspiciousIps: [],
       errorSlices: [],
       velocityMatrix: { rows: [], cols: [], cells: [], anomalousUsers: 0 },
-      deviceTrend: { points: [], shiftDayLabel: null },
+      deviceTrend: { points: [], shiftDayLabel: null, split: null },
       isLoading: false,
       isFetching: false,
     }
@@ -617,6 +617,7 @@ describe('SecurityMonitor utils', () => {
         deviceTrend: {
           points: [{ label: 'Jul-27', platform: 54, crossPlatform: 46 }],
           shiftDayLabel: null,
+          split: null,
         },
         velocityMatrix: {
           rows: ['a.morgan'],

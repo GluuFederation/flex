@@ -92,9 +92,15 @@ type DeviceTrendPoint = {
   crossPlatform: number
 }
 
+type DeviceSplit = {
+  platform: number
+  crossPlatform: number
+}
+
 type DeviceTrend = {
   points: readonly DeviceTrendPoint[]
   shiftDayLabel: string | null
+  split: DeviceSplit | null
 }
 
 type PeriodTotals = {
@@ -279,7 +285,6 @@ type SecurityRanges = {
   deviceTrend: MetricsDateRange
   monthWithPrevious: MetricsDateRange
   lastTwelveMonths: MetricsDateRange
-  ipWindow: MetricsDateRange
   primary: MetricsDateRange
   pulse: MetricsDateRange
   dropOff: MetricsDateRange
@@ -297,6 +302,7 @@ export type {
   ChartEmptyInset,
   CountAxis,
   DeviceShiftChartProps,
+  DeviceSplit,
   DeviceTrend,
   DeviceTrendPoint,
   DropOffChartProps,
