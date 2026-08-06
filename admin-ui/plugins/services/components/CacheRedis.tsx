@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -7,10 +8,12 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import type { CacheRedisProps } from './types'
-import { REDIS_PROVIDER_OPTIONS } from '../helper'
+import { getRedisProviderOptions } from '../helper'
 
 const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
   const { t } = useTranslation()
+
+  const redisProviderOptions = useMemo(() => getRedisProviderOptions(), [])
   return (
     <div className={classes.sectionGrid}>
       <div className={classes.fieldItem}>
@@ -19,7 +22,7 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           name="redisProviderType"
           value={formik.values.redisProviderType || ''}
           formik={formik}
-          values={REDIS_PROVIDER_OPTIONS}
+          values={redisProviderOptions}
           lsize={12}
           rsize={12}
           doc_category={CACHE}
@@ -41,6 +44,21 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           isDark={isDark}
           disabled={disabled}
           placeholder={getFieldPlaceholder(t, 'fields.servers')}
+        />
+      </div>
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.username"
+          name="username"
+          lsize={12}
+          rsize={12}
+          formik={formik}
+          value={formik.values.username || ''}
+          doc_category={CACHE}
+          doc_entry="username"
+          isDark={isDark}
+          disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.username')}
         />
       </div>
       <div className={classes.fieldItem}>
@@ -87,6 +105,53 @@ const CacheRedis = ({ formik, classes, isDark, disabled }: CacheRedisProps) => {
           isDark={isDark}
           disabled={disabled}
           placeholder={getFieldPlaceholder(t, 'fields.ssl_trust_store_file_path')}
+        />
+      </div>
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.ssl_trust_store_password"
+          name="sslTrustStorePassword"
+          type="password"
+          lsize={12}
+          rsize={12}
+          formik={formik}
+          value={formik.values.sslTrustStorePassword || ''}
+          doc_category={CACHE}
+          doc_entry="sslTrustStorePassword"
+          isDark={isDark}
+          disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.ssl_trust_store_password')}
+        />
+      </div>
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.ssl_key_store_file_path"
+          name="sslKeyStoreFilePath"
+          lsize={12}
+          rsize={12}
+          formik={formik}
+          value={formik.values.sslKeyStoreFilePath || ''}
+          doc_category={CACHE}
+          doc_entry="sslKeyStoreFilePath"
+          isDark={isDark}
+          disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.ssl_key_store_file_path')}
+        />
+      </div>
+      <div className={classes.fieldItem}>
+        <GluuInputRow
+          label="fields.ssl_key_store_password"
+          name="sslKeyStorePassword"
+          type="password"
+          lsize={12}
+          rsize={12}
+          formik={formik}
+          value={formik.values.sslKeyStorePassword || ''}
+          doc_category={CACHE}
+          doc_entry="sslKeyStorePassword"
+          isDark={isDark}
+          disabled={disabled}
+          placeholder={getFieldPlaceholder(t, 'fields.ssl_key_store_password')}
         />
       </div>
       <div className={classes.fieldItem}>

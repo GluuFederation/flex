@@ -22,7 +22,7 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, type QueryKey } from '@tanstack/react-query'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logger } from '@/utils/logger'
@@ -38,6 +38,10 @@ import {
   usePutConfigCacheNativePersistence,
   usePutConfigCacheRedis,
   getGetConfigCacheQueryKey,
+  getGetConfigCacheInMemoryQueryKey,
+  getGetConfigCacheMemcachedQueryKey,
+  getGetConfigCacheNativePersistenceQueryKey,
+  getGetConfigCacheRedisQueryKey,
   type CacheConfiguration,
   type InMemoryConfiguration,
   type MemcachedConfiguration,
@@ -46,14 +50,19 @@ import {
   CacheConfigurationCacheProviderType,
 } from 'JansConfigApi'
 import { useCacheAudit } from './hooks'
-import type { CacheFormValues, CacheProviderType, CacheSubComponentBaseProps } from './types'
+import type {
+  CacheFormValues,
+  CacheProviderType,
+  CacheSubComponentBaseProps,
+  RedisConfigurationPayload,
+} from './types'
 import {
   isInMemoryCache,
   isMemcachedCache,
   isRedisCache,
   isNativePersistenceCache,
   buildCacheChangedFieldOperations,
-  CACHE_PROVIDER_OPTIONS,
+  getCacheProviderOptions,
 } from '../helper'
 import { useStyles } from './styles/CachePage.style'
 import { queryDefaults } from '@/utils/queryUtils'
@@ -73,6 +82,8 @@ const PROVIDER_SECTIONS: Record<
 
 const CachePage: React.FC = () => {
   const { t } = useTranslation()
+
+  const cacheProviderOptions = useMemo(() => getCacheProviderOptions(), [])
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logCacheUpdate } = useCacheAudit()
@@ -136,13 +147,15 @@ const CachePage: React.FC = () => {
     query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
   })
   const {
-    data: cacheRedisData = {} as RedisConfiguration,
+    data: redisQueryData,
     isLoading: redisLoading,
     isError: isRedisError,
     error: redisError,
   } = useGetConfigCacheRedis({
     query: { staleTime: queryDefaults.queryOptions.staleTime, enabled: canReadCache },
   })
+  // See `RedisConfigurationPayload`: the generated type omits `username`.
+  const cacheRedisData = (redisQueryData ?? {}) as RedisConfigurationPayload
 
   const loading = cacheLoading || memoryLoading || memcachedLoading || nativeLoading || redisLoading
 
@@ -182,10 +195,29 @@ const CachePage: React.FC = () => {
       },
     },
   })
-  const putMemoryMutation = usePutConfigCacheInMemory()
-  const putMemcachedMutation = usePutConfigCacheMemcached()
-  const putNativeMutation = usePutConfigCacheNativePersistence()
-  const putRedisMutation = usePutConfigCacheRedis()
+  const invalidateOnSuccess = useCallback(
+    (queryKey: QueryKey) => ({
+      mutation: {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey })
+        },
+      },
+    }),
+    [queryClient],
+  )
+
+  const putMemoryMutation = usePutConfigCacheInMemory(
+    invalidateOnSuccess(getGetConfigCacheInMemoryQueryKey()),
+  )
+  const putMemcachedMutation = usePutConfigCacheMemcached(
+    invalidateOnSuccess(getGetConfigCacheMemcachedQueryKey()),
+  )
+  const putNativeMutation = usePutConfigCacheNativePersistence(
+    invalidateOnSuccess(getGetConfigCacheNativePersistenceQueryKey()),
+  )
+  const putRedisMutation = usePutConfigCacheRedis(
+    invalidateOnSuccess(getGetConfigCacheRedisQueryKey()),
+  )
 
   const isMutating =
     patchCacheMutation.isPending ||
@@ -206,9 +238,13 @@ const CachePage: React.FC = () => {
       memoryDefaultPutExpiration: cacheMemoryData.defaultPutExpiration,
       redisProviderType: cacheRedisData.redisProviderType,
       servers: cacheRedisData.servers,
+      username: cacheRedisData.username || '',
       password: cacheRedisData.password || '',
       sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName || '',
       sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath || '',
+      sslTrustStorePassword: cacheRedisData.sslTrustStorePassword || '',
+      sslKeyStoreFilePath: cacheRedisData.sslKeyStoreFilePath || '',
+      sslKeyStorePassword: cacheRedisData.sslKeyStorePassword || '',
       redisDefaultPutExpiration: cacheRedisData.defaultPutExpiration,
       useSSL: cacheRedisData.useSSL,
       maxIdleConnections: cacheRedisData.maxIdleConnections,
@@ -247,12 +283,16 @@ const CachePage: React.FC = () => {
         }
 
         if (isRedisCache(values)) {
-          const redisCache: RedisConfiguration = {
+          const redisCache: RedisConfigurationPayload = {
             redisProviderType: values.redisProviderType as RedisConfiguration['redisProviderType'],
             servers: values.servers,
+            username: values.username,
             password: values.password,
             sentinelMasterGroupName: values.sentinelMasterGroupName,
             sslTrustStoreFilePath: values.sslTrustStoreFilePath,
+            sslTrustStorePassword: values.sslTrustStorePassword,
+            sslKeyStoreFilePath: values.sslKeyStoreFilePath,
+            sslKeyStorePassword: values.sslKeyStorePassword,
             defaultPutExpiration: values.redisDefaultPutExpiration,
             useSSL: values.useSSL,
             maxIdleConnections: values.maxIdleConnections,
@@ -370,14 +410,11 @@ const CachePage: React.FC = () => {
                       name="cacheProviderType"
                       value={formik.values.cacheProviderType}
                       formik={formik}
-                      values={CACHE_PROVIDER_OPTIONS}
+                      values={cacheProviderOptions}
                       lsize={12}
                       rsize={12}
                       doc_category={CACHE}
                       doc_entry="cacheProviderType"
-                      // Stays interactive on mobile: it only switches which
-                      // provider's settings are shown, and nothing below it can
-                      // be edited or submitted from there anyway.
                       disabled={!canWriteCache}
                       isDark={isDark}
                     />

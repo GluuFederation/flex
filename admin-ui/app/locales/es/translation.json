@@ -1281,7 +1281,11 @@
     "fido2_metrics_health_status": "Métricas Fido2",
     "fido2_metrics_health_unknown": "No se pudo determinar el estado del servicio de métricas.",
     "fido2_metrics_health_up": "El servicio de métricas está funcionando con normalidad.",
-    "fetching_data": "Obteniendo datos..."
+    "fetching_data": "Obteniendo datos...",
+    "logging_level_required": "El nivel de registro es obligatorio",
+    "logging_level_invalid": "Nivel de registro no válido",
+    "logging_layout_required": "El formato de registro es obligatorio",
+    "logging_layout_invalid": "Formato de registro no válido"
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",
@@ -1363,7 +1367,21 @@
     "field_invalid_url": "{{field}} debe ser una URL válida",
     "field_invalid_number": "{{field}} debe ser un número entero válido",
     "field_must_be_positive": "{{field}} debe ser al menos 1",
-    "field_invalid_regex": "{{field}} debe ser una expresión regular válida"
+    "field_invalid_regex": "{{field}} debe ser una expresión regular válida",
+    "field_required": "{{field}} es obligatorio",
+    "field_must_be_number": "{{field}} debe ser un número",
+    "field_must_be_integer": "{{field}} debe ser un número entero",
+    "field_min_value": "{{field}} debe ser como mínimo {{min}}",
+    "field_max_value": "{{field}} no debe superar {{max}}",
+    "field_invalid_value": "{{field}} no es válido",
+    "field_min_items": "Se requiere al menos un valor en {{field}}",
+    "must_not_exceed": "No debe superar {{max}}",
+    "cors_preflight_max_age_max": "No debe superar 24 horas (86400 segundos)",
+    "min_one_approved_issuer": "Se requiere al menos un emisor aprobado",
+    "min_one_scope": "Se requiere al menos un alcance",
+    "min_one_asset_type": "Se requiere al menos un tipo",
+    "min_one_service_module": "Se requiere al menos un módulo de servicio",
+    "api_protection_type_invalid": "Tipo de protección de API no válido. El tipo admitido es {{type}}"
   },
   "tooltips": {
     "sort_ascending": "Ordenar ascendente",
@@ -1718,7 +1736,9 @@
     "log_layout_text": "Texto",
     "log_layout_json": "JSON",
     "jwt": "JWT",
-    "reference": "Referencia"
+    "reference": "Referencia",
+    "expired": "CADUCADO",
+    "register": "REGISTRO"
   },
   "documentation": {
     "fido": {
@@ -2307,10 +2327,14 @@
       "nativeDefaultPutExpiration": "Tiempo de expiración de cache nativo",
       "connectionFactoryType": "Tipo de factory de conexión Memcached",
       "redisProviderType": "Tipo de conexión Redis",
+      "username": "Nombre de usuario de Redis.",
       "password": "Contraseña Redis",
       "sentinelMasterGroupName": "Nombre del grupo maestro Sentinel (requerido si se selecciona conexión SENTINEL)",
       "useSSL": "Habilitar SSL entre Gluu Server y Redis",
       "sslTrustStoreFilePath": "Ruta al trust store",
+      "sslTrustStorePassword": "Contraseña del almacén de confianza.",
+      "sslKeyStoreFilePath": "Ruta del directorio al almacén de claves.",
+      "sslKeyStorePassword": "Contraseña del almacén de claves.",
       "maxIdleConnections": "Máximo de instancias inactivas en el pool",
       "maxTotalConnections": "Número máximo de conexiones en el pool",
       "connectionTimeout": "Timeout de conexión",

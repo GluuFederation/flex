@@ -31,15 +31,13 @@ const ScimFieldRenderer: React.FC<ScimFieldRendererProps> = ({
 
   const value = formik.values[name]
   const error = formik.errors[name]
-  const touched = formik.touched[name]
 
   const fieldPlaceholder = useMemo(() => getFieldPlaceholder(t, label), [t, label])
   const itemClass = useMemo(
     () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
     [colSize, fieldItemFullWidthClass, fieldItemClass],
   )
-  const showError = useMemo(() => !!(error && touched), [error, touched])
-
+  const showError = useMemo(() => !!error, [error])
   const stableOptions = useMemo(
     () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
     [selectOptions],

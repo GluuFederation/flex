@@ -1,0 +1,778 @@
+name: Build Admin UI
+
+# Builds admin-ui assets and publishes them to a GitHub release + Maven, or deploys
+# them to an ephemeral easycloud VM. Runnable standalone or via workflow_call.
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_ref:
+        description: 'Branch, tag, or commit to build. Empty = ref the workflow runs from.'
+        required: false
+        type: string
+        default: ''
+      run_tests:
+        description: 'Run tests before building'
+        required: false
+        type: boolean
+        default: true
+      build_env:
+        description: 'Build environment (npm run build:<env>)'
+        required: false
+        type: choice
+        options:
+          - prod
+          - dev
+        default: prod
+      version_name:
+        description: 'Version name for assets. Empty = derived (tag name, or branch name).'
+        required: false
+        type: string
+        default: ''
+      publish:
+        description: 'Publish assets to GitHub Releases + GitHub Maven. auto = only on main or v* tags.'
+        required: false
+        type: choice
+        options:
+          - auto
+          - 'true'
+          - 'false'
+        default: auto
+      deploy:
+        description: 'Deploy to an ephemeral easycloud DO VM. auto = only on feature branches.'
+        required: false
+        type: choice
+        options:
+          - auto
+          - 'true'
+          - 'false'
+        default: auto
+      release_tag:
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0) — the only forms consumers resolve. Must already exist. Empty = derive (main -> nightly).'
+        required: false
+        type: string
+        default: ''
+      comment_on_pr:
+        description: 'Comment the published asset links on the branch open PR (implies publishing to the nightly release).'
+        required: false
+        type: boolean
+        default: false
+      flex_branch:
+        description: 'Flex branch installed on the ephemeral VM via flex-linux-setup (backing jans-config-api).'
+        required: false
+        type: string
+        default: 'main'
+      easycloud_ref:
+        description: 'Ref of GluuFederation/easycloud to check out for the VM deploy. Empty = default branch.'
+        required: false
+        type: string
+        default: ''
+      target_ip:
+        description: 'Deploy the built assets to this existing VM instead of creating an easycloud VM. Requires the ADMIN_UI_DEPLOY_SSH_KEY secret.'
+        required: false
+        type: string
+        default: ''
+      target_host:
+        description: 'FQDN of the target VM for env-config.js (jans-config-api host). Used with target_ip; falls back to target_ip when empty.'
+        required: false
+        type: string
+        default: ''
+      target_ssh_port:
+        description: 'SSH port for the target VM (used with target_ip).'
+        required: false
+        type: string
+        default: '22'
+      termination_in:
+        description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
+        required: false
+        type: string
+        default: '6h'
+  workflow_call:
+    inputs:
+      build_ref:
+        description: 'Branch, tag, or commit to build. Empty = ref the workflow runs from.'
+        required: false
+        type: string
+        default: ''
+      run_tests:
+        description: 'Run tests before building'
+        required: false
+        type: boolean
+        default: true
+      build_env:
+        description: 'Build environment (npm run build:<env>)'
+        required: false
+        type: string
+        default: prod
+      version_name:
+        description: 'Version name for assets. Empty = derived (tag name, or branch name).'
+        required: false
+        type: string
+        default: ''
+      publish:
+        description: 'Publish assets. auto = only on main or v* tags; true/false to force.'
+        required: false
+        type: string
+        default: auto
+      deploy:
+        description: 'Deploy to an ephemeral easycloud DO VM. auto = only on feature branches.'
+        required: false
+        type: string
+        default: auto
+      release_tag:
+        description: 'Existing release to upload assets to. Must be nightly or a v-prefixed version tag (e.g. v5.16.0). Must already exist unless recreate_release is set.'
+        required: false
+        type: string
+        default: ''
+      recreate_release:
+        description: 'Delete+recreate release_tag before uploading (nightly semantics).'
+        required: false
+        type: boolean
+        default: false
+      comment_on_pr:
+        description: 'Comment the published asset links on the branch open PR (implies publishing to the nightly release).'
+        required: false
+        type: boolean
+        default: false
+      flex_branch:
+        description: 'Flex branch installed on the ephemeral VM via flex-linux-setup.'
+        required: false
+        type: string
+        default: 'main'
+      easycloud_ref:
+        description: 'Ref of GluuFederation/easycloud to check out for the VM deploy. Empty = default branch.'
+        required: false
+        type: string
+        default: ''
+      target_ip:
+        description: 'Deploy the built assets to this existing VM instead of creating an easycloud VM. Requires the ADMIN_UI_DEPLOY_SSH_KEY secret.'
+        required: false
+        type: string
+        default: ''
+      target_host:
+        description: 'FQDN of the target VM for env-config.js (jans-config-api host). Used with target_ip; falls back to target_ip when empty.'
+        required: false
+        type: string
+        default: ''
+      target_ssh_port:
+        description: 'SSH port for the target VM (used with target_ip).'
+        required: false
+        type: string
+        default: '22'
+      termination_in:
+        description: 'Hours before the ephemeral VM is terminated (e.g. 6h)'
+        required: false
+        type: string
+        default: '6h'
+    secrets:
+      MOWORKFLOWTOKEN:
+        required: false
+      DO_TOKEN:
+        required: false
+      MOAUTO_GPG_PRIVATE_KEY:
+        required: false
+      MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE:
+        required: false
+      ADMIN_UI_DEPLOY_SSH_KEY:
+        required: false
+      ZULIP_API_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  DO_REGION: nyc1
+  DO_VM_IMAGE: ubuntu-22-04-x64
+  DO_VM_SIZE: s-4vcpu-8gb
+  JANS_PERSISTENCE: MYSQL
+
+jobs:
+  build:
+    if: github.repository == 'GluuFederation/flex'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      ref_name: ${{ steps.meta.outputs.ref_name }}
+      do_publish: ${{ steps.meta.outputs.do_publish }}
+      do_deploy: ${{ steps.meta.outputs.do_deploy }}
+      is_tag: ${{ steps.meta.outputs.is_tag }}
+      sha: ${{ steps.meta.outputs.sha }}
+      release_tag: ${{ steps.meta.outputs.release_tag }}
+      require_existing: ${{ steps.meta.outputs.require_existing }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.build_ref || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve version and flags
+        id: meta
+        env:
+          BUILD_REF: ${{ inputs.build_ref }}
+          FALLBACK_REF: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ inputs.version_name }}
+          INPUT_PUBLISH: ${{ inputs.publish }}
+          INPUT_DEPLOY: ${{ inputs.deploy }}
+          INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
+          INPUT_RECREATE: ${{ inputs.recreate_release }}
+          INPUT_COMMENT: ${{ inputs.comment_on_pr }}
+          INPUT_TARGET_IP: ${{ inputs.target_ip }}
+        run: |
+          REF="${BUILD_REF:-$FALLBACK_REF}"
+
+          IS_TAG=false
+          if git rev-parse -q --verify "refs/tags/$REF" >/dev/null; then
+            IS_TAG=true
+          fi
+
+          IS_RELEASE_REF=false
+          if [ "$REF" = "main" ] || { [ "$IS_TAG" = "true" ] && [[ "$REF" == v* || "$REF" == nightly ]]; }; then
+            IS_RELEASE_REF=true
+          fi
+
+          DO_PUBLISH=false
+          case "$INPUT_PUBLISH" in
+            true)  DO_PUBLISH=true ;;
+            false) DO_PUBLISH=false ;;
+            *)     DO_PUBLISH=$IS_RELEASE_REF ;;
+          esac
+          if [ "$INPUT_COMMENT" = "true" ] || [ "$INPUT_RECREATE" = "true" ] || [ -n "$INPUT_RELEASE_TAG" ]; then
+            DO_PUBLISH=true
+          fi
+
+          # Asset/version identifier tracks the target release so tarball names clobber.
+          REQUIRE_EXISTING=false
+          if [ -n "$INPUT_RELEASE_TAG" ]; then
+            RELEASE_TAG="$INPUT_RELEASE_TAG"
+            VERSION="${RELEASE_TAG#admin-ui-}"
+            if [ "$INPUT_RECREATE" = "true" ]; then REQUIRE_EXISTING=false; else REQUIRE_EXISTING=true; fi
+          elif [ "$IS_TAG" = "true" ]; then
+            RELEASE_TAG="$REF"
+            VERSION="$REF"
+          elif [ "$REF" = "main" ] || [ "$DO_PUBLISH" = "true" ]; then
+            RELEASE_TAG="nightly"
+            VERSION="nightly"
+          else
+            VERSION="$(echo "$REF" | tr '/' '-')"
+            RELEASE_TAG="admin-ui-$VERSION"
+          fi
+
+          if [ -n "$INPUT_VERSION" ] && [ -z "$INPUT_RELEASE_TAG" ]; then
+            VERSION="$INPUT_VERSION"
+          fi
+          VERSION=$(echo "$VERSION" | tr -cd 'a-zA-Z0-9._-')
+
+          DO_DEPLOY=false
+          case "$INPUT_DEPLOY" in
+            true)  DO_DEPLOY=true ;;
+            false) DO_DEPLOY=false ;;
+            *)     if [ "$IS_RELEASE_REF" = "false" ]; then DO_DEPLOY=true; fi ;;
+          esac
+          # an explicit target VM always means "deploy there"
+          if [ -n "$INPUT_TARGET_IP" ] && [ "$INPUT_DEPLOY" != "false" ]; then
+            DO_DEPLOY=true
+          fi
+
+          {
+            echo "version=$VERSION"
+            echo "ref_name=$REF"
+            echo "is_tag=$IS_TAG"
+            echo "do_publish=$DO_PUBLISH"
+            echo "do_deploy=$DO_DEPLOY"
+            echo "sha=$(git rev-parse HEAD)"
+            echo "release_tag=$RELEASE_TAG"
+            echo "require_existing=$REQUIRE_EXISTING"
+          } >> "$GITHUB_OUTPUT"
+          echo "Building ref=$REF version=$VERSION release=$RELEASE_TAG publish=$DO_PUBLISH deploy=$DO_DEPLOY require_existing=$REQUIRE_EXISTING"
+
+      - name: Ensure .nvmrc
+        run: |
+          if [ ! -f admin-ui/.nvmrc ]; then
+            echo "24" > admin-ui/.nvmrc
+          fi
+          echo "Node version: $(cat admin-ui/.nvmrc)"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: admin-ui/.nvmrc
+
+      - name: Install dependencies
+        working-directory: admin-ui
+        run: |
+          node --version
+          npm cache clean --force
+          npm cache verify
+          rm -rf node_modules jans_config_api_orval package-lock.json
+          npm install
+          npm run api:orval
+
+      - name: Run tests
+        if: inputs.run_tests
+        working-directory: admin-ui
+        run: |
+          if npm run 2>/dev/null | grep -qE "^\s+test:all$"; then
+            npm run test:all
+          else
+            npm test -- --runInBand --watchman=false
+          fi
+
+      - name: Build
+        working-directory: admin-ui
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
+        run: |
+          rm -rf dist/* node_modules/.cache
+          npm run "build:$BUILD_ENV"
+
+      - name: Package assets
+        working-directory: admin-ui
+        env:
+          VERSION_NAME: ${{ steps.meta.outputs.version }}
+        run: |
+          tar -czf "admin-ui-$VERSION_NAME-node_modules.tar.gz" node_modules
+          tar -czf "admin-ui-$VERSION_NAME-built.tar.gz" dist
+          ls -lh admin-ui-*.tar.gz
+
+      - name: Upload built asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-ui-built
+          path: admin-ui/admin-ui-${{ steps.meta.outputs.version }}-built.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Upload node_modules asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-ui-node-modules
+          path: admin-ui/admin-ui-${{ steps.meta.outputs.version }}-node_modules.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: needs.build.outputs.do_publish == 'true'
+    runs-on: ubuntu-latest
+    # serialize runs mutating the same release (delete/create/upload) so concurrent
+    # publishes to e.g. nightly can't clobber each other mid-flight
+    concurrency:
+      group: admin-ui-release-${{ needs.build.outputs.release_tag }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: write   # GitHub Maven publish uses GITHUB_TOKEN; releases use MOWORKFLOWTOKEN
+    env:
+      VERSION_NAME: ${{ needs.build.outputs.version }}
+      REF_NAME: ${{ needs.build.outputs.ref_name }}
+      IS_TAG: ${{ needs.build.outputs.is_tag }}
+      BUILD_SHA: ${{ needs.build.outputs.sha }}
+      RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+      REQUIRE_EXISTING: ${{ needs.build.outputs.require_existing }}
+      RECREATE_RELEASE: ${{ inputs.recreate_release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Download assets
+        uses: actions/download-artifact@v4
+        with:
+          pattern: admin-ui-*
+          merge-multiple: true
+
+      - name: Publish to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+        run: |
+          TAG="$RELEASE_TAG"
+
+          if [ "$RECREATE_RELEASE" = "true" ]; then
+            echo "Recreating release $TAG targeting $REF_NAME"
+            gh release delete "$TAG" --cleanup-tag --yes || echo "$TAG did not exist"
+            gh release create "$TAG" \
+              --generate-notes --prerelease --title "$TAG" --target "$REF_NAME"
+          elif [ "$REQUIRE_EXISTING" = "true" ]; then
+            if ! gh release view "$TAG" >/dev/null 2>&1; then
+              echo "::error::Target release '$TAG' does not exist. Create it first or drop the release_tag input." >&2
+              exit 1
+            fi
+          elif ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "Admin UI $VERSION_NAME" \
+              --notes "Admin UI build assets for $VERSION_NAME (commit $BUILD_SHA)" \
+              --target "$BUILD_SHA" \
+              --prerelease
+          fi
+
+          gh release upload "$TAG" \
+            "admin-ui-$VERSION_NAME-built.tar.gz" \
+            "admin-ui-$VERSION_NAME-node_modules.tar.gz" \
+            --clobber
+          echo "Uploaded assets to release $TAG"
+
+      - name: Setup Java/Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Publish to GitHub Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << 'EOF'
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>x-access-token</username>
+                <password>${env.GITHUB_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+          REPO_URL="https://maven.pkg.github.com/${GITHUB_REPOSITORY}"
+
+          # SNAPSHOT so re-deploys on the same branch version are accepted
+          MAVEN_VERSION="$VERSION_NAME"
+          if [ "$IS_TAG" != "true" ]; then
+            MAVEN_VERSION="$VERSION_NAME-SNAPSHOT"
+          fi
+
+          mvn -B deploy:deploy-file \
+            -DgroupId=org.gluu \
+            -DartifactId=admin-ui \
+            -Dversion="$MAVEN_VERSION" \
+            -Dpackaging=tar.gz \
+            -Dclassifier=built \
+            -Dfile="admin-ui-$VERSION_NAME-built.tar.gz" \
+            -DrepositoryId=github \
+            -Durl="$REPO_URL" \
+            -DgeneratePom=true
+
+          mvn -B deploy:deploy-file \
+            -DgroupId=org.gluu \
+            -DartifactId=admin-ui \
+            -Dversion="$MAVEN_VERSION" \
+            -Dpackaging=tar.gz \
+            -Dclassifier=node_modules \
+            -Dfile="admin-ui-$VERSION_NAME-node_modules.tar.gz" \
+            -DrepositoryId=github \
+            -Durl="$REPO_URL" \
+            -DgeneratePom=false
+
+      - name: Comment assets on PR
+        if: inputs.comment_on_pr
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+        run: |
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$REF_NAME" --state open \
+                 --json number --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then
+            echo "No open PR found for head '$REF_NAME'; skipping comment"
+            exit 0
+          fi
+          BASE="https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG"
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$(cat <<EOF
+          🛠️ Admin UI assets for \`$REF_NAME\` (commit \`$BUILD_SHA\`) published to the **$RELEASE_TAG** release:
+
+          - built: [\`admin-ui-$VERSION_NAME-built.tar.gz\`]($BASE/admin-ui-$VERSION_NAME-built.tar.gz)
+          - node_modules: [\`admin-ui-$VERSION_NAME-node_modules.tar.gz\`]($BASE/admin-ui-$VERSION_NAME-node_modules.tar.gz)
+          EOF
+          )"
+          echo "Commented on PR #$PR"
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.do_deploy == 'true'
+    runs-on: ubuntu-latest
+    # serialize deploys to the same BYO target VM; ephemeral runs (no target_ip)
+    # create their own VM, so key each run uniquely to keep them independent
+    concurrency:
+      group: admin-ui-deploy-${{ inputs.target_ip != '' && inputs.target_ip || github.run_id }}
+      cancel-in-progress: false
+    env:
+      VERSION_NAME: ${{ needs.build.outputs.version }}
+    steps:
+      - name: Checkout easycloud
+        if: inputs.target_ip == ''
+        uses: actions/checkout@v4
+        with:
+          repository: GluuFederation/easycloud
+          ref: ${{ inputs.easycloud_ref }}
+          token: ${{ secrets.MOWORKFLOWTOKEN }}
+          fetch-depth: 0
+
+      - name: Download built asset
+        uses: actions/download-artifact@v4
+        with:
+          name: admin-ui-built
+
+      - name: Install latest GH
+        if: inputs.target_ip == ''
+        continue-on-error: true
+        run: |
+          VERSION=$(curl -s "https://api.github.com/repos/cli/cli/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-)
+          curl -sSL "https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz" -o gh.tar.gz
+          tar xf gh.tar.gz
+          sudo cp "gh_${VERSION}_linux_amd64/bin/gh" /usr/local/bin/
+          rm -rf gh.tar.gz "gh_${VERSION}_linux_amd64"
+          gh version
+
+      - name: Import GPG key
+        id: import_gpg
+        if: inputs.target_ip == ''
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Install terraform
+        if: inputs.target_ip == ''
+        run: |
+          wget -q https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
+          unzip -q terraform_1.5.7_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          rm terraform_1.5.7_linux_amd64.zip
+          terraform --version
+
+      - name: Configure Git
+        if: inputs.target_ip == ''
+        run: |
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+          git config --global --add --bool push.autoSetupRemote true
+          echo "${{ secrets.MOWORKFLOWTOKEN }}" > token.txt
+          gh auth login --with-token < token.txt
+          rm token.txt
+
+      - name: Create ephemeral DO VM
+        id: create_env
+        if: inputs.target_ip == ''
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          DO_TOKEN: ${{ secrets.DO_TOKEN }}
+          BOT_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          TERMINATION_IN: ${{ inputs.termination_in }}
+          FLEX_BRANCH: ${{ inputs.flex_branch }}
+        run: |
+          bash ./automation/create_ephemerals_envs.sh \
+            "unused" \
+            "$DO_TOKEN" \
+            "" \
+            "" \
+            "$BOT_TOKEN" \
+            "do vm" \
+            "" \
+            "$TERMINATION_IN" \
+            "$DO_REGION" \
+            "$DO_VM_IMAGE" \
+            "$DO_VM_SIZE" \
+            "$FLEX_BRANCH" \
+            "$JANS_PERSISTENCE" \
+            ""
+
+          IDENTIFIER=$(find "$GITHUB_ACTOR" -mindepth 1 -maxdepth 1 -type d | head -1)
+          cd "$IDENTIFIER"
+          ENVNAME=$(terraform output unique_name | xargs)
+          IP=$(terraform output ip | xargs)
+          HOST="$ENVNAME.gluu.info"
+          {
+            echo "ip=$IP"
+            echo "host=$HOST"
+            echo "pem=$IDENTIFIER/private.pem"
+          } >> "$GITHUB_OUTPUT"
+          echo "VM created: $HOST ($IP)"
+
+      - name: Report VM access to Zulip
+        id: report_zulip
+        if: inputs.target_ip == '' && steps.create_env.outputs.MSG != ''
+        continue-on-error: true
+        uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5  # v1
+        with:
+          api-key: ${{ secrets.ZULIP_API_KEY }}
+          email: "git-gluu@gluu.org"
+          organization-url: "https://chat.gluu.org"
+          to: "bot_reporter"
+          type: "stream"
+          topic: "admin-ui-deployments"
+          content: ${{ steps.create_env.outputs.MSG }}
+
+      - name: Prepare BYO target
+        id: byo
+        if: inputs.target_ip != ''
+        env:
+          TARGET_IP: ${{ inputs.target_ip }}
+          TARGET_HOST: ${{ inputs.target_host }}
+          TARGET_SSH_PORT: ${{ inputs.target_ssh_port }}
+          SSH_KEY: ${{ secrets.ADMIN_UI_DEPLOY_SSH_KEY }}
+        run: |
+          if [ -z "$SSH_KEY" ]; then
+            echo "::error::target_ip is set but the ADMIN_UI_DEPLOY_SSH_KEY secret is empty." >&2
+            exit 1
+          fi
+          # validate before use: reject anything that isn't a bare IP / hostname
+          # (blocks shell metacharacters, quotes, whitespace, control chars)
+          if ! printf '%s' "$TARGET_IP" | grep -Eq '^[0-9a-fA-F.:]+$'; then
+            echo "::error::target_ip '$TARGET_IP' is not a valid IPv4/IPv6 address." >&2
+            exit 1
+          fi
+          if [ -n "$TARGET_HOST" ] && ! printf '%s' "$TARGET_HOST" | grep -Eq '^[A-Za-z0-9.-]+$'; then
+            echo "::error::target_host '$TARGET_HOST' is not a valid hostname." >&2
+            exit 1
+          fi
+          PORT="${TARGET_SSH_PORT:-22}"
+          if ! printf '%s' "$PORT" | grep -Eq '^[0-9]+$' || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+            echo "::error::target_ssh_port '$PORT' is not a valid port (1-65535)." >&2
+            exit 1
+          fi
+          mkdir -p byo
+          printf '%s\n' "$SSH_KEY" > byo/private.pem
+          chmod 600 byo/private.pem
+          # A key stored with literal "\n" (backslash-n) instead of real newlines is the
+          # most common breakage; repair it, then confirm the key actually parses.
+          if ! ssh-keygen -y -f byo/private.pem >/dev/null 2>&1 && grep -q '\\n' byo/private.pem; then
+            echo "Key contained literal \\n; converting to real newlines"
+            printf '%b' "$SSH_KEY" > byo/private.pem
+            chmod 600 byo/private.pem
+          fi
+          if ! ssh-keygen -y -f byo/private.pem >/dev/null 2>&1; then
+            echo "::error::ADMIN_UI_DEPLOY_SSH_KEY did not parse as a private key (lines=$(wc -l < byo/private.pem)). Store the raw PEM with real newlines — not base64, not backslash-escaped, no passphrase." >&2
+            exit 1
+          fi
+          echo "SSH private key parsed OK"
+          {
+            echo "ip=$TARGET_IP"
+            echo "host=${TARGET_HOST:-$TARGET_IP}"
+            echo "pem=byo/private.pem"
+            echo "port=$PORT"
+          } >> "$GITHUB_OUTPUT"
+          echo "Deploying to existing target $TARGET_IP:$PORT (host ${TARGET_HOST:-$TARGET_IP})"
+
+      - name: Wait for SSH
+        env:
+          PEM: ${{ steps.create_env.outputs.pem || steps.byo.outputs.pem }}
+          IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
+          PORT: ${{ steps.byo.outputs.port || '22' }}
+        run: |
+          chmod 600 "$PEM"
+          for i in $(seq 1 30); do
+            if ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p "$PORT" -i "$PEM" "root@$IP" true 2>/dev/null; then
+              echo "SSH is up"
+              exit 0
+            fi
+            echo "Waiting for SSH ($i/30)..."
+            sleep 20
+          done
+          echo "SSH never came up; last verbose attempt (handshake only, no key material):" >&2
+          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p "$PORT" -i "$PEM" "root@$IP" true 2>&1 | tail -25 >&2 || true
+          exit 1
+
+      - name: Wait for Flex install
+        if: inputs.flex_branch != '' && inputs.target_ip == ''
+        env:
+          PEM: ${{ steps.create_env.outputs.pem }}
+          IP: ${{ steps.create_env.outputs.ip }}
+        run: |
+          SSH="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $PEM root@$IP"
+          for i in $(seq 1 10); do
+            CONFIG_API=$($SSH "systemctl is-active jans-config-api" 2>/dev/null || true)
+            AUTH=$($SSH "systemctl is-active jans-auth" 2>/dev/null || true)
+            echo "jans-config-api=${CONFIG_API:-none} jans-auth=${AUTH:-none} ($i/10)"
+            if [ "$CONFIG_API" = "active" ]; then
+              echo "Flex is up"
+              exit 0
+            fi
+            # legacy monolith (unit missing + jans container running) is not flex-linux-setup
+            if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1 \
+               && $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
+              echo "::error::VM is running the legacy docker monolith, not flex-linux-setup;" >&2
+              echo "::error::check the easycloud jans.sh.tpl or pass a fixed easycloud_ref." >&2
+              exit 1
+            fi
+            sleep 60
+          done
+          echo "::group::VM diagnostics (jans-config-api never became active)"
+          $SSH '
+            echo "### cloud-init status";      cloud-init status --long 2>/dev/null || true
+            echo "### failed units";           systemctl --failed --no-pager || true
+            echo "### jans units";             systemctl status jans-config-api jans-auth --no-pager 2>&1 | tail -40 || true
+            echo "### log files";              ls -la /var/log/flex-setup.log /var/log/flex-certbot.log /var/log/cloud-init-output.log 2>&1 || true
+            echo "### flex-setup.log tail";     tail -100 /var/log/flex-setup.log 2>/dev/null || echo "(absent)"
+            echo "### cloud-init-output tail";  tail -150 /var/log/cloud-init-output.log 2>/dev/null || echo "(absent)"
+          ' || true
+          echo "::endgroup::"
+          echo "::error::Flex did not become ready in time; failing the deploy." >&2
+          exit 1
+
+      - name: Deploy admin-ui to VM
+        env:
+          PEM: ${{ steps.create_env.outputs.pem || steps.byo.outputs.pem }}
+          IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
+          HOST: ${{ steps.create_env.outputs.host || steps.byo.outputs.host }}
+          PORT: ${{ steps.byo.outputs.port || '22' }}
+        run: |
+          # ssh takes -p, scp takes -P
+          COMMON_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10 -i $PEM"
+          SSH_OPTS="$COMMON_OPTS -p $PORT"
+          SCP_OPTS="$COMMON_OPTS -P $PORT"
+
+          tar -xzf "admin-ui-$VERSION_NAME-built.tar.gz"
+
+          # env-config.js pointing at the VM's jans-config-api. Values are emitted as
+          # JSON-encoded (hence JS-safe) string literals via jq so host/IP can never
+          # break out of the string context.
+          CONFIG_API_HOST="https://$HOST/jans-config-api"
+          ADMIN_UI_ENDPOINT="$CONFIG_API_HOST/admin-ui"
+          CONFIG_API_JSON=$(jq -n --arg v "$CONFIG_API_HOST" '$v')
+          ADMIN_UI_JSON=$(jq -n --arg v "$ADMIN_UI_ENDPOINT" '$v')
+          {
+            echo "const CONFIG_API_BASE_URL = ${CONFIG_API_JSON};"
+            echo "const API_BASE_URL = ${ADMIN_UI_JSON};"
+            echo "window.configApiBaseUrl = CONFIG_API_BASE_URL;"
+            echo "window.apiBaseUrl = API_BASE_URL;"
+          } > env-config.js
+
+          # apache serves admin UI from /var/www/html/admin; replace with this build
+          ssh $SSH_OPTS "root@$IP" 'rm -rf /var/www/html/admin && mkdir -p /var/www/html/admin'
+          scp $SCP_OPTS -r dist/* "root@$IP:/var/www/html/admin/"
+          scp $SCP_OPTS env-config.js "root@$IP:/var/www/html/admin/"
+
+      - name: Summary
+        env:
+          HOST: ${{ steps.create_env.outputs.host || steps.byo.outputs.host }}
+          IP: ${{ steps.create_env.outputs.ip || steps.byo.outputs.ip }}
+          TERMINATION_IN: ${{ inputs.termination_in }}
+          BYO: ${{ inputs.target_ip != '' }}
+          ZULIP_OUTCOME: ${{ steps.report_zulip.outcome }}
+        run: |
+          {
+            echo "## Admin UI deployed"
+            echo ""
+            echo "- **URL:** https://$HOST/admin"
+            echo "- **IP:** $IP"
+            echo "- **Version:** $VERSION_NAME"
+            if [ "$BYO" != "true" ]; then
+              echo "- **VM terminates in:** $TERMINATION_IN"
+              echo "- **Admin password:** stored on the VM at /root/flex_admin_password"
+              echo ""
+              if [ "$ZULIP_OUTCOME" = "success" ]; then
+                echo "SSH key + connection details were posted to Zulip #bot_reporter (topic admin-ui-deployments)."
+              else
+                echo "Zulip report was not confirmed (outcome: ${ZULIP_OUTCOME:-skipped}) — retrieve the SSH key from the easycloud env PR raised by this run, or the 'Report VM access to Zulip' step log."
+              fi
+            else
+              echo ""
+              echo "Deployed to the caller-supplied target VM (ADMIN_UI_DEPLOY_SSH_KEY)."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

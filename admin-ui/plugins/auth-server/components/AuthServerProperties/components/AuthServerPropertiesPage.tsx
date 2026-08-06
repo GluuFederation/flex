@@ -129,6 +129,7 @@ const AuthServerPropertiesPage: React.FC = () => {
   const baselineConfigurationRef = useRef<AppConfiguration | null>(null)
   const setFieldValueRef = useRef<FormikProps<AppConfiguration>['setFieldValue'] | null>(null)
   const resetFormRef = useRef<FormikProps<AppConfiguration>['resetForm'] | null>(null)
+  const validateFormRef = useRef<FormikProps<AppConfiguration>['validateForm'] | null>(null)
   const previousConfigurationRef = useRef<AppConfiguration | null>(null)
   const validationSchema = useMemo(() => createAppConfigurationSchema(t), [t])
   const handleAcrUpdateSuccess = useCallback(() => {
@@ -173,13 +174,14 @@ const AuthServerPropertiesPage: React.FC = () => {
     enableReinitialize: true,
     validateOnChange: true,
     validateOnBlur: true,
-    validateOnMount: false,
+    validateOnMount: true,
     onSubmit: () => {},
   })
   useEffect(() => {
     setFieldValueRef.current = formik.setFieldValue
     resetFormRef.current = formik.resetForm
-  }, [formik.setFieldValue, formik.resetForm])
+    validateFormRef.current = formik.validateForm
+  }, [formik.setFieldValue, formik.resetForm, formik.validateForm])
   useEffect(() => {
     const configChanged =
       previousConfigurationRef.current === null ||
@@ -197,6 +199,7 @@ const AuthServerPropertiesPage: React.FC = () => {
           touched: {},
           errors: {},
         })
+        void validateFormRef.current?.(serverConfiguration)
         setResetKey((prev) => prev + 1)
       }
     }
@@ -691,7 +694,6 @@ const AuthServerPropertiesPage: React.FC = () => {
                           lSize={lSize}
                           handler={patchHandler}
                           errors={formik.errors}
-                          touched={formik.touched}
                           formResetKey={resetKey}
                         />
                       </div>

@@ -52,6 +52,16 @@ const mockNativeConfig = {
 }
 
 jest.mock('JansConfigApi', () => ({
+  RedisConfigurationRedisProviderType: {
+    STANDALONE: 'STANDALONE',
+    CLUSTER: 'CLUSTER',
+    SHARDED: 'SHARDED',
+    SENTINEL: 'SENTINEL',
+  },
+  MemcachedConfigurationConnectionFactoryType: {
+    DEFAULT: 'DEFAULT',
+    BINARY: 'BINARY',
+  },
   useGetConfigCache: jest.fn(() => ({
     data: { cacheProviderType: 'IN_MEMORY' },
     isLoading: false,
@@ -93,6 +103,10 @@ jest.mock('JansConfigApi', () => ({
     isPending: false,
   })),
   getGetConfigCacheQueryKey: jest.fn(() => ['configCache']),
+  getGetConfigCacheInMemoryQueryKey: jest.fn(() => ['configCacheInMemory']),
+  getGetConfigCacheMemcachedQueryKey: jest.fn(() => ['configCacheMemcached']),
+  getGetConfigCacheNativePersistenceQueryKey: jest.fn(() => ['configCacheNativePersistence']),
+  getGetConfigCacheRedisQueryKey: jest.fn(() => ['configCacheRedis']),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isFetching: false, isFetched: true })),
   CacheConfigurationCacheProviderType: {
     IN_MEMORY: 'IN_MEMORY',

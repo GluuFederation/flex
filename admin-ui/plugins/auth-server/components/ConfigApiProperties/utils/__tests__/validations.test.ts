@@ -1,13 +1,18 @@
-import { configApiPropertiesSchema } from 'Plugins/auth-server/components/ConfigApiProperties/utils/validations'
+import { getConfigApiPropertiesSchema } from 'Plugins/auth-server/components/ConfigApiProperties/utils/validations'
+
+import type { TFunction } from 'i18next'
+
+const t = ((key: string) => key) as TFunction
+const schema = getConfigApiPropertiesSchema(t)
 
 describe('configApiPropertiesSchema', () => {
   it('accepts an empty object (all fields nullable/optional)', async () => {
-    await expect(configApiPropertiesSchema.isValid({})).resolves.toBe(true)
+    await expect(schema.isValid({})).resolves.toBe(true)
   })
 
   it('accepts a populated valid config', async () => {
     await expect(
-      configApiPropertiesSchema.isValid({
+      schema.isValid({
         serviceName: 'jans-config-api',
         configOauthEnabled: true,
         apiProtectionType: 'OAuth2',
@@ -21,38 +26,38 @@ describe('configApiPropertiesSchema', () => {
   })
 
   it('rejects an unsupported api protection type', async () => {
-    await expect(
-      configApiPropertiesSchema.validate({ apiProtectionType: 'Basic' }),
-    ).rejects.toThrow('Invalid API protection type. Supported type is OAuth2')
+    await expect(schema.validate({ apiProtectionType: 'Basic' })).rejects.toThrow(
+      'validation_messages.api_protection_type_invalid',
+    )
   })
 
   it('rejects an empty approved issuer list', async () => {
-    await expect(configApiPropertiesSchema.validate({ apiApprovedIssuer: [] })).rejects.toThrow(
-      'At least one approved issuer is required',
+    await expect(schema.validate({ apiApprovedIssuer: [] })).rejects.toThrow(
+      'validation_messages.min_one_approved_issuer',
     )
   })
 
   it('rejects a malformed issuer url', async () => {
-    await expect(
-      configApiPropertiesSchema.validate({ authIssuerUrl: 'not-a-url' }),
-    ).rejects.toThrow('Invalid URL format')
+    await expect(schema.validate({ authIssuerUrl: 'not-a-url' })).rejects.toThrow(
+      'validation_messages.invalid_url_format',
+    )
   })
 
   it('rejects an unknown logging level', async () => {
-    await expect(configApiPropertiesSchema.validate({ loggingLevel: 'VERBOSE' })).rejects.toThrow(
-      'Invalid logging level',
+    await expect(schema.validate({ loggingLevel: 'VERBOSE' })).rejects.toThrow(
+      'messages.logging_level_invalid',
     )
   })
 
   it('rejects a negative maxCount', async () => {
-    await expect(configApiPropertiesSchema.validate({ maxCount: -1 })).rejects.toThrow(
-      'Must be non-negative',
+    await expect(schema.validate({ maxCount: -1 })).rejects.toThrow(
+      'validation_messages.must_be_non_negative',
     )
   })
 
   it('rejects a maxCount over the ceiling', async () => {
-    await expect(configApiPropertiesSchema.validate({ maxCount: 10001 })).rejects.toThrow(
-      'Must not exceed 10000',
+    await expect(schema.validate({ maxCount: 10001 })).rejects.toThrow(
+      'validation_messages.must_not_exceed',
     )
   })
 
@@ -60,14 +65,14 @@ describe('configApiPropertiesSchema', () => {
     // The number field carries a transform that maps '' -> null; feed the raw
     // form string through a loosely-typed input to exercise it.
     const input: Record<string, string> = { maxCount: '' }
-    await expect(configApiPropertiesSchema.isValid(input)).resolves.toBe(true)
+    await expect(schema.isValid(input)).resolves.toBe(true)
   })
 
   it('rejects a cors preflight max age above 24 hours', async () => {
     await expect(
-      configApiPropertiesSchema.validate({
+      schema.validate({
         corsConfigurationFilters: [{ corsPreflightMaxAge: 90000 }],
       }),
-    ).rejects.toThrow('Must not exceed 24 hours (86400 seconds)')
+    ).rejects.toThrow('validation_messages.cors_preflight_max_age_max')
   })
 })

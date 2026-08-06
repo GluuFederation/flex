@@ -1,3 +1,4 @@
+import { JansAttributeStatus } from 'JansConfigApi'
 import { DEFAULT_STALE_TIME, DEFAULT_GC_TIME } from '@/utils/queryUtils'
 
 export const API_ATTRIBUTE = 'api-attribute'
@@ -19,3 +20,9 @@ export const ATTRIBUTE_CACHE_CONFIG = {
   GC_TIME: DEFAULT_GC_TIME,
   SINGLE_ATTRIBUTE_STALE_TIME: 2 * 60 * 1000,
 }
+
+export const getAttributeStatusOptions = (): Array<{ value: string; labelKey: string }> =>
+  Object.values(JansAttributeStatus).map((status) => ({
+    value: status,
+    labelKey: `options.${status}`,
+  }))

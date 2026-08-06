@@ -1,66 +1,66 @@
 import {
-  CACHE_PROVIDER_OPTIONS,
-  REDIS_PROVIDER_OPTIONS,
-  CONNECTION_FACTORY_OPTIONS,
+  getCacheProviderOptions,
+  getRedisProviderOptions,
+  getConnectionFactoryOptions,
 } from 'Plugins/services/helper/constants'
 
-describe('CACHE_PROVIDER_OPTIONS', () => {
+describe('getCacheProviderOptions', () => {
   it('has exactly 4 options', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toHaveLength(4)
+    expect(getCacheProviderOptions()).toHaveLength(4)
   })
 
   it('contains IN_MEMORY option', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({ value: 'IN_MEMORY', label: 'In Memory' })
+    expect(getCacheProviderOptions()).toContainEqual({ value: 'IN_MEMORY', label: 'In Memory' })
   })
 
   it('contains MEMCACHED option', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({ value: 'MEMCACHED', label: 'Memcached' })
+    expect(getCacheProviderOptions()).toContainEqual({ value: 'MEMCACHED', label: 'Memcached' })
   })
 
   it('contains REDIS option', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({ value: 'REDIS', label: 'Redis' })
+    expect(getCacheProviderOptions()).toContainEqual({ value: 'REDIS', label: 'Redis' })
   })
 
   it('contains NATIVE_PERSISTENCE option', () => {
-    expect(CACHE_PROVIDER_OPTIONS).toContainEqual({
+    expect(getCacheProviderOptions()).toContainEqual({
       value: 'NATIVE_PERSISTENCE',
       label: 'Native Persistence',
     })
   })
 })
 
-describe('REDIS_PROVIDER_OPTIONS', () => {
+describe('getRedisProviderOptions', () => {
   it('has exactly 4 options', () => {
-    expect(REDIS_PROVIDER_OPTIONS).toHaveLength(4)
+    expect(getRedisProviderOptions()).toHaveLength(4)
   })
 
   it('contains STANDALONE option', () => {
-    expect(REDIS_PROVIDER_OPTIONS).toContainEqual({ value: 'STANDALONE', label: 'Standalone' })
+    expect(getRedisProviderOptions()).toContainEqual({ value: 'STANDALONE', label: 'Standalone' })
   })
 
   it('contains CLUSTER option', () => {
-    expect(REDIS_PROVIDER_OPTIONS).toContainEqual({ value: 'CLUSTER', label: 'Cluster' })
+    expect(getRedisProviderOptions()).toContainEqual({ value: 'CLUSTER', label: 'Cluster' })
   })
 
   it('contains SHARDED option', () => {
-    expect(REDIS_PROVIDER_OPTIONS).toContainEqual({ value: 'SHARDED', label: 'Sharded' })
+    expect(getRedisProviderOptions()).toContainEqual({ value: 'SHARDED', label: 'Sharded' })
   })
 
   it('contains SENTINEL option', () => {
-    expect(REDIS_PROVIDER_OPTIONS).toContainEqual({ value: 'SENTINEL', label: 'Sentinel' })
+    expect(getRedisProviderOptions()).toContainEqual({ value: 'SENTINEL', label: 'Sentinel' })
   })
 })
 
-describe('CONNECTION_FACTORY_OPTIONS', () => {
+describe('getConnectionFactoryOptions', () => {
   it('has exactly 2 options', () => {
-    expect(CONNECTION_FACTORY_OPTIONS).toHaveLength(2)
+    expect(getConnectionFactoryOptions()).toHaveLength(2)
   })
 
   it('contains DEFAULT option', () => {
-    expect(CONNECTION_FACTORY_OPTIONS).toContainEqual({ value: 'DEFAULT', label: 'Default' })
+    expect(getConnectionFactoryOptions()).toContainEqual({ value: 'DEFAULT', label: 'Default' })
   })
 
   it('contains BINARY option', () => {
-    expect(CONNECTION_FACTORY_OPTIONS).toContainEqual({ value: 'BINARY', label: 'Binary' })
+    expect(getConnectionFactoryOptions()).toContainEqual({ value: 'BINARY', label: 'Binary' })
   })
 })

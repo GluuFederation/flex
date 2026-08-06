@@ -64,7 +64,15 @@ WORKDIR /
 ENV ADMIN_UI_VERSION=main
 ENV GLUU_BUILD_DATE='2025-11-06 18:51'
 
-RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+# Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
+# v* tag builds attach to that tag's release; everything else (main, nightly, branches)
+# lands on the rolling `nightly` release as admin-ui-nightly-*.tar.gz. Each version maps
+# to exactly one release, so a missing asset fails the build (no fallback).
+RUN case "${ADMIN_UI_VERSION}" in \
+        v*) RELEASE_TAG="${ADMIN_UI_VERSION}"; ASSET_VERSION="${ADMIN_UI_VERSION}" ;; \
+        *) RELEASE_TAG="nightly"; ASSET_VERSION="nightly" ;; \
+    esac \
+    && wget -q https://github.com/GluuFederation/flex/releases/download/${RELEASE_TAG}/admin-ui-${ASSET_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
     && mkdir -p /opt/flex/admin-ui \
     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
     && rm -rf /tmp/admin-ui.tar.gz

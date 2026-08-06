@@ -78,7 +78,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
     [item, acrs?.defaultAcr],
   )
 
-  const validationSchema = useMemo(() => getAuthNValidationSchema(item), [item])
+  const validationSchema = useMemo(() => getAuthNValidationSchema(item, t), [item, t])
 
   const formik: FormikProps<AcrsFormValues> = useFormik<AcrsFormValues>({
     initialValues,

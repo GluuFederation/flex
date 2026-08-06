@@ -24,7 +24,7 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { loggingValidationSchema } from '../validations'
+import { getLoggingValidationSchema } from '../validations'
 import type { PendingValues } from '../types'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -94,6 +94,8 @@ const LoggingPage = (): React.ReactElement => {
     () => getLoggingInitialValues(logging),
     [logging],
   )
+
+  const loggingValidationSchema = useMemo(() => getLoggingValidationSchema(t), [t])
 
   const levelOptions = useMemo(
     () =>
@@ -186,6 +188,7 @@ const LoggingPage = (): React.ReactElement => {
               initialValues={initialValues}
               validationSchema={loggingValidationSchema}
               enableReinitialize
+              validateOnMount
               onSubmit={handleSubmit}
             >
               {(formik) => (
@@ -204,12 +207,8 @@ const LoggingPage = (): React.ReactElement => {
                           doc_category={JSON_CONFIG}
                           doc_entry="loggingLevel"
                           required
-                          showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
-                          errorMessage={
-                            formik.errors.loggingLevel
-                              ? t(formik.errors.loggingLevel as string)
-                              : undefined
-                          }
+                          showError={!!formik.errors.loggingLevel}
+                          errorMessage={formik.errors.loggingLevel as string | undefined}
                           disabled={isMobile}
                         />
                       </div>
@@ -225,14 +224,8 @@ const LoggingPage = (): React.ReactElement => {
                           doc_category={JSON_CONFIG}
                           doc_entry="loggingLayout"
                           required
-                          showError={
-                            !!(formik.errors.loggingLayout && formik.touched.loggingLayout)
-                          }
-                          errorMessage={
-                            formik.errors.loggingLayout
-                              ? t(formik.errors.loggingLayout as string)
-                              : undefined
-                          }
+                          showError={!!formik.errors.loggingLayout}
+                          errorMessage={formik.errors.loggingLayout as string | undefined}
                           disabled={isMobile}
                         />
                       </div>
