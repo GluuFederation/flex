@@ -10,6 +10,10 @@ import { DATE_FORMATS } from '@/utils/dayjsUtils'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { FILTER_SHEET, MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
+import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
+import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
 import { useStyles } from './GluuFilterPopover.style'
 import type { GluuFilterPopoverProps, FilterField } from './types'
 
@@ -85,6 +89,7 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
   const isDark = state.theme === THEME_DARK
   const { classes } = useStyles({ themeColors, isDark, width, columns })
   const popoverRef = useRef<HTMLDivElement | null>(null)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const applyButtonColors = useMemo(
     () => ({
@@ -94,8 +99,24 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
     [themeColors],
   )
 
+  const sheetCancelColors = useMemo(
+    () => ({
+      textColor: themeColors.formFooter?.cancel?.textColor ?? themeColors.fontColor,
+      borderColor: themeColors.formFooter?.cancel?.borderColor ?? themeColors.borderColor,
+    }),
+    [themeColors],
+  )
+
+  const sheetApplyColors = useMemo(
+    () => ({
+      backgroundColor: themeColors.badges?.filledBadgeBg ?? themeColors.fontColor,
+      textColor: themeColors.badges?.filledBadgeText ?? themeColors.background,
+    }),
+    [themeColors],
+  )
+
   useEffect(() => {
-    if (!open) return
+    if (!open || isMobile) return
 
     const handleOutsideClick = (event: MouseEvent) => {
       if (!popoverRef.current) return
@@ -120,7 +141,66 @@ const GluuFilterPopover: React.FC<GluuFilterPopoverProps> = ({
       document.removeEventListener('mousedown', handleOutsideClick)
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [open, onCancel, onApply, applyDisabled])
+  }, [open, isMobile, onCancel, onApply, applyDisabled])
+
+  if (isMobile) {
+    return (
+      <MobileNavSheet
+        openKey={open ? SHEET_KEYS.CUSTOM : null}
+        onClose={onCancel}
+        title={t('titles.filters')}
+      >
+        <div className={classes.sheetContent}>
+          {fields.map((field) => (
+            <div key={field.key} className={classes.sheetFieldGroup}>
+              {field.label && (
+                <GluuText variant="span" disableThemeColor className={classes.sheetFieldLabel}>
+                  {field.label}
+                </GluuText>
+              )}
+              <FilterFieldRenderer field={field} classes={classes} />
+            </div>
+          ))}
+
+          {children}
+
+          <div className={classes.sheetButtonRow}>
+            <GluuButton
+              type="button"
+              size="md"
+              block
+              outlined
+              onClick={onCancel}
+              textColor={sheetCancelColors.textColor}
+              borderColor={sheetCancelColors.borderColor}
+              borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+              minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+              fontWeight={700}
+            >
+              {cancelLabel ?? t('actions.cancel')}
+            </GluuButton>
+            <GluuButton
+              type="button"
+              size="md"
+              block
+              onClick={onApply}
+              disabled={applyDisabled}
+              backgroundColor={sheetApplyColors.backgroundColor}
+              textColor={sheetApplyColors.textColor}
+              borderColor={sheetApplyColors.backgroundColor}
+              borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+              minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+              fontWeight={700}
+              useOpacityOnHover
+              hoverOpacity={OPACITY.OVERLAY}
+            >
+              {applyLabel ?? t('actions.apply')}
+            </GluuButton>
+          </div>
+        </div>
+      </MobileNavSheet>
+    )
+  }
 
   if (!open) return null
 

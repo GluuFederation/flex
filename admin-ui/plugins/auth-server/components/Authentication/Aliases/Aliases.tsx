@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Close, DeleteOutlined, Edit } from '@/components/icons'
 import { ModalLayer } from '@/components/ModalLayer'
-import { OPACITY } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
 import { useFormik } from 'formik'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -50,6 +51,7 @@ const Aliases = ({
     canWrite: canWriteAuth,
     canDelete: canDeleteAuth,
   } = usePermission(AUTH_RESOURCE_ID)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { state: themeState } = useTheme()
   const themeColors = useMemo(
@@ -221,6 +223,7 @@ const Aliases = ({
 
   const actions = useMemo<ActionDef<AcrMappingTableRow>[]>(() => {
     const list: ActionDef<AcrMappingTableRow>[] = []
+    if (isMobile) return list
     if (canWriteAuth) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
@@ -239,6 +242,7 @@ const Aliases = ({
     }
     return list
   }, [
+    isMobile,
     canWriteAuth,
     canDeleteAuth,
     t,

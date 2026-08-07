@@ -1,6 +1,13 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, MAPPING_SPACING, OPACITY, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  ICON_SIZE,
+  MAPPING_SPACING,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import customColors from '@/customColors'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
@@ -31,8 +38,23 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
   }
 
   return {
-    page: { fontFamily, paddingTop: SPACING.CARD_CONTENT_GAP },
-    searchCard: createSearchCardStyle({ cardBg, isDark }),
+    page: {
+      fontFamily,
+      paddingTop: SPACING.CARD_CONTENT_GAP,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingTop: 0,
+      },
+    },
+    searchCard: {
+      ...createSearchCardStyle({ cardBg, isDark }),
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        border: 'none',
+        boxShadow: 'none',
+        backgroundColor: 'transparent',
+        padding: 0,
+        marginBottom: 0,
+      },
+    },
     searchCardContent: {
       position: 'relative',
       zIndex: 2,
@@ -53,6 +75,9 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       'boxSizing': 'border-box' as const,
       '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: TABLE_LINE_HEIGHT },
       '& table th': { verticalAlign: 'middle', lineHeight: TABLE_LINE_HEIGHT },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        marginTop: SPACING.CARD_BUTTON_GAP,
+      },
     },
     addIcon: { fontSize: ICON_SIZE.MD },
     infoIcon: { fontSize: ICON_SIZE.SM },

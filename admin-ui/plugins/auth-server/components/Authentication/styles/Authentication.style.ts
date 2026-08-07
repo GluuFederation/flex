@@ -1,6 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, ICON_SIZE } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  ICON_SIZE,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -13,7 +19,6 @@ const WIDTH_FULL = '100%'
 const BOX_SIZING_BORDER = 'border-box'
 const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
-const MOBILE_BREAKPOINT = 768
 
 export const useStyles = makeStyles<AuthenticationStylesParams>()((
   _theme: Theme,
@@ -24,6 +29,7 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
 
   return {
     addIcon: { fontSize: ICON_SIZE.MD },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,
@@ -45,7 +51,7 @@ export const useStyles = makeStyles<AuthenticationStylesParams>()((
       flexDirection: FLEX_DIRECTION_COLUMN as 'column',
       gap: 0,
       overflow: 'visible',
-      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: SPACING.PAGE,
       },
     },
