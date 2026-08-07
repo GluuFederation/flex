@@ -86,6 +86,8 @@ const AgamaFlows: React.FC = () => {
   const [limit, setLimit] = useState<number>(10)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [searchPattern, setSearchPattern] = useState<string>('')
+  const searchTerm = useMemo(() => searchPattern.trim().toLowerCase(), [searchPattern])
+  const isSearching = searchTerm.length > 0
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showConfigModal, setShowConfigModal] = useState<boolean>(false)
   const [manageConfig, setManageConfig] = useState<boolean>(false)
@@ -136,8 +138,8 @@ const AgamaFlows: React.FC = () => {
     error: projectsError,
   } = useGetAgamaPrj(
     {
-      count: searchPattern ? SEARCH_FETCH_COUNT : limit,
-      start: searchPattern ? 0 : pageNumber * limit,
+      count: isSearching ? SEARCH_FETCH_COUNT : limit,
+      start: isSearching ? 0 : pageNumber * limit,
     },
     {
       query: {
@@ -728,24 +730,21 @@ const AgamaFlows: React.FC = () => {
   }, [])
 
   const filteredData = useMemo(() => {
-    const term = searchPattern.trim().toLowerCase()
-    if (!term) return listData
+    if (!isSearching) return listData
     return listData.filter((row) =>
       [row.details?.projectMetadata?.projectName, row.type]
         .filter(Boolean)
-        .some((field) => String(field).toLowerCase().includes(term)),
+        .some((field) => String(field).toLowerCase().includes(searchTerm)),
     )
-  }, [listData, searchPattern])
+  }, [listData, isSearching, searchTerm])
 
   const visibleData = useMemo(() => {
-    if (!searchPattern.trim()) return listData
+    if (!isSearching) return listData
     const start = pageNumber * limit
     return filteredData.slice(start, start + limit)
-  }, [searchPattern, listData, filteredData, pageNumber, limit])
+  }, [isSearching, listData, filteredData, pageNumber, limit])
 
-  const totalItems = searchPattern.trim()
-    ? filteredData.length
-    : projectsResponse?.totalEntriesCount || 0
+  const totalItems = isSearching ? filteredData.length : projectsResponse?.totalEntriesCount || 0
 
   const columns: ColumnDef<AgamaTableRow>[] = useMemo(
     () => [

@@ -173,6 +173,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
     <Form
       onSubmit={(e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
+        if (isMobile) return
         formik.handleSubmit()
       }}
     >
@@ -204,7 +205,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               lsize={12}
               rsize={12}
               type="number"
-              disabled={isSimplePassword}
+              disabled={isSimplePassword || isMobile}
               showError={!!(formik.errors.level && formik.touched.level)}
               errorMessage={formik.errors.level}
               required={true}
@@ -220,6 +221,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               lsize={12}
               rsize={12}
               values={DEFAULT_AUTHN_OPTIONS}
+              disabled={isMobile}
               showError={!!(formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod)}
               errorMessage={formik.errors.defaultAuthNMethod}
             />
@@ -234,7 +236,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 formik={formik}
                 lsize={12}
                 rsize={12}
-                disabled={isSimplePassword}
+                disabled={isSimplePassword || isMobile}
                 showError={!!(formik.errors.samlACR && formik.touched.samlACR)}
                 errorMessage={formik.errors.samlACR}
               />
@@ -250,7 +252,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 formik={formik}
                 lsize={12}
                 rsize={12}
-                disabled={isSimplePassword}
+                disabled={isSimplePassword || isMobile}
                 showError={!!(formik.errors.description && formik.touched.description)}
                 errorMessage={formik.errors.description}
               />
@@ -310,6 +312,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                   showError={!!(formik.errors.bindDN && formik.touched.bindDN)}
                   errorMessage={formik.errors.bindDN}
                 />
@@ -324,6 +327,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   type="number"
+                  disabled={isMobile}
                   showError={!!(formik.errors.maxConnections && formik.touched.maxConnections)}
                   errorMessage={formik.errors.maxConnections}
                 />
@@ -337,6 +341,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -348,6 +353,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -360,6 +366,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   type="password"
+                  disabled={isMobile}
                 />
               </div>
 
@@ -371,6 +378,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                       <GluuAutocomplete
                         hideLabel
                         allowCustom
+                        disabled={isMobile}
                         name="servers"
                         label={t('fields.remote_ldap_server_post')}
                         value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
@@ -398,6 +406,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                       <GluuAutocomplete
                         hideLabel
                         allowCustom
+                        disabled={isMobile}
                         name="baseDNs"
                         label={t('fields.base_dns')}
                         value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
@@ -427,6 +436,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   value={formik.values.useSSL}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -438,6 +448,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   value={formik.values.enabled}
+                  disabled={isMobile}
                 />
               </div>
             </>
@@ -480,6 +491,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   }
                   placeholder={t('placeholders.enter_property_key')}
                   className={classes.propsInput}
+                  disabled={isMobile}
                 />
                 <Input
                   value={prop.value || ''}
@@ -488,6 +500,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   }
                   placeholder={t('placeholders.enter_property_value')}
                   className={classes.propsInput}
+                  disabled={isMobile}
                 />
                 {!isMobile && (
                   <GluuButton

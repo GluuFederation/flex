@@ -139,7 +139,7 @@ const DefaultAcr = (): React.ReactElement => {
     initialValues,
     enableReinitialize: true,
     onSubmit: () => {
-      if (canWriteAuth) {
+      if (canWriteAuth && !isMobile) {
         setModal(true)
       }
     },
@@ -200,6 +200,7 @@ const DefaultAcr = (): React.ReactElement => {
                 value={formik.values.defaultAcr}
                 formik={formik}
                 values={authScripts}
+                disabled={isMobile}
                 doc_category="json_properties"
                 doc_entry="defaultAcr"
               />
