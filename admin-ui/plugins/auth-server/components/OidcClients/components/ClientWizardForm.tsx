@@ -366,7 +366,7 @@ const ClientWizardForm = ({
       currentStep,
       availableSteps,
       clientSnapshot,
-      viewOnly,
+      isViewOnly,
       oidcConfiguration,
       modifiedFields,
       setModifiedFields,

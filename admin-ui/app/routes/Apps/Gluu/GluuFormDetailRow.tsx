@@ -82,7 +82,7 @@ const GluuFormDetailRow = ({
         place="top"
       />
       <Label for={value?.toString()} style={valueLabelStyle} sm={layout === 'row' ? rsize : 12}>
-        {valueNode ? (
+        {valueNode != null ? (
           valueNode
         ) : !isBadge ? (
           value
