@@ -1,20 +1,33 @@
 {{- $fullName := include "gateway-api.fullname" . -}}
 {{- $namespace := .Release.Namespace -}}
-{{- $gatewayNamespace := .Values.routes.gatewayNamespace | default $namespace -}}
+{{- $defaultGatewayName := .Values.gateway.name -}}
+{{- $defaultGatewayNamespace := .Values.routes.gatewayNamespace | default $namespace -}}
 {{- $httpSection := .Values.routes.httpSectionName | default "http" -}}
 {{- $httpsSection := .Values.routes.httpsSectionName | default "https" -}}
+{{- $adminSvc := index .Values.global "admin-ui" "adminUiServiceName" -}}
 {{- $authSvc := index .Values.global "auth-server" "authServerServiceName" -}}
 {{- $configSvc := index .Values.global "config-api" "configApiServerServiceName" -}}
 {{- $fido2Svc := .Values.global.fido2.fido2ServiceName -}}
 {{- $scimSvc := .Values.global.scim.scimServiceName -}}
 {{- $casaSvc := .Values.global.casa.casaServiceName -}}
-{{- $adminSvc := index .Values.global "admin-ui" "adminUiServiceName" -}}
+{{- $adminUiGatewayName := index .Values.global "admin-ui" "gatewayName" | default $defaultGatewayName -}}
+{{- $adminUiGatewayNamespace := index .Values.global "admin-ui" "gatewayNamespace" | default $defaultGatewayNamespace -}}
+{{- $authGatewayName := index .Values.global "auth-server" "gatewayName" | default $defaultGatewayName -}}
+{{- $authGatewayNamespace := index .Values.global "auth-server" "gatewayNamespace" | default $defaultGatewayNamespace -}}
+{{- $casaGatewayName := .Values.global.casa.gatewayName | default $defaultGatewayName -}}
+{{- $casaGatewayNamespace := .Values.global.casa.gatewayNamespace | default $defaultGatewayNamespace -}}
+{{- $configApiGatewayName := index .Values.global "config-api" "gatewayName" | default $defaultGatewayName -}}
+{{- $configApiGatewayNamespace := index .Values.global "config-api" "gatewayNamespace" | default $defaultGatewayNamespace -}}
+{{- $fido2GatewayName := .Values.global.fido2.gatewayName | default $defaultGatewayName -}}
+{{- $fido2GatewayNamespace := .Values.global.fido2.gatewayNamespace | default $defaultGatewayNamespace -}}
+{{- $scimGatewayName := .Values.global.scim.gatewayName | default $defaultGatewayName -}}
+{{- $scimGatewayNamespace := .Values.global.scim.gatewayNamespace | default $defaultGatewayNamespace -}}
 
 {{- /* ======================================================== */}}
 {{- /* 1. ADMIN UI ROUTES                                       */}}
 {{- /* ======================================================== */}}
 
-{{- if index .Values.global "admin-ui" "ingress" "adminUiEnabled" }}
+{{- if .Values.routes.adminUiEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -32,8 +45,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $adminUiGatewayName }}
+    namespace: {{ $adminUiGatewayNamespace }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
@@ -69,12 +82,12 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $authGatewayName }}
+    namespace: {{ $authGatewayNamespace }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
-  {{- if index .Values.global "auth-server" "ingress" "openidConfigEnabled" }}
+  {{- if .Values.routes.openidConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -89,7 +102,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if index .Values.global "auth-server" "ingress" "deviceCodeEnabled" }}
+  {{- if .Values.routes.deviceCodeEnabled }}
   - matches:
     - path:
         type: Exact
@@ -104,7 +117,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if index .Values.global "auth-server" "ingress" "firebaseMessagingEnabled" }}
+  {{- if .Values.routes.firebaseMessagingEnabled }}
   - matches:
     - path:
         type: Exact
@@ -119,7 +132,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if index .Values.global "auth-server" "ingress" "uma2ConfigEnabled" }}
+  {{- if .Values.routes.uma2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -134,7 +147,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if index .Values.global "auth-server" "ingress" "webfingerEnabled" }}
+  {{- if .Values.routes.webfingerEnabled }}
   - matches:
     - path:
         type: Exact
@@ -149,7 +162,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if and (index .Values.global "auth-server" "lockEnabled") (index .Values.global "auth-server" "ingress" "lockConfigEnabled") }}
+  {{- if and (index .Values.global "auth-server" "lockEnabled") (.Values.routes.lockConfigEnabled) }}
   - matches:
     - path:
         type: Exact
@@ -164,7 +177,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if index .Values.global "auth-server" "ingress" "authzenConfigEnabled" }}
+  {{- if .Values.routes.authzenConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -181,7 +194,7 @@ spec:
   {{- end }}
 
 {{- /* Auth Server: Secure (HTTPS) */}}
-{{- if index .Values.global "auth-server" "ingress" "authServerEnabled" }}
+{{- if .Values.routes.authServerEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -199,8 +212,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $authGatewayName }}
+    namespace: {{ $authGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -231,8 +244,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $authGatewayName }}
+    namespace: {{ $authGatewayNamespace }}
     sectionName: {{ $httpSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -249,7 +262,7 @@ spec:
 {{- end }}
 
 {{- /* Auth Server: Protected HTTPS */}}
-{{- if or (index .Values.global "auth-server" "ingress" "authServerProtectedToken") (index .Values.global "auth-server" "ingress" "authServerProtectedRegister") }}
+{{- if or (.Values.routes.authServerProtectedToken) (.Values.routes.authServerProtectedRegister) }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -267,14 +280,14 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $authGatewayName }}
+    namespace: {{ $authGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
   {{- /* Auth Server protected token (/jans-auth/restv1/token) */}}
-  {{- if index .Values.global "auth-server" "ingress" "authServerProtectedToken" }}
+  {{- if .Values.routes.authServerProtectedToken }}
   - matches:
     - path:
         type: PathPrefix
@@ -298,7 +311,7 @@ spec:
   {{- end }}
 
   {{- /* Auth Server protected register (/jans-auth/restv1/register) */}}
-  {{- if index .Values.global "auth-server" "ingress" "authServerProtectedRegister" }}
+  {{- if .Values.routes.authServerProtectedRegister }}
   - matches:
     - path:
         type: PathPrefix
@@ -327,7 +340,7 @@ spec:
 {{- /* 3. CASA ROUTES                                           */}}
 {{- /* ======================================================== */}}
 
-{{- if .Values.global.casa.ingress.casaEnabled }}
+{{- if .Values.routes.casaEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -345,8 +358,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $casaGatewayName }}
+    namespace: {{ $casaGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -376,8 +389,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $casaGatewayName }}
+    namespace: {{ $casaGatewayNamespace }}
     sectionName: {{ $httpSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -398,7 +411,7 @@ spec:
 {{- /* 4. CONFIG API ROUTES                                     */}}
 {{- /* ======================================================== */}}
 
-{{- if index .Values.global "config-api" "ingress" "configApiEnabled" }}
+{{- if .Values.routes.configApiEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -416,8 +429,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $configApiGatewayName }}
+    namespace: {{ $configApiGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -447,8 +460,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $configApiGatewayName }}
+    namespace: {{ $configApiGatewayNamespace }}
     sectionName: {{ $httpSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -470,7 +483,7 @@ spec:
 {{- /* ======================================================== */}}
 
 {{- /* Fido2: Public */}}
-{{- if or .Values.global.fido2.ingress.fido2ConfigEnabled .Values.global.fido2.ingress.fido2WebauthnEnabled }}
+{{- if or .Values.routes.fido2ConfigEnabled .Values.routes.fido2WebauthnEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -488,12 +501,12 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $fido2GatewayName }}
+    namespace: {{ $fido2GatewayNamespace }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
-  {{- if .Values.global.fido2.ingress.fido2ConfigEnabled }}
+  {{- if .Values.routes.fido2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -508,7 +521,7 @@ spec:
     - name: {{ $fido2Svc }}
       port: 8080
   {{- end }}
-  {{- if .Values.global.fido2.ingress.fido2WebauthnEnabled }}
+  {{- if .Values.routes.fido2WebauthnEnabled }}
   - matches:
     - path:
         type: Exact
@@ -526,7 +539,7 @@ spec:
 {{- end }}
 
 {{- /* Fido2: Secure & Redirect */}}
-{{- if .Values.global.fido2.ingress.fido2Enabled }}
+{{- if .Values.routes.fido2Enabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -544,8 +557,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $fido2GatewayName }}
+    namespace: {{ $fido2GatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -575,8 +588,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $fido2GatewayName }}
+    namespace: {{ $fido2GatewayNamespace }}
     sectionName: {{ $httpSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -598,7 +611,7 @@ spec:
 {{- /* ======================================================== */}}
 
 {{- /* SCIM: Public */}}
-{{- if .Values.global.scim.ingress.scimConfigEnabled }}
+{{- if .Values.routes.scimConfigEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -616,8 +629,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $scimGatewayName }}
+    namespace: {{ $scimGatewayNamespace }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
@@ -637,7 +650,7 @@ spec:
 {{- end }}
 
 {{- /* SCIM: Secure & Redirect */}}
-{{- if .Values.global.scim.ingress.scimEnabled }}
+{{- if .Values.routes.scimEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -655,8 +668,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $scimGatewayName }}
+    namespace: {{ $scimGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -686,8 +699,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $scimGatewayName }}
+    namespace: {{ $scimGatewayNamespace }}
     sectionName: {{ $httpSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
@@ -703,7 +716,7 @@ spec:
         statusCode: 301
 {{- end }}
 
-{{- if and (index .Values.global "auth-server" "lockEnabled") (index .Values.global "auth-server" "ingress" "lockAuditEnabled") }}
+{{- if and (index .Values.global "auth-server" "lockEnabled") (.Values.routes.lockAuditEnabled) }}
 ---
 {{- /* ======================================================== */}}
 {{- /* 7. gRPC APPS                                             */}}
@@ -729,8 +742,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - name: {{ .Values.gateway.name }}
-    namespace: {{ $gatewayNamespace }}
+  - name: {{ $authGatewayName }}
+    namespace: {{ $authGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.global.fqdn | quote }}
