@@ -63,8 +63,8 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic',
-                        choices=['basic', 'agama_io.jans.casa.authn.main'])
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='agama_org.gluu.agama.pw.main',
+                        choices=['basic', 'agama_io.jans.casa.authn.main', 'agama_org.gluu.agama.pw.main'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     parser.add_argument('--no-restart-services',
