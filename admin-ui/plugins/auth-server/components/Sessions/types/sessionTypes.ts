@@ -28,7 +28,11 @@ export type SessionDetailPageProps = {
 export type SessionState = (typeof SESSION_STATES)[number]
 
 export type SearchFilterType =
-  'client_id' | 'auth_user' | 'expirationDate' | 'authenticationTime' | null
+  | 'client_id'
+  | 'auth_user'
+  | 'expirationDate'
+  | 'authenticationTime'
+  | null
 
 export type MutationCallbacks = {
   onSuccess?: () => void

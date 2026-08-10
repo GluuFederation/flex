@@ -1,5 +1,12 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
+
+let mockIsMobile = false
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: () => mockIsMobile,
+}))
+
 import {
   createAuthenticationTestStore,
   createAuthenticationTestWrapper,
@@ -32,6 +39,7 @@ describe('DefaultAcr', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockIsMobile = false
     jest.mocked(useCedarling).mockReturnValue(makeMockCedarling())
     const store = createAuthenticationTestStore()
     Wrapper = createAuthenticationTestWrapper(store)
@@ -54,5 +62,37 @@ describe('DefaultAcr', () => {
       .mockReturnValue(makeMockCedarling({ hasCedarWritePermission: jest.fn(() => false) }))
     render(<DefaultAcr />, { wrapper: Wrapper })
     expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
+  })
+
+  describe('mobile is read-only', () => {
+    beforeEach(() => {
+      mockIsMobile = true
+    })
+
+    it('renders the acr selector as non-editable', () => {
+      const { container } = render(<DefaultAcr />, { wrapper: Wrapper })
+      const select = container.querySelector('select')
+      expect(select).not.toBeNull()
+      // GluuSelectRow marks a read-only select with aria-disabled rather than
+      // the disabled attribute, so accept either form.
+      const nonEditable =
+        (select as HTMLSelectElement).disabled || select?.getAttribute('aria-disabled') === 'true'
+      expect(nonEditable).toBe(true)
+    })
+
+    it('shows a Back-only footer', () => {
+      render(<DefaultAcr />, { wrapper: Wrapper })
+      expect(screen.getByText(/Back/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
+    })
+
+    it('does not open the commit dialog when the form is submitted', () => {
+      const { container } = render(<DefaultAcr />, { wrapper: Wrapper })
+      const form = container.querySelector('form')
+      expect(form).not.toBeNull()
+      fireEvent.submit(form as HTMLFormElement)
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
   })
 })

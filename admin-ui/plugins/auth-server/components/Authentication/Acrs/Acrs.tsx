@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useState, type ReactElement } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { Check, Close, Edit } from '@/components/icons'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { usePermission } from '@/cedarling/hooks/usePermission'
@@ -23,6 +25,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   const { canRead: canReadAuthN, canWrite: canWriteAuthN } = usePermission(AUTH_RESOURCE_ID)
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { state: themeState } = useTheme()
   const themeColors = useMemo(
@@ -141,7 +144,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
 
   const actions = useMemo<ActionDef<AuthNItem>[]>(() => {
-    if (!canWriteAuthN) {
+    if (isMobile || !canWriteAuthN) {
       return []
     }
     return [
@@ -152,7 +155,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
         onClick: handleGoToAuthNEditPage,
       },
     ]
-  }, [canWriteAuthN, t, handleGoToAuthNEditPage, classes.editIcon])
+  }, [isMobile, canWriteAuthN, t, handleGoToAuthNEditPage, classes.editIcon])
 
   const detailLabelStyle = useMemo(
     () => ({ color: themeColors.fontColor }),

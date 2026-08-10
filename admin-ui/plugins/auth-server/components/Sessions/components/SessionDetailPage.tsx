@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { GluuBadge } from '@/components/GluuBadge'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuDetailGrid } from '@/components/GluuDetailGrid'
+import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { useStyles } from './styles/SessionListPage.style'
 import { formatDate } from '@/utils/dayjsUtils'
-import { AUTHENTICATED_SESSION_STATE, type SessionDetailPageProps } from '../types'
+import { AUTHENTICATED_SESSION_STATE, DOC_CATEGORY, type SessionDetailPageProps } from '../types'
 
 const JANS_ID_ATTRS = ['inum', 'jansid', 'jansuniqueid']
 
@@ -41,8 +40,6 @@ const safeStringify = (
 }
 
 const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
-  const { t } = useTranslation()
-
   const { state: themeState } = useTheme()
   const { themeColors, isDarkTheme } = useMemo(
     () => ({
@@ -51,7 +48,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
     }),
     [themeState.theme],
   )
-  const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+  const { badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
 
   const stateBadge = useMemo(
     () =>
@@ -71,79 +68,66 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
     [row.sessionAttributes],
   )
 
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
+
+  const fields: GluuDetailGridField[] = useMemo(
+    () => [
+      { label: 'fields.expiration', value: expirationText, doc_entry: 'expirationDate' },
+      { label: 'fields.jans_id', value: jansId, doc_entry: 'jansId' },
+      {
+        label: 'fields.jans_state',
+        value: row.state ?? '—',
+        doc_entry: 'jansState',
+        isBadge: true,
+        badgeBackgroundColor: stateBadge.backgroundColor,
+        badgeTextColor: stateBadge.textColor,
+      },
+      {
+        label: 'fields.permission_granted_map',
+        value: permissionGrantedMapText,
+        doc_entry: 'permissionGrantedMap',
+      },
+      {
+        label: 'fields.jans_sess_state',
+        value: row.sessionState ?? '—',
+        doc_entry: 'jansSessState',
+        fullWidth: true,
+      },
+      {
+        label: 'fields.jans_user_dn',
+        value: row.userDn ?? '—',
+        doc_entry: 'jansUsrDN',
+        fullWidth: true,
+      },
+      {
+        label: 'fields.jans_sess_attr',
+        value: sessionAttributesText,
+        doc_entry: 'jansSessAttr',
+        fullWidth: true,
+      },
+    ],
+    [
+      expirationText,
+      jansId,
+      row.state,
+      row.sessionState,
+      row.userDn,
+      stateBadge,
+      permissionGrantedMapText,
+      sessionAttributesText,
+    ],
+  )
+
   return (
-    <div className={classes.expandedGrid}>
-      <div className={classes.expandedField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.expiration')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {expirationText}
-        </GluuText>
-      </div>
-
-      <div className={classes.expandedField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.jans_id')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {jansId}
-        </GluuText>
-      </div>
-
-      <div className={classes.expandedField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.jans_state')}:
-        </GluuText>
-        <div>
-          <GluuBadge
-            size="sm"
-            backgroundColor={stateBadge.backgroundColor}
-            textColor={stateBadge.textColor}
-            borderColor={stateBadge.borderColor}
-            borderRadius={6}
-          >
-            {row.state ?? '—'}
-          </GluuBadge>
-        </div>
-      </div>
-
-      <div className={classes.expandedField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.permission_granted_map')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {permissionGrantedMapText}
-        </GluuText>
-      </div>
-
-      <div className={classes.expandedHalfField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.jans_sess_state')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {row.sessionState ?? '—'}
-        </GluuText>
-      </div>
-
-      <div className={classes.expandedHalfField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.jans_user_dn')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {row.userDn ?? '—'}
-        </GluuText>
-      </div>
-
-      <div className={classes.expandedFullField}>
-        <GluuText variant="span" disableThemeColor className={classes.expandedLabel}>
-          {t('fields.jans_sess_attr')}:
-        </GluuText>
-        <GluuText variant="span" disableThemeColor className={classes.expandedValue}>
-          {sessionAttributesText}
-        </GluuText>
-      </div>
-    </div>
+    <GluuDetailGrid
+      fields={fields}
+      labelStyle={detailLabelStyle}
+      defaultDocCategory={DOC_CATEGORY}
+      layout="column"
+    />
   )
 }
 

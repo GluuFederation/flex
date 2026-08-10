@@ -1,9 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { TINY_MAX_MEDIA_QUERY } from '@/constants'
+import { BUTTON_STYLES } from 'Routes/Apps/Gluu/styles/GluuThemeFormFooter.style'
 import { fontWeights } from '@/styles/fonts'
 
 const MODAL_BODY_MAX_HEIGHT = '60vh'
+/** Footer buttons only need their generous 28px side padding trimmed to fit a phone. */
+const TINY_BUTTON_PADDING_X = 16
+const TINY_BUTTON_FONT_SIZE = 13
 
 export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   _,
@@ -35,6 +40,15 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       gap: 12,
       paddingTop: 16,
       paddingBottom: 8,
+      [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
+        'gap': 8,
+        '& button': {
+          fontSize: `${TINY_BUTTON_FONT_SIZE}px !important`,
+          padding: `${BUTTON_STYLES.paddingY}px ${TINY_BUTTON_PADDING_X}px !important`,
+          whiteSpace: 'nowrap' as const,
+          minWidth: 0,
+        },
+      },
     },
     buttonGroup: {
       display: 'flex',

@@ -2,8 +2,11 @@ import { type ReactElement, useMemo, useState, useCallback, useRef, useEffect } 
 import { Add } from '@/components/icons'
 import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { GluuPageContent } from '@/components'
 import { GluuButton } from '@/components/GluuButton'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -32,6 +35,7 @@ const Authentication = (): ReactElement => {
     [themeState.theme],
   )
   const { classes } = useStyles({ isDark, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const [activeTab, setActiveTab] = useState(defaultTab)
   const [canEditAliases, setCanEditAliases] = useState(false)
@@ -62,7 +66,7 @@ const Authentication = (): ReactElement => {
 
   const addMappingButton = useMemo(
     () =>
-      activeTab === ALIASES_TAB_INDEX && canEditAliases ? (
+      !isMobile && activeTab === ALIASES_TAB_INDEX && canEditAliases ? (
         <GluuButton
           type="button"
           size="md"
@@ -78,7 +82,7 @@ const Authentication = (): ReactElement => {
           {t('actions.add_mapping')}
         </GluuButton>
       ) : null,
-    [activeTab, canEditAliases, themeColors, handleAddMapping, t, classes],
+    [isMobile, activeTab, canEditAliases, themeColors, handleAddMapping, t, classes],
   )
 
   const tabToShow = useCallback(
@@ -108,6 +112,9 @@ const Authentication = (): ReactElement => {
 
   return (
     <GluuPageContent>
+      <GluuText variant="h1" className={classes.mobilePageTitle}>
+        {t('menus.authentication')}
+      </GluuText>
       <div className={classes.formCard}>
         <div className={classes.content}>
           <GluuTabs

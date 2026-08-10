@@ -1,5 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  INPUT,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -12,7 +19,6 @@ const FIELD_WIDTH = '50%'
 const BOX_SIZING_BORDER = 'border-box'
 const DISPLAY_FLEX = 'flex'
 const FLEX_DIRECTION_COLUMN = 'column'
-const MOBILE_BREAKPOINT = 768
 
 export const useStyles = makeStyles<DefaultAcrStylesParams>()((_theme, { themeColors }) => {
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
@@ -29,7 +35,7 @@ export const useStyles = makeStyles<DefaultAcrStylesParams>()((_theme, { themeCo
       'width': FIELD_WIDTH,
       'minWidth': 0,
       'boxSizing': BOX_SIZING_BORDER as 'border-box',
-      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
         width: WIDTH_FULL,
       },
       '& .form-group': {
