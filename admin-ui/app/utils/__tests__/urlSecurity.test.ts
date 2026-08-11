@@ -54,6 +54,18 @@ describe('urlSecurity', () => {
     expect(sent).toBe('https://admin.example.com/post-logout')
   })
 
+  it('omits relative post logout redirect uris', () => {
+    expect(buildSafeLogoutUrl('https://auth.example.com/logout', '/post-logout', 'state-123')).toBe(
+      'https://auth.example.com/logout?state=state-123',
+    )
+  })
+
+  it('omits protocol-relative post logout redirect uris', () => {
+    expect(
+      buildSafeLogoutUrl('https://auth.example.com/logout', '//evil.example.com/x', 'state-123'),
+    ).toBe('https://auth.example.com/logout?state=state-123')
+  })
+
   it('omits unsafe post logout redirect urls', () => {
     const logoutUrl = buildSafeLogoutUrl(
       'https://auth.example.com/logout',

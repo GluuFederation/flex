@@ -1,4 +1,5 @@
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:'])
+const ABSOLUTE_URL_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i
 
 export const buildSafeNavigationUrl = (
   rawUrl: string | null | undefined,
@@ -38,7 +39,11 @@ export const buildSafeLogoutUrl = (
   logoutUrl.searchParams.set('state', state)
 
   const configuredPostLogoutRedirectUri = postLogoutRedirectUri?.trim()
-  if (configuredPostLogoutRedirectUri && buildSafeNavigationUrl(configuredPostLogoutRedirectUri)) {
+  if (
+    configuredPostLogoutRedirectUri &&
+    ABSOLUTE_URL_PATTERN.test(configuredPostLogoutRedirectUri) &&
+    buildSafeNavigationUrl(configuredPostLogoutRedirectUri)
+  ) {
     logoutUrl.searchParams.set('post_logout_redirect_uri', configuredPostLogoutRedirectUri)
   }
 
