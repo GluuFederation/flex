@@ -367,6 +367,8 @@ class flex_installer(JettyInstaller):
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
+        self.agama_pw_deployment_ldif_fn = os.path.join(self.templates_dir, 'agama_pw_deployment.ldif')
+        self.agama_pw_fn = os.path.join(Config.dist_jans_dir, 'agama-pw.gama')
         self.source_files = []
 
     def resolve_admin_ui_bin_url(self):
@@ -403,6 +405,7 @@ class flex_installer(JettyInstaller):
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.resolve_admin_ui_bin_url(), os.path.join(Config.dist_jans_dir, os.path.basename(self.resolve_admin_ui_bin_url()))),
                 (self.policy_store_cjar_url, self.policy_store_cjar_path),
+                ('https://github.com/GluuFederation/agama-pw/releases/download/v1.0.9/agama-pw.gama', self.agama_pw_fn)
             ]
 
             if argsp.update_admin_ui:
@@ -659,6 +662,8 @@ class flex_installer(JettyInstaller):
 
         self.tls13_settings()
 
+        self.deploy_agama_pw()
+
 
     def install_config_api_plugin(self):
 
@@ -848,6 +853,21 @@ class flex_installer(JettyInstaller):
         jansAuthInstaller.writeFile(keystore_pw_fn, json.dumps(keystore_pw_data))
         jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
         jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
+
+
+    def deploy_agama_pw(self):
+        print("Deploying Agama-PW Project")
+        Config.templateRenderingDict['agama_pw_deployment_id'] = str(uuid.uuid4())
+        Config.templateRenderingDict['agama_pw_deployment_start_date'] = self.get_ldap_time()
+        Config.templateRenderingDict['agama_pw_assets_base64'] = config_api_installer.generate_base64_file(self.agama_pw_fn, 1)
+        config_api_installer.renderTemplateInOut(
+            self.agama_pw_deployment_ldif_fn,
+            self.templates_dir,
+            self.source_dir
+        )
+
+        agama_pw_deployment_ldif_rendered_fn = os.path.join(self.source_dir, os.path.basename(self.agama_pw_deployment_ldif_fn))
+        self.dbUtils.import_ldif([agama_pw_deployment_ldif_rendered_fn])
 
 
 def prompt_for_installation():
