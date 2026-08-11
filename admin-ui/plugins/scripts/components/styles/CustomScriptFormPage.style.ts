@@ -333,12 +333,18 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
           outline: `${OUTLINE_NONE} !important`,
           boxShadow: `${OUTLINE_NONE} !important`,
         },
-      '& input:disabled, & select:disabled, & .custom-select:disabled': {
+      '& input:disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled': {
         backgroundColor: `${formInputBg} !important`,
         border: `1px solid ${inputBorderColor} !important`,
         color: `${themeColors.fontColor} !important`,
-        opacity: OPACITY.DISABLED,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
         cursor: 'not-allowed',
+      },
+      '& select:disabled option': {
+        color: `${themeColors.fontColor} !important`,
+        WebkitTextFillColor: `${themeColors.fontColor} !important`,
+        opacity: `${OPACITY.FULL} !important`,
       },
       '& input::placeholder': {
         color: `${themeColors.textMuted} !important`,

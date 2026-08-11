@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, memo } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Add, DeleteOutlined, Edit, VisibilityOutlined } from '@/components/icons'
 import { useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
@@ -18,7 +19,7 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import SetTitle from 'Utils/SetTitle'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import { logger } from '@/utils/logger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
@@ -28,9 +29,12 @@ import ClientDetailPage from './ClientDetailPage'
 import ClientShowScopes from './ClientShowScopes'
 import { findAndFilterScopeClients } from './ClientScopeUtils'
 import { useStyles } from './styles/ClientListPage.style'
-import { BORDER_RADIUS } from '@/constants'
 import {
   CLIENT_ACTION_IDS,
+  CLIENT_SORT_COLUMNS,
+  CLIENT_SORT_COLUMN_LABELS,
+  CLIENT_SORT_ORDER,
+  DEFAULT_CLIENT_SORT_BY,
   FETCH_LIMITS,
   CLIENT_VIEW_QUERY_PARAM,
   CLIENT_VIEW_QUERY_VALUE,
@@ -40,6 +44,7 @@ import {
   SCOPE_INUM_PARAM,
 } from '../constants'
 import type { ClientRow, ScopeItem } from '../types'
+import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import {
   COLUMN_WIDTHS,
   type ColumnDef,
@@ -84,6 +89,7 @@ const ClientListPage: React.FC = () => {
     return { themeColors: getThemeColor(selected), isDarkTheme: selected === THEME_DARK }
   }, [state?.theme])
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -91,6 +97,7 @@ const ClientListPage: React.FC = () => {
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState('')
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_CLIENT_SORT_BY)
   const [itemToDelete, setItemToDelete] = useState<ClientRow | null>(null)
   const [modal, setModal] = useState(false)
   const [scopesModal, setScopesModal] = useState<{ data: string[]; show: boolean }>({
@@ -109,8 +116,9 @@ const ClientListPage: React.FC = () => {
       limit,
       pattern: pattern || undefined,
       startIndex: pageNumber * limit,
+      ...(sortBy && { sortBy, sortOrder: CLIENT_SORT_ORDER }),
     }),
-    [limit, pattern, pageNumber],
+    [limit, pattern, pageNumber, sortBy],
   )
 
   const {
@@ -255,8 +263,43 @@ const ClientListPage: React.FC = () => {
     [setPageNumber],
   )
 
+  const handleSortByChange = useCallback(
+    (value: string) => {
+      setSortBy(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
+
+  const sortOptions = useMemo(
+    () => [
+      { value: '', label: t('options.none') },
+      ...CLIENT_SORT_COLUMNS.map((value) => ({
+        value,
+        label: t(CLIENT_SORT_COLUMN_LABELS[value] || value),
+      })),
+    ],
+    [t],
+  )
+
+  const filters: FilterDef[] = useMemo(
+    () => [
+      {
+        key: 'sortBy',
+        label: `${t('fields.sort_by')}:`,
+        value: sortBy,
+        options: sortOptions,
+        onChange: handleSortByChange,
+        width: 180,
+        defaultValue: DEFAULT_CLIENT_SORT_BY,
+      },
+    ],
+    [t, sortBy, sortOptions, handleSortByChange],
+  )
+
   const handleRefresh = useCallback(() => {
     setPattern('')
+    setSortBy(DEFAULT_CLIENT_SORT_BY)
     setPageNumber(0)
     refetch()
   }, [setPageNumber, refetch])
@@ -386,7 +429,7 @@ const ClientListPage: React.FC = () => {
   const actions: ActionDef<ClientRow>[] = useMemo(() => {
     const list: ActionDef<ClientRow>[] = []
 
-    if (canWrite) {
+    if (canWrite && !isMobile) {
       list.push({
         icon: <Edit className={classes.editIcon} />,
         tooltip: t('messages.edit_client'),
@@ -402,7 +445,7 @@ const ClientListPage: React.FC = () => {
         onClick: (row) => handleGoToClientEditPage(row, true),
       })
     }
-    if (canDelete) {
+    if (canDelete && !isMobile) {
       list.push({
         icon: <DeleteOutlined className={classes.deleteIcon} />,
         tooltip: t('messages.delete_client'),
@@ -411,7 +454,16 @@ const ClientListPage: React.FC = () => {
       })
     }
     return list
-  }, [canWrite, canRead, canDelete, t, classes, handleGoToClientEditPage, handleDeleteClick])
+  }, [
+    isMobile,
+    canWrite,
+    canRead,
+    canDelete,
+    t,
+    classes,
+    handleGoToClientEditPage,
+    handleDeleteClick,
+  ])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -460,6 +512,9 @@ const ClientListPage: React.FC = () => {
         />
 
         <GluuViewWrapper canShow={canRead}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.oidc_clients')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
@@ -469,9 +524,10 @@ const ClientListPage: React.FC = () => {
                 searchOnType
                 onSearch={handleSearch}
                 onSearchSubmit={handleSearch}
-                onRefresh={canRead ? handleRefresh : undefined}
+                filters={filters}
+                onRefresh={!isMobile && canRead ? handleRefresh : undefined}
                 refreshLoading={isLoading}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
                 disabled={isLoading}
               />
             </div>

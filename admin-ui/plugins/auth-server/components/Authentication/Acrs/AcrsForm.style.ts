@@ -1,5 +1,12 @@
 import { makeStyles } from 'tss-react/mui'
-import { SPACING, BORDER_RADIUS, CEDARLING_CONFIG_SPACING, INPUT, OPACITY } from '@/constants'
+import {
+  SPACING,
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  INPUT,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+} from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
@@ -12,7 +19,6 @@ type AcrsFormStylesParams = {
 }
 
 const SELECT_ARROW_SPACE = 44
-const MOBILE_BREAKPOINT = 768
 
 const PROPS_HEADER_MB = 16
 
@@ -49,7 +55,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       boxSizing: 'border-box' as const,
       display: 'flex',
       flexDirection: 'column' as const,
-      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: SPACING.PAGE,
       },
     },
@@ -59,7 +65,7 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
       columnGap: SPACING.SECTION_GAP,
       rowGap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
-      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
         gridTemplateColumns: '1fr',
       },
     },

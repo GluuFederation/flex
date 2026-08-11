@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { createPortal } from 'react-dom'
 import { useAppDispatch } from '@/redux/hooks'
 import { useTranslation } from 'react-i18next'
@@ -52,7 +54,12 @@ import type {
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
-import { DATE_TIME_FORMAT_OPTIONS, ACCEPTED_PROJECT_TYPES, ACCEPTED_SHA_TYPES } from './constants'
+import {
+  DATE_TIME_FORMAT_OPTIONS,
+  ACCEPTED_PROJECT_TYPES,
+  ACCEPTED_SHA_TYPES,
+  SEARCH_FETCH_COUNT,
+} from './constants'
 import { AUTH_RESOURCE_ID } from '../constants'
 
 const agamaButtonStyle = {
@@ -70,6 +77,7 @@ const AgamaFlows: React.FC = () => {
     canWrite: canWriteAuth,
     canDelete: canDeleteAuth,
   } = usePermission(AUTH_RESOURCE_ID)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
@@ -77,6 +85,9 @@ const AgamaFlows: React.FC = () => {
 
   const [limit, setLimit] = useState<number>(10)
   const [pageNumber, setPageNumber] = useState<number>(0)
+  const [searchPattern, setSearchPattern] = useState<string>('')
+  const searchTerm = useMemo(() => searchPattern.trim().toLowerCase(), [searchPattern])
+  const isSearching = searchTerm.length > 0
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showConfigModal, setShowConfigModal] = useState<boolean>(false)
   const [manageConfig, setManageConfig] = useState<boolean>(false)
@@ -127,8 +138,8 @@ const AgamaFlows: React.FC = () => {
     error: projectsError,
   } = useGetAgamaPrj(
     {
-      count: limit,
-      start: pageNumber * limit,
+      count: isSearching ? SEARCH_FETCH_COUNT : limit,
+      start: isSearching ? 0 : pageNumber * limit,
     },
     {
       query: {
@@ -713,7 +724,27 @@ const AgamaFlows: React.FC = () => {
     ],
   )
 
-  const totalItems = projectsResponse?.totalEntriesCount || 0
+  const handleSearch = useCallback((value: string) => {
+    setSearchPattern(value)
+    setPageNumber(0)
+  }, [])
+
+  const filteredData = useMemo(() => {
+    if (!isSearching) return listData
+    return listData.filter((row) =>
+      [row.details?.projectMetadata?.projectName, row.type]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(searchTerm)),
+    )
+  }, [listData, isSearching, searchTerm])
+
+  const visibleData = useMemo(() => {
+    if (!isSearching) return listData
+    const start = pageNumber * limit
+    return filteredData.slice(start, start + limit)
+  }, [isSearching, listData, filteredData, pageNumber, limit])
+
+  const totalItems = isSearching ? filteredData.length : projectsResponse?.totalEntriesCount || 0
 
   const columns: ColumnDef<AgamaTableRow>[] = useMemo(
     () => [
@@ -761,6 +792,7 @@ const AgamaFlows: React.FC = () => {
         },
       },
     ]
+    if (isMobile) return list
     if (canWriteAuth) {
       list.push({
         icon: <SettingsIcon className={classes.settingsIcon} />,
@@ -782,7 +814,7 @@ const AgamaFlows: React.FC = () => {
       })
     }
     return list
-  }, [canWriteAuth, canDeleteAuth, t, classes, handleDeleteClick])
+  }, [isMobile, canWriteAuth, canDeleteAuth, t, classes, handleDeleteClick])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -933,8 +965,12 @@ const AgamaFlows: React.FC = () => {
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <GluuSearchToolbar
-                onRefresh={canReadAuth ? refetchProjects : undefined}
-                primaryAction={primaryAction}
+                searchValue={searchPattern}
+                searchOnType
+                onSearch={handleSearch}
+                onSearchSubmit={handleSearch}
+                onRefresh={!isMobile && canReadAuth ? refetchProjects : undefined}
+                primaryAction={isMobile ? undefined : primaryAction}
                 disabled={loading}
               />
             </div>
@@ -943,7 +979,7 @@ const AgamaFlows: React.FC = () => {
           <div className={classes.tableCard}>
             <GluuTable<AgamaTableRow>
               columns={columns}
-              data={listData}
+              data={visibleData}
               actions={actions}
               getRowKey={getRowKey}
               pagination={pagination}

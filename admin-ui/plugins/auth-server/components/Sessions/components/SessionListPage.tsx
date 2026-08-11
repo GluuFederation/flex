@@ -26,7 +26,8 @@ import {
   REGEX_CSV_SPECIAL_CHARS,
   REGEX_DOUBLE_QUOTE,
 } from '@/utils/regex'
-import { BORDER_RADIUS } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetSessions, useSearchSession } from 'JansConfigApi'
 import type { SessionId, SearchSessionParams } from 'JansConfigApi'
@@ -84,6 +85,7 @@ const SessionListPage: React.FC = () => {
     [themeState.theme],
   )
   const { classes, badgeStyles } = useStyles({ isDark: isDarkTheme, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
 
@@ -96,6 +98,8 @@ const SessionListPage: React.FC = () => {
   const [filterTextValue, setFilterTextValue] = useState('')
   const [filterDateValue, setFilterDateValue] = useState<Dayjs | null>(null)
   const [showFilter, setShowFilter] = useState(false)
+
+  const [mobileSearch, setMobileSearch] = useState('')
 
   const [deleteModal, setDeleteModal] = useState(false)
   const [revokeModal, setRevokeModal] = useState(false)
@@ -134,12 +138,22 @@ const SessionListPage: React.FC = () => {
     [sessions],
   )
 
-  const totalItems = authenticatedSessions.length
+  const visibleSessions = useMemo(() => {
+    const term = mobileSearch.trim().toLowerCase()
+    if (!isMobile || !term) return authenticatedSessions
+    return authenticatedSessions.filter(({ sessionAttributes }) =>
+      [sessionAttributes?.auth_user, sessionAttributes?.remote_ip, sessionAttributes?.client_id]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(term)),
+    )
+  }, [authenticatedSessions, isMobile, mobileSearch])
+
+  const totalItems = visibleSessions.length
 
   const paginatedSessions = useMemo(() => {
     const start = pageNumber * limit
-    return authenticatedSessions.slice(start, start + limit)
-  }, [authenticatedSessions, pageNumber, limit])
+    return visibleSessions.slice(start, start + limit)
+  }, [visibleSessions, pageNumber, limit])
 
   const loading = sessionsLoading || searchLoading || isDeleting || isRevoking
 
@@ -221,6 +235,14 @@ const SessionListPage: React.FC = () => {
     setRevokeUsername(value || null)
   }, [])
 
+  const handleMobileSearch = useCallback(
+    (value: string) => {
+      setMobileSearch(value)
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
+
   const handleFilterToggle = useCallback(() => {
     setShowFilter((prev) => !prev)
   }, [])
@@ -253,7 +275,8 @@ const SessionListPage: React.FC = () => {
       setSearchParams(undefined)
     }
     setPageNumber(0)
-  }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber])
+    if (isMobile) setShowFilter(false)
+  }, [filterSearchField, filterTextValue, filterDateValue, setPageNumber, isMobile])
 
   const handleFilterCancel = useCallback(() => {
     setShowFilter(false)
@@ -276,7 +299,7 @@ const SessionListPage: React.FC = () => {
     () => [
       {
         key: 'searchFilter',
-        label: '',
+        label: isMobile ? `${t('fields.search_filter')}:` : '',
         value: filterSearchField,
         type: 'select' as const,
         options: FILTER_FIELD_OPTIONS.map((option) => ({
@@ -288,7 +311,7 @@ const SessionListPage: React.FC = () => {
       isDateFilter
         ? {
             key: 'value',
-            label: '',
+            label: isMobile ? `${t('fields.value')}:` : '',
             value: '',
             type: 'date' as const,
             dateValue: filterDateValue,
@@ -297,7 +320,7 @@ const SessionListPage: React.FC = () => {
           }
         : {
             key: 'value',
-            label: '',
+            label: isMobile ? `${t('fields.value')}:` : '',
             value: filterTextValue,
             type: 'text' as const,
             placeholder: t('placeholders.value'),
@@ -306,6 +329,7 @@ const SessionListPage: React.FC = () => {
     ],
     [
       t,
+      isMobile,
       filterSearchField,
       filterTextValue,
       filterDateValue,
@@ -455,7 +479,7 @@ const SessionListPage: React.FC = () => {
   )
 
   const actions = useMemo(() => {
-    if (!canDelete) return []
+    if (isMobile || !canDelete) return []
     return [
       {
         icon: <DeleteOutlined className={classes.deleteIcon} />,
@@ -464,7 +488,7 @@ const SessionListPage: React.FC = () => {
         onClick: handleDeleteClick,
       },
     ]
-  }, [canDelete, t, handleDeleteClick, classes.deleteIcon])
+  }, [isMobile, canDelete, t, handleDeleteClick, classes.deleteIcon])
 
   const pagination: PaginationConfig = useMemo(
     () => ({
@@ -521,21 +545,34 @@ const SessionListPage: React.FC = () => {
     <GluuLoader blocking={loading}>
       <div className={classes.page}>
         <GluuViewWrapper canShow>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('menus.sessions')}
+          </GluuText>
           <div className={classes.searchCard}>
             <div className={classes.searchCardContent}>
               <div className={classes.toolbarRow}>
                 <div className={classes.searchToolbarWrapper}>
-                  <GluuSearchToolbar
-                    searchLabel={canDelete ? t('fields.selectUserRevoke') : undefined}
-                    searchValue={revokeUsername ?? ''}
-                    selectOptions={usernameSelectOptions}
-                    onSelectChange={handleUsernameSelectChange}
-                    disabled={loading}
-                  />
+                  {isMobile ? (
+                    <GluuSearchToolbar
+                      searchValue={mobileSearch}
+                      searchOnType
+                      onSearch={handleMobileSearch}
+                      onSearchSubmit={handleMobileSearch}
+                      disabled={loading}
+                    />
+                  ) : (
+                    <GluuSearchToolbar
+                      searchLabel={canDelete ? t('fields.selectUserRevoke') : undefined}
+                      searchValue={revokeUsername ?? ''}
+                      selectOptions={usernameSelectOptions}
+                      onSelectChange={handleUsernameSelectChange}
+                      disabled={loading}
+                    />
+                  )}
                 </div>
 
                 <div className={classes.actionsGroup}>
-                  {canDelete && (
+                  {!isMobile && canDelete && (
                     <GluuButton
                       type="button"
                       size="md"
@@ -552,36 +589,52 @@ const SessionListPage: React.FC = () => {
                     </GluuButton>
                   )}
 
-                  <GluuButton
-                    type="button"
-                    size="md"
-                    outlined
-                    className={classes.toolbarButton}
-                    onClick={handleFilterToggle}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    textColor={filterButtonColors.textColor}
-                    borderColor={filterButtonColors.borderColor}
-                    minHeight={52}
-                    useOpacityOnHover
-                  >
-                    <FilterListIcon className={classes.toolbarButtonIcon} />
-                    {t('titles.filters')}
-                  </GluuButton>
+                  {isMobile ? (
+                    <button
+                      type="button"
+                      aria-label={t('titles.filters')}
+                      aria-haspopup="dialog"
+                      aria-expanded={showFilter}
+                      className={classes.mobileFilterTrigger}
+                      onClick={handleFilterToggle}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <FilterListIcon />
+                    </button>
+                  ) : (
+                    <GluuButton
+                      type="button"
+                      size="md"
+                      outlined
+                      className={classes.toolbarButton}
+                      onClick={handleFilterToggle}
+                      onMouseDown={(e) => e.stopPropagation()}
+                      textColor={filterButtonColors.textColor}
+                      borderColor={filterButtonColors.borderColor}
+                      minHeight={52}
+                      useOpacityOnHover
+                    >
+                      <FilterListIcon className={classes.toolbarButtonIcon} />
+                      {t('titles.filters')}
+                    </GluuButton>
+                  )}
 
-                  <GluuButton
-                    type="button"
-                    size="md"
-                    className={classes.toolbarButton}
-                    onClick={downloadCSV}
-                    backgroundColor={exportButtonColors.backgroundColor}
-                    textColor={exportButtonColors.textColor}
-                    borderColor={exportButtonColors.backgroundColor}
-                    minHeight={52}
-                    useOpacityOnHover
-                  >
-                    <GetAppIcon className={classes.toolbarButtonIcon} />
-                    {t('titles.export_csv')}
-                  </GluuButton>
+                  {!isMobile && (
+                    <GluuButton
+                      type="button"
+                      size="md"
+                      className={classes.toolbarButton}
+                      onClick={downloadCSV}
+                      backgroundColor={exportButtonColors.backgroundColor}
+                      textColor={exportButtonColors.textColor}
+                      borderColor={exportButtonColors.backgroundColor}
+                      minHeight={52}
+                      useOpacityOnHover
+                    >
+                      <GetAppIcon className={classes.toolbarButtonIcon} />
+                      {t('titles.export_csv')}
+                    </GluuButton>
+                  )}
 
                   <GluuFilterPopover
                     open={showFilter}

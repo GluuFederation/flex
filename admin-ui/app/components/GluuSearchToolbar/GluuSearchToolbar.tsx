@@ -67,6 +67,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     actionsLabel,
     refreshLoading = false,
     refreshButtonVariant = 'outlined',
+    compactActionLabels = false,
     disabled = false,
     className,
   } = props
@@ -403,6 +404,11 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
     )
   }
 
+  const actionButtonClass = cx(
+    classes.toolbarButton,
+    compactActionLabels && classes.toolbarButtonCompact,
+  )
+
   return (
     <div className={cx(classes.container, className)}>
       <div className={classes.fieldGroupSearch}>
@@ -525,7 +531,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
         <div className={classes.buttonGroup}>
           {onRefresh && (
             <GluuRefreshButton
-              className={classes.toolbarButton}
+              className={actionButtonClass}
               onClick={onRefresh}
               loading={refreshLoading}
               variant={refreshButtonVariant}
@@ -537,7 +543,7 @@ const GluuSearchToolbar: React.FC<GluuSearchToolbarProps> = (props) => {
           {primaryAction && (
             <GluuButton
               type="button"
-              className={classes.toolbarButton}
+              className={actionButtonClass}
               disabled={primaryDisabled}
               onClick={handlePrimaryClick}
               size="md"

@@ -1,5 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
+import { MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
+
+const MOBILE_DETAIL_COL_MIN = 160
 
 interface UserDetailViewPageStylesParams {
   themeColors: ThemeConfig
@@ -29,6 +32,10 @@ export const useStyles = makeStyles<UserDetailViewPageStylesParams>()((_, { them
     content: {
       paddingLeft: 28,
       paddingRight: 28,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingLeft: 0,
+        paddingRight: 0,
+      },
     },
     grid: {
       'display': 'grid',
@@ -37,8 +44,9 @@ export const useStyles = makeStyles<UserDetailViewPageStylesParams>()((_, { them
       '@media (max-width: 1200px)': {
         gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       },
-      '@media (max-width: 720px)': {
-        gridTemplateColumns: '1fr',
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        gridTemplateColumns: `repeat(auto-fit, minmax(${MOBILE_DETAIL_COL_MIN}px, 1fr))`,
+        gap: `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px`,
       },
     },
     field: {

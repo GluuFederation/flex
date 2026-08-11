@@ -11,22 +11,21 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
-import { useGetUser, getGetUserQueryKey } from 'JansConfigApi'
-import { useQueryClient } from '@tanstack/react-query'
+import { useGetUser } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 import { UserTableRowData, CustomUser } from '../types'
 import { useDeleteUserWithAudit } from '../hooks/useUserMutations'
-import { adminUiFeatures } from '@/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { GluuTable } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import type { ColumnDef, PaginationConfig } from '@/components/GluuTable'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { useStyles } from './UserListPage.style'
 
 const usersResourceId = ADMIN_UI_RESOURCES.Users
@@ -37,7 +36,6 @@ const UserList = (): JSX.Element => {
     canWrite: canWriteUsers,
     canDelete: canDeleteUsers,
   } = usePermission(usersResourceId)
-  const queryClient = useQueryClient()
 
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -45,6 +43,14 @@ const UserList = (): JSX.Element => {
   const [isViewDetailModalOpen, setIsViewDetailModalOpen] = useState<boolean>(false)
   const [selectedUserFor2FA, setSelectedUserFor2FA] = useState<UserTableRowData | null>(null)
   const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+
+  useEffect(() => {
+    if (isMobile) {
+      setModal(false)
+      setDeleteData(null)
+    }
+  }, [isMobile])
 
   const { limit, setLimit, pageNumber, setPageNumber, onPagingSizeSync } = usePaginationState()
   const [pattern, setPattern] = useState<string>('')
@@ -90,6 +96,8 @@ const UserList = (): JSX.Element => {
 
   const submitForm = useCallback(
     async (userMessage: string) => {
+      // Mobile is view-only, so no commit can be submitted from there.
+      if (isMobile) return
       const inumToDelete = deleteData?.inum
       const userDataToDelete = deleteData as CustomUser | undefined
       if (inumToDelete) {
@@ -104,7 +112,7 @@ const UserList = (): JSX.Element => {
         }
       }
     },
-    [deleteData, deleteUser],
+    [deleteData, deleteUser, isMobile],
   )
   const { state: themeState } = useTheme()
   const selectedTheme = themeState.theme || DEFAULT_THEME
@@ -157,12 +165,6 @@ const UserList = (): JSX.Element => {
     refetchUsers()
   }, [refetchUsers, setPageNumber])
 
-  const handleRefresh = useCallback(() => {
-    setPageNumber(0)
-    setPattern('')
-    invalidateQueriesByKey(queryClient, getGetUserQueryKey())
-  }, [queryClient, setPageNumber])
-
   const handlePageChange = useCallback(
     (page: number) => {
       setPageNumber(page)
@@ -195,6 +197,18 @@ const UserList = (): JSX.Element => {
       onClick: (row: UserTableRowData) => void
     }> = []
 
+    const credentialsAction = {
+      icon: <LockOpenIcon className={classes.actionIcon} />,
+      tooltip: t('messages.credentials'),
+      id: 'userCredentials',
+      onClick: handleView2FADetails,
+    }
+
+    if (isMobile) {
+      list.push(credentialsAction)
+      return list
+    }
+
     if (canWriteUsers) {
       list.push({
         icon: <Edit className={classes.actionIcon} />,
@@ -202,12 +216,7 @@ const UserList = (): JSX.Element => {
         id: 'editUser',
         onClick: handleGoToUserEditPage,
       })
-      list.push({
-        icon: <LockOpenIcon className={classes.actionIcon} />,
-        tooltip: t('messages.credentials'),
-        id: 'userCredentials',
-        onClick: handleView2FADetails,
-      })
+      list.push(credentialsAction)
     }
 
     if (canDeleteUsers) {
@@ -224,6 +233,7 @@ const UserList = (): JSX.Element => {
 
     return list
   }, [
+    isMobile,
     canWriteUsers,
     canDeleteUsers,
     t,
@@ -291,8 +301,7 @@ const UserList = (): JSX.Element => {
                 searchOnType
                 onSearch={setPattern}
                 onSearchSubmit={handleSearchSubmit}
-                onRefresh={canReadUsers ? handleRefresh : undefined}
-                primaryAction={primaryAction}
+                primaryAction={isMobile ? undefined : primaryAction}
               />
             </div>
           </div>

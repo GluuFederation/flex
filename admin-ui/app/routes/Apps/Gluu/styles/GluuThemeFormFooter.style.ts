@@ -10,6 +10,7 @@ import {
 interface FormFooterStyleParams {
   hasRightGroup: boolean
   backOnly: boolean
+  hasStepNav: boolean
 }
 
 export const STEP_NAV_SIZES = {
@@ -29,7 +30,7 @@ export const BUTTON_STYLES = {
 }
 
 export const useStyles = makeStyles<FormFooterStyleParams>()(
-  (_theme, { hasRightGroup, backOnly }) => ({
+  (_theme, { hasRightGroup, backOnly, hasStepNav }) => ({
     footerWrapper: {
       position: 'relative',
       display: 'flex',
@@ -45,6 +46,7 @@ export const useStyles = makeStyles<FormFooterStyleParams>()(
       },
       [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
         flexWrap: 'wrap',
+        ...(hasStepNav && { flexDirection: 'column' as const }),
       },
     },
 
@@ -53,7 +55,14 @@ export const useStyles = makeStyles<FormFooterStyleParams>()(
       alignItems: 'center',
       gap: 12,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        ...(backOnly && { width: '100%' }),
+        ...(backOnly && !hasStepNav && { width: '100%' }),
+        ...(hasStepNav && { order: 1 }),
+      },
+      [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
+        ...(hasStepNav && {
+          'width': '100%',
+          '& button': { width: '100% !important' },
+        }),
       },
     },
 
@@ -84,6 +93,18 @@ export const useStyles = makeStyles<FormFooterStyleParams>()(
       display: 'inline-flex',
       alignItems: 'center',
       gap: 4,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        position: 'static',
+        left: 'auto',
+        transform: 'none',
+        order: 2,
+        marginLeft: 'auto',
+      },
+      [`@media ${TINY_MAX_MEDIA_QUERY}`]: {
+        width: '100%',
+        marginLeft: 0,
+        justifyContent: 'space-between',
+      },
     },
 
     stepNavButton: {

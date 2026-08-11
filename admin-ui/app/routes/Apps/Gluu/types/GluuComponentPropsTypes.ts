@@ -34,6 +34,7 @@ export type GluuDialogProps = {
 export type GluuFormDetailRowProps = {
   label: string
   value?: string | number | boolean | null
+  valueNode?: ReactNode
   isBadge?: boolean
   badgeColor?: string
   badgeBackgroundColor?: string
