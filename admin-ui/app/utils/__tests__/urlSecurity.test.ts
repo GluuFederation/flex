@@ -26,6 +26,34 @@ describe('urlSecurity', () => {
     )
   })
 
+  it('sends the configured post logout redirect uri without normalising it', () => {
+    const cases = [
+      'https://admin.example.com',
+      'https://admin.example.com:443/post-logout',
+      'https://Admin.Example.com/post-logout',
+    ]
+
+    cases.forEach((configuredUri) => {
+      const logoutUrl = buildSafeLogoutUrl(
+        'https://auth.example.com/logout',
+        configuredUri,
+        'state-123',
+      )
+      const sent = new URL(logoutUrl as string).searchParams.get('post_logout_redirect_uri')
+      expect(sent).toBe(configuredUri)
+    })
+  })
+
+  it('trims surrounding whitespace from the post logout redirect uri', () => {
+    const logoutUrl = buildSafeLogoutUrl(
+      'https://auth.example.com/logout',
+      '  https://admin.example.com/post-logout  ',
+      'state-123',
+    )
+    const sent = new URL(logoutUrl as string).searchParams.get('post_logout_redirect_uri')
+    expect(sent).toBe('https://admin.example.com/post-logout')
+  })
+
   it('omits unsafe post logout redirect urls', () => {
     const logoutUrl = buildSafeLogoutUrl(
       'https://auth.example.com/logout',

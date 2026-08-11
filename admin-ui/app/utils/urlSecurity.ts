@@ -37,9 +37,9 @@ export const buildSafeLogoutUrl = (
   const logoutUrl = new URL(safeEndSessionEndpoint)
   logoutUrl.searchParams.set('state', state)
 
-  const safePostLogoutRedirectUri = buildSafeNavigationUrl(postLogoutRedirectUri)
-  if (safePostLogoutRedirectUri) {
-    logoutUrl.searchParams.set('post_logout_redirect_uri', safePostLogoutRedirectUri)
+  const configuredPostLogoutRedirectUri = postLogoutRedirectUri?.trim()
+  if (configuredPostLogoutRedirectUri && buildSafeNavigationUrl(configuredPostLogoutRedirectUri)) {
+    logoutUrl.searchParams.set('post_logout_redirect_uri', configuredPostLogoutRedirectUri)
   }
 
   return logoutUrl.toString()
