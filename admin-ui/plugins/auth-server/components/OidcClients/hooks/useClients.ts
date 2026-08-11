@@ -13,7 +13,7 @@ export const useClients = <T = ClientRow>(params?: UseClientsParams) => {
 
   const queryParams = useMemo(
     () => (params ? { ...params, pattern: params.pattern || undefined } : undefined),
-    [params?.limit, params?.pattern, params?.startIndex],
+    [params?.limit, params?.pattern, params?.startIndex, params?.sortBy, params?.sortOrder],
   )
 
   const query = useGetOauthOpenidClients(queryParams, {

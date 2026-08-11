@@ -13,6 +13,7 @@ const defaultLabelStyle: CSSProperties = { fontWeight: 'bold' }
 const GluuFormDetailRow = ({
   label,
   value,
+  valueNode,
   isBadge,
   badgeColor,
   badgeBackgroundColor,
@@ -81,7 +82,9 @@ const GluuFormDetailRow = ({
         place="top"
       />
       <Label for={value?.toString()} style={valueLabelStyle} sm={layout === 'row' ? rsize : 12}>
-        {!isBadge ? (
+        {valueNode != null ? (
+          valueNode
+        ) : !isBadge ? (
           value
         ) : badgeBackgroundColor != null && badgeTextColor != null ? (
           <GluuBadge

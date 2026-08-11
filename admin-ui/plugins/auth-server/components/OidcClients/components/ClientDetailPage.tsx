@@ -1,18 +1,43 @@
-import React, { useMemo, memo } from 'react'
+import React, { useMemo, useState, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
+import { Visibility, VisibilityOff } from '@/components/icons'
 import { getGrantTypeLabel } from 'Plugins/auth-server/utils'
-import { DOC_CATEGORY, LABELS, DOC_ENTRIES } from '../constants'
-import type { DisplayValue, ClientDetailPageProps } from '../types'
+import { DOC_CATEGORY, LABELS, DOC_ENTRIES, CLIENT_SECRET_MASK } from '../constants'
+import { useStyles } from './styles/ClientDetailPage.style'
+import type { DisplayValue, ClientDetailPageProps, ClientSecretValueProps } from '../types'
 
 const displayOrDash = (value: DisplayValue): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
 const formatBadgeList = (items: string[] | undefined): string =>
   items?.length ? items.join(', ') : '—'
+
+const ClientSecretValue: React.FC<ClientSecretValueProps> = memo(({ secret, themeColors }) => {
+  const { t } = useTranslation()
+  const { classes } = useStyles({ themeColors })
+  const [isVisible, setIsVisible] = useState(false)
+
+  const toggle = useCallback(() => setIsVisible((prev) => !prev), [])
+
+  return (
+    <span className={classes.secretRow}>
+      <span className={classes.secretText}>{isVisible ? secret : CLIENT_SECRET_MASK}</span>
+      <button
+        type="button"
+        className={classes.secretToggle}
+        onClick={toggle}
+        aria-label={t(isVisible ? 'password.hide' : 'password.show')}
+      >
+        {isVisible ? <Visibility /> : <VisibilityOff />}
+      </button>
+    </span>
+  )
+})
+ClientSecretValue.displayName = 'ClientSecretValue'
 
 const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
   const { t } = useTranslation()
@@ -51,7 +76,10 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
       },
       {
         label: LABELS.CLIENT_SECRET,
-        value: row.clientSecret ? '••••••••' : '—',
+        value: row.clientSecret ? undefined : '—',
+        valueNode: row.clientSecret ? (
+          <ClientSecretValue secret={row.clientSecret} themeColors={themeColors} />
+        ) : undefined,
         doc_entry: DOC_ENTRIES.CLIENT_SECRET,
         doc_category: DOC_CATEGORY,
       },

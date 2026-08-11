@@ -12,6 +12,7 @@ export const SPONTANEOUS_SCOPE_TYPE = SCOPE_TYPES.SPONTANEOUS
 export const TOKEN_DETAIL_DOC_SECTION = 'user'
 
 export const EM_DASH_PLACEHOLDER = '—'
+export const CLIENT_SECRET_MASK = '••••••••'
 export const TWO_DASH_PLACEHOLDER = '--'
 
 export const SCOPE_INUM_PARAM = 'scopeInum'
@@ -31,6 +32,14 @@ export const TOKEN_DATE_QUERY_FORMAT = DATE_FORMATS.DATE_ONLY
 export const TOKEN_DATE_DISPLAY_FORMAT = DATE_FORMATS.TOKEN_DATETIME
 export const TOKEN_CSV_FILENAME = 'client-tokens.csv'
 export const TOKEN_CSV_MIME_TYPE = 'text/csv'
+
+export const CLIENT_SORT_COLUMNS = ['inum', 'displayName'] as const
+export const CLIENT_SORT_COLUMN_LABELS: Record<string, string> = {
+  inum: 'fields.inum',
+  displayName: 'fields.displayname',
+}
+export const DEFAULT_CLIENT_SORT_BY = ''
+export const CLIENT_SORT_ORDER = 'ascending'
 
 export const CLIENT_ACTION_IDS = {
   EDIT: 'editClient',

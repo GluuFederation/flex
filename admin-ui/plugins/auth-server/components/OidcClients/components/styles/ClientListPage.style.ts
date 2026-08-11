@@ -2,7 +2,13 @@ import { useMemo } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, ICON_SIZE, SPACING } from '@/constants'
+import {
+  BORDER_RADIUS,
+  ICON_SIZE,
+  SPACING,
+  MOBILE_MEDIA_QUERY,
+  createMobilePageTitleStyle,
+} from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily, fontWeights, fontSizes } from '@/styles/fonts'
@@ -18,7 +24,15 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
   })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: { fontFamily, paddingTop: SPACING.PAGE },
+    page: {
+      fontFamily,
+      paddingTop: SPACING.PAGE,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        paddingBottom: SPACING.CONTENT_PADDING,
+        boxSizing: 'border-box' as const,
+      },
+    },
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     cellText: {
       color: themeColors.fontColor,
       fontWeight: fontWeights.medium,
