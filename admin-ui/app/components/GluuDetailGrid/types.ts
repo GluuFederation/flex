@@ -1,8 +1,9 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 export type GluuDetailGridField = {
   label: string
   value?: string | number | boolean | null
+  valueNode?: ReactNode
   doc_entry?: string
   doc_category?: string
   isBadge?: boolean

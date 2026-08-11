@@ -73,6 +73,7 @@ const GluuThemeFormFooter = ({
   const { classes } = useStyles({
     hasRightGroup: buttonStates.hasRightGroup,
     backOnly: buttonStates.backOnly,
+    hasStepNav: Boolean(stepNavigation),
   })
   const buttonColors = useMemo(() => getButtonColors(theme), [theme])
 

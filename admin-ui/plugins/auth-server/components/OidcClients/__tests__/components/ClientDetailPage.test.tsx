@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { ClientDetailPage } from 'Plugins/auth-server/components/OidcClients/components'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import mockClients from '../fixtures/mockClients'
@@ -62,4 +63,47 @@ it('Should render correctly for a trusted client', () => {
   render(<ClientDetailPage row={trustedClient} scopes={mockScopes} />, { wrapper: Wrapper })
   // Trusted client renders "Yes" badge
   expect(screen.getAllByText(/Yes/i).length).toBeGreaterThan(0)
+})
+
+describe('client secret', () => {
+  const secretClient: ClientRow = { ...client, clientSecret: 'super-secret-value' }
+
+  it('Should mask the client secret until it is revealed', async () => {
+    const user = userEvent.setup()
+    render(<ClientDetailPage row={secretClient} scopes={mockScopes} />, { wrapper: Wrapper })
+
+    expect(screen.queryByText(secretClient.clientSecret as string)).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /show password/i }))
+    expect(screen.getByText(secretClient.clientSecret as string)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /hide password/i }))
+    expect(screen.queryByText(secretClient.clientSecret as string)).not.toBeInTheDocument()
+  })
+
+  it('Should mask a second client secret independently of a revealed one', async () => {
+    const user = userEvent.setup()
+    const otherClient: ClientRow = {
+      ...client,
+      inum: 'other-inum',
+      clientSecret: 'another-secret-value',
+    }
+
+    const { unmount } = render(<ClientDetailPage row={secretClient} scopes={mockScopes} />, {
+      wrapper: Wrapper,
+    })
+    await user.click(screen.getByRole('button', { name: /show password/i }))
+    expect(screen.getByText(secretClient.clientSecret as string)).toBeInTheDocument()
+    unmount()
+
+    render(<ClientDetailPage row={otherClient} scopes={mockScopes} />, { wrapper: Wrapper })
+    expect(screen.queryByText(otherClient.clientSecret as string)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /show password/i })).toBeInTheDocument()
+  })
+
+  it('Should show a placeholder when the client has no secret', () => {
+    const noSecretClient: ClientRow = { ...client, clientSecret: undefined }
+    render(<ClientDetailPage row={noSecretClient} scopes={mockScopes} />, { wrapper: Wrapper })
+    expect(screen.queryByRole('button', { name: /show password/i })).not.toBeInTheDocument()
+  })
 })

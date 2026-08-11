@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import { alpha } from '@mui/material/styles'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import {
@@ -13,6 +12,7 @@ import { getAccordionStyles } from '@/styles/accordionStyles'
 import { createClientFormLayoutStyles } from './clientFormLayout'
 import { fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
 import type { ThemeConfig } from '@/context/theme/config'
+import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 
 type ClientCibaParUmaPanelStyleParams = {
   isDark: boolean
@@ -132,12 +132,11 @@ export const useStyles = makeStyles<ClientCibaParUmaPanelStyleParams>()((
           outline: 'none !important',
           boxShadow: 'none !important',
         },
-      '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input):disabled, & select:disabled, & textarea:disabled':
+      '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input):disabled, & select:disabled, & textarea:disabled, & select[aria-disabled="true"], & input[aria-disabled="true"]:not(.MuiInputBase-input):not(.gluu-dynamic-list-input), & textarea[aria-disabled="true"]':
         {
-          backgroundColor: `${alpha(formInputBg, OPACITY.DISABLED)} !important`,
-          color: `${themeColors.fontColor} !important`,
-          opacity: OPACITY.DISABLED,
-          cursor: 'not-allowed',
+          backgroundColor: `${formInputBg} !important`,
+          border: `1px solid ${inputBorderColor} !important`,
+          ...createDisabledInputStyles(themeColors.fontColor),
         },
       '& input:not(.MuiInputBase-input):not(.gluu-dynamic-list-input)::placeholder, & textarea::placeholder':
         {
