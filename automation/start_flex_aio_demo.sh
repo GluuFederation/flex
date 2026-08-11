@@ -287,6 +287,12 @@ services:
       - $demo_templates_dir/traefik-tls.yaml:/etc/traefik/conf.d/traefik-tls.yaml
       - $demo_templates_dir/web_https.crt:/etc/certs/web_https.crt
       - $demo_templates_dir/web_https.key:/etc/certs/web_https.key
+    networks:
+      # Alias the FQDN to traefik so in-cluster server-to-server calls over the public URL
+      # (e.g. config-api -> jans-auth introspection on :443) reach traefik's TLS, not a dead loopback.
+      default:
+        aliases:
+          - $fqdn
 
 EOF
 
@@ -298,6 +304,11 @@ EOF
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --bind-address=0.0.0.0
+      # Relaxed durability for a throwaway demo/CI DB: default per-commit fsync + binlog make the
+      # write-heavy test-data load ~2.4x slower than PostgreSQL. Not for production data.
+      - --innodb-flush-log-at-trx-commit=2
+      - --innodb-doublewrite=0
+      - --skip-log-bin
     container_name: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=Test1234#
@@ -341,8 +352,6 @@ EOF
   flex:
     image: ghcr.io/gluufederation/flex/flex-all-in-one:$image_version
     container_name: flex
-    extra_hosts:
-      - "$fqdn:$ipaddr"
     environment:
       - CN_CONFIG_CONSUL_HOST=consul
       - CN_CONFIG_CONSUL_NAMESPACE=flex
