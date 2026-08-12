@@ -4,6 +4,8 @@ import { useAppDispatch } from '@/redux/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { Card, CardBody } from 'Components'
 import { GluuPageContent } from '@/components'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import JansLockConfiguration from './JansLockConfiguration'
@@ -92,8 +94,11 @@ const JansLock: React.FC = () => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadLock}>
         <GluuLoader blocking={isLoading || patchMutation.isPending}>
-          <div className={classes.formCard}>
-            <div className={classes.content}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {t('titles.jans_lock')}
+          </GluuText>
+          <Card className={classes.formCard}>
+            <CardBody className={classes.content}>
               <JansLockConfiguration
                 lockConfig={(lockConfiguration as Record<string, JsonValue>) ?? {}}
                 onUpdate={handleUpdate}
@@ -101,8 +106,8 @@ const JansLock: React.FC = () => {
                 canWriteLock={canWriteLock}
                 classes={classes}
               />
-            </div>
-          </div>
+            </CardBody>
+          </Card>
         </GluuLoader>
       </GluuViewWrapper>
     </GluuPageContent>
