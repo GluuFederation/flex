@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
 import { Add, Delete as DeleteIcon } from '@/components/icons'
 
@@ -13,7 +14,7 @@ import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -42,6 +43,8 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   readOnly,
 }) => {
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const isReadOnly = readOnly || isMobile
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -57,19 +60,30 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const toggle = useCallback(() => {
+    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [])
+  }, [isReadOnly])
 
-  const initialValues: StaticConfigFormValues = transformToFormValues(
-    fidoConfiguration?.fido2Configuration,
-    fidoConstants.STATIC,
-  ) as StaticConfigFormValues
+  useEffect(() => {
+    if (isReadOnly) {
+      setModal(false)
+    }
+  }, [isReadOnly])
+
+  const initialValues = useMemo<StaticConfigFormValues>(
+    () =>
+      transformToFormValues(
+        fidoConfiguration?.fido2Configuration,
+        fidoConstants.STATIC,
+      ) as StaticConfigFormValues,
+    [fidoConfiguration],
+  )
 
   const fidoValidationSchemas = useMemo(() => getFidoValidationSchemas(t), [t])
 
   const formik = useFormik<StaticConfigFormValues>({
     initialValues,
-    onSubmit: readOnly ? () => undefined : toggle,
+    onSubmit: isReadOnly ? () => undefined : toggle,
     validationSchema: fidoValidationSchemas.staticConfigValidationSchema,
     validateOnMount: true,
   })
@@ -93,12 +107,12 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string) => {
-      if (readOnly) {
+      if (isReadOnly) {
         return
       }
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, formik.values, readOnly],
+    [handleSubmit, formik.values, isReadOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -108,12 +122,12 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   const handleFormSubmit = useCallback(
     (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (readOnly) {
+      if (isReadOnly) {
         return
       }
       formik.handleSubmit()
     },
-    [formik, readOnly],
+    [formik, isReadOnly],
   )
 
   const requestedParties = useMemo(
@@ -226,6 +240,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.authenticatorCertsFolder}
               errorMessage={formik.errors.authenticatorCertsFolder}
@@ -244,6 +259,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.mdsCertsFolder}
               errorMessage={formik.errors.mdsCertsFolder}
@@ -259,6 +275,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.mdsTocsFolder}
               errorMessage={formik.errors.mdsTocsFolder}
@@ -274,6 +291,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.serverMetadataFolder}
               errorMessage={formik.errors.serverMetadataFolder}
@@ -290,6 +308,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.unfinishedRequestExpiration}
               errorMessage={formik.errors.unfinishedRequestExpiration}
@@ -309,6 +328,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required
               showError={!!formik.errors.authenticationHistoryExpiration}
               errorMessage={formik.errors.authenticationHistoryExpiration}
@@ -328,6 +348,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               values={ATTESTATION_MODE_OPTIONS}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               required={true}
               showError={!!formik.errors.attestationMode}
               errorMessage={formik.errors.attestationMode}
@@ -344,6 +365,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -355,6 +377,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -366,6 +389,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
+              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -380,18 +404,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   {t(fidoConstants.LABELS.REQUESTED_PARTIES_ID)}
                 </span>
               </GluuText>
-              <GluuButton
-                type="button"
-                backgroundColor={themeColors.settings.addPropertyButton.bg}
-                textColor={themeColors.settings.addPropertyButton.text}
-                useOpacityOnHover
-                className={classes.propsActionBtn}
-                onClick={addRequestedParty}
-                disabled={!canAddParty}
-              >
-                <Add fontSize="small" />
-                {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
-              </GluuButton>
+              {!isMobile && (
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.addPropertyButton.bg}
+                  textColor={themeColors.settings.addPropertyButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={addRequestedParty}
+                  disabled={!canAddParty}
+                >
+                  <Add fontSize="small" />
+                  {t(fidoConstants.BUTTON_TEXT.ADD_PARTY)}
+                </GluuButton>
+              )}
             </div>
             <div className={classes.propsBody}>
               {requestedParties.map((item, index) => (
@@ -403,6 +429,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.name')}
                     className={classes.propsInput}
+                    disabled={isMobile}
                   />
                   <Input
                     value={item.value || ''}
@@ -411,18 +438,21 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.value')}
                     className={classes.propsInput}
+                    disabled={isMobile}
                   />
-                  <GluuButton
-                    type="button"
-                    backgroundColor={themeColors.settings.removeButton.bg}
-                    textColor={themeColors.settings.removeButton.text}
-                    useOpacityOnHover
-                    className={classes.propsActionBtn}
-                    onClick={() => removeRequestedParty(index)}
-                  >
-                    <DeleteIcon className={classes.propsActionIcon} />
-                    {t('actions.remove')}
-                  </GluuButton>
+                  {!isMobile && (
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.settings.removeButton.bg}
+                      textColor={themeColors.settings.removeButton.text}
+                      useOpacityOnHover
+                      className={classes.propsActionBtn}
+                      onClick={() => removeRequestedParty(index)}
+                    >
+                      <DeleteIcon className={classes.propsActionIcon} />
+                      {t('actions.remove')}
+                    </GluuButton>
+                  )}
                 </div>
               ))}
               {showPartiesError && <div className={classes.propsError}>{partiesError}</div>}
@@ -440,18 +470,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   {t(fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS)}
                 </span>
               </GluuText>
-              <GluuButton
-                type="button"
-                backgroundColor={themeColors.settings.addPropertyButton.bg}
-                textColor={themeColors.settings.addPropertyButton.text}
-                useOpacityOnHover
-                className={classes.propsActionBtn}
-                onClick={addAlgorithm}
-                disabled={!canAddAlgorithm}
-              >
-                <Add fontSize="small" />
-                {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
-              </GluuButton>
+              {!isMobile && (
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.addPropertyButton.bg}
+                  textColor={themeColors.settings.addPropertyButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={addAlgorithm}
+                  disabled={!canAddAlgorithm}
+                >
+                  <Add fontSize="small" />
+                  {t(fidoConstants.BUTTON_TEXT.ADD_ALGORITHM)}
+                </GluuButton>
+              )}
             </div>
             <div className={classes.propsBody}>
               {enabledFidoAlgorithms.map((item, index) => (
@@ -463,18 +495,21 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.value')}
                     className={classes.propsInput}
+                    disabled={isMobile}
                   />
-                  <GluuButton
-                    type="button"
-                    backgroundColor={themeColors.settings.removeButton.bg}
-                    textColor={themeColors.settings.removeButton.text}
-                    useOpacityOnHover
-                    className={classes.propsActionBtn}
-                    onClick={() => removeAlgorithm(index)}
-                  >
-                    <DeleteIcon className={classes.propsActionIcon} />
-                    {t('actions.remove')}
-                  </GluuButton>
+                  {!isMobile && (
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.settings.removeButton.bg}
+                      textColor={themeColors.settings.removeButton.text}
+                      useOpacityOnHover
+                      className={classes.propsActionBtn}
+                      onClick={() => removeAlgorithm(index)}
+                    >
+                      <DeleteIcon className={classes.propsActionIcon} />
+                      {t('actions.remove')}
+                    </GluuButton>
+                  )}
                 </div>
               ))}
               {showAlgorithmsError && <div className={classes.propsError}>{algorithmsError}</div>}
@@ -492,18 +527,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                   {t(fidoConstants.LABELS.METADATA_SERVERS)}
                 </span>
               </GluuText>
-              <GluuButton
-                type="button"
-                backgroundColor={themeColors.settings.addPropertyButton.bg}
-                textColor={themeColors.settings.addPropertyButton.text}
-                useOpacityOnHover
-                className={classes.propsActionBtn}
-                onClick={addMetadataServer}
-                disabled={!canAddServer}
-              >
-                <Add fontSize="small" />
-                {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
-              </GluuButton>
+              {!isMobile && (
+                <GluuButton
+                  type="button"
+                  backgroundColor={themeColors.settings.addPropertyButton.bg}
+                  textColor={themeColors.settings.addPropertyButton.text}
+                  useOpacityOnHover
+                  className={classes.propsActionBtn}
+                  onClick={addMetadataServer}
+                  disabled={!canAddServer}
+                >
+                  <Add fontSize="small" />
+                  {t(fidoConstants.BUTTON_TEXT.ADD_METADATA_SERVER)}
+                </GluuButton>
+              )}
             </div>
             <div className={classes.propsBody}>
               {metadataServers.map((server, index) => (
@@ -515,6 +552,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.enter_url')}
                     className={classes.propsInput}
+                    disabled={isMobile}
                   />
                   <Input
                     value={server.rootCert || ''}
@@ -523,18 +561,21 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.enter_root_certificate')}
                     className={classes.propsInput}
+                    disabled={isMobile}
                   />
-                  <GluuButton
-                    type="button"
-                    backgroundColor={themeColors.settings.removeButton.bg}
-                    textColor={themeColors.settings.removeButton.text}
-                    useOpacityOnHover
-                    className={classes.propsActionBtn}
-                    onClick={() => removeMetadataServer(index)}
-                  >
-                    <DeleteIcon className={classes.propsActionIcon} />
-                    {t('actions.remove')}
-                  </GluuButton>
+                  {!isMobile && (
+                    <GluuButton
+                      type="button"
+                      backgroundColor={themeColors.settings.removeButton.bg}
+                      textColor={themeColors.settings.removeButton.text}
+                      useOpacityOnHover
+                      className={classes.propsActionBtn}
+                      onClick={() => removeMetadataServer(index)}
+                    >
+                      <DeleteIcon className={classes.propsActionIcon} />
+                      {t('actions.remove')}
+                    </GluuButton>
+                  )}
                 </div>
               ))}
               {showServersError && <div className={classes.propsError}>{serversError}</div>}
@@ -551,6 +592,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
               onChange={(vals) => formik.setFieldValue(fidoConstants.FORM_FIELDS.HINTS, vals)}
               onBlur={() => formik.setFieldTouched(fidoConstants.FORM_FIELDS.HINTS, true)}
               options={HINT_OPTIONS}
+              disabled={isMobile}
               required
               showError={!!formik.errors.hints}
               errorMessage={formik.errors.hints as string}
@@ -564,8 +606,8 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
       <GluuThemeFormFooter
         showBack
-        showCancel
-        showApply={!readOnly}
+        showCancel={!isMobile}
+        showApply={!isReadOnly}
         onApply={() => {
           const ops = buildChangedFieldOperations(
             initialValues,
@@ -583,7 +625,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         isLoading={isSubmitting ?? false}
       />
 
-      {!readOnly && (
+      {!isReadOnly && (
         <GluuWebhookCommitDialog
           handler={toggle}
           modal={modal}
