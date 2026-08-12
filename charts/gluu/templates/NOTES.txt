@@ -1,4 +1,4 @@
-{{ if or (index .Values "gateway-api" "routes" "adminUiEnabled") (index .Values.global "admin-ui" "ingress" "adminUiEnabled") -}}
+{{ if or (and (index .Values.global "gateway-api" "enabled") (index .Values "gateway-api" "routes" "adminUiEnabled")) (index .Values.global "admin-ui" "ingress" "adminUiEnabled") -}}
 ********************************************************************************
 ***              SECURITY WARNING: ADMIN-UI EXPOSED                          ***
 ********************************************************************************
