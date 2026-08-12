@@ -22,12 +22,31 @@
 {{- $fido2GatewayNamespace := .Values.global.fido2.gatewayNamespace | default $defaultGatewayNamespace -}}
 {{- $scimGatewayName := .Values.global.scim.gatewayName | default $defaultGatewayName -}}
 {{- $scimGatewayNamespace := .Values.global.scim.gatewayNamespace | default $defaultGatewayNamespace -}}
+{{- $adminUiEnabled := or .Values.routes.adminUiEnabled (index .Values.global "admin-ui" "ingress" "adminUiEnabled") -}}
+{{- $authServerEnabled := or .Values.routes.authServerEnabled (index .Values.global "auth-server" "ingress" "authServerEnabled") -}}
+{{- $openidConfigEnabled := or .Values.routes.openidConfigEnabled (index .Values.global "auth-server" "ingress" "openidConfigEnabled") -}}
+{{- $deviceCodeEnabled := or .Values.routes.deviceCodeEnabled (index .Values.global "auth-server" "ingress" "deviceCodeEnabled") -}}
+{{- $firebaseMessagingEnabled := or .Values.routes.firebaseMessagingEnabled (index .Values.global "auth-server" "ingress" "firebaseMessagingEnabled") -}}
+{{- $uma2ConfigEnabled := or .Values.routes.uma2ConfigEnabled (index .Values.global "auth-server" "ingress" "uma2ConfigEnabled") -}}
+{{- $webfingerEnabled := or .Values.routes.webfingerEnabled (index .Values.global "auth-server" "ingress" "webfingerEnabled") -}}
+{{- $authzenConfigEnabled := or .Values.routes.authzenConfigEnabled (index .Values.global "auth-server" "ingress" "authzenConfigEnabled") -}}
+{{- $authServerProtectedToken := or .Values.routes.authServerProtectedToken (index .Values.global "auth-server" "ingress" "authServerProtectedToken") -}}
+{{- $authServerProtectedRegister := or .Values.routes.authServerProtectedRegister (index .Values.global "auth-server" "ingress" "authServerProtectedRegister") -}}
+{{- $lockConfigEnabled := or .Values.routes.lockConfigEnabled (index .Values.global "auth-server" "ingress" "lockConfigEnabled") -}}
+{{- $lockAuditEnabled := or .Values.routes.lockAuditEnabled (index .Values.global "auth-server" "ingress" "lockAuditEnabled") -}}
+{{- $casaEnabled := or .Values.routes.casaEnabled .Values.global.casa.ingress.casaEnabled -}}
+{{- $configApiEnabled := or .Values.routes.configApiEnabled (index .Values.global "config-api" "ingress" "configApiEnabled") -}}
+{{- $fido2Enabled := or .Values.routes.fido2Enabled .Values.global.fido2.ingress.fido2Enabled -}}
+{{- $fido2ConfigEnabled := or .Values.routes.fido2ConfigEnabled .Values.global.fido2.ingress.fido2ConfigEnabled -}}
+{{- $fido2WebauthnEnabled := or .Values.routes.fido2WebauthnEnabled .Values.global.fido2.ingress.fido2WebauthnEnabled -}}
+{{- $scimEnabled := or .Values.routes.scimEnabled .Values.global.scim.ingress.scimEnabled -}}
+{{- $scimConfigEnabled := or .Values.routes.scimConfigEnabled .Values.global.scim.ingress.scimConfigEnabled -}}
 
 {{- /* ======================================================== */}}
 {{- /* 1. ADMIN UI ROUTES                                       */}}
 {{- /* ======================================================== */}}
 
-{{- if .Values.routes.adminUiEnabled }}
+{{- if $adminUiEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -87,7 +106,7 @@ spec:
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
-  {{- if .Values.routes.openidConfigEnabled }}
+  {{- if $openidConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -102,7 +121,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.deviceCodeEnabled }}
+  {{- if $deviceCodeEnabled }}
   - matches:
     - path:
         type: Exact
@@ -117,7 +136,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.firebaseMessagingEnabled }}
+  {{- if $firebaseMessagingEnabled }}
   - matches:
     - path:
         type: Exact
@@ -132,7 +151,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.uma2ConfigEnabled }}
+  {{- if $uma2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -147,7 +166,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.webfingerEnabled }}
+  {{- if $webfingerEnabled }}
   - matches:
     - path:
         type: Exact
@@ -162,7 +181,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if and (index .Values.global "auth-server" "lockEnabled") (.Values.routes.lockConfigEnabled) }}
+  {{- if and (index .Values.global "auth-server" "lockEnabled") ($lockConfigEnabled) }}
   - matches:
     - path:
         type: Exact
@@ -177,7 +196,7 @@ spec:
     - name: {{ $authSvc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.authzenConfigEnabled }}
+  {{- if $authzenConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -194,7 +213,7 @@ spec:
   {{- end }}
 
 {{- /* Auth Server: Secure (HTTPS) */}}
-{{- if .Values.routes.authServerEnabled }}
+{{- if $authServerEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -262,7 +281,7 @@ spec:
 {{- end }}
 
 {{- /* Auth Server: Protected HTTPS */}}
-{{- if or (.Values.routes.authServerProtectedToken) (.Values.routes.authServerProtectedRegister) }}
+{{- if or ($authServerProtectedToken) ($authServerProtectedRegister) }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -287,7 +306,7 @@ spec:
   - {{ .Values.global.fqdn | quote }}
   rules:
   {{- /* Auth Server protected token (/jans-auth/restv1/token) */}}
-  {{- if .Values.routes.authServerProtectedToken }}
+  {{- if $authServerProtectedToken }}
   - matches:
     - path:
         type: PathPrefix
@@ -311,7 +330,7 @@ spec:
   {{- end }}
 
   {{- /* Auth Server protected register (/jans-auth/restv1/register) */}}
-  {{- if .Values.routes.authServerProtectedRegister }}
+  {{- if $authServerProtectedRegister }}
   - matches:
     - path:
         type: PathPrefix
@@ -340,7 +359,7 @@ spec:
 {{- /* 3. CASA ROUTES                                           */}}
 {{- /* ======================================================== */}}
 
-{{- if .Values.routes.casaEnabled }}
+{{- if $casaEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -411,7 +430,7 @@ spec:
 {{- /* 4. CONFIG API ROUTES                                     */}}
 {{- /* ======================================================== */}}
 
-{{- if .Values.routes.configApiEnabled }}
+{{- if $configApiEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -483,7 +502,7 @@ spec:
 {{- /* ======================================================== */}}
 
 {{- /* Fido2: Public */}}
-{{- if or .Values.routes.fido2ConfigEnabled .Values.routes.fido2WebauthnEnabled }}
+{{- if or $fido2ConfigEnabled $fido2WebauthnEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -506,7 +525,7 @@ spec:
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
-  {{- if .Values.routes.fido2ConfigEnabled }}
+  {{- if $fido2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -521,7 +540,7 @@ spec:
     - name: {{ $fido2Svc }}
       port: 8080
   {{- end }}
-  {{- if .Values.routes.fido2WebauthnEnabled }}
+  {{- if $fido2WebauthnEnabled }}
   - matches:
     - path:
         type: Exact
@@ -539,7 +558,7 @@ spec:
 {{- end }}
 
 {{- /* Fido2: Secure & Redirect */}}
-{{- if .Values.routes.fido2Enabled }}
+{{- if $fido2Enabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -611,7 +630,7 @@ spec:
 {{- /* ======================================================== */}}
 
 {{- /* SCIM: Public */}}
-{{- if .Values.routes.scimConfigEnabled }}
+{{- if $scimConfigEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -650,7 +669,7 @@ spec:
 {{- end }}
 
 {{- /* SCIM: Secure & Redirect */}}
-{{- if .Values.routes.scimEnabled }}
+{{- if $scimEnabled }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -716,7 +735,7 @@ spec:
         statusCode: 301
 {{- end }}
 
-{{- if and (index .Values.global "auth-server" "lockEnabled") (.Values.routes.lockAuditEnabled) }}
+{{- if and (index .Values.global "auth-server" "lockEnabled") ($lockAuditEnabled) }}
 ---
 {{- /* ======================================================== */}}
 {{- /* 7. gRPC APPS                                             */}}
