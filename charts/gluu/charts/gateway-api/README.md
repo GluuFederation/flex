@@ -55,8 +55,27 @@ Kubernetes: `>=v1.23.0-0`
 | gateway.tlsSecretName | string | `"tls-certificate"` | Secret containing the TLS certificate for the Gateway |
 | gateway.verifyClientCertProtection | bool | `false` | Verify client certificate for protected endpoints (if enabled, caCert must be set). See additionalConfig for implementation-wise configuration (if any). |
 | nameOverride | string | `""` |  |
-| routes | object | `{"annotations":{},"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{}}` | Configuration for HTTPRoute and its related resources |
+| routes | object | `{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}` | Configuration for HTTPRoute and its related resources |
+| routes.adminUiEnabled | bool | `true` | Enable Admin UI endpoints /admin |
 | routes.annotations | object | `{}` | Specific annotations for the HTTPRoute resource |
+| routes.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
+| routes.authServerProtectedRegister | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/register. |
+| routes.authServerProtectedToken | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/token. |
+| routes.authzenConfigEnabled | bool | `true` | Enable endpoint /.well-known/authzen-configuration |
+| routes.casaEnabled | bool | `false` | Enable Casa endpoints /jans-casa |
+| routes.configApiEnabled | bool | `true` | Enable Config API endpoints /jans-config-api |
+| routes.deviceCodeEnabled | bool | `true` | Enable endpoint /device-code |
+| routes.fido2ConfigEnabled | bool | `false` | Enable endpoint /.well-known/fido2-configuration |
+| routes.fido2Enabled | bool | `false` | Enable all fido2 endpoints /jans-fido2 |
+| routes.fido2WebauthnEnabled | bool | `false` | Enable endpoint /.well-known/webauthn |
+| routes.firebaseMessagingEnabled | bool | `true` | Enable endpoint /firebase-messaging-sw.js |
 | routes.gatewayNamespace | string | `""` | Namespace where the Gateway resource resides. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. If set, ensure the target namespace exists and your Gateway controller has the required cross-namespace RBAC permissions. |
 | routes.httpSectionName | string | `"http"` | Only set the httpSectionName and httpsSectionName if it doesn't work with the default values, according to your installed controller (e.g. some controller may require the listener name to be `default`). |
 | routes.labels | object | `{}` | Specific labels for the HTTPRoute resource |
+| routes.lockAuditEnabled | bool | `false` | Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, global.auth-server.lockEnabled must be enabled) |
+| routes.lockConfigEnabled | bool | `false` | Enable endpoint /.well-known/lock-server-configuration (if enabled, global.auth-server.lockEnabled must be enabled) |
+| routes.openidConfigEnabled | bool | `true` | Enable endpoint /.well-known/openid-configuration |
+| routes.scimConfigEnabled | bool | `false` | Enable endpoint /.well-known/scim-configuration |
+| routes.scimEnabled | bool | `false` | Enable SCIM endpoints /jans-scim |
+| routes.uma2ConfigEnabled | bool | `true` | Enable endpoint /.well-known/uma2-configuration |
+| routes.webfingerEnabled | bool | `true` | Enable endpoint /.well-known/webfinger |
