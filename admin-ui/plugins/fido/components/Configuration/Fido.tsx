@@ -5,7 +5,6 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import StaticConfiguration from './components/StaticConfiguration'
 import DynamicConfiguration from './components/DynamicConfiguration'
 import SetTitle from 'Utils/SetTitle'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
 import { fidoConstants } from '../../helper'
 import { useFidoConfig, useUpdateFidoConfig } from '../../hooks'
@@ -90,9 +89,6 @@ const Fido: React.FC = () => {
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadFido}>
         <GluuLoader blocking={isLoading || updateFidoMutation.isPending}>
-          <GluuText variant="h1" className={classes.mobilePageTitle}>
-            {t('titles.fido_management')}
-          </GluuText>
           <div className={classes.formCard}>
             <div className={classes.content}>
               <GluuTabs

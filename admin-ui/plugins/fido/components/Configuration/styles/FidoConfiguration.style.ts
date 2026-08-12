@@ -1,10 +1,9 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS, OPACITY, ICON_SIZE, MOBILE_MEDIA_QUERY } from '@/constants'
+import { SPACING, BORDER_RADIUS, OPACITY, ICON_SIZE } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import { createFormGroupOverrides } from '@/styles/formStyles'
-import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -56,11 +55,6 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
       flexDirection: FLEX_DIRECTION_COLUMN,
       gap: SPACING.CARD_CONTENT_GAP,
       width: WIDTH_FULL,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
-          pointerEvents: 'none' as const,
-        },
-      },
     },
     fieldsGrid: {
       display: 'grid',
@@ -97,11 +91,6 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         },
         '& .input-group': {
           margin: MARGIN_ZERO,
-        },
-        [`@media ${MOBILE_MEDIA_QUERY}`]: {
-          '& .form-group [class*="col"]': {
-            paddingBottom: 0,
-          },
         },
       }
     })(),
@@ -166,11 +155,6 @@ export const useStyles = makeStyles<FidoConfigStylesParams>()((
         color: `${themeColors.fontColor} !important`,
         opacity: OPACITY.DISABLED,
         cursor: 'not-allowed',
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        '& input:disabled, & select:disabled, & .custom-select:disabled': createDisabledInputStyles(
-          themeColors.fontColor,
-        ),
       },
       '& input::placeholder': {
         color: `${themeColors.textMuted} !important`,

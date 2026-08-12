@@ -1,10 +1,9 @@
 import { useFormik, FormikProps } from 'formik'
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
+import { adminUiFeatures } from '@/constants'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
@@ -31,21 +30,14 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   classes,
 }) => {
   const { t } = useTranslation()
-  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
-  const isReadOnly = !canWriteLock || isMobile
   const [modal, setModal] = useState(false)
   const validationSchema = useMemo(() => getLockValidationSchema(t), [t])
 
-  useEffect(() => {
-    if (isReadOnly) {
-      setModal(false)
-    }
-  }, [isReadOnly])
+  const viewOnly = !canWriteLock
 
   const toggle = useCallback((): void => {
-    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [isReadOnly])
+  }, [])
 
   const initialFormValues = useMemo(() => transformToFormValues(lockConfig), [lockConfig])
 
@@ -105,14 +97,13 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
 
   const submitForm = useCallback(
     (_userMessage: string) => {
-      if (isReadOnly) return
       const { patches: patchOperations } = trimmedValuesAndPatches
 
       if (patchOperations.length > 0) {
         onUpdate(patchOperations)
       }
     },
-    [trimmedValuesAndPatches, onUpdate, isReadOnly],
+    [trimmedValuesAndPatches, onUpdate],
   )
 
   return (
@@ -127,7 +118,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
                 formik={formik}
                 fieldItemClass={classes.fieldItem}
                 fieldItemFullWidthClass={classes.fieldItemFullWidth}
-                viewOnly={isReadOnly}
+                viewOnly={viewOnly}
               />
             ))}
           </div>
@@ -135,8 +126,8 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
 
         <GluuThemeFormFooter
           showBack
-          showCancel={!isMobile}
-          showApply={!isReadOnly}
+          showCancel
+          showApply={canWriteLock}
           onApply={toggle}
           onCancel={handleCancel}
           disableCancel={!isFormDirty}

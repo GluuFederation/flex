@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFormik } from 'formik'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
 import { Add, Delete as DeleteIcon } from '@/components/icons'
 import { Form, Input } from 'Components'
@@ -12,7 +11,7 @@ import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuButton } from '@/components/GluuButton'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
+import { adminUiFeatures } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -37,8 +36,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   readOnly,
 }) => {
   const { t } = useTranslation()
-  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
-  const isReadOnly = readOnly || isMobile
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
     () => ({
@@ -53,15 +50,8 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   const [commitOperations, setCommitOperations] = useState<GluuCommitDialogOperation[]>([])
 
   const toggle = useCallback(() => {
-    if (isReadOnly) return
     setModal((prev) => !prev)
-  }, [isReadOnly])
-
-  useEffect(() => {
-    if (isReadOnly) {
-      setModal(false)
-    }
-  }, [isReadOnly])
+  }, [])
 
   const initialValues = useMemo<DynamicConfigFormValues>(
     () =>
@@ -73,7 +63,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
 
   const formik = useFormik<DynamicConfigFormValues>({
     initialValues,
-    onSubmit: isReadOnly ? () => undefined : toggle,
+    onSubmit: readOnly ? () => undefined : toggle,
     validationSchema: fidoValidationSchemas.dynamicConfigValidationSchema,
     validateOnMount: true,
   })
@@ -97,12 +87,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string) => {
-      if (isReadOnly) {
+      if (readOnly) {
         return
       }
       handleSubmit(formik.values, userMessage)
     },
-    [handleSubmit, formik.values, isReadOnly],
+    [handleSubmit, formik.values, readOnly],
   )
 
   const handleCancel = useCallback(() => {
@@ -112,12 +102,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   const handleFormSubmit = useCallback(
     (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (isReadOnly) {
+      if (readOnly) {
         return
       }
       formik.handleSubmit()
     },
-    [formik, isReadOnly],
+    [formik, readOnly],
   )
 
   const personCustomObjectClassList = useMemo(
@@ -167,7 +157,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               required
               showError={!!formik.errors.issuer}
               errorMessage={formik.errors.issuer}
@@ -183,7 +172,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               required
               showError={!!formik.errors.baseEndpoint}
               errorMessage={formik.errors.baseEndpoint}
@@ -199,7 +187,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.cleanServiceInterval}
               errorMessage={formik.errors.cleanServiceInterval}
               type="number"
@@ -215,7 +202,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.cleanServiceBatchChunkSize}
               errorMessage={formik.errors.cleanServiceBatchChunkSize}
               type="number"
@@ -231,7 +217,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.loggingLayout}
               errorMessage={formik.errors.loggingLayout}
               placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.LOGGING_LAYOUT)}
@@ -247,7 +232,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.metricReporterInterval}
               errorMessage={formik.errors.metricReporterInterval}
               placeholder={getFieldPlaceholder(t, fidoConstants.LABELS.METRIC_REPORTER_INTERVAL)}
@@ -263,7 +247,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.metricReporterKeepDataDays}
               errorMessage={formik.errors.metricReporterKeepDataDays}
               placeholder={getFieldPlaceholder(
@@ -282,7 +265,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.loggingLevel}
               errorMessage={formik.errors.loggingLevel}
             />
@@ -295,7 +277,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -307,7 +288,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -319,7 +299,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -331,7 +310,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -343,7 +321,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -355,7 +332,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -367,7 +343,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               doc_category={fidoConstants.DOC_CATEGORY}
             />
           </div>
@@ -381,7 +356,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
               formik={formik}
               lsize={LABEL_SIZE}
               rsize={INPUT_SIZE}
-              disabled={isMobile}
               showError={!!formik.errors.fido2MetricsRetentionDays}
               errorMessage={formik.errors.fido2MetricsRetentionDays}
               placeholder={getFieldPlaceholder(
@@ -402,20 +376,18 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                   {t(fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES)}
                 </span>
               </GluuText>
-              {!isMobile && (
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.addPropertyButton.bg}
-                  textColor={themeColors.settings.addPropertyButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={addObjectClass}
-                  disabled={!canAddObjectClass}
-                >
-                  <Add fontSize="small" />
-                  {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
-                </GluuButton>
-              )}
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addObjectClass}
+                disabled={!canAddObjectClass}
+              >
+                <Add fontSize="small" />
+                {t(fidoConstants.BUTTON_TEXT.ADD_CLASSES)}
+              </GluuButton>
             </div>
             <div className={classes.propsBody}>
               {personCustomObjectClassList.map((item, index) => (
@@ -427,21 +399,18 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
                     }
                     placeholder={t('placeholders.value')}
                     className={classes.propsInput}
-                    disabled={isMobile}
                   />
-                  {!isMobile && (
-                    <GluuButton
-                      type="button"
-                      backgroundColor={themeColors.settings.removeButton.bg}
-                      textColor={themeColors.settings.removeButton.text}
-                      useOpacityOnHover
-                      className={classes.propsActionBtn}
-                      onClick={() => removeObjectClass(index)}
-                    >
-                      <DeleteIcon className={classes.propsActionIcon} />
-                      {t('actions.remove')}
-                    </GluuButton>
-                  )}
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeObjectClass(index)}
+                  >
+                    <DeleteIcon className={classes.propsActionIcon} />
+                    {t('actions.remove')}
+                  </GluuButton>
                 </div>
               ))}
               {showObjectClassError && <div className={classes.propsError}>{objectClassError}</div>}
@@ -452,8 +421,8 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
 
       <GluuThemeFormFooter
         showBack
-        showCancel={!isMobile}
-        showApply={!isReadOnly}
+        showCancel
+        showApply={!readOnly}
         onApply={() => {
           const ops = buildChangedFieldOperations(
             initialValues,
@@ -471,7 +440,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
         isLoading={isSubmitting ?? false}
       />
 
-      {!isReadOnly && (
+      {!readOnly && (
         <GluuWebhookCommitDialog
           handler={toggle}
           modal={modal}
