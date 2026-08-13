@@ -32,6 +32,8 @@ app_versions = {
     "NODE_VERSION": "v18.16.0"
 }
 
+AGAMA_PW_DEPLOYMENT_ID = '48b53270-0ab3-4f34-b3d1-03b179eecbc9'
+
 os.environ["FLEX_PRE_JANS"] = "True"
 
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
@@ -859,7 +861,7 @@ class flex_installer(JettyInstaller):
 
     def deploy_agama_pw(self):
         print("Deploying Agama-PW Project")
-        Config.templateRenderingDict['agama_pw_deployment_id'] = str(uuid.uuid4())
+        Config.templateRenderingDict['agama_pw_deployment_id'] = AGAMA_PW_DEPLOYMENT_ID
         Config.templateRenderingDict['agama_pw_deployment_start_date'] = self.get_ldap_time()
         Config.templateRenderingDict['agama_pw_assets_base64'] = config_api_installer.generate_base64_file(self.agama_pw_fn, 1)
         config_api_installer.renderTemplateInOut(
