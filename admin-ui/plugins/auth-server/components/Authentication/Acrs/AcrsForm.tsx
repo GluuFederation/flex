@@ -7,6 +7,8 @@ import {
   type SyntheticEvent,
 } from 'react'
 import { useFormik, type FormikProps } from 'formik'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { Add, DeleteOutline } from '@/components/icons'
 import { Form, Input, FormGroup, Col } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -34,6 +36,7 @@ import { getPropertiesConfig } from './helper/acrUtils'
 
 const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): ReactElement => {
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { navigateToRoute } = useAppNavigation()
   const location = useLocation()
   const authnTab: number = (location.state as { authnTab?: number } | null)?.authnTab ?? 0
@@ -170,6 +173,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
     <Form
       onSubmit={(e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
+        if (isMobile) return
         formik.handleSubmit()
       }}
     >
@@ -201,7 +205,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               lsize={12}
               rsize={12}
               type="number"
-              disabled={isSimplePassword}
+              disabled={isSimplePassword || isMobile}
               showError={!!(formik.errors.level && formik.touched.level)}
               errorMessage={formik.errors.level}
               required={true}
@@ -217,6 +221,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
               lsize={12}
               rsize={12}
               values={DEFAULT_AUTHN_OPTIONS}
+              disabled={isMobile}
               showError={!!(formik.errors.defaultAuthNMethod && formik.touched.defaultAuthNMethod)}
               errorMessage={formik.errors.defaultAuthNMethod}
             />
@@ -231,7 +236,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 formik={formik}
                 lsize={12}
                 rsize={12}
-                disabled={isSimplePassword}
+                disabled={isSimplePassword || isMobile}
                 showError={!!(formik.errors.samlACR && formik.touched.samlACR)}
                 errorMessage={formik.errors.samlACR}
               />
@@ -247,7 +252,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                 formik={formik}
                 lsize={12}
                 rsize={12}
-                disabled={isSimplePassword}
+                disabled={isSimplePassword || isMobile}
                 showError={!!(formik.errors.description && formik.touched.description)}
                 errorMessage={formik.errors.description}
               />
@@ -307,6 +312,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                   showError={!!(formik.errors.bindDN && formik.touched.bindDN)}
                   errorMessage={formik.errors.bindDN}
                 />
@@ -321,6 +327,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   type="number"
+                  disabled={isMobile}
                   showError={!!(formik.errors.maxConnections && formik.touched.maxConnections)}
                   errorMessage={formik.errors.maxConnections}
                 />
@@ -334,6 +341,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -345,6 +353,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   formik={formik}
                   lsize={12}
                   rsize={12}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -357,6 +366,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   type="password"
+                  disabled={isMobile}
                 />
               </div>
 
@@ -368,6 +378,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                       <GluuAutocomplete
                         hideLabel
                         allowCustom
+                        disabled={isMobile}
                         name="servers"
                         label={t('fields.remote_ldap_server_post')}
                         value={Array.isArray(formik.values.servers) ? formik.values.servers : []}
@@ -395,6 +406,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                       <GluuAutocomplete
                         hideLabel
                         allowCustom
+                        disabled={isMobile}
                         name="baseDNs"
                         label={t('fields.base_dns')}
                         value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs : []}
@@ -424,6 +436,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   value={formik.values.useSSL}
+                  disabled={isMobile}
                 />
               </div>
 
@@ -435,6 +448,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   lsize={12}
                   rsize={12}
                   value={formik.values.enabled}
+                  disabled={isMobile}
                 />
               </div>
             </>
@@ -452,18 +466,20 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
             <GluuText variant="h5" disableThemeColor>
               <span className={classes.propsTitle}>{t('fields.script_properties')}</span>
             </GluuText>
-            <GluuButton
-              type="button"
-              backgroundColor={themeColors.settings.addPropertyButton.bg}
-              textColor={themeColors.settings.addPropertyButton.text}
-              useOpacityOnHover
-              className={classes.propsActionBtn}
-              onClick={addConfigProperty}
-              disabled={!canAddProperty}
-            >
-              <Add fontSize="small" />
-              {t('actions.add_property')}
-            </GluuButton>
+            {!isMobile && (
+              <GluuButton
+                type="button"
+                backgroundColor={themeColors.settings.addPropertyButton.bg}
+                textColor={themeColors.settings.addPropertyButton.text}
+                useOpacityOnHover
+                className={classes.propsActionBtn}
+                onClick={addConfigProperty}
+                disabled={!canAddProperty}
+              >
+                <Add fontSize="small" />
+                {t('actions.add_property')}
+              </GluuButton>
+            )}
           </div>
           <div className={classes.propsBody}>
             {configurationProperties.map((prop) => (
@@ -475,6 +491,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   }
                   placeholder={t('placeholders.enter_property_key')}
                   className={classes.propsInput}
+                  disabled={isMobile}
                 />
                 <Input
                   value={prop.value || ''}
@@ -483,18 +500,21 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
                   }
                   placeholder={t('placeholders.enter_property_value')}
                   className={classes.propsInput}
+                  disabled={isMobile}
                 />
-                <GluuButton
-                  type="button"
-                  backgroundColor={themeColors.settings.removeButton.bg}
-                  textColor={themeColors.settings.removeButton.text}
-                  useOpacityOnHover
-                  className={classes.propsActionBtn}
-                  onClick={() => removeConfigProperty(prop.id)}
-                >
-                  <DeleteOutline fontSize="small" />
-                  {t('actions.remove')}
-                </GluuButton>
+                {!isMobile && (
+                  <GluuButton
+                    type="button"
+                    backgroundColor={themeColors.settings.removeButton.bg}
+                    textColor={themeColors.settings.removeButton.text}
+                    useOpacityOnHover
+                    className={classes.propsActionBtn}
+                    onClick={() => removeConfigProperty(prop.id)}
+                  >
+                    <DeleteOutline fontSize="small" />
+                    {t('actions.remove')}
+                  </GluuButton>
+                )}
               </div>
             ))}
           </div>
@@ -505,10 +525,10 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
         hideDivider
         showBack={true}
         onBack={handleNavigateBack}
-        showCancel={true}
+        showCancel={!isMobile}
         onCancel={handleCancel}
         disableCancel={isSubmitting || !formik.dirty}
-        showApply={true}
+        showApply={!isMobile}
         onApply={handleApply}
         disableApply={isSubmitting || !formik.dirty || !formik.isValid}
         applyButtonType="button"

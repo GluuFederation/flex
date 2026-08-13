@@ -25,6 +25,7 @@ const GluuDetailGrid: React.FC<GluuDetailGridProps> = ({
           <GluuFormDetailRow
             label={field.label}
             value={field.value}
+            valueNode={field.valueNode}
             doc_entry={field.doc_entry}
             doc_category={field.doc_category ?? defaultDocCategory}
             isBadge={field.isBadge}

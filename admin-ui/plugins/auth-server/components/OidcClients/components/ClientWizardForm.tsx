@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { Card, CardBody, Wizard, WizardStep } from 'Components'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
@@ -26,7 +27,7 @@ import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scop
 import cloneDeep from 'lodash/cloneDeep'
 import omit from 'lodash/omit'
 import { useAppDispatch } from '@/redux/hooks'
-import { adminUiFeatures } from '@/constants'
+import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import { GluuButton } from '@/components'
 import { GluuFilterPopover } from '@/components/GluuFilterPopover'
 import { DownloadIcon, FilterListIcon, Visibility as VisibilityIcon } from '@/components/icons'
@@ -62,6 +63,8 @@ const ClientWizardForm = ({
   modifiedFields,
   setModifiedFields,
 }: ClientWizardFormProps) => {
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const isViewOnly = viewOnly || isMobile
   const formRef = useRef<FormikProps<ClientWizardFormValues>>(null)
   const footerRef = useRef<HTMLDivElement>(null)
   const commitMessageRef = useRef('')
@@ -251,7 +254,7 @@ const ClientWizardForm = ({
               <ClientBasic
                 client={clientSnapshot}
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 isEdit={isEdit}
                 oidcConfiguration={oidcConfiguration}
                 modifiedFields={modifiedFields}
@@ -264,7 +267,7 @@ const ClientWizardForm = ({
             <div>
               <ClientTokensPanel
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -275,7 +278,7 @@ const ClientWizardForm = ({
             <div>
               <ClientLogoutPanel
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -286,7 +289,7 @@ const ClientWizardForm = ({
             <div>
               <ClientSoftwarePanel
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -301,7 +304,7 @@ const ClientWizardForm = ({
                 setCurrentStep={setCurrentStep}
                 sequence={availableSteps}
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -313,7 +316,7 @@ const ClientWizardForm = ({
               <ClientEncryptionSigningPanel
                 formik={formik}
                 oidcConfiguration={oidcConfiguration}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -325,7 +328,7 @@ const ClientWizardForm = ({
               <ClientAdvanced
                 scripts={scripts}
                 formik={formik}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -337,7 +340,7 @@ const ClientWizardForm = ({
               <ClientScript
                 formik={formik}
                 scripts={scripts}
-                viewOnly={viewOnly}
+                viewOnly={isViewOnly}
                 modifiedFields={modifiedFields}
                 setModifiedFields={setModifiedFields}
               />
@@ -363,7 +366,7 @@ const ClientWizardForm = ({
       currentStep,
       availableSteps,
       clientSnapshot,
-      viewOnly,
+      isViewOnly,
       oidcConfiguration,
       modifiedFields,
       setModifiedFields,
@@ -475,20 +478,22 @@ const ClientWizardForm = ({
                           applyDisabled={!tokenPattern.dateAfter || !tokenPattern.dateBefore}
                         />
                       </div>
-                      <GluuButton
-                        type="button"
-                        onClick={handleExportCSVClick}
-                        title={t('titles.export_csv')}
-                        backgroundColor={themeColors.formFooter.apply.backgroundColor}
-                        textColor={themeColors.formFooter.apply.textColor}
-                        borderColor={themeColors.formFooter.apply.borderColor}
-                        useOpacityOnHover
-                        disabled={!tokenHasData || isExporting}
-                        className={classes.downloadButton}
-                      >
-                        <DownloadIcon className={classes.downloadButtonIcon} />
-                        {t('titles.export_csv')}
-                      </GluuButton>
+                      {!isMobile && (
+                        <GluuButton
+                          type="button"
+                          onClick={handleExportCSVClick}
+                          title={t('titles.export_csv')}
+                          backgroundColor={themeColors.formFooter.apply.backgroundColor}
+                          textColor={themeColors.formFooter.apply.textColor}
+                          borderColor={themeColors.formFooter.apply.borderColor}
+                          useOpacityOnHover
+                          disabled={!tokenHasData || isExporting}
+                          className={classes.downloadButton}
+                        >
+                          <DownloadIcon className={classes.downloadButtonIcon} />
+                          {t('titles.export_csv')}
+                        </GluuButton>
+                      )}
                     </>
                   )}
                   <GluuButton
@@ -583,10 +588,10 @@ const ClientWizardForm = ({
                         ? () => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
                         : prevStep
                     }
-                    showCancel
+                    showCancel={!isMobile}
                     cancelButtonLabel={t('actions.cancel')}
                     onCancel={() => formik.resetForm()}
-                    showApply={!viewOnly && canWriteClient}
+                    showApply={!isViewOnly && canWriteClient}
                     applyButtonType="button"
                     applyButtonLabel={t('actions.apply')}
                     onApply={validateFinish}

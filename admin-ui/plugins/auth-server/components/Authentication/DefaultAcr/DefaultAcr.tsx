@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppDispatch } from '@/redux/hooks'
 import { useFormik } from 'formik'
 import { useQueryClient } from '@tanstack/react-query'
@@ -38,6 +40,7 @@ import type { DefaultAcrFormValues } from '../types'
 
 const DefaultAcr = (): React.ReactElement => {
   const { canRead: canReadAuth, canWrite: canWriteAuth } = usePermission(AUTH_RESOURCE_ID)
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAcrUpdate } = useAcrAudit()
@@ -136,7 +139,7 @@ const DefaultAcr = (): React.ReactElement => {
     initialValues,
     enableReinitialize: true,
     onSubmit: () => {
-      if (canWriteAuth) {
+      if (canWriteAuth && !isMobile) {
         setModal(true)
       }
     },
@@ -197,24 +200,29 @@ const DefaultAcr = (): React.ReactElement => {
                 value={formik.values.defaultAcr}
                 formik={formik}
                 values={authScripts}
+                disabled={isMobile}
                 doc_category="json_properties"
                 doc_entry="defaultAcr"
               />
             </div>
           </GluuViewWrapper>
         </div>
-        {canWriteAuth && (
-          <GluuThemeFormFooter
-            hideDivider
-            showBack
-            showCancel
-            showApply
-            applyButtonType="submit"
-            onCancel={handleCancel}
-            disableCancel={!formik.dirty}
-            disableApply={!formik.dirty}
-            isLoading={putAcrsMutation.isPending}
-          />
+        {isMobile ? (
+          <GluuThemeFormFooter hideDivider showBack />
+        ) : (
+          canWriteAuth && (
+            <GluuThemeFormFooter
+              hideDivider
+              showBack
+              showCancel
+              showApply
+              applyButtonType="submit"
+              onCancel={handleCancel}
+              disableCancel={!formik.dirty}
+              disableApply={!formik.dirty}
+              isLoading={putAcrsMutation.isPending}
+            />
+          )
         )}
       </Form>
     </GluuLoader>

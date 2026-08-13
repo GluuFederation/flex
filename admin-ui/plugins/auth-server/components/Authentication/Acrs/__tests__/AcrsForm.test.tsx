@@ -1,5 +1,12 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+
+let mockIsMobile = false
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: () => mockIsMobile,
+}))
+
 import {
   createAuthenticationTestStore,
   createAuthenticationTestWrapper,
@@ -52,6 +59,7 @@ describe('AcrsForm', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockIsMobile = false
     const store = createAuthenticationTestStore()
     Wrapper = createAuthenticationTestWrapper(store)
   })
@@ -125,6 +133,65 @@ describe('AcrsForm', () => {
     it('disables Apply button when the form is not dirty', () => {
       render(<AcrsForm item={simplePasswordItem} handleSubmit={jest.fn()} />, { wrapper: Wrapper })
       expect(screen.getByText(/Apply/i).closest('button')).toBeDisabled()
+    })
+  })
+
+  describe('mobile is read-only', () => {
+    beforeEach(() => {
+      mockIsMobile = true
+    })
+
+    // GluuSelectRow renders a read-only select as aria-disabled + tabindex=-1
+    // rather than the disabled attribute, so accept either form.
+    const expectNonEditable = (control: Element): void => {
+      const nonEditable =
+        (control as HTMLInputElement).disabled || control.getAttribute('aria-disabled') === 'true'
+      expect(nonEditable).toBe(true)
+    }
+
+    it('disables every LDAP field and toggle', () => {
+      const { container } = render(<AcrsForm item={ldapItem} handleSubmit={jest.fn()} />, {
+        wrapper: Wrapper,
+      })
+      const controls = container.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+        'input, select, textarea',
+      )
+      expect(controls.length).toBeGreaterThan(0)
+      controls.forEach(expectNonEditable)
+    })
+
+    it('disables the script property inputs', () => {
+      const { container } = render(<AcrsForm item={scriptItem} handleSubmit={jest.fn()} />, {
+        wrapper: Wrapper,
+      })
+      const controls = container.querySelectorAll<HTMLInputElement>('input')
+      expect(controls.length).toBeGreaterThan(0)
+      controls.forEach(expectNonEditable)
+    })
+
+    it('does not offer Add Property or Remove controls', () => {
+      render(<AcrsForm item={scriptItem} handleSubmit={jest.fn()} />, { wrapper: Wrapper })
+      expect(screen.queryByText(/Add Property/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Remove/i)).not.toBeInTheDocument()
+    })
+
+    it('does not open the commit dialog when the form is submitted', () => {
+      const handleSubmit = jest.fn()
+      const { container } = render(<AcrsForm item={scriptItem} handleSubmit={handleSubmit} />, {
+        wrapper: Wrapper,
+      })
+      const form = container.querySelector('form')
+      expect(form).not.toBeNull()
+      fireEvent.submit(form as HTMLFormElement)
+      expect(handleSubmit).not.toHaveBeenCalled()
+      expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
+    })
+
+    it('shows a Back-only footer', () => {
+      render(<AcrsForm item={simplePasswordItem} handleSubmit={jest.fn()} />, { wrapper: Wrapper })
+      expect(screen.getByText(/Back/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
   })
 })

@@ -78,15 +78,20 @@ jest.mock('Routes/Apps/Gluu/GluuCommitDialog', () => ({
   default: jest.fn(() => null),
 }))
 
-jest.mock('@/helpers/navigation', () => ({
-  useAppNavigation: jest.fn(() => ({
-    navigateToRoute: jest.fn(),
-  })),
-  ROUTES: {
-    AUTH_SERVER_SCOPE_EDIT: jest.fn((id: string) => `/scope/${id}`),
-    AUTH_SERVER_CLIENT_EDIT: jest.fn((id: string) => `/client/${id}`),
-  },
-}))
+jest.mock('@/helpers/navigation', () => {
+  const actual = jest.requireActual('@/helpers/navigation')
+  return {
+    ...actual,
+    useAppNavigation: jest.fn(() => ({
+      navigateToRoute: jest.fn(),
+    })),
+    ROUTES: {
+      ...actual.ROUTES,
+      AUTH_SERVER_SCOPE_EDIT: jest.fn((id: string) => `/scope/${id}`),
+      AUTH_SERVER_CLIENT_EDIT: jest.fn((id: string) => `/client/${id}`),
+    },
+  }
+})
 
 jest.mock('@/redux/hooks', () => ({
   useAppDispatch: jest.fn(() => jest.fn()),

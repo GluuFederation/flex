@@ -1,14 +1,23 @@
 import { makeStyles } from 'tss-react/mui'
-import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import { BORDER_RADIUS, INPUT, OPACITY, FILTER_POPOVER, SPACING } from '@/constants'
+import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
+import {
+  BORDER_RADIUS,
+  INPUT,
+  MOBILE_MEDIA_QUERY,
+  OPACITY,
+  FILTER_POPOVER,
+  FILTER_SHEET,
+  SPACING,
+} from '@/constants'
 import type { StyleParams } from './types'
 
-export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, columns }) => {
+export const useStyles = makeStyles<StyleParams>()((_, { themeColors, isDark, width, columns }) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   const inputBg = themeColors.inputBackground
   const inputBorder = themeColors.fontColor
   const inputColor = themeColors.fontColor
   const popoverBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
+  const sheetInputBorder = isDark ? 'transparent' : popoverBorderColor
 
   return {
     container: {
@@ -78,6 +87,12 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, col
       '&:focus': {
         borderColor: inputBorder,
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'borderColor': sheetInputBorder,
+        '&:focus': {
+          borderColor: sheetInputBorder,
+        },
+      },
     },
     selectChevron: {
       position: 'absolute',
@@ -108,11 +123,47 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, width, col
       '&:focus': {
         borderColor: inputBorder,
       },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+        'borderColor': sheetInputBorder,
+        '&:focus': {
+          borderColor: sheetInputBorder,
+        },
+      },
     },
     buttonRow: {
       display: 'grid',
       gridTemplateColumns: `repeat(${columns}, 1fr)`,
       gap: 12,
+    },
+    sheetContent: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: FILTER_SHEET.FIELD_GROUP_GAP,
+      padding: `${FILTER_SHEET.TITLE_TO_GROUP}px ${FILTER_SHEET.PADDING_X}px ${FILTER_SHEET.BODY_PADDING_BOTTOM}px`,
+      fontFamily,
+      boxSizing: 'border-box' as const,
+    },
+    sheetFieldGroup: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: FILTER_SHEET.FIELD_LABEL_MB,
+      minWidth: 0,
+    },
+    sheetFieldLabel: {
+      fontSize: fontSizes.description,
+      fontWeight: fontWeights.semiBold,
+      letterSpacing: letterSpacing.normal,
+      color: themeColors.fontColor,
+      fontFamily,
+    },
+    sheetButtonRow: {
+      'display': 'flex',
+      'gap': FILTER_SHEET.BUTTONS_GAP,
+      'marginTop': FILTER_SHEET.BUTTONS_MT - FILTER_SHEET.FIELD_GROUP_GAP,
+      '& > *': {
+        flex: '1 1 0',
+        minWidth: 0,
+      },
     },
   }
 })

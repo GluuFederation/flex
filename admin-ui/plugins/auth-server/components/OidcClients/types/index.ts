@@ -12,6 +12,11 @@ export type ClientDetailPageProps = {
   scopes: ScopeItem[]
 }
 
+export type ClientSecretValueProps = {
+  secret: string
+  themeColors: ThemeConfig
+}
+
 export type UseClientTokensParams = {
   clientInum: string | undefined
   pattern: TokenSearchPattern
@@ -63,6 +68,8 @@ export type UseClientsParams = {
   limit?: number
   pattern?: string
   startIndex?: number
+  sortBy?: string
+  sortOrder?: string
 }
 
 export type DeleteClientParams = {
