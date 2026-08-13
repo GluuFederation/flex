@@ -24,8 +24,8 @@ import {
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
   buildVelocityMatrix,
-  countSequenceSpikes,
-  countSpikes,
+  countSequenceSpikesInRange,
+  countSpikesInRange,
   filterSuspiciousIps,
   getSecurityPalette,
   percentDelta,
@@ -157,29 +157,27 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     )
 
     const monthlyEntries = monthlyQuery.data?.entries ?? []
-    const hourlyAnomaliesToday = countSpikes(
-      sliceEntriesByRange(hourlyEntries, todayStart, todayEnd),
+    const hourlyAnomaliesToday = countSpikesInRange(hourlyEntries, todayStart, todayEnd)
+    const hourlyAnomaliesYesterday = countSpikesInRange(
+      hourlyEntries,
+      todayStart.subtract(1, 'day'),
+      todayStart.subtract(1, 'millisecond'),
     )
-    const hourlyAnomaliesYesterday = countSpikes(
-      sliceEntriesByRange(
-        hourlyEntries,
-        todayStart.subtract(1, 'day'),
-        todayStart.subtract(1, 'millisecond'),
-      ),
+    const dailyAnomalies = countSpikesInRange(dailyEntries, thisMonthStart, todayEnd)
+    const dailyAnomaliesPrevious = countSpikesInRange(
+      dailyEntries,
+      monthStart,
+      thisMonthStart.subtract(1, 'millisecond'),
     )
-    const dailyAnomalies = countSpikes(sliceEntriesByRange(dailyEntries, thisMonthStart, todayEnd))
-    const dailyAnomaliesPrevious = countSpikes(
-      sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
+    const monthlyAnomalies = countSequenceSpikesInRange(
+      monthlyEntries,
+      ranges.lastTwelveMonths.startDate,
+      todayEnd,
     )
-    const monthlyAnomalies = countSequenceSpikes(
-      sliceEntriesByRange(monthlyEntries, ranges.lastTwelveMonths.startDate, todayEnd),
-    )
-    const monthlyAnomaliesPrevious = countSequenceSpikes(
-      sliceEntriesByRange(
-        monthlyEntries,
-        ranges.lastTwelveMonths.startDate,
-        thisMonthStart.subtract(1, 'millisecond'),
-      ),
+    const monthlyAnomaliesPrevious = countSequenceSpikesInRange(
+      monthlyEntries,
+      ranges.lastTwelveMonths.startDate,
+      thisMonthStart.subtract(1, 'millisecond'),
     )
 
     return {

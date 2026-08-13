@@ -699,7 +699,20 @@ const pointDelta = (current: number, previous: number): KpiDelta => {
 const countSpikes = (entries: readonly AggregationEntry[]): number =>
   buildFailureSpikeSeries(entries).filter((point) => point.isSpike).length
 
-const countSequenceSpikes = (entries: readonly AggregationEntry[]): number => {
+const isWithinRange = (timestamp: number, from: Dayjs, to: Dayjs): boolean =>
+  timestamp >= from.valueOf() && timestamp <= to.valueOf()
+
+// Baselines are derived from every entry supplied, then the result is narrowed to the
+// reported window. Narrowing the entries first would discard the history each point is
+// compared against, so the KPI counters would disagree with the charts.
+const countSpikesInRange = (entries: readonly AggregationEntry[], from: Dayjs, to: Dayjs): number =>
+  buildFailureSpikeSeries(entries).filter(
+    (point) => point.isSpike && isWithinRange(point.timestamp, from, to),
+  ).length
+
+const buildSequenceSpikePoints = (
+  entries: readonly AggregationEntry[],
+): { timestamp: number; isSpike: boolean }[] => {
   const points = entries
     .map((entry) => {
       const date = entryStartDate(entry)
@@ -709,13 +722,29 @@ const countSequenceSpikes = (entries: readonly AggregationEntry[]): number => {
     .filter((point): point is { timestamp: number; failures: number } => point !== null)
     .sort((a, b) => a.timestamp - b.timestamp)
 
-  return points.filter((point, index) => {
+  return points.map((point, index) => {
     const history = points.slice(Math.max(0, index - BASELINE_WINDOW_DAYS), index)
-    if (!history.length) return false
-    const baseline = history.reduce((sum, item) => sum + item.failures, 0) / history.length
-    return baseline > 0 && point.failures >= baseline * SPIKE_RATIO_THRESHOLD
-  }).length
+    const baseline = history.length
+      ? history.reduce((sum, item) => sum + item.failures, 0) / history.length
+      : 0
+    return {
+      timestamp: point.timestamp,
+      isSpike: baseline > 0 && point.failures >= baseline * SPIKE_RATIO_THRESHOLD,
+    }
+  })
 }
+
+const countSequenceSpikes = (entries: readonly AggregationEntry[]): number =>
+  buildSequenceSpikePoints(entries).filter((point) => point.isSpike).length
+
+const countSequenceSpikesInRange = (
+  entries: readonly AggregationEntry[],
+  from: Dayjs,
+  to: Dayjs,
+): number =>
+  buildSequenceSpikePoints(entries).filter(
+    (point) => point.isSpike && isWithinRange(point.timestamp, from, to),
+  ).length
 
 const buildAnomalySummary = (
   spikeSeries: readonly FailureSpikePoint[],
@@ -815,7 +844,9 @@ export {
   buildVelocityMatrix,
   countByThreatLevel,
   countSequenceSpikes,
+  countSequenceSpikesInRange,
   countSpikes,
+  countSpikesInRange,
   filterSuspiciousIps,
   findDropOffPeak,
   findPeakSpike,
