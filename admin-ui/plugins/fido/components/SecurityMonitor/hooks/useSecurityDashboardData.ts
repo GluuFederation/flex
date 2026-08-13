@@ -18,6 +18,7 @@ import {
 } from '../constants'
 import {
   aggregateIpFailures,
+  aggregateUserFailures,
   buildAnomalySummary,
   buildDeviceTrend,
   buildDropOffSeries,
@@ -27,6 +28,7 @@ import {
   countSpikesInRange,
   filterSpikePointsByRange,
   filterSuspiciousIps,
+  filterUsersUnderSiege,
   getSecurityPalette,
   percentDelta,
   pointDelta,
@@ -106,6 +108,10 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   const ipStats = useMemo(() => aggregateIpFailures(authEntries), [authEntries])
 
   const suspiciousIps = useMemo(() => filterSuspiciousIps(ipStats), [ipStats])
+
+  const userStats = useMemo(() => aggregateUserFailures(authEntries), [authEntries])
+
+  const usersUnderSiege = useMemo(() => filterUsersUnderSiege(userStats), [userStats])
 
   const errorSlices = useMemo(
     () => buildErrorCategorySlices(errorsQuery.data, palette.errorCategories),
@@ -290,6 +296,8 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     spikeSeries,
     dropOffSeries,
     ipStats,
+    userStats,
+    usersUnderSiege,
     suspiciousIps,
     errorSlices,
     velocityMatrix,

@@ -113,7 +113,7 @@ const SecurityMonitorPage: React.FC = () => {
                 <SessionIntegrityChart series={data.dropOffSeries} />
               </div>
               <div className={classes.fullWidthRow}>
-                <ThreatOriginsChart ipStats={data.ipStats} />
+                <ThreatOriginsChart userStats={data.userStats} />
               </div>
             </>
           )
@@ -156,7 +156,7 @@ const SecurityMonitorPage: React.FC = () => {
           />
           <SecurityKpiStrip
             summary={data.summary}
-            suspiciousIps={data.suspiciousIps}
+            usersUnderSiege={data.usersUnderSiege}
             period={period}
           />
           <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />

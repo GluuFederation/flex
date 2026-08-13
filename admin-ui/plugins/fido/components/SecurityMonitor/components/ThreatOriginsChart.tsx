@@ -9,7 +9,7 @@ import {
   buildIpScaffold,
   countByThreatLevel,
   getSecurityPalette,
-  takeTopIpsByFailure,
+  takeTopUsersByFailure,
 } from '../utils'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
@@ -24,7 +24,7 @@ const BAR_EMPTY_INSET = {
   right: CHART_EMPTY_INSET.BAR_LEFT_MARGIN,
 }
 
-const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
+const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
   const { t } = useTranslation()
   const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
@@ -32,13 +32,14 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
 
   const data = useMemo(
     () =>
-      takeTopIpsByFailure(ipStats).map((stat) => ({
-        ipAddress: stat.primaryUser ?? stat.ipAddress,
+      takeTopUsersByFailure(userStats).map((stat) => ({
+        ipAddress: stat.username,
         failures: stat.failures,
-        targetedUsers: stat.targetedUsers,
+        abandoned: stat.abandoned,
+        failed: stat.failed,
         fill: palette.threatLevels[stat.threatLevel],
       })),
-    [ipStats, palette.threatLevels],
+    [userStats, palette.threatLevels],
   )
 
   const isEmpty = data.length === 0
@@ -50,8 +51,8 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
   )
 
   const criticalCount = useMemo(
-    () => countByThreatLevel(ipStats, THREAT_LEVELS.CRITICAL),
-    [ipStats],
+    () => countByThreatLevel(userStats, THREAT_LEVELS.CRITICAL),
+    [userStats],
   )
 
   const legend = useMemo(

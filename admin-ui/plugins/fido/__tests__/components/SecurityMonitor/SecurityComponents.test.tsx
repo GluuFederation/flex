@@ -7,14 +7,13 @@ import SecurityMonitorHeader from 'Plugins/fido/components/SecurityMonitor/compo
 import VelocityWatchHeatmap from 'Plugins/fido/components/SecurityMonitor/components/VelocityWatchHeatmap'
 import {
   ANOMALY_KINDS,
-  ATTACK_PATTERNS,
   KPI_PERIODS,
   THREAT_LEVELS,
 } from 'Plugins/fido/components/SecurityMonitor/constants'
 import type {
   AnomalySummary,
-  IpFailureStat,
   SecurityKpiSummary,
+  UserFailureStat,
   VelocityMatrix,
 } from 'Plugins/fido/components/SecurityMonitor/types'
 
@@ -60,23 +59,21 @@ const summary: SecurityKpiSummary = {
   },
 }
 
-const criticalIp: IpFailureStat = {
-  ipAddress: '192.168.1.142',
-  primaryUser: 'jdoe',
+const criticalUser: UserFailureStat = {
+  username: 'john',
   failures: 148,
+  failed: 100,
+  abandoned: 48,
   successes: 0,
-  attempts: 148,
+  outcomes: 148,
   failureRate: 100,
-  targetedUsers: 6,
-  firstSeen: 1,
   lastSeen: 2,
   threatLevel: THREAT_LEVELS.CRITICAL,
-  pattern: ATTACK_PATTERNS.PASSWORD_SPRAYING,
 }
 
-const warningIp: IpFailureStat = {
-  ...criticalIp,
-  ipAddress: '172.16.0.33',
+const warningUser: UserFailureStat = {
+  ...criticalUser,
+  username: 'berry',
   failures: 60,
   threatLevel: THREAT_LEVELS.MEDIUM,
 }
@@ -195,7 +192,7 @@ describe('SecurityKpiStrip', () => {
     render(
       <SecurityKpiStrip
         summary={summary}
-        suspiciousIps={[criticalIp, warningIp]}
+        usersUnderSiege={[criticalUser, warningUser]}
         period={KPI_PERIODS.TODAY}
       />,
       { wrapper: Wrapper },
@@ -210,7 +207,7 @@ describe('SecurityKpiStrip', () => {
   })
 
   it('shows each delta as a value badge beside its caption', () => {
-    render(<SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />, {
+    render(<SecurityKpiStrip summary={summary} usersUnderSiege={[]} period={KPI_PERIODS.TODAY} />, {
       wrapper: Wrapper,
     })
 
@@ -239,7 +236,7 @@ describe('SecurityKpiStrip', () => {
       },
     }
 
-    render(<SecurityKpiStrip summary={quiet} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />, {
+    render(<SecurityKpiStrip summary={quiet} usersUnderSiege={[]} period={KPI_PERIODS.TODAY} />, {
       wrapper: Wrapper,
     })
 
@@ -248,23 +245,24 @@ describe('SecurityKpiStrip', () => {
     expect(screen.queryAllByTestId('TrendingDownIcon')).toHaveLength(0)
   })
 
-  it('lists the flagged IP addresses as chips', () => {
+  it('shows the worst-hit account as a chip and folds the rest into an overflow badge', () => {
     render(
       <SecurityKpiStrip
         summary={summary}
-        suspiciousIps={[criticalIp, warningIp]}
+        usersUnderSiege={[criticalUser, warningUser]}
         period={KPI_PERIODS.TODAY}
       />,
       { wrapper: Wrapper },
     )
 
-    expect(screen.getByText('192.168.1.142')).toBeInTheDocument()
-    expect(screen.getByText('172.16.0.33')).toBeInTheDocument()
+    expect(screen.getByText('john')).toBeInTheDocument()
+    expect(screen.getByText('+1')).toBeInTheDocument()
+    expect(screen.queryByText('berry')).not.toBeInTheDocument()
   })
 
   it('maps the monthly period onto every card', () => {
     render(
-      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.THIS_MONTH} />,
+      <SecurityKpiStrip summary={summary} usersUnderSiege={[]} period={KPI_PERIODS.THIS_MONTH} />,
       {
         wrapper: Wrapper,
       },
@@ -277,18 +275,18 @@ describe('SecurityKpiStrip', () => {
 
   it('moves the anomaly count with the selected period', () => {
     const { rerender } = render(
-      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />,
+      <SecurityKpiStrip summary={summary} usersUnderSiege={[]} period={KPI_PERIODS.TODAY} />,
       { wrapper: Wrapper },
     )
     expect(screen.getByText('3')).toBeInTheDocument()
 
     rerender(
-      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.LAST_7_DAYS} />,
+      <SecurityKpiStrip summary={summary} usersUnderSiege={[]} period={KPI_PERIODS.LAST_7_DAYS} />,
     )
     expect(screen.getByText('14')).toBeInTheDocument()
 
     rerender(
-      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.THIS_MONTH} />,
+      <SecurityKpiStrip summary={summary} usersUnderSiege={[]} period={KPI_PERIODS.THIS_MONTH} />,
     )
     expect(screen.getByText('47')).toBeInTheDocument()
   })

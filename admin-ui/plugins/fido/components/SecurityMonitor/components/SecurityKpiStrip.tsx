@@ -1,22 +1,34 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Tooltip from '@mui/material/Tooltip'
 import { GluuBadge } from '@/components/GluuBadge'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
-import { THREAT_LEVELS } from '../constants'
+import { SIEGE_CHIP_LIMIT, THREAT_LEVELS } from '../constants'
 import { countByThreatLevel, getBadgeBackground, getSecurityPalette } from '../utils'
 import KpiDeltaLabel from './KpiDeltaLabel'
 import type { SecurityKpiStripProps } from '../types'
 
-const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspiciousIps, period }) => {
+const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
+  summary,
+  usersUnderSiege,
+  period,
+}) => {
   const { t } = useTranslation()
   const { themeColors, isDark } = useSecurityTheme()
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
   const criticalCount = useMemo(
-    () => countByThreatLevel(suspiciousIps, THREAT_LEVELS.CRITICAL),
-    [suspiciousIps],
+    () => countByThreatLevel(usersUnderSiege, THREAT_LEVELS.CRITICAL),
+    [usersUnderSiege],
+  )
+
+  const chipUsers = usersUnderSiege.slice(0, SIEGE_CHIP_LIMIT)
+  const overflowCount = usersUnderSiege.length - chipUsers.length
+  const allUsernames = useMemo(
+    () => usersUnderSiege.map((stat) => stat.username).join(', '),
+    [usersUnderSiege],
   )
 
   const anomalyDelta = summary.anomaliesDelta[period]
@@ -70,34 +82,45 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
         <p className={classes.kpiLabel}>{t('fields.suspicious_ips')}</p>
         <p
           className={classes.kpiValue}
-          style={{ color: alertColor(suspiciousIps.length, palette.chart.suspicious) }}
+          style={{ color: alertColor(usersUnderSiege.length, palette.chart.suspicious) }}
         >
-          {suspiciousIps.length.toLocaleString()}
+          {usersUnderSiege.length.toLocaleString()}
         </p>
         <p className={classes.kpiCaption}>
           {t('fields.suspicious_ips_breakdown', {
             critical: criticalCount,
-            warning: suspiciousIps.length - criticalCount,
+            warning: usersUnderSiege.length - criticalCount,
           })}
         </p>
-        <div className={classes.kpiChips}>
-          {suspiciousIps.slice(0, 3).map((stat) => (
-            <GluuBadge
-              key={stat.ipAddress}
-              pill
-              backgroundColor={getBadgeBackground(
-                palette.threatLevels[stat.threatLevel],
-                isDark,
-                stat.threatLevel === THREAT_LEVELS.CRITICAL
-                  ? palette.statusBg.inactive
-                  : palette.statusBg.active,
-              )}
-              textColor={palette.threatLevels[stat.threatLevel]}
-            >
-              {stat.ipAddress}
-            </GluuBadge>
-          ))}
-        </div>
+        <Tooltip title={allUsernames} arrow>
+          <div className={classes.kpiChips}>
+            {chipUsers.map((stat) => (
+              <GluuBadge
+                key={stat.username}
+                pill
+                backgroundColor={getBadgeBackground(
+                  palette.threatLevels[stat.threatLevel],
+                  isDark,
+                  stat.threatLevel === THREAT_LEVELS.CRITICAL
+                    ? palette.statusBg.inactive
+                    : palette.statusBg.active,
+                )}
+                textColor={palette.threatLevels[stat.threatLevel]}
+              >
+                {stat.username}
+              </GluuBadge>
+            ))}
+            {overflowCount > 0 && (
+              <GluuBadge
+                pill
+                backgroundColor={palette.statusBg.active}
+                textColor={palette.chart.suspicious}
+              >
+                {t('fields.siege_overflow', { total: overflowCount })}
+              </GluuBadge>
+            )}
+          </div>
+        </Tooltip>
       </div>
     </div>
   )

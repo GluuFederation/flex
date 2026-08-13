@@ -202,3 +202,68 @@ describe('buildFailureSpikeSeries abandoned handling', () => {
     expect(series[0].failures).toBe(20)
   })
 })
+
+describe('abandoned operations from the aggregation payload', () => {
+  const hour = todayStart.add(10, 'hour')
+
+  it('prefers the reported counter over the attempts residual', () => {
+    const series = buildFailureSpikeSeries(
+      [
+        {
+          startTime: hour.toISOString(),
+          authenticationAttempts: 13,
+          authenticationSuccesses: 2,
+          authenticationFailures: 0,
+          metricsData: { abandonedOperations: 4 },
+        },
+      ],
+      todayStart,
+    )
+
+    expect(series[0].failures).toBe(4)
+  })
+
+  it('falls back to the residual when the counter is absent', () => {
+    const series = buildFailureSpikeSeries(
+      [
+        {
+          startTime: hour.toISOString(),
+          authenticationAttempts: 13,
+          authenticationSuccesses: 2,
+          authenticationFailures: 0,
+        },
+      ],
+      todayStart,
+    )
+
+    expect(series[0].failures).toBe(11)
+  })
+
+  it('flags a bucket with no history once it clears the absolute floor', () => {
+    const entries = [
+      {
+        startTime: hour.toISOString(),
+        authenticationAttempts: 13,
+        authenticationSuccesses: 2,
+        authenticationFailures: 0,
+        metricsData: { abandonedOperations: 4 },
+      },
+    ]
+
+    expect(countSpikesInRange(entries, todayStart, todayEnd)).toBe(1)
+  })
+
+  it('leaves a quiet bucket below the floor alone', () => {
+    const entries = [
+      {
+        startTime: todayStart.add(19, 'hour').toISOString(),
+        authenticationAttempts: 3,
+        authenticationSuccesses: 1,
+        authenticationFailures: 0,
+        metricsData: { abandonedOperations: 2 },
+      },
+    ]
+
+    expect(countSpikesInRange(entries, todayStart, todayEnd)).toBe(0)
+  })
+})

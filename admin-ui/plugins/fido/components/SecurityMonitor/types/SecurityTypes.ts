@@ -36,6 +36,18 @@ type IpFailureStat = {
   pattern: AttackPattern
 }
 
+type UserFailureStat = {
+  username: string
+  failures: number
+  failed: number
+  abandoned: number
+  successes: number
+  outcomes: number
+  failureRate: number
+  lastSeen: number
+  threatLevel: ThreatLevel
+}
+
 type ChartEmptyInset = {
   top?: number
   right?: number
@@ -100,6 +112,7 @@ type PeriodTotals = {
   attempts: number
   successes: number
   failures: number
+  abandoned?: number
 }
 
 type KpiDelta = {
@@ -213,7 +226,7 @@ type KpiDeltaLabelProps = {
 
 type SecurityKpiStripProps = {
   summary: SecurityKpiSummary
-  suspiciousIps: readonly IpFailureStat[]
+  usersUnderSiege: readonly UserFailureStat[]
   period: KpiPeriod
 }
 
@@ -226,7 +239,7 @@ type DropOffChartProps = {
 }
 
 type FailureBurstByIpProps = {
-  ipStats: readonly IpFailureStat[]
+  userStats: readonly UserFailureStat[]
 }
 
 type ErrorCategoryChartProps = {
@@ -247,6 +260,8 @@ type SecurityDashboardData = {
   spikeSeries: readonly FailureSpikePoint[]
   dropOffSeries: readonly DropOffPoint[]
   ipStats: readonly IpFailureStat[]
+  userStats: readonly UserFailureStat[]
+  usersUnderSiege: readonly UserFailureStat[]
   suspiciousIps: readonly IpFailureStat[]
   errorSlices: readonly ErrorCategorySlice[]
   velocityMatrix: VelocityMatrix
@@ -329,6 +344,7 @@ export type {
   SecurityTheme,
   SecurityTranslate,
   ThreatLevel,
+  UserFailureStat,
   VelocityCell,
   VelocityHeatmapProps,
   VelocityMatrix,

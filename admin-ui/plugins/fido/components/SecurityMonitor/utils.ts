@@ -20,11 +20,15 @@ import {
   DROP_OFF_ALERT_RATE,
   HIGH_IP_FAILURE_MULTIPLIER,
   HIGH_IP_FAILURE_RATIO,
+  NO_BASELINE_MIN_FAILURES,
   CHART_LABEL_FORMATS,
   SPIKE_RATIO_THRESHOLD,
   SUSPICIOUS_IP_MIN_FAILURES,
   SUSPICIOUS_IP_MIN_FAILURE_RATE,
   SUSPICIOUS_IP_MIN_TARGETED_USERS,
+  USER_SIEGE_MIN_FAILURES,
+  USER_SIEGE_MIN_FAILURE_RATE,
+  USER_SIEGE_RATE_MIN_FAILURES,
   THREAT_LEVELS,
   TOP_IP_LIMIT,
   TOP_USER_LIMIT,
@@ -55,6 +59,7 @@ import type {
   SecurityExportRows,
   SecurityTranslate,
   ThreatLevel,
+  UserFailureStat,
   VelocityCell,
   VelocityMatrix,
 } from './types'
@@ -77,10 +82,15 @@ const resolveIdentity = (entry: MetricsEntry): string | null =>
 
 const FAILURE_STATUSES: ReadonlySet<string> = new Set([
   METRIC_STATUS.FAILURE,
+  METRIC_STATUS.ABANDONED,
   'FAILED',
   'ERROR',
-  'ABANDONED',
 ])
+
+// An operation writes an ATTEMPT row when it starts and an outcome row when it ends, so
+// only the outcome rows may be tallied.
+const isOutcomeEntry = (entry: MetricsEntry): boolean =>
+  entry.status?.toUpperCase() !== METRIC_STATUS.ATTEMPT
 
 const isSuccessEntry = (entry: MetricsEntry): boolean =>
   entry.status?.toUpperCase() === METRIC_STATUS.SUCCESS
@@ -101,14 +111,22 @@ const entryStartDate = (entry: AggregationEntry): Dayjs | null => {
   return parsed.isValid() ? parsed : null
 }
 
-// A bucket's failures are the explicit failures plus the abandoned attempts the
-// aggregation reports only as the residual of attempts that never resolved.
-const entryFailures = (entry: AggregationEntry): number => {
+// The aggregation reports abandoned operations explicitly, and that number is smaller than
+// the attempts residual because a single abandoned operation can span several attempts.
+// Only fall back to the residual when the counter is absent.
+const entryAbandoned = (entry: AggregationEntry): number => {
+  const reported = entry.abandonedOperations ?? entry.metricsData?.abandonedOperations
+  if (typeof reported === 'number' && Number.isFinite(reported)) return Math.max(0, reported)
+
   const attempts = toCount(entry.authenticationAttempts)
   const successes = toCount(entry.authenticationSuccesses)
   const failures = toCount(entry.authenticationFailures)
-  return failures + Math.max(0, attempts - successes - failures)
+  return Math.max(0, attempts - successes - failures)
 }
+
+// A bucket's failures are the explicit failures plus the abandoned operations.
+const entryFailures = (entry: AggregationEntry): number =>
+  toCount(entry.authenticationFailures) + entryAbandoned(entry)
 
 const buildFailureSpikeSeries = (
   entries: readonly AggregationEntry[],
@@ -149,7 +167,12 @@ const buildFailureSpikeSeries = (
         timestamp,
         failures: point.failures,
         baseline,
-        isSpike: baseline > 0 && point.failures >= baseline * SPIKE_RATIO_THRESHOLD,
+        // Without comparable history there is no baseline to beat, so fall back to an
+        // absolute floor. Otherwise a young deployment could never report an anomaly.
+        isSpike:
+          baseline > 0
+            ? point.failures >= baseline * SPIKE_RATIO_THRESHOLD
+            : point.failures >= NO_BASELINE_MIN_FAILURES,
       }
     })
 }
@@ -229,7 +252,7 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
 
   entries.forEach((entry) => {
     const ipAddress = entry.ipAddress
-    if (!ipAddress) return
+    if (!ipAddress || !isOutcomeEntry(entry)) return
     const bucket = buckets.get(ipAddress) ?? {
       failures: 0,
       successes: 0,
@@ -266,8 +289,7 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
 
   return Array.from(buckets.entries())
     .map(([ipAddress, bucket]) => {
-      const inferredFailures = Math.max(0, bucket.attempts - bucket.successes - bucket.failures)
-      const failures = bucket.failures + inferredFailures
+      const failures = bucket.failures
       const failureRatio = bucket.attempts ? failures / bucket.attempts : 0
       return {
         ipAddress,
@@ -289,6 +311,69 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
     .sort((a, b) => b.failures - a.failures)
 }
 
+// Grouped by account rather than by address: abandoned rows carry no IP at all, and one
+// account can be hit from several addresses, so an IP-keyed tally cannot cover every user.
+const aggregateUserFailures = (entries: readonly MetricsEntry[]): UserFailureStat[] => {
+  const buckets = new Map<
+    string,
+    { failed: number; abandoned: number; successes: number; outcomes: number; lastSeen: number }
+  >()
+
+  entries.forEach((entry) => {
+    const identity = resolveIdentity(entry)
+    if (!identity || !isOutcomeEntry(entry)) return
+
+    const bucket = buckets.get(identity) ?? {
+      failed: 0,
+      abandoned: 0,
+      successes: 0,
+      outcomes: 0,
+      lastSeen: 0,
+    }
+
+    bucket.outcomes += 1
+    if (entry.status?.toUpperCase() === METRIC_STATUS.ABANDONED) bucket.abandoned += 1
+    else if (isFailureEntry(entry)) bucket.failed += 1
+    else if (isSuccessEntry(entry)) bucket.successes += 1
+
+    if (entry.timestamp) {
+      const parsed = createDate(entry.timestamp)
+      if (parsed.isValid()) bucket.lastSeen = Math.max(bucket.lastSeen, parsed.valueOf())
+    }
+
+    buckets.set(identity, bucket)
+  })
+
+  return Array.from(buckets.entries())
+    .map(([username, bucket]) => {
+      const failures = bucket.failed + bucket.abandoned
+      const failureRatio = bucket.outcomes ? failures / bucket.outcomes : 0
+      return {
+        username,
+        failures,
+        failed: bucket.failed,
+        abandoned: bucket.abandoned,
+        successes: bucket.successes,
+        outcomes: bucket.outcomes,
+        failureRate: roundTo(failureRatio * 100),
+        lastSeen: bucket.lastSeen,
+        threatLevel: classifyThreatLevel({ failures, failureRatio }),
+      }
+    })
+    .sort((a, b) => b.failures - a.failures)
+}
+
+const filterUsersUnderSiege = (stats: readonly UserFailureStat[]): UserFailureStat[] =>
+  stats.filter(
+    (stat) =>
+      stat.failures >= USER_SIEGE_MIN_FAILURES ||
+      (stat.failures >= USER_SIEGE_RATE_MIN_FAILURES &&
+        stat.failureRate >= USER_SIEGE_MIN_FAILURE_RATE * 100),
+  )
+
+const takeTopUsersByFailure = (stats: readonly UserFailureStat[], limit = TOP_USER_LIMIT) =>
+  stats.filter((stat) => stat.failures > 0).slice(0, limit)
+
 const takeTopIpsByFailure = (stats: readonly IpFailureStat[], limit = TOP_IP_LIMIT) =>
   stats.filter((stat) => stat.failures > 0).slice(0, limit)
 
@@ -300,8 +385,10 @@ const filterSuspiciousIps = (stats: readonly IpFailureStat[]): IpFailureStat[] =
         stat.targetedUsers >= SUSPICIOUS_IP_MIN_TARGETED_USERS),
   )
 
-const countByThreatLevel = (stats: readonly IpFailureStat[], level: ThreatLevel): number =>
-  stats.filter((stat) => stat.threatLevel === level).length
+const countByThreatLevel = (
+  stats: readonly { threatLevel: ThreatLevel }[],
+  level: ThreatLevel,
+): number => stats.filter((stat) => stat.threatLevel === level).length
 
 const buildDropOffSeries = (
   entries: readonly AggregationEntry[],
@@ -314,7 +401,7 @@ const buildDropOffSeries = (
       const attempts = toCount(entry.authenticationAttempts)
       const successes = toCount(entry.authenticationSuccesses)
       const failures = toCount(entry.authenticationFailures)
-      const dropOffs = Math.max(0, attempts - successes - failures)
+      const dropOffs = entryAbandoned(entry)
 
       return {
         timestamp: date.valueOf(),
@@ -637,8 +724,9 @@ const sumAggregation = (entries: readonly AggregationEntry[]): PeriodTotals =>
       attempts: acc.attempts + toCount(entry.authenticationAttempts),
       successes: acc.successes + toCount(entry.authenticationSuccesses),
       failures: acc.failures + toCount(entry.authenticationFailures),
+      abandoned: (acc.abandoned ?? 0) + entryAbandoned(entry),
     }),
-    { attempts: 0, successes: 0, failures: 0 },
+    { attempts: 0, successes: 0, failures: 0, abandoned: 0 },
   )
 
 const AGGREGATION_COUNTER_KEYS = [
@@ -705,8 +793,10 @@ const successRateOf = (totals: { attempts: number; successes: number }): number 
 
 // Abandoned authentications are reported by the aggregation API only as the residual of
 // attempts that neither succeeded nor failed outright.
+// Prefer the abandoned counter carried by the aggregation; the attempts residual is only a
+// fallback for totals assembled without it.
 const abandonedOf = (totals: PeriodTotals): number =>
-  Math.max(0, totals.attempts - totals.successes - totals.failures)
+  totals.abandoned ?? Math.max(0, totals.attempts - totals.successes - totals.failures)
 
 // Auth failures cover every attempt that did not authenticate: explicit failures plus
 // abandoned sessions.
@@ -882,4 +972,7 @@ export {
   mergeTodayFromHourly,
   sumAggregation,
   takeTopIpsByFailure,
+  aggregateUserFailures,
+  takeTopUsersByFailure,
+  filterUsersUnderSiege,
 }

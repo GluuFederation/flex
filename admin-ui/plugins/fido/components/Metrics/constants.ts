@@ -53,6 +53,10 @@ export const METRIC_OPERATION_TYPES = {
 export const METRIC_STATUS = {
   SUCCESS: 'SUCCESS',
   FAILURE: 'FAILURE',
+  ABANDONED: 'ABANDONED',
+  // Precursor row written when an operation starts; it is later paired with a SUCCESS,
+  // FAILURE or ABANDONED row, so counting it as an outcome double-counts the operation.
+  ATTEMPT: 'ATTEMPT',
 } as const
 
 export const AGGREGATION_TYPES = ['hourly', 'daily', 'weekly', 'monthly'] as const

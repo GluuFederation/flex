@@ -94,6 +94,7 @@ export type AggregationEntry = {
   authenticationSuccesses?: number | null
   registrationFailures?: number | null
   fallbackEvents?: number | null
+  abandonedOperations?: number | null
   period?: string | null
   authenticationSuccessRate?: number | null
   authenticationAvgDuration?: number | null

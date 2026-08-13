@@ -62,7 +62,8 @@ describe('SecurityMonitor utils', () => {
 
       expect(series.map((point) => point.baseline)).toEqual([0, 10, 15])
       expect(series[2]!.isSpike).toBe(true)
-      expect(series[0]!.isSpike).toBe(false)
+      // No history yet, so the first point falls back to the absolute floor.
+      expect(series[0]!.isSpike).toBe(true)
     })
 
     it('keeps the baseline history but only returns points from the requested start', () => {
@@ -131,7 +132,7 @@ describe('SecurityMonitor utils', () => {
       expect(stats[0]!.failureRate).toBeCloseTo(66.67, 1)
     })
 
-    it('counts both explicit and inferred failures for the same IP', () => {
+    it('ignores ATTEMPT precursor rows and counts only outcomes', () => {
       const stats = aggregateIpFailures([
         authEntry({ ipAddress: '10.0.0.3', userId: 'alice', status: 'FAILED' }),
         authEntry({ ipAddress: '10.0.0.3', userId: 'bob', status: 'ATTEMPT' }),
@@ -139,9 +140,9 @@ describe('SecurityMonitor utils', () => {
 
       expect(stats[0]).toMatchObject({
         ipAddress: '10.0.0.3',
-        failures: 2,
+        failures: 1,
         successes: 0,
-        attempts: 2,
+        attempts: 1,
       })
       expect(stats[0]!.failureRate).toBe(100)
     })
@@ -347,7 +348,7 @@ describe('SecurityMonitor utils', () => {
         { authenticationAttempts: 10, authenticationSuccesses: 7, authenticationFailures: 3 },
       ])
 
-      expect(totals).toEqual({ attempts: 20, successes: 15, failures: 5 })
+      expect(totals).toEqual({ attempts: 20, successes: 15, failures: 5, abandoned: 0 })
       expect(successRateOf(totals)).toBe(75)
       expect(successRateOf({ attempts: 0, successes: 0 })).toBe(0)
     })
@@ -569,6 +570,8 @@ describe('SecurityMonitor utils', () => {
       spikeSeries: [],
       dropOffSeries: [],
       ipStats: [],
+      userStats: [],
+      usersUnderSiege: [],
       suspiciousIps: [],
       errorSlices: [],
       velocityMatrix: { rows: [], cols: [], cells: [], anomalousUsers: 0 },
