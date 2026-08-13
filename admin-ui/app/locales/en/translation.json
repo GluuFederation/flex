@@ -792,6 +792,7 @@
     "anomaly_granularity_daily": "Daily",
     "anomaly_granularity_monthly": "Monthly",
     "auth_failures": "Auth Failures",
+    "auth_failures_drop_off": "Auth Failures/Drop-off",
     "auth_success_rate": "Auth Success Rate",
     "period": "Period",
     "period_today": "Today",
@@ -1679,7 +1680,7 @@
     "passkey_security_monitor": "Passkey Security Monitor",
     "attack_pulse": "Failed Sign-ins",
     "session_integrity_monitor": "Sign-in Outcomes",
-    "threat_origins": "Failures by IP",
+    "threat_origins": "Failures/Drop-off by IP",
     "error_intelligence": "Error Types",
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types"

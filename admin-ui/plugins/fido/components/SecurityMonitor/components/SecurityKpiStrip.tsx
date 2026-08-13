@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { GluuBadge } from '@/components/GluuBadge'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
-import { KPI_PERIOD_GRANULARITY, THREAT_LEVELS } from '../constants'
+import { THREAT_LEVELS } from '../constants'
 import { countByThreatLevel, getBadgeBackground, getSecurityPalette } from '../utils'
 import KpiDeltaLabel from './KpiDeltaLabel'
 import type { SecurityKpiStripProps } from '../types'
@@ -14,18 +14,16 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
-  const anomalyGranularity = KPI_PERIOD_GRANULARITY[period]
-
   const criticalCount = useMemo(
     () => countByThreatLevel(suspiciousIps, THREAT_LEVELS.CRITICAL),
     [suspiciousIps],
   )
 
-  const anomalyDelta = summary.anomaliesDelta[anomalyGranularity]
+  const anomalyDelta = summary.anomaliesDelta[period]
   const failureDelta = summary.failureDelta[period]
   const successDelta = summary.successRateDelta[period]
 
-  const anomalyCount = summary.anomalies[anomalyGranularity]
+  const anomalyCount = summary.anomalies[period]
   const failureCount = summary.failures[period]
   const successRate = summary.successRate[period]
 
@@ -46,7 +44,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({ summary, suspicious
       </div>
 
       <div className={classes.kpiCard}>
-        <p className={classes.kpiLabel}>{t('fields.auth_failures')}</p>
+        <p className={classes.kpiLabel}>{t('fields.auth_failures_drop_off')}</p>
         <p
           className={classes.kpiValue}
           style={{ color: alertColor(failureCount, palette.chart.failures) }}

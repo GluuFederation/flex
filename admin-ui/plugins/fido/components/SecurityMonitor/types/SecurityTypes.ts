@@ -2,13 +2,7 @@ import type { ReactNode } from 'react'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { ThemeValue } from '@/context/theme/constants'
 import type { AggregationTypeParam, MetricsDateRange } from '../../Metrics/types'
-import type {
-  ANOMALY_GRANULARITIES,
-  ANOMALY_KINDS,
-  ATTACK_PATTERNS,
-  KPI_PERIODS,
-  THREAT_LEVELS,
-} from '../constants'
+import type { ANOMALY_KINDS, ATTACK_PATTERNS, KPI_PERIODS, THREAT_LEVELS } from '../constants'
 
 type SecurityTranslate = (key: string, options?: Record<string, string | number>) => string
 
@@ -17,8 +11,6 @@ type ThreatLevel = (typeof THREAT_LEVELS)[keyof typeof THREAT_LEVELS]
 type AttackPattern = (typeof ATTACK_PATTERNS)[keyof typeof ATTACK_PATTERNS]
 
 type KpiPeriod = (typeof KPI_PERIODS)[keyof typeof KPI_PERIODS]
-
-type AnomalyGranularity = (typeof ANOMALY_GRANULARITIES)[keyof typeof ANOMALY_GRANULARITIES]
 
 type AnomalyKind = (typeof ANOMALY_KINDS)[keyof typeof ANOMALY_KINDS]
 
@@ -32,6 +24,7 @@ type FailureSpikePoint = {
 
 type IpFailureStat = {
   ipAddress: string
+  primaryUser: string | null
   failures: number
   successes: number
   attempts: number
@@ -120,8 +113,8 @@ type SecurityKpiSummary = {
   successRate: Record<KpiPeriod, number>
   failureDelta: Record<KpiPeriod, KpiDelta>
   successRateDelta: Record<KpiPeriod, KpiDelta>
-  anomalies: Record<AnomalyGranularity, number>
-  anomaliesDelta: Record<AnomalyGranularity, KpiDelta>
+  anomalies: Record<KpiPeriod, number>
+  anomaliesDelta: Record<KpiPeriod, KpiDelta>
 }
 
 type AnomalyChip = {
@@ -280,11 +273,14 @@ type SecurityTheme = {
 
 type SecurityRanges = {
   hourlyWithBaseline: MetricsDateRange
+  recentAnomalies: MetricsDateRange
   today: MetricsDateRange
+  yesterday: MetricsDateRange
+  previousSevenDays: MetricsDateRange
+  previousMonth: MetricsDateRange
   lastSevenDays: MetricsDateRange
   deviceTrend: MetricsDateRange
   monthWithPrevious: MetricsDateRange
-  lastTwelveMonths: MetricsDateRange
   primary: MetricsDateRange
   pulse: MetricsDateRange
   dropOff: MetricsDateRange
@@ -296,7 +292,6 @@ type SecurityRanges = {
 export type {
   AnomalyBannerProps,
   AnomalyChip,
-  AnomalyGranularity,
   AnomalySummary,
   AttackPattern,
   ChartEmptyInset,

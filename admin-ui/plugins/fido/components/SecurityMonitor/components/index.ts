@@ -1,7 +1,6 @@
 export { default as AnomalyBanner } from './AnomalyBanner'
 export { default as AttackPulseChart } from './AttackPulseChart'
 export { default as DeviceFingerprintChart } from './DeviceFingerprintChart'
-export { default as ErrorIntelligenceChart } from './ErrorIntelligenceChart'
 export { default as SecurityKpiStrip } from './SecurityKpiStrip'
 export { default as SecurityMonitorHeader } from './SecurityMonitorHeader'
 export { default as SessionIntegrityChart } from './SessionIntegrityChart'

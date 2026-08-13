@@ -901,6 +901,7 @@
     "anomaly_granularity_daily": "Diário",
     "anomaly_granularity_monthly": "Mensal",
     "auth_failures": "Falhas de autenticação",
+    "auth_failures_drop_off": "Falhas de autenticação/abandonos",
     "auth_success_rate": "Taxa de sucesso de autenticação",
     "period": "Período",
     "period_today": "Hoje",
@@ -1683,7 +1684,7 @@
     "passkey_security_monitor": "Monitor de Segurança de Passkey",
     "attack_pulse": "Logins com falha",
     "session_integrity_monitor": "Resultados de login",
-    "threat_origins": "Falhas por IP",
+    "threat_origins": "Falhas/Abandonos por IP",
     "error_intelligence": "Tipos de erro",
     "velocity_watch": "Tentativas por usuário",
     "device_fingerprint_shift": "Tipos de autenticador"

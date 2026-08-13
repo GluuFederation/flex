@@ -10,7 +10,7 @@ import {
 } from '../../Metrics/hooks'
 import type { AggregationEntry } from '../../Metrics/types'
 import {
-  ANOMALY_GRANULARITIES,
+  CHART_LABEL_FORMATS,
   KPI_PERIODS,
   SECURITY_ENTRIES_LIMIT,
   TOP_USER_LIMIT,
@@ -24,16 +24,18 @@ import {
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
   buildVelocityMatrix,
-  countSequenceSpikesInRange,
   countSpikesInRange,
+  filterSpikePointsByRange,
   filterSuspiciousIps,
   getSecurityPalette,
   percentDelta,
   pointDelta,
   sliceEntriesByRange,
+  sliceMetricsEntriesByRange,
   successRateOf,
   mergeTodayFromHourly,
   sumAggregation,
+  totalFailuresOf,
 } from '../utils'
 import { useSecurityRanges } from './useSecurityRanges'
 import { useSecurityTheme } from './useSecurityTheme'
@@ -55,7 +57,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   const dailyQuery = useAggregationMetrics('Daily', ranges.monthWithPrevious)
   const pulseQuery = useAggregationMetrics(ranges.pulseAggregation, ranges.pulse)
   const deviceQuery = useAggregationMetrics('Daily', ranges.deviceTrend)
-  const monthlyQuery = useAggregationMetrics('Monthly', ranges.lastTwelveMonths)
   const errorsQuery = useErrorsAnalytics(ranges.primary)
   const devicesQuery = useDevicesAnalytics(ranges.deviceTrend)
   const authEntriesQuery = useMetricsEntriesByOperation(
@@ -126,9 +127,55 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     [deviceEntries, devicesQuery.data],
   )
 
+  // The banner reports what is happening right now, so every input is scoped to the
+  // trailing two hours. Spike baselines still come from the full hourly history.
+  const recentSpikeSeries = useMemo(
+    () =>
+      filterSpikePointsByRange(
+        buildFailureSpikeSeries(hourlyEntries),
+        ranges.recentAnomalies.startDate,
+        ranges.recentAnomalies.endDate,
+      ),
+    [hourlyEntries, ranges.recentAnomalies],
+  )
+
+  const recentSuspiciousIps = useMemo(
+    () =>
+      filterSuspiciousIps(
+        aggregateIpFailures(
+          sliceMetricsEntriesByRange(
+            authEntries,
+            ranges.recentAnomalies.startDate,
+            ranges.recentAnomalies.endDate,
+          ),
+        ),
+      ),
+    [authEntries, ranges.recentAnomalies],
+  )
+
+  const recentDropOffSeries = useMemo(
+    () =>
+      buildDropOffSeries(
+        sliceEntriesByRange(
+          hourlyEntries,
+          ranges.recentAnomalies.startDate,
+          ranges.recentAnomalies.endDate,
+        ),
+        CHART_LABEL_FORMATS.HOURLY,
+      ),
+    [hourlyEntries, ranges.recentAnomalies],
+  )
+
   const anomalies = useMemo(
-    () => buildAnomalySummary(spikeSeries, suspiciousIps, dropOffSeries, translate),
-    [spikeSeries, suspiciousIps, dropOffSeries, translate],
+    () =>
+      buildAnomalySummary(
+        recentSpikeSeries.filter((point) => point.isSpike).length,
+        recentSpikeSeries,
+        recentSuspiciousIps,
+        recentDropOffSeries,
+        translate,
+      ),
+    [recentSpikeSeries, recentSuspiciousIps, recentDropOffSeries, translate],
   )
 
   const summary = useMemo<SecurityKpiSummary>(() => {
@@ -156,35 +203,32 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
       sliceEntriesByRange(dailyEntries, monthStart, thisMonthStart.subtract(1, 'millisecond')),
     )
 
-    const monthlyEntries = monthlyQuery.data?.entries ?? []
-    const hourlyAnomaliesToday = countSpikesInRange(hourlyEntries, todayStart, todayEnd)
-    const hourlyAnomaliesYesterday = countSpikesInRange(
+    // Each KPI period counts the anomalies inside that exact window, so the tile always
+    // matches the range the charts are drawing.
+    const todayAnomalies = countSpikesInRange(hourlyEntries, todayStart, todayEnd)
+    const yesterdayAnomalies = countSpikesInRange(
       hourlyEntries,
-      todayStart.subtract(1, 'day'),
-      todayStart.subtract(1, 'millisecond'),
+      ranges.yesterday.startDate,
+      ranges.yesterday.endDate,
     )
-    const dailyAnomalies = countSpikesInRange(dailyEntries, thisMonthStart, todayEnd)
-    const dailyAnomaliesPrevious = countSpikesInRange(
+    const weekAnomalies = countSpikesInRange(dailyEntries, weekStart, todayEnd)
+    const previousWeekAnomalies = countSpikesInRange(
       dailyEntries,
-      monthStart,
-      thisMonthStart.subtract(1, 'millisecond'),
+      ranges.previousSevenDays.startDate,
+      ranges.previousSevenDays.endDate,
     )
-    const monthlyAnomalies = countSequenceSpikesInRange(
-      monthlyEntries,
-      ranges.lastTwelveMonths.startDate,
-      todayEnd,
-    )
-    const monthlyAnomaliesPrevious = countSequenceSpikesInRange(
-      monthlyEntries,
-      ranges.lastTwelveMonths.startDate,
-      thisMonthStart.subtract(1, 'millisecond'),
+    const monthAnomalies = countSpikesInRange(dailyEntries, thisMonthStart, todayEnd)
+    const previousMonthAnomalies = countSpikesInRange(
+      dailyEntries,
+      ranges.previousMonth.startDate,
+      ranges.previousMonth.endDate,
     )
 
     return {
       failures: {
-        [KPI_PERIODS.TODAY]: today.failures,
-        [KPI_PERIODS.LAST_7_DAYS]: week.failures,
-        [KPI_PERIODS.THIS_MONTH]: month.failures,
+        [KPI_PERIODS.TODAY]: totalFailuresOf(today),
+        [KPI_PERIODS.LAST_7_DAYS]: totalFailuresOf(week),
+        [KPI_PERIODS.THIS_MONTH]: totalFailuresOf(month),
       },
       attempts: {
         [KPI_PERIODS.TODAY]: today.attempts,
@@ -197,9 +241,15 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
         [KPI_PERIODS.THIS_MONTH]: successRateOf(month),
       },
       failureDelta: {
-        [KPI_PERIODS.TODAY]: percentDelta(today.failures, yesterday.failures),
-        [KPI_PERIODS.LAST_7_DAYS]: percentDelta(week.failures, previousWeek.failures),
-        [KPI_PERIODS.THIS_MONTH]: percentDelta(month.failures, previousMonth.failures),
+        [KPI_PERIODS.TODAY]: percentDelta(totalFailuresOf(today), totalFailuresOf(yesterday)),
+        [KPI_PERIODS.LAST_7_DAYS]: percentDelta(
+          totalFailuresOf(week),
+          totalFailuresOf(previousWeek),
+        ),
+        [KPI_PERIODS.THIS_MONTH]: percentDelta(
+          totalFailuresOf(month),
+          totalFailuresOf(previousMonth),
+        ),
       },
       successRateDelta: {
         [KPI_PERIODS.TODAY]: pointDelta(successRateOf(today), successRateOf(yesterday)),
@@ -207,17 +257,17 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
         [KPI_PERIODS.THIS_MONTH]: pointDelta(successRateOf(month), successRateOf(previousMonth)),
       },
       anomalies: {
-        [ANOMALY_GRANULARITIES.HOURLY]: hourlyAnomaliesToday,
-        [ANOMALY_GRANULARITIES.DAILY]: dailyAnomalies,
-        [ANOMALY_GRANULARITIES.MONTHLY]: monthlyAnomalies,
+        [KPI_PERIODS.TODAY]: todayAnomalies,
+        [KPI_PERIODS.LAST_7_DAYS]: weekAnomalies,
+        [KPI_PERIODS.THIS_MONTH]: monthAnomalies,
       },
       anomaliesDelta: {
-        [ANOMALY_GRANULARITIES.HOURLY]: pointDelta(hourlyAnomaliesToday, hourlyAnomaliesYesterday),
-        [ANOMALY_GRANULARITIES.DAILY]: pointDelta(dailyAnomalies, dailyAnomaliesPrevious),
-        [ANOMALY_GRANULARITIES.MONTHLY]: pointDelta(monthlyAnomalies, monthlyAnomaliesPrevious),
+        [KPI_PERIODS.TODAY]: pointDelta(todayAnomalies, yesterdayAnomalies),
+        [KPI_PERIODS.LAST_7_DAYS]: pointDelta(weekAnomalies, previousWeekAnomalies),
+        [KPI_PERIODS.THIS_MONTH]: pointDelta(monthAnomalies, previousMonthAnomalies),
       },
     }
-  }, [dailyQuery.data, hourlyQuery.data, monthlyQuery.data, ranges])
+  }, [dailyQuery.data, hourlyQuery.data, dailyEntries, hourlyEntries, ranges])
 
   const isLoading =
     pulseQuery.isLoading ||
@@ -230,7 +280,6 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     hourlyQuery.isFetching ||
     dailyQuery.isFetching ||
     deviceQuery.isFetching ||
-    monthlyQuery.isFetching ||
     errorsQuery.isFetching ||
     devicesQuery.isFetching ||
     authEntriesQuery.isFetching

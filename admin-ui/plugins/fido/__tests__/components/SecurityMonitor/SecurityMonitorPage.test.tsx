@@ -26,7 +26,6 @@ jest.mock('@/utils/fileDownload', () => ({
 jest.mock('Plugins/fido/components/SecurityMonitor/components', () => ({
   AttackPulseChart: () => <div data-testid="attack-pulse-chart" />,
   DeviceFingerprintChart: () => <div data-testid="device-fingerprint-chart" />,
-  ErrorIntelligenceChart: () => <div data-testid="error-intelligence-chart" />,
   SecurityKpiStrip: ({ period }: { period: string }) => <div data-testid="kpi-strip">{period}</div>,
   SecurityMonitorHeader: ({
     anomalies,
@@ -143,7 +142,7 @@ describe('SecurityMonitorPage', () => {
 
     expect(screen.getByTestId('attack-pulse-chart')).toBeInTheDocument()
     expect(screen.getByTestId('session-integrity-chart')).toBeInTheDocument()
-    expect(screen.queryByTestId('threat-origins-chart')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threat-origins-chart')).toBeInTheDocument()
   })
 
   it('puts the anomaly count in the Live Threats tab label', () => {
@@ -152,13 +151,10 @@ describe('SecurityMonitorPage', () => {
     expect(screen.getByText('Live Threats (2)')).toBeInTheDocument()
   })
 
-  it('shows the IP burst and error donut side by side on Attack Origins', () => {
+  it('does not render an Attack Origins tab', () => {
     render(<SecurityMonitorPage />, { wrapper: Wrapper })
 
-    fireEvent.click(screen.getByText('Attack Origins'))
-
-    expect(screen.getByTestId('threat-origins-chart')).toBeInTheDocument()
-    expect(screen.getByTestId('error-intelligence-chart')).toBeInTheDocument()
+    expect(screen.queryByText('Attack Origins')).not.toBeInTheDocument()
   })
 
   it('shows the velocity heatmap and device trend on Behavioral Patterns', () => {

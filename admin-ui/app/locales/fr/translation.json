@@ -905,6 +905,7 @@
     "anomaly_granularity_daily": "Quotidien",
     "anomaly_granularity_monthly": "Mensuel",
     "auth_failures": "Échecs d'authentification",
+    "auth_failures_drop_off": "Échecs d'authentification/abandons",
     "auth_success_rate": "Taux de succès d'authentification",
     "period": "Période",
     "period_today": "Aujourd'hui",
@@ -1688,7 +1689,7 @@
     "passkey_security_monitor": "Moniteur de Sécurité Passkey",
     "attack_pulse": "Connexions en échec",
     "session_integrity_monitor": "Résultats de connexion",
-    "threat_origins": "Échecs par IP",
+    "threat_origins": "Échecs/Abandons par IP",
     "error_intelligence": "Types d'erreur",
     "velocity_watch": "Tentatives par utilisateur",
     "device_fingerprint_shift": "Types d'authentificateur"

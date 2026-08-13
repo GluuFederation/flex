@@ -33,7 +33,7 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
   const data = useMemo(
     () =>
       takeTopIpsByFailure(ipStats).map((stat) => ({
-        ipAddress: stat.ipAddress,
+        ipAddress: stat.primaryUser ?? stat.ipAddress,
         failures: stat.failures,
         targetedUsers: stat.targetedUsers,
         fill: palette.threatLevels[stat.threatLevel],
@@ -100,7 +100,11 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ ipStats }) => {
               tick={axisTick}
             />
             {isEmpty ? null : <Tooltip content={renderTooltip} cursor={false} />}
-            <Bar dataKey="failures" name={t('fields.auth_failures')} isAnimationActive={false} />
+            <Bar
+              dataKey="failures"
+              name={t('fields.auth_failures_drop_off')}
+              isAnimationActive={false}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -17,7 +17,6 @@ import { useSecurityStyles } from './SecurityMonitorPage.style'
 import {
   AttackPulseChart,
   DeviceFingerprintChart,
-  ErrorIntelligenceChart,
   SecurityKpiStrip,
   SecurityMonitorHeader,
   SessionIntegrityChart,
@@ -26,7 +25,7 @@ import {
 } from './components'
 import { useSecurityDashboardData, useSecurityTheme } from './hooks'
 import { buildSecurityExportRows } from './utils'
-import { KPI_PERIODS, KPI_PERIOD_GRANULARITY } from './constants'
+import { KPI_PERIODS } from './constants'
 import type { KpiPeriod } from './types'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
@@ -48,7 +47,6 @@ const SecurityMonitorPage: React.FC = () => {
   const [period, setPeriod] = useState<KpiPeriod>(KPI_PERIODS.TODAY)
 
   const data = useSecurityDashboardData(nowValue, period)
-  const anomalyGranularity = KPI_PERIOD_GRANULARITY[period]
 
   const handleRefresh = useCallback(() => {
     setNowValue(createDate().valueOf())
@@ -57,7 +55,7 @@ const SecurityMonitorPage: React.FC = () => {
 
   const handleExport = useCallback(() => {
     const ipWindowLabel = t(`fields.period_${period}`)
-    const rows = buildSecurityExportRows(data, t, period, anomalyGranularity, ipWindowLabel)
+    const rows = buildSecurityExportRows(data, t, period, ipWindowLabel)
 
     if (!rows.length) {
       dispatch(updateToast(true, 'error', t('messages.no_data_to_export')))
@@ -90,7 +88,6 @@ const SecurityMonitorPage: React.FC = () => {
     data.suspiciousIps,
     t,
     period,
-    anomalyGranularity,
     dispatch,
     nowValue,
   ])
@@ -98,7 +95,6 @@ const SecurityMonitorPage: React.FC = () => {
   const tabNames = useMemo(
     () => [
       t('fields.security_tab_live_threats', { total: data.anomalies.count }),
-      t('fields.security_tab_attack_origins'),
       t('fields.security_tab_behavioral_patterns'),
     ],
     [t, data.anomalies.count],
@@ -116,16 +112,12 @@ const SecurityMonitorPage: React.FC = () => {
               <div className={classes.fullWidthRow}>
                 <SessionIntegrityChart series={data.dropOffSeries} />
               </div>
+              <div className={classes.fullWidthRow}>
+                <ThreatOriginsChart ipStats={data.ipStats} />
+              </div>
             </>
           )
         case tabNames[1]:
-          return (
-            <div className={classes.chartRow}>
-              <ThreatOriginsChart ipStats={data.ipStats} />
-              <ErrorIntelligenceChart slices={data.errorSlices} />
-            </div>
-          )
-        case tabNames[2]:
           return (
             <>
               <div className={classes.fullWidthRow}>
@@ -146,7 +138,6 @@ const SecurityMonitorPage: React.FC = () => {
       data.spikeSeries,
       data.dropOffSeries,
       data.ipStats,
-      data.errorSlices,
       data.velocityMatrix,
       data.deviceTrend,
     ],

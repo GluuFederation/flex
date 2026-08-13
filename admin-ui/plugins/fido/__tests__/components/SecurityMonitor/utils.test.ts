@@ -14,8 +14,6 @@ import {
   buildVelocityScaffoldRows,
   buildVelocityMatrix,
   countByThreatLevel,
-  countSequenceSpikes,
-  countSpikes,
   filterSuspiciousIps,
   findDropOffPeak,
   findPeakSpike,
@@ -146,6 +144,22 @@ describe('SecurityMonitor utils', () => {
         attempts: 2,
       })
       expect(stats[0]!.failureRate).toBe(100)
+    })
+
+    it('reports the hardest-hit account as the primary user', () => {
+      const stats = aggregateIpFailures([
+        authEntry({ ipAddress: '10.0.0.4', userId: 'alice' }),
+        authEntry({ ipAddress: '10.0.0.4', userId: 'bob' }),
+        authEntry({ ipAddress: '10.0.0.4', userId: 'bob' }),
+      ])
+
+      expect(stats[0]!.primaryUser).toBe('bob')
+    })
+
+    it('falls back to null when no identity is exposed', () => {
+      const stats = aggregateIpFailures([authEntry({ ipAddress: '10.0.0.5' })])
+
+      expect(stats[0]!.primaryUser).toBeNull()
     })
 
     it('skips entries without an IP address', () => {
@@ -362,22 +376,6 @@ describe('SecurityMonitor utils', () => {
       expect(percentDelta(0, 0)).toEqual({ value: 0, isIncrease: false })
       expect(pointDelta(87, 94)).toEqual({ value: 7, isIncrease: false })
     })
-
-    it('counts spikes across aggregation entries', () => {
-      expect(
-        countSpikes([hourly('2024-01-01T10:00:00Z', 10), hourly('2024-01-02T10:00:00Z', 30)]),
-      ).toBe(1)
-    })
-
-    it('counts sequence spikes where buckets have no same-hour history', () => {
-      const monthly = [
-        hourly('2024-01-01T00:00:00Z', 10),
-        hourly('2024-02-01T00:00:00Z', 12),
-        hourly('2024-03-01T00:00:00Z', 40),
-      ]
-      expect(countSpikes(monthly)).toBe(0)
-      expect(countSequenceSpikes(monthly)).toBe(1)
-    })
   })
 
   describe('buildAnomalySummary', () => {
@@ -393,7 +391,7 @@ describe('SecurityMonitor utils', () => {
       )
       const dropOff = [{ label: 'Fri', successRate: 50, failureRate: 20, dropOffRate: 30 }]
 
-      const summary = buildAnomalySummary(spikes, suspicious, dropOff, t)
+      const summary = buildAnomalySummary(3, spikes, suspicious, dropOff, t)
 
       expect(summary.count).toBe(3)
       expect(summary.chips.map((chip) => chip.kind)).toEqual([
@@ -405,6 +403,7 @@ describe('SecurityMonitor utils', () => {
 
     it('counts a drop-off anomaly when there is no spike', () => {
       const summary = buildAnomalySummary(
+        1,
         [],
         [],
         [{ label: 'Fri', successRate: 50, failureRate: 20, dropOffRate: 27 }],
@@ -416,7 +415,7 @@ describe('SecurityMonitor utils', () => {
     })
 
     it('reports nothing when there are no anomalies', () => {
-      const summary = buildAnomalySummary([], [], [], t)
+      const summary = buildAnomalySummary(0, [], [], [], t)
 
       expect(summary).toEqual({ count: 0, chips: [] })
     })
@@ -560,11 +559,11 @@ describe('SecurityMonitor utils', () => {
           last_7_days: { value: 0, isIncrease: false },
           this_month: { value: 0, isIncrease: false },
         },
-        anomalies: { hourly: 3, daily: 0, monthly: 0 },
+        anomalies: { today: 3, last_7_days: 0, this_month: 0 },
         anomaliesDelta: {
-          hourly: { value: 0, isIncrease: false },
-          daily: { value: 0, isIncrease: false },
-          monthly: { value: 0, isIncrease: false },
+          today: { value: 0, isIncrease: false },
+          last_7_days: { value: 0, isIncrease: false },
+          this_month: { value: 0, isIncrease: false },
         },
       },
       spikeSeries: [],
@@ -598,7 +597,6 @@ describe('SecurityMonitor utils', () => {
         data,
         translate,
         'today',
-        'hourly',
         'fields.ip_window_last_hour',
       ).filter((row) => row[0] === 'titles.velocity_watch')
 
@@ -615,13 +613,7 @@ describe('SecurityMonitor utils', () => {
 
     it('returns nothing when no chart series carry data', () => {
       expect(
-        buildSecurityExportRows(
-          emptyData,
-          translate,
-          'today',
-          'hourly',
-          'fields.ip_window_last_hour',
-        ),
+        buildSecurityExportRows(emptyData, translate, 'today', 'fields.ip_window_last_hour'),
       ).toEqual([])
     })
 
@@ -642,13 +634,7 @@ describe('SecurityMonitor utils', () => {
         },
       }
 
-      const rows = buildSecurityExportRows(
-        data,
-        translate,
-        'today',
-        'hourly',
-        'fields.ip_window_last_hour',
-      )
+      const rows = buildSecurityExportRows(data, translate, 'today', 'fields.ip_window_last_hour')
 
       expect(rows.slice(0, 5).map((row) => [row[2], row[3], row[4]])).toEqual([
         ['fields.anomalies_captured', 3, 'fields.unit_count'],

@@ -6,7 +6,6 @@ import SecurityKpiStrip from 'Plugins/fido/components/SecurityMonitor/components
 import SecurityMonitorHeader from 'Plugins/fido/components/SecurityMonitor/components/SecurityMonitorHeader'
 import VelocityWatchHeatmap from 'Plugins/fido/components/SecurityMonitor/components/VelocityWatchHeatmap'
 import {
-  ANOMALY_GRANULARITIES,
   ANOMALY_KINDS,
   ATTACK_PATTERNS,
   KPI_PERIODS,
@@ -50,19 +49,20 @@ const summary: SecurityKpiSummary = {
     [KPI_PERIODS.THIS_MONTH]: { value: 1, isIncrease: true },
   },
   anomalies: {
-    [ANOMALY_GRANULARITIES.HOURLY]: 3,
-    [ANOMALY_GRANULARITIES.DAILY]: 14,
-    [ANOMALY_GRANULARITIES.MONTHLY]: 47,
+    [KPI_PERIODS.TODAY]: 3,
+    [KPI_PERIODS.LAST_7_DAYS]: 14,
+    [KPI_PERIODS.THIS_MONTH]: 47,
   },
   anomaliesDelta: {
-    [ANOMALY_GRANULARITIES.HOURLY]: { value: 1, isIncrease: true },
-    [ANOMALY_GRANULARITIES.DAILY]: { value: 5, isIncrease: true },
-    [ANOMALY_GRANULARITIES.MONTHLY]: { value: 12, isIncrease: true },
+    [KPI_PERIODS.TODAY]: { value: 1, isIncrease: true },
+    [KPI_PERIODS.LAST_7_DAYS]: { value: 5, isIncrease: true },
+    [KPI_PERIODS.THIS_MONTH]: { value: 12, isIncrease: true },
   },
 }
 
 const criticalIp: IpFailureStat = {
   ipAddress: '192.168.1.142',
+  primaryUser: 'jdoe',
   failures: 148,
   successes: 0,
   attempts: 148,
@@ -224,14 +224,14 @@ describe('SecurityKpiStrip', () => {
     const quiet: SecurityKpiSummary = {
       ...summary,
       failures: { ...summary.failures, [KPI_PERIODS.TODAY]: 0 },
-      anomalies: { ...summary.anomalies, [ANOMALY_GRANULARITIES.HOURLY]: 0 },
+      anomalies: { ...summary.anomalies, [KPI_PERIODS.TODAY]: 0 },
       failureDelta: {
         ...summary.failureDelta,
         [KPI_PERIODS.TODAY]: { value: 0, isIncrease: true },
       },
       anomaliesDelta: {
         ...summary.anomaliesDelta,
-        [ANOMALY_GRANULARITIES.HOURLY]: { value: 0, isIncrease: true },
+        [KPI_PERIODS.TODAY]: { value: 0, isIncrease: true },
       },
       successRateDelta: {
         ...summary.successRateDelta,
@@ -273,6 +273,24 @@ describe('SecurityKpiStrip', () => {
     expect(screen.getByText('47')).toBeInTheDocument()
     expect(screen.getByText('18,340')).toBeInTheDocument()
     expect(screen.getByText('93')).toBeInTheDocument()
+  })
+
+  it('moves the anomaly count with the selected period', () => {
+    const { rerender } = render(
+      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.TODAY} />,
+      { wrapper: Wrapper },
+    )
+    expect(screen.getByText('3')).toBeInTheDocument()
+
+    rerender(
+      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.LAST_7_DAYS} />,
+    )
+    expect(screen.getByText('14')).toBeInTheDocument()
+
+    rerender(
+      <SecurityKpiStrip summary={summary} suspiciousIps={[]} period={KPI_PERIODS.THIS_MONTH} />,
+    )
+    expect(screen.getByText('47')).toBeInTheDocument()
   })
 })
 
