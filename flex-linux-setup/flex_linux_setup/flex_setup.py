@@ -405,7 +405,9 @@ class flex_installer(JettyInstaller):
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.resolve_admin_ui_bin_url(), os.path.join(Config.dist_jans_dir, os.path.basename(self.resolve_admin_ui_bin_url()))),
                 (self.policy_store_cjar_url, self.policy_store_cjar_path),
-                ('https://github.com/GluuFederation/agama-pw/releases/download/v1.0.9/agama-pw.gama', self.agama_pw_fn)
+                (base.determine_jans_artifact_url(
+                         'maven/io/jans/jans-config-api/plugins/admin-ui-plugin/{0}/admin-ui-plugin-{0}-agama-pw.gama'.format(
+                             base.current_app.app_info['jans_version'])), self.agama_pw_fn)
             ]
 
             if argsp.update_admin_ui:
