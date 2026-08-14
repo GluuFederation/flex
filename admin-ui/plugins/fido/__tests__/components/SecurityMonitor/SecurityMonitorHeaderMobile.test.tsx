@@ -47,7 +47,7 @@ describe('SecurityMonitorHeader on mobile', () => {
 
     expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: 'Period' })).not.toBeInTheDocument()
-    expect(screen.getByText('0 active anomalies')).toBeInTheDocument()
+    expect(screen.getByText('0 active anomalies in the last 2 hours')).toBeInTheDocument()
   })
 
   it('offers every period plus both actions inside the sheet', () => {

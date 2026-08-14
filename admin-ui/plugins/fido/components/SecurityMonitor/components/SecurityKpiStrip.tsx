@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import Tooltip from '@mui/material/Tooltip'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { GluuBadge } from '@/components/GluuBadge'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
@@ -27,7 +27,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
   const chipUsers = usersUnderSiege.slice(0, SIEGE_CHIP_LIMIT)
   const overflowCount = usersUnderSiege.length - chipUsers.length
   const allUsernames = useMemo(
-    () => usersUnderSiege.map((stat) => stat.username).join(', '),
+    () => usersUnderSiege.map((stat) => <div key={stat.username}>{stat.username}</div>),
     [usersUnderSiege],
   )
 
@@ -92,7 +92,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
             warning: usersUnderSiege.length - criticalCount,
           })}
         </p>
-        <Tooltip title={allUsernames} arrow>
+        <GluuTooltip doc_entry="security_users_under_siege" content={allUsernames}>
           <div className={classes.kpiChips}>
             {chipUsers.map((stat) => (
               <GluuBadge
@@ -120,7 +120,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
               </GluuBadge>
             )}
           </div>
-        </Tooltip>
+        </GluuTooltip>
       </div>
     </div>
   )

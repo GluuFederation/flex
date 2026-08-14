@@ -172,7 +172,7 @@ describe('AnomalyBanner', () => {
       { wrapper: Wrapper },
     )
 
-    expect(screen.getByText('3 active anomalies')).toBeInTheDocument()
+    expect(screen.getByText('3 active anomalies in the last 2 hours')).toBeInTheDocument()
     expect(screen.getByText('Auth Spike')).toBeInTheDocument()
     expect(screen.getByText('2 IPs Flagged')).toBeInTheDocument()
   })
@@ -182,7 +182,7 @@ describe('AnomalyBanner', () => {
       wrapper: Wrapper,
     })
 
-    expect(screen.getByText('0 active anomalies')).toBeInTheDocument()
+    expect(screen.getByText('0 active anomalies in the last 2 hours')).toBeInTheDocument()
     expect(screen.queryByText('Auth Spike')).not.toBeInTheDocument()
   })
 })

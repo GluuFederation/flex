@@ -174,13 +174,7 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
 
   const anomalies = useMemo(
     () =>
-      buildAnomalySummary(
-        recentSpikeSeries.filter((point) => point.isSpike).length,
-        recentSpikeSeries,
-        recentSuspiciousIps,
-        recentDropOffSeries,
-        translate,
-      ),
+      buildAnomalySummary(recentSpikeSeries, recentSuspiciousIps, recentDropOffSeries, translate),
     [recentSpikeSeries, recentSuspiciousIps, recentDropOffSeries, translate],
   )
 

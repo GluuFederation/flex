@@ -1,10 +1,7 @@
-import { memo, useMemo } from 'react'
-import Tooltip from '@mui/material/Tooltip'
+import { memo } from 'react'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { STATUS_LABEL_KEYS } from '@/constants'
-import { useTheme } from '@/context/theme/themeContext'
-import { THEME_DARK, THEME_LIGHT } from '@/context/theme/constants'
-import getThemeColor from '@/context/theme/config'
 import type { ServiceStatusValue } from '@/constants'
 
 type ClassesType = Record<string, string>
@@ -21,28 +18,9 @@ export const StatusIndicator = memo<StatusIndicatorProps>(({ label, status, clas
   const serverName = t(label)
   const translationKey = STATUS_LABEL_KEYS[status]
   const tooltipTitle = `${serverName} - ${t(translationKey)}`
-  const { state: themeState } = useTheme()
-  const isDark = themeState?.theme === THEME_DARK
-
-  const tooltipStyles = useMemo(() => {
-    const lightTheme = getThemeColor(THEME_LIGHT)
-    const bg = isDark ? lightTheme.menu.background : lightTheme.fontColor
-    const fg = isDark ? lightTheme.fontColor : lightTheme.card.background
-    return {
-      tooltip: { backgroundColor: bg, color: fg, maxWidth: '45vw', fontSize: '0.875rem' },
-      arrow: { color: bg },
-    }
-  }, [isDark])
 
   return (
-    <Tooltip
-      title={tooltipTitle}
-      arrow
-      slotProps={{
-        tooltip: { sx: tooltipStyles.tooltip },
-        arrow: { sx: tooltipStyles.arrow },
-      }}
-    >
+    <GluuTooltip doc_entry={`server_status_${label}`} content={tooltipTitle}>
       <div className={classes.statusIndicator}>
         <div
           className={`${classes.statusDot} ${
@@ -53,7 +31,7 @@ export const StatusIndicator = memo<StatusIndicatorProps>(({ label, status, clas
           {serverName}
         </GluuText>
       </div>
-    </Tooltip>
+    </GluuTooltip>
   )
 })
 

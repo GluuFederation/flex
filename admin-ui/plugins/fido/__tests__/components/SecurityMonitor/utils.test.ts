@@ -392,7 +392,7 @@ describe('SecurityMonitor utils', () => {
       )
       const dropOff = [{ label: 'Fri', successRate: 50, failureRate: 20, dropOffRate: 30 }]
 
-      const summary = buildAnomalySummary(3, spikes, suspicious, dropOff, t)
+      const summary = buildAnomalySummary(spikes, suspicious, dropOff, t)
 
       expect(summary.count).toBe(3)
       expect(summary.chips.map((chip) => chip.kind)).toEqual([
@@ -404,7 +404,6 @@ describe('SecurityMonitor utils', () => {
 
     it('counts a drop-off anomaly when there is no spike', () => {
       const summary = buildAnomalySummary(
-        1,
         [],
         [],
         [{ label: 'Fri', successRate: 50, failureRate: 20, dropOffRate: 27 }],
@@ -416,7 +415,7 @@ describe('SecurityMonitor utils', () => {
     })
 
     it('reports nothing when there are no anomalies', () => {
-      const summary = buildAnomalySummary(0, [], [], [], t)
+      const summary = buildAnomalySummary([], [], [], t)
 
       expect(summary).toEqual({ count: 0, chips: [] })
     })

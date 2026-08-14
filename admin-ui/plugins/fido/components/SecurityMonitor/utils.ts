@@ -868,7 +868,6 @@ const countSpikesInRange = (entries: readonly AggregationEntry[], from: Dayjs, t
   ).length
 
 const buildAnomalySummary = (
-  anomalyCount: number,
   spikeSeries: readonly FailureSpikePoint[],
   suspiciousIps: readonly IpFailureStat[],
   dropOffSeries: readonly DropOffPoint[],
@@ -886,13 +885,14 @@ const buildAnomalySummary = (
     chips.push({
       kind: ANOMALY_KINDS.IPS_FLAGGED,
       label: t('fields.anomaly_chip_ips_flagged', { total: suspiciousIps.length }),
+      detail: suspiciousIps.map((stat) => stat.ipAddress),
     })
   }
   if (hasDropOffAlert) {
     chips.push({ kind: ANOMALY_KINDS.DROP_OFF, label: t('fields.anomaly_chip_drop_off') })
   }
 
-  return { count: anomalyCount, chips }
+  return { count: chips.length, chips }
 }
 
 const HOUR_LABEL_LENGTH = 2

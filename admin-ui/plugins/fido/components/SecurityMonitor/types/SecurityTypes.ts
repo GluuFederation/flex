@@ -133,6 +133,7 @@ type SecurityKpiSummary = {
 type AnomalyChip = {
   kind: AnomalyKind
   label: string
+  detail?: readonly string[]
 }
 
 type AnomalySummary = {
