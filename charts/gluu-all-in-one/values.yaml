@@ -604,6 +604,8 @@ gateway-api:
   enabled: false
   # -- Configuration for Gateway resource
   gateway:
+    # -- Enable Gateway API and create a Gateway resource (if disabled, you will have to create and manage the Gateway resource externally). HTTPRoutes are still rendered so they can target the external Gateway.
+    enabled: true
     # -- Set the gatewayClassName corresponding to your installed controller.
     className: nginx
     # -- The name of the Gateway resource to be created
