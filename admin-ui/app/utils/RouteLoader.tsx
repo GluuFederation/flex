@@ -15,7 +15,6 @@ export const createLazyRoute = (
 export const LazyRoutes = {
   DashboardPage: createLazyRoute(() => import('../routes/Dashboards/DashboardPage')),
   ProfilePage: createLazyRoute(() => import('../routes/Apps/Profile/ProfilePage')),
-  Gluu404Error: createLazyRoute(() => import('../routes/Apps/Gluu/Gluu404Error')),
   ByeBye: createLazyRoute(() => import('../routes/Pages/ByeBye')),
   GluuNavBar: createLazyRoute(() => import('../routes/Apps/Gluu/GluuNavBar')),
   DefaultSidebar: createLazyRoute(() => import('../layout/components/DefaultSidebar')),

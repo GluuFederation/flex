@@ -181,7 +181,6 @@
     "apply": "Appliquer",
     "apply_filter": "Appliquer le filtre",
     "back": "Retour",
-    "back_home": "Retour à la maison",
     "back_to_home": "Retour à l'accueil",
     "support_portal": "Portail d'assistance",
     "cancel": "Annuler",
@@ -871,8 +870,6 @@
     "test": "TEST"
   },
   "footer": {
-    "copyright": "(C) {{year}} Tous droits réservés.",
-    "designed_by": "Ceci est le \"{{name}}\" conçu et implémenté par",
     "company_name": "Gluu Inc."
   },
   "messages": {

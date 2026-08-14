@@ -180,7 +180,6 @@
     "apply": "Aplicar",
     "apply_filter": "Aplicar filtro",
     "back": "Voltar",
-    "back_home": "Voltar para casa",
     "back_to_home": "Voltar para o início",
     "support_portal": "Portal de suporte",
     "add_server": "Adicionar servidor",
@@ -867,8 +866,6 @@
     "umaAuthorizationPolicies": "Políticas de Autorização"
   },
   "footer": {
-    "copyright": "(C) {{year}} Todos os direitos reservados.",
-    "designed_by": "Este é o \"{{name}}\" projetado e implementado por",
     "company_name": "Gluu Inc."
   },
   "messages": {

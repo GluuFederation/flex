@@ -267,7 +267,7 @@ export default defineConfig(({ mode }) => {
     : []
   const processEnv = {
     NODE_ENV: nodeEnv,
-    BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
+    BASE_PATH: base,
     API_BASE_URL: env.API_BASE_URL,
     CONFIG_API_BASE_URL:
       env.CONFIG_API_BASE_URL && !env.CONFIG_API_BASE_URL.includes('%(')

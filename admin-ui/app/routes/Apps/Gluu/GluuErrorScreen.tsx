@@ -1,5 +1,4 @@
 import { use, useMemo } from 'react'
-import type { FallbackProps } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import OpenInNew from '@mui/icons-material/OpenInNew'
@@ -15,19 +14,24 @@ import { EXTERNAL_LINKS } from '@/constants'
 import { isDevelopment } from '@/utils/env'
 import { createDate } from '@/utils/dayjsUtils'
 import { useStyles } from './styles/GluuErrorScreen.style'
+import type { GluuErrorScreenProps } from './GluuErrorScreen.types'
 
-const basePath = process.env.BASE_PATH ?? '/admin'
+const basePath = process.env.BASE_PATH ?? '/admin/'
 const currentYear = createDate().year()
 
-const GluuErrorScreen = ({ error }: FallbackProps) => {
+const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => {
   const { t } = useTranslation()
   const currentTheme = use(ThemeContext)?.state.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
 
+  const isNotFound = variant === 'not-found'
+  const title = isNotFound ? t('messages.resource_not_found_title') : t('messages.crash_title')
+  const message = isNotFound ? t('messages.resource_not_found_message') : t('messages.crash_message')
+
   return (
     <EmptyLayout className={classes.screen}>
-      {isDevelopment && (
+      {isDevelopment && !isNotFound && (
         <details className={classes.errorOverlay}>
           <summary className={classes.errorSummary}>{t('actions.show_error')}</summary>
           <pre className={classes.errorStack}>
@@ -53,10 +57,10 @@ const GluuErrorScreen = ({ error }: FallbackProps) => {
             <circle cx="65.5" cy="40.5" r="9.5" fill={themeColors.background} />
           </svg>
           <GluuText variant="h1" className={classes.title}>
-            {t('messages.crash_title')}
+            {title}
           </GluuText>
           <GluuText variant="p" secondary className={classes.message}>
-            {t('messages.crash_message')}
+            {message}
           </GluuText>
           <hr className={classes.divider} />
           <div className={classes.actions}>

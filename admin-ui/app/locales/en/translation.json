@@ -33,7 +33,6 @@
     "apply": "Apply",
     "apply_filter": "Apply Filter",
     "back": "Back",
-    "back_home": "Back Home",
     "back_to_home": "Back to home",
     "support_portal": "Support Portal",
     "cancel": "Cancel",
@@ -867,8 +866,6 @@
     "mobileNavigation": "Mobile navigation"
   },
   "footer": {
-    "copyright": "(C) {{year}} All Rights Reserved.",
-    "designed_by": "This is the \"{{name}}\" designed and implemented by",
     "company_name": "Gluu Inc."
   },
   "messages": {
