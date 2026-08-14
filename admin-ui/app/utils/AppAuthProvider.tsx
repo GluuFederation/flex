@@ -154,8 +154,12 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
 
+    let isActive = true
+
     AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
       .then((response) => {
+        if (!isActive) return
+
         const additionalParameters: Record<string, string> = {}
 
         if (config.additionalParameters?.length) {
@@ -181,11 +185,16 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         authorizationHandler.performAuthorizationRequest(response, authRequest)
       })
       .catch((fetchError: Error) => {
+        if (!isActive) return
         logger.error(
           'Failed to fetch OIDC configuration from issuer: ' + resolveApiErrorMessage(fetchError),
         )
         setError(fetchError)
       })
+
+    return () => {
+      isActive = false
+    }
   }, [
     isLicenseValid,
     issuer,

@@ -177,4 +177,4 @@ export const REGEX_BASE64URL_MINUS = /-/g
 /** Matches base64url '_' characters; replace with '/' to convert base64url → standard base64 before atob (JWT decode). */
 export const REGEX_BASE64URL_UNDERSCORE = /_/g
 /** Matches a same-origin route (path, optional query and hash) with no scheme or authority, used to reject open-redirect values before restoring the route a user asked for prior to the OIDC round-trip. */
-export const REGEX_INTERNAL_ROUTE = /^\/[^/\\][^\s\\]*$|^\/$/
+export const REGEX_INTERNAL_ROUTE = /^\/[^\s/\\][^\s\\]*$|^\/$/

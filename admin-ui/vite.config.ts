@@ -40,12 +40,13 @@ const basePathRedirectPlugin = (base: string) => {
     configureServer(server: ViteDevServer) {
       server.middlewares.use((req, res, next) => {
         const url = req.url ?? '/'
+        const { pathname, search } = new URL(url, 'http://localhost')
         const acceptsHtml = req.headers.accept?.includes('text/html') ?? false
-        if (!acceptsHtml || url.startsWith(base) || url.startsWith('/@')) {
+        if (!acceptsHtml || pathname.startsWith(base) || pathname.startsWith('/@')) {
           next()
           return
         }
-        res.writeHead(HTTP_STATUS_FOUND, { Location: base })
+        res.writeHead(HTTP_STATUS_FOUND, { Location: `${base}${search}` })
         res.end()
       })
     },
