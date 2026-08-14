@@ -40,6 +40,7 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
   const legend = useMemo(
     () => [
       { label: t('fields.auth_failures'), color: palette.chart.failures },
+      { label: t('fields.agg_auth_attempts'), color: palette.chart.attempts },
       { label: t('fields.rolling_baseline'), color: palette.chart.baseline },
     ],
     [t, palette.chart],
@@ -51,7 +52,10 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
   const countAxis = useMemo(
     () =>
       buildCountAxis(
-        chartData.reduce((max, point) => Math.max(max, point.failures, point.baseline), 0),
+        chartData.reduce(
+          (max, point) => Math.max(max, point.failures, point.attempts, point.baseline),
+          0,
+        ),
       ),
     [chartData],
   )
@@ -92,6 +96,14 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
               stroke={palette.chart.failures}
               dot={{ r: SPIKE_LINE_DOT_RADIUS, fill: palette.chart.failures, strokeWidth: 0 }}
               activeDot={{ r: SPIKE_LINE_DOT_RADIUS + 1 }}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="attempts"
+              name={t('fields.agg_auth_attempts')}
+              stroke={palette.chart.attempts}
+              dot={false}
               isAnimationActive={false}
             />
             <Line

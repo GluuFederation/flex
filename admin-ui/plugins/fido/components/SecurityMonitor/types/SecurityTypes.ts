@@ -20,6 +20,7 @@ type FailureSpikePoint = {
   label: string
   timestamp: number
   failures: number
+  attempts: number
   baseline: number
   isSpike: boolean
 }
@@ -221,10 +222,17 @@ type AnomalyBannerProps = {
   anomalies: AnomalySummary
 }
 
+type SecurityInfoTooltipProps = {
+  title?: ReactNode
+  placement?: 'top' | 'bottom' | 'left' | 'right'
+  children: ReactNode
+}
+
 type KpiDeltaLabelProps = {
   delta: KpiDelta
   label: string
   increaseIsGood?: boolean
+  hint?: string
 }
 
 type SecurityKpiStripProps = {
@@ -337,6 +345,7 @@ export type {
   SecurityRanges,
   SecurityStylesParams,
   SecurityExportRow,
+  SecurityInfoTooltipProps,
   SecurityExportRows,
   SecurityTheme,
   SecurityTranslate,

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import SecurityInfoTooltip from './SecurityInfoTooltip'
 import { GluuBadge } from '@/components/GluuBadge'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
@@ -52,7 +52,11 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         >
           {anomalyCount.toLocaleString()}
         </p>
-        <KpiDeltaLabel delta={anomalyDelta} label={t('fields.delta_vs_previous')} />
+        <KpiDeltaLabel
+          delta={anomalyDelta}
+          label={t('fields.delta_vs_previous')}
+          hint={t('fields.delta_anomalies_hint')}
+        />
       </div>
 
       <div className={classes.kpiCard}>
@@ -63,7 +67,11 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         >
           {failureCount.toLocaleString()}
         </p>
-        <KpiDeltaLabel delta={failureDelta} label={t('fields.delta_vs_baseline')} />
+        <KpiDeltaLabel
+          delta={failureDelta}
+          label={t('fields.delta_vs_baseline')}
+          hint={t('fields.delta_failures_hint')}
+        />
       </div>
 
       <div className={classes.kpiCard}>
@@ -75,7 +83,12 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
           {successRate}
           <span className={classes.kpiValueUnit}>%</span>
         </p>
-        <KpiDeltaLabel delta={successDelta} label={t('fields.delta_vs_previous')} increaseIsGood />
+        <KpiDeltaLabel
+          delta={successDelta}
+          label={t('fields.delta_vs_previous')}
+          increaseIsGood
+          hint={t('fields.delta_success_rate_hint')}
+        />
       </div>
 
       <div className={classes.kpiCard}>
@@ -87,7 +100,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
           {usersUnderSiege.length.toLocaleString()}
         </p>
         <div className={classes.kpiDeltaRow}>
-          <GluuTooltip doc_entry="security_users_under_siege" content={allUsernames}>
+          <SecurityInfoTooltip title={allUsernames}>
             {chipUsers.map((stat) => (
               <GluuBadge
                 key={stat.username}
@@ -106,13 +119,15 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
                   : stat.username}
               </GluuBadge>
             ))}
-          </GluuTooltip>
-          <span className={classes.kpiCaption}>
-            {t('fields.users_under_siege_breakdown', {
-              critical: criticalCount,
-              warning: usersUnderSiege.length - criticalCount,
-            })}
-          </span>
+          </SecurityInfoTooltip>
+          <SecurityInfoTooltip title={t('fields.users_under_siege_breakdown_hint')}>
+            <span className={classes.kpiCaption}>
+              {t('fields.users_under_siege_breakdown', {
+                critical: criticalCount,
+                warning: usersUnderSiege.length - criticalCount,
+              })}
+            </span>
+          </SecurityInfoTooltip>
         </div>
       </div>
     </div>

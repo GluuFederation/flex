@@ -2,6 +2,8 @@ import {
   abandonedOf,
   buildFailureSpikeSeries,
   countSpikesInRange,
+  mergeTodayFromHourly,
+  sumAggregation,
   totalFailuresOf,
 } from 'Plugins/fido/components/SecurityMonitor/utils'
 import { createDate } from '@/utils/dayjsUtils'
@@ -265,5 +267,53 @@ describe('abandoned operations from the aggregation payload', () => {
     ]
 
     expect(countSpikesInRange(entries, todayStart, todayEnd)).toBe(0)
+  })
+})
+
+describe('today folded from hourly buckets', () => {
+  it('keeps the reported abandoned counter instead of reverting to the residual', () => {
+    const hourly = [
+      {
+        startTime: todayStart.add(7, 'hour').toISOString(),
+        authenticationAttempts: 2,
+        authenticationSuccesses: 1,
+        authenticationFailures: 0,
+        metricsData: { abandonedOperations: 0 },
+      },
+      {
+        startTime: todayStart.add(10, 'hour').toISOString(),
+        authenticationAttempts: 13,
+        authenticationSuccesses: 2,
+        authenticationFailures: 0,
+        metricsData: { abandonedOperations: 2 },
+      },
+    ]
+
+    const merged = mergeTodayFromHourly([], hourly, todayStart, todayEnd)
+    const totals = sumAggregation(merged)
+
+    // 15 attempts and 3 successes would infer 12 abandoned; the API reported 2.
+    expect(abandonedOf(totals)).toBe(2)
+    expect(totalFailuresOf(totals)).toBe(2)
+  })
+})
+
+describe('attempts line', () => {
+  it('carries attempts alongside failures for the comparison line', () => {
+    const series = buildFailureSpikeSeries(
+      [
+        {
+          startTime: todayStart.add(7, 'hour').toISOString(),
+          authenticationAttempts: 13,
+          authenticationSuccesses: 2,
+          authenticationFailures: 0,
+          metricsData: { abandonedOperations: 2 },
+        },
+      ],
+      todayStart,
+    )
+
+    expect(series[0].attempts).toBe(13)
+    expect(series[0].failures).toBe(2)
   })
 })

@@ -301,3 +301,24 @@ describe('VelocityWatchHeatmap', () => {
     expect(screen.getByText('1 user anomalous')).toBeInTheDocument()
   })
 })
+
+describe('SecurityKpiStrip delta tooltips', () => {
+  it('explains every delta and the siege breakdown', async () => {
+    render(
+      <SecurityKpiStrip
+        summary={summary}
+        usersUnderSiege={[criticalUser, warningUser]}
+        period={KPI_PERIODS.TODAY}
+      />,
+      { wrapper: Wrapper },
+    )
+
+    fireEvent.mouseOver(screen.getByText('vs baseline'))
+    expect(
+      await screen.findByText('Failed + abandoned sign-ins vs previous period'),
+    ).toBeInTheDocument()
+
+    fireEvent.mouseOver(screen.getByText('1 critical · 1 warning'))
+    expect(await screen.findByText('Critical-level accounts vs the rest')).toBeInTheDocument()
+  })
+})

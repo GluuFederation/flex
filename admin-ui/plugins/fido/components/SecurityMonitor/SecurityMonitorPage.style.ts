@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { hexToRgb } from '@/customColors'
+import customColors, { hexToRgb } from '@/customColors'
 import {
   BORDER_RADIUS,
   createMobilePageTitleStyle,
@@ -216,6 +216,25 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
         fontSize: fontSizes.md,
       },
+    },
+    // Mirrors the chart tooltip (Dashboards/Chart/TooltipDesign) so both read as one control.
+    infoTooltip: {
+      fontFamily,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semiBold,
+      lineHeight: lineHeights.normal,
+      borderRadius: BORDER_RADIUS.SMALL_MEDIUM,
+      padding: '12px 16px',
+      maxWidth: 320,
+      border: `1px solid rgba(${hexToRgb(isDark ? customColors.white : customColors.black)}, ${
+        isDark ? 0.2 : 0.1
+      })`,
+      boxShadow: `0px 4px 16px 0px rgba(${hexToRgb(customColors.black)}, 0.25)`,
+    },
+    infoTooltipAnchor: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
     },
     kpiCaption: {
       fontFamily,

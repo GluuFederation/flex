@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import SecurityInfoTooltip from './SecurityInfoTooltip'
 import { GluuBadge } from '@/components/GluuBadge'
 import { getBadgeBackground } from '../utils'
 import { RECENT_ANOMALY_WINDOW_HOURS } from '../constants'
@@ -22,9 +22,8 @@ const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
 
   return (
     <div className={classes.anomalySummary} role="status">
-      <GluuTooltip
-        doc_entry="security_active_anomalies"
-        content={t('fields.active_anomalies_hint', { hours: RECENT_ANOMALY_WINDOW_HOURS })}
+      <SecurityInfoTooltip
+        title={t('fields.active_anomalies_hint', { hours: RECENT_ANOMALY_WINDOW_HOURS })}
       >
         <span className={hasAnomalies ? classes.anomalyCount : classes.anomalyCountClear}>
           {t('fields.active_anomalies', {
@@ -32,7 +31,7 @@ const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
             hours: RECENT_ANOMALY_WINDOW_HOURS,
           })}
         </span>
-      </GluuTooltip>
+      </SecurityInfoTooltip>
       {anomalies.chips.map((chip) => {
         const badge = (
           <GluuBadge
@@ -45,15 +44,14 @@ const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
         )
 
         return chip.detail?.length ? (
-          <GluuTooltip
+          <SecurityInfoTooltip
             key={chip.kind}
-            doc_entry={`anomaly_chip_${chip.kind}`}
-            content={chip.detail.map((entry) => (
+            title={chip.detail.map((entry) => (
               <div key={entry}>{entry}</div>
             ))}
           >
             {badge}
-          </GluuTooltip>
+          </SecurityInfoTooltip>
         ) : (
           <React.Fragment key={chip.kind}>{badge}</React.Fragment>
         )

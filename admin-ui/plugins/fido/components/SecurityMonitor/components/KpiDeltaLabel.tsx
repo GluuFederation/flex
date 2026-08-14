@@ -1,10 +1,16 @@
 import React from 'react'
+import SecurityInfoTooltip from './SecurityInfoTooltip'
 import { TrendingDownIcon, TrendingUpIcon } from '@/components/icons'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { KpiDeltaLabelProps } from '../types'
 
-const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, increaseIsGood = false }) => {
+const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({
+  delta,
+  label,
+  increaseIsGood = false,
+  hint,
+}) => {
   const { themeColors, isDark } = useSecurityTheme()
   const { classes, cx } = useSecurityStyles({ isDark, themeColors })
 
@@ -16,7 +22,7 @@ const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, increaseIsG
       ? classes.kpiDeltaGood
       : classes.kpiDeltaBad
 
-  return (
+  const row = (
     <p className={classes.kpiDeltaRow}>
       <span className={cx(classes.kpiDeltaBadge, toneClass)}>
         {isFlat ? null : delta.isIncrease ? <TrendingUpIcon /> : <TrendingDownIcon />}
@@ -25,6 +31,8 @@ const KpiDeltaLabel: React.FC<KpiDeltaLabelProps> = ({ delta, label, increaseIsG
       <span className={classes.kpiCaption}>{label}</span>
     </p>
   )
+
+  return <SecurityInfoTooltip title={hint}>{row}</SecurityInfoTooltip>
 }
 
 export default React.memo(KpiDeltaLabel)

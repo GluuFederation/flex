@@ -652,7 +652,9 @@ describe('SecurityMonitor utils', () => {
     it('prefixes the KPI summary before every chart series', () => {
       const data: SecurityDashboardData = {
         ...emptyData,
-        spikeSeries: [{ label: '03', timestamp: 1, failures: 48, baseline: 5, isSpike: true }],
+        spikeSeries: [
+          { label: '03', timestamp: 1, failures: 48, attempts: 120, baseline: 5, isSpike: true },
+        ],
         deviceTrend: {
           points: [{ label: 'Jul-27', platform: 54, crossPlatform: 46 }],
           shiftDayLabel: null,

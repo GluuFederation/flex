@@ -140,9 +140,13 @@ const buildFailureSpikeSeries = (
     .map((entry) => {
       const date = entryStartDate(entry)
       if (!date) return null
-      return { date, failures: entryFailures(entry) }
+      return {
+        date,
+        failures: entryFailures(entry),
+        attempts: toCount(entry.authenticationAttempts),
+      }
     })
-    .filter((point): point is { date: Dayjs; failures: number } => point !== null)
+    .filter((point): point is { date: Dayjs; failures: number; attempts: number } => point !== null)
     .sort((a, b) => a.date.valueOf() - b.date.valueOf())
 
   const failuresByBucket = new Map<number, number>()
@@ -169,6 +173,7 @@ const buildFailureSpikeSeries = (
         label: point.date.format(labelFormat),
         timestamp,
         failures: point.failures,
+        attempts: point.attempts,
         baseline,
         // Without comparable history there is no baseline to beat, so fall back to an
         // absolute floor. Otherwise a young deployment could never report an anomaly.
@@ -774,11 +779,15 @@ const foldEntriesIntoDay = (
   const counters: Record<string, number> = {}
   const deviceTypes: Record<string, number> = {}
   let uniqueUsers = 0
+  let abandoned = 0
 
   entries.forEach((entry) => {
     AGGREGATION_COUNTER_KEYS.forEach((key) => {
       counters[key] = (counters[key] ?? 0) + toCount(entry[key])
     })
+    // Read through entryAbandoned: the hourly payload carries the counter inside
+    // metricsData, and dropping it here would send the fold back to the attempts residual.
+    abandoned += entryAbandoned(entry)
     uniqueUsers = Math.max(uniqueUsers, toCount(entry.uniqueUsers))
     Object.entries(readCountRecord(entry.deviceTypes)).forEach(([key, value]) => {
       deviceTypes[key] = (deviceTypes[key] ?? 0) + value
@@ -789,6 +798,7 @@ const foldEntriesIntoDay = (
     folded[key] = counters[key] ?? 0
   })
   folded.uniqueUsers = uniqueUsers
+  folded.abandonedOperations = abandoned
   if (Object.keys(deviceTypes).length) folded.deviceTypes = deviceTypes
 
   return folded
@@ -808,8 +818,6 @@ const mergeTodayFromHourly = (
   return folded ? [...dailyEntries, folded] : dailyEntries
 }
 
-// Abandoned authentications are reported by the aggregation API only as the residual of
-// attempts that neither succeeded nor failed outright.
 // Prefer the abandoned counter carried by the aggregation; the attempts residual is only a
 // fallback for totals assembled without it.
 const abandonedOf = (totals: PeriodTotals): number =>
@@ -886,6 +894,7 @@ const padSpikeSeries = (
       label: bucket.format(labelFormat),
       timestamp: bucket.valueOf(),
       failures: 0,
+      attempts: 0,
       baseline: 0,
       isSpike: false,
     }))
@@ -1000,6 +1009,7 @@ const buildHourScaffold = (): FailureSpikePoint[] =>
     label: `${String(hour).padStart(HOUR_LABEL_LENGTH, '0')}:00`,
     timestamp: hour,
     failures: 0,
+    attempts: 0,
     baseline: 0,
     isSpike: false,
   }))
