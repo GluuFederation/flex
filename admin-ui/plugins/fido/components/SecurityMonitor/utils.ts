@@ -1,4 +1,4 @@
-import { alpha } from '@mui/material/styles'
+import { alpha, darken, lighten } from '@mui/material/styles'
 import { OPACITY } from '@/constants'
 import { createDate, DATE_FORMATS, type Dayjs } from '@/utils/dayjsUtils'
 import { METRIC_STATUS } from '../Metrics/constants'
@@ -29,6 +29,8 @@ import {
   USER_SIEGE_MIN_FAILURES,
   USER_SIEGE_MIN_FAILURE_RATE,
   USER_SIEGE_RATE_MIN_FAILURES,
+  USER_THREAT_CRITICAL_FAILURES,
+  USER_THREAT_CRITICAL_RATE,
   THREAT_LEVELS,
   TOP_IP_LIMIT,
   TOP_USER_LIMIT,
@@ -74,6 +76,8 @@ const PLATFORM_KEY_HINT = 'platform'
 const CROSS_PLATFORM_KEY_HINT = 'cross'
 
 const PLATFORM_MAJORITY_SHARE = 50
+
+const BADGE_TEXT_SHIFT = 0.35
 
 const toCount = (value: number | null | undefined): number =>
   typeof value === 'number' && Number.isFinite(value) ? value : 0
@@ -319,6 +323,26 @@ const aggregateIpFailures = (entries: readonly MetricsEntry[]): IpFailureStat[] 
     .sort((a, b) => b.failures - a.failures)
 }
 
+// Any account that clears the siege rule is at least HIGH: a tile that flags an account as
+// besieged while the chart paints it LOW reads as a contradiction.
+const classifyUserThreatLevel = (stat: { failures: number; failureRatio: number }): ThreatLevel => {
+  if (
+    stat.failures >= USER_THREAT_CRITICAL_FAILURES ||
+    (stat.failures >= USER_SIEGE_MIN_FAILURES && stat.failureRatio >= USER_THREAT_CRITICAL_RATE)
+  ) {
+    return THREAT_LEVELS.CRITICAL
+  }
+  if (
+    stat.failures >= USER_SIEGE_MIN_FAILURES ||
+    (stat.failures >= USER_SIEGE_RATE_MIN_FAILURES &&
+      stat.failureRatio >= USER_SIEGE_MIN_FAILURE_RATE)
+  ) {
+    return THREAT_LEVELS.HIGH
+  }
+  if (stat.failures >= USER_SIEGE_RATE_MIN_FAILURES) return THREAT_LEVELS.MEDIUM
+  return THREAT_LEVELS.LOW
+}
+
 // Grouped by account rather than by address: abandoned rows carry no IP at all, and one
 // account can be hit from several addresses, so an IP-keyed tally cannot cover every user.
 const aggregateUserFailures = (entries: readonly MetricsEntry[]): UserFailureStat[] => {
@@ -365,7 +389,7 @@ const aggregateUserFailures = (entries: readonly MetricsEntry[]): UserFailureSta
         outcomes: bucket.outcomes,
         failureRate: roundTo(failureRatio * 100),
         lastSeen: bucket.lastSeen,
-        threatLevel: classifyThreatLevel({ failures, failureRatio }),
+        threatLevel: classifyUserThreatLevel({ failures, failureRatio }),
       }
     })
     .sort((a, b) => b.failures - a.failures)
@@ -490,6 +514,9 @@ const getSecurityPalette = (themeColors: SecurityPaletteSource): SecurityPalette
 
 const getBadgeBackground = (tone: string, isDark: boolean, lightBackground: string): string =>
   isDark ? alpha(tone, OPACITY.ERROR_BG_DARK) : lightBackground
+
+const getBadgeTextColor = (tone: string, isDark: boolean): string =>
+  isDark ? lighten(tone, BADGE_TEXT_SHIFT) : darken(tone, BADGE_TEXT_SHIFT)
 
 const buildErrorCategorySlices = (
   errors: ErrorsAnalyticsResponse | undefined,
@@ -1063,6 +1090,7 @@ export {
   findDropOffPeak,
   findPeakSpike,
   getBadgeBackground,
+  getBadgeTextColor,
   getSecurityPalette,
   percentDelta,
   pointDelta,

@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardBody } from 'Components'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { getBadgeBackground } from '../utils'
+import { getBadgeBackground, getBadgeTextColor } from '../utils'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { SecurityChartCardProps } from '../types'
@@ -30,6 +30,8 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
     themeColors.badges.statusInactiveBg,
   )
 
+  const statusText = getBadgeTextColor(statusTone, isDark)
+
   return (
     <Card
       className={`${classes.chartCard} h-100`}
@@ -46,7 +48,7 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
           <div className={classes.chartHeaderRight}>
             {headerExtra}
             {statusLabel ? (
-              <GluuBadge pill backgroundColor={statusBackground} textColor={statusTone}>
+              <GluuBadge pill backgroundColor={statusBackground} textColor={statusText}>
                 {statusLabel}
               </GluuBadge>
             ) : null}

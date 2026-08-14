@@ -108,3 +108,34 @@ describe('filterUsersUnderSiege', () => {
     expect(filterUsersUnderSiege([stat('paul', 4, 100)])).toEqual([])
   })
 })
+
+describe('user threat levels stay consistent with the siege rule', () => {
+  const withOutcomes = (failures: number, outcomes: number) =>
+    aggregateUserFailures([
+      ...Array.from({ length: failures }, () => abandoned('imran')),
+      ...Array.from({ length: outcomes - failures }, () => success('imran')),
+    ])[0]!
+
+  it('never leaves a besieged account on the lowest level', () => {
+    const stats = [withOutcomes(8, 18), withOutcomes(5, 20), withOutcomes(3, 4)]
+
+    stats.forEach((stat) => {
+      expect(filterUsersUnderSiege([stat])).toHaveLength(1)
+      expect(stat.threatLevel).not.toBe(THREAT_LEVELS.LOW)
+      expect(stat.threatLevel).not.toBe(THREAT_LEVELS.MEDIUM)
+    })
+  })
+
+  it('rates a sustained run as high and a relentless one as critical', () => {
+    expect(withOutcomes(8, 18).threatLevel).toBe(THREAT_LEVELS.HIGH)
+    expect(withOutcomes(12, 20).threatLevel).toBe(THREAT_LEVELS.CRITICAL)
+    expect(withOutcomes(6, 6).threatLevel).toBe(THREAT_LEVELS.CRITICAL)
+  })
+
+  it('leaves a quiet account low', () => {
+    const stat = withOutcomes(1, 20)
+
+    expect(stat.threatLevel).toBe(THREAT_LEVELS.LOW)
+    expect(filterUsersUnderSiege([stat])).toEqual([])
+  })
+})

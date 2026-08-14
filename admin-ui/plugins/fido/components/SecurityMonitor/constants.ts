@@ -24,6 +24,12 @@ const USER_SIEGE_RATE_MIN_FAILURES = 3
 
 const USER_SIEGE_MIN_FAILURE_RATE = 0.6
 
+// A besieged account escalates on its own scale: the IP thresholds describe an attacking
+// address, which is a much busier thing than a single victim account.
+const USER_THREAT_CRITICAL_FAILURES = 10
+
+const USER_THREAT_CRITICAL_RATE = 0.8
+
 const SIEGE_CHIP_LIMIT = 1
 
 const CRITICAL_IP_FAILURE_RATIO = 0.8
@@ -147,6 +153,8 @@ export {
   USER_SIEGE_MIN_FAILURES,
   USER_SIEGE_MIN_FAILURE_RATE,
   USER_SIEGE_RATE_MIN_FAILURES,
+  USER_THREAT_CRITICAL_FAILURES,
+  USER_THREAT_CRITICAL_RATE,
   TOP_IP_LIMIT,
   TOP_USER_LIMIT,
   VELOCITY_ANOMALY_MIN_ATTEMPTS,
