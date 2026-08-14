@@ -7,6 +7,7 @@ import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { GluuDropdown } from '../GluuDropdown'
 import type { GluuDropdownOption } from '../GluuDropdown/types'
 import notificationIcon from 'Images/svg/notification-icon.svg'
+import { useStyles } from './Notifications.style'
 
 const DARK_ICON_FILTER = 'brightness(0) invert(1)'
 const LIGHT_ICON_FILTER =
@@ -21,15 +22,16 @@ const Notifications = () => {
   }, [themeContext?.state?.theme])
 
   const isDark = currentTheme === THEME_DARK
+  const { classes } = useStyles()
 
   const notificationOptions: GluuDropdownOption[] = useMemo(
     () => [
       {
         value: 'no-notifications',
-        label: <span style={{ whiteSpace: 'nowrap' }}>{t('notifications.no_notifications')}</span>,
+        label: <span className={classes.optionLabel}>{t('notifications.no_notifications')}</span>,
       },
     ],
-    [t],
+    [t, classes.optionLabel],
   )
 
   const iconFilter = useMemo(() => {
@@ -60,12 +62,8 @@ const Notifications = () => {
       <img
         src={notificationIcon}
         alt="Notifications"
-        style={{
-          width: '26px',
-          height: '26px',
-          display: 'block',
-          filter: iconFilter,
-        }}
+        className={classes.icon}
+        style={{ filter: iconFilter }}
       />
     </Box>
   )

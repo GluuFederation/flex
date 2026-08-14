@@ -21,11 +21,13 @@ import { logger } from '@/utils/logger'
 export const invalidateScopeQueries = (queryClient: ReturnType<typeof useQueryClient>) => {
   const listKey = getGetOauthScopesQueryKey()[0]
   const inumKeyPrefix = getGetOauthScopesByInumQueryKey('')[0]
+  const isScopeKey = (segment: string): boolean =>
+    segment === listKey || segment.startsWith(inumKeyPrefix)
   return queryClient.invalidateQueries({
     predicate: (query) => {
-      const queryKey = query.queryKey[0]
-      if (typeof queryKey !== 'string') return false
-      return queryKey === listKey || queryKey.startsWith(inumKeyPrefix)
+      const [first, second] = query.queryKey
+      const target = first === 'infinite' ? second : first
+      return typeof target === 'string' && isScopeKey(target)
     },
   })
 }

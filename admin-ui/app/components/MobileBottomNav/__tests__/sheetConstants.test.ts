@@ -8,6 +8,7 @@ jest.mock('@/helpers/navigation', () => ({
     SCIM_BASE: '/scim',
     FIDO_BASE: '/fido/configuration',
     FIDO_METRICS: '/fido/metrics',
+    FIDO_SECURITY_MONITOR: '/fido/security-monitor',
     JANS_LOCK_BASE: '/jans-lock',
     ADMIN_DASHBOARD: '/home/dashboard',
     ADMIN_HEALTH: '/home/health',
@@ -46,6 +47,7 @@ describe('isMoreMenuPath', () => {
 
   it('is true for a route belonging to a tile child (FIDO/Services)', () => {
     expect(isMoreMenuPath('/fido/metrics')).toBe(true)
+    expect(isMoreMenuPath('/fido/security-monitor')).toBe(true)
     expect(isMoreMenuPath('/config/persistence')).toBe(true)
   })
 

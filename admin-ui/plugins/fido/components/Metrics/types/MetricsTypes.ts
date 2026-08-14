@@ -1,4 +1,5 @@
 import type { Dayjs } from 'dayjs'
+import type { Fido2MetricsEntry } from 'JansConfigApi'
 
 export type HeatmapData = {
   rows: readonly string[]
@@ -93,6 +94,7 @@ export type AggregationEntry = {
   authenticationSuccesses?: number | null
   registrationFailures?: number | null
   fallbackEvents?: number | null
+  abandonedOperations?: number | null
   period?: string | null
   authenticationSuccessRate?: number | null
   authenticationAvgDuration?: number | null
@@ -133,7 +135,34 @@ export type ErrorsAnalyticsResponse = {
   successRate?: number | null
   failureRate?: number | null
   dropOffRate?: number | null
-  [key: string]: number | string | boolean | null | undefined
+  errorCategories?: Record<string, number | null> | null
+  errorCounts?: Record<string, number | null> | null
+  topErrors?: Record<string, number | null> | null
+  [key: string]: Record<string, number | null> | number | string | boolean | null | undefined
+}
+
+export type MetricsEntriesParams = MetricsDateRangeParams & {
+  limit?: number
+  startIndex?: number
+}
+
+export type MetricsEntry = Fido2MetricsEntry
+
+export type MetricsEntriesResponse = {
+  start?: number | null
+  totalEntriesCount?: number | null
+  entriesCount?: number | null
+  entries?: MetricsEntry[] | null
+}
+
+export type DevicesAnalyticsParams = MetricsDateRangeParams
+
+export type DevicesAnalyticsResponse = {
+  authenticatorTypes?: Record<string, number | null> | null
+  deviceTypes?: Record<string, number | null> | null
+  browsers?: Record<string, number | null> | null
+  platforms?: Record<string, number | null> | null
+  [key: string]: Record<string, number | null> | number | string | boolean | null | undefined
 }
 
 export type PerformanceAnalyticsResponse = {

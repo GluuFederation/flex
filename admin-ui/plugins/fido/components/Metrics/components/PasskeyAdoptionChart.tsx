@@ -13,7 +13,7 @@ import { METRICS_CHART_COLORS, RECHARTS_INITIAL_DIMENSION } from '../constants'
 import { useAdoptionMetrics } from '../hooks'
 import { formatChartValue, toNumber } from '../utils'
 import type { PasskeyAdoptionChartProps } from '../types'
-import { fontWeights, fontSizes, fontFamily } from '@/styles/fonts'
+import { fontWeights, fontFamily } from '@/styles/fonts'
 
 const ARROW_S = 6
 const BAR_SIZE = 68
@@ -60,7 +60,6 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   const existingUsers = Math.max(0, totalRegisteredUsers - newRegisteredUsers)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-  const borderColor = themeColors.borderColor
   const textColor = themeColors.fontColor
 
   const totalForBar = existingUsers + newRegisteredUsers
@@ -148,11 +147,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
     const newColor = METRICS_CHART_COLORS.newUsers
 
     return (
-      <svg
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'visible' }}
-        width={width}
-        height={height}
-      >
+      <svg className={classes.adoptionArrowOverlay} width={width} height={height}>
         {/* Left: total span arrow (top of bar → bottom) */}
         <line
           x1={leftArrowX}
@@ -231,7 +226,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   return (
     <Card className={`${classes.chartCard} h-100`}>
-      <CardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <CardBody className={classes.chartCardBody}>
         <GluuText variant="div" className={classes.chartTitle}>
           {t('titles.passkey_adoption_rate')}
         </GluuText>
@@ -241,21 +236,15 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
             <div className={classes.adoptionYAxisColumn}>
               <div className={classes.adoptionYAxisTicks}>
                 {Y_TICKS.map((n) => (
-                  <span key={n} style={{ fontSize: 11, color: textColor, lineHeight: 1 }}>
+                  <span key={n} className={classes.adoptionYAxisTick}>
                     {n}
                   </span>
                 ))}
               </div>
             </div>
 
-            <div
-              className={classes.adoptionDottedBox}
-              style={{ border: `1px dashed ${borderColor}` }}
-            >
-              <div
-                ref={containerRef}
-                style={{ position: 'relative', width: '100%', height: '100%' }}
-              >
+            <div className={classes.adoptionDottedBox}>
+              <div ref={containerRef} className={classes.adoptionChartCanvas}>
                 <ResponsiveContainer
                   width="100%"
                   height="100%"
@@ -344,26 +333,8 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                     </PieChart>
                   </ResponsiveContainer>
                   <div className={classes.adoptionDonutCenter}>
-                    <div
-                      style={{
-                        color: METRICS_CHART_COLORS.adoptionRate,
-                        fontWeight: fontWeights.semiBold,
-                        fontSize: fontSizes.sm,
-                        fontFamily,
-                      }}
-                    >
-                      {t('fields.adoption_rate')}
-                    </div>
-                    <div
-                      style={{
-                        color: METRICS_CHART_COLORS.adoptionRate,
-                        fontWeight: fontWeights.bold,
-                        fontSize: fontSizes.lg,
-                        fontFamily,
-                      }}
-                    >
-                      {adoptionPasskeyRate}%
-                    </div>
+                    <div className={classes.adoptionDonutLabel}>{t('fields.adoption_rate')}</div>
+                    <div className={classes.adoptionDonutValue}>{adoptionPasskeyRate}%</div>
                   </div>
                 </div>
               </div>
@@ -376,7 +347,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 className={classes.adoptionLegendDot}
                 style={{ backgroundColor: METRICS_CHART_COLORS.newUsers }}
               />
-              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+              <span className={classes.adoptionLegendLabel}>
                 {t('fields.new_registered_users')} {newRegisteredUsers}
               </span>
             </div>
@@ -385,7 +356,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 className={classes.adoptionLegendDot}
                 style={{ backgroundColor: METRICS_CHART_COLORS.totalUsers }}
               />
-              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+              <span className={classes.adoptionLegendLabel}>
                 {t('fields.total_registered_users')} {totalRegisteredUsers}
               </span>
             </div>
@@ -394,7 +365,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 className={classes.adoptionLegendDot}
                 style={{ backgroundColor: METRICS_CHART_COLORS.adoptionRate }}
               />
-              <span style={{ color: textColor, fontSize: fontSizes.sm, fontFamily }}>
+              <span className={classes.adoptionLegendLabel}>
                 {t('fields.adoption_passkey_rate')} {adoptionPasskeyRate}%
               </span>
             </div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { useStyles } from './styles/GluuAdvancedSearch.style'
 import type { GluuAdvancedSearchProps } from './types/index'
 
 const GluuAdvancedSearch = ({
@@ -33,10 +34,12 @@ const GluuAdvancedSearch = ({
           }
         : undefined
 
+  const { classes } = useStyles()
+
   const patternProps = controlled ? { value: pattern || '' } : { defaultValue: pattern }
 
   return (
-    <FormGroup row style={{ marginTop: '10px' }}>
+    <FormGroup row className={classes.row}>
       {showLimit && (
         <Input
           style={{ width: '100px' }}

@@ -245,7 +245,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     return out
   }, [columns, resizedColumnWidths, computedWidths, computedPixelWidths, isMobileViewport])
 
-  const { classes } = useStyles({ isDark, themeColors, stickyHeader })
+  const { classes, cx } = useStyles({ isDark, themeColors, stickyHeader })
 
   const tableRef = useRef<HTMLTableElement>(null)
   const headerCellRefs = useRef<Map<string, HTMLTableCellElement>>(new Map())
@@ -441,7 +441,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                 onClick={() => action.onClick(row)}
               >
                 {typeof action.icon === 'string' ? (
-                  <i className={action.icon} style={{ fontSize: '16px' }} />
+                  <i className={`${action.icon} ${classes.actionIcon}`} />
                 ) : (
                   action.icon
                 )}
@@ -684,7 +684,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           )
                         })}
                         {actions && actions.length > 0 && (
-                          <td className={classes.cell} style={{ textAlign: 'center' }}>
+                          <td className={cx(classes.cell, classes.cellCentered)}>
                             {renderActionCell(row)}
                           </td>
                         )}

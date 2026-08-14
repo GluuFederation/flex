@@ -51,6 +51,8 @@ const createLightTheme = (): ThemeConfig => {
     badges: {
       statusActiveBg: customColors.statusActiveBg,
       statusActive: customColors.statusActive,
+      statusInactiveBg: customColors.statusInactiveBg,
+      statusInactive: customColors.statusInactive,
       filledBadgeBg: customColors.statusActive,
       filledBadgeText: customColors.white,
       disabledBg: customColors.disabledBadgeLightBg,
@@ -100,6 +102,11 @@ const createLightTheme = (): ThemeConfig => {
       axisColor: getLoadingOverlayRgba(customColors.black, 0.4),
       donutEmptyColor: customColors.chartDonutEmptyLight,
       cellBorderColor: getLoadingOverlayRgba(customColors.black, 0.08),
+      blue: customColors.chartBlue,
+      lightBlue: customColors.chartLightBlue,
+      purple: customColors.chartPurple,
+      cyan: customColors.chartCyan,
+      cellText: customColors.darkGray,
     },
   }
 }
@@ -151,6 +158,8 @@ const createDarkTheme = (): ThemeConfig => {
     badges: {
       statusActiveBg: customColors.statusActiveBg,
       statusActive: customColors.statusActive,
+      statusInactiveBg: customColors.statusInactiveBg,
+      statusInactive: customColors.statusInactive,
       filledBadgeBg: customColors.statusActive,
       filledBadgeText: customColors.white,
       disabledBg: customColors.disabledBadgeDarkBg,
@@ -200,6 +209,11 @@ const createDarkTheme = (): ThemeConfig => {
       axisColor: getLoadingOverlayRgba(customColors.white, 0.4),
       donutEmptyColor: customColors.chartDonutEmptyDark,
       cellBorderColor: getLoadingOverlayRgba(customColors.white, 0.06),
+      blue: customColors.chartBlue,
+      lightBlue: customColors.chartLightBlue,
+      purple: customColors.chartPurple,
+      cyan: customColors.chartCyan,
+      cellText: customColors.darkGray,
     },
   }
 }

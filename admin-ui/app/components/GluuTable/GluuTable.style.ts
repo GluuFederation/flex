@@ -215,6 +215,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       transformOrigin: 'center',
       transition: 'opacity 0.15s ease, transform 0.2s ease',
     },
+    actionIcon: {
+      fontSize: fontSizes.md,
+    },
+    cellCentered: {
+      textAlign: 'center' as const,
+    },
     cell: {
       padding: '14px 16px',
       color: themeColors.fontColor,

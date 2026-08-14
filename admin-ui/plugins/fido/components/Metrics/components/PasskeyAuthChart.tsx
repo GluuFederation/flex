@@ -101,41 +101,19 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
 
   return (
     <Card className={`${classes.chartCard} h-100`}>
-      <CardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 16,
-            marginBottom: 4,
-          }}
-        >
-          <GluuText variant="div" className={classes.chartTitle} style={{ margin: 0 }}>
+      <CardBody className={classes.chartCardBody}>
+        <div className={classes.authChartHeader}>
+          <GluuText variant="div" className={classes.chartTitle}>
             {t('titles.passkey_authentication')}
           </GluuText>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              flexShrink: 0,
-              paddingTop: 2,
-            }}
-          >
+          <div className={classes.authChartLegend}>
             {data.map((entry) => (
-              <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div key={entry.name} className={classes.authChartLegendItem}>
                 <span
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: entry.fill,
-                    flexShrink: 0,
-                    display: 'inline-block',
-                  }}
+                  className={classes.authChartLegendDot}
+                  style={{ backgroundColor: entry.fill }}
                 />
-                <span style={{ fontSize: 12, color: entry.fill, whiteSpace: 'nowrap' }}>
+                <span className={classes.adoptionLegendLabel} style={{ color: entry.fill }}>
                   {entry.name} {entry.value}%
                 </span>
               </div>
@@ -143,7 +121,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
           </div>
         </div>
 
-        <div style={{ flex: 1, minHeight: 320 }}>
+        <div className={classes.authChartCanvas}>
           <ResponsiveContainer
             width="100%"
             height="100%"

@@ -5,6 +5,7 @@ import React, { useMemo } from 'react'
 import { Close } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { useStyles } from './styles/GluuRemovableSelectRow.style'
 import type { GluuRemovableSelectRowProps } from './types'
 
 const GluuRemovableSelectRow = ({
@@ -26,6 +27,7 @@ const GluuRemovableSelectRow = ({
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles()
 
   return (
     <div>
@@ -36,7 +38,7 @@ const GluuRemovableSelectRow = ({
         doc_entry={name}
         isDirect={isDirect}
       />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className={classes.row}>
         <InputGroup style={{ flex: 1, minWidth: 0 }}>
           <CustomInput
             type="select"
@@ -64,20 +66,7 @@ const GluuRemovableSelectRow = ({
           <button
             type="button"
             aria-label={t('actions.remove')}
-            style={{
-              width: 32,
-              height: 32,
-              minWidth: 32,
-              minHeight: 32,
-              padding: 6,
-              background: 'transparent',
-              border: 'none',
-              boxShadow: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
+            className={classes.removeButton}
             onClick={() => handler()}
           >
             <Close sx={{ color: themeColors.fontColor, fontSize: 16 }} />

@@ -31,6 +31,7 @@ jest.mock('@/helpers/navigation', () => ({
     SCIM_BASE: '/scim',
     FIDO_BASE: '/fido/configuration',
     FIDO_METRICS: '/fido/metrics',
+    FIDO_SECURITY_MONITOR: '/fido/security-monitor',
     JANS_LOCK_BASE: '/jans-lock',
     PLUGIN_BASE_PATHS: {
       HOME: '/home',

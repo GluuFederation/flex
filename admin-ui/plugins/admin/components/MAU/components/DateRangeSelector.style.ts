@@ -1,8 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { BORDER_RADIUS, getSegmentedButtonStyle, SEGMENTED_CONTROL, SPACING } from '@/constants'
 
-const PRESET_BUTTON_MIN_WIDTH = 110
+const PRESET_BUTTON_MIN_WIDTH = SEGMENTED_CONTROL.BUTTON_MIN_WIDTH
 const VIEW_BUTTON_MIN_WIDTH = 96
 
 export const VIEW_BUTTON_STYLE = {
@@ -16,8 +16,7 @@ export const VIEW_BUTTON_STYLE = {
 
 export const getPresetButtonStyle = (isFirst: boolean, isLast: boolean) => ({
   minWidth: PRESET_BUTTON_MIN_WIDTH,
-  borderRadius: isFirst ? '8px 0 0 8px' : isLast ? '0 8px 8px 0' : 0,
-  marginLeft: isFirst ? 0 : -1,
+  ...getSegmentedButtonStyle(isFirst, isLast),
 })
 
 const useStyles = makeStyles()((theme) => ({

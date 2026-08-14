@@ -135,7 +135,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               <LabelList
                 dataKey="regAttempts"
                 position="top"
-                style={{ fill: axisColor, fontSize: 10 }}
+                className={classes.chartLabelSm}
                 formatter={formatNonZeroChartValue}
               />
             </Bar>
@@ -148,7 +148,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               <LabelList
                 dataKey="regSuccess"
                 position="top"
-                style={{ fill: axisColor, fontSize: 10 }}
+                className={classes.chartLabelSm}
                 formatter={formatNonZeroChartValue}
               />
             </Bar>
@@ -161,7 +161,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               <LabelList
                 dataKey="authAttempts"
                 position="top"
-                style={{ fill: axisColor, fontSize: 10 }}
+                className={classes.chartLabelSm}
                 formatter={formatNonZeroChartValue}
               />
             </Bar>
@@ -174,7 +174,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               <LabelList
                 dataKey="authSuccess"
                 position="top"
-                style={{ fill: axisColor, fontSize: 10 }}
+                className={classes.chartLabelSm}
                 formatter={formatNonZeroChartValue}
               />
             </Bar>
