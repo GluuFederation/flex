@@ -303,7 +303,7 @@ Kubernetes: `>=v1.23.0-0`
 | fido2.ingress.fido2WebauthnLabels | object | `{}` | fido2 webauthn ingress resource labels. key app is taken |
 | fqdn | string | `"demoexample.gluu.org"` | Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services. |
 | fullNameOverride | string | `""` |  |
-| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}},"enabled":false,"gateway":{"annotations":{},"attachLbIp":false,"className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"},"routes":{"annotations":{},"labels":{}}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
+| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}},"enabled":false,"gateway":{"annotations":{},"attachLbIp":false,"className":"nginx","httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"},"routes":{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
 | gateway-api.additionalConfig | object | `{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}}` | Additional configuration for Specific Gateway API implementation |
 | gateway-api.additionalConfig.airlock | object | `{"createLbService":false}` | Configuration for Airlock Microgateway |
 | gateway-api.additionalConfig.airlock.createLbService | bool | `false` | Create LoadBalancer service using GatewayParameters (by default airlock-microgateway doesn't create the service). See https://docs.airlock.com/microgateway/latest/index/api/crds/gateway-parameters/v1alpha1/ for details. The GatewayParameters will be attached to gateway.infrastructure.parametersRef only if it's empty. |
@@ -329,9 +329,30 @@ Kubernetes: `>=v1.23.0-0`
 | gateway-api.gateway.labels | object | `{}` | Specific labels for the Gateway resource |
 | gateway-api.gateway.name | string | `"gluu-gateway"` | The name of the Gateway resource to be created |
 | gateway-api.gateway.tlsSecretName | string | `"tls-certificate"` | Secret containing the TLS certificate for the Gateway |
-| gateway-api.routes | object | `{"annotations":{},"labels":{}}` | Configuration for HTTPRoute and its related resources |
+| gateway-api.routes | object | `{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}` | Configuration for HTTPRoute and its related resources |
+| gateway-api.routes.adminUiEnabled | bool | `true` | Enable Admin UI endpoints /admin |
 | gateway-api.routes.annotations | object | `{}` | Specific annotations for the HTTPRoute resource |
+| gateway-api.routes.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
+| gateway-api.routes.authServerProtectedRegister | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/register. |
+| gateway-api.routes.authServerProtectedToken | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/token. |
+| gateway-api.routes.authzenConfigEnabled | bool | `true` | Enable endpoint /.well-known/authzen-configuration |
+| gateway-api.routes.casaEnabled | bool | `false` | Enable Casa endpoints /jans-casa |
+| gateway-api.routes.configApiEnabled | bool | `true` | Enable Config API endpoints /jans-config-api |
+| gateway-api.routes.deviceCodeEnabled | bool | `true` | Enable endpoint /device-code |
+| gateway-api.routes.fido2ConfigEnabled | bool | `false` | Enable endpoint /.well-known/fido2-configuration |
+| gateway-api.routes.fido2Enabled | bool | `false` | Enable all fido2 endpoints /jans-fido2 |
+| gateway-api.routes.fido2WebauthnEnabled | bool | `false` | Enable endpoint /.well-known/webauthn |
+| gateway-api.routes.firebaseMessagingEnabled | bool | `true` | Enable endpoint /firebase-messaging-sw.js |
+| gateway-api.routes.gatewayNamespace | string | `""` | Namespace where the Gateway resource resides. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. If set, ensure the target namespace exists and your Gateway controller has the required cross-namespace RBAC permissions. |
+| gateway-api.routes.httpSectionName | string | `"http"` | Only set the httpSectionName and httpsSectionName if it doesn't work with the default values, according to your installed controller (e.g. some controller may require the listener name to be `default`). |
 | gateway-api.routes.labels | object | `{}` | Specific labels for the HTTPRoute resource |
+| gateway-api.routes.lockAuditEnabled | bool | `false` | Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, auth-server.lockEnabled must be enabled) |
+| gateway-api.routes.lockConfigEnabled | bool | `false` | Enable endpoint /.well-known/lock-server-configuration (if enabled, auth-server.lockEnabled must be enabled) |
+| gateway-api.routes.openidConfigEnabled | bool | `true` | Enable endpoint /.well-known/openid-configuration |
+| gateway-api.routes.scimConfigEnabled | bool | `false` | Enable endpoint /.well-known/scim-configuration |
+| gateway-api.routes.scimEnabled | bool | `false` | Enable SCIM endpoints /jans-scim |
+| gateway-api.routes.uma2ConfigEnabled | bool | `true` | Enable endpoint /.well-known/uma2-configuration |
+| gateway-api.routes.webfingerEnabled | bool | `true` | Enable endpoint /.well-known/webfinger |
 | hpa | object | `{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}` | Configure the HorizontalPodAutoscaler |
 | hpa.behavior | object | `{}` | Scaling Policies |
 | hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
