@@ -79,7 +79,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
       </div>
 
       <div className={classes.kpiCard}>
-        <p className={classes.kpiLabel}>{t('fields.suspicious_ips')}</p>
+        <p className={classes.kpiLabel}>{t('fields.users_under_siege')}</p>
         <p
           className={classes.kpiValue}
           style={{ color: alertColor(usersUnderSiege.length, palette.chart.suspicious) }}
@@ -87,7 +87,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
           {usersUnderSiege.length.toLocaleString()}
         </p>
         <p className={classes.kpiCaption}>
-          {t('fields.suspicious_ips_breakdown', {
+          {t('fields.users_under_siege_breakdown', {
             critical: criticalCount,
             warning: usersUnderSiege.length - criticalCount,
           })}

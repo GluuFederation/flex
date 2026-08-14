@@ -55,7 +55,7 @@ jest.mock('Plugins/fido/components/SecurityMonitor/components', () => ({
     </div>
   ),
   SessionIntegrityChart: () => <div data-testid="session-integrity-chart" />,
-  ThreatOriginsChart: () => <div data-testid="threat-origins-chart" />,
+  TopTargetedAccountsChart: () => <div data-testid="top-targeted-accounts-chart" />,
   VelocityWatchHeatmap: () => <div data-testid="velocity-heatmap" />,
 }))
 
@@ -99,6 +99,17 @@ const baseData = () => ({
   spikeSeries: [{ label: '14', timestamp: 1, failures: 124, baseline: 15, isSpike: true }],
   dropOffSeries: [],
   ipStats: [{ ipAddress: '192.0.2.10', failures: 24, failureRate: 100 }],
+  userStats: [
+    {
+      username: 'a.morgan',
+      failures: 24,
+      failed: 20,
+      abandoned: 4,
+      failureRate: 100,
+      threatLevel: 'critical',
+    },
+  ],
+  usersUnderSiege: [],
   suspiciousIps: [],
   errorSlices: [{ category: 'INVALID_CREDENTIAL', count: 45, share: 45, color: '#f13f44' }],
   velocityMatrix: { rows: [], cols: [], cells: [], anomalousUsers: 0 },
@@ -142,7 +153,7 @@ describe('SecurityMonitorPage', () => {
 
     expect(screen.getByTestId('attack-pulse-chart')).toBeInTheDocument()
     expect(screen.getByTestId('session-integrity-chart')).toBeInTheDocument()
-    expect(screen.getByTestId('threat-origins-chart')).toBeInTheDocument()
+    expect(screen.getByTestId('top-targeted-accounts-chart')).toBeInTheDocument()
   })
 
   it('puts the anomaly count in the Live Threats tab label', () => {
@@ -174,6 +185,7 @@ describe('SecurityMonitorPage', () => {
     expect(downloadTextFile).toHaveBeenCalledTimes(1)
     const [csv, fileName, mimeType] = downloadTextFile.mock.calls[0]
     expect(csv).toContain('192.0.2.10')
+    expect(csv).toContain('a.morgan')
     expect(csv).toContain('INVALID_CREDENTIAL')
     expect(fileName).toMatch(/^passkey-security-monitor-\d{8}-\d{4}\.csv$/)
     expect(mimeType).toContain('text/csv')
@@ -181,7 +193,7 @@ describe('SecurityMonitorPage', () => {
 
   it('does not download anything when there is no data to export', () => {
     useSecurityDashboardData.mockReturnValue(
-      buildData({ spikeSeries: [], ipStats: [], errorSlices: [] }),
+      buildData({ spikeSeries: [], ipStats: [], userStats: [], errorSlices: [] }),
     )
 
     render(<SecurityMonitorPage />, { wrapper: Wrapper })

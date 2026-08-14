@@ -20,7 +20,7 @@ import {
   SecurityKpiStrip,
   SecurityMonitorHeader,
   SessionIntegrityChart,
-  ThreatOriginsChart,
+  TopTargetedAccountsChart,
   VelocityWatchHeatmap,
 } from './components'
 import { useSecurityDashboardData, useSecurityTheme } from './hooks'
@@ -54,8 +54,7 @@ const SecurityMonitorPage: React.FC = () => {
   }, [queryClient])
 
   const handleExport = useCallback(() => {
-    const ipWindowLabel = t(`fields.period_${period}`)
-    const rows = buildSecurityExportRows(data, t, period, ipWindowLabel)
+    const rows = buildSecurityExportRows(data, t, period)
 
     if (!rows.length) {
       dispatch(updateToast(true, 'error', t('messages.no_data_to_export')))
@@ -81,10 +80,12 @@ const SecurityMonitorPage: React.FC = () => {
     data.summary,
     data.spikeSeries,
     data.dropOffSeries,
+    data.userStats,
     data.ipStats,
     data.errorSlices,
     data.velocityMatrix,
     data.deviceTrend,
+    data.usersUnderSiege,
     data.suspiciousIps,
     t,
     period,
@@ -107,13 +108,13 @@ const SecurityMonitorPage: React.FC = () => {
           return (
             <>
               <div className={classes.fullWidthRow}>
+                <TopTargetedAccountsChart userStats={data.userStats} />
+              </div>
+              <div className={classes.fullWidthRow}>
                 <AttackPulseChart series={data.spikeSeries} />
               </div>
               <div className={classes.fullWidthRow}>
                 <SessionIntegrityChart series={data.dropOffSeries} />
-              </div>
-              <div className={classes.fullWidthRow}>
-                <ThreatOriginsChart userStats={data.userStats} />
               </div>
             </>
           )
@@ -137,7 +138,7 @@ const SecurityMonitorPage: React.FC = () => {
       classes,
       data.spikeSeries,
       data.dropOffSeries,
-      data.ipStats,
+      data.userStats,
       data.velocityMatrix,
       data.deviceTrend,
     ],

@@ -47,7 +47,7 @@ import type {
   DropOffPoint,
   ErrorCategorySlice,
   FailureSpikePoint,
-  IpBarScaffoldPoint,
+  UserBarScaffoldPoint,
   IpFailureStat,
   KpiDelta,
   KpiPeriod,
@@ -503,7 +503,6 @@ const buildSecurityExportRows = (
   data: SecurityDashboardData,
   t: SecurityTranslate,
   period: KpiPeriod,
-  ipWindowLabel: string,
 ): SecurityExportRows => {
   const { velocityMatrix } = data
   const count = t('fields.unit_count')
@@ -513,7 +512,8 @@ const buildSecurityExportRows = (
 
   const attackPulse = t('titles.attack_pulse')
   const outcomes = t('titles.session_integrity_monitor')
-  const origins = t('titles.threat_origins')
+  const targetedAccounts = t('titles.top_targeted_accounts')
+  const origins = t('titles.threat_origins_ips')
   const errorTypes = t('titles.error_intelligence')
   const velocity = t('titles.velocity_watch')
   const devices = t('titles.device_fingerprint_shift')
@@ -532,6 +532,17 @@ const buildSecurityExportRows = (
       [outcomes, point.label, t('fields.success_rate'), point.successRate, percent],
       [outcomes, point.label, t('fields.failure_rate'), point.failureRate, percent],
       [outcomes, point.label, t('fields.drop_off_rate'), point.dropOffRate, percent],
+    ]),
+    ...data.userStats.flatMap((stat): SecurityExportRow[] => [
+      [targetedAccounts, stat.username, t('fields.auth_failures'), stat.failures, count],
+      [targetedAccounts, stat.username, t('fields.failure_rate'), stat.failureRate, percent],
+      [
+        targetedAccounts,
+        stat.username,
+        t('fields.threat_level'),
+        t(`fields.threat_level_${stat.threatLevel}`),
+        flag,
+      ],
     ]),
     ...data.ipStats.flatMap((stat): SecurityExportRow[] => [
       [origins, stat.ipAddress, t('fields.auth_failures'), stat.failures, count],
@@ -584,7 +595,8 @@ const buildSecurityExportRows = (
       data.summary.successRate[period],
       percent,
     ],
-    [summary, ipWindowLabel, t('fields.suspicious_ips'), data.suspiciousIps.length, count],
+    [summary, periodLabel, t('fields.users_under_siege'), data.usersUnderSiege.length, count],
+    [summary, periodLabel, t('fields.suspicious_ips'), data.suspiciousIps.length, count],
     ...series,
   ]
 }
@@ -927,9 +939,9 @@ const buildDeviceScaffold = (base?: number): DeviceTrendPoint[] =>
     crossPlatform: 0,
   }))
 
-const buildIpScaffold = (): IpBarScaffoldPoint[] =>
+const buildUserScaffold = (): UserBarScaffoldPoint[] =>
   Array.from({ length: CHART_SCAFFOLD.BAR_ROWS }, (_, index) => ({
-    ipAddress: ' '.repeat(index + 1),
+    username: ' '.repeat(index + 1),
     failures: 0,
   }))
 
@@ -943,9 +955,8 @@ export {
   buildDeviceScaffold,
   buildDropOffScaffold,
   buildHourScaffold,
-  buildIpScaffold,
+  buildUserScaffold,
   buildVelocityScaffoldRows,
-  buildAuthenticatorSplit,
   buildDeviceTrend,
   buildSecurityExportRows,
   buildDropOffSeries,
@@ -963,7 +974,6 @@ export {
   findPeakSpike,
   getBadgeBackground,
   getSecurityPalette,
-  resolveIdentity,
   percentDelta,
   pointDelta,
   sliceEntriesByRange,

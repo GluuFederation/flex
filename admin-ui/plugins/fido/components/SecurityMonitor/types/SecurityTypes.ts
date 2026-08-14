@@ -60,8 +60,8 @@ type CountAxis = {
   ticks: number[]
 }
 
-type IpBarScaffoldPoint = {
-  ipAddress: string
+type UserBarScaffoldPoint = {
+  username: string
   failures: number
 }
 
@@ -238,12 +238,8 @@ type DropOffChartProps = {
   series: readonly DropOffPoint[]
 }
 
-type FailureBurstByIpProps = {
+type TopTargetedAccountsProps = {
   userStats: readonly UserFailureStat[]
-}
-
-type ErrorCategoryChartProps = {
-  slices: readonly ErrorCategorySlice[]
 }
 
 type VelocityHeatmapProps = {
@@ -309,7 +305,6 @@ export type {
   AnomalyChip,
   AnomalySummary,
   AttackPattern,
-  ChartEmptyInset,
   CountAxis,
   DeviceShiftChartProps,
   DeviceSplit,
@@ -317,12 +312,9 @@ export type {
   DeviceTrendPoint,
   DropOffChartProps,
   DropOffPoint,
-  ErrorCategoryChartProps,
   ErrorCategorySlice,
-  FailureBurstByIpProps,
   FailureSpikePoint,
   FailureSpikeTimelineProps,
-  IpBarScaffoldPoint,
   IpFailureStat,
   KpiDelta,
   KpiDeltaLabelProps,
@@ -330,7 +322,6 @@ export type {
   PeriodToggleProps,
   PeriodTotals,
   SecurityChartCardProps,
-  SecurityChartColors,
   SecurityDashboardData,
   SecurityKpiStripProps,
   SecurityKpiSummary,
@@ -344,6 +335,8 @@ export type {
   SecurityTheme,
   SecurityTranslate,
   ThreatLevel,
+  TopTargetedAccountsProps,
+  UserBarScaffoldPoint,
   UserFailureStat,
   VelocityCell,
   VelocityHeatmapProps,

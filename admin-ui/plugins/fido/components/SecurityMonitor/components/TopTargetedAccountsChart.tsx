@@ -6,16 +6,16 @@ import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
 import { CHART_EMPTY_INSET, THREAT_LEVELS } from '../constants'
 import {
   buildCountAxis,
-  buildIpScaffold,
+  buildUserScaffold,
   countByThreatLevel,
   getSecurityPalette,
   takeTopUsersByFailure,
 } from '../utils'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
-import type { FailureBurstByIpProps } from '../types'
+import type { TopTargetedAccountsProps } from '../types'
 
-const IP_LABEL_WIDTH = 130
+const USER_LABEL_WIDTH = 130
 
 const BAR_EMPTY_INSET = {
   top: CHART_EMPTY_INSET.TOP_MARGIN,
@@ -24,7 +24,7 @@ const BAR_EMPTY_INSET = {
   right: CHART_EMPTY_INSET.BAR_LEFT_MARGIN,
 }
 
-const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
+const TopTargetedAccountsChart: React.FC<TopTargetedAccountsProps> = ({ userStats }) => {
   const { t } = useTranslation()
   const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
@@ -33,7 +33,7 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
   const data = useMemo(
     () =>
       takeTopUsersByFailure(userStats).map((stat) => ({
-        ipAddress: stat.username,
+        username: stat.username,
         failures: stat.failures,
         abandoned: stat.abandoned,
         failed: stat.failed,
@@ -43,7 +43,7 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
   )
 
   const isEmpty = data.length === 0
-  const chartData = useMemo(() => (isEmpty ? buildIpScaffold() : data), [data, isEmpty])
+  const chartData = useMemo(() => (isEmpty ? buildUserScaffold() : data), [data, isEmpty])
 
   const countAxis = useMemo(
     () => buildCountAxis(chartData.reduce((max, item) => Math.max(max, item.failures), 0)),
@@ -66,9 +66,11 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
 
   return (
     <SecurityChartCard
-      title={t('titles.threat_origins')}
-      subtitle={t('fields.threat_origins_subtitle')}
-      statusLabel={criticalCount ? t('fields.critical_ips', { total: criticalCount }) : undefined}
+      title={t('titles.top_targeted_accounts')}
+      subtitle={t('fields.top_targeted_accounts_subtitle')}
+      statusLabel={
+        criticalCount ? t('fields.critical_accounts', { total: criticalCount }) : undefined
+      }
       accentColor={criticalCount ? palette.threatLevels[THREAT_LEVELS.CRITICAL] : undefined}
       legend={legend}
       isEmpty={isEmpty}
@@ -96,8 +98,8 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
             />
             <YAxis
               type="category"
-              dataKey="ipAddress"
-              width={isEmpty ? 0 : IP_LABEL_WIDTH}
+              dataKey="username"
+              width={isEmpty ? 0 : USER_LABEL_WIDTH}
               tick={axisTick}
             />
             {isEmpty ? null : <Tooltip content={renderTooltip} cursor={false} />}
@@ -113,4 +115,4 @@ const ThreatOriginsChart: React.FC<FailureBurstByIpProps> = ({ userStats }) => {
   )
 }
 
-export default React.memo(ThreatOriginsChart)
+export default React.memo(TopTargetedAccountsChart)

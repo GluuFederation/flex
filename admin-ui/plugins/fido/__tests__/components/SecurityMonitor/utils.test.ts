@@ -10,7 +10,7 @@ import {
   buildErrorCategorySlices,
   buildFailureSpikeSeries,
   buildHourScaffold,
-  buildIpScaffold,
+  buildUserScaffold,
   buildVelocityScaffoldRows,
   buildVelocityMatrix,
   countByThreatLevel,
@@ -441,11 +441,11 @@ describe('SecurityMonitor utils', () => {
     })
 
     it('builds unique blank rows for category axes', () => {
-      const bars = buildIpScaffold()
+      const bars = buildUserScaffold()
       const rows = buildVelocityScaffoldRows()
 
       expect(bars).toHaveLength(5)
-      expect(new Set(bars.map((bar) => bar.ipAddress)).size).toBe(bars.length)
+      expect(new Set(bars.map((bar) => bar.username)).size).toBe(bars.length)
       expect(bars.every((bar) => bar.failures === 0)).toBe(true)
       expect(new Set(rows).size).toBe(rows.length)
     })
@@ -596,12 +596,9 @@ describe('SecurityMonitor utils', () => {
         },
       }
 
-      const velocityRows = buildSecurityExportRows(
-        data,
-        translate,
-        'today',
-        'fields.ip_window_last_hour',
-      ).filter((row) => row[0] === 'titles.velocity_watch')
+      const velocityRows = buildSecurityExportRows(data, translate, 'today').filter(
+        (row) => row[0] === 'titles.velocity_watch',
+      )
 
       expect(velocityRows).toEqual([
         [
@@ -615,9 +612,7 @@ describe('SecurityMonitor utils', () => {
     })
 
     it('returns nothing when no chart series carry data', () => {
-      expect(
-        buildSecurityExportRows(emptyData, translate, 'today', 'fields.ip_window_last_hour'),
-      ).toEqual([])
+      expect(buildSecurityExportRows(emptyData, translate, 'today')).toEqual([])
     })
 
     it('prefixes the KPI summary before every chart series', () => {
@@ -637,13 +632,14 @@ describe('SecurityMonitor utils', () => {
         },
       }
 
-      const rows = buildSecurityExportRows(data, translate, 'today', 'fields.ip_window_last_hour')
+      const rows = buildSecurityExportRows(data, translate, 'today')
 
-      expect(rows.slice(0, 5).map((row) => [row[2], row[3], row[4]])).toEqual([
+      expect(rows.slice(0, 6).map((row) => [row[2], row[3], row[4]])).toEqual([
         ['fields.anomalies_captured', 3, 'fields.unit_count'],
         ['fields.auth_failures', 12, 'fields.unit_count'],
         ['fields.agg_auth_attempts', 100, 'fields.unit_count'],
         ['fields.auth_success_rate', 88, 'fields.unit_percent'],
+        ['fields.users_under_siege', 0, 'fields.unit_count'],
         ['fields.suspicious_ips', 0, 'fields.unit_count'],
       ])
 
