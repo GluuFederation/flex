@@ -4,6 +4,30 @@
 {{- $namespace := .Release.Namespace -}}
 {{- $svcName := .Values.service.name -}}
 {{- $svcPort := .Values.service.port -}}
+{{- $routes := index .Values "gateway-api" "routes" -}}
+{{- $gatewayName := index .Values "gateway-api" "gateway" "name" -}}
+{{- $gatewayNamespace := $routes.gatewayNamespace | default $namespace -}}
+{{- $httpSection := $routes.httpSectionName | default "http" -}}
+{{- $httpsSection := $routes.httpsSectionName | default "https" -}}
+{{- $adminUiEnabled := or $routes.adminUiEnabled (index .Values "admin-ui" "ingress" "adminUiEnabled") -}}
+{{- $authServerEnabled := or $routes.authServerEnabled (index .Values "auth-server" "ingress" "authServerEnabled") -}}
+{{- $openidConfigEnabled := or $routes.openidConfigEnabled (index .Values "auth-server" "ingress" "openidConfigEnabled") -}}
+{{- $deviceCodeEnabled := or $routes.deviceCodeEnabled (index .Values "auth-server" "ingress" "deviceCodeEnabled") -}}
+{{- $firebaseMessagingEnabled := or $routes.firebaseMessagingEnabled (index .Values "auth-server" "ingress" "firebaseMessagingEnabled") -}}
+{{- $uma2ConfigEnabled := or $routes.uma2ConfigEnabled (index .Values "auth-server" "ingress" "uma2ConfigEnabled") -}}
+{{- $webfingerEnabled := or $routes.webfingerEnabled (index .Values "auth-server" "ingress" "webfingerEnabled") -}}
+{{- $authzenConfigEnabled := or $routes.authzenConfigEnabled (index .Values "auth-server" "ingress" "authzenConfigEnabled") -}}
+{{- $authServerProtectedToken := or $routes.authServerProtectedToken (index .Values "auth-server" "ingress" "authServerProtectedToken") -}}
+{{- $authServerProtectedRegister := or $routes.authServerProtectedRegister (index .Values "auth-server" "ingress" "authServerProtectedRegister") -}}
+{{- $lockConfigEnabled := or $routes.lockConfigEnabled (index .Values "auth-server" "ingress" "lockConfigEnabled") -}}
+{{- $lockAuditEnabled := or $routes.lockAuditEnabled (index .Values "auth-server" "ingress" "lockAuditEnabled") -}}
+{{- $casaEnabled := or $routes.casaEnabled .Values.casa.ingress.casaEnabled -}}
+{{- $configApiEnabled := or $routes.configApiEnabled (index .Values "config-api" "ingress" "configApiEnabled") -}}
+{{- $fido2Enabled := or $routes.fido2Enabled .Values.fido2.ingress.fido2Enabled -}}
+{{- $fido2ConfigEnabled := or $routes.fido2ConfigEnabled .Values.fido2.ingress.fido2ConfigEnabled -}}
+{{- $fido2WebauthnEnabled := or $routes.fido2WebauthnEnabled .Values.fido2.ingress.fido2WebauthnEnabled -}}
+{{- $scimEnabled := or $routes.scimEnabled .Values.scim.ingress.scimEnabled -}}
+{{- $scimConfigEnabled := or $routes.scimConfigEnabled .Values.scim.ingress.scimConfigEnabled -}}
 
 {{- /* ======================================================== */}}
 {{- /* ROUTE 1: PUBLIC CONFIGURATION (HTTP & HTTPS)             */}}
@@ -16,23 +40,24 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-    {{- if index .Values "gateway-api" "routes" "labels" }}
-    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- if $routes.labels }}
+    {{- toYaml $routes.labels | nindent 4 }}
     {{- end }}
-  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  {{- if $routes.annotations }}
   annotations:
-    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+    {{- toYaml $routes.annotations | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  - name: {{ index .Values "gateway-api" "gateway" "name" }}
+  - name: {{ $gatewayName }}
+    namespace: {{ $gatewayNamespace }}
     # No sectionName: Attaches to ALL listeners (HTTP and HTTPS)
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
 
   {{- /* 1. OpenID Configuration */}}
-  {{- if index .Values "auth-server" "ingress" "openidConfigEnabled" }}
+  {{- if $openidConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -49,7 +74,7 @@ spec:
   {{- end }}
 
   {{- /* 2. Device Code */}}
-  {{- if index .Values "auth-server" "ingress" "deviceCodeEnabled" }}
+  {{- if $deviceCodeEnabled }}
   - matches:
     - path:
         type: Exact
@@ -66,7 +91,7 @@ spec:
   {{- end }}
 
   {{- /* 3. Firebase Messaging */}}
-  {{- if index .Values "auth-server" "ingress" "firebaseMessagingEnabled" }}
+  {{- if $firebaseMessagingEnabled }}
   - matches:
     - path:
         type: Exact
@@ -83,7 +108,7 @@ spec:
   {{- end }}
 
   {{- /* 4. UMA2 Config */}}
-  {{- if index .Values "auth-server" "ingress" "uma2ConfigEnabled" }}
+  {{- if $uma2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -100,7 +125,7 @@ spec:
   {{- end }}
 
   {{- /* 5. Webfinger */}}
-  {{- if index .Values "auth-server" "ingress" "webfingerEnabled" }}
+  {{- if $webfingerEnabled }}
   - matches:
     - path:
         type: Exact
@@ -117,7 +142,7 @@ spec:
   {{- end }}
 
   {{- /* 8. FIDO2 Configuration */}}
-  {{- if .Values.fido2.ingress.fido2ConfigEnabled }}
+  {{- if $fido2ConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -134,7 +159,7 @@ spec:
   {{- end }}
 
   {{- /* 9. WebAuthn */}}
-  {{- if .Values.fido2.ingress.fido2WebauthnEnabled }}
+  {{- if $fido2WebauthnEnabled }}
   - matches:
     - path:
         type: Exact
@@ -151,7 +176,7 @@ spec:
   {{- end }}
 
   {{- /* 10. SCIM Configuration */}}
-  {{- if .Values.scim.ingress.scimConfigEnabled }}
+  {{- if $scimConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -168,7 +193,7 @@ spec:
   {{- end }}
 
   {{- /* 11. Lock Config */}}
-  {{- if and (index .Values "auth-server" "lockEnabled") (index .Values "auth-server" "ingress" "lockConfigEnabled") }}
+  {{- if and (index .Values "auth-server" "lockEnabled") ($lockConfigEnabled) }}
   - matches:
     - path:
         type: Exact
@@ -185,7 +210,7 @@ spec:
   {{- end }}
 
   {{- /* 12. Authzen Config */}}
-  {{- if index .Values "auth-server" "ingress" "authzenConfigEnabled" }}
+  {{- if $authzenConfigEnabled }}
   - matches:
     - path:
         type: Exact
@@ -202,7 +227,7 @@ spec:
   {{- end }}
 
   {{- /* 13. Admin UI */}}
-  {{- if index .Values "admin-ui" "ingress" "adminUiEnabled" }}
+  {{- if $adminUiEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -224,23 +249,24 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-    {{- if index .Values "gateway-api" "routes" "labels" }}
-    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- if $routes.labels }}
+    {{- toYaml $routes.labels | nindent 4 }}
     {{- end }}
-  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  {{- if $routes.annotations }}
   annotations:
-    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+    {{- toYaml $routes.annotations | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  - name: {{ index .Values "gateway-api" "gateway" "name" }}
-    sectionName: https  # ONLY LISTEN ON HTTPS
+  - name: {{ $gatewayName }}
+    namespace: {{ $gatewayNamespace }}
+    sectionName: {{ $httpsSection }}  # ONLY LISTEN ON HTTPS
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
 
   {{- /* 1. Auth Server (/jans-auth) */}}
-  {{- if index .Values "auth-server" "ingress" "authServerEnabled" }}
+  {{- if $authServerEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -251,7 +277,7 @@ spec:
   {{- end }}
 
   {{- /* 2. Casa (/jans-casa) */}}
-  {{- if .Values.casa.ingress.casaEnabled }}
+  {{- if $casaEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -262,7 +288,7 @@ spec:
   {{- end }}
 
   {{- /* 3. Config API (/jans-config-api) */}}
-  {{- if index .Values "config-api" "ingress" "configApiEnabled" }}
+  {{- if $configApiEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -273,7 +299,7 @@ spec:
   {{- end }}
 
   {{- /* 4. FIDO2 (/jans-fido2) */}}
-  {{- if .Values.fido2.ingress.fido2Enabled }}
+  {{- if $fido2Enabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -284,7 +310,7 @@ spec:
   {{- end }}
 
   {{- /* 5. SCIM (/jans-scim) */}}
-  {{- if .Values.scim.ingress.scimEnabled }}
+  {{- if $scimEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -306,17 +332,18 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-    {{- if index .Values "gateway-api" "routes" "labels" }}
-    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- if $routes.labels }}
+    {{- toYaml $routes.labels | nindent 4 }}
     {{- end }}
-  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  {{- if $routes.annotations }}
   annotations:
-    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+    {{- toYaml $routes.annotations | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  - name: {{ index .Values "gateway-api" "gateway" "name" }}
-    sectionName: http  # ONLY LISTEN ON HTTP
+  - name: {{ $gatewayName }}
+    namespace: {{ $gatewayNamespace }}
+    sectionName: {{ $httpSection }}  # ONLY LISTEN ON HTTP
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
@@ -324,7 +351,7 @@ spec:
   {{- /* Same 6 Rules, but with Redirect Filter instead of BackendRef */}}
 
   {{- /* 1. Auth Server Redirect */}}
-  {{- if index .Values "auth-server" "ingress" "authServerEnabled" }}
+  {{- if $authServerEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -337,7 +364,7 @@ spec:
   {{- end }}
 
   {{- /* 2. Casa Redirect */}}
-  {{- if .Values.casa.ingress.casaEnabled }}
+  {{- if $casaEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -350,7 +377,7 @@ spec:
   {{- end }}
 
   {{- /* 3. Config API Redirect */}}
-  {{- if index .Values "config-api" "ingress" "configApiEnabled" }}
+  {{- if $configApiEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -363,7 +390,7 @@ spec:
   {{- end }}
 
   {{- /* 4. FIDO2 Redirect */}}
-  {{- if .Values.fido2.ingress.fido2Enabled }}
+  {{- if $fido2Enabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -376,7 +403,7 @@ spec:
   {{- end }}
 
   {{- /* 5. SCIM Redirect */}}
-  {{- if .Values.scim.ingress.scimEnabled }}
+  {{- if $scimEnabled }}
   - matches:
     - path:
         type: PathPrefix
@@ -388,7 +415,7 @@ spec:
         statusCode: 301
   {{- end }}
 
-{{- if and (index .Values "auth-server" "lockEnabled") (index .Values "auth-server" "ingress" "lockAuditEnabled") }}
+{{- if and (index .Values "auth-server" "lockEnabled") ($lockAuditEnabled) }}
 ---
 {{- /* ======================================================== */}}
 {{- /* ROUTE 4: gRPC APPS                                       */}}
@@ -405,17 +432,18 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-    {{- if index .Values "gateway-api" "routes" "labels" }}
-    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- if $routes.labels }}
+    {{- toYaml $routes.labels | nindent 4 }}
     {{- end }}
-  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  {{- if $routes.annotations }}
   annotations:
-    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+    {{- toYaml $routes.annotations | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  - name: {{ index .Values "gateway-api" "gateway" "name" }}
-    sectionName: https
+  - name: {{ $gatewayName }}
+    namespace: {{ $gatewayNamespace }}
+    sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
@@ -455,7 +483,7 @@ spec:
   {{- end }}
 {{- end }}
 
-{{- if or (index .Values "auth-server" "ingress" "authServerProtectedToken") (index .Values "auth-server" "ingress" "authServerProtectedRegister") }}
+{{- if or ($authServerProtectedToken) ($authServerProtectedRegister) }}
 ---
 {{- /* ======================================================== */}}
 {{- /* ROUTE: SECURE APPS (PROTECTED HTTPS TRAFFIC)             */}}
@@ -468,23 +496,24 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-    {{- if index .Values "gateway-api" "routes" "labels" }}
-    {{- toYaml (index .Values "gateway-api" "routes" "labels") | nindent 4 }}
+    {{- if $routes.labels }}
+    {{- toYaml $routes.labels | nindent 4 }}
     {{- end }}
-  {{- if index .Values "gateway-api" "routes" "annotations" }}
+  {{- if $routes.annotations }}
   annotations:
-    {{- toYaml (index .Values "gateway-api" "routes" "annotations") | nindent 4 }}
+    {{- toYaml $routes.annotations | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  - name: {{ index .Values "gateway-api" "gateway" "name" }}
-    sectionName: https
+  - name: {{ $gatewayName }}
+    namespace: {{ $gatewayNamespace }}
+    sectionName: {{ $httpsSection }}
   hostnames:
   - {{ .Values.fqdn | quote }}
   rules:
 
   {{- /* 1. Auth Server protected token (/jans-auth/restv1/token) */}}
-  {{- if index .Values "auth-server" "ingress" "authServerProtectedToken" }}
+  {{- if $authServerProtectedToken }}
   - matches:
     - path:
         type: PathPrefix
@@ -503,7 +532,7 @@ spec:
   {{- end }}
 
   {{- /* 2. Auth Server protected register (/jans-auth/restv1/register) */}}
-  {{- if index .Values "auth-server" "ingress" "authServerProtectedRegister" }}
+  {{- if $authServerProtectedRegister }}
   - matches:
     - path:
         type: PathPrefix
