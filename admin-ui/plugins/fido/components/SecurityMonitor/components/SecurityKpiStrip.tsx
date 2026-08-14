@@ -86,14 +86,8 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         >
           {usersUnderSiege.length.toLocaleString()}
         </p>
-        <p className={classes.kpiCaption}>
-          {t('fields.users_under_siege_breakdown', {
-            critical: criticalCount,
-            warning: usersUnderSiege.length - criticalCount,
-          })}
-        </p>
-        <GluuTooltip doc_entry="security_users_under_siege" content={allUsernames}>
-          <div className={classes.kpiChips}>
+        <div className={classes.kpiDeltaRow}>
+          <GluuTooltip doc_entry="security_users_under_siege" content={allUsernames}>
             {chipUsers.map((stat) => (
               <GluuBadge
                 key={stat.username}
@@ -107,20 +101,19 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
                 )}
                 textColor={palette.threatLevels[stat.threatLevel]}
               >
-                {stat.username}
+                {overflowCount > 0
+                  ? t('fields.siege_summary', { username: stat.username, total: overflowCount })
+                  : stat.username}
               </GluuBadge>
             ))}
-            {overflowCount > 0 && (
-              <GluuBadge
-                pill
-                backgroundColor={palette.statusBg.active}
-                textColor={palette.chart.suspicious}
-              >
-                {t('fields.siege_overflow', { total: overflowCount })}
-              </GluuBadge>
-            )}
-          </div>
-        </GluuTooltip>
+          </GluuTooltip>
+          <span className={classes.kpiCaption}>
+            {t('fields.users_under_siege_breakdown', {
+              critical: criticalCount,
+              warning: usersUnderSiege.length - criticalCount,
+            })}
+          </span>
+        </div>
       </div>
     </div>
   )

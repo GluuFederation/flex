@@ -915,7 +915,7 @@
     "delta_vs_previous": "par rapport à la période précédente",
     "delta_vs_baseline": "par rapport à la référence",
     "users_under_siege_breakdown": "{{critical}} critiques · {{warning}} avertissement",
-    "siege_overflow": "+{{total}}",
+    "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Schémas comportementaux",
     "attack_pulse_subtitle": "Échecs face à la moyenne mobile sur 7 périodes",
     "session_integrity_subtitle": "Part de réussite, échec et abandon par jour",

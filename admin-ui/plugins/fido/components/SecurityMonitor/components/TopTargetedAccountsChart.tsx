@@ -15,7 +15,7 @@ import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
 import type { TopTargetedAccountsProps } from '../types'
 
-const USER_LABEL_WIDTH = 130
+const USER_LABEL_WIDTH = 64
 
 const BAR_EMPTY_INSET = {
   top: CHART_EMPTY_INSET.TOP_MARGIN,
@@ -86,7 +86,7 @@ const TopTargetedAccountsChart: React.FC<TopTargetedAccountsProps> = ({ userStat
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 12, right: 24, bottom: 8, left: 24 }}
+            margin={{ top: 12, right: USER_LABEL_WIDTH, bottom: 8, left: 0 }}
           >
             <CartesianGrid {...gridProps} />
             <XAxis

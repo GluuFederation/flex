@@ -911,7 +911,7 @@
     "delta_vs_previous": "em relação ao período anterior",
     "delta_vs_baseline": "em relação à linha de base",
     "users_under_siege_breakdown": "{{critical}} críticos · {{warning}} de aviso",
-    "siege_overflow": "+{{total}}",
+    "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Padrões comportamentais",
     "attack_pulse_subtitle": "Falhas em relação à média móvel de 7 períodos",
     "session_integrity_subtitle": "Proporção de sucesso, falha e abandono por dia",

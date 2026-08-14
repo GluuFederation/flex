@@ -802,7 +802,7 @@
     "delta_vs_previous": "frente al periodo anterior",
     "delta_vs_baseline": "frente a la línea base",
     "users_under_siege_breakdown": "{{critical}} críticas · {{warning}} de advertencia",
-    "siege_overflow": "+{{total}}",
+    "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Patrones de comportamiento",
     "attack_pulse_subtitle": "Fallos frente al promedio móvil de 7 periodos",
     "session_integrity_subtitle": "Proporción de éxito, fallo y abandono por día",

@@ -802,7 +802,7 @@
     "delta_vs_previous": "vs previous period",
     "delta_vs_baseline": "vs baseline",
     "users_under_siege_breakdown": "{{critical}} critical · {{warning}} warning",
-    "siege_overflow": "+{{total}}",
+    "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Behavioral Patterns",
     "attack_pulse_subtitle": "Failures against the rolling 7-period average",
     "session_integrity_subtitle": "Share of success, failure and drop-off per day",
