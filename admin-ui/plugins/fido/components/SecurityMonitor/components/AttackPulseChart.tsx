@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import {
   ComposedChart,
-  Area,
   Line,
   XAxis,
   YAxis,
@@ -12,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
-import { CHART_EMPTY_INSET, SECURITY_CHART_FILL_OPACITY } from '../constants'
+import { CHART_EMPTY_INSET, SPIKE_LINE_DOT_RADIUS } from '../constants'
 import {
   buildCountAxis,
   buildHourScaffold,
@@ -86,13 +85,13 @@ const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
               ticks={countAxis.ticks}
             />
             {isEmpty ? null : <Tooltip content={renderTooltip} />}
-            <Area
+            <Line
               type="monotone"
               dataKey="failures"
               name={t('fields.auth_failures')}
               stroke={palette.chart.failures}
-              fill={palette.chart.failures}
-              fillOpacity={SECURITY_CHART_FILL_OPACITY}
+              dot={{ r: SPIKE_LINE_DOT_RADIUS, fill: palette.chart.failures, strokeWidth: 0 }}
+              activeDot={{ r: SPIKE_LINE_DOT_RADIUS + 1 }}
               isAnimationActive={false}
             />
             <Line

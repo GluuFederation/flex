@@ -245,7 +245,7 @@ describe('SecurityKpiStrip', () => {
     expect(screen.queryAllByTestId('TrendingDownIcon')).toHaveLength(0)
   })
 
-  it('shows the worst-hit account as a chip and folds the rest into an overflow badge', () => {
+  it('shows the worst-hit account as a chip and folds the rest into a count suffix', () => {
     render(
       <SecurityKpiStrip
         summary={summary}
@@ -255,8 +255,7 @@ describe('SecurityKpiStrip', () => {
       { wrapper: Wrapper },
     )
 
-    expect(screen.getByText('john')).toBeInTheDocument()
-    expect(screen.getByText('+1')).toBeInTheDocument()
+    expect(screen.getByText('john +1')).toBeInTheDocument()
     expect(screen.queryByText('berry')).not.toBeInTheDocument()
   })
 

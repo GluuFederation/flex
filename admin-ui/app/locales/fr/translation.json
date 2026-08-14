@@ -918,7 +918,7 @@
     "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Schémas comportementaux",
     "attack_pulse_subtitle": "Échecs face à la moyenne mobile sur 7 périodes",
-    "session_integrity_subtitle": "Part de réussite, échec et abandon par jour",
+    "session_integrity_subtitle": "Part de réussite, échec et abandon sur la période sélectionnée",
     "top_targeted_accounts_subtitle": "Principaux comptes utilisateurs par connexions en échec sur la période sélectionnée",
     "error_intelligence_subtitle": "Part de chaque type d'erreur",
     "velocity_watch_subtitle": "Tentatives par utilisateur par blocs de 4 heures",

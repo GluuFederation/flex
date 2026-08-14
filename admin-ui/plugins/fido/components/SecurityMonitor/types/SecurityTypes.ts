@@ -14,6 +14,8 @@ type KpiPeriod = (typeof KPI_PERIODS)[keyof typeof KPI_PERIODS]
 
 type AnomalyKind = (typeof ANOMALY_KINDS)[keyof typeof ANOMALY_KINDS]
 
+type BucketUnit = 'day' | 'hour'
+
 type FailureSpikePoint = {
   label: string
   timestamp: number
@@ -297,8 +299,10 @@ type SecurityRanges = {
   pulse: MetricsDateRange
   dropOff: MetricsDateRange
   pulseAggregation: AggregationTypeParam
+  deviceAggregation: AggregationTypeParam
   pulseLabelFormat: string
   dropOffLabelFormat: string
+  deviceLabelFormat: string
 }
 
 export type {
@@ -306,6 +310,7 @@ export type {
   AnomalyChip,
   AnomalySummary,
   AttackPattern,
+  BucketUnit,
   CountAxis,
   DeviceShiftChartProps,
   DeviceSplit,

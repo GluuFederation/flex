@@ -805,7 +805,7 @@
     "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Behavioral Patterns",
     "attack_pulse_subtitle": "Failures against the rolling 7-period average",
-    "session_integrity_subtitle": "Share of success, failure and drop-off per day",
+    "session_integrity_subtitle": "Share of success, failure and drop-off in the selected period",
     "top_targeted_accounts_subtitle": "Top user accounts by failed sign-ins in the selected period",
     "error_intelligence_subtitle": "Share of each error type",
     "velocity_watch_subtitle": "Attempts per user in 4-hour blocks",

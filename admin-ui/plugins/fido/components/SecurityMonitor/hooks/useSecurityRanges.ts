@@ -3,7 +3,6 @@ import { createDate } from '@/utils/dayjsUtils'
 import {
   BASELINE_WINDOW_DAYS,
   CHART_LABEL_FORMATS,
-  DEVICE_TREND_DAYS,
   KPI_PERIODS,
   RECENT_ANOMALY_WINDOW_HOURS,
 } from '../constants'
@@ -18,10 +17,6 @@ const useSecurityRanges = (nowValue: number, period: KpiPeriod): SecurityRanges 
     const today = { startDate: startOfToday, endDate: endOfToday }
     const lastSevenDays = {
       startDate: startOfToday.subtract(BASELINE_WINDOW_DAYS - 1, 'day'),
-      endDate: endOfToday,
-    }
-    const deviceTrend = {
-      startDate: startOfToday.subtract(DEVICE_TREND_DAYS - 1, 'day'),
       endDate: endOfToday,
     }
     const thisMonth = { startDate: now.startOf('month'), endDate: endOfToday }
@@ -55,7 +50,7 @@ const useSecurityRanges = (nowValue: number, period: KpiPeriod): SecurityRanges 
       previousSevenDays,
       previousMonth,
       lastSevenDays,
-      deviceTrend: isToday ? deviceTrend : primary,
+      deviceTrend: primary,
       monthWithPrevious: {
         startDate: now.subtract(1, 'month').startOf('month'),
         endDate: endOfToday,
@@ -65,10 +60,12 @@ const useSecurityRanges = (nowValue: number, period: KpiPeriod): SecurityRanges 
         startDate: primary.startDate.subtract(BASELINE_WINDOW_DAYS, 'day'),
         endDate: primary.endDate,
       },
-      dropOff: isToday ? lastSevenDays : primary,
+      dropOff: primary,
       pulseAggregation: isToday ? 'Hourly' : 'Daily',
+      deviceAggregation: isToday ? 'Hourly' : 'Daily',
       pulseLabelFormat: isToday ? CHART_LABEL_FORMATS.HOURLY : CHART_LABEL_FORMATS.DAILY,
-      dropOffLabelFormat: CHART_LABEL_FORMATS.DAILY,
+      dropOffLabelFormat: isToday ? CHART_LABEL_FORMATS.HOURLY : CHART_LABEL_FORMATS.DAILY,
+      deviceLabelFormat: isToday ? CHART_LABEL_FORMATS.HOURLY : CHART_LABEL_FORMATS.DAILY,
     }
   }, [nowValue, period])
 

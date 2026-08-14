@@ -40,6 +40,7 @@ import type {
   AnomalyChip,
   AnomalySummary,
   AttackPattern,
+  BucketUnit,
   CountAxis,
   DeviceSplit,
   DeviceTrend,
@@ -65,6 +66,8 @@ import type {
 } from './types'
 
 const HOURS_IN_DAY = 24
+
+const FULL_SHARE = 100
 
 const PLATFORM_KEY_HINT = 'platform'
 
@@ -398,17 +401,21 @@ const buildDropOffSeries = (
     .map((entry) => {
       const date = entryStartDate(entry)
       if (!date) return null
-      const attempts = toCount(entry.authenticationAttempts)
       const successes = toCount(entry.authenticationSuccesses)
       const failures = toCount(entry.authenticationFailures)
       const dropOffs = entryAbandoned(entry)
+      const outcomes = successes + failures + dropOffs
+      const successRate = outcomes ? roundTo((successes / outcomes) * 100) : 0
+      const failureRate = outcomes ? roundTo((failures / outcomes) * 100) : 0
 
       return {
         timestamp: date.valueOf(),
         label: date.format(labelFormat),
-        successRate: attempts ? roundTo((successes / attempts) * 100) : 0,
-        failureRate: attempts ? roundTo((failures / attempts) * 100) : 0,
-        dropOffRate: attempts ? roundTo((dropOffs / attempts) * 100) : 0,
+        successRate,
+        failureRate,
+        // Rounding each share independently leaves the stack at 99.99 or 100.01, so the
+        // last band absorbs the residue and the three always total 100.
+        dropOffRate: outcomes ? roundTo(FULL_SHARE - successRate - failureRate) : 0,
       }
     })
     .filter((point): point is DropOffPoint & { timestamp: number } => point !== null)
@@ -691,6 +698,7 @@ const buildAuthenticatorSplit = (devices?: DevicesAnalyticsResponse): DeviceSpli
 const buildDeviceTrend = (
   entries: readonly AggregationEntry[],
   devices?: DevicesAnalyticsResponse,
+  labelFormat: string = CHART_LABEL_FORMATS.DAILY,
 ): DeviceTrend => {
   const points: DeviceTrendPoint[] = entries
     .map((entry) => {
@@ -705,7 +713,7 @@ const buildDeviceTrend = (
 
       return {
         timestamp: date.valueOf(),
-        label: date.format('MMM-DD'),
+        label: date.format(labelFormat),
         platform: roundTo((platform / total) * 100),
         crossPlatform: roundTo(((total - platform) / total) * 100),
       }
@@ -800,9 +808,6 @@ const mergeTodayFromHourly = (
   return folded ? [...dailyEntries, folded] : dailyEntries
 }
 
-const successRateOf = (totals: { attempts: number; successes: number }): number =>
-  totals.attempts ? roundTo((totals.successes / totals.attempts) * 100) : 0
-
 // Abandoned authentications are reported by the aggregation API only as the residual of
 // attempts that neither succeeded nor failed outright.
 // Prefer the abandoned counter carried by the aggregation; the attempts residual is only a
@@ -810,9 +815,84 @@ const successRateOf = (totals: { attempts: number; successes: number }): number 
 const abandonedOf = (totals: PeriodTotals): number =>
   totals.abandoned ?? Math.max(0, totals.attempts - totals.successes - totals.failures)
 
+// An operation writes an ATTEMPT row when it starts, so `attempts` outnumbers the resolved
+// operations whenever a flow is still open. Rates are denominated by resolved outcomes
+// instead, which keeps success, failure and drop-off adding up to 100%.
+const outcomesOf = (totals: PeriodTotals): number =>
+  totals.successes + totals.failures + abandonedOf(totals)
+
+const successRateOf = (totals: PeriodTotals): number => {
+  const outcomes = outcomesOf(totals)
+  return outcomes ? roundTo((totals.successes / outcomes) * 100) : 0
+}
+
 // Auth failures cover every attempt that did not authenticate: explicit failures plus
 // abandoned sessions.
 const totalFailuresOf = (totals: PeriodTotals): number => totals.failures + abandonedOf(totals)
+
+const eachBucketStart = (from: Dayjs, to: Dayjs, unit: BucketUnit): Dayjs[] => {
+  const buckets: Dayjs[] = []
+  const end = to.valueOf()
+  let cursor = from.startOf(unit)
+  while (cursor.valueOf() <= end) {
+    buckets.push(cursor)
+    cursor = cursor.add(1, unit)
+  }
+  return buckets
+}
+
+const bucketStartsOf = (entries: readonly AggregationEntry[], unit: BucketUnit): Set<number> => {
+  const starts = new Set<number>()
+  entries.forEach((entry) => {
+    const date = entryStartDate(entry)
+    if (date) starts.add(date.startOf(unit).valueOf())
+  })
+  return starts
+}
+
+// The aggregation API only returns buckets that recorded activity, so a chart drawn straight
+// from the response collapses to the days that happen to have data instead of the selected
+// range. Padding the gaps with zeroed buckets keeps the axis honest.
+const padAggregationEntries = (
+  entries: readonly AggregationEntry[],
+  from: Dayjs,
+  to: Dayjs,
+  unit: BucketUnit,
+): AggregationEntry[] => {
+  const present = bucketStartsOf(entries, unit)
+  const filler = eachBucketStart(from, to, unit)
+    .filter((bucket) => !present.has(bucket.valueOf()))
+    .map((bucket) => ({
+      startTime: bucket.toISOString(),
+      authenticationAttempts: 0,
+      authenticationSuccesses: 0,
+      authenticationFailures: 0,
+      abandonedOperations: 0,
+    }))
+  return filler.length ? [...entries, ...filler] : [...entries]
+}
+
+const padSpikeSeries = (
+  series: readonly FailureSpikePoint[],
+  from: Dayjs,
+  to: Dayjs,
+  unit: BucketUnit,
+  labelFormat: string,
+): FailureSpikePoint[] => {
+  const present = new Set(series.map((point) => point.timestamp))
+  const filler = eachBucketStart(from, to, unit)
+    .filter((bucket) => !present.has(bucket.valueOf()))
+    .map((bucket) => ({
+      label: bucket.format(labelFormat),
+      timestamp: bucket.valueOf(),
+      failures: 0,
+      baseline: 0,
+      isSpike: false,
+    }))
+  return filler.length
+    ? [...series, ...filler].sort((a, b) => a.timestamp - b.timestamp)
+    : [...series]
+}
 
 const sliceEntriesByRange = (
   entries: readonly AggregationEntry[],
@@ -917,7 +997,7 @@ const buildDayLabels = (count: number, format: string, base?: number): string[] 
 
 const buildHourScaffold = (): FailureSpikePoint[] =>
   Array.from({ length: HOURS_IN_DAY }, (_, hour) => ({
-    label: String(hour).padStart(HOUR_LABEL_LENGTH, '0'),
+    label: `${String(hour).padStart(HOUR_LABEL_LENGTH, '0')}:00`,
     timestamp: hour,
     failures: 0,
     baseline: 0,
@@ -977,6 +1057,8 @@ export {
   percentDelta,
   pointDelta,
   sliceEntriesByRange,
+  padAggregationEntries,
+  padSpikeSeries,
   spikeRatio,
   successRateOf,
   mergeTodayFromHourly,

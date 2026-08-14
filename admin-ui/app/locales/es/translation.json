@@ -805,7 +805,7 @@
     "siege_summary": "{{username}} +{{total}}",
     "security_tab_behavioral_patterns": "Patrones de comportamiento",
     "attack_pulse_subtitle": "Fallos frente al promedio móvil de 7 periodos",
-    "session_integrity_subtitle": "Proporción de éxito, fallo y abandono por día",
+    "session_integrity_subtitle": "Proporción de éxito, fallo y abandono en el periodo seleccionado",
     "top_targeted_accounts_subtitle": "Cuentas de usuario principales por inicios fallidos en el periodo seleccionado",
     "error_intelligence_subtitle": "Proporción de cada tipo de error",
     "velocity_watch_subtitle": "Intentos por usuario en bloques de 4 horas",

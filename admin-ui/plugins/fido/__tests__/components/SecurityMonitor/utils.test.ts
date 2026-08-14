@@ -80,7 +80,7 @@ describe('SecurityMonitor utils', () => {
     it('labels points by hour of day', () => {
       const series = buildFailureSpikeSeries([hourly('2024-01-01T07:00:00', 3)])
 
-      expect(series[0]!.label).toBe('07')
+      expect(series[0]!.label).toBe('07:00')
     })
 
     it('ignores entries without a parseable start time', () => {
@@ -238,6 +238,41 @@ describe('SecurityMonitor utils', () => {
       })
     })
 
+    it('keeps the three rates at 100% when attempts outnumber resolved outcomes', () => {
+      const series = buildDropOffSeries([
+        {
+          startTime: '2024-01-01T10:00:00',
+          authenticationAttempts: 4,
+          authenticationSuccesses: 1,
+          authenticationFailures: 0,
+          abandonedOperations: 1,
+        },
+      ])
+
+      const point = series[0]!
+      expect(point.successRate + point.failureRate + point.dropOffRate).toBe(100)
+      expect(point.successRate).toBe(50)
+      expect(point.dropOffRate).toBe(50)
+    })
+
+    it('absorbs rounding residue so thirds still total 100%', () => {
+      const series = buildDropOffSeries([
+        {
+          startTime: '2024-01-01T10:00:00',
+          authenticationAttempts: 9,
+          authenticationSuccesses: 1,
+          authenticationFailures: 1,
+          abandonedOperations: 1,
+        },
+      ])
+
+      const point = series[0]!
+      expect(point.successRate).toBe(33.33)
+      expect(point.failureRate).toBe(33.33)
+      expect(point.dropOffRate).toBe(33.34)
+      expect(point.successRate + point.failureRate + point.dropOffRate).toBe(100)
+    })
+
     it('returns zeroes when there are no attempts', () => {
       const series = buildDropOffSeries([
         { startTime: '2024-01-01T10:00:00Z', authenticationAttempts: 0 },
@@ -350,7 +385,7 @@ describe('SecurityMonitor utils', () => {
 
       expect(totals).toEqual({ attempts: 20, successes: 15, failures: 5, abandoned: 0 })
       expect(successRateOf(totals)).toBe(75)
-      expect(successRateOf({ attempts: 0, successes: 0 })).toBe(0)
+      expect(successRateOf({ attempts: 0, successes: 0, failures: 0, abandoned: 0 })).toBe(0)
     })
 
     it('slices aggregation entries by range', () => {
@@ -426,8 +461,8 @@ describe('SecurityMonitor utils', () => {
       const scaffold = buildHourScaffold()
 
       expect(scaffold).toHaveLength(24)
-      expect(scaffold[0]?.label).toBe('00')
-      expect(scaffold[23]?.label).toBe('23')
+      expect(scaffold[0]?.label).toBe('00:00')
+      expect(scaffold[23]?.label).toBe('23:00')
       expect(scaffold.every((point) => point.failures === 0 && point.baseline === 0)).toBe(true)
     })
 

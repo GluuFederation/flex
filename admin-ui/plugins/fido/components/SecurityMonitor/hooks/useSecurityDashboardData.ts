@@ -36,6 +36,8 @@ import {
   sliceMetricsEntriesByRange,
   successRateOf,
   mergeTodayFromHourly,
+  padAggregationEntries,
+  padSpikeSeries,
   sumAggregation,
   totalFailuresOf,
 } from '../utils'
@@ -58,7 +60,7 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   const hourlyQuery = useAggregationMetrics('Hourly', ranges.hourlyWithBaseline)
   const dailyQuery = useAggregationMetrics('Daily', ranges.monthWithPrevious)
   const pulseQuery = useAggregationMetrics(ranges.pulseAggregation, ranges.pulse)
-  const deviceQuery = useAggregationMetrics('Daily', ranges.deviceTrend)
+  const deviceQuery = useAggregationMetrics(ranges.deviceAggregation, ranges.deviceTrend)
   const errorsQuery = useErrorsAnalytics(ranges.primary)
   const devicesQuery = useDevicesAnalytics(ranges.deviceTrend)
   const authEntriesQuery = useMetricsEntriesByOperation(
@@ -79,28 +81,62 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     [dailyQuery.data, withToday],
   )
 
-  const deviceEntries = useMemo(
-    () => withToday(deviceQuery.data?.entries ?? []),
-    [deviceQuery.data, withToday],
-  )
+  const deviceEntries = useMemo(() => {
+    const entries = deviceQuery.data?.entries ?? []
+    return ranges.deviceAggregation === 'Hourly' ? entries : withToday(entries)
+  }, [deviceQuery.data, ranges.deviceAggregation, withToday])
 
   const pulseEntries = useMemo(() => {
     const entries = pulseQuery.data?.entries ?? []
     return ranges.pulseAggregation === 'Hourly' ? entries : withToday(entries)
   }, [pulseQuery.data, ranges.pulseAggregation, withToday])
 
+  // The aggregation API omits buckets with no activity, so every range-scoped series is
+  // padded up to the current moment. Without it a deployment with three days of history
+  // draws three bars no matter which period is selected.
+  const paddingEnd = useMemo(() => {
+    const now = createDate(nowValue)
+    return (end: (typeof ranges)['primary']['endDate']) => (end.isAfter(now) ? now : end)
+  }, [nowValue])
+
+  const isHourlyView = ranges.pulseAggregation === 'Hourly'
+  const spikeUnit = isHourlyView ? 'hour' : 'day'
+
   const spikeSeries = useMemo(
-    () => buildFailureSpikeSeries(pulseEntries, ranges.primary.startDate, ranges.pulseLabelFormat),
-    [pulseEntries, ranges.primary.startDate, ranges.pulseLabelFormat],
+    () =>
+      padSpikeSeries(
+        buildFailureSpikeSeries(pulseEntries, ranges.primary.startDate, ranges.pulseLabelFormat),
+        ranges.primary.startDate,
+        paddingEnd(ranges.primary.endDate),
+        spikeUnit,
+        ranges.pulseLabelFormat,
+      ),
+    [pulseEntries, ranges.primary, ranges.pulseLabelFormat, spikeUnit, paddingEnd],
   )
 
   const dropOffSeries = useMemo(
     () =>
       buildDropOffSeries(
-        sliceEntriesByRange(dailyEntries, ranges.dropOff.startDate, ranges.dropOff.endDate),
+        padAggregationEntries(
+          sliceEntriesByRange(
+            isHourlyView ? hourlyEntries : dailyEntries,
+            ranges.dropOff.startDate,
+            ranges.dropOff.endDate,
+          ),
+          ranges.dropOff.startDate,
+          paddingEnd(ranges.dropOff.endDate),
+          isHourlyView ? 'hour' : 'day',
+        ),
         ranges.dropOffLabelFormat,
       ),
-    [dailyEntries, ranges.dropOff, ranges.dropOffLabelFormat],
+    [
+      dailyEntries,
+      hourlyEntries,
+      isHourlyView,
+      ranges.dropOff,
+      ranges.dropOffLabelFormat,
+      paddingEnd,
+    ],
   )
 
   const authEntries = useMemo(() => authEntriesQuery.data?.entries ?? [], [authEntriesQuery.data])
@@ -129,8 +165,8 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
   )
 
   const deviceTrend = useMemo(
-    () => buildDeviceTrend(deviceEntries, devicesQuery.data),
-    [deviceEntries, devicesQuery.data],
+    () => buildDeviceTrend(deviceEntries, devicesQuery.data, ranges.deviceLabelFormat),
+    [deviceEntries, devicesQuery.data, ranges.deviceLabelFormat],
   )
 
   // The banner reports what is happening right now, so every input is scoped to the
