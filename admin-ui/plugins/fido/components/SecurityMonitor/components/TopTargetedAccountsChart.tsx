@@ -57,11 +57,22 @@ const TopTargetedAccountsChart: React.FC<TopTargetedAccountsProps> = ({ userStat
 
   const legend = useMemo(
     () =>
-      Object.entries(palette.threatLevels).map(([level, color]) => ({
-        label: t(`fields.threat_level_${level}`),
-        color,
-      })),
-    [t, palette.threatLevels],
+      Object.entries(palette.threatLevels).map(([level, color]) => {
+        const bucket = userStats.filter((stat) => stat.threatLevel === level)
+        const dropOff = bucket.reduce((sum, stat) => sum + stat.abandoned, 0)
+        const failed = bucket.reduce((sum, stat) => sum + stat.failed, 0)
+
+        return {
+          label: t(`fields.threat_level_${level}`),
+          color,
+          hint: t('fields.threat_level_breakdown', {
+            accounts: bucket.length,
+            dropOff,
+            failed,
+          }),
+        }
+      }),
+    [t, palette.threatLevels, userStats],
   )
 
   return (

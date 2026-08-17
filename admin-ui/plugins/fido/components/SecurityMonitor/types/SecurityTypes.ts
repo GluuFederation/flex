@@ -181,6 +181,7 @@ type SecurityPaletteSource = Pick<ThemeConfig, 'badges' | 'chart' | 'textMuted' 
 type SecurityLegendItem = {
   label: string
   color: string
+  hint?: ReactNode
 }
 
 type SecurityChartCardProps = {

@@ -315,7 +315,7 @@ describe('SecurityKpiStrip delta tooltips', () => {
 
     fireEvent.mouseOver(screen.getByText('vs baseline'))
     expect(
-      await screen.findByText('Failed + abandoned sign-ins vs previous period'),
+      await screen.findByText('Failed or abandoned passkey sign-ins vs previous period'),
     ).toBeInTheDocument()
 
     fireEvent.mouseOver(screen.getByText('1 critical · 1 warning'))
