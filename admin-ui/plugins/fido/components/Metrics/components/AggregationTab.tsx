@@ -26,6 +26,7 @@ import {
   entriesToHourlyHeatmap,
 } from '../utils'
 import ActivityBarChart from './ActivityBarChart'
+import ActivityLineChart from './ActivityLineChart'
 import DurationHeatmap from './DurationHeatmap'
 
 const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
@@ -90,6 +91,13 @@ const AggregationTab: React.FC = () => {
     return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
   }, [aggApiData, appliedAggType, appliedRange, t])
 
+  // The bar chart leads with a zeroed range summary row; a line would read that as a dip to
+  // zero, so the trend chart plots the buckets only.
+  const trendData: readonly ActivityDataPoint[] = useMemo(
+    () => activityData.slice(1),
+    [activityData],
+  )
+
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) {
@@ -139,6 +147,11 @@ const AggregationTab: React.FC = () => {
                 <ActivityBarChart title={t('titles.agg_hourly_activity')} data={activityData} />
               </Col>
             </Row>
+            <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_hourly_trend')} data={trendData} />
+              </Col>
+            </Row>
             <Row>
               <Col xs={12} lg={6} className="mb-4 mb-lg-0">
                 <DurationHeatmap
@@ -178,6 +191,11 @@ const AggregationTab: React.FC = () => {
                 <ActivityBarChart title={t('titles.agg_daily_activity')} data={activityData} />
               </Col>
             </Row>
+            <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_daily_trend')} data={trendData} />
+              </Col>
+            </Row>
             <Row>
               <Col xs={12}>
                 <DurationHeatmap
@@ -215,6 +233,11 @@ const AggregationTab: React.FC = () => {
                 />
               </Col>
             </Row>
+            <Row className="mt-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_weekly_trend')} data={trendData} />
+              </Col>
+            </Row>
           </>
         )
 
@@ -239,13 +262,18 @@ const AggregationTab: React.FC = () => {
                 />
               </Col>
             </Row>
+            <Row className="mt-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_monthly_trend')} data={trendData} />
+              </Col>
+            </Row>
           </>
         )
 
       default:
         return null
     }
-  }, [appliedAggType, t, activityData, heatmapData, authHeatmapData])
+  }, [appliedAggType, t, activityData, trendData, heatmapData, authHeatmapData])
 
   return (
     <GluuLoader blocking={isAggLoading}>
