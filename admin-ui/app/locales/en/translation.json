@@ -454,6 +454,8 @@
     "agg_reg_attempts": "Reg Attempts",
     "agg_auth_attempts": "Auth Attempts",
     "agg_auth_success": "Auth Success",
+    "agg_auth_failed": "Auth Failed",
+    "agg_reg_failed": "Reg Failed",
     "agg_time_series_hours": "Time Series (in hours)",
     "agg_range_label": "{{type}} {{start}}\nto {{end}}",
     "agg_week_number": "Week {{number}}",

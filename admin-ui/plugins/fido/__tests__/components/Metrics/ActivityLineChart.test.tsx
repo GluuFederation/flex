@@ -18,8 +18,24 @@ jest.mock('recharts', () => {
 })
 
 const mockData: ActivityDataPoint[] = [
-  { label: 'Feb 01', regSuccess: 80, regAttempts: 120, authAttempts: 150, authSuccess: 100 },
-  { label: 'Feb 08', regSuccess: 90, regAttempts: 130, authAttempts: 160, authSuccess: 110 },
+  {
+    label: 'Feb 01',
+    regSuccess: 80,
+    regAttempts: 120,
+    regFailed: 2,
+    authAttempts: 150,
+    authSuccess: 100,
+    authFailed: 3,
+  },
+  {
+    label: 'Feb 08',
+    regSuccess: 90,
+    regAttempts: 130,
+    regFailed: 2,
+    authAttempts: 160,
+    authSuccess: 110,
+    authFailed: 3,
+  },
 ]
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -33,7 +49,7 @@ describe('ActivityLineChart', () => {
     expect(screen.getByText('Hourly Trend')).toBeInTheDocument()
   })
 
-  it('draws one line per activity series', () => {
+  it('draws a passed and a failed line for each operation', () => {
     const { container } = render(<ActivityLineChart title="Hourly Trend" data={mockData} />, {
       wrapper: Wrapper,
     })
@@ -56,8 +72,10 @@ describe('ActivityLineChart', () => {
             label: 'Feb 01\nH12',
             regSuccess: 55,
             regAttempts: 100,
+            regFailed: 45,
             authAttempts: 120,
             authSuccess: 80,
+            authFailed: 40,
           },
         ]}
       />,
@@ -74,8 +92,10 @@ describe('ActivityLineChart density', () => {
     label: `B${i}`,
     regSuccess: i % 3,
     regAttempts: i % 4,
+    regFailed: i % 2,
     authAttempts: i % 5,
     authSuccess: i % 2,
+    authFailed: i % 3,
   })
 
   it('marks every point while the buckets stay readable', () => {

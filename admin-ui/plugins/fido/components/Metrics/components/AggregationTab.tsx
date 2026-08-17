@@ -85,8 +85,10 @@ const AggregationTab: React.FC = () => {
       label: buildRangeLabel(appliedAggType, appliedRange, t),
       regSuccess: 0,
       regAttempts: 0,
+      regFailed: 0,
       authAttempts: 0,
       authSuccess: 0,
+      authFailed: 0,
     }
     return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
   }, [aggApiData, appliedAggType, appliedRange, t])

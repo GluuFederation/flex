@@ -812,6 +812,8 @@
     "adoption_rate": "Taxa de Adoção",
     "agg_auth_attempts": "Tentativas de Autenticação",
     "agg_auth_success": "Autenticações Bem-sucedidas",
+    "agg_auth_failed": "Autenticação com falha",
+    "agg_reg_failed": "Registro com falha",
     "agg_avg_duration_heatmap_caption": "Mapa de Calor de Duração Média (Milissegundos)",
     "agg_date": "Data",
     "agg_metrics_type_label": "Tipo de Agregação de Métricas",

@@ -25,7 +25,7 @@ import {
   ACTIVITY_LINE_MAX_DOTS,
   ACTIVITY_LINE_STROKE_WIDTH,
   ACTIVITY_LINE_TICK_GAP,
-  AGGREGATION_SERIES_COLORS,
+  ACTIVITY_TREND_SERIES_COLORS,
   RECHARTS_INITIAL_DIMENSION,
 } from '../constants'
 import type { ActivityChartProps, ActivityDataPoint } from '../types'
@@ -79,13 +79,16 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
 
   const showDots = data.length <= ACTIVITY_LINE_MAX_DOTS
 
+  // Passed against failed, the comparison the trend exists to make. Attempts are omitted:
+  // they are just the sum of the two and flatten the contrast.
   const series = useMemo(
-    () => [
-      { key: 'regAttempts', name: t('fields.agg_reg_attempts') },
-      { key: 'regSuccess', name: t('fields.agg_reg_success') },
-      { key: 'authAttempts', name: t('fields.agg_auth_attempts') },
-      { key: 'authSuccess', name: t('fields.agg_auth_success') },
-    ],
+    () =>
+      [
+        { key: 'authSuccess', name: t('fields.agg_auth_success') },
+        { key: 'authFailed', name: t('fields.agg_auth_failed') },
+        { key: 'regSuccess', name: t('fields.agg_reg_success') },
+        { key: 'regFailed', name: t('fields.agg_reg_failed') },
+      ] as const,
     [t],
   )
 
@@ -145,17 +148,13 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
                 type="monotone"
                 dataKey={line.key}
                 name={line.name}
-                stroke={
-                  AGGREGATION_SERIES_COLORS[line.key as keyof typeof AGGREGATION_SERIES_COLORS]
-                }
+                stroke={ACTIVITY_TREND_SERIES_COLORS[line.key]}
                 strokeWidth={ACTIVITY_LINE_STROKE_WIDTH}
                 dot={
                   showDots
                     ? {
                         r: ACTIVITY_LINE_DOT_RADIUS,
-                        fill: AGGREGATION_SERIES_COLORS[
-                          line.key as keyof typeof AGGREGATION_SERIES_COLORS
-                        ],
+                        fill: ACTIVITY_TREND_SERIES_COLORS[line.key],
                         strokeWidth: 0,
                       }
                     : false

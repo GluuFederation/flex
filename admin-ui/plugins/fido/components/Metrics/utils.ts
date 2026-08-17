@@ -154,17 +154,40 @@ export const buildRangeLabel = (
   return t('fields.agg_range_label', { type: t(`fields.agg_type_${aggType}`), start, end })
 }
 
+// An operation that neither succeeded nor failed outright was abandoned; the API reports that
+// count separately, and falls back to the attempts residual on payloads that omit it.
+const failedOf = (
+  attempts: number,
+  successes: number,
+  failures: number,
+  abandoned?: number,
+): number => failures + (abandoned ?? Math.max(0, attempts - successes - failures))
+
 export const entriesToActivityData = (
   entries: AggregationEntry[],
   aggType?: AggregationType,
 ): ActivityDataPoint[] =>
-  entries.map((e) => ({
-    label: aggType === 'hourly' ? formatHourlyActivityLabel(e) : formatPeriodLabel(e, aggType),
-    regSuccess: e.registrationSuccesses ?? 0,
-    regAttempts: e.registrationAttempts ?? 0,
-    authAttempts: e.authenticationAttempts ?? 0,
-    authSuccess: e.authenticationSuccesses ?? 0,
-  }))
+  entries.map((e) => {
+    const regAttempts = e.registrationAttempts ?? 0
+    const regSuccess = e.registrationSuccesses ?? 0
+    const authAttempts = e.authenticationAttempts ?? 0
+    const authSuccess = e.authenticationSuccesses ?? 0
+    const reportedAbandoned = e.abandonedOperations ?? e.metricsData?.abandonedOperations
+    const abandoned =
+      typeof reportedAbandoned === 'number' && Number.isFinite(reportedAbandoned)
+        ? Math.max(0, reportedAbandoned)
+        : undefined
+
+    return {
+      label: aggType === 'hourly' ? formatHourlyActivityLabel(e) : formatPeriodLabel(e, aggType),
+      regSuccess,
+      regAttempts,
+      regFailed: failedOf(regAttempts, regSuccess, e.registrationFailures ?? 0),
+      authAttempts,
+      authSuccess,
+      authFailed: failedOf(authAttempts, authSuccess, e.authenticationFailures ?? 0, abandoned),
+    }
+  })
 
 export const entriesToHeatmapData = (
   entries: AggregationEntry[],

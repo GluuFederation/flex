@@ -617,6 +617,8 @@
     "agg_reg_attempts": "Tentatives Inscr.",
     "agg_auth_attempts": "Tentatives Auth.",
     "agg_auth_success": "Auth. Réussies",
+    "agg_auth_failed": "Authentification échouée",
+    "agg_reg_failed": "Inscription échouée",
     "agg_time_series_hours": "Série Temporelle (en heures)",
     "agg_range_label": "{{type}} {{start}}\nà {{end}}",
     "agg_week_number": "Semaine {{number}}",

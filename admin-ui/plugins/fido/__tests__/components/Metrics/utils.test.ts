@@ -270,3 +270,49 @@ describe('Metrics utils', () => {
     })
   })
 })
+
+describe('entriesToActivityData failure counters', () => {
+  it('reads the reported failure and abandoned counters', () => {
+    const [point] = entriesToActivityData(
+      [
+        {
+          startTime: '2026-08-13T10:00:00',
+          period: '2026-08-13',
+          registrationAttempts: 5,
+          registrationSuccesses: 4,
+          registrationFailures: 1,
+          authenticationAttempts: 13,
+          authenticationSuccesses: 2,
+          authenticationFailures: 1,
+          metricsData: { abandonedOperations: 4 },
+        },
+      ],
+      'daily',
+    )
+
+    expect(point!.regFailed).toBe(1)
+    // 1 explicit failure plus the 4 abandoned operations the API reported.
+    expect(point!.authFailed).toBe(5)
+  })
+
+  it('falls back to the attempts residual when no abandoned counter is present', () => {
+    const [point] = entriesToActivityData(
+      [
+        {
+          startTime: '2026-08-13T10:00:00',
+          period: '2026-08-13',
+          registrationAttempts: 10,
+          registrationSuccesses: 6,
+          registrationFailures: 0,
+          authenticationAttempts: 20,
+          authenticationSuccesses: 12,
+          authenticationFailures: 3,
+        },
+      ],
+      'daily',
+    )
+
+    expect(point!.regFailed).toBe(4)
+    expect(point!.authFailed).toBe(8)
+  })
+})

@@ -18,8 +18,24 @@ jest.mock('recharts', () => {
 })
 
 const mockData: ActivityDataPoint[] = [
-  { label: 'Feb 01', regSuccess: 80, regAttempts: 120, authAttempts: 150, authSuccess: 100 },
-  { label: 'Feb 08', regSuccess: 90, regAttempts: 130, authAttempts: 160, authSuccess: 110 },
+  {
+    label: 'Feb 01',
+    regSuccess: 80,
+    regAttempts: 120,
+    regFailed: 2,
+    authAttempts: 150,
+    authSuccess: 100,
+    authFailed: 3,
+  },
+  {
+    label: 'Feb 08',
+    regSuccess: 90,
+    regAttempts: 130,
+    regFailed: 2,
+    authAttempts: 160,
+    authSuccess: 110,
+    authFailed: 3,
+  },
 ]
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -54,8 +70,10 @@ describe('ActivityBarChart', () => {
         label: 'Feb 01\nH12',
         regSuccess: 55,
         regAttempts: 100,
+        regFailed: 45,
         authAttempts: 120,
         authSuccess: 80,
+        authFailed: 40,
       },
     ]
     render(<ActivityBarChart title="Hourly Activity" data={multiLineData} />, { wrapper: Wrapper })
