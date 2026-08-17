@@ -21,10 +21,9 @@ export const METRICS_CHART_COLORS = {
 // The trend contrasts passed against failed, so each of the four lines takes a clearly
 // separated hue rather than the two near-identical warm tones the activity bars use.
 export const ACTIVITY_TREND_SERIES_COLORS = {
+  authAttempts: customColors.chartBlue,
   authSuccess: customColors.statusActive,
   authFailed: customColors.statusInactive,
-  regSuccess: customColors.chartBlue,
-  regFailed: customColors.orange,
 } as const
 
 export const ACTIVITY_LINE_DOT_RADIUS = 2.5

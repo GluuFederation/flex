@@ -289,8 +289,6 @@ describe('entriesToActivityData failure counters', () => {
       ],
       'daily',
     )
-
-    expect(point!.regFailed).toBe(1)
     // 1 explicit failure plus the 4 abandoned operations the API reported.
     expect(point!.authFailed).toBe(5)
   })
@@ -311,8 +309,6 @@ describe('entriesToActivityData failure counters', () => {
       ],
       'daily',
     )
-
-    expect(point!.regFailed).toBe(4)
     expect(point!.authFailed).toBe(8)
   })
 })

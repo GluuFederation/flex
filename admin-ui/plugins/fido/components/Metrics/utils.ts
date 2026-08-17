@@ -182,7 +182,6 @@ export const entriesToActivityData = (
       label: aggType === 'hourly' ? formatHourlyActivityLabel(e) : formatPeriodLabel(e, aggType),
       regSuccess,
       regAttempts,
-      regFailed: failedOf(regAttempts, regSuccess, e.registrationFailures ?? 0),
       authAttempts,
       authSuccess,
       authFailed: failedOf(authAttempts, authSuccess, e.authenticationFailures ?? 0, abandoned),

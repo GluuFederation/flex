@@ -22,7 +22,6 @@ const mockData: ActivityDataPoint[] = [
     label: 'Feb 01',
     regSuccess: 80,
     regAttempts: 120,
-    regFailed: 2,
     authAttempts: 150,
     authSuccess: 100,
     authFailed: 3,
@@ -31,7 +30,6 @@ const mockData: ActivityDataPoint[] = [
     label: 'Feb 08',
     regSuccess: 90,
     regAttempts: 130,
-    regFailed: 2,
     authAttempts: 160,
     authSuccess: 110,
     authFailed: 3,
@@ -49,12 +47,12 @@ describe('ActivityLineChart', () => {
     expect(screen.getByText('Hourly Trend')).toBeInTheDocument()
   })
 
-  it('draws a passed and a failed line for each operation', () => {
+  it('draws an attempted, success and failed line for authentication', () => {
     const { container } = render(<ActivityLineChart title="Hourly Trend" data={mockData} />, {
       wrapper: Wrapper,
     })
 
-    expect(container.querySelectorAll('.recharts-line')).toHaveLength(4)
+    expect(container.querySelectorAll('.recharts-line')).toHaveLength(3)
   })
 
   it('renders with empty data without crashing', () => {
@@ -72,7 +70,6 @@ describe('ActivityLineChart', () => {
             label: 'Feb 01\nH12',
             regSuccess: 55,
             regAttempts: 100,
-            regFailed: 45,
             authAttempts: 120,
             authSuccess: 80,
             authFailed: 40,
@@ -92,7 +89,6 @@ describe('ActivityLineChart density', () => {
     label: `B${i}`,
     regSuccess: i % 3,
     regAttempts: i % 4,
-    regFailed: i % 2,
     authAttempts: i % 5,
     authSuccess: i % 2,
     authFailed: i % 3,
@@ -120,6 +116,6 @@ describe('ActivityLineChart density', () => {
     )
 
     expect(container.querySelectorAll('.recharts-line-dots circle')).toHaveLength(0)
-    expect(container.querySelectorAll('.recharts-line')).toHaveLength(4)
+    expect(container.querySelectorAll('.recharts-line')).toHaveLength(3)
   })
 })

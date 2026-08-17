@@ -79,15 +79,12 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
 
   const showDots = data.length <= ACTIVITY_LINE_MAX_DOTS
 
-  // Passed against failed, the comparison the trend exists to make. Attempts are omitted:
-  // they are just the sum of the two and flatten the contrast.
   const series = useMemo(
     () =>
       [
+        { key: 'authAttempts', name: t('fields.agg_auth_attempts') },
         { key: 'authSuccess', name: t('fields.agg_auth_success') },
         { key: 'authFailed', name: t('fields.agg_auth_failed') },
-        { key: 'regSuccess', name: t('fields.agg_reg_success') },
-        { key: 'regFailed', name: t('fields.agg_reg_failed') },
       ] as const,
     [t],
   )

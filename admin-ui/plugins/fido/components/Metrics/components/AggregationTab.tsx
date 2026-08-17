@@ -85,7 +85,6 @@ const AggregationTab: React.FC = () => {
       label: buildRangeLabel(appliedAggType, appliedRange, t),
       regSuccess: 0,
       regAttempts: 0,
-      regFailed: 0,
       authAttempts: 0,
       authSuccess: 0,
       authFailed: 0,
@@ -146,12 +145,12 @@ const AggregationTab: React.FC = () => {
           <>
             <Row className="mb-4">
               <Col xs={12}>
-                <ActivityBarChart title={t('titles.agg_hourly_activity')} data={activityData} />
+                <ActivityLineChart title={t('titles.agg_hourly_trend')} data={trendData} />
               </Col>
             </Row>
             <Row className="mb-4">
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_hourly_trend')} data={trendData} />
+                <ActivityBarChart title={t('titles.agg_hourly_activity')} data={activityData} />
               </Col>
             </Row>
             <Row>
@@ -190,12 +189,12 @@ const AggregationTab: React.FC = () => {
           <>
             <Row className="mb-4">
               <Col xs={12}>
-                <ActivityBarChart title={t('titles.agg_daily_activity')} data={activityData} />
+                <ActivityLineChart title={t('titles.agg_daily_trend')} data={trendData} />
               </Col>
             </Row>
             <Row className="mb-4">
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_daily_trend')} data={trendData} />
+                <ActivityBarChart title={t('titles.agg_daily_activity')} data={activityData} />
               </Col>
             </Row>
             <Row>
@@ -219,6 +218,11 @@ const AggregationTab: React.FC = () => {
         return (
           <>
             <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_weekly_trend')} data={trendData} />
+              </Col>
+            </Row>
+            <Row className="mb-4">
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_weekly_activity')} data={activityData} />
               </Col>
@@ -235,17 +239,17 @@ const AggregationTab: React.FC = () => {
                 />
               </Col>
             </Row>
-            <Row className="mt-4">
-              <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_weekly_trend')} data={trendData} />
-              </Col>
-            </Row>
           </>
         )
 
       case 'monthly':
         return (
           <>
+            <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_monthly_trend')} data={trendData} />
+              </Col>
+            </Row>
             <Row className="mb-4">
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_monthly_activity')} data={activityData} />
@@ -262,11 +266,6 @@ const AggregationTab: React.FC = () => {
                   colLabelsBottom
                   showExpand={false}
                 />
-              </Col>
-            </Row>
-            <Row className="mt-4">
-              <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_monthly_trend')} data={trendData} />
               </Col>
             </Row>
           </>

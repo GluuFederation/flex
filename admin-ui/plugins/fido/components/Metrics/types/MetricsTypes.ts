@@ -54,7 +54,6 @@ export type ActivityDataPoint = {
   label: string
   regSuccess: number
   regAttempts: number
-  regFailed: number
   authAttempts: number
   authSuccess: number
   authFailed: number
