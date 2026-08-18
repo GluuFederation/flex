@@ -1177,6 +1177,8 @@
     "see_project_details": "Ver detalhes do projeto",
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
+    "session_expired_title": "Sessão expirada",
+    "session_expired_description": "A sua sessão expirou por motivos de segurança. Inicie sessão novamente para continuar.",
     "request_timeout_title": "Tempo limite da solicitação",
     "request_timeout_description": "A solicitação foi encerrada porque não houve resposta do servidor por mais de 60 segundos. Verifique sua conexão de rede e o status do servidor e tente novamente.",
     "edit_acr": "Editar ACR",

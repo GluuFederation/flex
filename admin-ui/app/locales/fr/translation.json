@@ -1180,6 +1180,8 @@
     "see_project_details": "Voir les détails du projet",
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
+    "session_expired_title": "Session expirée",
+    "session_expired_description": "Votre session a expiré pour des raisons de sécurité. Veuillez vous reconnecter pour continuer.",
     "request_timeout_title": "Délai d'attente dépassé",
     "request_timeout_description": "La requête a été interrompue car le serveur n'a pas répondu pendant plus de 60 secondes. Veuillez vérifier votre connexion réseau et l'état du serveur, puis réessayez.",
     "edit_acr": "Modifier ACR",

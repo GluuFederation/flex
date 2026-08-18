@@ -1236,6 +1236,8 @@
     "no_attributes_found": "No attributes found",
     "all_attributes_added": "All attributes have been added",
     "copied": "Copied",
+    "session_expired_title": "Session Expired",
+    "session_expired_description": "Your session has expired for security reasons. Please sign in again to continue.",
     "request_timeout_title": "Request Timeout",
     "request_timeout_description": "The request has been terminated as there is no response from the server for more than 60 seconds. Please check your network connection and server status, then try again.",
     "no_data_found": "No data found",

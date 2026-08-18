@@ -8,6 +8,7 @@ import licenseReducer, {
   generateTrialLicense,
 } from '../../features/licenseSlice'
 import authReducer from '../../features/authSlice'
+import { reducer as initReducer } from '../../features/initSlice'
 import {
   isLicenseActive,
   retrieveLicense,
@@ -44,11 +45,12 @@ const mockedGetStat = getStat as jest.MockedFunction<typeof getStat>
 
 const buildStore = () =>
   configureStore({
-    reducer: { authReducer, licenseReducer },
+    reducer: { authReducer, licenseReducer, initReducer },
     middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware),
   })
 
 const license = () => store.getState().licenseReducer
+const init = () => store.getState().initReducer
 let store: ReturnType<typeof buildStore>
 
 const ACTIVE_WITH_THRESHOLD = {
@@ -86,6 +88,18 @@ describe('licenseListener', () => {
       store.dispatch(checkLicenseConfigValid(undefined))
 
       await waitFor(() => expect(license().isConfigValid).toBe(false))
+      expect(init().isSessionExpired).toBe(false)
+    })
+
+    // A timed-out session must surface the timeout modal. Marking the config invalid here would
+    // send the user to the SSA upload screen when all they need is to sign in again.
+    it.each([401, 403])('reports a timeout rather than an invalid config on %i', async (status) => {
+      mockedCheckConfig.mockRejectedValue({ response: { status } })
+
+      store.dispatch(checkLicenseConfigValid(undefined))
+
+      await waitFor(() => expect(init().isSessionExpired).toBe(true))
+      expect(license().isConfigValid).toBeNull()
     })
   })
 

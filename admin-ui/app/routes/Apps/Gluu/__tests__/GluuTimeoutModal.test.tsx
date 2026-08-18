@@ -12,7 +12,7 @@ const createTestStore = (isTimeout: boolean, authServerHost = ''): Store =>
       initReducer,
       authReducer: (state = { config: { authServerHost } }) => state,
     }),
-    preloadedState: { initReducer: { isTimeout } },
+    preloadedState: { initReducer: { isTimeout, isSessionExpired: false } },
   })
 
 const renderModal = (isTimeout: boolean, authServerHost = '') => {
@@ -32,7 +32,7 @@ describe('GluuTimeoutModal', () => {
     renderModal(true)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByText('Request Timeout')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
   })
 
   it('renders nothing when isTimeout is false', () => {
@@ -48,9 +48,56 @@ describe('GluuTimeoutModal', () => {
     expect(store.getState().initReducer.isTimeout).toBe(false)
   })
 
-  it('clears the timeout state when Try Again is clicked', () => {
+  it('clears the timeout state when Refresh is clicked', () => {
     const { store } = renderModal(true, '')
-    fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
     expect(store.getState().initReducer.isTimeout).toBe(false)
+  })
+})
+
+// A dead session and a slow request are different problems with different remedies, so the modal
+// must not tell an expired user to go check their network connection.
+describe('GluuTimeoutModal session expiry', () => {
+  const renderExpired = (authServerHost = '') => {
+    const store = configureStore({
+      reducer: combineReducers({
+        initReducer,
+        authReducer: (state = { config: { authServerHost } }) => state,
+      }),
+      preloadedState: { initReducer: { isTimeout: false, isSessionExpired: true } },
+    })
+    return render(
+      <Provider store={store}>
+        <AppTestWrapper>
+          <GluuTimeoutModal />
+        </AppTestWrapper>
+      </Provider>,
+    )
+  }
+
+  it('shows the session-expired copy, not the request-timeout copy', () => {
+    renderExpired()
+
+    expect(screen.getByText(/session has expired/i)).toBeInTheDocument()
+    expect(screen.queryByText(/no response from the server/i)).not.toBeInTheDocument()
+  })
+
+  it('stays hidden when neither state is set', () => {
+    const store = configureStore({
+      reducer: combineReducers({
+        initReducer,
+        authReducer: (state = { config: { authServerHost: '' } }) => state,
+      }),
+      preloadedState: { initReducer: { isTimeout: false, isSessionExpired: false } },
+    })
+    const { container } = render(
+      <Provider store={store}>
+        <AppTestWrapper>
+          <GluuTimeoutModal />
+        </AppTestWrapper>
+      </Provider>,
+    )
+
+    expect(container).toBeEmptyDOMElement()
   })
 })
