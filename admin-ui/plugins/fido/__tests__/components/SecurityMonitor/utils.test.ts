@@ -14,6 +14,7 @@ import {
   buildVelocityScaffoldRows,
   buildVelocityMatrix,
   countByThreatLevel,
+  summarizeThreatBuckets,
   filterSuspiciousIps,
   findDropOffPeak,
   findPeakSpike,
@@ -33,6 +34,7 @@ import {
 import { createDate } from '@/utils/dayjsUtils'
 import type {
   SecurityDashboardData,
+  UserFailureStat,
   SecurityTranslate,
 } from 'Plugins/fido/components/SecurityMonitor/types'
 import type { AggregationEntry, MetricsEntry } from 'Plugins/fido/components/Metrics/types'
@@ -722,5 +724,44 @@ describe('SecurityMonitor utils', () => {
         'fields.unit_percent',
       ])
     })
+  })
+})
+
+describe('summarizeThreatBuckets', () => {
+  const stat = (overrides: Partial<UserFailureStat>): UserFailureStat => ({
+    username: 'john',
+    failures: 148,
+    failed: 100,
+    abandoned: 48,
+    successes: 0,
+    outcomes: 148,
+    failureRate: 100,
+    lastSeen: 2,
+    threatLevel: THREAT_LEVELS.CRITICAL,
+    ...overrides,
+  })
+
+  it('totals accounts, failures and drop-off per threat level in one pass', () => {
+    const buckets = summarizeThreatBuckets([
+      stat({}),
+      stat({ username: 'nadia' }),
+      stat({ username: 'berry', threatLevel: THREAT_LEVELS.MEDIUM, failed: 30, abandoned: 12 }),
+    ])
+
+    expect(buckets[THREAT_LEVELS.CRITICAL]).toEqual({ accounts: 2, failed: 200, dropOff: 96 })
+    expect(buckets[THREAT_LEVELS.MEDIUM]).toEqual({ accounts: 1, failed: 30, dropOff: 12 })
+  })
+
+  it('seeds every threat level so untouched buckets report zeroes', () => {
+    const buckets = summarizeThreatBuckets([stat({})])
+
+    expect(Object.keys(buckets).sort()).toEqual(Object.values(THREAT_LEVELS).sort())
+    expect(buckets[THREAT_LEVELS.LOW]).toEqual({ accounts: 0, failed: 0, dropOff: 0 })
+  })
+
+  it('returns all-zero buckets for no accounts', () => {
+    const buckets = summarizeThreatBuckets([])
+
+    expect(Object.values(buckets).every((b) => b.accounts === 0 && b.failed === 0)).toBe(true)
   })
 })
