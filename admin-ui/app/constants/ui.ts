@@ -286,6 +286,41 @@ export const MAPPING_SPACING = {
   CONTENT_PADDING_TOP: 27,
 } as const
 
+export const SEGMENTED_CONTROL = {
+  BUTTON_MIN_WIDTH: 110,
+  BORDER_OVERLAP: -1,
+} as const
+
+export const CHART_AXIS = {
+  GRID_DASH: '3 3',
+  TICK_FONT_SIZE: 12,
+} as const
+
+export const KPI_DELTA_BADGE = {
+  PADDING_X: 10,
+  PADDING_Y: 4,
+  ICON_GAP: 4,
+} as const
+
+export const SUMMARY_CARD = {
+  MIN_HEIGHT: 180,
+  PADDING_VERTICAL: 32,
+  PADDING_HORIZONTAL: 40,
+  CONTENT_GAP: 12,
+} as const
+
+export const getSegmentedButtonStyle = (isFirst: boolean, isLast: boolean) => {
+  const radius = BORDER_RADIUS.SMALL_MEDIUM
+  return {
+    borderRadius: isFirst
+      ? `${radius}px 0 0 ${radius}px`
+      : isLast
+        ? `0 ${radius}px ${radius}px 0`
+        : 0,
+    marginLeft: isFirst ? 0 : SEGMENTED_CONTROL.BORDER_OVERLAP,
+  }
+}
+
 export const createMobilePageTitleStyle = (fontColor: string) => ({
   display: 'none' as const,
   [`@media ${MOBILE_MEDIA_QUERY}`]: {

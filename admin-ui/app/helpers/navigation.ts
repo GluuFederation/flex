@@ -137,6 +137,7 @@ const ROUTES = {
   // ========== FIDO Plugin ==========
   FIDO_BASE: `${PLUGIN_BASE_PATHS.FIDO}/configuration`,
   FIDO_METRICS: `${PLUGIN_BASE_PATHS.FIDO}/metrics`,
+  FIDO_SECURITY_MONITOR: `${PLUGIN_BASE_PATHS.FIDO}/security-monitor`,
 
   // ========== SMTP Plugin ==========
   SMTP_BASE: `${PLUGIN_BASE_PATHS.SMTP}/smtpmanagement`,

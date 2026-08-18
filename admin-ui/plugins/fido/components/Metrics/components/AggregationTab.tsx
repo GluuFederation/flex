@@ -8,10 +8,8 @@ import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { GluuButton } from '@/components/GluuButton'
 import { createDate } from '@/utils/dayjsUtils'
 import type { Dayjs } from 'dayjs'
-import { BORDER_RADIUS, SPACING } from '@/constants'
-import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { ChevronIcon } from '@/components/SVG'
+import { useMetricsStyles } from '../MetricsPage.style'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { AGGREGATION_TYPES, EMPTY_HEATMAP_DATA_DEFAULT, type AggregationType } from '../constants'
 import { useAggregationMetrics } from '../hooks'
@@ -28,6 +26,7 @@ import {
   entriesToHourlyHeatmap,
 } from '../utils'
 import ActivityBarChart from './ActivityBarChart'
+import ActivityLineChart from './ActivityLineChart'
 import DurationHeatmap from './DurationHeatmap'
 
 const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
@@ -42,6 +41,7 @@ const AggregationTab: React.FC = () => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
+  const { classes } = useMetricsStyles({ isDark, themeColors })
 
   const [startDate, setStartDate] = useState<Dayjs>(() =>
     createDate().startOf('month').startOf('day').millisecond(0),
@@ -87,9 +87,17 @@ const AggregationTab: React.FC = () => {
       regAttempts: 0,
       authAttempts: 0,
       authSuccess: 0,
+      authFailed: 0,
     }
     return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
   }, [aggApiData, appliedAggType, appliedRange, t])
+
+  // The bar chart leads with a zeroed range summary row; a line would read that as a dip to
+  // zero, so the trend chart plots the buckets only.
+  const trendData: readonly ActivityDataPoint[] = useMemo(
+    () => activityData.slice(1),
+    [activityData],
+  )
 
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
@@ -117,8 +125,6 @@ const AggregationTab: React.FC = () => {
   const authHeatmapData: HeatmapData = rawAuthHeatmapData
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
-  const inputBg = themeColors.inputBackground
-  const inputBorder = isDark ? 'transparent' : themeColors.borderColor
   const applyButtonColors = useMemo(
     () => ({
       backgroundColor: themeColors.formFooter?.apply?.backgroundColor,
@@ -126,8 +132,6 @@ const AggregationTab: React.FC = () => {
     }),
     [themeColors],
   )
-
-  const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
 
   const aggOptions = AGGREGATION_TYPES.map((v) => ({
     value: v,
@@ -139,6 +143,11 @@ const AggregationTab: React.FC = () => {
       case 'hourly':
         return (
           <>
+            <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_hourly_trend')} data={trendData} />
+              </Col>
+            </Row>
             <Row className="mb-4">
               <Col xs={12}>
                 <ActivityBarChart title={t('titles.agg_hourly_activity')} data={activityData} />
@@ -180,6 +189,11 @@ const AggregationTab: React.FC = () => {
           <>
             <Row className="mb-4">
               <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_daily_trend')} data={trendData} />
+              </Col>
+            </Row>
+            <Row className="mb-4">
+              <Col xs={12}>
                 <ActivityBarChart title={t('titles.agg_daily_activity')} data={activityData} />
               </Col>
             </Row>
@@ -204,6 +218,11 @@ const AggregationTab: React.FC = () => {
         return (
           <>
             <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_weekly_trend')} data={trendData} />
+              </Col>
+            </Row>
+            <Row className="mb-4">
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_weekly_activity')} data={activityData} />
               </Col>
@@ -226,6 +245,11 @@ const AggregationTab: React.FC = () => {
       case 'monthly':
         return (
           <>
+            <Row className="mb-4">
+              <Col xs={12}>
+                <ActivityLineChart title={t('titles.agg_monthly_trend')} data={trendData} />
+              </Col>
+            </Row>
             <Row className="mb-4">
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <ActivityBarChart title={t('titles.agg_monthly_activity')} data={activityData} />
@@ -250,27 +274,14 @@ const AggregationTab: React.FC = () => {
       default:
         return null
     }
-  }, [appliedAggType, t, activityData, heatmapData, authHeatmapData])
+  }, [appliedAggType, t, activityData, trendData, heatmapData, authHeatmapData])
 
   return (
     <GluuLoader blocking={isAggLoading}>
-      <div
-        style={{
-          width: '100%',
-          backgroundColor: cardBg,
-          ...cardBorderStyle,
-          borderRadius: BORDER_RADIUS.DEFAULT,
-          padding: `${SPACING.CARD_PADDING}px 20px`,
-          marginBottom: SPACING.CARD_GAP,
-          position: 'relative',
-          zIndex: 0,
-          overflow: 'visible',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div style={{ position: 'relative', zIndex: 2, isolation: 'isolate' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' }}>
-            <div style={{ flex: 2, minWidth: 280 }}>
+      <div className={classes.filterCard}>
+        <div className={classes.filterCardContent}>
+          <div className={classes.filterRow}>
+            <div className={classes.filterDateFieldWide}>
               <GluuDatePicker
                 mode="range"
                 layout="row"
@@ -288,42 +299,15 @@ const AggregationTab: React.FC = () => {
               />
             </div>
 
-            <div
-              style={{ flex: 1, minWidth: 180, display: 'flex', flexDirection: 'column', gap: 6 }}
-            >
-              <span
-                style={{
-                  fontSize: fontSizes.base,
-                  fontWeight: fontWeights.semiBold,
-                  color: themeColors.fontColor,
-                  fontFamily,
-                }}
-              >
-                {t('fields.agg_metrics_type_label')}:
-              </span>
-              <div style={{ position: 'relative', width: '100%' }}>
+            <div className={classes.aggTypeField}>
+              <span className={classes.aggFieldLabel}>{t('fields.agg_metrics_type_label')}:</span>
+              <div className={classes.aggSelectWrapper}>
                 <select
                   value={aggType}
                   onChange={(e) =>
                     setAggType(e.target.value === '' ? '' : (e.target.value as AggregationType))
                   }
-                  style={{
-                    width: '100%',
-                    height: 52,
-                    padding: '0 36px 0 16px',
-                    border: `1px solid ${inputBorder}`,
-                    borderRadius: BORDER_RADIUS.SMALL,
-                    backgroundColor: inputBg,
-                    color: themeColors.fontColor,
-                    fontSize: fontSizes.base,
-                    fontWeight: fontWeights.medium,
-                    fontFamily,
-                    outline: 'none',
-                    appearance: 'none',
-                    WebkitAppearance: 'none',
-                    cursor: 'pointer',
-                    boxSizing: 'border-box',
-                  }}
+                  className={classes.aggSelect}
                 >
                   <option value="">{t('fields.agg_type_placeholder')}</option>
                   {aggOptions.map((o) => (
@@ -332,23 +316,13 @@ const AggregationTab: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <span
-                  style={{
-                    position: 'absolute',
-                    right: 12,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    pointerEvents: 'none',
-                    display: 'flex',
-                    color: themeColors.fontColor,
-                  }}
-                >
+                <span className={classes.aggSelectChevron}>
                   <ChevronIcon width={20} height={20} direction="down" />
                 </span>
               </div>
             </div>
 
-            <div style={{ alignSelf: 'flex-end', minWidth: 120 }}>
+            <div className={classes.filterActionFieldEnd}>
               <GluuButton
                 type="button"
                 size="md"

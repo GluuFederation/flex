@@ -50,14 +50,13 @@ const PolicyStoreUploadConfirmDialog: React.FC<PolicyStoreUploadConfirmDialogPro
     <ModalLayer onClose={onClose}>
       <div
         ref={dialogRef}
-        className={commitClasses.modalContainer}
+        className={`${commitClasses.modalContainer} ${classes.dialogSurface}`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
         role="dialog"
         aria-modal="true"
         tabIndex={-1}
         aria-labelledby="confirm-upload-title"
-        style={{ outline: 'none' }}
       >
         <button
           type="button"

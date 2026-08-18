@@ -89,8 +89,8 @@ const MetricsPage: React.FC = () => {
   const filterBar = (
     <div className={classes.filterCard}>
       <div className={classes.filterCardContent}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: 220 }}>
+        <div className={classes.filterRow}>
+          <div className={classes.filterDateField}>
             <GluuDatePicker
               mode="range"
               layout="row"
@@ -107,7 +107,7 @@ const MetricsPage: React.FC = () => {
               backgroundColor={cardBg}
             />
           </div>
-          <div style={{ minWidth: 120 }}>
+          <div className={classes.filterActionField}>
             <GluuButton
               type="button"
               size="md"

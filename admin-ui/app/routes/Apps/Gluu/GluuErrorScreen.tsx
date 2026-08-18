@@ -27,7 +27,9 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
 
   const isNotFound = variant === 'not-found'
   const title = isNotFound ? t('messages.resource_not_found_title') : t('messages.crash_title')
-  const message = isNotFound ? t('messages.resource_not_found_message') : t('messages.crash_message')
+  const message = isNotFound
+    ? t('messages.resource_not_found_message')
+    : t('messages.crash_message')
 
   return (
     <EmptyLayout className={classes.screen}>
@@ -72,7 +74,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
               minHeight={40}
               padding="0 28px"
               useOpacityOnHover
-              style={{ letterSpacing: '0.28px' }}
+              className={classes.actionButton}
               onClick={() => window.location.assign(basePath)}
             >
               <ArrowBack className={classes.buttonIcon} />
@@ -85,7 +87,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
               fontWeight={700}
               minHeight={40}
               padding="0 28px"
-              style={{ letterSpacing: '0.28px' }}
+              className={classes.actionButton}
               onClick={() => window.open(EXTERNAL_LINKS.SUPPORT, '_blank', 'noopener,noreferrer')}
             >
               <OpenInNew className={classes.buttonIconSmall} />

@@ -19,8 +19,9 @@ const ColorBar: React.FC<{
   maxVal: number
   height: number
   textColor: string
+  className: string
   barWidth?: number
-}> = ({ minVal, maxVal, height, textColor, barWidth = 18 }) => {
+}> = ({ minVal, maxVal, height, textColor, className, barWidth = 18 }) => {
   const stops = HEATMAP_COLOR_STOPS
   const gradientId = 'heatmap-grad'
   const step = getNiceStep(minVal, maxVal)
@@ -36,7 +37,7 @@ const ColorBar: React.FC<{
   const verticalPadding = 8
   const barHeight = Math.max(0, height - verticalPadding * 2)
   return (
-    <svg width={svgWidth} height={height} style={{ flexShrink: 0 }}>
+    <svg width={svgWidth} height={height} className={className}>
       <defs>
         <linearGradient id={gradientId} x1="0" y1="1" x2="0" y2="0">
           {stops.map((s, i) => (
@@ -445,8 +446,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               width={colorBarW}
               height={colorBarHeight}
             >
-              <div style={{ height: '100%' }}>
+              <div className={classes.chartColorBarBox}>
                 <ColorBar
+                  className={classes.chartColorBarSvg}
                   minVal={minVal}
                   maxVal={maxVal}
                   height={colorBarHeight}

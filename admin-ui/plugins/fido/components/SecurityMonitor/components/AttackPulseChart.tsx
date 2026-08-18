@@ -1,0 +1,125 @@
+import React, { useMemo } from 'react'
+import {
+  ComposedChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
+import { useTranslation } from 'react-i18next'
+import { useChartTheme } from '@/hooks/useChartTheme'
+import { RECHARTS_INITIAL_DIMENSION } from '../../Metrics/constants'
+import { CHART_EMPTY_INSET, SPIKE_LINE_DOT_RADIUS } from '../constants'
+import {
+  buildCountAxis,
+  buildHourScaffold,
+  findPeakSpike,
+  getSecurityPalette,
+  spikeRatio,
+} from '../utils'
+import { useSecurityStyles } from '../SecurityMonitorPage.style'
+import SecurityChartCard from './SecurityChartCard'
+import type { FailureSpikeTimelineProps } from '../types'
+
+const AXIS_EMPTY_INSET = {
+  top: CHART_EMPTY_INSET.TOP_MARGIN,
+  bottom: CHART_EMPTY_INSET.AXIS_HEIGHT,
+  left: CHART_EMPTY_INSET.AXIS_WIDTH,
+}
+
+const AttackPulseChart: React.FC<FailureSpikeTimelineProps> = ({ series }) => {
+  const { t } = useTranslation()
+  const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
+  const { classes } = useSecurityStyles({ isDark, themeColors })
+  const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
+
+  const peak = useMemo(() => findPeakSpike(series), [series])
+
+  const legend = useMemo(
+    () => [
+      { label: t('fields.auth_failures'), color: palette.chart.failures },
+      { label: t('fields.agg_auth_attempts'), color: palette.chart.attempts },
+      { label: t('fields.rolling_baseline'), color: palette.chart.baseline },
+    ],
+    [t, palette.chart],
+  )
+
+  const isEmpty = series.length === 0
+  const chartData = useMemo(() => (isEmpty ? buildHourScaffold() : [...series]), [series, isEmpty])
+
+  const countAxis = useMemo(
+    () =>
+      buildCountAxis(
+        chartData.reduce(
+          (max, point) => Math.max(max, point.failures, point.attempts, point.baseline),
+          0,
+        ),
+      ),
+    [chartData],
+  )
+
+  return (
+    <SecurityChartCard
+      title={t('titles.attack_pulse')}
+      subtitle={t('fields.attack_pulse_subtitle')}
+      statusLabel={
+        peak ? t('fields.spike_alert', { ratio: spikeRatio(peak), hour: peak.label }) : undefined
+      }
+      accentColor={peak ? palette.chart.failures : undefined}
+      legend={legend}
+      isEmpty={isEmpty}
+      emptyLabel={t('fields.no_data')}
+      emptyInset={AXIS_EMPTY_INSET}
+    >
+      <div className={classes.chartCanvas}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={RECHARTS_INITIAL_DIMENSION}
+        >
+          <ComposedChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="label" tick={axisTick} interval="preserveStartEnd" minTickGap={4} />
+            <YAxis
+              tick={axisTick}
+              allowDecimals={false}
+              domain={countAxis.domain}
+              ticks={countAxis.ticks}
+            />
+            {isEmpty ? null : <Tooltip content={renderTooltip} />}
+            <Line
+              type="monotone"
+              dataKey="failures"
+              name={t('fields.auth_failures')}
+              stroke={palette.chart.failures}
+              dot={{ r: SPIKE_LINE_DOT_RADIUS, fill: palette.chart.failures, strokeWidth: 0 }}
+              activeDot={{ r: SPIKE_LINE_DOT_RADIUS + 1 }}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="attempts"
+              name={t('fields.agg_auth_attempts')}
+              stroke={palette.chart.attempts}
+              dot={false}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="baseline"
+              name={t('fields.rolling_baseline')}
+              stroke={palette.chart.baseline}
+              strokeDasharray="6 4"
+              dot={false}
+              isAnimationActive={false}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+    </SecurityChartCard>
+  )
+}
+
+export default React.memo(AttackPulseChart)
