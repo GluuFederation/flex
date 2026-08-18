@@ -762,6 +762,8 @@ describe('summarizeThreatBuckets', () => {
   it('returns all-zero buckets for no accounts', () => {
     const buckets = summarizeThreatBuckets([])
 
-    expect(Object.values(buckets).every((b) => b.accounts === 0 && b.failed === 0)).toBe(true)
+    expect(
+      Object.values(buckets).every((b) => b.accounts === 0 && b.failed === 0 && b.dropOff === 0),
+    ).toBe(true)
   })
 })
