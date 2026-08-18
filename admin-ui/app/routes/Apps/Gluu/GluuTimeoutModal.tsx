@@ -12,6 +12,14 @@ import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
 
+const basePath = process.env.BASE_PATH ?? '/admin/'
+
+// BASE_PATH is normalised to a trailing slash, so targeting it directly avoids relying on the
+// server to redirect /admin to /admin/. Exported because jsdom forbids stubbing window.location,
+// so the URL is asserted here instead of through the navigation itself.
+export const buildAdminUrl = (authServerHost?: string | number | boolean): string | null =>
+  authServerHost ? `${authServerHost}${basePath}` : null
+
 const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -26,7 +34,7 @@ const GluuTimeoutModal = () => {
   const handleRefresh = useCallback(() => {
     dispatch(handleApiTimeout({ isTimeout: false }))
     dispatch(handleSessionExpired({ isSessionExpired: false }))
-    const host = authServerHost ? `${authServerHost}/admin` : null
+    const host = buildAdminUrl(authServerHost)
     if (host) {
       window.location.href = host
     } else {

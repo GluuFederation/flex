@@ -128,6 +128,8 @@ describe('ApiKeyRedirect screen arbitration', () => {
       store,
     )
 
+    // Asserted positively: the absence checks alone would pass even if nothing rendered at all.
+    expect(screen.getByText('Welcome to Admin UI')).toBeInTheDocument()
     expect(loaderOf(container)).not.toBeInTheDocument()
     expect(screen.queryByText(/upload ssa here/i)).not.toBeInTheDocument()
   })
