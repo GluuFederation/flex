@@ -18,6 +18,28 @@ export const METRICS_CHART_COLORS = {
   maxDuration: customColors.chartCyan,
 } as const
 
+// The trend contrasts passed against failed, so each of the four lines takes a clearly
+// separated hue rather than the two near-identical warm tones the activity bars use.
+export const ACTIVITY_TREND_SERIES_COLORS = {
+  authAttempts: customColors.chartBlue,
+  authSuccess: customColors.statusActive,
+  authFailed: customColors.statusInactive,
+} as const
+
+export const ACTIVITY_LINE_DOT_RADIUS = 2.5
+
+export const ACTIVITY_LINE_STROKE_WIDTH = 1.8
+
+// Past this many buckets the markers touch and the line reads as a solid band, so the trend
+// keeps the same look by dropping to a plain stroke instead.
+export const ACTIVITY_LINE_MAX_DOTS = 60
+
+// Small gutter at each end so the first and last tick labels are not clipped by the card.
+export const ACTIVITY_LINE_AXIS_PADDING = { left: 12, right: 24 } as const
+
+// Minimum pixels between x-axis labels; Recharts drops ticks that would crowd past it.
+export const ACTIVITY_LINE_TICK_GAP = 24
+
 export const AGGREGATION_SERIES_COLORS = {
   regSuccess: customColors.orange,
   regAttempts: customColors.chartLightBlue,

@@ -27,10 +27,13 @@ export type DurationHeatmapProps = {
   showExpand?: boolean
 }
 
-export type ActivityBarChartProps = {
+export type ActivityChartProps = {
   title: string
   data: readonly ActivityDataPoint[]
   height?: number
+}
+
+export type ActivityBarChartProps = ActivityChartProps & {
   barSize?: number
   barCategoryGap?: string | number
 }
@@ -53,6 +56,7 @@ export type ActivityDataPoint = {
   regAttempts: number
   authAttempts: number
   authSuccess: number
+  authFailed: number
 }
 
 export type MetricsDateRange = {
