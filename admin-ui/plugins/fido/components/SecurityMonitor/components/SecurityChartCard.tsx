@@ -3,6 +3,7 @@ import { Card, CardBody } from 'Components'
 import { GluuBadge } from '@/components/GluuBadge'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { getBadgeBackground, getBadgeTextColor } from '../utils'
+import SecurityInfoTooltip from './SecurityInfoTooltip'
 import { useSecurityTheme } from '../hooks'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import type { SecurityChartCardProps } from '../types'
@@ -57,10 +58,12 @@ const SecurityChartCard: React.FC<SecurityChartCardProps> = ({
         {legend?.length ? (
           <div className={classes.legendRow}>
             {legend.map((item) => (
-              <span key={item.label} className={classes.legendItem}>
-                <span className={classes.legendDot} style={{ backgroundColor: item.color }} />
-                {item.label}
-              </span>
+              <SecurityInfoTooltip key={item.label} title={item.hint}>
+                <span className={classes.legendItem}>
+                  <span className={classes.legendDot} style={{ backgroundColor: item.color }} />
+                  {item.label}
+                </span>
+              </SecurityInfoTooltip>
             ))}
           </div>
         ) : null}

@@ -61,6 +61,7 @@ import type {
   SecurityExportRow,
   SecurityExportRows,
   SecurityTranslate,
+  ThreatBucketSummary,
   ThreatLevel,
   UserFailureStat,
   VelocityCell,
@@ -421,6 +422,29 @@ const countByThreatLevel = (
   stats: readonly { threatLevel: ThreatLevel }[],
   level: ThreatLevel,
 ): number => stats.filter((stat) => stat.threatLevel === level).length
+
+// Every threat level is seeded so untouched buckets still report zeroes rather than dropping out.
+const summarizeThreatBuckets = (
+  stats: readonly UserFailureStat[],
+): Record<ThreatLevel, ThreatBucketSummary> => {
+  const buckets = Object.values(THREAT_LEVELS).reduce(
+    (acc, level) => {
+      acc[level] = { accounts: 0, failed: 0, dropOff: 0 }
+      return acc
+    },
+    {} as Record<ThreatLevel, ThreatBucketSummary>,
+  )
+
+  for (const stat of stats) {
+    const bucket = buckets[stat.threatLevel]
+    if (!bucket) continue
+    bucket.accounts += 1
+    bucket.failed += stat.failed
+    bucket.dropOff += stat.abandoned
+  }
+
+  return buckets
+}
 
 const buildDropOffSeries = (
   entries: readonly AggregationEntry[],
@@ -1081,6 +1105,7 @@ export {
   buildFailureSpikeSeries,
   buildVelocityMatrix,
   countByThreatLevel,
+  summarizeThreatBuckets,
   abandonedOf,
   countSpikesInRange,
   filterSpikePointsByRange,

@@ -4,6 +4,7 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import AnomalyBanner from 'Plugins/fido/components/SecurityMonitor/components/AnomalyBanner'
 import SecurityKpiStrip from 'Plugins/fido/components/SecurityMonitor/components/SecurityKpiStrip'
 import SecurityMonitorHeader from 'Plugins/fido/components/SecurityMonitor/components/SecurityMonitorHeader'
+import TopTargetedAccountsChart from 'Plugins/fido/components/SecurityMonitor/components/TopTargetedAccountsChart'
 import VelocityWatchHeatmap from 'Plugins/fido/components/SecurityMonitor/components/VelocityWatchHeatmap'
 import {
   ANOMALY_KINDS,
@@ -315,10 +316,39 @@ describe('SecurityKpiStrip delta tooltips', () => {
 
     fireEvent.mouseOver(screen.getByText('vs baseline'))
     expect(
-      await screen.findByText('Failed + abandoned sign-ins vs previous period'),
+      await screen.findByText('Failed or abandoned passkey sign-ins vs previous period'),
     ).toBeInTheDocument()
 
     fireEvent.mouseOver(screen.getByText('1 critical · 1 warning'))
     expect(await screen.findByText('Critical-level accounts vs the rest')).toBeInTheDocument()
+  })
+})
+
+describe('TopTargetedAccountsChart legend tooltips', () => {
+  const criticalPeer: UserFailureStat = { ...criticalUser, username: 'nadia' }
+
+  it('surfaces the bucket breakdown on the matching legend chip', async () => {
+    render(<TopTargetedAccountsChart userStats={[criticalUser, criticalPeer, warningUser]} />, {
+      wrapper: Wrapper,
+    })
+
+    fireEvent.mouseOver(screen.getByText('Critical'))
+    expect(await screen.findByText('2 accounts · 200 failed · 96 drop-off')).toBeInTheDocument()
+
+    fireEvent.mouseOver(screen.getByText('Medium'))
+    expect(await screen.findByText('1 accounts · 100 failed · 48 drop-off')).toBeInTheDocument()
+  })
+
+  it('counts only the accounts the chart actually plots', async () => {
+    const manyUsers = Array.from({ length: 12 }, (_, index) => ({
+      ...criticalUser,
+      username: `user-${index}`,
+      failures: 200 - index,
+    }))
+
+    render(<TopTargetedAccountsChart userStats={manyUsers} />, { wrapper: Wrapper })
+
+    fireEvent.mouseOver(screen.getByText('Critical'))
+    expect(await screen.findByText(/^8 accounts/)).toBeInTheDocument()
   })
 })
