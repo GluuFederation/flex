@@ -178,9 +178,16 @@ type SecurityPalette = {
 
 type SecurityPaletteSource = Pick<ThemeConfig, 'badges' | 'chart' | 'textMuted' | 'warningColor'>
 
+type ThreatBucketSummary = {
+  accounts: number
+  failed: number
+  dropOff: number
+}
+
 type SecurityLegendItem = {
   label: string
   color: string
+  hint?: ReactNode
 }
 
 type SecurityChartCardProps = {
@@ -349,6 +356,7 @@ export type {
   SecurityExportRows,
   SecurityTheme,
   SecurityTranslate,
+  ThreatBucketSummary,
   ThreatLevel,
   TopTargetedAccountsProps,
   UserBarScaffoldPoint,

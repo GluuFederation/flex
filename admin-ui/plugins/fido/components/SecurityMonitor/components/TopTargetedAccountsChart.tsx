@@ -9,11 +9,12 @@ import {
   buildUserScaffold,
   countByThreatLevel,
   getSecurityPalette,
+  summarizeThreatBuckets,
   takeTopUsersByFailure,
 } from '../utils'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
 import SecurityChartCard from './SecurityChartCard'
-import type { TopTargetedAccountsProps } from '../types'
+import type { ThreatLevel, TopTargetedAccountsProps } from '../types'
 
 const USER_LABEL_WIDTH = 64
 
@@ -30,16 +31,19 @@ const TopTargetedAccountsChart: React.FC<TopTargetedAccountsProps> = ({ userStat
   const { classes } = useSecurityStyles({ isDark, themeColors })
   const palette = useMemo(() => getSecurityPalette(themeColors), [themeColors])
 
+  // The legend describes the bars this chart draws, so both read from the same truncated set.
+  const topStats = useMemo(() => takeTopUsersByFailure(userStats), [userStats])
+
   const data = useMemo(
     () =>
-      takeTopUsersByFailure(userStats).map((stat) => ({
+      topStats.map((stat) => ({
         username: stat.username,
         failures: stat.failures,
         abandoned: stat.abandoned,
         failed: stat.failed,
         fill: palette.threatLevels[stat.threatLevel],
       })),
-    [userStats, palette.threatLevels],
+    [topStats, palette.threatLevels],
   )
 
   const isEmpty = data.length === 0
@@ -55,13 +59,16 @@ const TopTargetedAccountsChart: React.FC<TopTargetedAccountsProps> = ({ userStat
     [userStats],
   )
 
+  const threatBuckets = useMemo(() => summarizeThreatBuckets(topStats), [topStats])
+
   const legend = useMemo(
     () =>
       Object.entries(palette.threatLevels).map(([level, color]) => ({
         label: t(`fields.threat_level_${level}`),
         color,
+        hint: t('fields.threat_level_breakdown', threatBuckets[level as ThreatLevel]),
       })),
-    [t, palette.threatLevels],
+    [t, palette.threatLevels, threatBuckets],
   )
 
   return (
