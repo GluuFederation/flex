@@ -181,7 +181,6 @@
     "apply": "Aplicar",
     "apply_filter": "Aplicar filtro",
     "back": "Voltar",
-    "back_home": "Voltar para casa",
     "back_to_home": "Voltar para o início",
     "support_portal": "Portal de suporte",
     "add_server": "Adicionar servidor",
@@ -945,8 +944,6 @@
     "suspicious_ips": "Endereços IP suspeitos"
   },
   "footer": {
-    "copyright": "(C) {{year}} Todos os direitos reservados.",
-    "designed_by": "Este é o \"{{name}}\" projetado e implementado por",
     "company_name": "Gluu Inc."
   },
   "messages": {
@@ -1181,6 +1178,8 @@
     "see_project_details": "Ver detalhes do projeto",
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
+    "session_expired_title": "Sessão expirada",
+    "session_expired_description": "A sua sessão expirou por motivos de segurança. Inicie sessão novamente para continuar.",
     "request_timeout_title": "Tempo limite da solicitação",
     "request_timeout_description": "A solicitação foi encerrada porque não houve resposta do servidor por mais de 60 segundos. Verifique sua conexão de rede e o status do servidor e tente novamente.",
     "edit_acr": "Editar ACR",

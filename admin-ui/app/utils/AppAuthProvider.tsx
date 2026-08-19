@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
 import { uuidv4 } from './Util'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
@@ -41,6 +41,7 @@ import decodeJwt from '@/utils/jwtDecode'
 import type { UserInfo } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
+import { rememberIntendedRoute, consumeIntendedRoute } from '@/utils/intendedRoute'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 
@@ -49,6 +50,7 @@ const LOGOUT_DELAY_SECONDS = 10
 const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
   const location = useLocation()
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
@@ -152,8 +154,12 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
 
+    let isActive = true
+
     AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
       .then((response) => {
+        if (!isActive) return
+
         const additionalParameters: Record<string, string> = {}
 
         if (config.additionalParameters?.length) {
@@ -175,15 +181,30 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           extras,
         })
         saveIssuer(issuer)
+        rememberIntendedRoute(`${location.pathname}${location.search}${location.hash}`)
         authorizationHandler.performAuthorizationRequest(response, authRequest)
       })
       .catch((fetchError: Error) => {
+        if (!isActive) return
         logger.error(
           'Failed to fetch OIDC configuration from issuer: ' + resolveApiErrorMessage(fetchError),
         )
         setError(fetchError)
       })
-  }, [isLicenseValid, issuer, userinfo_jwt, hasSession, location.search, config])
+
+    return () => {
+      isActive = false
+    }
+  }, [
+    isLicenseValid,
+    issuer,
+    userinfo_jwt,
+    hasSession,
+    location.pathname,
+    location.search,
+    location.hash,
+    config,
+  ])
   const [code, setCode] = useState<string | null>(null)
 
   useEffect(() => {
@@ -273,6 +294,10 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               }
 
               setShowAdminUI(true)
+              const intendedRoute = consumeIntendedRoute()
+              if (intendedRoute) {
+                navigate(intendedRoute, { replace: true })
+              }
             })
             .catch((oError: Error) => {
               logger.error(

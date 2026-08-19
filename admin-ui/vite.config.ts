@@ -13,7 +13,7 @@ import {
   REGEX_STYLE_IMPORT_TILDE_PREFIX,
   REGEX_VIRTUAL_MODULE_NULL_PREFIX,
 } from './app/utils/regex'
-import type { HmrContext } from 'vite'
+import type { HmrContext, ViteDevServer } from 'vite'
 
 const timingPlugin = () => {
   return {
@@ -29,7 +29,29 @@ const timingPlugin = () => {
   }
 }
 
+const HTTP_STATUS_FOUND = 302
+
 const REGEX_WASM_ASSET = /\.wasm$/
+
+const basePathRedirectPlugin = (base: string) => {
+  return {
+    name: 'admin-ui:base-path-redirect',
+    apply: 'serve' as const,
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url ?? '/'
+        const { pathname, search } = new URL(url, 'http://localhost')
+        const acceptsHtml = req.headers.accept?.includes('text/html') ?? false
+        if (!acceptsHtml || pathname.startsWith(base) || pathname.startsWith('/@')) {
+          next()
+          return
+        }
+        res.writeHead(HTTP_STATUS_FOUND, { Location: `${base}${search}` })
+        res.end()
+      })
+    },
+  }
+}
 
 const wasmPreloadPlugin = (base: string) => {
   return {
@@ -267,7 +289,7 @@ export default defineConfig(({ mode }) => {
     : []
   const processEnv = {
     NODE_ENV: nodeEnv,
-    BASE_PATH: base === '/' ? '/' : base.replace(/\/$/, ''),
+    BASE_PATH: base,
     API_BASE_URL: env.API_BASE_URL,
     CONFIG_API_BASE_URL:
       env.CONFIG_API_BASE_URL && !env.CONFIG_API_BASE_URL.includes('%(')
@@ -282,6 +304,7 @@ export default defineConfig(({ mode }) => {
     publicDir: 'public',
     plugins: [
       timingPlugin(),
+      basePathRedirectPlugin(base),
       wasm(),
       wasmPreloadPlugin(base),
       react({
