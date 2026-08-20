@@ -872,6 +872,8 @@ class flex_installer(JettyInstaller):
 
         agama_pw_deployment_ldif_rendered_fn = os.path.join(self.source_dir, os.path.basename(self.agama_pw_deployment_ldif_fn))
         self.dbUtils.import_ldif([agama_pw_deployment_ldif_rendered_fn])
+        print("Enabling Agama Script")
+        installer_obj.dbUtils.enable_script('BADA-BADA')
 
 
 def prompt_for_installation():
