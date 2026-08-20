@@ -201,6 +201,10 @@ auth-server:
   # -- space-separated key algorithm for encryption (default to `RSA1_5 RSA-OAEP`)
   authEncKeys: "RSA1_5 RSA-OAEP"
   # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # -- Enable Auth server endpoints /jans-auth
     authServerEnabled: true
@@ -347,6 +351,10 @@ auth-server-key-rotation:
 admin-ui:
   # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
   enabled: true
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
     adminUiEnabled: true
@@ -380,6 +388,10 @@ casa:
   # -- passing custom java options to casa. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.
   cnCustomJavaOptions: ""
   # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # -- Enable casa endpoints /jans-casa
     casaEnabled: false
@@ -430,6 +442,10 @@ config-api:
     # -- config-api admin-ui plugin audit log level
     adminUiAuditLogLevel: "INFO"
   # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # Enable config API endpoints /jans-config-api
     configApiEnabled: true
@@ -471,6 +487,10 @@ fido2:
     # -- root log level
     rootLogLevel: "INFO"
   # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # -- Enable endpoint /.well-known/fido2-configuration
     fido2ConfigEnabled: false
@@ -522,6 +542,10 @@ scim:
     # -- root log level
     rootLogLevel: "INFO"
   # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+  gatewayName: ""
+  # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+  gatewayNamespace: ""
   ingress:
     # -- Enable endpoint /.well-known/scim-configuration
     scimConfigEnabled: false
