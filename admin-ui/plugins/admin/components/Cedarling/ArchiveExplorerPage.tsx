@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { Box } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
@@ -14,7 +12,8 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent, GluuButton } from '@/components'
-import { Add, DeleteOutlined, DownloadOutlined, Edit, Check, Close } from '@/components/icons'
+import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
+import { Check, Close, DeleteOutlined, Edit, InfoOutlined } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
@@ -24,7 +23,6 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
-import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { base64ToUint8Array, toPolicyStoreEntries } from '@/utils/policyStore'
 import {
   buildArchiveTree,
@@ -59,7 +57,6 @@ const ArchiveExplorerPage: React.FC = () => {
   const isDark = themeState.theme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ isDark, themeColors })
-  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   // Entries live in component state: every edit is in-memory until the archive is downloaded and
   // re-uploaded, which is what the ticket specifies.
@@ -211,66 +208,64 @@ const ArchiveExplorerPage: React.FC = () => {
     }
   }, [entries, store, inum, dispatch, t])
 
+  const handleToggleAdd = useCallback(() => setIsAdding((previous) => !previous), [])
+
+  const handleCancelAdd = useCallback(() => {
+    setIsAdding(false)
+    setNewPath('')
+  }, [])
+
+  const handleNewPathChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => setNewPath(event.target.value),
+    [],
+  )
+
+  const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICY_STORES), [navigateBack])
+
   const hasUnsavedChanges = dirtyPaths.size > 0
 
   return (
     <GluuLoader blocking={isLoading}>
       <GluuViewWrapper canShow={canReadSecurity}>
         <GluuPageContent>
-          <Box className={classes.page}>
-            {isMobile && (
-              <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
-                {t('titles.archive_explorer')}
-              </GluuText>
-            )}
+          <div className={classes.mobileContentPad}>
+            <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
+              {t('titles.archive_explorer')}
+            </GluuText>
 
-            <Box className={classes.toolbar}>
-              <GluuText variant="span" disableThemeColor className={classes.storeName}>
-                {store?.displayname || inum}
-              </GluuText>
-              {hasUnsavedChanges && (
-                <GluuText variant="span" disableThemeColor className={classes.dirtyNote}>
+            <GluuText variant="span" disableThemeColor className={classes.storeName}>
+              {store?.displayname || inum}
+            </GluuText>
+
+            {hasUnsavedChanges && (
+              <div className={`${classes.infoAlert} ${classes.infoAlertTopAligned}`}>
+                <InfoOutlined className={classes.infoIcon} />
+                <GluuText variant="span" className={classes.infoText} disableThemeColor>
                   {t('documentation.policyStore.unsavedChangesNote')}
                 </GluuText>
-              )}
-              <Box className={classes.toolbarSpacer} />
-              {canWriteSecurity && (
-                <GluuButton onClick={() => setIsAdding((prev) => !prev)} padding="6px 16px">
-                  <Add className={classes.actionIcon} aria-hidden /> {t('actions.add_file')}
-                </GluuButton>
-              )}
-              <GluuButton onClick={handleDownload} padding="6px 16px">
-                <DownloadOutlined className={classes.actionIcon} aria-hidden />{' '}
-                {t('actions.download')}
-              </GluuButton>
-              <GluuButton
-                onClick={() => navigateBack(ROUTES.ADMIN_POLICY_STORES)}
-                padding="6px 16px"
-              >
-                {t('actions.back')}
-              </GluuButton>
-            </Box>
+              </div>
+            )}
 
             {isAdding && canWriteSecurity && (
-              <Box className={classes.addFileRow}>
+              <div className={classes.addFileRow}>
                 <input
                   className={classes.addFileInput}
                   value={newPath}
-                  onChange={(event) => setNewPath(event.target.value)}
+                  onChange={handleNewPathChange}
                   placeholder={t('placeholders.archive_file_path')}
                   aria-label={t('placeholders.archive_file_path')}
                 />
-                <GluuButton onClick={handleAddFile} padding="6px 16px">
+                <GluuButton onClick={handleAddFile} padding="8px 20px">
                   {t('actions.create')}
                 </GluuButton>
-                <GluuButton onClick={() => setIsAdding(false)} padding="6px 16px">
+                <GluuButton onClick={handleCancelAdd} padding="8px 20px">
                   {t('actions.cancel')}
                 </GluuButton>
-              </Box>
+              </div>
             )}
 
-            <Box className={classes.splitPane}>
-              <Box className={classes.treePane}>
+            <div className={classes.splitPane}>
+              <div className={classes.treePane}>
                 {loadError ? (
                   <GluuText variant="span" disableThemeColor className={classes.binaryNotice}>
                     {loadError}
@@ -284,26 +279,26 @@ const ArchiveExplorerPage: React.FC = () => {
                     classes={classes}
                   />
                 )}
-              </Box>
+              </div>
 
-              <Box className={classes.viewerPane}>
+              <div className={classes.viewerPane}>
                 {selectedEntry ? (
                   <>
-                    <Box className={classes.viewerHeader}>
+                    <div className={classes.viewerHeader}>
                       <GluuText variant="span" disableThemeColor className={classes.viewerPath}>
                         {selectedEntry.path}
                       </GluuText>
                       {selectedIsText && canWriteSecurity && !isEditing && (
-                        <GluuButton onClick={handleStartEdit} padding="4px 12px">
+                        <GluuButton onClick={handleStartEdit} padding="6px 16px">
                           <Edit className={classes.actionIcon} aria-hidden /> {t('actions.edit')}
                         </GluuButton>
                       )}
                       {isEditing && (
                         <>
-                          <GluuButton onClick={handleSave} padding="4px 12px">
+                          <GluuButton onClick={handleSave} padding="6px 16px">
                             <Check className={classes.actionIcon} aria-hidden /> {t('actions.save')}
                           </GluuButton>
-                          <GluuButton onClick={handleDiscard} padding="4px 12px">
+                          <GluuButton onClick={handleDiscard} padding="6px 16px">
                             <Close className={classes.actionIcon} aria-hidden />{' '}
                             {t('actions.discard')}
                           </GluuButton>
@@ -312,15 +307,15 @@ const ArchiveExplorerPage: React.FC = () => {
                       {canWriteSecurity && !isEditing && (
                         <GluuButton
                           onClick={handleDeleteFile}
-                          padding="4px 12px"
+                          padding="6px 16px"
                           aria-label={t('actions.delete')}
                         >
                           <DeleteOutlined className={classes.actionIcon} aria-hidden />
                         </GluuButton>
                       )}
-                    </Box>
+                    </div>
                     {selectedIsText ? (
-                      <Box className={classes.viewerBody}>
+                      <div className={classes.viewerBody}>
                         <AceEditor
                           mode={editorModeFor(selectedEntry.path)}
                           theme={isDark ? 'monokai' : 'xcode'}
@@ -332,7 +327,7 @@ const ArchiveExplorerPage: React.FC = () => {
                           height={EDITOR_HEIGHT}
                           setOptions={{ useWorker: false, showPrintMargin: false }}
                         />
-                      </Box>
+                      </div>
                     ) : (
                       <GluuText variant="p" disableThemeColor className={classes.binaryNotice}>
                         {t('documentation.policyStore.binaryFileNotice')}
@@ -340,15 +335,28 @@ const ArchiveExplorerPage: React.FC = () => {
                     )}
                   </>
                 ) : (
-                  <Box className={classes.emptyViewer}>
+                  <div className={classes.emptyViewer}>
                     <GluuText variant="span" disableThemeColor>
                       {t('documentation.policyStore.selectFileToView')}
                     </GluuText>
-                  </Box>
+                  </div>
                 )}
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+
+            <GluuThemeFormFooter
+              className={classes.footer}
+              showBack
+              onBack={handleBack}
+              showCancel
+              cancelButtonLabel={t('actions.download')}
+              onCancel={handleDownload}
+              showApply={canWriteSecurity}
+              applyButtonLabel={t('actions.add_file')}
+              onApply={handleToggleAdd}
+              applyButtonType="button"
+            />
+          </div>
         </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>

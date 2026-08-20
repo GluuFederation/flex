@@ -952,7 +952,6 @@
     "filename": "Nome do arquivo",
     "uploaded": "Enviado",
     "size": "Tamanho",
-    "uploaded_by": "Por",
     "comments": "Comentários"
   },
   "footer": {
@@ -2509,7 +2508,6 @@
       "permissionGrantedMap": "Mapa de Permissões Concedidas"
     },
     "policyStore": {
-      "historyNote": "Todos os repositórios de políticas enviados são mantidos aqui. Apenas um fica ativo por vez — é o que o Cedarling carrega ao entrar. Ative um anterior para reverter.",
       "noPolicyStores": "Nenhum repositório de políticas encontrado.",
       "activateWarning": "Ativar este repositório de políticas desativa o atual. Todas as permissões serão reavaliadas no próximo login.",
       "deleteWarning": "Isto exclui permanentemente o repositório de políticas. Não pode ser desfeito.",

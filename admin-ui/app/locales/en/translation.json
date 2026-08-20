@@ -842,7 +842,6 @@
     "filename": "Filename",
     "uploaded": "Uploaded",
     "size": "Size",
-    "uploaded_by": "By",
     "comments": "Comments"
   },
   "languages": {
@@ -2504,7 +2503,6 @@
       "note_suffix": "to manage roles and permissions. Once you save the cedarling configuration, roles and permissions will be automatically synced from the policy store."
     },
     "policyStore": {
-      "historyNote": "Every uploaded policy store is kept here. Exactly one is active at a time — that is the store Cedarling loads when you sign in. Activate an earlier store to roll back.",
       "noPolicyStores": "No policy stores found.",
       "activateWarning": "Activating this policy store deactivates the current one. All permissions will be re-evaluated from it at the next sign-in.",
       "deleteWarning": "This permanently deletes the policy store. This cannot be undone.",

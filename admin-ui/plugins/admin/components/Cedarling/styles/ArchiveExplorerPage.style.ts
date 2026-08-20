@@ -1,46 +1,57 @@
 import { makeStyles } from 'tss-react/mui'
+import type { Theme } from '@mui/material/styles'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   BORDER_RADIUS,
   ICON_SIZE,
   MOBILE_MEDIA_QUERY,
+  MOBILE_PAGE_PADDING_X,
   SPACING,
   createMobilePageTitleStyle,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { fontFamily } from '@/styles/fonts'
+import { createInfoAlertStyles } from '@/styles/formStyles'
+import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 const TREE_WIDTH = 300
 const PANE_HEIGHT = 520
+const EDITOR_PANE_HEIGHT = PANE_HEIGHT - 60
 
 export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
-  _,
+  theme: Theme,
   { isDark, themeColors },
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
-    page: {
-      fontFamily,
-      paddingTop: SPACING.PAGE,
+    // Matches the sibling Cedarling Configuration page so both screens share one page shell.
+    mobileContentPad: {
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        paddingBottom: `${SPACING.CONTENT_PADDING}px`,
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.MD}px`,
+        marginTop: `-${SPACING.PAGE / 2}px`,
         boxSizing: 'border-box',
+      },
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: `${MOBILE_PAGE_PADDING_X.SM}px`,
+        paddingRight: `${MOBILE_PAGE_PADDING_X.SM}px`,
       },
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      flexWrap: 'wrap',
-      gap: 8,
-      marginBottom: SPACING.PAGE,
+
+    ...createInfoAlertStyles(themeColors.infoAlert),
+    infoAlertTopAligned: { alignItems: 'flex-start', marginBottom: SPACING.CARD_GAP },
+
+    storeName: {
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.bold,
+      color: themeColors.fontColor,
+      marginBottom: SPACING.CARD_GAP,
+      display: 'block',
+      wordBreak: 'break-word',
     },
-    toolbarSpacer: { flex: 1 },
-    storeName: { color: themeColors.fontColor, fontWeight: 600, fontSize: 15 },
-    dirtyNote: {
-      color: themeColors.infoAlert.text,
-      fontSize: 13,
-    },
+
     splitPane: {
       display: 'flex',
       gap: SPACING.PAGE,
@@ -49,54 +60,63 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     },
     treePane: {
       ...cardBorderStyle,
+      borderRadius: BORDER_RADIUS.DEFAULT,
+      backgroundColor: cardBg,
       width: TREE_WIDTH,
       minWidth: TREE_WIDTH,
       maxHeight: PANE_HEIGHT,
       overflowY: 'auto',
-      padding: 8,
-      backgroundColor: themeColors.card.background,
+      padding: 12,
+      boxSizing: 'border-box',
       [`@media ${MOBILE_MEDIA_QUERY}`]: { width: '100%', minWidth: 0, maxHeight: 260 },
     },
     viewerPane: {
       ...cardBorderStyle,
+      borderRadius: BORDER_RADIUS.DEFAULT,
+      backgroundColor: cardBg,
       flex: 1,
       minWidth: 0,
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: themeColors.card.background,
+      boxSizing: 'border-box',
+      overflow: 'hidden',
     },
     viewerHeader: {
       display: 'flex',
       alignItems: 'center',
       gap: 8,
-      padding: 8,
+      flexWrap: 'wrap',
+      padding: 12,
       borderBottom: `1px solid ${themeColors.borderColor}`,
     },
     viewerPath: {
-      color: themeColors.fontColor,
-      fontWeight: 500,
-      fontSize: 13,
-      wordBreak: 'break-all',
       flex: 1,
+      minWidth: 160,
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.medium,
+      color: themeColors.fontColor,
+      wordBreak: 'break-all',
     },
-    viewerBody: { flex: 1, minHeight: PANE_HEIGHT - 60 },
+    viewerBody: { flex: 1, minHeight: EDITOR_PANE_HEIGHT },
     emptyViewer: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: PANE_HEIGHT,
-      color: themeColors.fontColor,
-      opacity: 0.7,
-      fontSize: 14,
       padding: 16,
       textAlign: 'center',
+      fontFamily,
+      fontSize: fontSizes.base,
+      color: themeColors.fontColor,
     },
     binaryNotice: {
       padding: 16,
+      fontFamily,
+      fontSize: fontSizes.base,
       color: themeColors.fontColor,
-      opacity: 0.8,
-      fontSize: 13,
     },
+
     treeRow: {
       'display': 'flex',
       'alignItems': 'center',
@@ -104,36 +124,45 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       'padding': '4px 6px',
       'borderRadius': BORDER_RADIUS.SMALL,
       'cursor': 'pointer',
+      'fontFamily': fontFamily,
+      'fontSize': fontSizes.base,
       'color': themeColors.fontColor,
-      'fontSize': 13,
       'userSelect': 'none',
       '&:hover': { backgroundColor: themeColors.background },
     },
     treeRowSelected: {
       backgroundColor: themeColors.background,
-      fontWeight: 600,
+      fontWeight: fontWeights.bold,
     },
     treeRowName: { wordBreak: 'break-all' },
     dirtyDot: {
       width: 8,
       height: 8,
-      borderRadius: '50%',
-      backgroundColor: themeColors.infoAlert.text,
+      borderRadius: BORDER_RADIUS.CIRCLE,
+      backgroundColor: themeColors.infoAlert.icon,
       flexShrink: 0,
     },
-    treeIcon: { fontSize: ICON_SIZE.SM, opacity: 0.7, flexShrink: 0 },
+    treeIcon: { fontSize: ICON_SIZE.SM, flexShrink: 0 },
     actionIcon: { fontSize: ICON_SIZE.SM },
-    addFileRow: { display: 'flex', gap: 8, alignItems: 'center', padding: 8, flexWrap: 'wrap' },
+
+    addFileRow: {
+      display: 'flex',
+      gap: 8,
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      marginBottom: SPACING.CARD_GAP,
+    },
     addFileInput: {
       flex: 1,
       minWidth: 180,
-      padding: '6px 8px',
+      padding: '8px 12px',
       borderRadius: BORDER_RADIUS.SMALL,
       border: `1px solid ${themeColors.borderColor}`,
-      backgroundColor: themeColors.background,
+      backgroundColor: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
       color: themeColors.fontColor,
       fontFamily,
-      fontSize: 13,
+      fontSize: fontSizes.base,
     },
+    footer: { marginTop: SPACING.PAGE },
   }
 })

@@ -956,7 +956,6 @@
     "filename": "Nom du fichier",
     "uploaded": "Téléversé",
     "size": "Taille",
-    "uploaded_by": "Par",
     "comments": "Commentaires"
   },
   "footer": {
@@ -2525,7 +2524,6 @@
       "permissionGrantedMap": "Carte des autorisations accordées"
     },
     "policyStore": {
-      "historyNote": "Chaque magasin de politiques téléversé est conservé ici. Un seul est actif à la fois : c’est celui que Cedarling charge à la connexion. Activez un magasin antérieur pour revenir en arrière.",
       "noPolicyStores": "Aucun magasin de politiques trouvé.",
       "activateWarning": "Activer ce magasin de politiques désactive l’actuel. Toutes les permissions seront réévaluées à la prochaine connexion.",
       "deleteWarning": "Ceci supprime définitivement le magasin de politiques. Cette action est irréversible.",

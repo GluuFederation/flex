@@ -9,14 +9,15 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createSearchCardStyle } from '@/styles/searchCardStyle'
 import { fontFamily } from '@/styles/fonts'
-import customColors from '@/customColors'
 
 const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   _,
   { isDark, themeColors },
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
+  const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
   return {
     page: {
       fontFamily,
@@ -27,24 +28,36 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       },
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    infoAlert: {
-      ...cardBorderStyle,
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: 8,
-      padding: 12,
-      marginBottom: SPACING.PAGE,
-      backgroundColor: themeColors.infoAlert.background,
-      color: themeColors.infoAlert.text,
+
+    searchCard: createSearchCardStyle({ cardBg, isDark }),
+    searchCardContent: {
+      position: 'relative',
+      zIndex: 2,
+      isolation: 'isolate',
+      pointerEvents: 'auto',
     },
-    infoIcon: { fontSize: ICON_SIZE.SM, marginTop: 2 },
-    infoText: { fontSize: 13, lineHeight: 1.5 },
-    cellName: { color: themeColors.fontColor, fontWeight: 500, wordBreak: 'break-word' },
-    cellMuted: { color: themeColors.fontColor, opacity: 0.8, fontSize: 13 },
+    tableCard: {
+      'width': '100%',
+      'maxWidth': '100%',
+      'minWidth': 0,
+      'marginTop': SPACING.PAGE,
+      'backgroundColor': cardBg,
+      ...cardBorderStyle,
+      'borderRadius': BORDER_RADIUS.DEFAULT,
+      'padding': '20px',
+      'position': 'relative',
+      'overflow': 'visible',
+      'boxSizing': 'border-box',
+      '& table': { minWidth: 0 },
+      '& table td': { verticalAlign: 'middle', minWidth: 0, lineHeight: '28px' },
+      '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
+    },
+
+    cellName: { color: themeColors.fontColor, fontWeight: 500, overflowWrap: 'anywhere' },
+    cellMuted: { color: themeColors.fontColor, fontFamily },
     cellComments: {
       color: themeColors.fontColor,
-      opacity: 0.8,
-      fontSize: 13,
+      fontFamily,
       display: '-webkit-box',
       WebkitLineClamp: 2,
       WebkitBoxOrient: 'vertical',
@@ -52,8 +65,10 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       wordBreak: 'break-word',
     },
     statusBadge: { minWidth: 80 },
-    actionIcon: { fontSize: ICON_SIZE.SM },
-    activeIcon: { fontSize: ICON_SIZE.SM, color: customColors.statusActive },
+    viewIcon: { fontSize: ICON_SIZE.SM },
+    downloadIcon: { fontSize: ICON_SIZE.SM },
+    activateIcon: { fontSize: ICON_SIZE.SM },
+    deleteIcon: { fontSize: ICON_SIZE.SM },
   }
 })
 
@@ -63,12 +78,12 @@ export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig })
 
   const badgeStyles = useMemo(
     () => ({
-      active: {
+      statusBadgeActive: {
         backgroundColor: themeColors.badges.filledBadgeBg,
         textColor: themeColors.badges.filledBadgeText,
         borderColor: 'transparent',
       },
-      backup: {
+      statusBadgeBackup: {
         backgroundColor: themeColors.background,
         textColor: themeColors.fontColor,
         borderColor: themeColors.borderColor,

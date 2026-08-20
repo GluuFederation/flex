@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { GluuPageContent } from '@/components'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
@@ -15,7 +13,6 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   CheckCircleOutline,
-  InfoOutlined,
   VisibilityOutlined,
 } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
@@ -37,10 +34,16 @@ import {
 } from '@/utils/policyStore'
 import { formatBytes } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
-import type { ColumnDef, ActionDef } from '@/components/GluuTable'
+import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
+
+// Filename carries a host prefix, so it needs real room; Size is short and fixed. Without these
+// the auto table layout squeezes the filename to three lines and gives Size the leftover space.
+const COLUMN_MIN_WIDTHS = { FILENAME: 280, SIZE: 110, COMMENTS: 200 } as const
+
+const LIMIT_OPTIONS = getRowsPerPageOptions()
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const PAGE_TITLE_KEY = 'titles.policy_store_history'
@@ -65,17 +68,11 @@ const formatDate = (value: string | undefined): string => {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString()
 }
 
-/** `jansUsrDN` is a DN such as `inum=abc,ou=people,o=jans`; show just the inum where possible. */
-const formatUploadedBy = (dn: string | undefined): string => {
-  if (!dn) return '-'
-  const inumPart = dn.split(',').find((part) => part.trim().toLowerCase().startsWith('inum='))
-  return inumPart ? inumPart.trim().slice('inum='.length) : dn
-}
-
 const PolicyStoreHistoryPage: React.FC = () => {
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
   SetTitle(t(PAGE_TITLE_KEY))
+  const pageTitle = t(PAGE_TITLE_KEY)
 
   const {
     canRead: canReadSecurity,
@@ -156,6 +153,34 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const closeDialog = useCallback(() => setPendingAction(null), [])
 
+  const handleRowsPerPageChange = useCallback(
+    (rowsPerPage: number) => {
+      setLimit(rowsPerPage)
+      setPageNumber(0)
+    },
+    [setLimit, setPageNumber],
+  )
+
+  const handleSearchSubmit = useCallback(() => {
+    setPageNumber(0)
+    refetch()
+  }, [setPageNumber, refetch])
+
+  const handleRefresh = useCallback(() => {
+    setPageNumber(0)
+    setPattern('')
+    setServerSort(DEFAULT_SERVER_SORT)
+    refetch()
+  }, [setPageNumber, refetch])
+
+  const handleSortByFilter = useCallback(
+    (value: string) => {
+      setServerSort({ column: value || DEFAULT_SERVER_SORT.column, desc: true })
+      setPageNumber(0)
+    },
+    [setPageNumber],
+  )
+
   const handleConfirm = useCallback(
     async (comments: string) => {
       if (!pendingAction) return
@@ -180,6 +205,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
       {
         key: 'displayname',
         label: t('fields.filename'),
+        minWidth: COLUMN_MIN_WIDTHS.FILENAME,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellName}>
             {row.displayname || row.inum}
@@ -192,7 +218,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
         width: COLUMN_WIDTHS.PILL_SINGLE_SHORT,
         render: (_value, row) => {
           const active = isActivePolicyStore(row)
-          const style = active ? badgeStyles.active : badgeStyles.backup
+          const style = active ? badgeStyles.statusBadgeActive : badgeStyles.statusBadgeBackup
           return (
             <GluuBadge
               size="md"
@@ -210,6 +236,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
       {
         key: 'creationDate',
         label: t('fields.uploaded'),
+        width: COLUMN_WIDTHS.PILL_SINGLE,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
             {formatDate(row.creationDate)}
@@ -219,6 +246,8 @@ const PolicyStoreHistoryPage: React.FC = () => {
       {
         key: 'policyStore',
         label: t('fields.size'),
+        width: COLUMN_MIN_WIDTHS.SIZE,
+        align: 'right',
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
             {formatBytes(decodedByteLength(row.policyStore))}
@@ -226,17 +255,9 @@ const PolicyStoreHistoryPage: React.FC = () => {
         ),
       },
       {
-        key: 'jansUsrDN',
-        label: t('fields.uploaded_by'),
-        render: (_value, row) => (
-          <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
-            {formatUploadedBy(row.jansUsrDN)}
-          </GluuText>
-        ),
-      },
-      {
         key: 'description',
         label: t('fields.comments'),
+        minWidth: COLUMN_MIN_WIDTHS.COMMENTS,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellComments}>
             {row.description || '-'}
@@ -251,13 +272,13 @@ const PolicyStoreHistoryPage: React.FC = () => {
     if (isLoading || !canReadSecurity) return []
     const list: ActionDef<AdminUIPolicyStore>[] = [
       {
-        icon: <VisibilityOutlined className={classes.actionIcon} />,
+        icon: <VisibilityOutlined className={classes.viewIcon} />,
         tooltip: t('actions.open'),
         id: 'openPolicyStore',
         onClick: handleOpen,
       },
       {
-        icon: <DownloadOutlined className={classes.actionIcon} />,
+        icon: <DownloadOutlined className={classes.downloadIcon} />,
         tooltip: t('actions.download'),
         id: 'downloadPolicyStore',
         onClick: handleDownload,
@@ -267,7 +288,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
     if (isMobile) return list
     if (canWriteSecurity) {
       list.push({
-        icon: <CheckCircleOutline className={classes.activeIcon} />,
+        icon: <CheckCircleOutline className={classes.activateIcon} />,
         tooltip: t('actions.set_active'),
         id: 'activatePolicyStore',
         // The active store is already live; only backups can be promoted.
@@ -277,7 +298,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
     }
     if (canDeleteSecurity) {
       list.push({
-        icon: <DeleteOutlined className={classes.actionIcon} />,
+        icon: <DeleteOutlined className={classes.deleteIcon} />,
         tooltip: t('actions.delete'),
         id: 'deletePolicyStore',
         // The ticket requires one active store at all times, so the active one cannot be deleted.
@@ -314,106 +335,116 @@ const PolicyStoreHistoryPage: React.FC = () => {
         label: `${t('fields.sort_by')}:`,
         value: serverSort.column,
         options: sortOptions,
-        onChange: (value: string) => {
-          setServerSort({ column: value || DEFAULT_SERVER_SORT.column, desc: true })
-          setPageNumber(0)
-        },
+        onChange: handleSortByFilter,
         width: TOOLBAR.CONTROL_WIDTH,
         defaultValue: DEFAULT_SERVER_SORT.column,
       },
     ],
-    [t, serverSort.column, sortOptions, setPageNumber],
+    [t, serverSort.column, sortOptions, handleSortByFilter],
   )
+
+  const pagination: PaginationConfig = useMemo(
+    () => ({
+      page: effectivePage,
+      rowsPerPage: limit,
+      totalItems,
+      rowsPerPageOptions: LIMIT_OPTIONS,
+      onPageChange: setPageNumber,
+      onRowsPerPageChange: handleRowsPerPageChange,
+    }),
+    [effectivePage, limit, totalItems, setPageNumber, handleRowsPerPageChange],
+  )
+
+  const getRowKey = useCallback(
+    (row: AdminUIPolicyStore, index: number) => row.inum ?? `no-inum-${index}`,
+    [],
+  )
+
+  const emptyMessage = useMemo(
+    () =>
+      !pattern && totalItems === 0
+        ? t('documentation.policyStore.noPolicyStores')
+        : t('messages.no_data'),
+    [pattern, totalItems, t],
+  )
+
+  const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
+  const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
   const dialogFeature =
     pendingAction?.type === 'delete'
       ? adminUiFeatures.policy_store_delete
       : adminUiFeatures.policy_store_write
 
+  const loading = isFetching || isMutating
+
   return (
-    <GluuLoader blocking={isLoading || isMutating}>
-      <GluuViewWrapper canShow={canReadSecurity}>
-        <GluuPageContent>
-          <Box className={classes.page}>
-            {isMobile && (
-              <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
-                {t(PAGE_TITLE_KEY)}
-              </GluuText>
-            )}
+    <GluuLoader blocking={loading}>
+      <div className={classes.page}>
+        <GluuViewWrapper canShow={canReadSecurity}>
+          <GluuText variant="h1" className={classes.mobilePageTitle}>
+            {pageTitle}
+          </GluuText>
 
-            <Box className={classes.infoAlert}>
-              <InfoOutlined className={classes.infoIcon} />
-              <GluuText variant="span" className={classes.infoText} disableThemeColor>
-                {t('documentation.policyStore.historyNote')}
-              </GluuText>
-            </Box>
+          <div className={classes.searchCard}>
+            <div className={classes.searchCardContent}>
+              <GluuSearchToolbar
+                searchLabel={searchLabel}
+                searchPlaceholder={searchPlaceholder}
+                searchValue={pattern}
+                searchOnType
+                onSearch={setPattern}
+                onSearchSubmit={handleSearchSubmit}
+                filters={filters}
+                onRefresh={canReadSecurity ? handleRefresh : undefined}
+                refreshLoading={isFetching}
+                actionsLabel={`${t('fields.actions')}:`}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-            <GluuSearchToolbar
-              searchLabel={`${t('fields.pattern')}:`}
-              searchPlaceholder={t('placeholders.search_pattern')}
-              searchValue={pattern}
-              onSearch={setPattern}
-              onSearchSubmit={(value: string) => {
-                setPattern(value)
-                setPageNumber(0)
-                refetch()
-              }}
-              filters={filters}
-              onRefresh={() => {
-                setPageNumber(0)
-                setPattern('')
-                setServerSort(DEFAULT_SERVER_SORT)
-                refetch()
-              }}
-              refreshLoading={isFetching}
-            />
-
+          <div className={classes.tableCard}>
             <GluuTable<AdminUIPolicyStore>
               columns={columns}
               data={stores}
-              loading={isLoading}
-              actions={actions}
-              getRowKey={(item, index) => item.inum ?? index}
-              emptyMessage={t('documentation.policyStore.noPolicyStores')}
+              loading={false}
+              pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
-              pagination={{
-                page: effectivePage,
-                rowsPerPage: limit,
-                totalItems,
-                rowsPerPageOptions: getRowsPerPageOptions(),
-                onPageChange: setPageNumber,
-                onRowsPerPageChange: (rowsPerPage) => {
-                  setLimit(rowsPerPage)
-                  setPageNumber(0)
-                },
-              }}
+              actions={actions}
+              getRowKey={getRowKey}
+              emptyMessage={emptyMessage}
             />
-          </Box>
-        </GluuPageContent>
-      </GluuViewWrapper>
+          </div>
+        </GluuViewWrapper>
 
-      {pendingAction && (
         <GluuCommitDialog
-          modal
+          modal={Boolean(pendingAction)}
           handler={closeDialog}
           onAccept={handleConfirm}
           feature={dialogFeature}
-          alertSeverity={pendingAction.type === 'delete' ? 'error' : 'warning'}
+          alertSeverity={pendingAction?.type === 'delete' ? 'error' : 'warning'}
           alertMessage={
-            pendingAction.type === 'delete'
+            pendingAction?.type === 'delete'
               ? t('documentation.policyStore.deleteWarning')
               : t('documentation.policyStore.activateWarning')
           }
-          operations={[
-            {
-              label:
-                pendingAction.type === 'delete' ? t('actions.delete') : t('actions.set_active'),
-              path: pendingAction.store.displayname || pendingAction.store.inum || '',
-              value: pendingAction.store.description || '',
-            },
-          ]}
+          operations={
+            pendingAction
+              ? [
+                  {
+                    label:
+                      pendingAction.type === 'delete'
+                        ? t('actions.delete')
+                        : t('actions.set_active'),
+                    path: pendingAction.store.displayname || pendingAction.store.inum || '',
+                    value: pendingAction.store.description || '',
+                  },
+                ]
+              : []
+          }
         />
-      )}
+      </div>
     </GluuLoader>
   )
 }

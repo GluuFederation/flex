@@ -842,7 +842,6 @@
     "filename": "Nombre de archivo",
     "uploaded": "Subido",
     "size": "Tamaño",
-    "uploaded_by": "Por",
     "comments": "Comentarios"
   },
   "languages": {
@@ -2508,7 +2507,6 @@
       "note_suffix": "Para administrar roles y permisos. Una vez que guarde la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
     },
     "policyStore": {
-      "historyNote": "Aquí se conservan todos los almacenes de políticas subidos. Solo uno está activo a la vez: es el que Cedarling carga al iniciar sesión. Active uno anterior para revertir.",
       "noPolicyStores": "No se encontraron almacenes de políticas.",
       "activateWarning": "Activar este almacén de políticas desactiva el actual. Todos los permisos se volverán a evaluar en el próximo inicio de sesión.",
       "deleteWarning": "Esto elimina permanentemente el almacén de políticas. No se puede deshacer.",
