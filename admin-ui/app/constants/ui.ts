@@ -310,7 +310,7 @@ export const SUMMARY_CARD = {
 } as const
 
 export const getSegmentedButtonStyle = (isFirst: boolean, isLast: boolean) => {
-  const radius = BORDER_RADIUS.SMALL_MEDIUM
+  const radius = BORDER_RADIUS.SMALL
   return {
     borderRadius: isFirst
       ? `${radius}px 0 0 ${radius}px`

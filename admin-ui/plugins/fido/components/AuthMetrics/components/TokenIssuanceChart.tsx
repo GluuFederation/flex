@@ -64,8 +64,6 @@ const TokenIssuanceChart: React.FC<TokenIssuanceChartProps> = ({ rows }) => {
 
   const isEmpty = rows.length === 0
 
-  // A coarse bucket can leave a handful of points, and ALL leaves exactly one. An unmarked lone
-  // point draws nothing at all, so markers come back once the series is sparse enough to need them.
   const dot = rows.length <= SPARSE_SERIES_MAX_POINTS && { r: 3 }
 
   return (

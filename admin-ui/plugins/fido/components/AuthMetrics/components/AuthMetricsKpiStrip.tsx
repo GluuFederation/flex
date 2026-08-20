@@ -15,29 +15,32 @@ type AuthMetricsKpiStripProps = {
 }
 
 const AuthMetricsKpiStrip: React.FC<AuthMetricsKpiStripProps> = ({ totals }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { themeColors, isDark } = useChartTheme()
   const { classes } = useAuthMetricsStyles({ isDark, themeColors })
   const palette = useMemo(() => getSeriesColors(themeColors), [themeColors])
 
-  // An unknown rate is shown as a dash: printing 0% with no attempts recorded would read as
-  // every authentication having failed.
+  const formatCount = useMemo(() => {
+    const formatter = new Intl.NumberFormat(i18n.resolvedLanguage)
+    return (value: number) => formatter.format(value)
+  }, [i18n.resolvedLanguage])
+
   const successRateLabel = totals.successRate === null ? '—' : `${totals.successRate.toFixed(1)}%`
 
   const cards = [
-    { label: t('fields.auth_attempts'), value: totals.attempts.toLocaleString() },
+    { label: t('fields.auth_attempts'), value: formatCount(totals.attempts) },
     {
       label: t('fields.auth_success'),
-      value: totals.success.toLocaleString(),
+      value: formatCount(totals.success),
       color: palette.success,
     },
     {
       label: t('fields.auth_failure'),
-      value: totals.failure.toLocaleString(),
+      value: formatCount(totals.failure),
       color: totals.failure > 0 ? palette.failure : undefined,
     },
     { label: t('fields.auth_success_rate'), value: successRateLabel },
-    { label: t('fields.acr_in_use'), value: totals.acrCount.toLocaleString() },
+    { label: t('fields.acr_in_use'), value: formatCount(totals.acrCount) },
   ]
 
   return (

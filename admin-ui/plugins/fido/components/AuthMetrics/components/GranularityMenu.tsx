@@ -6,10 +6,6 @@ import { useSecurityTheme } from '../../SecurityMonitor/hooks'
 import { useGranularityMenuStyles } from './GranularityMenu.style'
 import type { Granularity, GranularityMenuProps } from '../types'
 
-// Hangs under the date preset that opened it, so the granularities on offer read as belonging to
-// the range just chosen. Deliberately not a standalone control: which buckets make sense is a
-// property of the range, and a separate always-visible picker invited combinations that produce an
-// unreadable chart.
 const GranularityMenu: React.FC<GranularityMenuProps> = ({
   options,
   value,
@@ -20,8 +16,6 @@ const GranularityMenu: React.FC<GranularityMenuProps> = ({
   const { isDark } = useSecurityTheme()
   const { classes, cx } = useGranularityMenuStyles({ isDark })
 
-  // Escape closes as well as an outside click; a menu that only the mouse can dismiss strands
-  // anyone who opened it from the keyboard.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onDismiss()
@@ -54,8 +48,6 @@ const GranularityMenu: React.FC<GranularityMenuProps> = ({
                 role="option"
                 aria-selected={isSelected}
                 tabIndex={0}
-                // `selected` is a plain class name because the shared option styles target
-                // `&.selected`, the same hook GluuDropdown uses for its own rows.
                 className={cx(classes.option, isSelected && 'selected')}
                 onClick={() => handleSelect(option.value)}
                 onKeyDown={(event) => {

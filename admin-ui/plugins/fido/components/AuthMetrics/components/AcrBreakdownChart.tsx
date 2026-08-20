@@ -22,13 +22,9 @@ const AREA_FILL_OPACITY = 0.35
 
 type AcrBreakdownChartProps = {
   rows: MetricChartRow[]
-  // Carries both the prefixed dataKey and the acr's own name, so the legend shows the acr while
-  // the row key stays collision-proof.
   series: NamedSeries[]
 }
 
-// Stacked because the parts sum to total successful authentications; the interesting question is
-// which acr carried the traffic, not how each one moved in isolation.
 const AcrBreakdownChart: React.FC<AcrBreakdownChartProps> = ({ rows, series }) => {
   const { t } = useTranslation()
   const { themeColors, isDark, gridProps, axisTick, renderTooltip } = useChartTheme()
@@ -60,8 +56,6 @@ const AcrBreakdownChart: React.FC<AcrBreakdownChartProps> = ({ rows, series }) =
 
   const isEmpty = rows.length === 0 || series.length === 0
 
-  // A coarse bucket can leave a handful of points, and ALL leaves exactly one. An unmarked lone
-  // point draws nothing at all, so markers come back once the series is sparse enough to need them.
   const dot = rows.length <= SPARSE_SERIES_MAX_POINTS && { r: 3 }
 
   return (

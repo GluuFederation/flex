@@ -6,14 +6,12 @@ import { SHARED_DROPDOWN_STYLES } from '@/components/GluuDropdown/sharedDropdown
 const PRESET_BUTTON_MIN_WIDTH = SEGMENTED_CONTROL.BUTTON_MIN_WIDTH
 const VIEW_BUTTON_MIN_WIDTH = 96
 
-// Above the cards the menu overhangs, and matching the shared dropdown keeps the two consistent
-// where both could be open on one screen.
 const PRESET_MENU_Z_INDEX = SHARED_DROPDOWN_STYLES.menuZIndex
 const PRESET_MENU_GAP = SHARED_DROPDOWN_STYLES.margin
 
 export const VIEW_BUTTON_STYLE = {
   minWidth: VIEW_BUTTON_MIN_WIDTH,
-  borderRadius: BORDER_RADIUS.SMALL_MEDIUM,
+  borderRadius: BORDER_RADIUS.SMALL,
   fontFamily,
   fontStyle: 'normal' as const,
   lineHeight: lineHeights.normal,
@@ -21,9 +19,6 @@ export const VIEW_BUTTON_STYLE = {
 }
 
 export const getPresetButtonStyle = (isFirst: boolean, isLast: boolean) => {
-  // The border overlap moves to the slot: buttons sit inside positioned wrappers now, and a
-  // negative margin on the button would shift it within its own slot rather than pull neighbouring
-  // slots together, leaving a one-pixel seam and a doubled border between segments.
   const segmented = getSegmentedButtonStyle(isFirst, isLast)
 
   return { minWidth: PRESET_BUTTON_MIN_WIDTH, ...segmented, marginLeft: 0 }
@@ -68,9 +63,6 @@ const useStyles = makeStyles()((theme) => ({
       justifyContent: 'flex-end',
     },
   },
-  // Inside the controls column and left-aligned, which puts it on the same edge as the preset
-  // group: the column shrinks to its contents at md and up, so that edge tracks the controls
-  // however wide the heading gets.
   secondaryRow: {
     display: 'flex',
     alignItems: 'center',
@@ -88,8 +80,6 @@ const useStyles = makeStyles()((theme) => ({
     'display': 'flex',
     'gap': 0,
     'width': '100%',
-    // Sizing sits on the slot rather than the button, so a menu can be anchored to one segment
-    // without the button losing the flex behaviour it had when it was a direct child.
     '& > *': {
       flex: 1,
       minWidth: 0,
@@ -97,7 +87,6 @@ const useStyles = makeStyles()((theme) => ({
     '& > * > button': {
       width: '100%',
     },
-    // Carries the overlap that used to live on the button, collapsing adjacent borders.
     '& > * + *': {
       marginLeft: SEGMENTED_CONTROL.BORDER_OVERLAP,
     },
@@ -112,9 +101,6 @@ const useStyles = makeStyles()((theme) => ({
   presetSlot: {
     position: 'relative',
   },
-  // Hangs off the segment that was clicked, which is why the slot exists at all. Centred on that
-  // segment so the menu's arrow points back at the button that opened it, the same relationship the
-  // header dropdowns have with their triggers.
   presetMenu: {
     position: 'absolute',
     top: '100%',

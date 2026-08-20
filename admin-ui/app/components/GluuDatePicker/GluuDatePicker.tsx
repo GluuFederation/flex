@@ -137,6 +137,7 @@ const GluuDatePicker = memo(
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
+      prev.inputBackgroundColor === next.inputBackgroundColor &&
       prev.minDate === next.minDate &&
       prev.maxDate === next.maxDate &&
       prev.disabled === next.disabled

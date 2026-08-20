@@ -25,7 +25,7 @@ import type { Granularity, MetricRange } from './types'
 
 const AUTH_METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
 
-const startOfWindow = (days: number) => startOfDay(dayjs().subtract(days, 'day'))
+const startOfWindow = (days: number) => startOfDay(dayjs().subtract(days - 1, 'day'))
 
 const endOfToday = () => endOfDay(dayjs())
 
@@ -43,22 +43,16 @@ const AuthMetricsPage: React.FC = () => {
   const [endDate, setEndDate] = useState<Dayjs>(endOfToday)
   const [selectedPreset, setSelectedPreset] = useState<number | null>(DEFAULT_SELECTED_RANGE_DAYS)
   const [granularity, setGranularity] = useState<Granularity>(DEFAULT_GRANULARITY)
-  // Held here rather than inside the dropdown so picking a preset can open it. Closed on load.
   const [isGranularityMenuOpen, setIsGranularityMenuOpen] = useState(false)
 
-  // Draft dates are held separately from the applied range so the charts only refetch on View,
-  // the same contract the MAU dashboard uses.
   const [appliedRange, setAppliedRange] = useState<MetricRange>(() => ({
     startDate: startOfWindow(DEFAULT_SELECTED_RANGE_DAYS).toDate(),
     endDate: endOfToday().toDate(),
   }))
 
-  // Snapped to day boundaries so picking a single date covers that whole day. The picker carries a
-  // time of day the user never chose, and left as-is it cut the first hours off the start date.
   const handleStartDateChange = useCallback((date: Dayjs | null) => {
     if (!date) return
     setStartDate(startOfDay(date))
-    // Any hand-picked date leaves the presets, so none of them should read as active.
     setSelectedPreset(null)
   }, [])
 
@@ -68,14 +62,10 @@ const AuthMetricsPage: React.FC = () => {
     setSelectedPreset(null)
   }, [])
 
-  // Presets carry days here rather than the MAU dashboard's months, since auth rows expire on
-  // metricReporterKeepDataDays.
   const handlePresetSelect = useCallback((days: number) => {
     setSelectedPreset(days)
     setStartDate(startOfWindow(days))
     setEndDate(endOfToday())
-    // A new range changes which granularities apply, so the menu opens on the new set instead of
-    // leaving the user to notice for themselves that the options moved under the collapsed label.
     setIsGranularityMenuOpen(true)
   }, [])
 
@@ -83,21 +73,24 @@ const AuthMetricsPage: React.FC = () => {
     setAppliedRange({ startDate: startDate.toDate(), endDate: endDate.toDate() })
   }, [startDate, endDate])
 
-  // Follows the dates being edited rather than the applied range, so the toggle shows what the
-  // pending selection allows before View is pressed. Granularity is a client-side fold, so
-  // narrowing it re-buckets what is already loaded without waiting for a refetch.
   const allowedGranularities = useMemo(
     () => granularitiesForRange(startDate.toDate(), endDate.toDate()),
     [startDate, endDate],
   )
 
-  // Resolved during render rather than corrected through an effect, which keeps `granularity` as a
-  // record of what the user last asked for: pick 5 min on 24 Hours, move to 30 Days and back, and
-  // 5 min returns instead of a reset default.
   const effectiveGranularity = resolveGranularity(granularity, allowedGranularities)
 
-  const { authRows, acrRows, acrSeries, tokenRows, totals, isBusy, isError, isTruncated } =
-    useAuthMetricsCharts({ range: appliedRange, granularity: effectiveGranularity })
+  const {
+    authRows,
+    acrRows,
+    acrSeries,
+    tokenRows,
+    totals,
+    isBusy,
+    isError,
+    isPartial,
+    isTruncated,
+  } = useAuthMetricsCharts({ range: appliedRange, granularity: effectiveGranularity })
 
   const granularityLabelOf = useCallback(
     (value: Granularity) => t(`fields.granularity_${value.toLowerCase()}`),
@@ -129,9 +122,6 @@ const AuthMetricsPage: React.FC = () => {
               onPresetSelect={handlePresetSelect}
               onApply={handleApply}
               isLoading={isBusy}
-              // Hangs under whichever preset was clicked rather than standing as its own control:
-              // which buckets are available is a property of the range, so the choice belongs
-              // against the button that set it.
               presetMenuAnchor={isGranularityMenuOpen ? selectedPreset : null}
               presetMenu={
                 <GranularityMenu
@@ -151,25 +141,33 @@ const AuthMetricsPage: React.FC = () => {
             </GluuText>
           ) : null}
 
-          {/* Stated outright: a capped page walk means the totals below undercount, and a silent
-              short chart is exactly the failure this replaced. */}
+          {!isError && isPartial ? (
+            <GluuText variant="p" className={classes.notice}>
+              {t('fields.auth_metrics_partial')}
+            </GluuText>
+          ) : null}
+
           {!isError && isTruncated ? (
             <GluuText variant="p" className={classes.notice}>
               {t('fields.auth_metrics_truncated')}
             </GluuText>
           ) : null}
 
-          <AuthMetricsKpiStrip totals={totals} />
+          {isError ? null : (
+            <>
+              <AuthMetricsKpiStrip totals={totals} />
 
-          <div className={classes.fullWidthRow}>
-            <AuthActivityChart rows={authRows} />
-          </div>
-          <div className={classes.fullWidthRow}>
-            <AcrBreakdownChart rows={acrRows} series={acrSeries} />
-          </div>
-          <div className={classes.fullWidthRow}>
-            <TokenIssuanceChart rows={tokenRows} />
-          </div>
+              <div className={classes.fullWidthRow}>
+                <AuthActivityChart rows={authRows} />
+              </div>
+              <div className={classes.fullWidthRow}>
+                <AcrBreakdownChart rows={acrRows} series={acrSeries} />
+              </div>
+              <div className={classes.fullWidthRow}>
+                <TokenIssuanceChart rows={tokenRows} />
+              </div>
+            </>
+          )}
         </GluuPageContent>
       </GluuViewWrapper>
     </GluuLoader>

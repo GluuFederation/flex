@@ -14,8 +14,6 @@ const row = (index: number): MetricDataEntry => ({
   data: { count: 1 },
 })
 
-// Serves `total` rows PAGE_SIZE.SERIES at a time, recording the params of every call so the walk
-// itself can be asserted rather than only its result.
 const pagedFetcher = (total: number) => {
   const calls: GetMetricEntriesParams[] = []
 
@@ -49,8 +47,6 @@ describe('fetchAllMetricEntries', () => {
     expect(calls).toHaveLength(1)
   })
 
-  // The bug this replaced: a seven-day window holds roughly 2,000 five-minute rows against a
-  // 500-row page, so one request charted a fraction of the range and every KPI total undercounted.
   it('walks every page so a multi-page window is counted in full', async () => {
     const total = PAGE_SIZE.SERIES * 3 + 17
     const { fetcher, calls } = pagedFetcher(total)
@@ -69,8 +65,6 @@ describe('fetchAllMetricEntries', () => {
     ])
   })
 
-  // Ascending order keeps paging stable: rows written mid-walk append instead of shifting
-  // everything already read, which a descending sort would do.
   it('pages in ascending start-date order', async () => {
     const { fetcher, calls } = pagedFetcher(5)
 
@@ -90,7 +84,6 @@ describe('fetchAllMetricEntries', () => {
     expect(result.totalCount).toBe(total)
   })
 
-  // A server that over-reports its total would otherwise keep the walk running to the ceiling.
   it('stops on an empty page even when the reported total is larger', async () => {
     const calls: GetMetricEntriesParams[] = []
     const fetcher = (params: GetMetricEntriesParams): Promise<MetricEntryPagedResult> => {

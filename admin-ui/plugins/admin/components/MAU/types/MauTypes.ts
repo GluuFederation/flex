@@ -55,15 +55,9 @@ export type DateRangeSelectorProps = {
   onPresetSelect: (value: number) => void
   onApply: () => void
   isLoading?: boolean
-  // Heading and presets are overridable so other dashboards can mount the same control surface.
-  // `value` is deliberately unitless: MAU reads it as months, callers with shorter retention read
-  // it as days, and the selector itself never needs to know which.
   headingKey?: string
   presets?: readonly DateRangePreset[]
   applyLabelKey?: string
-  // Hung under one preset button rather than beside the group, so a control that qualifies the
-  // chosen range appears against the segment that set it. Anchored by preset value; nothing is
-  // rendered when the anchor matches no preset, which is how the menu stays closed.
   presetMenu?: ReactNode
   presetMenuAnchor?: number | null
 }

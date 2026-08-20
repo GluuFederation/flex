@@ -35,8 +35,6 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const themeColors = getThemeColor(selectedTheme)
   const { classes } = useStyles()
 
-  // The unselected preset fill doubles as the date field fill, so the whole filter row reads as one
-  // surface with only the active preset lifted out of it.
   const unselectedBg = themeColors.dashboard.supportCard ?? themeColors.menu.background
   const presetButtonBg = (isSelected: boolean) =>
     isSelected ? themeColors.inputBackground : unselectedBg

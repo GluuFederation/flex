@@ -944,6 +944,7 @@
     "secondary_value": "Valor secundário",
     "suspicious_ips": "Endereços IP suspeitos",
     "auth_metrics_unavailable": "As métricas não estão disponíveis. Verifique se o plugin de métricas está implementado e se o seu token tem o âmbito metric.readonly.",
+    "auth_metrics_partial": "Não foi possível carregar alguns tipos de métrica. Os números abaixo estão incompletos.",
     "auth_activity_subtitle": "Autenticações bem-sucedidas e falhadas ao longo do tempo.",
     "auth_by_acr_subtitle": "Autenticações bem-sucedidas divididas por contexto de autenticação.",
     "token_issuance_subtitle": "Tokens e códigos de autorização emitidos ao longo do tempo.",

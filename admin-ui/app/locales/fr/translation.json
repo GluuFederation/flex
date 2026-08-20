@@ -948,6 +948,7 @@
     "secondary_value": "Valeur secondaire",
     "suspicious_ips": "Adresses IP suspectes",
     "auth_metrics_unavailable": "Les métriques sont indisponibles. Vérifiez que le plugin de métriques est déployé et que votre jeton possède la portée metric.readonly.",
+    "auth_metrics_partial": "Certains types de métrique n'ont pas pu être chargés. Les chiffres ci-dessous sont incomplets.",
     "auth_activity_subtitle": "Authentifications réussies et échouées au fil du temps.",
     "auth_by_acr_subtitle": "Authentifications réussies réparties par contexte d'authentification.",
     "token_issuance_subtitle": "Jetons et codes d'autorisation émis au fil du temps.",

@@ -16,13 +16,9 @@ import {
   toMetricPoints,
 } from 'Plugins/fido/components/AuthMetrics/utils'
 
-// Buckets are measured from the start of the window, so every buildChartRows call needs one.
-// Fixed at a UTC midnight, which is where a snapped range always begins.
 const ANCHOR = Date.UTC(2026, 7, 20, 0, 0, 0)
 
 describe('formatDateForApi', () => {
-  // Regression: toISOString() converted to UTC, so an admin at UTC+5 who picked the 20th had the
-  // window start at 19:00 on the 19th. The wall-clock time the user chose has to survive intact.
   it('sends the selected wall-clock time, with no UTC conversion', () => {
     const picked = new Date(2026, 7, 20, 0, 0, 0)
 
@@ -35,9 +31,6 @@ describe('formatDateForApi', () => {
 })
 
 describe('UTC handling of server timestamps', () => {
-  // MetricEntry.startDate is a plain java.util.Date with no @JsonFormat, so whether a Z reaches us
-  // is decided by the server's Jackson config. MetricDateUtil reads a bare value as UTC and
-  // normalizes an offset to UTC, so all three shapes have to land on the same instant here.
   const shapes = [
     ['bare, no offset', '2026-08-20T06:50:00'],
     ['Z suffix', '2026-08-20T06:50:00.000Z'],
@@ -59,8 +52,6 @@ describe('UTC handling of server timestamps', () => {
     expect(point.label).toBe('01:50')
   })
 
-  // Daily buckets have to break on the server's midnight. Bucketing in the viewer's zone would put
-  // these two rows in different bars for anyone east or west of UTC.
   it('cuts daily buckets at UTC midnight, not the viewer local midnight', () => {
     const rows = buildChartRows(
       [
@@ -85,14 +76,40 @@ describe('UTC handling of server timestamps', () => {
   })
 })
 
+describe('preset window boundaries', () => {
+  const startOfWindow = (days: number) => startOfDay(createDate().subtract(days - 1, 'day'))
+
+  it.each([
+    ['24 Hours', 1],
+    ['7 Days', 7],
+    ['30 Days', 30],
+  ])('has the %s preset cover exactly that many calendar dates', (_name, days) => {
+    const start = startOfWindow(days)
+    const end = endOfDay(createDate())
+
+    expect(end.diff(start, 'day') + 1).toBe(days)
+  })
+
+  it.each([
+    ['24 Hours', 1, ['HOURLY', 'HOURS_3', 'HOURS_12', 'HOURS_24']],
+    ['7 Days', 7, ['DAILY', 'DAYS_3', 'DAYS_7']],
+    ['30 Days', 30, ['DAILY', 'DAYS_3', 'DAYS_7', 'DAYS_15', 'DAYS_21', 'DAYS_30']],
+  ])('keeps the %s preset in its own granularity tier', (_name, days, expected) => {
+    const granularities = granularitiesForRange(
+      startOfWindow(days).toDate(),
+      endOfDay(createDate()).toDate(),
+    )
+
+    expect(granularities).toEqual(expected)
+  })
+})
+
 describe('granularitiesForRange', () => {
   const spanOf = (days: number): [Date, Date] => [
     new Date(2026, 7, 20 - days, 0, 0, 0),
     new Date(2026, 7, 20, 23, 59, 0),
   ]
 
-  // Keyed off the span, not off which preset was clicked, so a hand-picked range of the same
-  // length is offered exactly the same choices.
   it.each([
     ['a single day', 0, ['HOURLY', 'HOURS_3', 'HOURS_12', 'HOURS_24']],
     ['the 24 Hours preset', 1, ['HOURLY', 'HOURS_3', 'HOURS_12', 'HOURS_24']],
@@ -103,8 +120,6 @@ describe('granularitiesForRange', () => {
     expect(granularitiesForRange(...spanOf(days))).toEqual(expected)
   })
 
-  // A reversed range is transient while the user edits the second date; it must not empty the
-  // toggle, which would leave nothing selectable.
   it('falls back to the finest tier when the range is reversed', () => {
     const [start, end] = spanOf(7)
 
@@ -113,7 +128,6 @@ describe('granularitiesForRange', () => {
 })
 
 describe('multi-unit bucket widths', () => {
-  // One row per hour across two days, so every bucket width below has something to fold.
   const hourlyRows = Array.from({ length: 48 }, (_, hour) => ({
     startDate: new Date(ANCHOR + hour * 3_600_000).toISOString(),
     data: { count: 1 },
@@ -141,7 +155,6 @@ describe('multi-unit bucket widths', () => {
     expect(rows[0].success).toBe(expectedPerBucket)
   })
 
-  // Whatever the width, nothing may be dropped or counted twice on the way into the buckets.
   it.each(['HOURLY', 'HOURS_3', 'HOURS_12', 'HOURS_24', 'DAILY', 'DAYS_3', 'DAYS_7', 'DAYS_30'])(
     'preserves the total at %s',
     (granularity) => {
@@ -151,8 +164,6 @@ describe('multi-unit bucket widths', () => {
     },
   )
 
-  // Buckets run from the start of the window, not from the epoch, so a range opening mid-month
-  // still gets its first bucket at its own first row.
   it('measures buckets from the range start rather than from the epoch', () => {
     const [first] = rowsAt('DAYS_3')
 
@@ -165,15 +176,12 @@ describe('resolveGranularity', () => {
     expect(resolveGranularity('DAILY', ['DAILY', 'DAYS_3', 'DAYS_7'])).toBe('DAILY')
   })
 
-  // Picking 30 Days while on an hourly bucket has to land somewhere valid, not on an empty chart.
   it('falls back to the finest allowed when the choice is out of range', () => {
     expect(resolveGranularity('HOURLY', ['DAILY', 'DAYS_3', 'DAYS_7'])).toBe('DAILY')
   })
 })
 
 describe('startOfDay and endOfDay', () => {
-  // The date picker hands back the day the user clicked carrying a time of day they never chose,
-  // so a single-day range silently skipped the hours before it and after the end.
   it('widens a mid-afternoon pick to cover the whole day', () => {
     const picked = createDate(new Date(2026, 7, 20, 14, 37, 12))
 
@@ -190,7 +198,6 @@ describe('startOfDay and endOfDay', () => {
 })
 
 describe('parseMetricData', () => {
-  // Aggregations deliver `data` as a JSON string, entries as an object; both must work.
   it('parses a JSON string payload', () => {
     expect(parseMetricData('{"success":10,"failure":2}')).toEqual({ success: 10, failure: 2 })
   })
@@ -214,14 +221,12 @@ describe('parseMetricData', () => {
     expect(parseMetricData({ label: 'basic', ok: true, bad: 'abc', empty: '' })).toEqual({})
   })
 
-  // The shape is undocumented, so bad input must not throw during a render.
   it.each([['{not json'], [null], [undefined], ['']])('returns no values for %p', (input) => {
     expect(parseMetricData(input)).toEqual({})
   })
 })
 
 describe('toMetricPoints', () => {
-  // Typed as the aggregation entry, whose data is a JSON string, matching what the endpoint sends.
   const entry = (startDate: string, data: string): MetricAggregationEntry => ({
     startDate,
     applicationType: 'jans_auth',
@@ -264,8 +269,6 @@ describe('toMetricPoints', () => {
   })
 })
 
-// Built through a typed factory rather than cast: the repo bans the top type, and naming the
-// three fields the parser actually reads keeps the fixtures honest.
 const entry = (startDate: string, count: number, metricSubType?: string): MetricDataEntry => ({
   startDate,
   metricSubType,
@@ -273,8 +276,6 @@ const entry = (startDate: string, count: number, metricSubType?: string): Metric
 })
 
 describe('plainPoints and subTypePoints', () => {
-  // /metric/entries returns a plain row and a per-subtype row for the same window when subType is
-  // omitted. Adding both together is the one mistake that silently doubles every total.
   const points = toMetricPoints(
     [entry('2026-08-19T06:00:00Z', 6), entry('2026-08-19T06:00:00Z', 6, 'basic')],
     'MMM-DD',
@@ -336,8 +337,6 @@ describe('buildChartRows', () => {
     expect(rows.map((row) => row.success)).toEqual([2, 1])
   })
 
-  // Series keys are acr names straight from the API. Underscored axis fields are what stop a
-  // subtype called "label" from overwriting the x-axis value.
   it('keeps the axis fields intact when a series is named after one', () => {
     const rows = buildChartRows(
       [

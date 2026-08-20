@@ -114,6 +114,7 @@ const buildTextFieldSx = (
   '& .MuiInputBase-root, & .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
+    borderRadius: `${BORDER_RADIUS.SMALL}px`,
     ...(inputHeight != null ? { height: inputHeight, minHeight: inputHeight } : {}),
     // With the calendar icon hidden on mobile, center the date in the freed space.
     ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { justifyContent: 'center' } }),
@@ -133,7 +134,10 @@ const buildTextFieldSx = (
     color: tc.inputTextColor,
   },
   '& .MuiOutlinedInput-root, & .MuiPickersOutlinedInput-root': {
-    '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': { borderColor: tc.borderColor },
+    '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': {
+      borderColor: tc.borderColor,
+      borderRadius: `${BORDER_RADIUS.SMALL}px`,
+    },
     '&:hover fieldset, &:hover .MuiPickersOutlinedInput-notchedOutline': {
       borderColor: tc.borderColor,
     },

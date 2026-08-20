@@ -13,7 +13,6 @@ const totals: Totals = {
   acrCount: 2,
 }
 
-// The strip reads theme colours through useChartTheme, so it needs the provider the app supplies.
 const renderStrip = (props: Totals) =>
   render(
     <AppTestWrapper>
@@ -37,12 +36,33 @@ describe('AuthMetricsKpiStrip', () => {
     expect(screen.getByText('97.2%')).toBeInTheDocument()
   })
 
-  // A flat 0% with nothing recorded would read as every authentication having failed, which is a
-  // very different claim from having no data.
   it('shows a dash rather than 0% when no attempts were recorded', () => {
     renderStrip({ attempts: 0, success: 0, failure: 0, successRate: null, acrCount: 0 })
 
     expect(screen.getByText('—')).toBeInTheDocument()
     expect(screen.queryByText('0.0%')).not.toBeInTheDocument()
+  })
+})
+
+describe('AuthMetricsKpiStrip number locale', () => {
+  const formatIn = (language: string, value: number) =>
+    new Intl.NumberFormat(language).format(value)
+
+  it('groups digits differently in Spanish than in English', () => {
+    expect(formatIn('en', 12345)).toBe('12,345')
+    expect(formatIn('es', 12345)).toBe('12.345')
+  })
+
+  it('renders totals using the resolved app language, not the browser default', async () => {
+    const i18n = (await import('@/i18n')).default
+    await i18n.changeLanguage('es')
+
+    try {
+      renderStrip({ ...totals, attempts: 12345 })
+
+      expect(screen.getByText(formatIn(i18n.resolvedLanguage as string, 12345))).toBeInTheDocument()
+    } finally {
+      await i18n.changeLanguage('en')
+    }
   })
 })

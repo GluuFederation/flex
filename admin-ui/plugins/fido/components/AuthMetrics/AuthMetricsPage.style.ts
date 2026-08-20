@@ -17,8 +17,6 @@ interface StylesParams {
   themeColors: ThemeConfig
 }
 
-// Five cards rather than the Security Monitor's four, so the widest breakpoint carries an extra
-// column; every step below reuses that page's breakpoints so the two dashboards reflow together.
 const KPI_COLUMNS = 5
 
 export const useAuthMetricsStyles = makeStyles<StylesParams>()((
@@ -35,8 +33,6 @@ export const useAuthMetricsStyles = makeStyles<StylesParams>()((
       color: themeColors.fontColor,
       marginBottom: SPACING.CARD_GAP,
     },
-    // The MAU DateRangeSelector brings its own grid and now hosts the granularity menu, so this
-    // only carries the gap down to the KPI strip.
     filterRow: {
       width: '100%',
       marginBottom: SPACING.CARD_GAP,
@@ -93,8 +89,6 @@ export const useAuthMetricsStyles = makeStyles<StylesParams>()((
       width: '100%',
       marginBottom: SPACING.CARD_GAP,
     },
-    // ResponsiveContainer measures its parent, so the canvas needs a height of its own. Shared
-    // with the Security Monitor charts so the cards line up when both pages are open.
     chartCanvas: {
       width: '100%',
       height: SECURITY_CHART_HEIGHT,

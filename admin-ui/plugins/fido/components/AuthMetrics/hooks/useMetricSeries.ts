@@ -24,17 +24,12 @@ type EntriesFetcher = (
 type AllEntriesResult = {
   entries: MetricDataEntry[]
   totalCount: number
-  // True when the page ceiling was hit before the server's total was reached. Callers must say so
-  // rather than render a total that silently under-reports.
   isTruncated: boolean
 }
 
 const defaultFetcher: EntriesFetcher = (params, signal) =>
   getMetricEntries(params, undefined, signal)
 
-// One page holds far fewer rows than a multi-day window at the reporter's five-minute interval —
-// seven days is roughly 2,000 rows against a 500-row page — so every page is walked. Without this
-// the newest page alone was charted and every KPI total under-reported.
 const fetchAllMetricEntries = async (
   baseParams: GetMetricEntriesParams,
   { fetcher = defaultFetcher, signal }: { fetcher?: EntriesFetcher; signal?: AbortSignal } = {},
@@ -48,8 +43,6 @@ const fetchAllMetricEntries = async (
         ...baseParams,
         startIndex: page * PAGE_SIZE.SERIES,
         limit: PAGE_SIZE.SERIES,
-        // Ascending keeps paging stable: rows written while we walk the pages land at the end
-        // instead of shifting everything we have already read, as a descending sort would.
         sortBy: 'jansStartDate',
         sortOrder: 'ascending',
       },
@@ -60,7 +53,6 @@ const fetchAllMetricEntries = async (
     collected.push(...batch)
     totalCount = result?.totalEntriesCount ?? collected.length
 
-    // An empty page also ends the walk, so a server that misreports its total cannot spin here.
     if (batch.length === 0 || collected.length >= totalCount) {
       return { entries: collected, totalCount, isTruncated: false }
     }
@@ -80,8 +72,6 @@ const sharedQueryConfig = {
   placeholderData: keepPreviousData,
 }
 
-// Every row for one metric type across the window. /metric/aggregations is not used: it stays
-// empty until its producer task is deployed, and raw rows are finer than any aggregation period.
 const useAllMetricEntries = (
   args: {
     range: MetricRange

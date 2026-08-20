@@ -834,6 +834,7 @@
     "secondary_value": "Secondary value",
     "suspicious_ips": "Suspicious IP addresses",
     "auth_metrics_unavailable": "Metrics are unavailable. Check that the metric plugin is deployed and your token carries the metric.readonly scope.",
+    "auth_metrics_partial": "Some metric types could not be loaded. The figures below are incomplete.",
     "auth_activity_subtitle": "Successful and failed authentications over time.",
     "auth_by_acr_subtitle": "Successful authentications split by authentication context.",
     "token_issuance_subtitle": "Tokens and authorization codes issued over time.",
