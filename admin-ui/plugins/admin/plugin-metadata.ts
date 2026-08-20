@@ -19,6 +19,12 @@ const RolePermissionMappingPage = createLazyRoute(
 const CedarlingConfigPage = createLazyRoute(
   () => import('./components/Cedarling/CedarlingConfigPage'),
 )
+const PolicyStoreHistoryPage = createLazyRoute(
+  () => import('./components/Cedarling/PolicyStoreHistoryPage'),
+)
+const ArchiveExplorerPage = createLazyRoute(
+  () => import('./components/Cedarling/ArchiveExplorerPage'),
+)
 const WebhookListPage = createLazyRoute(() => import('./components/Webhook/WebhookListPage'))
 const WebhookFormPage = createLazyRoute(() => import('./components/Webhook/WebhookFormPage'))
 const AuditListPage = createLazyRoute(() => import('../admin/components/Audit/AuditListPage'))
@@ -73,6 +79,12 @@ const pluginMetadata = {
             {
               title: 'menus.securityDropdown.cedarlingConfig',
               path: ROUTES.ADMIN_CEDARLING_CONFIG,
+              action: CEDAR_ACTIONS.READ,
+              resourceKey: ADMIN_UI_RESOURCES.Security,
+            },
+            {
+              title: 'menus.securityDropdown.policyStoreHistory',
+              path: ROUTES.ADMIN_POLICY_STORES,
               action: CEDAR_ACTIONS.READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
@@ -135,6 +147,18 @@ const pluginMetadata = {
     {
       component: CedarlingConfigPage,
       path: ROUTES.ADMIN_CEDARLING_CONFIG,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: PolicyStoreHistoryPage,
+      path: ROUTES.ADMIN_POLICY_STORES,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: ArchiveExplorerPage,
+      path: ROUTES.ADMIN_POLICY_STORE_EXPLORER_TEMPLATE,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,
     },

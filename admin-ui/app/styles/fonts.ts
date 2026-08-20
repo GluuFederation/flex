@@ -1,4 +1,4 @@
-export const fontFamily = "'Mona-Sans', sans-serif"
+export const fontFamily = 'Helvetica, Arial, sans-serif'
 
 export const fontWeights = {
   regular: 400,

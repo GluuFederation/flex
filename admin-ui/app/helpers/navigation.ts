@@ -37,6 +37,10 @@ const ROUTES = {
   ADMIN_SETTINGS: `${PLUGIN_BASE_PATHS.HOME}/settings`,
   ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.HOME}/mapping`,
   ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.HOME}/cedarlingconfig`,
+  ADMIN_POLICY_STORES: `${PLUGIN_BASE_PATHS.HOME}/policystores`,
+  ADMIN_POLICY_STORE_EXPLORER: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.HOME}/policystores/${encodeURIComponent(inum)}/explorer`,
+  ADMIN_POLICY_STORE_EXPLORER_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/policystores/:inum/explorer`,
   ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
 
   // Assets

@@ -12,7 +12,7 @@ import logoutAuditReducer from '@/redux/features/sessionSlice'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
 jest.mock('@/redux/api/backend-api', () => ({
-  fetchPolicyStore: jest.fn().mockResolvedValue({ data: {} }),
+  fetchActivePolicyStoreBytes: jest.fn().mockResolvedValue(undefined),
   fetchUserInformation: jest.fn().mockResolvedValue(-1),
 }))
 

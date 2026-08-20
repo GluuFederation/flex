@@ -115,6 +115,11 @@ export const SECTION_MENUS: Readonly<Record<SectionKey, SectionMenu>> = {
             titleKey: 'menus.securityDropdown.cedarlingConfig',
             path: ROUTES.ADMIN_CEDARLING_CONFIG,
           },
+          {
+            key: 'security-policy-stores',
+            titleKey: 'menus.securityDropdown.policyStoreHistory',
+            path: ROUTES.ADMIN_POLICY_STORES,
+          },
         ],
       },
       { key: 'webhooks', titleKey: 'menus.webhooks', path: ROUTES.WEBHOOK_LIST },

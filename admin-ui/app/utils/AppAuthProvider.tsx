@@ -32,7 +32,7 @@ import type { AuthorizationResponse } from '@openid/appauth'
 
 setFlag('IS_LOG', false)
 import {
-  fetchPolicyStore,
+  fetchActivePolicyStoreBytes,
   fetchUserInformation,
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
@@ -113,14 +113,10 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     let isMounted = true
 
     if (hasSession) {
-      fetchPolicyStore()
-        .then((policyStoreResponse) => {
+      fetchActivePolicyStoreBytes()
+        .then((policyStoreBytes) => {
           if (!isMounted) return
-          const policyStoreBytes =
-            policyStoreResponse.data && 'responseBytes' in policyStoreResponse.data
-              ? policyStoreResponse.data.responseBytes
-              : undefined
-          if (policyStoreBytes && policyStoreBytes.trim().length > 0) {
+          if (policyStoreBytes) {
             dispatch(setPolicyStoreBytes(policyStoreBytes))
           } else {
             dispatch(setCedarFailedStatusAfterMaxTries())

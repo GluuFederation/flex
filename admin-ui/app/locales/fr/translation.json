@@ -95,7 +95,8 @@
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
       "mapping": "Rôles et permissions",
-      "cedarlingConfig": "Cedarling"
+      "cedarlingConfig": "Cedarling",
+      "policyStoreHistory": "Historique des magasins de politiques"
     },
     "lock": "Verrouillage",
     "cache": "Cache",
@@ -231,7 +232,13 @@
     "currentYear": "Année en cours",
     "export_csv": "Exporter CSV",
     "finish": "Terminer",
-    "export": "Exporter"
+    "export": "Exporter",
+    "open": "Ouvrir",
+    "set_active": "Activer",
+    "download": "Télécharger",
+    "add_file": "Ajouter un fichier",
+    "create": "Créer",
+    "discard": "Annuler les modifications"
   },
   "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
   "roleNotFoundMessage": "Utilisateur non autorisé",
@@ -945,7 +952,12 @@
     "metric": "Métrique",
     "label": "Libellé",
     "secondary_value": "Valeur secondaire",
-    "suspicious_ips": "Adresses IP suspectes"
+    "suspicious_ips": "Adresses IP suspectes",
+    "filename": "Nom du fichier",
+    "uploaded": "Téléversé",
+    "size": "Taille",
+    "uploaded_by": "Par",
+    "comments": "Commentaires"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1538,7 +1550,8 @@
     "valid_origin_uri": "Entrez un URI d’origine valide (ex. https://...)",
     "valid_request_uri": "Entrez un URI de requête valide (ex. https://...)",
     "valid_claim_uri": "Entrez un URI de réclamation valide (ex. https://...)",
-    "valid_uri_pattern": "Entrez un URI valide au format (ex. https:// ou schema://)"
+    "valid_uri_pattern": "Entrez un URI valide au format (ex. https:// ou schema://)",
+    "archive_file_path": "ex. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "Résultat du test SMTP",
@@ -1704,7 +1717,9 @@
     "error_intelligence": "Types d'erreur",
     "velocity_watch": "Tentatives par utilisateur",
     "device_fingerprint_shift": "Types d'authentificateur",
-    "threat_origins_ips": "Origines des menaces par IP"
+    "threat_origins_ips": "Origines des menaces par IP",
+    "policy_store_history": "Historique des magasins de politiques",
+    "archive_explorer": "Explorateur d’archive"
   },
   "options": {
     "admin": "ADMINISTRER",
@@ -1757,7 +1772,8 @@
     "jwt": "JWT",
     "reference": "Référence",
     "expired": "EXPIRÉ",
-    "register": "INSCRIPTION"
+    "register": "INSCRIPTION",
+    "backup": "SAUVEGARDE"
   },
   "documentation": {
     "fido": {
@@ -2456,7 +2472,8 @@
       "uploadFailed": "Échec du téléversement du magasin de politiques",
       "downloadFailed": "Échec du téléchargement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",
-      "auditPolicyStoreUploaded": "Magasin de politiques téléversé"
+      "auditPolicyStoreUploaded": "Magasin de politiques téléversé",
+      "defaultPolicyStoreDescription": "Magasin de politiques de l’interface d’administration"
     },
     "mappings": {
       "note_prefix": "Configure",
@@ -2506,6 +2523,27 @@
       "jansState": "État Jans",
       "jansUsrDN": "DN utilisateur Jans",
       "permissionGrantedMap": "Carte des autorisations accordées"
+    },
+    "policyStore": {
+      "historyNote": "Chaque magasin de politiques téléversé est conservé ici. Un seul est actif à la fois : c’est celui que Cedarling charge à la connexion. Activez un magasin antérieur pour revenir en arrière.",
+      "noPolicyStores": "Aucun magasin de politiques trouvé.",
+      "activateWarning": "Activer ce magasin de politiques désactive l’actuel. Toutes les permissions seront réévaluées à la prochaine connexion.",
+      "deleteWarning": "Ceci supprime définitivement le magasin de politiques. Cette action est irréversible.",
+      "activateSuccess": "Magasin de politiques activé avec succès.",
+      "activateFailed": "Échec de l’activation du magasin de politiques.",
+      "deleteSuccess": "Magasin de politiques supprimé avec succès.",
+      "deleteFailed": "Échec de la suppression du magasin de politiques.",
+      "downloadFailed": "Échec du téléchargement du magasin de politiques.",
+      "auditActivated": "Magasin de politiques activé",
+      "auditDeleted": "Magasin de politiques supprimé",
+      "archiveUnreadable": "Impossible de lire cette archive de magasin de politiques.",
+      "fileSaved": "Fichier enregistré. Téléchargez l’archive pour conserver vos modifications.",
+      "fileDeleted": "Fichier retiré de l’archive.",
+      "filePathRequired": "Saisissez un chemin de fichier.",
+      "fileAlreadyExists": "Un fichier avec ce chemin existe déjà dans l’archive.",
+      "unsavedChangesNote": "Modifications non enregistrées — téléchargez l’archive pour les conserver.",
+      "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
+      "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu."
     }
   },
   "script": {

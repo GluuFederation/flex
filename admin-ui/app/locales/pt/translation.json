@@ -94,7 +94,8 @@
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
       "mapping": "Funções e permissões",
-      "cedarlingConfig": "Cedarling"
+      "cedarlingConfig": "Cedarling",
+      "policyStoreHistory": "Histórico de repositórios de políticas"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -230,7 +231,13 @@
     "export_csv": "Exportar CSV",
     "finish": "Concluir",
     "search": "Pesquisar",
-    "export": "Exportar"
+    "export": "Exportar",
+    "open": "Abrir",
+    "set_active": "Ativar",
+    "download": "Baixar",
+    "add_file": "Adicionar arquivo",
+    "create": "Criar",
+    "discard": "Descartar"
   },
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
   "roleNotFoundMessage": "Usuário não autorizado",
@@ -941,7 +948,12 @@
     "metric": "Métrica",
     "label": "Rótulo",
     "secondary_value": "Valor secundário",
-    "suspicious_ips": "Endereços IP suspeitos"
+    "suspicious_ips": "Endereços IP suspeitos",
+    "filename": "Nome do arquivo",
+    "uploaded": "Enviado",
+    "size": "Tamanho",
+    "uploaded_by": "Por",
+    "comments": "Comentários"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1534,7 +1546,8 @@
     "valid_request_uri": "Insira um URI de solicitação válido (ex.: https://...)",
     "valid_claim_uri": "Insira um URI de reivindicação válido (ex.: https://...)",
     "valid_uri_pattern": "Insira um URI válido no formato (ex.: https:// ou schema://)",
-    "search_filter": "Filtro de Pesquisa"
+    "search_filter": "Filtro de Pesquisa",
+    "archive_file_path": "ex. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "Resultado do teste SMTP",
@@ -1700,7 +1713,9 @@
     "error_intelligence": "Tipos de erro",
     "velocity_watch": "Tentativas por usuário",
     "device_fingerprint_shift": "Tipos de autenticador",
-    "threat_origins_ips": "Origens de ameaças por IP"
+    "threat_origins_ips": "Origens de ameaças por IP",
+    "policy_store_history": "Histórico de repositórios de políticas",
+    "archive_explorer": "Explorador de arquivo"
   },
   "options": {
     "admin": "ADMIN",
@@ -1753,7 +1768,8 @@
     "jwt": "JWT",
     "reference": "Referência",
     "expired": "EXPIRADO",
-    "register": "REGISTRO"
+    "register": "REGISTRO",
+    "backup": "BACKUP"
   },
   "documentation": {
     "fido": {
@@ -2453,7 +2469,8 @@
       "uploadFailed": "Falha ao enviar o repositório de políticas",
       "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
-      "auditPolicyStoreUploaded": "Repositório de políticas enviado"
+      "auditPolicyStoreUploaded": "Repositório de políticas enviado",
+      "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração"
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2490,6 +2507,27 @@
       "jansState": "Estado Jans",
       "jansUsrDN": "DN de Usuário Jans",
       "permissionGrantedMap": "Mapa de Permissões Concedidas"
+    },
+    "policyStore": {
+      "historyNote": "Todos os repositórios de políticas enviados são mantidos aqui. Apenas um fica ativo por vez — é o que o Cedarling carrega ao entrar. Ative um anterior para reverter.",
+      "noPolicyStores": "Nenhum repositório de políticas encontrado.",
+      "activateWarning": "Ativar este repositório de políticas desativa o atual. Todas as permissões serão reavaliadas no próximo login.",
+      "deleteWarning": "Isto exclui permanentemente o repositório de políticas. Não pode ser desfeito.",
+      "activateSuccess": "Repositório de políticas ativado com sucesso.",
+      "activateFailed": "Falha ao ativar o repositório de políticas.",
+      "deleteSuccess": "Repositório de políticas excluído com sucesso.",
+      "deleteFailed": "Falha ao excluir o repositório de políticas.",
+      "downloadFailed": "Falha ao baixar o repositório de políticas.",
+      "auditActivated": "Repositório de políticas ativado",
+      "auditDeleted": "Repositório de políticas excluído",
+      "archiveUnreadable": "Não foi possível ler este arquivo de repositório de políticas.",
+      "fileSaved": "Arquivo salvo. Baixe o arquivo compactado para manter as alterações.",
+      "fileDeleted": "Arquivo removido do arquivo compactado.",
+      "filePathRequired": "Informe um caminho de arquivo.",
+      "fileAlreadyExists": "Já existe um arquivo com esse caminho.",
+      "unsavedChangesNote": "Alterações não salvas — baixe o arquivo compactado para mantê-las.",
+      "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
+      "selectFileToView": "Selecione um arquivo para ver o conteúdo."
     }
   },
   "script": {

@@ -37,13 +37,18 @@ jest.mock('@/cedarling/utility', () => ({
 }))
 
 const mockMutateAsync = jest.fn().mockResolvedValue(undefined)
+const mockCreatePolicyStore = jest.fn().mockResolvedValue(undefined)
 jest.mock('JansConfigApi', () => ({
   useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockMutateAsync })),
+  useCreateAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockCreatePolicyStore })),
+  useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
+  useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
+  getGetAdminuiPolicyStoreQueryKey: () => ['/admin-ui/security1/policyStore'],
 }))
 
 jest.mock('@/redux/api/backend-api', () => ({
-  uploadPolicyStore: jest.fn().mockResolvedValue({ status: 200 }),
-  fetchPolicyStore: jest.fn().mockResolvedValue({ data: { responseBytes: '' } }),
+  fetchActivePolicyStoreBytes: jest.fn().mockResolvedValue(''),
   postUserAction: jest.fn().mockResolvedValue({ status: 200 }),
 }))
 
@@ -79,10 +84,6 @@ describe('CedarlingConfigPage', () => {
   })
 
   it('uploads a .cjar file and triggers sync', async () => {
-    const { uploadPolicyStore } = jest.requireMock('@/redux/api/backend-api') as {
-      uploadPolicyStore: jest.Mock
-    }
-
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
@@ -107,12 +108,22 @@ describe('CedarlingConfigPage', () => {
     const uploadButton = screen.getByText('Upload')
     fireEvent.click(uploadButton)
 
-    await screen.findByText('Confirm Policy Store Upload')
+    // GluuCommitDialog collects the administrator's comments and requires at least 10 characters
+    // before it will accept, so the reason for every upload is recorded.
+    const commentsBox = await screen.findByRole('textbox')
+    fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
 
     fireEvent.click(screen.getByText('Yes'))
 
     await waitFor(() => {
-      expect(uploadPolicyStore).toHaveBeenCalledWith(expect.any(File))
+      expect(mockCreatePolicyStore).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          displayname: 'test-policy.cjar',
+          description: 'Rolling out updated admin policies',
+          policyStore: expect.any(String),
+          jansStatus: 'active',
+        }),
+      })
     })
 
     await waitFor(() => {

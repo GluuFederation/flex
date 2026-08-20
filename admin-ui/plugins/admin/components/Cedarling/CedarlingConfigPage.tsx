@@ -29,8 +29,11 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './CedarlingConfigPage.style'
-import PolicyStoreUploadConfirmDialog from './PolicyStoreUploadConfirmDialog'
-import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { adminUiFeatures } from '@/constants'
+import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
+import { fetchActivePolicyStoreBytes } from '@/redux/api/backend-api'
+import { base64ToUint8Array, fileToBase64 } from '@/utils/policyStore'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
@@ -79,6 +82,7 @@ const CedarlingConfigPage: React.FC = () => {
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
+  const { createPolicyStore } = usePolicyStoreMutations()
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
@@ -107,79 +111,77 @@ const CedarlingConfigPage: React.FC = () => {
     setShowConfirm(false)
   }, [])
 
-  const handleConfirmUpload = useCallback(async () => {
-    setShowConfirm(false)
-    if (!selectedFile) return
-
-    try {
-      setIsLoading(true)
-
-      await uploadPolicyStore(selectedFile)
+  const handleConfirmUpload = useCallback(
+    async (comments: string) => {
+      setShowConfirm(false)
+      if (!selectedFile) return
 
       try {
-        await logAuditUserAction({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
-          client_id: client_id,
-          payload: { fileName: selectedFile.name },
+        setIsLoading(true)
+
+        // Uploaded stores are created active so this screen keeps working the way it does today:
+        // upload, re-sync the role mappings, sign back in against the new policies. Rolling back to
+        // an earlier store is done from the Policy Store History screen.
+        // createPolicyStore records the audit entry, carrying these comments as the reason.
+        await createPolicyStore({
+          displayname: selectedFile.name,
+          description: comments,
+          policyStore: await fileToBase64(selectedFile),
         })
-      } catch (e) {
+
+        await syncRoleToScopesMappingsMutation.mutateAsync()
+
+        try {
+          await logAuditUserAction({
+            userinfo: userinfo ?? undefined,
+            action: UPDATE,
+            resource: ADMIN_UI_CEDARLING_CONFIG,
+            message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
+            client_id: client_id,
+            payload: { fileName: selectedFile.name },
+          })
+        } catch (e) {
+          logger.error(
+            'Audit log failed after role/scope sync:',
+            e instanceof Error ? e : String(e),
+          )
+        }
+
+        setSelectedFile(null)
+        navigateToRoute(ROUTES.LOGOUT)
+      } catch (error) {
         logger.error(
-          'Audit log failed after policy store upload:',
-          e instanceof Error ? e : String(e),
+          'Policy store upload flow failed:',
+          error instanceof Error ? error : String(error),
         )
+        // createPolicyStore already toasts its own failure; this covers the sync and audit steps.
+        const errorMessage = getErrorMessage(
+          error as Error | ApiError,
+          'documentation.cedarlingConfig.uploadFailed',
+          t,
+        )
+        dispatch(updateToast(true, 'error', errorMessage))
+      } finally {
+        setIsLoading(false)
       }
-
-      await syncRoleToScopesMappingsMutation.mutateAsync()
-
-      try {
-        await logAuditUserAction({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
-          client_id: client_id,
-          payload: { fileName: selectedFile.name },
-        })
-      } catch (e) {
-        logger.error('Audit log failed after role/scope sync:', e instanceof Error ? e : String(e))
-      }
-
-      setSelectedFile(null)
-      navigateToRoute(ROUTES.LOGOUT)
-    } catch (error) {
-      logger.error(
-        'Policy store upload flow failed:',
-        error instanceof Error ? error : String(error),
-      )
-      const errorMessage = getErrorMessage(
-        error as Error | ApiError,
-        'documentation.cedarlingConfig.uploadFailed',
-        t,
-      )
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [
-    selectedFile,
-    dispatch,
-    t,
-    userinfo,
-    client_id,
-    syncRoleToScopesMappingsMutation,
-    navigateToRoute,
-  ])
+    },
+    [
+      selectedFile,
+      dispatch,
+      t,
+      userinfo,
+      client_id,
+      createPolicyStore,
+      syncRoleToScopesMappingsMutation,
+      navigateToRoute,
+    ],
+  )
 
   const handleDownload = useCallback(async () => {
     try {
       setIsLoading(true)
 
-      const response = await fetchPolicyStore()
-      const responseBytes =
-        response.data && 'responseBytes' in response.data ? response.data.responseBytes : undefined
+      const responseBytes = await fetchActivePolicyStoreBytes()
 
       if (!responseBytes) {
         dispatch(
@@ -188,7 +190,7 @@ const CedarlingConfigPage: React.FC = () => {
         return
       }
 
-      const bytes = Uint8Array.from(atob(responseBytes), (c) => c.charCodeAt(0))
+      const bytes = base64ToUint8Array(responseBytes)
 
       const blob = new Blob([bytes], { type: ZIP_MIME_TYPE })
       const url = URL.createObjectURL(blob)
@@ -341,11 +343,23 @@ const CedarlingConfigPage: React.FC = () => {
         </GluuPageContent>
       </GluuViewWrapper>
 
-      <PolicyStoreUploadConfirmDialog
-        open={showConfirm}
-        onConfirm={handleConfirmUpload}
-        onClose={handleConfirmCancel}
-      />
+      {showConfirm && (
+        <GluuCommitDialog
+          modal
+          handler={handleConfirmCancel}
+          onAccept={handleConfirmUpload}
+          feature={adminUiFeatures.policy_store_write}
+          alertSeverity="warning"
+          alertMessage={t('documentation.cedarlingConfig.uploadConfirmMessage')}
+          operations={[
+            {
+              label: t('documentation.cedarlingConfig.uploadPolicyStore'),
+              path: selectedFile?.name ?? '',
+              value: '',
+            },
+          ]}
+        />
+      )}
     </GluuLoader>
   )
 }

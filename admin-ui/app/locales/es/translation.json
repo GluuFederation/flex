@@ -78,7 +78,13 @@
     "add_custom_attributes": "Agregar atributos personalizados",
     "refresh": "Actualizar",
     "view_current": "Ver actual",
-    "export": "Exportar"
+    "export": "Exportar",
+    "open": "Abrir",
+    "set_active": "Activar",
+    "download": "Descargar",
+    "add_file": "Añadir archivo",
+    "create": "Crear",
+    "discard": "Descartar"
   },
   "password": {
     "show": "Mostrar contraseña",
@@ -832,7 +838,12 @@
     "metric": "Métrica",
     "label": "Etiqueta",
     "secondary_value": "Valor secundario",
-    "suspicious_ips": "Direcciones IP sospechosas"
+    "suspicious_ips": "Direcciones IP sospechosas",
+    "filename": "Nombre de archivo",
+    "uploaded": "Subido",
+    "size": "Tamaño",
+    "uploaded_by": "Por",
+    "comments": "Comentarios"
   },
   "languages": {
     "language": "Idioma",
@@ -876,7 +887,8 @@
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
       "mapping": "Roles y permisos",
-      "cedarlingConfig": "Cedarling"
+      "cedarlingConfig": "Cedarling",
+      "policyStoreHistory": "Historial de almacenes de políticas"
     },
     "basic_configuration": "Configuración Básica",
     "inum_configuration": "Configuración Inum",
@@ -1534,7 +1546,8 @@
     "valid_origin_uri": "Ingrese un URI de origen válido (ej. https://...)",
     "valid_request_uri": "Ingrese un URI de solicitud válido (ej. https://...)",
     "valid_claim_uri": "Ingrese un URI de claims válido (ej. https://...)",
-    "valid_uri_pattern": "Ingrese un URI válido en formato (ej. https:// o schema://)"
+    "valid_uri_pattern": "Ingrese un URI válido en formato (ej. https:// o schema://)",
+    "archive_file_path": "p. ej. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "Resultado de la prueba SMTP",
@@ -1699,7 +1712,9 @@
     "error_intelligence": "Tipos de error",
     "velocity_watch": "Intentos por usuario",
     "device_fingerprint_shift": "Tipos de autenticador",
-    "threat_origins_ips": "Orígenes de amenazas por IP"
+    "threat_origins_ips": "Orígenes de amenazas por IP",
+    "policy_store_history": "Historial de almacenes de políticas",
+    "archive_explorer": "Explorador de archivos"
   },
   "options": {
     "admin": "ADMIN",
@@ -1752,7 +1767,8 @@
     "jwt": "JWT",
     "reference": "Referencia",
     "expired": "CADUCADO",
-    "register": "REGISTRO"
+    "register": "REGISTRO",
+    "backup": "RESPALDO"
   },
   "documentation": {
     "fido": {
@@ -2484,11 +2500,33 @@
       "uploadFailed": "Error al cargar el almacén de políticas",
       "downloadFailed": "Error al descargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
-      "auditPolicyStoreUploaded": "Almacén de políticas cargado"
+      "auditPolicyStoreUploaded": "Almacén de políticas cargado",
+      "defaultPolicyStoreDescription": "Almacén de políticas de la interfaz de administración"
     },
     "mappings": {
       "note_prefix": "Configurar",
       "note_suffix": "Para administrar roles y permisos. Una vez que guarde la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
+    },
+    "policyStore": {
+      "historyNote": "Aquí se conservan todos los almacenes de políticas subidos. Solo uno está activo a la vez: es el que Cedarling carga al iniciar sesión. Active uno anterior para revertir.",
+      "noPolicyStores": "No se encontraron almacenes de políticas.",
+      "activateWarning": "Activar este almacén de políticas desactiva el actual. Todos los permisos se volverán a evaluar en el próximo inicio de sesión.",
+      "deleteWarning": "Esto elimina permanentemente el almacén de políticas. No se puede deshacer.",
+      "activateSuccess": "Almacén de políticas activado correctamente.",
+      "activateFailed": "No se pudo activar el almacén de políticas.",
+      "deleteSuccess": "Almacén de políticas eliminado correctamente.",
+      "deleteFailed": "No se pudo eliminar el almacén de políticas.",
+      "downloadFailed": "No se pudo descargar el almacén de políticas.",
+      "auditActivated": "Almacén de políticas activado",
+      "auditDeleted": "Almacén de políticas eliminado",
+      "archiveUnreadable": "No se pudo leer este archivo de almacén de políticas.",
+      "fileSaved": "Archivo guardado. Descargue el archivo comprimido para conservar los cambios.",
+      "fileDeleted": "Archivo eliminado del archivo comprimido.",
+      "filePathRequired": "Introduzca una ruta de archivo.",
+      "fileAlreadyExists": "Ya existe un archivo con esa ruta.",
+      "unsavedChangesNote": "Cambios sin guardar: descargue el archivo comprimido para conservarlos.",
+      "binaryFileNotice": "Este archivo no es de texto y no se puede editar aquí.",
+      "selectFileToView": "Seleccione un archivo para ver su contenido."
     }
   },
   "validations": {

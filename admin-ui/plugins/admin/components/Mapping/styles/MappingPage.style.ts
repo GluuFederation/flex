@@ -5,7 +5,6 @@ import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/font
 import {
   MAPPING_SPACING,
   SPACING,
-  BORDER_RADIUS,
   MOBILE_MEDIA_QUERY,
   MOBILE_PAGE_PADDING_X,
   NAVBAR_DESKTOP_PADDING_X,
@@ -13,7 +12,6 @@ import {
   TINY_MAX_MEDIA_QUERY,
 } from '@/constants/ui'
 import { createInfoAlertStyles } from '@/styles/formStyles'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 
 interface ThemeColors {
   fontColor: string
@@ -121,15 +119,12 @@ export const useStyles = makeStyles<MappingPageStyleParams>()(
     },
 
     roleCard: {
-      ...getCardBorderStyle({ isDark }),
-      backgroundColor: isDark ? customColors.darkCardBg : customColors.white,
-      borderRadius: BORDER_RADIUS.DEFAULT,
+      backgroundColor: theme.card.background,
+      border: `1px solid ${theme.card.border}`,
+      borderRadius: MAPPING_SPACING.CARD_BORDER_RADIUS,
       marginBottom: SPACING.SECTION_GAP,
       overflow: 'visible',
       boxSizing: 'border-box',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
-      },
     },
 
     roleCardHeader: {
@@ -224,12 +219,8 @@ export const useStyles = makeStyles<MappingPageStyleParams>()(
       zIndex: 1,
       padding: MAPPING_SPACING.CARD_PADDING,
       paddingTop: MAPPING_SPACING.CONTENT_PADDING_TOP,
-      borderBottomLeftRadius: BORDER_RADIUS.DEFAULT,
-      borderBottomRightRadius: BORDER_RADIUS.DEFAULT,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        borderBottomLeftRadius: BORDER_RADIUS.MEDIUM_SMALL,
-        borderBottomRightRadius: BORDER_RADIUS.MEDIUM_SMALL,
-      },
+      borderBottomLeftRadius: MAPPING_SPACING.CARD_BORDER_RADIUS,
+      borderBottomRightRadius: MAPPING_SPACING.CARD_BORDER_RADIUS,
     },
 
     permissionsGrid: {

@@ -78,7 +78,13 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh",
     "view_current": "View Current",
-    "export": "Export"
+    "export": "Export",
+    "open": "Open",
+    "set_active": "Set active",
+    "download": "Download",
+    "add_file": "Add file",
+    "create": "Create",
+    "discard": "Discard"
   },
   "password": {
     "show": "Show password",
@@ -832,7 +838,12 @@
     "metric": "Metric",
     "label": "Label",
     "secondary_value": "Secondary value",
-    "suspicious_ips": "Suspicious IP addresses"
+    "suspicious_ips": "Suspicious IP addresses",
+    "filename": "Filename",
+    "uploaded": "Uploaded",
+    "size": "Size",
+    "uploaded_by": "By",
+    "comments": "Comments"
   },
   "languages": {
     "language": "Language",
@@ -876,7 +887,8 @@
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
       "mapping": "Roles and Permissions",
-      "cedarlingConfig": "Cedarling"
+      "cedarlingConfig": "Cedarling",
+      "policyStoreHistory": "Policy Store History"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -1531,7 +1543,8 @@
     "valid_origin_uri": "Enter a valid origin URI (e.g. https://...)",
     "valid_request_uri": "Enter a valid request URI (e.g. https://...)",
     "valid_claim_uri": "Enter a valid claim URI (e.g. https://...)",
-    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)"
+    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)",
+    "archive_file_path": "e.g. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1696,7 +1709,9 @@
     "error_intelligence": "Error Types",
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types",
-    "threat_origins_ips": "Threat Origins by IP"
+    "threat_origins_ips": "Threat Origins by IP",
+    "policy_store_history": "Policy Store History",
+    "archive_explorer": "Archive Explorer"
   },
   "options": {
     "admin": "ADMIN",
@@ -1749,7 +1764,8 @@
     "jwt": "JWT",
     "reference": "Reference",
     "expired": "EXPIRED",
-    "register": "REGISTER"
+    "register": "REGISTER",
+    "backup": "BACKUP"
   },
   "documentation": {
     "fido": {
@@ -2480,11 +2496,33 @@
       "policyStoreUrlInvalidError": "Please enter a valid URL",
       "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
       "uploadConfirmTitle": "Confirm Policy Store Upload",
-      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI."
+      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI.",
+      "defaultPolicyStoreDescription": "Admin UI Policy Store"
     },
     "mappings": {
       "note_prefix": "Configure",
       "note_suffix": "to manage roles and permissions. Once you save the cedarling configuration, roles and permissions will be automatically synced from the policy store."
+    },
+    "policyStore": {
+      "historyNote": "Every uploaded policy store is kept here. Exactly one is active at a time — that is the store Cedarling loads when you sign in. Activate an earlier store to roll back.",
+      "noPolicyStores": "No policy stores found.",
+      "activateWarning": "Activating this policy store deactivates the current one. All permissions will be re-evaluated from it at the next sign-in.",
+      "deleteWarning": "This permanently deletes the policy store. This cannot be undone.",
+      "activateSuccess": "Policy store activated successfully.",
+      "activateFailed": "Failed to activate the policy store.",
+      "deleteSuccess": "Policy store deleted successfully.",
+      "deleteFailed": "Failed to delete the policy store.",
+      "downloadFailed": "Failed to download the policy store.",
+      "auditActivated": "Policy store activated",
+      "auditDeleted": "Policy store deleted",
+      "archiveUnreadable": "This policy store archive could not be read.",
+      "fileSaved": "File saved in the archive. Download the archive to keep your changes.",
+      "fileDeleted": "File removed from the archive.",
+      "filePathRequired": "Enter a file path.",
+      "fileAlreadyExists": "A file with that path already exists in the archive.",
+      "unsavedChangesNote": "Unsaved changes — download the archive to keep them.",
+      "binaryFileNotice": "This file is not a text file and cannot be edited here.",
+      "selectFileToView": "Select a file from the archive to view its contents."
     }
   },
   "claims": {
