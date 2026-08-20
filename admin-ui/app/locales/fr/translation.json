@@ -162,7 +162,8 @@
     "allCategory": "Toutes les catégories",
     "notification": "Notification",
     "mobileNavigation": "Navigation mobile",
-    "security_monitor": "Moniteur de Sécurité"
+    "security_monitor": "Moniteur de Sécurité",
+    "auth_metrics": "Métriques d'authentification"
   },
   "actions": {
     "accept": "J'accepte",
@@ -945,7 +946,36 @@
     "metric": "Métrique",
     "label": "Libellé",
     "secondary_value": "Valeur secondaire",
-    "suspicious_ips": "Adresses IP suspectes"
+    "suspicious_ips": "Adresses IP suspectes",
+    "auth_metrics_unavailable": "Les métriques sont indisponibles. Vérifiez que le plugin de métriques est déployé et que votre jeton possède la portée metric.readonly.",
+    "auth_metrics_partial": "Certains types de métrique n'ont pas pu être chargés. Les chiffres ci-dessous sont incomplets.",
+    "auth_activity_subtitle": "Authentifications réussies et échouées au fil du temps.",
+    "auth_by_acr_subtitle": "Authentifications réussies réparties par contexte d'authentification.",
+    "token_issuance_subtitle": "Jetons et codes d'autorisation émis au fil du temps.",
+    "auth_success": "Réussies",
+    "auth_failure": "Échouées",
+    "auth_attempts": "Tentatives",
+    "acr_in_use": "ACR utilisés",
+    "access_tokens": "Jetons d'accès",
+    "id_tokens": "Jetons ID",
+    "refresh_tokens": "Jetons de rafraîchissement",
+    "authorization_codes": "Codes d'autorisation",
+    "select_granularity": "Sélectionner la granularité",
+    "date_preset_24h": "24 heures",
+    "date_preset_7d": "7 jours",
+    "date_preset_30d": "30 jours",
+    "granularity": "Granularité",
+    "granularity_hourly": "Horaire",
+    "granularity_hours_3": "3 heures",
+    "granularity_hours_12": "12 heures",
+    "granularity_hours_24": "24 heures",
+    "granularity_daily": "Quotidien",
+    "granularity_days_3": "3 jours",
+    "granularity_days_7": "7 jours",
+    "granularity_days_15": "15 jours",
+    "granularity_days_21": "21 jours",
+    "granularity_days_30": "30 jours",
+    "auth_metrics_truncated": "Données partielles affichées : cette plage contient plus d'entrées qu'il n'est possible de lire. Réduisez la plage pour obtenir des totaux exacts."
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1704,7 +1734,12 @@
     "error_intelligence": "Types d'erreur",
     "velocity_watch": "Tentatives par utilisateur",
     "device_fingerprint_shift": "Types d'authentificateur",
-    "threat_origins_ips": "Origines des menaces par IP"
+    "threat_origins_ips": "Origines des menaces par IP",
+    "auth_metrics": "Métriques d'authentification",
+    "auth_activity": "Activité d'authentification",
+    "auth_by_acr": "Authentifications par ACR",
+    "token_issuance": "Émission de jetons",
+    "auth_token_activity": "Activité d'authentification et de jetons"
   },
   "options": {
     "admin": "ADMINISTRER",

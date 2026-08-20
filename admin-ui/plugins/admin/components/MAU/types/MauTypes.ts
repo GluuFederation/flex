@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Dayjs } from 'dayjs'
 
 export type MauStatEntry = {
@@ -38,7 +39,7 @@ export type MauSummary = {
 
 export type DateRangePreset = {
   labelKey: string
-  months: number
+  value: number
 }
 
 export type MauChartProps = {
@@ -51,7 +52,12 @@ export type DateRangeSelectorProps = {
   selectedPreset: number | null
   onStartDateChange: (date: Dayjs | null) => void
   onEndDateChange: (date: Dayjs | null) => void
-  onPresetSelect: (months: number) => void
+  onPresetSelect: (value: number) => void
   onApply: () => void
   isLoading?: boolean
+  headingKey?: string
+  presets?: readonly DateRangePreset[]
+  applyLabelKey?: string
+  presetMenu?: ReactNode
+  presetMenuAnchor?: number | null
 }

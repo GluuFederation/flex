@@ -23,6 +23,11 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   onPresetSelect,
   onApply,
   isLoading,
+  headingKey = 'titles.usage_token_analytics',
+  presets = DATE_PRESETS,
+  applyLabelKey = 'actions.view',
+  presetMenu,
+  presetMenuAnchor,
 }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
@@ -30,41 +35,44 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   const themeColors = getThemeColor(selectedTheme)
   const { classes } = useStyles()
 
+  const unselectedBg = themeColors.dashboard.supportCard ?? themeColors.menu.background
   const presetButtonBg = (isSelected: boolean) =>
-    isSelected
-      ? themeColors.inputBackground
-      : (themeColors.dashboard.supportCard ?? themeColors.menu.background)
+    isSelected ? themeColors.inputBackground : unselectedBg
   const presetButtonBorder = themeColors.borderColor
 
   return (
     <Grid container spacing={2} className={classes.container}>
       <Grid className={classes.headingCol}>
         <GluuText variant="h5" className={classes.heading}>
-          {t('titles.usage_token_analytics')}
+          {t(headingKey)}
         </GluuText>
       </Grid>
       <Grid className={classes.controlsCol}>
         <Grid container spacing={2} className={classes.controls}>
           <Grid className={classes.presetColWrap}>
             <Box className={classes.presetGroup}>
-              {DATE_PRESETS.map((preset, index) => {
-                const isSelected = selectedPreset === preset.months
+              {presets.map((preset, index) => {
+                const isSelected = selectedPreset === preset.value
                 const isFirst = index === 0
-                const isLast = index === DATE_PRESETS.length - 1
+                const isLast = index === presets.length - 1
                 return (
-                  <GluuButton
-                    key={preset.months}
-                    onClick={() => onPresetSelect(preset.months)}
-                    theme={selectedTheme}
-                    outlined={!isSelected}
-                    textColor={themeColors.fontColor}
-                    backgroundColor={presetButtonBg(isSelected)}
-                    borderColor={presetButtonBorder}
-                    disableHoverStyles
-                    style={getPresetButtonStyle(isFirst, isLast)}
-                  >
-                    {t(preset.labelKey)}
-                  </GluuButton>
+                  <Box key={preset.value} className={classes.presetSlot}>
+                    <GluuButton
+                      onClick={() => onPresetSelect(preset.value)}
+                      theme={selectedTheme}
+                      outlined={!isSelected}
+                      textColor={themeColors.fontColor}
+                      backgroundColor={presetButtonBg(isSelected)}
+                      borderColor={presetButtonBorder}
+                      disableHoverStyles
+                      style={getPresetButtonStyle(isFirst, isLast)}
+                    >
+                      {t(preset.labelKey)}
+                    </GluuButton>
+                    {presetMenu && presetMenuAnchor === preset.value ? (
+                      <Box className={classes.presetMenu}>{presetMenu}</Box>
+                    ) : null}
+                  </Box>
                 )
               })}
             </Box>
@@ -78,6 +86,8 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               endDate={endDate}
               onStartDateChange={onStartDateChange}
               onEndDateChange={onEndDateChange}
+              inputBackgroundColor={unselectedBg}
+              backgroundColor={unselectedBg}
             />
           </Grid>
           <Grid className={classes.viewCol}>
@@ -91,7 +101,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
               fontWeight={fontWeights.bold}
               style={VIEW_BUTTON_STYLE}
             >
-              {t('actions.view')}
+              {t(applyLabelKey)}
             </GluuButton>
           </Grid>
         </Grid>

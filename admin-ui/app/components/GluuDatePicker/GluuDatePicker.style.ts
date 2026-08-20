@@ -24,13 +24,14 @@ const buildPickerThemeColors = (
   isDark: boolean,
   textColor?: string,
   backgroundColor?: string,
+  inputBackgroundColor?: string,
 ): PickerThemeColors => {
   const inputText = textColor || themeConfig.fontColor
   const borderColor = isDark ? 'transparent' : themeConfig.borderColor
   const hoverBg = getLoadingOverlayRgba(themeConfig.fontColor, getHoverOpacity(isDark))
   return {
     labelBackground: backgroundColor || themeConfig.background,
-    inputBackground: themeConfig.inputBackground,
+    inputBackground: inputBackgroundColor || themeConfig.inputBackground,
     inputTextColor: inputText,
     labelColor: inputText,
     borderColor,
@@ -113,6 +114,7 @@ const buildTextFieldSx = (
   '& .MuiInputBase-root, & .MuiPickersInputBase-root': {
     color: tc.inputTextColor,
     backgroundColor: tc.inputBackground,
+    borderRadius: `${BORDER_RADIUS.SMALL}px`,
     ...(inputHeight != null ? { height: inputHeight, minHeight: inputHeight } : {}),
     // With the calendar icon hidden on mobile, center the date in the freed space.
     ...(forceIcon ? {} : { [HIDE_ICON_QUERY]: { justifyContent: 'center' } }),
@@ -132,7 +134,10 @@ const buildTextFieldSx = (
     color: tc.inputTextColor,
   },
   '& .MuiOutlinedInput-root, & .MuiPickersOutlinedInput-root': {
-    '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': { borderColor: tc.borderColor },
+    '& fieldset, & .MuiPickersOutlinedInput-notchedOutline': {
+      borderColor: tc.borderColor,
+      borderRadius: `${BORDER_RADIUS.SMALL}px`,
+    },
     '&:hover fieldset, &:hover .MuiPickersOutlinedInput-notchedOutline': {
       borderColor: tc.borderColor,
     },
@@ -462,13 +467,15 @@ export const useDatePickerStyles = (params: GluuDatePickerStyleParams) => {
     isDark,
     textColor,
     backgroundColor,
+    inputBackgroundColor,
     inputHeight,
     labelShrink = true,
     forceIcon = false,
   } = params
   const pickerTheme = useMemo(
-    () => buildPickerThemeColors(themeColors, isDark, textColor, backgroundColor),
-    [themeColors, isDark, textColor, backgroundColor],
+    () =>
+      buildPickerThemeColors(themeColors, isDark, textColor, backgroundColor, inputBackgroundColor),
+    [themeColors, isDark, textColor, backgroundColor, inputBackgroundColor],
   )
   const { classes } = useLayoutStyles({ labelColor: pickerTheme.labelColor })
 

@@ -1,10 +1,12 @@
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import utc from 'dayjs/plugin/utc'
 import type { Dayjs, OpUnitType, ManipulateType } from 'dayjs'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(customParseFormat)
+dayjs.extend(utc)
 
 export type { Dayjs } from 'dayjs'
 
@@ -71,6 +73,13 @@ export const createDate = (
     return dayjs(date, format)
   }
   return dayjs(date)
+}
+
+export const createUtcDate = (date?: string | number | Date | Dayjs | null): Dayjs => {
+  if (date == null) {
+    return dayjs.utc()
+  }
+  return dayjs.utc(date)
 }
 
 export const parseDateStrict = (date: string, format: string): Dayjs | null => {

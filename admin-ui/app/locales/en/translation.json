@@ -832,7 +832,36 @@
     "metric": "Metric",
     "label": "Label",
     "secondary_value": "Secondary value",
-    "suspicious_ips": "Suspicious IP addresses"
+    "suspicious_ips": "Suspicious IP addresses",
+    "auth_metrics_unavailable": "Metrics are unavailable. Check that the metric plugin is deployed and your token carries the metric.readonly scope.",
+    "auth_metrics_partial": "Some metric types could not be loaded. The figures below are incomplete.",
+    "auth_activity_subtitle": "Successful and failed authentications over time.",
+    "auth_by_acr_subtitle": "Successful authentications split by authentication context.",
+    "token_issuance_subtitle": "Tokens and authorization codes issued over time.",
+    "auth_success": "Successful",
+    "auth_failure": "Failed",
+    "auth_attempts": "Attempts",
+    "acr_in_use": "ACRs in use",
+    "access_tokens": "Access tokens",
+    "id_tokens": "ID tokens",
+    "refresh_tokens": "Refresh tokens",
+    "authorization_codes": "Authorization codes",
+    "select_granularity": "Select granularity",
+    "date_preset_24h": "24 Hours",
+    "date_preset_7d": "7 Days",
+    "date_preset_30d": "30 Days",
+    "granularity": "Granularity",
+    "granularity_hourly": "Hourly",
+    "granularity_hours_3": "3 Hours",
+    "granularity_hours_12": "12 Hours",
+    "granularity_hours_24": "24 Hours",
+    "granularity_daily": "Daily",
+    "granularity_days_3": "3 Days",
+    "granularity_days_7": "7 Days",
+    "granularity_days_15": "15 Days",
+    "granularity_days_21": "21 Days",
+    "granularity_days_30": "30 Days",
+    "auth_metrics_truncated": "Showing partial data: this range holds more entries than one page walk can read. Narrow the range for exact totals."
   },
   "languages": {
     "language": "Language",
@@ -941,7 +970,8 @@
     "allCategory": "All Category",
     "notification": "Notification",
     "mobileNavigation": "Mobile navigation",
-    "security_monitor": "Security Monitor"
+    "security_monitor": "Security Monitor",
+    "auth_metrics": "Auth Metrics"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1696,7 +1726,12 @@
     "error_intelligence": "Error Types",
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types",
-    "threat_origins_ips": "Threat Origins by IP"
+    "threat_origins_ips": "Threat Origins by IP",
+    "auth_metrics": "Auth Metrics",
+    "auth_activity": "Authentication Activity",
+    "auth_by_acr": "Authentications by ACR",
+    "token_issuance": "Token Issuance",
+    "auth_token_activity": "Authentication & Token Activity"
   },
   "options": {
     "admin": "ADMIN",

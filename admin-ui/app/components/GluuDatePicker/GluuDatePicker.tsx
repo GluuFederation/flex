@@ -40,6 +40,7 @@ const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProp
     a.inputHeight === b.inputHeight &&
     a.textColor === b.textColor &&
     a.backgroundColor === b.backgroundColor &&
+    a.inputBackgroundColor === b.inputBackgroundColor &&
     (a.dateFormat ?? a.format) === (b.dateFormat ?? b.format) &&
     a.onStartDateChange === b.onStartDateChange &&
     a.onEndDateChange === b.onEndDateChange &&
@@ -68,6 +69,7 @@ const GluuDatePicker = memo(
       isDark: isDarkTheme,
       textColor: props.textColor,
       backgroundColor: props.backgroundColor,
+      inputBackgroundColor: props.inputBackgroundColor,
       inputHeight: props.inputHeight,
       labelShrink,
       forceIcon: props.forceIcon,
@@ -135,6 +137,7 @@ const GluuDatePicker = memo(
       prev.inputHeight === next.inputHeight &&
       prev.textColor === next.textColor &&
       prev.backgroundColor === next.backgroundColor &&
+      prev.inputBackgroundColor === next.inputBackgroundColor &&
       prev.minDate === next.minDate &&
       prev.maxDate === next.maxDate &&
       prev.disabled === next.disabled
