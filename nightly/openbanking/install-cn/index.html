@@ -2903,56 +2903,93 @@
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
 <h3 id="install-using-helmproduction-ready">Install using Helm(production-ready)<a class="headerlink" href="#install-using-helmproduction-ready" title="Permanent link">#</a></h3>
 <ul>
-<li>
-<p>To complete this installation in a production environment, you must obtain official Open Banking certificates. This requires generating private keys locally and submitting a Certificate Signing Request (CSR) to your Open Banking Directory (e.g., OBIE) to receive the corresponding signed certificates. Self-signed certificates should only be used for testing. Ensure you have the following files ready:</p>
+<li>To complete this installation in a production environment, you must obtain official Open Banking certificates. This requires generating private keys locally and submitting a Certificate Signing Request (CSR) to your Open Banking Directory (e.g., OBIE) to receive the corresponding signed certificates. Self-signed certificates should only be used for testing. Ensure you have the following files ready:</li>
+</ul>
 <table>
 <thead>
 <tr>
-<th>Certificate / key</th>
-<th>Description</th>
+<th><strong>Certificate / Key</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Override Property Name</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>OB Root CA</td>
-<td>Used in nginx as a certificate authority</td>
+<td>Used to build the OB transport truststore.</td>
+<td><code>cnObTransportTrustStore</code></td>
 </tr>
 <tr>
 <td>OB Issuing CA</td>
-<td>Used in nginx as a certificate authority</td>
+<td>Used to build the OB transport truststore.</td>
+<td><code>cnObTransportTrustStore</code></td>
 </tr>
 <tr>
 <td>OB Signing CA</td>
-<td>Used in nginx as a certificate authority</td>
+<td>Used to build the OB transport truststore.</td>
+<td><code>cnObTransportTrustStore</code></td>
 </tr>
 <tr>
 <td>OB AS Transport key <code>obtransport.key</code></td>
-<td>Used for mTLS. This will also be added to the JVM</td>
+<td>Used for mTLS. This is also added to the JVM.</td>
+<td><code>cnObTransportKey</code></td>
 </tr>
 <tr>
 <td>OB AS Transport crt <code>obtransport.pem</code></td>
-<td>Used for mTLS. This will also be added to the JVM</td>
+<td>Used for mTLS. This is also added to the JVM.</td>
+<td><code>cnObTransportCrt</code></td>
 </tr>
 <tr>
 <td>OB transport truststore <code>ob-transport-truststore.p12</code></td>
-<td>Used in SSA Validation. Generated from OB Root CA and Issuing CA</td>
+<td>Generated from the OB Root CA, Issuing CA, and Signing CA. Used in SSA validation.</td>
+<td><code>cnObTransportTrustStore</code></td>
 </tr>
 <tr>
 <td>OB AS signing crt <code>obsigning.pem</code></td>
-<td>Added to the JVM. Used in SSA Validation</td>
+<td>Used for SSA validation and provided through the external signing JWKS configuration.</td>
+<td><code>cnObExtSigningJwksCrt</code></td>
 </tr>
 <tr>
 <td>OB AS signing key <code>obsigning.key</code></td>
-<td>Added to the JVM. Used in SSA Validation</td>
+<td>Used for SSA validation and provided through the external signing JWKS configuration.</td>
+<td><code>cnObExtSigningJwksKey</code></td>
+</tr>
+<tr>
+<td>OB AS signing key passphrase</td>
+<td>Passphrase used to unlock the OB AS signing key.</td>
+<td><code>cnObExtSigningJwksKeyPassPhrase</code></td>
+</tr>
+<tr>
+<td>OB AS signing JWKS URI</td>
+<td>URI where the external signing public keys are published.</td>
+<td><code>cnObExtSigningJwksUri</code></td>
+</tr>
+<tr>
+<td>External signing key ID (<code>kid</code>)</td>
+<td>Identifies the signing key used in outgoing JWTs.</td>
+<td><code>cnObStaticSigningKeyKid</code></td>
+</tr>
+<tr>
+<td>Internal signing alias</td>
+<td>JVM/JKS alias used to locate the Open Banking private signing key. Should match the signing <code>kid</code>.</td>
+<td><code>cnObInternalSigningAlias</code></td>
+</tr>
+<tr>
+<td>OB AS transport key passphrase</td>
+<td>Passphrase used to unlock the OB AS transport private key.</td>
+<td><code>cnObTransportKeyPassPhrase</code></td>
+</tr>
+<tr>
+<td>OB transport alias</td>
+<td>Alias for the Open Banking transport certificate/key inside the JVM.</td>
+<td><code>cnObTransportAlias</code></td>
 </tr>
 </tbody>
 </table>
-</li>
-<li>
-<p>Download the Open Banking values file <code>openbanking-values.yaml</code>:
+<ul>
+<li>Download the Open Banking values file <code>openbanking-values.yaml</code>:
         <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/main/charts/gluu/openbanking-values.yaml
-</code></pre></div></p>
-</li>
+</code></pre></div></li>
 <li>
 <p>Based on the provider/platform you're using, you can follow the <a href="../../install/helm-install/">docs</a> to install your platform prerequisites, nginx-ingress, and the yaml changes needed in <code>openbanking-values.yaml</code> based on the Gluu persistence choosed.</p>
 </li>
@@ -3212,7 +3249,7 @@ kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 8, 2026 12:15:37 UTC"><span class="timeago" datetime="2026-05-08T12:15:37+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 8, 2026 12:15:37 UTC">2026-05-08</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 20, 2026 04:24:01 UTC"><span class="timeago" datetime="2026-08-20T04:24:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 20, 2026 04:24:01 UTC">2026-08-20</span>
   </span>
 
     
