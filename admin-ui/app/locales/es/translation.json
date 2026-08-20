@@ -832,7 +832,35 @@
     "metric": "Métrica",
     "label": "Etiqueta",
     "secondary_value": "Valor secundario",
-    "suspicious_ips": "Direcciones IP sospechosas"
+    "suspicious_ips": "Direcciones IP sospechosas",
+    "auth_metrics_unavailable": "Las métricas no están disponibles. Compruebe que el plugin de métricas esté desplegado y que su token tenga el permiso metric.readonly.",
+    "auth_activity_subtitle": "Autenticaciones correctas y fallidas a lo largo del tiempo.",
+    "auth_by_acr_subtitle": "Autenticaciones correctas divididas por contexto de autenticación.",
+    "token_issuance_subtitle": "Tokens y códigos de autorización emitidos a lo largo del tiempo.",
+    "auth_success": "Correctas",
+    "auth_failure": "Fallidas",
+    "auth_attempts": "Intentos",
+    "acr_in_use": "ACR en uso",
+    "access_tokens": "Tokens de acceso",
+    "id_tokens": "Tokens de ID",
+    "refresh_tokens": "Tokens de actualización",
+    "authorization_codes": "Códigos de autorización",
+    "select_granularity": "Seleccionar granularidad",
+    "date_preset_24h": "24 horas",
+    "date_preset_7d": "7 días",
+    "date_preset_30d": "30 días",
+    "granularity": "Granularidad",
+    "granularity_hourly": "Cada hora",
+    "granularity_hours_3": "3 horas",
+    "granularity_hours_12": "12 horas",
+    "granularity_hours_24": "24 horas",
+    "granularity_daily": "Diario",
+    "granularity_days_3": "3 días",
+    "granularity_days_7": "7 días",
+    "granularity_days_15": "15 días",
+    "granularity_days_21": "21 días",
+    "granularity_days_30": "30 días",
+    "auth_metrics_truncated": "Mostrando datos parciales: este intervalo contiene más entradas de las que se pueden leer. Reduzca el intervalo para obtener totales exactos."
   },
   "languages": {
     "language": "Idioma",
@@ -941,7 +969,8 @@
     "allCategory": "Todas las categorías",
     "notification": "Notificación",
     "mobileNavigation": "Navegación móvil",
-    "security_monitor": "Monitor de Seguridad"
+    "security_monitor": "Monitor de Seguridad",
+    "auth_metrics": "Métricas de autenticación"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1699,7 +1728,12 @@
     "error_intelligence": "Tipos de error",
     "velocity_watch": "Intentos por usuario",
     "device_fingerprint_shift": "Tipos de autenticador",
-    "threat_origins_ips": "Orígenes de amenazas por IP"
+    "threat_origins_ips": "Orígenes de amenazas por IP",
+    "auth_metrics": "Métricas de autenticación",
+    "auth_activity": "Actividad de autenticación",
+    "auth_by_acr": "Autenticaciones por ACR",
+    "token_issuance": "Emisión de tokens",
+    "auth_token_activity": "Actividad de autenticación y tokens"
   },
   "options": {
     "admin": "ADMIN",

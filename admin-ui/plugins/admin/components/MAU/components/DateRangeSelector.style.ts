@@ -1,9 +1,15 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { BORDER_RADIUS, getSegmentedButtonStyle, SEGMENTED_CONTROL, SPACING } from '@/constants'
+import { SHARED_DROPDOWN_STYLES } from '@/components/GluuDropdown/sharedDropdownStyles'
 
 const PRESET_BUTTON_MIN_WIDTH = SEGMENTED_CONTROL.BUTTON_MIN_WIDTH
 const VIEW_BUTTON_MIN_WIDTH = 96
+
+// Above the cards the menu overhangs, and matching the shared dropdown keeps the two consistent
+// where both could be open on one screen.
+const PRESET_MENU_Z_INDEX = SHARED_DROPDOWN_STYLES.menuZIndex
+const PRESET_MENU_GAP = SHARED_DROPDOWN_STYLES.margin
 
 export const VIEW_BUTTON_STYLE = {
   minWidth: VIEW_BUTTON_MIN_WIDTH,
@@ -14,10 +20,14 @@ export const VIEW_BUTTON_STYLE = {
   letterSpacing: letterSpacing.button,
 }
 
-export const getPresetButtonStyle = (isFirst: boolean, isLast: boolean) => ({
-  minWidth: PRESET_BUTTON_MIN_WIDTH,
-  ...getSegmentedButtonStyle(isFirst, isLast),
-})
+export const getPresetButtonStyle = (isFirst: boolean, isLast: boolean) => {
+  // The border overlap moves to the slot: buttons sit inside positioned wrappers now, and a
+  // negative margin on the button would shift it within its own slot rather than pull neighbouring
+  // slots together, leaving a one-pixel seam and a doubled border between segments.
+  const segmented = getSegmentedButtonStyle(isFirst, isLast)
+
+  return { minWidth: PRESET_BUTTON_MIN_WIDTH, ...segmented, marginLeft: 0 }
+}
 
 const useStyles = makeStyles()((theme) => ({
   container: {
@@ -58,6 +68,16 @@ const useStyles = makeStyles()((theme) => ({
       justifyContent: 'flex-end',
     },
   },
+  // Inside the controls column and left-aligned, which puts it on the same edge as the preset
+  // group: the column shrinks to its contents at md and up, so that edge tracks the controls
+  // however wide the heading gets.
+  secondaryRow: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap' as const,
+    gap: SPACING.CARD_BUTTON_GAP,
+    marginTop: SPACING.CARD_BUTTON_GAP,
+  },
   presetColWrap: {
     width: '100%',
     [theme.breakpoints.up('md')]: {
@@ -68,17 +88,40 @@ const useStyles = makeStyles()((theme) => ({
     'display': 'flex',
     'gap': 0,
     'width': '100%',
-    '& > button': {
+    // Sizing sits on the slot rather than the button, so a menu can be anchored to one segment
+    // without the button losing the flex behaviour it had when it was a direct child.
+    '& > *': {
       flex: 1,
       minWidth: 0,
     },
+    '& > * > button': {
+      width: '100%',
+    },
+    // Carries the overlap that used to live on the button, collapsing adjacent borders.
+    '& > * + *': {
+      marginLeft: SEGMENTED_CONTROL.BORDER_OVERLAP,
+    },
     [theme.breakpoints.up('md')]: {
       'width': 'auto',
-      '& > button': {
+      '& > *': {
         flex: 'none',
         minWidth: PRESET_BUTTON_MIN_WIDTH,
       },
     },
+  },
+  presetSlot: {
+    position: 'relative',
+  },
+  // Hangs off the segment that was clicked, which is why the slot exists at all. Centred on that
+  // segment so the menu's arrow points back at the button that opened it, the same relationship the
+  // header dropdowns have with their triggers.
+  presetMenu: {
+    position: 'absolute',
+    top: '100%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: PRESET_MENU_Z_INDEX,
+    marginTop: PRESET_MENU_GAP,
   },
   datePickerCol: {
     flex: 1,

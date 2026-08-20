@@ -24,6 +24,7 @@ export type GluuDatePickerStyleParams = {
   isDark: boolean
   textColor?: string
   backgroundColor?: string
+  inputBackgroundColor?: string
   inputHeight?: number
   labelShrink?: boolean
   forceIcon?: boolean
@@ -33,7 +34,12 @@ type GluuDatePickerBase = {
   format?: string
   dateFormat?: string
   textColor?: string
+  // Sits behind the floating label so it does not collide with the outline. Named for what it
+  // backs, not for the field: use inputBackgroundColor to fill the field itself.
   backgroundColor?: string
+  // Fills the input. Left unset the field takes themeColors.inputBackground, which is right on a
+  // plain form; a field sitting in a toolbar may need to match the controls beside it instead.
+  inputBackgroundColor?: string
   inputHeight?: number
   showTime?: boolean
   forceIcon?: boolean

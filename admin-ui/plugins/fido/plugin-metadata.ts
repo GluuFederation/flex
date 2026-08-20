@@ -6,6 +6,7 @@ import { createLazyRoute } from '@/utils/RouteLoader'
 const Fido = createLazyRoute(() => import('./components/Configuration'))
 const MetricsPage = createLazyRoute(() => import('./components/Metrics'))
 const SecurityMonitorPage = createLazyRoute(() => import('./components/SecurityMonitor'))
+const AuthMetricsPage = createLazyRoute(() => import('./components/AuthMetrics'))
 
 const pluginMetadata = {
   menus: [
@@ -32,6 +33,12 @@ const pluginMetadata = {
           action: CEDAR_ACTIONS.READ,
           resourceKey: ADMIN_UI_RESOURCES.FIDO,
         },
+        {
+          title: 'menus.auth_metrics',
+          path: ROUTES.FIDO_AUTH_METRICS,
+          action: CEDAR_ACTIONS.READ,
+          resourceKey: ADMIN_UI_RESOURCES.FIDO,
+        },
       ],
     },
   ],
@@ -51,6 +58,12 @@ const pluginMetadata = {
     {
       component: SecurityMonitorPage,
       path: ROUTES.FIDO_SECURITY_MONITOR,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.FIDO,
+    },
+    {
+      component: AuthMetricsPage,
+      path: ROUTES.FIDO_AUTH_METRICS,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.FIDO,
     },

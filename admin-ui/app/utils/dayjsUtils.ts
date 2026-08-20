@@ -1,10 +1,12 @@
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import utc from 'dayjs/plugin/utc'
 import type { Dayjs, OpUnitType, ManipulateType } from 'dayjs'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(customParseFormat)
+dayjs.extend(utc)
 
 export type { Dayjs } from 'dayjs'
 
@@ -71,6 +73,17 @@ export const createDate = (
     return dayjs(date, format)
   }
   return dayjs(date)
+}
+
+// For APIs that work wholly in UTC. A value carrying an offset is converted to UTC; one without an
+// offset is read as UTC rather than as the viewer's local time. That matches how such a server
+// parses the dates it is sent, so a range requested and the timestamps returned stay on one clock.
+// Use createDate instead wherever the API speaks the viewer's local time.
+export const createUtcDate = (date?: string | number | Date | Dayjs | null): Dayjs => {
+  if (date == null) {
+    return dayjs.utc()
+  }
+  return dayjs.utc(date)
 }
 
 export const parseDateStrict = (date: string, format: string): Dayjs | null => {

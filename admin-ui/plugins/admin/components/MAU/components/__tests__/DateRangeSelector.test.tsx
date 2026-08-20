@@ -33,7 +33,7 @@ describe('DateRangeSelector', () => {
     const onPresetSelect = jest.fn()
     renderSelector({ onPresetSelect })
     fireEvent.click(screen.getByRole('button', { name: '6 Months' }))
-    expect(onPresetSelect).toHaveBeenCalledWith(DATE_PRESETS[1].months)
+    expect(onPresetSelect).toHaveBeenCalledWith(DATE_PRESETS[1].value)
   })
 
   it('calls onApply when the view button is clicked', () => {
