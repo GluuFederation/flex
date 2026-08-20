@@ -34,6 +34,10 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   return {
+    badgeScrollBox: {
+      maxWidth: 140,
+      overflow: 'auto',
+    },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,

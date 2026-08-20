@@ -4,7 +4,7 @@ import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
 import GluuErrorScreen from 'Routes/Apps/Gluu/GluuErrorScreen'
 import logUiCrash from '@/utils/logUiCrash'
 
-const basePath = process.env.BASE_PATH ?? '/admin'
+const basePath = process.env.BASE_PATH ?? '/admin/'
 
 const AppMain = () => {
   return (

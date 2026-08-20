@@ -33,6 +33,8 @@ export type ThemeConfig = {
   badges: {
     statusActiveBg: string
     statusActive: string
+    statusInactiveBg: string
+    statusInactive: string
     filledBadgeBg: string
     filledBadgeText: string
     disabledBg: string
@@ -66,5 +68,10 @@ export type ThemeConfig = {
     axisColor: string
     donutEmptyColor: string
     cellBorderColor: string
+    blue: string
+    lightBlue: string
+    purple: string
+    cyan: string
+    cellText: string
   }
 }

@@ -37,6 +37,9 @@ export const useStyles = makeStyles<StyleProps>()((theme: Theme, { isDark, theme
       ...cardBorderStyle,
       padding: SPACING.CARD_PADDING,
     },
+    formContentFill: {
+      flex: 1,
+    },
     formContent: {
       ...createFormGroupOverrides(),
       ...createFormLabelStyles(fontColor),

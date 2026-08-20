@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { ThemeContext } from '@/context/theme/themeContext'
 import { THEME_DARK, THEME_LIGHT, DEFAULT_THEME } from '@/context/theme/constants'
 import logoImage from '../../../images/logos/logo192.png'
+import { useStyles } from './LogoThemed.style'
 
 type LogoVariant = 'green' | 'white'
 
@@ -44,8 +45,10 @@ const LogoThemed: React.FC<LogoThemedProps> = ({
     }
   }, [currentTheme, width, height, variant])
 
+  const { classes } = useStyles()
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div className={classes.logoWrapper}>
       <img
         {...otherProps}
         style={logoStyle}

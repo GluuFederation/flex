@@ -427,7 +427,6 @@ const UserForm = ({
                       textColor={themeColors.fontColor}
                       borderColor={themeColors.borderColor}
                       disableHoverStyles
-                      style={{ gap: 8 }}
                     >
                       {t('actions.change_password')}
                     </GluuButton>

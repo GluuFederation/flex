@@ -38,7 +38,6 @@ describe('LazyRoutes registry', () => {
   const expectedRoutes = [
     'DashboardPage',
     'ProfilePage',
-    'Gluu404Error',
     'ByeBye',
     'GluuNavBar',
     'DefaultSidebar',

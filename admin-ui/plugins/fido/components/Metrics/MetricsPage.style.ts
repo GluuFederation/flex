@@ -6,6 +6,8 @@ import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { METRICS_CHART_COLORS } from './constants'
 
+const Y_TICK_LINE_HEIGHT = 1
+
 const HEATMAP_MODAL_OVERLAY_LIGHT = getLoadingOverlayRgba(customColors.black, 0.55)
 const HEATMAP_MODAL_OVERLAY_DARK = getLoadingOverlayRgba(customColors.black, 0.7)
 const HEATMAP_MODAL_SHADOW_DARK = `0 24px 64px rgba(${hexToRgb(customColors.black)}, 0.6), 0 12px 32px rgba(${hexToRgb(customColors.black)}, 0.4)`
@@ -224,8 +226,190 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
     adoptionDottedBox: {
       flex: 1,
       position: 'relative' as const,
+      border: `1px dashed ${themeColors.borderColor}`,
       borderRadius: 8,
       overflow: 'visible' as const,
+    },
+    chartLabelSm: {
+      fill: themeColors.fontColor,
+      fontSize: fontSizes.xs,
+    },
+    chartLabelMd: {
+      fill: themeColors.fontColor,
+      fontSize: fontSizes.sm,
+    },
+    chartColorBarSvg: {
+      flexShrink: 0,
+    },
+    chartColorBarBox: {
+      height: '100%',
+    },
+    authChartHeader: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      gap: SPACING.CARD_PADDING,
+      marginBottom: 4,
+    },
+    authChartLegend: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 4,
+      flexShrink: 0,
+      paddingTop: 2,
+    },
+    authChartLegendItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+    },
+    authChartLegendDot: {
+      width: 10,
+      height: 10,
+      borderRadius: '50%',
+      flexShrink: 0,
+      display: 'inline-block',
+    },
+    authChartCanvas: {
+      flex: 1,
+      minHeight: 320,
+    },
+    onboardingCanvas: {
+      position: 'relative' as const,
+      width: '100%',
+      height: 320,
+    },
+    onboardingLegend: {
+      position: 'absolute' as const,
+      top: 12,
+      left: 80,
+      zIndex: 2,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 6,
+      padding: '10px 14px',
+      border: `1px solid ${themeColors.borderColor}`,
+      borderRadius: 6,
+      backgroundColor: cardBg,
+    },
+    onboardingLegendItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+    },
+    onboardingLegendDash: {
+      width: 14,
+      height: 4,
+      borderRadius: 2,
+      display: 'inline-block',
+    },
+    onboardingLegendLabel: {
+      fontFamily,
+      fontSize: fontSizes.pill,
+      fontWeight: fontWeights.semiBold,
+    },
+    filterRow: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      gap: SPACING.CARD_PADDING,
+      flexWrap: 'wrap' as const,
+    },
+    filterDateField: {
+      flex: 1,
+      minWidth: 220,
+    },
+    filterDateFieldWide: {
+      flex: 2,
+      minWidth: 280,
+    },
+    filterActionField: {
+      minWidth: 120,
+    },
+    filterActionFieldEnd: {
+      alignSelf: 'flex-end',
+      minWidth: 120,
+    },
+    aggTypeField: {
+      flex: 1,
+      minWidth: 180,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 6,
+    },
+    aggFieldLabel: {
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.semiBold,
+      color: themeColors.fontColor,
+    },
+    aggSelectWrapper: {
+      position: 'relative' as const,
+      width: '100%',
+    },
+    aggSelect: {
+      width: '100%',
+      height: 52,
+      padding: '0 36px 0 16px',
+      border: `1px solid ${isDark ? 'transparent' : themeColors.borderColor}`,
+      borderRadius: BORDER_RADIUS.SMALL,
+      backgroundColor: themeColors.inputBackground,
+      color: themeColors.fontColor,
+      fontFamily,
+      fontSize: fontSizes.base,
+      fontWeight: fontWeights.medium,
+      outline: 'none',
+      appearance: 'none' as const,
+      WebkitAppearance: 'none' as const,
+      cursor: 'pointer',
+      boxSizing: 'border-box' as const,
+    },
+    aggSelectChevron: {
+      position: 'absolute' as const,
+      right: 12,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      pointerEvents: 'none' as const,
+      display: 'flex',
+      color: themeColors.fontColor,
+    },
+    adoptionYAxisTick: {
+      fontFamily,
+      fontSize: fontSizes.xs,
+      lineHeight: Y_TICK_LINE_HEIGHT,
+      color: themeColors.fontColor,
+    },
+    adoptionChartCanvas: {
+      position: 'relative' as const,
+      width: '100%',
+      height: '100%',
+    },
+    adoptionArrowOverlay: {
+      position: 'absolute' as const,
+      inset: 0,
+      pointerEvents: 'none' as const,
+      overflow: 'visible' as const,
+    },
+    adoptionDonutLabel: {
+      fontFamily,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semiBold,
+      color: METRICS_CHART_COLORS.adoptionRate,
+    },
+    adoptionDonutValue: {
+      fontFamily,
+      fontSize: fontSizes.lg,
+      fontWeight: fontWeights.bold,
+      color: METRICS_CHART_COLORS.adoptionRate,
+    },
+    adoptionLegendLabel: {
+      fontFamily,
+      fontSize: fontSizes.sm,
+      color: themeColors.fontColor,
+    },
+    chartCardBody: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      height: '100%',
     },
     adoptionLegend: {
       display: 'flex',
