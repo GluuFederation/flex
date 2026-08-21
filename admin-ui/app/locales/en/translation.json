@@ -841,6 +841,7 @@
     "suspicious_ips": "Suspicious IP addresses",
     "filename": "Filename",
     "uploaded": "Uploaded",
+    "files": "Files",
     "size": "Size",
     "comments": "Comments"
   },
@@ -1710,7 +1711,7 @@
     "device_fingerprint_shift": "Authenticator Types",
     "threat_origins_ips": "Threat Origins by IP",
     "policy_store_history": "Policy Store History",
-    "archive_explorer": "Archive Explorer"
+    "policy_store_contents": "Policy Store Contents"
   },
   "options": {
     "admin": "ADMIN",
@@ -2486,7 +2487,6 @@
       "downloadPolicyStore": "Download",
       "policyStoreDownloaded": "Policy store downloaded successfully",
       "noPolicyStoreToDownload": "No policy store available to download",
-      "uploadSuccess": "Policy store uploaded. Activate it from Policy Store History to put it into use.",
       "uploadFailed": "Failed to upload policy store",
       "downloadFailed": "Failed to download policy store",
       "selectFileFirst": "Please select a .cjar file first",

@@ -82,4 +82,20 @@ describe('GluuTable', () => {
     const resizeHandles = screen.getAllByRole('separator', { name: /Resize column/i })
     expect(resizeHandles).toHaveLength(columns.length)
   })
+
+  it('renders an action disabled per row rather than removing it', () => {
+    const onClick = jest.fn()
+    const actions = [
+      { icon: 'icon', tooltip: 'Edit', onClick, disabled: (row: Row) => row.id === 'a' },
+    ]
+    render(<GluuTable columns={columns} data={data} actions={actions} />, { wrapper: Wrapper })
+
+    const buttons = screen.getAllByRole('button', { name: 'Edit' })
+    expect(buttons).toHaveLength(data.length)
+    expect(buttons[0]).toBeDisabled()
+    expect(buttons[1]).toBeEnabled()
+
+    fireEvent.click(buttons[0])
+    expect(onClick).not.toHaveBeenCalled()
+  })
 })

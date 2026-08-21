@@ -25,7 +25,6 @@ if (PATH_SUFFIX === '' || !fs.existsSync(specPath)) {
 }
 
 const patchedPrefix = `${LEGACY_PREFIX}${PATH_SUFFIX}/policyStore`
-// openapi-merge quotes path keys that contain `{}` placeholders, so the quotes are optional.
 const pathKey = /^(\s{2})(['"]?)(\/admin-ui\/security\/policyStore[^'"\s:]*)\2:$/
 
 const lines = fs.readFileSync(specPath, 'utf8').split('\n')

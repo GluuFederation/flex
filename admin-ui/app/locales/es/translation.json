@@ -841,6 +841,7 @@
     "suspicious_ips": "Direcciones IP sospechosas",
     "filename": "Nombre de archivo",
     "uploaded": "Subido",
+    "files": "Archivos",
     "size": "Tamaño",
     "comments": "Comentarios"
   },
@@ -1713,7 +1714,7 @@
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Orígenes de amenazas por IP",
     "policy_store_history": "Historial de almacenes de políticas",
-    "archive_explorer": "Explorador de archivos"
+    "policy_store_contents": "Contenido del almacén de políticas"
   },
   "options": {
     "admin": "ADMIN",
@@ -2496,7 +2497,6 @@
       "downloadPolicyStore": "Descargar",
       "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
       "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
-      "uploadSuccess": "Almacén de políticas cargado. Actívelo desde el Historial de almacenes de políticas para ponerlo en uso.",
       "uploadFailed": "Error al cargar el almacén de políticas",
       "downloadFailed": "Error al descargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",

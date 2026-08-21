@@ -33,15 +33,12 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({ inum: 'store-1' }),
 }))
 
-// Ace's mode/theme side-effect imports must be mocked WITHOUT `virtual: true` — the real modules
-// are installed and spawn a worker that leaks past teardown.
 jest.mock('ace-builds/src-noconflict/mode-json', () => ({}))
 jest.mock('ace-builds/src-noconflict/mode-xml', () => ({}))
 jest.mock('ace-builds/src-noconflict/mode-text', () => ({}))
 jest.mock('ace-builds/src-noconflict/theme-xcode', () => ({}))
 jest.mock('ace-builds/src-noconflict/theme-monokai', () => ({}))
 
-// Ace pulls in workers and canvas APIs jsdom lacks; a textarea stands in for the editor.
 jest.mock('react-ace', () => ({
   __esModule: true,
   default: ({
@@ -119,10 +116,10 @@ describe('ArchiveExplorerPage', () => {
   it('renders the archive directory tree', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
-    expect(await screen.findByText('META-INF')).toBeInTheDocument()
-    expect(screen.getByText('MANIFEST.MF')).toBeInTheDocument()
-    expect(screen.getByText('policies')).toBeInTheDocument()
-    expect(screen.getByText('allow.cedar')).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'META-INF' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'MANIFEST.MF' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'policies' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'allow.cedar' })).toBeInTheDocument()
   })
 
   it('shows the selected file contents read-only until Edit is clicked', async () => {
@@ -180,23 +177,22 @@ describe('ArchiveExplorerPage', () => {
     })
     fireEvent.click(screen.getByText('Create'))
 
-    expect(await screen.findByText('deny.cedar')).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'deny.cedar' })).toBeInTheDocument()
   })
 
   it('removes a file from the archive', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
-    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.click(await screen.findByRole('button', { name: 'allow.cedar' }))
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('allow.cedar')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument()
     })
-    expect(screen.getByText('MANIFEST.MF')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'MANIFEST.MF' })).toBeInTheDocument()
   })
 
   it('packs the edited archive back into a readable zip', async () => {
-    // Guards the whole point of the screen: edit in the browser, download, re-upload.
     const edited = await writeArchive([
       { path: 'policies/allow.cedar', bytes: textToBytes('forbid();') },
     ])

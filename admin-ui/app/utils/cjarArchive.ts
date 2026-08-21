@@ -77,7 +77,6 @@ export const editorModeFor = (path: string): string => {
   if (extension === 'json') return 'json'
   if (extension === 'xml') return 'xml'
   if (extension === 'yaml' || extension === 'yml') return 'yaml'
-  // Ace ships no Cedar mode; plain text keeps the content readable and editable.
   return 'text'
 }
 
@@ -101,7 +100,6 @@ const crc32 = (bytes: Uint8Array): number => {
   return (crc ^ 0xffffffff) >>> 0
 }
 
-// These constructors are absent on older engines, so probe before relying on them.
 const canDecompress = (): boolean => typeof DecompressionStream === 'function'
 const canCompress = (): boolean => typeof CompressionStream === 'function'
 
@@ -127,7 +125,6 @@ const deflateRaw = async (data: Uint8Array): Promise<Uint8Array> =>
   runThroughStream(data, new CompressionStream(DEFLATE_RAW))
 
 const findEndOfCentralDirectory = (view: DataView): number => {
-  // The EOCD sits at the end, after an optional comment, so scan backwards for its signature.
   const earliest = Math.max(0, view.byteLength - EOCD_SIZE - 0xffff)
   for (let offset = view.byteLength - EOCD_SIZE; offset >= earliest; offset--) {
     if (view.getUint32(offset, true) === SIGNATURE.END_OF_CENTRAL_DIRECTORY) {
@@ -154,8 +151,6 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
   const entries: ArchiveEntry[] = []
 
   for (let index = 0; index < entryCount; index++) {
-    // Offsets come from the file itself, so bound-check before every read. Without this a corrupt
-    // archive surfaces as a raw DataView RangeError instead of a message the UI can show.
     if (cursor < 0 || cursor + CENTRAL_HEADER_SIZE > bytes.length) {
       throw new Error('Not a valid archive: central directory runs past the end of the file.')
     }
@@ -173,8 +168,6 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
     )
 
     if (!path.endsWith('/')) {
-      // Anything beyond store/deflate (bzip2, LZMA, zstd) would otherwise fall through to the
-      // STORED branch and hand back still-compressed bytes as if they were the file's contents.
       if (method !== COMPRESSION.STORED && method !== COMPRESSION.DEFLATE) {
         throw new Error(`Unsupported compression method ${method} for "${path}".`)
       }
@@ -184,8 +177,6 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       if (view.getUint32(localOffset, true) !== SIGNATURE.LOCAL_HEADER) {
         throw new Error(`Not a valid archive: bad local header for "${path}".`)
       }
-      // The local header's name/extra lengths can differ from the central directory's, so the data
-      // offset must be computed from the local header itself.
       const localNameLength = view.getUint16(localOffset + 26, true)
       const localExtraLength = view.getUint16(localOffset + 28, true)
       const dataStart = localOffset + LOCAL_HEADER_SIZE + localNameLength + localExtraLength
@@ -230,7 +221,6 @@ export const writeArchive = async (
   for (const entry of entries) {
     const nameBytes = textEncoder.encode(entry.path)
     const deflated = canDeflate && entry.bytes.length > 0 ? await deflateRaw(entry.bytes) : null
-    // Only keep the compressed form when it is actually smaller.
     const useDeflate = deflated !== null && deflated.length < entry.bytes.length
     const payload = useDeflate ? deflated : entry.bytes
     staged.push({

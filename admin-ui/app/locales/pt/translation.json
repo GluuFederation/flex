@@ -951,6 +951,7 @@
     "suspicious_ips": "Endereços IP suspeitos",
     "filename": "Nome do arquivo",
     "uploaded": "Enviado",
+    "files": "Arquivos",
     "size": "Tamanho",
     "comments": "Comentários"
   },
@@ -1714,7 +1715,7 @@
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Origens de ameaças por IP",
     "policy_store_history": "Histórico de repositórios de políticas",
-    "archive_explorer": "Explorador de arquivo"
+    "policy_store_contents": "Conteúdo do repositório de políticas"
   },
   "options": {
     "admin": "ADMIN",
@@ -2465,7 +2466,6 @@
       "downloadPolicyStore": "Baixar",
       "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
       "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
-      "uploadSuccess": "Repositório de políticas enviado. Ative-o no Histórico de repositórios de políticas para colocá-lo em uso.",
       "uploadFailed": "Falha ao enviar o repositório de políticas",
       "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",

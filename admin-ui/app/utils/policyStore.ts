@@ -63,8 +63,6 @@ export const selectActivePolicyStore = (
 export const isActivePolicyStore = (entry: AdminUIPolicyStore): boolean =>
   entry.jansStatus === POLICY_STORE_STATUS.ACTIVE
 
-// Explicitly ArrayBuffer-backed (not the wider ArrayBufferLike) so the result stays a valid
-// BlobPart for the archive download.
 export const base64ToUint8Array = (base64: string): Uint8Array<ArrayBuffer> => {
   const binaryString = atob(base64)
   const bytes = new Uint8Array(new ArrayBuffer(binaryString.length))

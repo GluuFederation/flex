@@ -9,7 +9,6 @@ import PolicyStoreHistoryPage from 'Plugins/admin/components/Cedarling/PolicySto
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
 
-// jest.mock factories are hoisted above const declarations, so these objects must be inlined.
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
     hasCedarReadPermission: jest.fn(() => true),
@@ -89,7 +88,9 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 const openConfirmFor = async (actionLabel: string) => {
-  const button = await screen.findByRole('button', { name: actionLabel })
+  const buttons = await screen.findAllByRole('button', { name: actionLabel })
+  const button = buttons.find((candidate) => !candidate.hasAttribute('disabled'))
+  if (!button) throw new Error(`no enabled "${actionLabel}" action found`)
   fireEvent.click(button)
   const commentsBox = await waitFor(() => {
     const box = document.getElementById('user_action_message')
@@ -101,8 +102,12 @@ const openConfirmFor = async (actionLabel: string) => {
 }
 
 describe('PolicyStoreHistoryPage', () => {
+  const mockUsePermission = jest.requireMock('@/cedarling/hooks/usePermission')
+    .usePermission as jest.Mock
+
   beforeEach(() => {
     jest.clearAllMocks()
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
   })
 
   it('lists every uploaded policy store with its status', async () => {
@@ -119,14 +124,40 @@ describe('PolicyStoreHistoryPage', () => {
     expect(await screen.findByText('Kept as a rollback point')).toBeInTheDocument()
   })
 
-  it('offers Set active and Delete only on backups, never on the active store', async () => {
+  it('disables Set active and Delete on the active store, keeping them on backups', async () => {
     render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
     await screen.findByText('current-policies.cjar')
 
-    // One active + one backup, and only the backup row exposes these two actions — the ticket
-    // requires that a policy store is always active, so the live one cannot be removed or re-activated.
-    expect(screen.getAllByRole('button', { name: 'Set active' })).toHaveLength(1)
-    expect(screen.getAllByRole('button', { name: 'Delete' })).toHaveLength(1)
+    const setActiveButtons = screen.getAllByRole('button', { name: 'Set active' })
+    const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
+    expect(setActiveButtons).toHaveLength(2)
+    expect(deleteButtons).toHaveLength(2)
+
+    expect(setActiveButtons[0]).toBeDisabled()
+    expect(deleteButtons[0]).toBeDisabled()
+    expect(setActiveButtons[1]).toBeEnabled()
+    expect(deleteButtons[1]).toBeEnabled()
+  })
+
+  it('offers Delete on write permission alone', async () => {
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: false })
+
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
+    expect(deleteButtons).toHaveLength(2)
+    expect(deleteButtons.some((button) => !button.hasAttribute('disabled'))).toBe(true)
+  })
+
+  it('hides Set active and Delete without write permission', async () => {
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: false, canDelete: false })
+
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Set active' })).not.toBeInTheDocument()
   })
 
   it('activates a backup through the confirm dialog', async () => {
@@ -142,16 +173,12 @@ describe('PolicyStoreHistoryPage', () => {
       })
     })
 
-    // Role-to-scope mappings are derived from whichever store is active, so activation — not
-    // upload — is the point at which they have to be regenerated.
     await waitFor(() => {
       expect(mockSyncMutate).toHaveBeenCalled()
     })
   })
 
   it('still reports activation as successful when the role-scope sync fails', async () => {
-    // The store is already active at this point; a sync failure must not read as a failed
-    // activation, or an administrator will retry an operation that already took effect.
     const { logAuditUserAction } = jest.requireMock('@/utils/AuditLogger') as {
       logAuditUserAction: jest.Mock
     }
@@ -168,8 +195,6 @@ describe('PolicyStoreHistoryPage', () => {
       })
     })
 
-    // The activation audit is written after the sync, so seeing it proves the rejected sync was
-    // swallowed rather than aborting the flow.
     await waitFor(() => {
       expect(logAuditUserAction).toHaveBeenCalledWith(
         expect.objectContaining({

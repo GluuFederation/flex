@@ -19,8 +19,6 @@ describe('toPolicyStoreEntries', () => {
     expect(toPolicyStoreEntries([active])).toEqual([active])
   })
 
-  // Deliberately off-contract values: the list response shape is ambiguous in the upstream spec,
-  // so the guards must hold even for payloads the declared type says cannot arrive.
   it.each([[null], [undefined], [{}], [{ entries: null }], ['nonsense'], [42]])(
     'returns [] for %p',
     (payload) => {

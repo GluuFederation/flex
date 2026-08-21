@@ -75,6 +75,19 @@ const CedarlingConfigPage: React.FC = () => {
 
   const { classes } = useStyles({ themeColors, isDark })
 
+  const alertIconSx = useMemo(() => ({ color: themeColors.infoAlert.text }), [themeColors])
+
+  const uploadOperations = useMemo(
+    () => [
+      {
+        label: t('documentation.cedarlingConfig.uploadPolicyStore'),
+        path: selectedFile?.name ?? '',
+        value: '',
+      },
+    ],
+    [t, selectedFile],
+  )
+
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
   const { createPolicyStore } = usePolicyStoreMutations()
@@ -112,10 +125,6 @@ const CedarlingConfigPage: React.FC = () => {
       try {
         setIsLoading(true)
 
-        // An upload only stages a store — it is created inactive and does not become the store
-        // Cedarling loads until an administrator activates it from Policy Store History. So there
-        // is nothing to re-sync and no reason to end the session here; both belong to activation.
-        // createPolicyStore records the audit entry, carrying these comments as the reason.
         await createPolicyStore({
           displayname: selectedFile.name,
           description: comments,
@@ -123,14 +132,12 @@ const CedarlingConfigPage: React.FC = () => {
         })
 
         setSelectedFile(null)
-        dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.uploadSuccess')))
-        navigateToRoute(ROUTES.ADMIN_POLICY_STORES)
+        navigateToRoute(ROUTES.LOGOUT)
       } catch (error) {
         logger.error(
           'Policy store upload flow failed:',
           error instanceof Error ? error : String(error),
         )
-        // createPolicyStore already toasts its own failure; this covers the base64 read.
         const errorMessage = getErrorMessage(
           error as Error | ApiError,
           'documentation.cedarlingConfig.uploadFailed',
@@ -209,10 +216,7 @@ const CedarlingConfigPage: React.FC = () => {
                   <Box className={classes.formContent}>
                     <Box className={classes.alertWrapper}>
                       <Box className={classes.alertBox}>
-                        <InfoOutlined
-                          className={classes.alertIcon}
-                          sx={{ color: themeColors.infoAlert.text }}
-                        />
+                        <InfoOutlined className={classes.alertIcon} sx={alertIconSx} />
                         <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
                           {t('documentation.cedarlingConfig.steps')}
                         </GluuText>
@@ -318,13 +322,7 @@ const CedarlingConfigPage: React.FC = () => {
           feature={adminUiFeatures.policy_store_write}
           alertSeverity="warning"
           alertMessage={t('documentation.cedarlingConfig.uploadConfirmMessage')}
-          operations={[
-            {
-              label: t('documentation.cedarlingConfig.uploadPolicyStore'),
-              path: selectedFile?.name ?? '',
-              value: '',
-            },
-          ]}
+          operations={uploadOperations}
         />
       )}
     </GluuLoader>

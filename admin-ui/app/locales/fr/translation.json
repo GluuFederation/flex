@@ -955,6 +955,7 @@
     "suspicious_ips": "Adresses IP suspectes",
     "filename": "Nom du fichier",
     "uploaded": "Téléversé",
+    "files": "Fichiers",
     "size": "Taille",
     "comments": "Commentaires"
   },
@@ -1718,7 +1719,7 @@
     "device_fingerprint_shift": "Types d'authentificateur",
     "threat_origins_ips": "Origines des menaces par IP",
     "policy_store_history": "Historique des magasins de politiques",
-    "archive_explorer": "Explorateur d’archive"
+    "policy_store_contents": "Contenu du magasin de politiques"
   },
   "options": {
     "admin": "ADMINISTRER",
@@ -2468,7 +2469,6 @@
       "downloadPolicyStore": "Télécharger",
       "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
       "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
-      "uploadSuccess": "Magasin de politiques téléversé. Activez-le depuis l’historique des magasins de politiques pour le mettre en service.",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
       "downloadFailed": "Échec du téléchargement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",

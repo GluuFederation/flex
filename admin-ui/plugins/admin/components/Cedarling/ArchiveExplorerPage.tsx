@@ -28,6 +28,7 @@ import {
   buildArchiveTree,
   editorModeFor,
   entryToText,
+  formatBytes,
   isTextEntry,
   normalizeArchivePath,
   readArchive,
@@ -43,12 +44,31 @@ const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const ZIP_MIME_TYPE = 'application/zip'
 const EDITOR_HEIGHT = '460px'
 
+const EMPTY_LOCATION = { dir: '', name: '', size: '' } as const
+const EDITOR_OPTIONS = { useWorker: false, showPrintMargin: false } as const
+
+const summarizeArchive = (entries: ArchiveEntry[] | null) => ({
+  fileCount: entries?.length ?? 0,
+  totalBytes: entries?.reduce((total, entry) => total + entry.bytes.length, 0) ?? 0,
+})
+
+const splitArchivePath = (entry: ArchiveEntry | null) => {
+  if (!entry) return EMPTY_LOCATION
+  const segments = entry.path.split('/')
+  const name = segments.pop() ?? entry.path
+  return {
+    dir: segments.length ? `${segments.join('/')}/` : '',
+    name,
+    size: formatBytes(entry.bytes.length),
+  }
+}
+
 const ArchiveExplorerPage: React.FC = () => {
   const { t } = useTranslation()
   const { inum } = useParams<{ inum: string }>()
   const { navigateBack } = useAppNavigation()
   const dispatch = useAppDispatch()
-  SetTitle(t('titles.archive_explorer'))
+  SetTitle(t('titles.policy_store_contents'))
 
   const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
     usePermission(SECURITY_RESOURCE_ID)
@@ -58,11 +78,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const { classes } = useStyles({ isDark, themeColors })
 
-  // Entries live in component state: every edit is in-memory until the archive is downloaded and
-  // re-uploaded, which is what the ticket specifies.
   const [entries, setEntries] = useState<ArchiveEntry[] | null>(null)
-  // A ref, not state: marking a store as loaded must not re-run the effect below, whose cleanup
-  // would then cancel the in-flight unpack before it could store its result.
   const loadedInumRef = useRef<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
@@ -79,12 +95,9 @@ const ArchiveExplorerPage: React.FC = () => {
 
   const store: AdminUIPolicyStore | undefined = useMemo(() => {
     const list = toPolicyStoreEntries(data)
-    // The filter may be ignored by the backend, so match on inum client-side rather than trusting
-    // that a single-entry response is the store that was asked for.
     return list.find((entry) => entry.inum === inum) ?? (list.length === 1 ? list[0] : undefined)
   }, [data, inum])
 
-  // Unpack once per store. Guarded by loadedInum so in-memory edits are not discarded by a refetch.
   useEffect(() => {
     const archive = store?.policyStore
     const storeInum = store?.inum
@@ -119,11 +132,23 @@ const ArchiveExplorerPage: React.FC = () => {
     [entries, selectedPath],
   )
 
-  const selectedIsText = selectedEntry ? isTextEntry(selectedEntry.path) : false
+  const selectedIsText = useMemo(
+    () => (selectedEntry ? isTextEntry(selectedEntry.path) : false),
+    [selectedEntry],
+  )
   const selectedText = useMemo(
     () => (selectedEntry && selectedIsText ? entryToText(selectedEntry) : ''),
     [selectedEntry, selectedIsText],
   )
+
+  const { fileCount, totalBytes } = useMemo(() => summarizeArchive(entries), [entries])
+
+  const archiveSummary = useMemo(
+    () => (fileCount ? `${t('fields.files')}: ${fileCount} · ${formatBytes(totalBytes)}` : ''),
+    [fileCount, totalBytes, t],
+  )
+
+  const selectedLocation = useMemo(() => splitArchivePath(selectedEntry), [selectedEntry])
 
   const handleSelect = useCallback((path: string) => {
     setSelectedPath(path)
@@ -230,12 +255,17 @@ const ArchiveExplorerPage: React.FC = () => {
         <GluuPageContent>
           <div className={classes.mobileContentPad}>
             <GluuText variant="h1" className={classes.mobilePageTitle} disableThemeColor>
-              {t('titles.archive_explorer')}
+              {t('titles.policy_store_contents')}
             </GluuText>
 
-            <GluuText variant="span" disableThemeColor className={classes.storeName}>
-              {store?.displayname || inum}
-            </GluuText>
+            <div className={classes.storeHeader}>
+              <GluuText variant="span" disableThemeColor className={classes.storeName}>
+                {store?.displayname || inum}
+              </GluuText>
+              <GluuText variant="span" disableThemeColor className={classes.storeMeta}>
+                {archiveSummary}
+              </GluuText>
+            </div>
 
             {hasUnsavedChanges && (
               <div className={`${classes.infoAlert} ${classes.infoAlertTopAligned}`}>
@@ -266,27 +296,47 @@ const ArchiveExplorerPage: React.FC = () => {
 
             <div className={classes.splitPane}>
               <div className={classes.treePane}>
-                {loadError ? (
-                  <GluuText variant="span" disableThemeColor className={classes.binaryNotice}>
-                    {loadError}
+                <div className={classes.paneHeader}>
+                  <GluuText variant="span" disableThemeColor className={classes.paneTitle}>
+                    {t('fields.files')}
                   </GluuText>
-                ) : (
-                  <ArchiveFileTree
-                    nodes={tree}
-                    selectedPath={selectedPath}
-                    dirtyPaths={dirtyPaths}
-                    onSelect={handleSelect}
-                    classes={classes}
-                  />
-                )}
+                  <GluuText variant="span" disableThemeColor className={classes.paneCount}>
+                    {fileCount}
+                  </GluuText>
+                </div>
+                <div className={classes.treeScroll}>
+                  {loadError ? (
+                    <GluuText variant="span" disableThemeColor className={classes.binaryNotice}>
+                      {loadError}
+                    </GluuText>
+                  ) : (
+                    <ArchiveFileTree
+                      nodes={tree}
+                      selectedPath={selectedPath}
+                      dirtyPaths={dirtyPaths}
+                      onSelect={handleSelect}
+                      classes={classes}
+                    />
+                  )}
+                </div>
               </div>
 
               <div className={classes.viewerPane}>
                 {selectedEntry ? (
                   <>
                     <div className={classes.viewerHeader}>
-                      <GluuText variant="span" disableThemeColor className={classes.viewerPath}>
-                        {selectedEntry.path}
+                      <div className={classes.viewerPath}>
+                        {selectedLocation.dir && (
+                          <GluuText variant="span" disableThemeColor className={classes.viewerDir}>
+                            {selectedLocation.dir}
+                          </GluuText>
+                        )}
+                        <GluuText variant="span" disableThemeColor className={classes.viewerFile}>
+                          {selectedLocation.name}
+                        </GluuText>
+                      </div>
+                      <GluuText variant="span" disableThemeColor className={classes.viewerSize}>
+                        {selectedLocation.size}
                       </GluuText>
                       {selectedIsText && canWriteSecurity && !isEditing && (
                         <GluuButton onClick={handleStartEdit} padding="6px 16px">
@@ -325,7 +375,7 @@ const ArchiveExplorerPage: React.FC = () => {
                           name={`archive-editor-${selectedEntry.path}`}
                           width="100%"
                           height={EDITOR_HEIGHT}
-                          setOptions={{ useWorker: false, showPrintMargin: false }}
+                          setOptions={EDITOR_OPTIONS}
                         />
                       </div>
                     ) : (

@@ -39,8 +39,6 @@ import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
 
-// Filename carries a host prefix, so it needs real room; Size is short and fixed. Without these
-// the auto table layout squeezes the filename to three lines and gives Size the leftover space.
 const COLUMN_MIN_WIDTHS = { FILENAME: 280, SIZE: 110, COMMENTS: 200 } as const
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
@@ -56,8 +54,6 @@ const SORT_COLUMN_LABELS: Record<string, string> = {
   jansStatus: 'fields.status',
 }
 
-// The list endpoint defaults to sorting by inum (a random uuid). A history screen has to be
-// chronological, so newest-first is the default here.
 const DEFAULT_SERVER_SORT = { column: 'creationDate', desc: true }
 
 type PendingAction = { type: 'activate' | 'delete'; store: AdminUIPolicyStore }
@@ -74,11 +70,8 @@ const PolicyStoreHistoryPage: React.FC = () => {
   SetTitle(t(PAGE_TITLE_KEY))
   const pageTitle = t(PAGE_TITLE_KEY)
 
-  const {
-    canRead: canReadSecurity,
-    canWrite: canWriteSecurity,
-    canDelete: canDeleteSecurity,
-  } = usePermission(SECURITY_RESOURCE_ID)
+  const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
+    usePermission(SECURITY_RESOURCE_ID)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -286,31 +279,28 @@ const PolicyStoreHistoryPage: React.FC = () => {
     ]
     if (isMobile) return list
     if (canWriteSecurity) {
-      list.push({
-        icon: <CheckCircleOutline className={classes.activateIcon} />,
-        tooltip: t('actions.set_active'),
-        id: 'activatePolicyStore',
-        // The active store is already live; only backups can be promoted.
-        show: (row) => !isActivePolicyStore(row),
-        onClick: (row) => setPendingAction({ type: 'activate', store: row }),
-      })
-    }
-    if (canDeleteSecurity) {
-      list.push({
-        icon: <DeleteOutlined className={classes.deleteIcon} />,
-        tooltip: t('actions.delete'),
-        id: 'deletePolicyStore',
-        // The ticket requires one active store at all times, so the active one cannot be deleted.
-        show: (row) => !isActivePolicyStore(row),
-        onClick: (row) => setPendingAction({ type: 'delete', store: row }),
-      })
+      list.push(
+        {
+          icon: <CheckCircleOutline className={classes.activateIcon} />,
+          tooltip: t('actions.set_active'),
+          id: 'activatePolicyStore',
+          disabled: (row) => isActivePolicyStore(row),
+          onClick: (row) => setPendingAction({ type: 'activate', store: row }),
+        },
+        {
+          icon: <DeleteOutlined className={classes.deleteIcon} />,
+          tooltip: t('actions.delete'),
+          id: 'deletePolicyStore',
+          disabled: (row) => isActivePolicyStore(row),
+          onClick: (row) => setPendingAction({ type: 'delete', store: row }),
+        },
+      )
     }
     return list
   }, [
     isLoading,
     canReadSecurity,
     canWriteSecurity,
-    canDeleteSecurity,
     isMobile,
     classes,
     t,

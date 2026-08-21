@@ -10,7 +10,7 @@ export const RESOURCE_ACTIONS = {
   Dashboard: ['read'],
   License: ['read', 'write'],
   MAU: ['read'],
-  Security: ['read', 'write', 'delete'],
+  Security: ['read', 'write'],
   Settings: ['read', 'write'],
   Webhooks: ['read', 'write', 'delete'],
   Assets: ['read', 'write', 'delete'],
