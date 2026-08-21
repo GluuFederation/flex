@@ -71,6 +71,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
+type WebhookTriggerAction = {
+  type?: string
+  payload?: { feature?: string; createdFeatureValue?: Record<string, string> }
+}
+
 describe('CedarlingConfigPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -130,5 +135,47 @@ describe('CedarlingConfigPage', () => {
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalled()
     })
+  })
+
+  it('triggers the policy store add/edit webhook after the upload succeeds', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    fireEvent.click(await screen.findByText('Upload'))
+    fireEvent.click(await screen.findByText('Yes'))
+    const commentsBox = await screen.findByRole('textbox')
+    fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
+    fireEvent.click(screen.getByText('Yes'))
+
+    await waitFor(() => {
+      expect(mockCreatePolicyStore).toHaveBeenCalled()
+    })
+
+    const triggers = dispatchSpy.mock.calls
+      .map(([action]) => action as WebhookTriggerAction)
+      .filter((action) => action?.type === 'webhook/triggerWebhook')
+
+    await waitFor(() => {
+      expect(triggers).toHaveLength(1)
+    })
+    expect(triggers[0].payload).toEqual({
+      feature: 'policy_store_write',
+      createdFeatureValue: expect.objectContaining({
+        displayname: 'test-policy.cjar',
+        description: 'Rolling out updated admin policies',
+        jansStatus: 'active',
+      }),
+    })
+    dispatchSpy.mockRestore()
   })
 })

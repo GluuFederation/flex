@@ -94,7 +94,6 @@
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
       "mapping": "Funções e permissões",
-      "cedarlingConfig": "Cedarling",
       "policyStoreHistory": "Gerenciamento de políticas do Admin UI"
     },
     "lock": "Trancar",
@@ -1020,6 +1019,7 @@
     "select_message_provider_type": "Por favor, selecione o tipo de provedor de mensagens",
     "new_role": "Novo papel",
     "add_webhook": "Adicionar Webhook",
+    "add_policy_store": "Adicionar repositório de políticas",
     "webhook_form_description": "Configure o webhook para receber notificações quando eventos específicos ocorrerem.",
     "no_webhooks_found": "Nenhum webhook encontrado",
     "no_assets_found": "Nenhum recurso encontrado",

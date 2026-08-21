@@ -77,14 +77,8 @@ const pluginMetadata = {
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
             {
-              title: 'menus.securityDropdown.cedarlingConfig',
-              path: ROUTES.ADMIN_CEDARLING_CONFIG,
-              action: CEDAR_ACTIONS.READ,
-              resourceKey: ADMIN_UI_RESOURCES.Security,
-            },
-            {
               title: 'menus.securityDropdown.policyStoreHistory',
-              path: ROUTES.ADMIN_POLICY_STORES,
+              path: ROUTES.ADMIN_POLICIES_LIST,
               action: CEDAR_ACTIONS.READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
@@ -146,19 +140,19 @@ const pluginMetadata = {
     },
     {
       component: CedarlingConfigPage,
-      path: ROUTES.ADMIN_CEDARLING_CONFIG,
+      path: ROUTES.ADMIN_POLICIES_CREATE,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,
     },
     {
       component: PolicyStoreHistoryPage,
-      path: ROUTES.ADMIN_POLICY_STORES,
+      path: ROUTES.ADMIN_POLICIES_LIST,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,
     },
     {
       component: ArchiveExplorerPage,
-      path: ROUTES.ADMIN_POLICY_STORE_EXPLORER_TEMPLATE,
+      path: ROUTES.ADMIN_POLICIES_VIEW_TEMPLATE,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,
     },

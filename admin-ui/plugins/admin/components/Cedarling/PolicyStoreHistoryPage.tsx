@@ -11,6 +11,7 @@ import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import {
+  Add,
   DeleteOutlined,
   DownloadOutlined,
   CheckCircleOutline,
@@ -99,7 +100,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
       sortBy: serverSort.column,
       sortOrder: serverSort.desc ? 'descending' : 'ascending',
     },
-    { query: { enabled: canReadSecurity, staleTime: 0 } },
+    { query: { enabled: canReadSecurity } },
   )
 
   const stores = useMemo(() => toPolicyStoreEntries(data), [data])
@@ -119,7 +120,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const handleOpen = useCallback(
     (store: AdminUIPolicyStore) => {
       if (!store.inum) return
-      navigateToRoute(ROUTES.ADMIN_POLICY_STORE_EXPLORER(store.inum))
+      navigateToRoute(ROUTES.ADMIN_POLICIES_VIEW(store.inum))
     },
     [navigateToRoute],
   )
@@ -374,6 +375,21 @@ const PolicyStoreHistoryPage: React.FC = () => {
     [pendingAction],
   )
 
+  const navigateToCreatePage = useCallback(
+    () => navigateToRoute(ROUTES.ADMIN_POLICIES_CREATE),
+    [navigateToRoute],
+  )
+
+  const primaryAction = useMemo(
+    () => ({
+      label: t('messages.add_policy_store'),
+      icon: <Add className={classes.addIcon} />,
+      onClick: navigateToCreatePage,
+      disabled: !canWriteSecurity,
+    }),
+    [t, navigateToCreatePage, canWriteSecurity, classes],
+  )
+
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
   const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
@@ -408,6 +424,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
                 filters={filters}
                 onRefresh={canReadSecurity ? handleRefresh : undefined}
                 refreshLoading={isFetching}
+                primaryAction={primaryAction}
                 actionsLabel={`${t('fields.actions')}:`}
                 disabled={loading}
               />

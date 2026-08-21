@@ -58,7 +58,7 @@ const RolePermissionMappingPage: React.FC = React.memo(() => {
               <InfoOutlined className={classes.infoIcon} />
               <GluuText variant="span" className={classes.infoText} disableThemeColor>
                 {t('documentation.mappings.note_prefix')}{' '}
-                <Link to={ROUTES.ADMIN_CEDARLING_CONFIG} className={classes.infoLink}>
+                <Link to={ROUTES.ADMIN_POLICIES_CREATE} className={classes.infoLink}>
                   Cedarling
                 </Link>{' '}
                 {t('documentation.mappings.note_suffix')}

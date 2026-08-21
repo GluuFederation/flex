@@ -12,13 +12,11 @@ import type { ArchiveTreeNode } from '@/utils/cjarArchive'
 type ArchiveFileTreeProps = {
   nodes: readonly ArchiveTreeNode[]
   selectedPath: string | null
-  dirtyPaths: ReadonlySet<string>
   onSelect: (path: string) => void
   classes: {
     treeRow: string
     treeRowSelected: string
     treeRowName: string
-    dirtyDot: string
     treeIcon: string
     treeFileIcon: string
   }
@@ -47,7 +45,6 @@ const activateOnKey = (action: () => void) => (event: React.KeyboardEvent) => {
 const ArchiveFileTree: React.FC<ArchiveFileTreeProps> = ({
   nodes,
   selectedPath,
-  dirtyPaths,
   onSelect,
   classes,
   depth = 0,
@@ -59,7 +56,6 @@ const ArchiveFileTree: React.FC<ArchiveFileTreeProps> = ({
           key={node.path}
           node={node}
           selectedPath={selectedPath}
-          dirtyPaths={dirtyPaths}
           onSelect={onSelect}
           classes={classes}
           depth={depth}
@@ -69,7 +65,6 @@ const ArchiveFileTree: React.FC<ArchiveFileTreeProps> = ({
           key={node.path}
           node={node}
           isSelected={selectedPath === node.path}
-          isDirty={dirtyPaths.has(node.path)}
           onSelect={onSelect}
           classes={classes}
           depth={depth}
@@ -82,14 +77,12 @@ const ArchiveFileTree: React.FC<ArchiveFileTreeProps> = ({
 const ArchiveDirectory = React.memo(function ArchiveDirectory({
   node,
   selectedPath,
-  dirtyPaths,
   onSelect,
   classes,
   depth,
 }: {
   node: ArchiveTreeNode
   selectedPath: string | null
-  dirtyPaths: ReadonlySet<string>
   onSelect: (path: string) => void
   classes: ArchiveFileTreeProps['classes']
   depth: number
@@ -133,7 +126,6 @@ const ArchiveDirectory = React.memo(function ArchiveDirectory({
         <ArchiveFileTree
           nodes={node.children}
           selectedPath={selectedPath}
-          dirtyPaths={dirtyPaths}
           onSelect={onSelect}
           classes={classes}
           depth={depth + 1}
@@ -146,14 +138,12 @@ const ArchiveDirectory = React.memo(function ArchiveDirectory({
 const ArchiveFile = React.memo(function ArchiveFile({
   node,
   isSelected,
-  isDirty,
   onSelect,
   classes,
   depth,
 }: {
   node: ArchiveTreeNode
   isSelected: boolean
-  isDirty: boolean
   onSelect: (path: string) => void
   classes: ArchiveFileTreeProps['classes']
   depth: number
@@ -179,7 +169,6 @@ const ArchiveFile = React.memo(function ArchiveFile({
       <GluuText variant="span" disableThemeColor className={classes.treeRowName}>
         {node.name}
       </GluuText>
-      {isDirty && <Box className={classes.dirtyDot} aria-label="unsaved changes" />}
     </Box>
   )
 })

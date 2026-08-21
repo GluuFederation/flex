@@ -95,7 +95,6 @@
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
       "mapping": "Rôles et permissions",
-      "cedarlingConfig": "Cedarling",
       "policyStoreHistory": "Gestion des politiques Admin UI"
     },
     "lock": "Verrouillage",
@@ -992,6 +991,7 @@
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
     "add_trust_relationship": "Ajouter une relation de confiance",
     "add_webhook": "Ajouter un Webhook",
+    "add_policy_store": "Ajouter un magasin de politiques",
     "webhook_form_description": "Configurez le webhook pour recevoir des notifications lorsque des événements spécifiques se produisent.",
     "no_webhooks_found": "Aucun webhook trouvé",
     "no_assets_found": "Aucune ressource trouvée",

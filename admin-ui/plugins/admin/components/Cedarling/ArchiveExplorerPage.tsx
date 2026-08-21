@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
@@ -11,17 +12,15 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { GluuPageContent, GluuButton } from '@/components'
+import { GluuPageContent } from '@/components'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
-import { Check, Close, DeleteOutlined, Edit, InfoOutlined } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useAppDispatch } from '@/redux/hooks'
-import { updateToast } from '@/redux/features/toastSlice'
+import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
 import { base64ToUint8Array, toPolicyStoreEntries } from '@/utils/policyStore'
 import {
@@ -30,10 +29,7 @@ import {
   entryToText,
   formatBytes,
   isTextEntry,
-  normalizeArchivePath,
   readArchive,
-  textToBytes,
-  writeArchive,
   type ArchiveEntry,
 } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
@@ -41,11 +37,18 @@ import ArchiveFileTree from './components/ArchiveFileTree'
 import { useStyles } from './styles/ArchiveExplorerPage.style'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
-const ZIP_MIME_TYPE = 'application/zip'
-const EDITOR_HEIGHT = '460px'
+const EDITOR_HEIGHT = '100%'
+const PANE_MIN_HEIGHT = 320
+const PANE_BOTTOM_GAP = 24
+const EDITOR_FONT_SIZE = 16
 
 const EMPTY_LOCATION = { dir: '', name: '', size: '' } as const
-const EDITOR_OPTIONS = { useWorker: false, showPrintMargin: false } as const
+const EDITOR_OPTIONS = {
+  useWorker: false,
+  showPrintMargin: false,
+  hScrollBarAlwaysVisible: false,
+} as const
+const EDITOR_PROPS = { $blockScrolling: true } as const
 
 const summarizeArchive = (entries: ArchiveEntry[] | null) => ({
   fileCount: entries?.length ?? 0,
@@ -67,11 +70,9 @@ const ArchiveExplorerPage: React.FC = () => {
   const { t } = useTranslation()
   const { inum } = useParams<{ inum: string }>()
   const { navigateBack } = useAppNavigation()
-  const dispatch = useAppDispatch()
   SetTitle(t('titles.policy_store_contents'))
 
-  const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
-    usePermission(SECURITY_RESOURCE_ID)
+  const { canRead: canReadSecurity } = usePermission(SECURITY_RESOURCE_ID)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -82,16 +83,10 @@ const ArchiveExplorerPage: React.FC = () => {
   const loadedInumRef = useRef<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
-  const [dirtyPaths, setDirtyPaths] = useState<Set<string>>(new Set())
-  const [hasStructuralChange, setHasStructuralChange] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [draft, setDraft] = useState('')
-  const [isAdding, setIsAdding] = useState(false)
-  const [newPath, setNewPath] = useState('')
 
   const { data, isLoading } = useGetAdminuiPolicyStore(
     { limit: 1, fieldValuePair: inum ? `inum=${inum}` : undefined },
-    { query: { enabled: canReadSecurity && Boolean(inum), staleTime: 0 } },
+    { query: { enabled: canReadSecurity && Boolean(inum) } },
   )
 
   const store: AdminUIPolicyStore | undefined = useMemo(() => {
@@ -114,8 +109,6 @@ const ArchiveExplorerPage: React.FC = () => {
         setEntries(unpacked)
         setLoadError(null)
         setSelectedPath(unpacked[0]?.path ?? null)
-        setDirtyPaths(new Set())
-        setHasStructuralChange(false)
       })
       .catch((error) => {
         logger.error(
@@ -158,103 +151,33 @@ const ArchiveExplorerPage: React.FC = () => {
 
   const handleSelect = useCallback((path: string) => {
     setSelectedPath(path)
-    setIsEditing(false)
-    setDraft('')
   }, [])
 
-  const handleStartEdit = useCallback(() => {
-    setDraft(selectedText)
-    setIsEditing(true)
-  }, [selectedText])
+  const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
 
-  const handleDiscard = useCallback(() => {
-    setIsEditing(false)
-    setDraft('')
+  const isMobile = useMediaQuery(`@media ${MOBILE_MEDIA_QUERY}`)
+  const splitPaneRef = useRef<HTMLDivElement>(null)
+  const footerRef = useRef<HTMLDivElement>(null)
+  const [paneHeight, setPaneHeight] = useState<number | null>(null)
+
+  useEffect(() => {
+    const updatePaneHeight = () => {
+      const pane = splitPaneRef.current
+      if (!pane) return
+      const paneTop = pane.getBoundingClientRect().top
+      const footerHeight = footerRef.current?.getBoundingClientRect().height ?? 0
+      const available = window.innerHeight - paneTop - footerHeight - PANE_BOTTOM_GAP
+      setPaneHeight(Math.max(PANE_MIN_HEIGHT, available))
+    }
+    updatePaneHeight()
+    window.addEventListener('resize', updatePaneHeight)
+    return () => window.removeEventListener('resize', updatePaneHeight)
   }, [])
 
-  const handleSave = useCallback(() => {
-    if (!selectedEntry) return
-    setEntries((previous) =>
-      (previous ?? []).map((entry) =>
-        entry.path === selectedEntry.path ? { ...entry, bytes: textToBytes(draft) } : entry,
-      ),
-    )
-    setDirtyPaths((previous) => new Set(previous).add(selectedEntry.path))
-    setIsEditing(false)
-    dispatch(updateToast(true, 'success', t('documentation.policyStore.fileSaved')))
-  }, [selectedEntry, draft, dispatch, t])
-
-  const handleAddFile = useCallback(() => {
-    const path = normalizeArchivePath(newPath)
-    if (!path) {
-      dispatch(updateToast(true, 'error', t('documentation.policyStore.filePathRequired')))
-      return
-    }
-    if ((entries ?? []).some((entry) => entry.path === path)) {
-      dispatch(updateToast(true, 'error', t('documentation.policyStore.fileAlreadyExists')))
-      return
-    }
-    setEntries((previous) =>
-      [...(previous ?? []), { path, bytes: textToBytes('') }].sort((a, b) =>
-        a.path.localeCompare(b.path),
-      ),
-    )
-    setDirtyPaths((previous) => new Set(previous).add(path))
-    setSelectedPath(path)
-    setNewPath('')
-    setIsAdding(false)
-    setIsEditing(true)
-    setDraft('')
-  }, [newPath, entries, dispatch, t])
-
-  const handleDeleteFile = useCallback(() => {
-    if (!selectedEntry) return
-    const remaining = (entries ?? []).filter((entry) => entry.path !== selectedEntry.path)
-    setEntries(remaining)
-    setDirtyPaths((previous) => {
-      const next = new Set(previous)
-      next.delete(selectedEntry.path)
-      return next
-    })
-    setSelectedPath(remaining[0]?.path ?? null)
-    setIsEditing(false)
-    setHasStructuralChange(true)
-    dispatch(updateToast(true, 'success', t('documentation.policyStore.fileDeleted')))
-  }, [selectedEntry, entries, dispatch, t])
-
-  const handleDownload = useCallback(async () => {
-    try {
-      const packed = await writeArchive(entries ?? [])
-      const blob = new Blob([packed], { type: ZIP_MIME_TYPE })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = store?.displayname || `${inum}.cjar`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      logger.error('Failed to pack archive:', error instanceof Error ? error : String(error))
-      dispatch(updateToast(true, 'error', t('documentation.policyStore.downloadFailed')))
-    }
-  }, [entries, store, inum, dispatch, t])
-
-  const handleToggleAdd = useCallback(() => setIsAdding((previous) => !previous), [])
-
-  const handleCancelAdd = useCallback(() => {
-    setIsAdding(false)
-    setNewPath('')
-  }, [])
-
-  const handleNewPathChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => setNewPath(event.target.value),
-    [],
+  const splitPaneStyle = useMemo(
+    () => (isMobile || paneHeight === null ? undefined : { height: paneHeight }),
+    [isMobile, paneHeight],
   )
-
-  const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICY_STORES), [navigateBack])
-
-  const hasUnsavedChanges = dirtyPaths.size > 0 || hasStructuralChange
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -274,34 +197,7 @@ const ArchiveExplorerPage: React.FC = () => {
               </GluuText>
             </div>
 
-            {hasUnsavedChanges && (
-              <div className={`${classes.infoAlert} ${classes.infoAlertTopAligned}`}>
-                <InfoOutlined className={classes.infoIcon} />
-                <GluuText variant="span" className={classes.infoText} disableThemeColor>
-                  {t('documentation.policyStore.unsavedChangesNote')}
-                </GluuText>
-              </div>
-            )}
-
-            {isAdding && canWriteSecurity && (
-              <div className={classes.addFileRow}>
-                <input
-                  className={classes.addFileInput}
-                  value={newPath}
-                  onChange={handleNewPathChange}
-                  placeholder={t('placeholders.archive_file_path')}
-                  aria-label={t('placeholders.archive_file_path')}
-                />
-                <GluuButton onClick={handleAddFile} padding="8px 20px">
-                  {t('actions.create')}
-                </GluuButton>
-                <GluuButton onClick={handleCancelAdd} padding="8px 20px">
-                  {t('actions.cancel')}
-                </GluuButton>
-              </div>
-            )}
-
-            <div className={classes.splitPane}>
+            <div className={classes.splitPane} ref={splitPaneRef} style={splitPaneStyle}>
               <div className={classes.treePane}>
                 <div className={classes.paneHeader}>
                   <GluuText variant="span" disableThemeColor className={classes.paneTitle}>
@@ -320,7 +216,6 @@ const ArchiveExplorerPage: React.FC = () => {
                     <ArchiveFileTree
                       nodes={tree}
                       selectedPath={selectedPath}
-                      dirtyPaths={dirtyPaths}
                       onSelect={handleSelect}
                       classes={classes}
                     />
@@ -342,46 +237,20 @@ const ArchiveExplorerPage: React.FC = () => {
                           {selectedLocation.name}
                         </GluuText>
                       </div>
-                      <GluuText variant="span" disableThemeColor className={classes.viewerSize}>
-                        {selectedLocation.size}
-                      </GluuText>
-                      {selectedIsText && canWriteSecurity && !isEditing && (
-                        <GluuButton onClick={handleStartEdit} padding="6px 16px">
-                          <Edit className={classes.actionIcon} aria-hidden /> {t('actions.edit')}
-                        </GluuButton>
-                      )}
-                      {isEditing && (
-                        <>
-                          <GluuButton onClick={handleSave} padding="6px 16px">
-                            <Check className={classes.actionIcon} aria-hidden /> {t('actions.save')}
-                          </GluuButton>
-                          <GluuButton onClick={handleDiscard} padding="6px 16px">
-                            <Close className={classes.actionIcon} aria-hidden />{' '}
-                            {t('actions.discard')}
-                          </GluuButton>
-                        </>
-                      )}
-                      {canWriteSecurity && !isEditing && (
-                        <GluuButton
-                          onClick={handleDeleteFile}
-                          padding="6px 16px"
-                          aria-label={t('actions.delete')}
-                        >
-                          <DeleteOutlined className={classes.actionIcon} aria-hidden />
-                        </GluuButton>
-                      )}
                     </div>
                     {selectedIsText ? (
                       <div className={classes.viewerBody}>
                         <AceEditor
                           mode={editorModeFor(selectedEntry.path)}
                           theme={isDark ? 'monokai' : 'xcode'}
-                          value={isEditing ? draft : selectedText}
-                          onChange={setDraft}
-                          readOnly={!isEditing}
+                          value={selectedText}
+                          readOnly
                           name={`archive-editor-${selectedEntry.path}`}
                           width="100%"
                           height={EDITOR_HEIGHT}
+                          fontSize={EDITOR_FONT_SIZE}
+                          wrapEnabled
+                          editorProps={EDITOR_PROPS}
                           setOptions={EDITOR_OPTIONS}
                         />
                       </div>
@@ -401,18 +270,14 @@ const ArchiveExplorerPage: React.FC = () => {
               </div>
             </div>
 
-            <GluuThemeFormFooter
-              className={classes.footer}
-              showBack
-              onBack={handleBack}
-              showCancel
-              cancelButtonLabel={t('actions.download')}
-              onCancel={handleDownload}
-              showApply={canWriteSecurity}
-              applyButtonLabel={t('actions.add_file')}
-              onApply={handleToggleAdd}
-              applyButtonType="button"
-            />
+            <div ref={footerRef}>
+              <GluuThemeFormFooter
+                className={classes.footer}
+                showBack
+                onBack={handleBack}
+                showCancel={false}
+              />
+            </div>
           </div>
         </GluuPageContent>
       </GluuViewWrapper>

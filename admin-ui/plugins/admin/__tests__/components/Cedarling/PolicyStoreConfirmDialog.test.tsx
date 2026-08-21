@@ -6,9 +6,7 @@ import PolicyStoreConfirmDialog from 'Plugins/admin/components/Cedarling/compone
 const TITLE = 'Confirm Policy Store Upload'
 const MESSAGE = 'Accepting triggers the associated webhooks.'
 
-const renderDialog = (
-  props: Partial<React.ComponentProps<typeof PolicyStoreConfirmDialog>> = {},
-) =>
+const renderDialog = (props: Partial<React.ComponentProps<typeof PolicyStoreConfirmDialog>> = {}) =>
   render(
     <PolicyStoreConfirmDialog
       open

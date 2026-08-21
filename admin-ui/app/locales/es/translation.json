@@ -887,7 +887,6 @@
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
       "mapping": "Roles y permisos",
-      "cedarlingConfig": "Cedarling",
       "policyStoreHistory": "Gestión de políticas de Admin UI"
     },
     "basic_configuration": "Configuración Básica",
@@ -982,6 +981,7 @@
     "webhook_dialog_dec": "Como parte del proceso de envío, el sistema activará automáticamente los siguientes webhooks asociados para realizar tareas de procesamiento adicionales.",
     "webhook_execution_dialog_dec": "Los webhooks asociados se activaron como parte del proceso de envío. A continuación se muestran los resultados de ejecución de cada webhook.",
     "add_webhook": "Agregar Webhook",
+    "add_policy_store": "Agregar almacén de políticas",
     "webhook_form_description": "Configure el webhook para recibir notificaciones cuando ocurran eventos específicos.",
     "no_webhooks_found": "No se encontraron webhooks",
     "no_assets_found": "No se encontraron recursos",

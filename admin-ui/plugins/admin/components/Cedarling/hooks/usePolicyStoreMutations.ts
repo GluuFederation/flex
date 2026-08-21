@@ -16,6 +16,9 @@ import { logger } from '@/utils/logger'
 import { CREATE, UPDATE, DELETION } from '@/audit/UserActionType'
 import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { POLICY_STORE_STATUS } from '@/constants/policyStore'
+import { adminUiFeatures } from '@/constants'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 
 type AuditAction = typeof CREATE | typeof UPDATE | typeof DELETION
@@ -30,8 +33,9 @@ type CreatePolicyStoreInput = {
  * Create / activate / delete for policy stores, each paired with an audit entry carrying the
  * administrator's comments — the ticket's requirement that every change records who, what and why.
  *
- * Webhooks are not fired here: the confirm dialogs these actions run behind are `GluuCommitDialog`,
- * which triggers the configured webhook for its `feature` prop before invoking `onAccept`.
+ * Each action also fires the webhooks registered against its Admin UI feature. `GluuCommitDialog`
+ * only lists them for confirmation ahead of the action; the trigger itself has to be dispatched
+ * once the operation has actually succeeded.
  */
 export const usePolicyStoreMutations = () => {
   const { t } = useTranslation()
@@ -113,6 +117,12 @@ export const usePolicyStoreMutations = () => {
           fileName: displayname,
           comments: description,
         })
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: data as Record<string, JsonValue>,
+            feature: adminUiFeatures.policy_store_write,
+          }),
+        )
         await syncRoleScopes(displayname)
         invalidatePolicyStores()
         return result
@@ -121,7 +131,7 @@ export const usePolicyStoreMutations = () => {
         throw error
       }
     },
-    [createMutation, audit, syncRoleScopes, invalidatePolicyStores, toastError, t],
+    [createMutation, audit, dispatch, syncRoleScopes, invalidatePolicyStores, toastError, t],
   )
 
   const setPolicyStoreActive = useCallback(
@@ -142,6 +152,15 @@ export const usePolicyStoreMutations = () => {
           policyStore: store.displayname ?? inum,
           comments,
         })
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: {
+              ...store,
+              jansStatus: POLICY_STORE_STATUS.ACTIVE,
+            } as Record<string, JsonValue>,
+            feature: adminUiFeatures.policy_store_write,
+          }),
+        )
         dispatch(updateToast(true, 'success', t('documentation.policyStore.activateSuccess')))
         invalidatePolicyStores()
       } catch (error) {
@@ -164,6 +183,12 @@ export const usePolicyStoreMutations = () => {
           policyStore: store.displayname ?? inum,
           comments,
         })
+        dispatch(
+          triggerWebhook({
+            createdFeatureValue: store as Record<string, JsonValue>,
+            feature: adminUiFeatures.policy_store_delete,
+          }),
+        )
         dispatch(updateToast(true, 'success', t('documentation.policyStore.deleteSuccess')))
         invalidatePolicyStores()
       } catch (error) {

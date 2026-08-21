@@ -10,21 +10,13 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import {
-  createFormInputStyles,
-  createFormInputFocusStyles,
-  createFormInputPlaceholderStyles,
-  createInfoAlertStyles,
-} from '@/styles/formStyles'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
 
 const TREE_WIDTH = 300
-const PANE_HEIGHT = 520
-const EDITOR_PANE_HEIGHT = PANE_HEIGHT - 60
+const PANE_MIN_HEIGHT = 320
 const PANE_HEADER_PADDING = '10px 12px'
 const TREE_ROW_HEIGHT = 32
 const SELECTED_ROW_ACCENT_WIDTH = 2
-const DIRTY_DOT_SIZE = 8
 
 export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   theme: Theme,
@@ -32,12 +24,6 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-  const inputColors = {
-    inputBg: themeColors.settings?.formInputBackground ?? themeColors.inputBackground,
-    inputBorderColor: themeColors.borderColor,
-    fontColor: themeColors.fontColor,
-    textMuted: themeColors.textMuted,
-  }
   const paneHeader = {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -61,9 +47,6 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       },
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-
-    ...createInfoAlertStyles(themeColors.infoAlert),
-    infoAlertTopAligned: { alignItems: 'flex-start', marginBottom: SPACING.CARD_GAP },
 
     storeHeader: {
       display: 'flex',
@@ -106,7 +89,8 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       display: 'flex',
       gap: SPACING.PAGE,
       alignItems: 'stretch',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: { flexDirection: 'column' },
+      minHeight: PANE_MIN_HEIGHT,
+      [`@media ${MOBILE_MEDIA_QUERY}`]: { flexDirection: 'column', height: 'auto' },
     },
     treePane: {
       ...cardBorderStyle,
@@ -114,7 +98,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       backgroundColor: cardBg,
       width: TREE_WIDTH,
       minWidth: TREE_WIDTH,
-      maxHeight: PANE_HEIGHT,
+      maxHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
@@ -159,18 +143,13 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       color: themeColors.fontColor,
       wordBreak: 'break-all',
     },
-    viewerSize: {
-      fontFamily,
-      fontSize: fontSizes.sm,
-      color: themeColors.textMuted,
-      flexShrink: 0,
-    },
-    viewerBody: { flex: 1, minHeight: EDITOR_PANE_HEIGHT },
+    viewerBody: { flex: 1, minHeight: 0 },
     emptyViewer: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: PANE_HEIGHT,
+      flex: 1,
+      minHeight: 0,
       padding: 16,
       textAlign: 'center',
       fontFamily,
@@ -211,33 +190,8 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
     },
-    dirtyDot: {
-      width: DIRTY_DOT_SIZE,
-      height: DIRTY_DOT_SIZE,
-      borderRadius: BORDER_RADIUS.CIRCLE,
-      backgroundColor: themeColors.infoAlert.icon,
-      flexShrink: 0,
-    },
     treeIcon: { fontSize: ICON_SIZE.SM, flexShrink: 0 },
     treeFileIcon: { fontSize: ICON_SIZE.SM, flexShrink: 0, color: themeColors.textMuted },
-    actionIcon: { fontSize: ICON_SIZE.SM },
-
-    addFileRow: {
-      display: 'flex',
-      gap: 8,
-      alignItems: 'center',
-      flexWrap: 'wrap',
-      marginBottom: SPACING.CARD_GAP,
-    },
-    addFileInput: {
-      ...createFormInputStyles(inputColors),
-      'flex': 1,
-      'minWidth': 180,
-      'fontFamily': fontFamily,
-      'fontSize': fontSizes.base,
-      '&:focus': createFormInputFocusStyles(inputColors),
-      '&::placeholder': createFormInputPlaceholderStyles(themeColors.textMuted),
-    },
     footer: { marginTop: SPACING.PAGE },
   }
 })

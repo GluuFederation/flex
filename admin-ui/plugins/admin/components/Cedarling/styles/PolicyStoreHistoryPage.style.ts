@@ -65,6 +65,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       wordBreak: 'break-word',
     },
     statusBadge: { minWidth: 80 },
+    addIcon: { fontSize: ICON_SIZE.MD },
     viewIcon: { fontSize: ICON_SIZE.SM },
     downloadIcon: { fontSize: ICON_SIZE.SM },
     activateIcon: { fontSize: ICON_SIZE.SM },

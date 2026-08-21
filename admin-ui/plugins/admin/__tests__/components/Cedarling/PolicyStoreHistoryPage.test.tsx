@@ -106,6 +106,11 @@ const openConfirmFor = async (actionLabel: string) => {
   fireEvent.click(screen.getByText('Yes'))
 }
 
+type WebhookTriggerAction = {
+  type?: string
+  payload?: { feature?: string; createdFeatureValue?: Record<string, string> }
+}
+
 describe('PolicyStoreHistoryPage', () => {
   const mockUsePermission = jest.requireMock('@/cedarling/hooks/usePermission')
     .usePermission as jest.Mock
@@ -114,6 +119,11 @@ describe('PolicyStoreHistoryPage', () => {
     jest.clearAllMocks()
     mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
   })
+
+  const webhookTriggers = (dispatchSpy: jest.SpyInstance) =>
+    dispatchSpy.mock.calls
+      .map(([action]) => action as WebhookTriggerAction)
+      .filter((action) => action?.type === 'webhook/triggerWebhook')
 
   it('lists every uploaded policy store with its status', async () => {
     render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
@@ -238,5 +248,51 @@ describe('PolicyStoreHistoryPage', () => {
         }),
       )
     })
+  })
+
+  it('triggers the policy store delete webhook once the store is gone', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    await openConfirmFor('Delete')
+
+    await waitFor(() => {
+      expect(mockDeleteMutate).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(webhookTriggers(dispatchSpy)).toEqual([
+        expect.objectContaining({
+          payload: expect.objectContaining({ feature: 'policy_store_delete' }),
+        }),
+      ])
+    })
+    dispatchSpy.mockRestore()
+  })
+
+  it('triggers the policy store add/edit webhook on activation', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    await openConfirmFor('Set active')
+
+    await waitFor(() => {
+      expect(mockEditMutate).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(webhookTriggers(dispatchSpy)).toHaveLength(1)
+    })
+
+    const [trigger] = webhookTriggers(dispatchSpy)
+    expect(trigger.payload).toEqual({
+      feature: 'policy_store_write',
+      createdFeatureValue: expect.objectContaining({
+        inum: 'backup-1',
+        displayname: 'previous-policies.cjar',
+        jansStatus: 'active',
+      }),
+    })
+    dispatchSpy.mockRestore()
   })
 })

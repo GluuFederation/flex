@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -122,7 +122,7 @@ describe('ArchiveExplorerPage', () => {
     expect(screen.getByRole('button', { name: 'allow.cedar' })).toBeInTheDocument()
   })
 
-  it('shows the selected file contents read-only until Edit is clicked', async () => {
+  it('shows the selected file contents read-only', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
@@ -130,66 +130,17 @@ describe('ArchiveExplorerPage', () => {
     const editor = await screen.findByTestId('archive-editor')
     expect(editor).toHaveValue('permit(principal, action, resource);')
     expect(editor).toHaveAttribute('readonly')
-
-    fireEvent.click(screen.getByText('Edit'))
-    await waitFor(() =>
-      expect(screen.getByTestId('archive-editor')).not.toHaveAttribute('readonly'),
-    )
   })
 
-  it('keeps an edit in memory and marks the file as unsaved', async () => {
+  it('offers no edit, delete, add, or download controls', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
-    fireEvent.click(screen.getByText('Edit'))
-    fireEvent.change(screen.getByTestId('archive-editor'), { target: { value: 'forbid();' } })
-    fireEvent.click(screen.getByText('Save'))
 
-    await waitFor(() => {
-      expect(screen.getByLabelText('unsaved changes')).toBeInTheDocument()
-    })
-    expect(screen.getByTestId('archive-editor')).toHaveValue('forbid();')
-  })
-
-  it('discards an edit without changing the file', async () => {
-    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
-
-    fireEvent.click(await screen.findByText('allow.cedar'))
-    fireEvent.click(screen.getByText('Edit'))
-    fireEvent.change(screen.getByTestId('archive-editor'), { target: { value: 'forbid();' } })
-    fireEvent.click(screen.getByText('Discard'))
-
-    await waitFor(() => {
-      expect(screen.getByTestId('archive-editor')).toHaveValue(
-        'permit(principal, action, resource);',
-      )
-    })
-    expect(screen.queryByLabelText('unsaved changes')).not.toBeInTheDocument()
-  })
-
-  it('adds a new file at the given path', async () => {
-    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
-    await screen.findByText('allow.cedar')
-
-    fireEvent.click(screen.getByText('Add file'))
-    fireEvent.change(screen.getByLabelText('e.g. policies/new-policy.cedar'), {
-      target: { value: 'policies/deny.cedar' },
-    })
-    fireEvent.click(screen.getByText('Create'))
-
-    expect(await screen.findByRole('button', { name: 'deny.cedar' })).toBeInTheDocument()
-  })
-
-  it('removes a file from the archive', async () => {
-    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
-
-    fireEvent.click(await screen.findByRole('button', { name: 'allow.cedar' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
-
-    await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument()
-    })
-    expect(screen.getByRole('button', { name: 'MANIFEST.MF' })).toBeInTheDocument()
+    expect(screen.queryByText('Edit')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Add file')).not.toBeInTheDocument()
+    expect(screen.queryByText('Download')).not.toBeInTheDocument()
   })
 
   it('packs the edited archive back into a readable zip', async () => {

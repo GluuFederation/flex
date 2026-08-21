@@ -10,7 +10,7 @@ describe('resolveStartPath', () => {
   })
 
   it('sends a deep route back to the base path', () => {
-    expect(resolveStartPath(BASE, '/admin/home/policystores', '', '')).toBe('/admin/')
+    expect(resolveStartPath(BASE, '/admin/home/policies', '', '')).toBe('/admin/')
   })
 
   it('keeps the query and hash so an auth callback survives the rewrite', () => {
@@ -41,7 +41,7 @@ describe('startAtRoot', () => {
   })
 
   it('rewrites the address bar when the page loads on a deep route', () => {
-    window.history.replaceState(null, '', '/admin/home/policystores')
+    window.history.replaceState(null, '', '/admin/home/policies')
     replaceState.mockClear()
 
     startAtRoot(BASE)
