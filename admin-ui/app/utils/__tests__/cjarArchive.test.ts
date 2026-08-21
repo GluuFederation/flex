@@ -176,4 +176,17 @@ describe('archive round-trip', () => {
 
     await expect(readArchive(packed)).rejects.toThrow(/not a valid archive/i)
   })
+
+  it('rejects an entry larger than the supported size', async () => {
+    const packed = await writeArchive([
+      { path: 'big.bin', bytes: new Uint8Array(17 * 1024 * 1024) },
+    ])
+
+    await expect(readArchive(packed)).rejects.toThrow(/exceeds the supported size/i)
+  }, 30000)
+
+  it('accepts an archive well under the size limits', async () => {
+    const packed = await writeArchive([entry('a.cedar', 'permit();')])
+    await expect(readArchive(packed)).resolves.toHaveLength(1)
+  })
 })

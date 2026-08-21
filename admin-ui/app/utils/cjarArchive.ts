@@ -38,6 +38,9 @@ const COMPRESSION = { STORED: 0, DEFLATE: 8 } as const
  */
 const UTF8_NAME_FLAG = 0x0800
 
+const MAX_ENTRY_BYTES = 16 * 1024 * 1024
+const MAX_ARCHIVE_BYTES = 64 * 1024 * 1024
+
 const LOCAL_HEADER_SIZE = 30
 const CENTRAL_HEADER_SIZE = 46
 const EOCD_SIZE = 22
@@ -106,19 +109,44 @@ const canCompress = (): boolean => typeof CompressionStream === 'function'
 const runThroughStream = async (
   data: Uint8Array,
   transform: CompressionStream | DecompressionStream,
+  maxBytes = Number.POSITIVE_INFINITY,
 ): Promise<Uint8Array> => {
   const copy = new Uint8Array(new ArrayBuffer(data.length))
   copy.set(data)
   const stream = new Blob([copy]).stream().pipeThrough(transform)
-  const buffer = await new Response(stream).arrayBuffer()
-  return new Uint8Array(buffer)
+  const reader = stream.getReader()
+  const chunks: Uint8Array[] = []
+  let total = 0
+
+  try {
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      total += value.length
+      if (total > maxBytes) {
+        await reader.cancel()
+        throw new Error('Policy store archive expands beyond the supported size.')
+      }
+      chunks.push(value)
+    }
+  } finally {
+    reader.releaseLock()
+  }
+
+  const output = new Uint8Array(new ArrayBuffer(total))
+  let offset = 0
+  for (const chunk of chunks) {
+    output.set(chunk, offset)
+    offset += chunk.length
+  }
+  return output
 }
 
-const inflateRaw = async (data: Uint8Array): Promise<Uint8Array> => {
+const inflateRaw = async (data: Uint8Array, maxBytes: number): Promise<Uint8Array> => {
   if (!canDecompress()) {
     throw new Error('This browser cannot decompress the policy store archive.')
   }
-  return runThroughStream(data, new DecompressionStream(DEFLATE_RAW))
+  return runThroughStream(data, new DecompressionStream(DEFLATE_RAW), maxBytes)
 }
 
 const deflateRaw = async (data: Uint8Array): Promise<Uint8Array> =>
@@ -149,6 +177,7 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
   const entryCount = view.getUint16(eocdOffset + 10, true)
   let cursor = view.getUint32(eocdOffset + 16, true)
   const entries: ArchiveEntry[] = []
+  let totalBytes = 0
 
   for (let index = 0; index < entryCount; index++) {
     if (cursor < 0 || cursor + CENTRAL_HEADER_SIZE > bytes.length) {
@@ -184,11 +213,16 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       if (dataStart + compressedSize > bytes.length) {
         throw new Error(`Not a valid archive: "${path}" is truncated.`)
       }
+      const budget = Math.min(MAX_ENTRY_BYTES, MAX_ARCHIVE_BYTES - totalBytes)
+      if (method === COMPRESSION.STORED && compressedSize > budget) {
+        throw new Error(`Policy store archive entry "${path}" exceeds the supported size.`)
+      }
       const raw = bytes.subarray(dataStart, dataStart + compressedSize)
-      const data = method === COMPRESSION.DEFLATE ? await inflateRaw(raw) : raw.slice()
+      const data = method === COMPRESSION.DEFLATE ? await inflateRaw(raw, budget) : raw.slice()
       if (crc32(data) !== expectedCrc) {
         throw new Error(`Not a valid archive: "${path}" failed its checksum.`)
       }
+      totalBytes += data.length
       entries.push({ path, bytes: data })
     }
 

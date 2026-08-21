@@ -12,7 +12,7 @@ import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import {
   DeleteOutlined,
   DownloadOutlined,
-  CheckCircleOutline,
+  CheckCircle,
   VisibilityOutlined,
 } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
@@ -285,7 +285,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
     if (canWriteSecurity) {
       list.push(
         {
-          icon: <CheckCircleOutline className={classes.activateIcon} />,
+          icon: <CheckCircle className={classes.activateIcon} />,
           tooltip: t('actions.set_active'),
           id: 'activatePolicyStore',
           disabled: (row) => isActivePolicyStore(row),

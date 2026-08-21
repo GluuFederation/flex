@@ -84,9 +84,9 @@ export const useStyles = (params: { isDark: boolean; themeColors: ThemeConfig })
         borderColor: 'transparent',
       },
       statusBadgeBackup: {
-        backgroundColor: themeColors.badges.filledBadgeBg,
-        textColor: themeColors.badges.filledBadgeText,
-        borderColor: 'transparent',
+        backgroundColor: themeColors.background,
+        textColor: themeColors.fontColor,
+        borderColor: themeColors.borderColor,
       },
     }),
     [themeColors],

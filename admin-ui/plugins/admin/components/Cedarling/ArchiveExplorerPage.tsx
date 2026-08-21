@@ -107,7 +107,8 @@ const ArchiveExplorerPage: React.FC = () => {
     }
     let isMounted = true
     loadedInumRef.current = storeInum
-    readArchive(base64ToUint8Array(archive))
+    Promise.resolve()
+      .then(() => readArchive(base64ToUint8Array(archive)))
       .then((unpacked) => {
         if (!isMounted) return
         setEntries(unpacked)
