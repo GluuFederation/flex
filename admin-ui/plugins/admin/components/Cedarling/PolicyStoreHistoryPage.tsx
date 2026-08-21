@@ -369,6 +369,11 @@ const PolicyStoreHistoryPage: React.FC = () => {
     [pattern, totalItems, t],
   )
 
+  const pendingStoreName = useMemo(
+    () => pendingAction?.store.displayname || pendingAction?.store.inum || '',
+    [pendingAction],
+  )
+
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
   const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
@@ -442,16 +447,23 @@ const PolicyStoreHistoryPage: React.FC = () => {
               ? t('documentation.policyStore.deleteWarning')
               : t('documentation.policyStore.activateWarning')
           }
+          label={
+            pendingAction?.type === 'delete'
+              ? `${t('documentation.policyStore.deleteConfirmTitle')}: ${pendingStoreName}`
+              : undefined
+          }
           operations={
-            pendingAction
+            pendingAction && pendingAction.type !== 'delete'
               ? [
                   {
-                    label:
-                      pendingAction.type === 'delete'
-                        ? t('actions.delete')
-                        : t('actions.set_active'),
-                    path: pendingAction.store.displayname || pendingAction.store.inum || '',
-                    value: pendingAction.store.description || '',
+                    label: t('fields.filename'),
+                    path: 'displayname',
+                    value: pendingStoreName,
+                  },
+                  {
+                    label: t('fields.status'),
+                    path: 'jansStatus',
+                    value: t('fields.active'),
                   },
                 ]
               : []

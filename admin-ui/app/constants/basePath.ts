@@ -1,1 +1,7 @@
-export const BASE_PATH: string = process.env.BASE_PATH ?? '/admin/'
+const configuredBasePath = process.env.BASE_PATH ?? '/admin/'
+
+const BASE_PATH: string = configuredBasePath.endsWith('/')
+  ? configuredBasePath
+  : `${configuredBasePath}/`
+
+export { BASE_PATH }

@@ -2529,6 +2529,7 @@
       "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
       "selectFileToView": "Selecione um arquivo para ver o conteúdo.",
       "activateConfirmTitle": "Confirmar ativação do repositório de políticas",
+      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas",
       "activateRestartWarning": "Ativar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e todas as permissões serão reavaliadas a partir dele no próximo login."
     }
   },

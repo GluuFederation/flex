@@ -32,7 +32,11 @@ const PolicyStoreConfirmDialog = ({
   }
 
   return (
-    <GluuModalShell onClose={onClose} ariaLabelledBy={TITLE_ID}>
+    <GluuModalShell
+      onClose={onClose}
+      ariaLabelledBy={TITLE_ID}
+      containerClassName={classes.modalContainer}
+    >
       <GluuText variant="h2" className={classes.title} id={TITLE_ID}>
         {title}
       </GluuText>

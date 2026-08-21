@@ -2524,6 +2524,7 @@
       "binaryFileNotice": "This file is not a text file and cannot be edited here.",
       "selectFileToView": "Select a file from the archive to view its contents.",
       "activateConfirmTitle": "Confirm Policy Store Activation",
+      "deleteConfirmTitle": "Confirm Policy Store Deletion",
       "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and all permissions are re-evaluated from it at the next sign-in."
     }
   },

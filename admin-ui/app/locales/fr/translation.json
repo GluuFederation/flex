@@ -2545,6 +2545,7 @@
       "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
       "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu.",
       "activateConfirmTitle": "Confirmer l’activation du magasin de politiques",
+      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques",
       "activateRestartWarning": "L'activation de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et toutes les permissions seront réévaluées à partir de celui-ci à la prochaine connexion."
     }
   },
