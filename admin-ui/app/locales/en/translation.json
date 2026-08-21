@@ -888,7 +888,7 @@
       "capabilities": "Capabilities",
       "mapping": "Roles and Permissions",
       "cedarlingConfig": "Cedarling",
-      "policyStoreHistory": "Policy Store History"
+      "policyStoreHistory": "Admin UI Policy Management"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -1710,7 +1710,7 @@
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types",
     "threat_origins_ips": "Threat Origins by IP",
-    "policy_store_history": "Policy Store History",
+    "policy_store_history": "Admin UI Policy Management",
     "policy_store_contents": "Policy Store Contents"
   },
   "options": {
@@ -2497,7 +2497,8 @@
       "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
       "uploadConfirmTitle": "Confirm Policy Store Upload",
       "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI.",
-      "defaultPolicyStoreDescription": "Admin UI Policy Store"
+      "defaultPolicyStoreDescription": "Admin UI Policy Store",
+      "uploadRestartWarning": "Uploading this policy store restarts the system. Accepting triggers the associated webhooks, and you will be signed out of the Admin UI once processing completes."
     },
     "mappings": {
       "note_prefix": "Configure",
@@ -2521,7 +2522,9 @@
       "fileAlreadyExists": "A file with that path already exists in the archive.",
       "unsavedChangesNote": "Unsaved changes — download the archive to keep them.",
       "binaryFileNotice": "This file is not a text file and cannot be edited here.",
-      "selectFileToView": "Select a file from the archive to view its contents."
+      "selectFileToView": "Select a file from the archive to view its contents.",
+      "activateConfirmTitle": "Confirm Policy Store Activation",
+      "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and all permissions are re-evaluated from it at the next sign-in."
     }
   },
   "claims": {

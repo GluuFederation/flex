@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createInfoAlertStyles } from '@/styles/formStyles'
 import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
@@ -54,6 +55,7 @@ const OPERATIONS_SCROLL_MAX_HEIGHT =
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const infoAlertStyles = createInfoAlertStyles(themeColors.infoAlert)
 
   return {
     modalScroll: {
@@ -190,6 +192,24 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: `${MOBILE_TEXTAREA_PADDING_Y}px ${MOBILE_TEXTAREA_PADDING_X}px`,
       },
+    },
+    alertBanner: {
+      ...infoAlertStyles.infoAlert,
+      alignItems: 'flex-start',
+    },
+    alertText: infoAlertStyles.infoText,
+    alertIconInfo: infoAlertStyles.infoIcon,
+    alertIconSuccess: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.badges.statusActive,
+    },
+    alertIconWarning: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.warningColor,
+    },
+    alertIconError: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.errorColor,
     },
     errorMessage: {
       fontFamily,

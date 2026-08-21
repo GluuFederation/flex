@@ -888,7 +888,7 @@
       "capabilities": "Capacidades",
       "mapping": "Roles y permisos",
       "cedarlingConfig": "Cedarling",
-      "policyStoreHistory": "Historial de almacenes de políticas"
+      "policyStoreHistory": "Gestión de políticas de Admin UI"
     },
     "basic_configuration": "Configuración Básica",
     "inum_configuration": "Configuración Inum",
@@ -1713,7 +1713,7 @@
     "velocity_watch": "Intentos por usuario",
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Orígenes de amenazas por IP",
-    "policy_store_history": "Historial de almacenes de políticas",
+    "policy_store_history": "Gestión de políticas de Admin UI",
     "policy_store_contents": "Contenido del almacén de políticas"
   },
   "options": {
@@ -2501,7 +2501,8 @@
       "downloadFailed": "Error al descargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
       "auditPolicyStoreUploaded": "Almacén de políticas cargado",
-      "defaultPolicyStoreDescription": "Almacén de políticas de la interfaz de administración"
+      "defaultPolicyStoreDescription": "Almacén de políticas de la interfaz de administración",
+      "uploadRestartWarning": "Subir este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y se cerrará su sesión en Admin UI cuando finalice el procesamiento."
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2525,7 +2526,9 @@
       "fileAlreadyExists": "Ya existe un archivo con esa ruta.",
       "unsavedChangesNote": "Cambios sin guardar: descargue el archivo comprimido para conservarlos.",
       "binaryFileNotice": "Este archivo no es de texto y no se puede editar aquí.",
-      "selectFileToView": "Seleccione un archivo para ver su contenido."
+      "selectFileToView": "Seleccione un archivo para ver su contenido.",
+      "activateConfirmTitle": "Confirmar activación del almacén de políticas",
+      "activateRestartWarning": "Activar este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y todos los permisos se volverán a evaluar a partir de él en el próximo inicio de sesión."
     }
   },
   "validations": {

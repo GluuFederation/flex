@@ -5,6 +5,7 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
@@ -12,7 +13,7 @@ import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import {
   DeleteOutlined,
   DownloadOutlined,
-  CheckCircle,
+  CheckCircleOutline,
   VisibilityOutlined,
 } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
@@ -86,6 +87,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const [pattern, setPattern] = useState('')
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
+  const [activationConfirmed, setActivationConfirmed] = useState(false)
 
   const { setPolicyStoreActive, deletePolicyStore, isMutating } = usePolicyStoreMutations()
 
@@ -148,7 +150,12 @@ const PolicyStoreHistoryPage: React.FC = () => {
     [dispatch, t],
   )
 
-  const closeDialog = useCallback(() => setPendingAction(null), [])
+  const closeDialog = useCallback(() => {
+    setPendingAction(null)
+    setActivationConfirmed(false)
+  }, [])
+
+  const handleActivationConfirmAccept = useCallback(() => setActivationConfirmed(true), [])
 
   const handleRowsPerPageChange = useCallback(
     (rowsPerPage: number) => {
@@ -189,6 +196,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
           await deletePolicyStore(store, comments)
         }
         setPendingAction(null)
+        setActivationConfirmed(false)
         refetch()
       } catch (error) {
         logger.error(`Policy store ${type} failed:`, error instanceof Error ? error : String(error))
@@ -285,7 +293,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
     if (canWriteSecurity) {
       list.push(
         {
-          icon: <CheckCircle className={classes.activateIcon} />,
+          icon: <CheckCircleOutline className={classes.activateIcon} />,
           tooltip: t('actions.set_active'),
           id: 'activatePolicyStore',
           disabled: (row) => isActivePolicyStore(row),
@@ -364,6 +372,10 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
   const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
+  const showActivationConfirm = pendingAction?.type === 'activate' && !activationConfirmed
+
+  const showCommitDialog = Boolean(pendingAction) && !showActivationConfirm
+
   const dialogFeature =
     pendingAction?.type === 'delete'
       ? adminUiFeatures.policy_store_delete
@@ -411,8 +423,16 @@ const PolicyStoreHistoryPage: React.FC = () => {
           </div>
         </GluuViewWrapper>
 
+        <PolicyStoreConfirmDialog
+          open={showActivationConfirm}
+          title={t('documentation.policyStore.activateConfirmTitle')}
+          message={t('documentation.policyStore.activateRestartWarning')}
+          onConfirm={handleActivationConfirmAccept}
+          onClose={closeDialog}
+        />
+
         <GluuCommitDialog
-          modal={Boolean(pendingAction)}
+          modal={showCommitDialog}
           handler={closeDialog}
           onAccept={handleConfirm}
           feature={dialogFeature}

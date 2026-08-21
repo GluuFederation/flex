@@ -95,7 +95,7 @@
       "capabilities": "Capacidades",
       "mapping": "Funções e permissões",
       "cedarlingConfig": "Cedarling",
-      "policyStoreHistory": "Histórico de repositórios de políticas"
+      "policyStoreHistory": "Gerenciamento de políticas do Admin UI"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -1714,7 +1714,7 @@
     "velocity_watch": "Tentativas por usuário",
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Origens de ameaças por IP",
-    "policy_store_history": "Histórico de repositórios de políticas",
+    "policy_store_history": "Gerenciamento de políticas do Admin UI",
     "policy_store_contents": "Conteúdo do repositório de políticas"
   },
   "options": {
@@ -2470,7 +2470,8 @@
       "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
       "auditPolicyStoreUploaded": "Repositório de políticas enviado",
-      "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração"
+      "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração",
+      "uploadRestartWarning": "Enviar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e você será desconectado do Admin UI assim que o processamento terminar."
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2526,7 +2527,9 @@
       "fileAlreadyExists": "Já existe um arquivo com esse caminho.",
       "unsavedChangesNote": "Alterações não salvas — baixe o arquivo compactado para mantê-las.",
       "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
-      "selectFileToView": "Selecione um arquivo para ver o conteúdo."
+      "selectFileToView": "Selecione um arquivo para ver o conteúdo.",
+      "activateConfirmTitle": "Confirmar ativação do repositório de políticas",
+      "activateRestartWarning": "Ativar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e todas as permissões serão reavaliadas a partir dele no próximo login."
     }
   },
   "script": {

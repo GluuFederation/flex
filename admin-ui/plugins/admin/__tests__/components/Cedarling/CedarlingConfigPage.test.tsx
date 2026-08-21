@@ -108,6 +108,9 @@ describe('CedarlingConfigPage', () => {
     const uploadButton = screen.getByText('Upload')
     fireEvent.click(uploadButton)
 
+    expect(await screen.findByText('Confirm Policy Store Upload')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Yes'))
+
     const commentsBox = await screen.findByRole('textbox')
     fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
 

@@ -28,6 +28,7 @@ import { useStyles } from './CedarlingConfigPage.style'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from '@/constants'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
+import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import { fetchActivePolicyStoreBytes } from '@/redux/api/backend-api'
 import { base64ToUint8Array, fileToBase64 } from '@/utils/policyStore'
 
@@ -66,6 +67,7 @@ const CedarlingConfigPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false)
 
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
@@ -110,8 +112,17 @@ const CedarlingConfigPage: React.FC = () => {
       dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.selectFileFirst')))
       return
     }
-    setShowConfirm(true)
+    setShowRestartConfirm(true)
   }, [selectedFile, dispatch, t])
+
+  const handleRestartConfirmClose = useCallback(() => {
+    setShowRestartConfirm(false)
+  }, [])
+
+  const handleRestartConfirmAccept = useCallback(() => {
+    setShowRestartConfirm(false)
+    setShowConfirm(true)
+  }, [])
 
   const handleConfirmCancel = useCallback(() => {
     setShowConfirm(false)
@@ -312,6 +323,14 @@ const CedarlingConfigPage: React.FC = () => {
           </div>
         </GluuPageContent>
       </GluuViewWrapper>
+
+      <PolicyStoreConfirmDialog
+        open={showRestartConfirm}
+        title={t('documentation.cedarlingConfig.uploadConfirmTitle')}
+        message={t('documentation.cedarlingConfig.uploadRestartWarning')}
+        onConfirm={handleRestartConfirmAccept}
+        onClose={handleRestartConfirmClose}
+      />
 
       {showConfirm && (
         <GluuCommitDialog

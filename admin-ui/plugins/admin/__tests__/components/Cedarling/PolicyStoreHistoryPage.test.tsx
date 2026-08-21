@@ -92,6 +92,11 @@ const openConfirmFor = async (actionLabel: string) => {
   const button = buttons.find((candidate) => !candidate.hasAttribute('disabled'))
   if (!button) throw new Error(`no enabled "${actionLabel}" action found`)
   fireEvent.click(button)
+  if (actionLabel === 'Set active') {
+    const confirmTitle = await screen.findByText('Confirm Policy Store Activation')
+    expect(confirmTitle).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Yes'))
+  }
   const commentsBox = await waitFor(() => {
     const box = document.getElementById('user_action_message')
     if (!box) throw new Error('comments box not rendered')
