@@ -83,7 +83,7 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
-  it('uploads a .cjar file and triggers sync', async () => {
+  it('uploads a .cjar file as an inactive store, without syncing or ending the session', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
@@ -121,13 +121,15 @@ describe('CedarlingConfigPage', () => {
           displayname: 'test-policy.cjar',
           description: 'Rolling out updated admin policies',
           policyStore: expect.any(String),
-          jansStatus: 'active',
+          // An upload only stages a store. The administrator activates it explicitly from Policy
+          // Store History, so uploading must never swap out the store Cedarling is running.
+          jansStatus: 'inactive',
         }),
       })
     })
 
-    await waitFor(() => {
-      expect(mockMutateAsync).toHaveBeenCalled()
-    })
+    // The role-to-scope mappings derive from the active store, which an upload does not change.
+    // Syncing here would regenerate them from the store that was already live.
+    expect(mockMutateAsync).not.toHaveBeenCalled()
   })
 })

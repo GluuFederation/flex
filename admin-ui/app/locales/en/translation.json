@@ -2486,6 +2486,7 @@
       "downloadPolicyStore": "Download",
       "policyStoreDownloaded": "Policy store downloaded successfully",
       "noPolicyStoreToDownload": "No policy store available to download",
+      "uploadSuccess": "Policy store uploaded. Activate it from Policy Store History to put it into use.",
       "uploadFailed": "Failed to upload policy store",
       "downloadFailed": "Failed to download policy store",
       "selectFileFirst": "Please select a .cjar file first",

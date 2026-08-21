@@ -50,6 +50,7 @@ const mockBackupStore = {
 
 const mockEditMutate = jest.fn().mockResolvedValue(undefined)
 const mockDeleteMutate = jest.fn().mockResolvedValue(undefined)
+const mockSyncMutate = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('JansConfigApi', () => ({
   useGetAdminuiPolicyStore: jest.fn(() => ({
@@ -61,6 +62,7 @@ jest.mock('JansConfigApi', () => ({
   useCreateAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn(), isPending: false })),
   useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockEditMutate, isPending: false })),
   useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockDeleteMutate, isPending: false })),
+  useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockSyncMutate, isPending: false })),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
   getGetAdminuiPolicyStoreQueryKey: () => ['/admin-ui/security1/policyStore'],
 }))
@@ -138,6 +140,43 @@ describe('PolicyStoreHistoryPage', () => {
         inum: 'backup-1',
         data: { jansStatus: 'active' },
       })
+    })
+
+    // Role-to-scope mappings are derived from whichever store is active, so activation — not
+    // upload — is the point at which they have to be regenerated.
+    await waitFor(() => {
+      expect(mockSyncMutate).toHaveBeenCalled()
+    })
+  })
+
+  it('still reports activation as successful when the role-scope sync fails', async () => {
+    // The store is already active at this point; a sync failure must not read as a failed
+    // activation, or an administrator will retry an operation that already took effect.
+    const { logAuditUserAction } = jest.requireMock('@/utils/AuditLogger') as {
+      logAuditUserAction: jest.Mock
+    }
+    mockSyncMutate.mockRejectedValueOnce(new Error('sync unavailable'))
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    await openConfirmFor('Set active')
+
+    await waitFor(() => {
+      expect(mockEditMutate).toHaveBeenCalledWith({
+        inum: 'backup-1',
+        data: { jansStatus: 'active' },
+      })
+    })
+
+    // The activation audit is written after the sync, so seeing it proves the rejected sync was
+    // swallowed rather than aborting the flow.
+    await waitFor(() => {
+      expect(logAuditUserAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'UPDATE',
+          payload: expect.objectContaining({ comments: 'Reverting a bad policy rollout' }),
+        }),
+      )
     })
   })
 

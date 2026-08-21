@@ -1,25 +1,21 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { useSyncRoleToScopesMappings } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
-import { logAuditUserAction } from '@/utils/AuditLogger'
 import { logger } from '@/utils/logger'
 import apiAxios from '@/redux/api/axios'
-import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { InfoOutlined } from '@/components/icons'
 import { Form } from 'Components'
-import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -81,10 +77,7 @@ const CedarlingConfigPage: React.FC = () => {
 
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
-  const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const { createPolicyStore } = usePolicyStoreMutations()
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
-  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const dispatch = useAppDispatch()
 
@@ -119,9 +112,9 @@ const CedarlingConfigPage: React.FC = () => {
       try {
         setIsLoading(true)
 
-        // Uploaded stores are created active so this screen keeps working the way it does today:
-        // upload, re-sync the role mappings, sign back in against the new policies. Rolling back to
-        // an earlier store is done from the Policy Store History screen.
+        // An upload only stages a store — it is created inactive and does not become the store
+        // Cedarling loads until an administrator activates it from Policy Store History. So there
+        // is nothing to re-sync and no reason to end the session here; both belong to activation.
         // createPolicyStore records the audit entry, carrying these comments as the reason.
         await createPolicyStore({
           displayname: selectedFile.name,
@@ -129,32 +122,15 @@ const CedarlingConfigPage: React.FC = () => {
           policyStore: await fileToBase64(selectedFile),
         })
 
-        await syncRoleToScopesMappingsMutation.mutateAsync()
-
-        try {
-          await logAuditUserAction({
-            userinfo: userinfo ?? undefined,
-            action: UPDATE,
-            resource: ADMIN_UI_CEDARLING_CONFIG,
-            message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
-            client_id: client_id,
-            payload: { fileName: selectedFile.name },
-          })
-        } catch (e) {
-          logger.error(
-            'Audit log failed after role/scope sync:',
-            e instanceof Error ? e : String(e),
-          )
-        }
-
         setSelectedFile(null)
-        navigateToRoute(ROUTES.LOGOUT)
+        dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.uploadSuccess')))
+        navigateToRoute(ROUTES.ADMIN_POLICY_STORES)
       } catch (error) {
         logger.error(
           'Policy store upload flow failed:',
           error instanceof Error ? error : String(error),
         )
-        // createPolicyStore already toasts its own failure; this covers the sync and audit steps.
+        // createPolicyStore already toasts its own failure; this covers the base64 read.
         const errorMessage = getErrorMessage(
           error as Error | ApiError,
           'documentation.cedarlingConfig.uploadFailed',
@@ -165,16 +141,7 @@ const CedarlingConfigPage: React.FC = () => {
         setIsLoading(false)
       }
     },
-    [
-      selectedFile,
-      dispatch,
-      t,
-      userinfo,
-      client_id,
-      createPolicyStore,
-      syncRoleToScopesMappingsMutation,
-      navigateToRoute,
-    ],
+    [selectedFile, dispatch, t, createPolicyStore, navigateToRoute],
   )
 
   const handleDownload = useCallback(async () => {

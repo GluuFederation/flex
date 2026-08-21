@@ -2465,6 +2465,7 @@
       "downloadPolicyStore": "Baixar",
       "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
       "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
+      "uploadSuccess": "Repositório de políticas enviado. Ative-o no Histórico de repositórios de políticas para colocá-lo em uso.",
       "uploadFailed": "Falha ao enviar o repositório de políticas",
       "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",

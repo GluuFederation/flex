@@ -2468,6 +2468,7 @@
       "downloadPolicyStore": "Télécharger",
       "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
       "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
+      "uploadSuccess": "Magasin de politiques téléversé. Activez-le depuis l’historique des magasins de politiques pour le mettre en service.",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
       "downloadFailed": "Échec du téléchargement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",

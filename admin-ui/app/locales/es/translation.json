@@ -2496,6 +2496,7 @@
       "downloadPolicyStore": "Descargar",
       "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
       "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
+      "uploadSuccess": "Almacén de políticas cargado. Actívelo desde el Historial de almacenes de políticas para ponerlo en uso.",
       "uploadFailed": "Error al cargar el almacén de políticas",
       "downloadFailed": "Error al descargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",

@@ -5,6 +5,7 @@ import {
   useCreateAdminuiPolicyStore,
   useEditAdminuiPolicyStore,
   useDeleteAdminuiPolicyStore,
+  useSyncRoleToScopesMappings,
   getGetAdminuiPolicyStoreQueryKey,
   type AdminUIPolicyStore,
 } from 'JansConfigApi'
@@ -23,7 +24,6 @@ type CreatePolicyStoreInput = {
   displayname: string
   description: string
   policyStore: string
-  activate?: boolean
 }
 
 /**
@@ -44,6 +44,7 @@ export const usePolicyStoreMutations = () => {
   const createMutation = useCreateAdminuiPolicyStore()
   const editMutation = useEditAdminuiPolicyStore()
   const deleteMutation = useDeleteAdminuiPolicyStore()
+  const syncRoleScopesMutation = useSyncRoleToScopesMappings()
 
   const invalidatePolicyStores = useCallback(() => {
     queryClient.invalidateQueries({
@@ -80,13 +81,16 @@ export const usePolicyStoreMutations = () => {
   )
 
   const createPolicyStore = useCallback(
-    async ({ displayname, description, policyStore, activate = true }: CreatePolicyStoreInput) => {
+    async ({ displayname, description, policyStore }: CreatePolicyStoreInput) => {
       try {
+        // Uploads are always staged inactive — the ticket requires the administrator to activate
+        // one explicitly from the Policy Store History screen. The backend enforces this too, so
+        // sending anything else would only misstate our intent.
         const data: AdminUIPolicyStore = {
           displayname,
           description,
           policyStore,
-          jansStatus: activate ? POLICY_STORE_STATUS.ACTIVE : POLICY_STORE_STATUS.INACTIVE,
+          jansStatus: POLICY_STORE_STATUS.INACTIVE,
         }
         const result = await createMutation.mutateAsync({ data })
         audit(CREATE, t('documentation.cedarlingConfig.auditPolicyStoreUploaded'), {
@@ -114,6 +118,22 @@ export const usePolicyStoreMutations = () => {
           inum,
           data: { jansStatus: POLICY_STORE_STATUS.ACTIVE },
         })
+
+        // The role-to-scope mappings are derived from whichever store is active, so they only need
+        // regenerating once the swap has happened. The activation itself already succeeded, so a
+        // sync failure is logged rather than surfaced as a failed activation.
+        try {
+          await syncRoleScopesMutation.mutateAsync()
+          audit(UPDATE, t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'), {
+            policyStore: store.displayname ?? inum,
+          })
+        } catch (error) {
+          logger.error(
+            'Role-to-scope sync failed after activating a policy store:',
+            error instanceof Error ? error : String(error),
+          )
+        }
+
         audit(UPDATE, t('documentation.policyStore.auditActivated'), {
           policyStore: store.displayname ?? inum,
           comments,
@@ -125,7 +145,7 @@ export const usePolicyStoreMutations = () => {
         throw error
       }
     },
-    [editMutation, audit, dispatch, invalidatePolicyStores, toastError, t],
+    [editMutation, syncRoleScopesMutation, audit, dispatch, invalidatePolicyStores, toastError, t],
   )
 
   const deletePolicyStore = useCallback(
