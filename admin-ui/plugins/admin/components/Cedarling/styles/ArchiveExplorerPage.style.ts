@@ -16,6 +16,7 @@ const TREE_WIDTH = 300
 const PANE_MIN_HEIGHT = 320
 const SPLIT_PANE_HEIGHT = '65vh'
 const PANE_HEADER_PADDING = '10px 12px'
+export const PANE_BODY_PADDING = 8
 const TREE_ROW_HEIGHT = 32
 const SELECTED_ROW_ACCENT_WIDTH = 2
 
@@ -101,7 +102,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     treeScroll: {
       flex: 1,
       overflowY: 'auto',
-      padding: 8,
+      padding: PANE_BODY_PADDING,
     },
     viewerPane: {
       ...cardBorderStyle,

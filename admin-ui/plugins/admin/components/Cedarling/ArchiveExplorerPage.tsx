@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import AceEditor from 'react-ace'
+import type { Ace } from 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/mode-text'
@@ -31,7 +32,7 @@ import {
 } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
 import ArchiveFileTree from './components/ArchiveFileTree'
-import { useStyles } from './styles/ArchiveExplorerPage.style'
+import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const EDITOR_HEIGHT = '100%'
@@ -139,6 +140,10 @@ const ArchiveExplorerPage: React.FC = () => {
     setSelectedPath(path)
   }, [])
 
+  const handleEditorLoad = useCallback((editor: Ace.Editor) => {
+    editor.renderer.setScrollMargin(PANE_BODY_PADDING, PANE_BODY_PADDING, 0, 0)
+  }, [])
+
   const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
 
   return (
@@ -207,6 +212,7 @@ const ArchiveExplorerPage: React.FC = () => {
                           height={EDITOR_HEIGHT}
                           fontSize={EDITOR_FONT_SIZE}
                           wrapEnabled
+                          onLoad={handleEditorLoad}
                           editorProps={EDITOR_PROPS}
                           setOptions={EDITOR_OPTIONS}
                         />
