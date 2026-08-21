@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
@@ -20,14 +19,12 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
 import { base64ToUint8Array, toPolicyStoreEntries } from '@/utils/policyStore'
 import {
   buildArchiveTree,
   editorModeFor,
   entryToText,
-  formatBytes,
   isTextEntry,
   readArchive,
   type ArchiveEntry,
@@ -38,11 +35,9 @@ import { useStyles } from './styles/ArchiveExplorerPage.style'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const EDITOR_HEIGHT = '100%'
-const PANE_MIN_HEIGHT = 320
-const PANE_BOTTOM_GAP = 24
 const EDITOR_FONT_SIZE = 16
 
-const EMPTY_LOCATION = { dir: '', name: '', size: '' } as const
+const EMPTY_LOCATION = { dir: '', name: '' } as const
 const EDITOR_OPTIONS = {
   useWorker: false,
   showPrintMargin: false,
@@ -50,10 +45,7 @@ const EDITOR_OPTIONS = {
 } as const
 const EDITOR_PROPS = { $blockScrolling: true } as const
 
-const summarizeArchive = (entries: ArchiveEntry[] | null) => ({
-  fileCount: entries?.length ?? 0,
-  totalBytes: entries?.reduce((total, entry) => total + entry.bytes.length, 0) ?? 0,
-})
+const countArchiveFiles = (entries: ArchiveEntry[] | null) => entries?.length ?? 0
 
 const splitArchivePath = (entry: ArchiveEntry | null) => {
   if (!entry) return EMPTY_LOCATION
@@ -62,7 +54,6 @@ const splitArchivePath = (entry: ArchiveEntry | null) => {
   return {
     dir: segments.length ? `${segments.join('/')}/` : '',
     name,
-    size: formatBytes(entry.bytes.length),
   }
 }
 
@@ -140,12 +131,7 @@ const ArchiveExplorerPage: React.FC = () => {
     [selectedEntry, selectedIsText],
   )
 
-  const { fileCount, totalBytes } = useMemo(() => summarizeArchive(entries), [entries])
-
-  const archiveSummary = useMemo(
-    () => (fileCount ? `${t('fields.files')}: ${fileCount} · ${formatBytes(totalBytes)}` : ''),
-    [fileCount, totalBytes, t],
-  )
+  const fileCount = useMemo(() => countArchiveFiles(entries), [entries])
 
   const selectedLocation = useMemo(() => splitArchivePath(selectedEntry), [selectedEntry])
 
@@ -154,30 +140,6 @@ const ArchiveExplorerPage: React.FC = () => {
   }, [])
 
   const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
-
-  const isMobile = useMediaQuery(`@media ${MOBILE_MEDIA_QUERY}`)
-  const splitPaneRef = useRef<HTMLDivElement>(null)
-  const footerRef = useRef<HTMLDivElement>(null)
-  const [paneHeight, setPaneHeight] = useState<number | null>(null)
-
-  useEffect(() => {
-    const updatePaneHeight = () => {
-      const pane = splitPaneRef.current
-      if (!pane) return
-      const paneTop = pane.getBoundingClientRect().top
-      const footerHeight = footerRef.current?.getBoundingClientRect().height ?? 0
-      const available = window.innerHeight - paneTop - footerHeight - PANE_BOTTOM_GAP
-      setPaneHeight(Math.max(PANE_MIN_HEIGHT, available))
-    }
-    updatePaneHeight()
-    window.addEventListener('resize', updatePaneHeight)
-    return () => window.removeEventListener('resize', updatePaneHeight)
-  }, [])
-
-  const splitPaneStyle = useMemo(
-    () => (isMobile || paneHeight === null ? undefined : { height: paneHeight }),
-    [isMobile, paneHeight],
-  )
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -188,16 +150,11 @@ const ArchiveExplorerPage: React.FC = () => {
               {t('titles.policy_store_contents')}
             </GluuText>
 
-            <div className={classes.storeHeader}>
-              <GluuText variant="span" disableThemeColor className={classes.storeName}>
-                {store?.displayname || inum}
-              </GluuText>
-              <GluuText variant="span" disableThemeColor className={classes.storeMeta}>
-                {archiveSummary}
-              </GluuText>
-            </div>
+            <GluuText variant="span" disableThemeColor className={classes.storeName}>
+              {store?.displayname || inum}
+            </GluuText>
 
-            <div className={classes.splitPane} ref={splitPaneRef} style={splitPaneStyle}>
+            <div className={classes.splitPane}>
               <div className={classes.treePane}>
                 <div className={classes.paneHeader}>
                   <GluuText variant="span" disableThemeColor className={classes.paneTitle}>
@@ -270,14 +227,12 @@ const ArchiveExplorerPage: React.FC = () => {
               </div>
             </div>
 
-            <div ref={footerRef}>
-              <GluuThemeFormFooter
-                className={classes.footer}
-                showBack
-                onBack={handleBack}
-                showCancel={false}
-              />
-            </div>
+            <GluuThemeFormFooter
+              className={classes.footer}
+              showBack
+              onBack={handleBack}
+              showCancel={false}
+            />
           </div>
         </GluuPageContent>
       </GluuViewWrapper>

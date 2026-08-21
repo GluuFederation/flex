@@ -169,6 +169,15 @@ describe('archive round-trip', () => {
     await expect(readArchive(packed)).rejects.toThrow(/unsupported compression method 93/i)
   })
 
+  it('rejects an archive that repeats the same path', async () => {
+    const packed = await writeArchive([
+      entry('a.cedar', 'permit();'),
+      entry('a.cedar', 'forbid();'),
+    ])
+
+    await expect(readArchive(packed)).rejects.toThrow(/duplicate entry "a\.cedar"/i)
+  })
+
   it('rejects a truncated archive instead of throwing a RangeError', async () => {
     const packed = await writeArchive([entry('a.cedar', 'permit(principal, action, resource);')])
     const view = new DataView(packed.buffer, packed.byteOffset, packed.byteLength)

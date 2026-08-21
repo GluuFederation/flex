@@ -177,6 +177,7 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
   const entryCount = view.getUint16(eocdOffset + 10, true)
   let cursor = view.getUint32(eocdOffset + 16, true)
   const entries: ArchiveEntry[] = []
+  const seenPaths = new Set<string>()
   let totalBytes = 0
 
   for (let index = 0; index < entryCount; index++) {
@@ -222,6 +223,10 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       if (crc32(data) !== expectedCrc) {
         throw new Error(`Not a valid archive: "${path}" failed its checksum.`)
       }
+      if (seenPaths.has(path)) {
+        throw new Error(`Not a valid archive: duplicate entry "${path}".`)
+      }
+      seenPaths.add(path)
       totalBytes += data.length
       entries.push({ path, bytes: data })
     }

@@ -10,10 +10,11 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
+import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 
 const TREE_WIDTH = 300
 const PANE_MIN_HEIGHT = 320
+const SPLIT_PANE_HEIGHT = '65vh'
 const PANE_HEADER_PADDING = '10px 12px'
 const TREE_ROW_HEIGHT = 32
 const SELECTED_ROW_ACCENT_WIDTH = 2
@@ -24,6 +25,13 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
 ) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const paneHeaderFont = {
+    fontFamily,
+    fontSize: fontSizes.base,
+    fontWeight: fontWeights.semiBold,
+    letterSpacing: letterSpacing.loose,
+  }
+
   const paneHeader = {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -48,40 +56,24 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
 
-    storeHeader: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 4,
-      marginBottom: SPACING.CARD_GAP,
-    },
     storeName: {
       fontFamily,
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.xl,
       fontWeight: fontWeights.bold,
       color: themeColors.fontColor,
       display: 'block',
+      marginBottom: SPACING.CARD_GAP,
       wordBreak: 'break-word',
-    },
-    storeMeta: {
-      fontFamily,
-      fontSize: fontSizes.sm,
-      color: themeColors.textMuted,
-      display: 'block',
     },
 
     paneHeader,
     paneTitle: {
-      fontFamily,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.bold,
-      letterSpacing: '0.04em',
-      textTransform: 'uppercase',
-      color: themeColors.textMuted,
+      ...paneHeaderFont,
+      color: themeColors.fontColor,
     },
     paneCount: {
-      fontFamily,
-      fontSize: fontSizes.sm,
-      color: themeColors.textMuted,
+      ...paneHeaderFont,
+      color: themeColors.fontColor,
       marginLeft: 'auto',
     },
 
@@ -89,6 +81,7 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       display: 'flex',
       gap: SPACING.PAGE,
       alignItems: 'stretch',
+      height: SPLIT_PANE_HEIGHT,
       minHeight: PANE_MIN_HEIGHT,
       [`@media ${MOBILE_MEDIA_QUERY}`]: { flexDirection: 'column', height: 'auto' },
     },
@@ -131,15 +124,14 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       flexWrap: 'wrap',
     },
     viewerDir: {
-      fontFamily,
-      fontSize: fontSizes.sm,
-      color: themeColors.textMuted,
-      wordBreak: 'break-all',
+      ...paneHeaderFont,
+      'color': themeColors.fontColor,
+      'display': 'inline-block',
+      'wordBreak': 'break-all',
+      '&::first-letter': { textTransform: 'uppercase' },
     },
     viewerFile: {
-      fontFamily,
-      fontSize: fontSizes.base,
-      fontWeight: fontWeights.bold,
+      ...paneHeaderFont,
       color: themeColors.fontColor,
       wordBreak: 'break-all',
     },

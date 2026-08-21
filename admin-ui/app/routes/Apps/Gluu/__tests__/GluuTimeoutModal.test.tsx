@@ -120,13 +120,19 @@ describe('GluuTimeoutModal session-expiry redirect', () => {
     process.env.BASE_PATH = '/custom-base/'
     jest.resetModules()
 
-    const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-    expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-      'https://auth.example.org/custom-base/',
-    )
-
-    process.env.BASE_PATH = original
-    jest.resetModules()
+    try {
+      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
+      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
+        'https://auth.example.org/custom-base/',
+      )
+    } finally {
+      if (original === undefined) {
+        delete process.env.BASE_PATH
+      } else {
+        process.env.BASE_PATH = original
+      }
+      jest.resetModules()
+    }
   })
 
   it('normalises a configured base path that omits the trailing slash', async () => {
@@ -134,13 +140,19 @@ describe('GluuTimeoutModal session-expiry redirect', () => {
     process.env.BASE_PATH = '/custom-base'
     jest.resetModules()
 
-    const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-    expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-      'https://auth.example.org/custom-base/',
-    )
-
-    process.env.BASE_PATH = original
-    jest.resetModules()
+    try {
+      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
+      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
+        'https://auth.example.org/custom-base/',
+      )
+    } finally {
+      if (original === undefined) {
+        delete process.env.BASE_PATH
+      } else {
+        process.env.BASE_PATH = original
+      }
+      jest.resetModules()
+    }
   })
 
   const renderExpired = (authServerHost: string) => {

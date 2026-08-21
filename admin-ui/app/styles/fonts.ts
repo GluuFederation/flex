@@ -31,6 +31,7 @@ export const letterSpacing = {
   normal: '0.3px',
   wide: '0.32px',
   content: '0.36px',
+  loose: '0.8px',
 } as const
 
 export const lineHeights = {
