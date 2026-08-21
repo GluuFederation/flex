@@ -2476,7 +2476,7 @@
       "defaultPolicyStoreDescription": "Magasin de politiques de l’interface d’administration"
     },
     "mappings": {
-      "note_prefix": "Configure",
+      "note_prefix": "Configurez",
       "note_suffix": "Pour gérer les rôles et les permissions. Une fois la configuration Cedarling enregistrée, les rôles et les permissions seront automatiquement synchronisés à partir du référentiel de stratégies."
     },
     "attribute": {

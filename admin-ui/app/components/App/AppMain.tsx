@@ -3,12 +3,11 @@ import { ErrorBoundary } from 'react-error-boundary'
 import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
 import GluuErrorScreen from 'Routes/Apps/Gluu/GluuErrorScreen'
 import logUiCrash from '@/utils/logUiCrash'
-
-const basePath = process.env.BASE_PATH ?? '/admin/'
+import { BASE_PATH } from '@/constants'
 
 const AppMain = () => {
   return (
-    <Router basename={basePath}>
+    <Router basename={BASE_PATH}>
       <ErrorBoundary
         FallbackComponent={GluuErrorScreen}
         onError={(error, info) =>

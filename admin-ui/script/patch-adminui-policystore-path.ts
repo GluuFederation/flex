@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { POLICY_STORE_PATH_SUFFIX } from '../app/constants/policyStore'
+import { LEGACY_POLICY_STORE_PATH, POLICY_STORE_PATH_SUFFIX } from '../app/constants/policyStore'
 
 /**
  * Temporary shim for the Cedarling policy-store work (GluuFederation/flex#2985).
@@ -15,8 +15,8 @@ import { POLICY_STORE_PATH_SUFFIX } from '../app/constants/policyStore'
  */
 const PATH_SUFFIX = POLICY_STORE_PATH_SUFFIX
 
-const LEGACY_PREFIX = '/admin-ui/security'
-const POLICY_STORE_PATH = `${LEGACY_PREFIX}/policyStore`
+const POLICY_STORE_PATH = LEGACY_POLICY_STORE_PATH
+const LEGACY_PREFIX = POLICY_STORE_PATH.replace(/\/policyStore$/, '')
 
 const specPath = path.join(process.cwd(), 'configApiSpecs.yaml')
 

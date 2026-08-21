@@ -119,7 +119,6 @@ const CedarlingConfigPage: React.FC = () => {
 
   const handleConfirmUpload = useCallback(
     async (comments: string) => {
-      setShowConfirm(false)
       if (!selectedFile) return
 
       try {

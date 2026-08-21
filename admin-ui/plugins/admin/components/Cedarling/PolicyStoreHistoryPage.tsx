@@ -34,6 +34,8 @@ import {
 } from '@/utils/policyStore'
 import { formatBytes } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from '@/redux/features/toastSlice'
 import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
@@ -66,6 +68,7 @@ const formatDate = (value: string | undefined): string => {
 
 const PolicyStoreHistoryPage: React.FC = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
   SetTitle(t(PAGE_TITLE_KEY))
   const pageTitle = t(PAGE_TITLE_KEY)
@@ -139,9 +142,10 @@ const PolicyStoreHistoryPage: React.FC = () => {
           'Failed to download policy store:',
           error instanceof Error ? error : String(error),
         )
+        dispatch(updateToast(true, 'error', t('documentation.policyStore.downloadFailed')))
       }
     },
-    [t],
+    [dispatch, t],
   )
 
   const closeDialog = useCallback(() => setPendingAction(null), [])

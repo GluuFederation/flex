@@ -10,13 +10,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import customColors from '@/customColors'
-import { EXTERNAL_LINKS } from '@/constants'
+import { BASE_PATH, EXTERNAL_LINKS } from '@/constants'
 import { isDevelopment } from '@/utils/env'
 import { createDate } from '@/utils/dayjsUtils'
 import { useStyles } from './styles/GluuErrorScreen.style'
 import type { GluuErrorScreenProps } from './GluuErrorScreen.types'
 
-const basePath = process.env.BASE_PATH ?? '/admin/'
 const currentYear = createDate().year()
 
 const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => {
@@ -75,7 +74,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
               padding="0 28px"
               useOpacityOnHover
               className={classes.actionButton}
-              onClick={() => window.location.assign(basePath)}
+              onClick={() => window.location.assign(BASE_PATH)}
             >
               <ArrowBack className={classes.buttonIcon} />
               {t('actions.back_to_home')}

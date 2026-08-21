@@ -83,6 +83,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [dirtyPaths, setDirtyPaths] = useState<Set<string>>(new Set())
+  const [hasStructuralChange, setHasStructuralChange] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState('')
   const [isAdding, setIsAdding] = useState(false)
@@ -113,9 +114,13 @@ const ArchiveExplorerPage: React.FC = () => {
         setLoadError(null)
         setSelectedPath(unpacked[0]?.path ?? null)
         setDirtyPaths(new Set())
+        setHasStructuralChange(false)
       })
-      .catch((error: Error) => {
-        logger.error('Failed to read policy store archive:', error)
+      .catch((error) => {
+        logger.error(
+          'Failed to read policy store archive:',
+          error instanceof Error ? error : String(error),
+        )
         if (!isMounted) return
         setEntries([])
         setLoadError(t('documentation.policyStore.archiveUnreadable'))
@@ -212,6 +217,7 @@ const ArchiveExplorerPage: React.FC = () => {
     })
     setSelectedPath(remaining[0]?.path ?? null)
     setIsEditing(false)
+    setHasStructuralChange(true)
     dispatch(updateToast(true, 'success', t('documentation.policyStore.fileDeleted')))
   }, [selectedEntry, entries, dispatch, t])
 
@@ -247,7 +253,7 @@ const ArchiveExplorerPage: React.FC = () => {
 
   const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICY_STORES), [navigateBack])
 
-  const hasUnsavedChanges = dirtyPaths.size > 0
+  const hasUnsavedChanges = dirtyPaths.size > 0 || hasStructuralChange
 
   return (
     <GluuLoader blocking={isLoading}>

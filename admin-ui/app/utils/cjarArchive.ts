@@ -158,6 +158,7 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       throw new Error('Not a valid archive: malformed central directory.')
     }
     const method = view.getUint16(cursor + 10, true)
+    const expectedCrc = view.getUint32(cursor + 16, true)
     const compressedSize = view.getUint32(cursor + 20, true)
     const nameLength = view.getUint16(cursor + 28, true)
     const extraLength = view.getUint16(cursor + 30, true)
@@ -184,10 +185,11 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
         throw new Error(`Not a valid archive: "${path}" is truncated.`)
       }
       const raw = bytes.subarray(dataStart, dataStart + compressedSize)
-      entries.push({
-        path,
-        bytes: method === COMPRESSION.DEFLATE ? await inflateRaw(raw) : raw.slice(),
-      })
+      const data = method === COMPRESSION.DEFLATE ? await inflateRaw(raw) : raw.slice()
+      if (crc32(data) !== expectedCrc) {
+        throw new Error(`Not a valid archive: "${path}" failed its checksum.`)
+      }
+      entries.push({ path, bytes: data })
     }
 
     cursor += CENTRAL_HEADER_SIZE + nameLength + extraLength + commentLength
