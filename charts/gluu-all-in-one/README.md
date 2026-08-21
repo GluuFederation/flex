@@ -31,8 +31,8 @@ Kubernetes: `>=v1.23.0-0`
 | additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
 | admin-ui | object | `{"enabled":true,"gatewayName":"","gatewayNamespace":"","ingress":{"adminUiAdditionalAnnotations":{},"adminUiEnabled":true,"adminUiLabels":{}}}` | Admin GUI for configuration of the auth-server |
 | admin-ui.enabled | bool | `true` | Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin. |
-| admin-ui.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| admin-ui.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| admin-ui.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| admin-ui.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | admin-ui.ingress.adminUiAdditionalAnnotations | object | `{}` | Admin UI ingress resource additional annotations. |
 | admin-ui.ingress.adminUiEnabled | bool | `true` | Enable Admin UI endpoints in either istio or nginx ingress depending on users choice |
 | admin-ui.ingress.adminUiLabels | object | `{}` | Admin UI ingress resource labels. key app is taken. |
@@ -89,8 +89,8 @@ Kubernetes: `>=v1.23.0-0`
 | auth-server.authSigKeys | string | `"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512"` | space-separated key algorithm for signing (default to `RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512`) |
 | auth-server.cnCustomJavaOptions | string | `""` | passing custom java options to auth-server. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
 | auth-server.enabled | bool | `true` | Boolean flag to enable/disable auth-server chart. You should never set this to false. |
-| auth-server.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| auth-server.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| auth-server.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| auth-server.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | auth-server.ingress.authServerAdditionalAnnotations | object | `{}` | Auth server ingress resource additional annotations. |
 | auth-server.ingress.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
 | auth-server.ingress.authServerLabels | object | `{}` | Auth server ingress resource labels. key app is taken |
@@ -137,8 +137,8 @@ Kubernetes: `>=v1.23.0-0`
 | casa.casaServiceName | string | `"casa"` | Name of the casa service. Please keep it as default. |
 | casa.cnCustomJavaOptions | string | `""` | passing custom java options to casa. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
 | casa.enabled | bool | `true` | Boolean flag to enable/disable the casa chart. |
-| casa.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| casa.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| casa.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| casa.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | casa.ingress.casaAdditionalAnnotations | object | `{}` | Casa ingress resource additional annotations. |
 | casa.ingress.casaEnabled | bool | `false` | Enable casa endpoints /jans-casa |
 | casa.ingress.casaLabels | object | `{}` | Casa ingress resource labels. key app is taken |
@@ -207,8 +207,8 @@ Kubernetes: `>=v1.23.0-0`
 | config-api.cnCustomJavaOptions | string | `""` | passing custom java options to config-api. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
 | config-api.configApiServerServiceName | string | `"config-api"` | Name of the config-api service. Please keep it as default. |
 | config-api.enabled | bool | `true` | Boolean flag to enable/disable the config-api chart. |
-| config-api.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| config-api.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| config-api.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| config-api.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | config-api.ingress.configApiAdditionalAnnotations | object | `{}` | ConfigAPI ingress resource additional annotations. |
 | config-api.ingress.configApiEnabled | bool | `true` |  |
 | config-api.ingress.configApiLabels | object | `{}` | configAPI ingress resource labels. key app is taken |
@@ -297,8 +297,8 @@ Kubernetes: `>=v1.23.0-0`
 | fido2.cnCustomJavaOptions | string | `""` | passing custom java options to fido2. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
 | fido2.enabled | bool | `true` | Boolean flag to enable/disable the fido2 chart. |
 | fido2.fido2ServiceName | string | `"fido2"` | Name of the fido2 service. Please keep it as default. |
-| fido2.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| fido2.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| fido2.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| fido2.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | fido2.ingress.fido2AdditionalAnnotations | object | `{}` | fido2 ingress resource additional annotations. |
 | fido2.ingress.fido2ConfigAdditionalAnnotations | object | `{}` | fido2 config ingress resource additional annotations. |
 | fido2.ingress.fido2ConfigEnabled | bool | `false` | Enable endpoint /.well-known/fido2-configuration |
@@ -310,7 +310,7 @@ Kubernetes: `>=v1.23.0-0`
 | fido2.ingress.fido2WebauthnLabels | object | `{}` | fido2 webauthn ingress resource labels. key app is taken |
 | fqdn | string | `"demoexample.gluu.org"` | Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services. |
 | fullNameOverride | string | `""` |  |
-| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}},"enabled":false,"gateway":{"annotations":{},"attachLbIp":false,"className":"nginx","enabled":true,"httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"},"routes":{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
+| gateway-api | object | `{"additionalConfig":{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}},"enabled":false,"gateway":{"annotations":{},"attachLbIp":false,"className":"nginx","enabled":true,"gatewayNamespace":"","httpPort":80,"httpSectionName":"http","httpsPort":443,"httpsSectionName":"https","infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"},"routes":{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}}` | Gateway API implementation. We support all GA-conformant implementations (e.g., 'nginx', 'istio', 'traefik'). See https://gateway-api.sigs.k8s.io/implementations/#conformant |
 | gateway-api.additionalConfig | object | `{"airlock":{"createLbService":false},"cilium":{"ipPoolBlocks":[]},"envoy":{"createGatewayClass":false},"istio":{},"kgateway":{},"nginx":{},"traefik":{}}` | Additional configuration for Specific Gateway API implementation |
 | gateway-api.additionalConfig.airlock | object | `{"createLbService":false}` | Configuration for Airlock Microgateway |
 | gateway-api.additionalConfig.airlock.createLbService | bool | `false` | Create LoadBalancer service using GatewayParameters (by default airlock-microgateway doesn't create the service). See https://docs.airlock.com/microgateway/latest/index/api/crds/gateway-parameters/v1alpha1/ for details. The GatewayParameters will be attached to gateway.infrastructure.parametersRef only if it's empty. |
@@ -323,12 +323,14 @@ Kubernetes: `>=v1.23.0-0`
 | gateway-api.additionalConfig.nginx | object | `{}` | Configuration for NGINX Fabric. |
 | gateway-api.additionalConfig.traefik | object | `{}` | Configuration for Traefik. |
 | gateway-api.enabled | bool | `false` | Boolean flag to enable/disable the Kubernetes Gateway and HTTPRoute resources. |
-| gateway-api.gateway | object | `{"annotations":{},"attachLbIp":false,"className":"nginx","enabled":true,"httpPort":80,"httpsPort":443,"infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"}` | Configuration for Gateway resource |
+| gateway-api.gateway | object | `{"annotations":{},"attachLbIp":false,"className":"nginx","enabled":true,"gatewayNamespace":"","httpPort":80,"httpSectionName":"http","httpsPort":443,"httpsSectionName":"https","infrastructure":{"annotations":{},"labels":{},"parametersRef":{}},"labels":{},"name":"gluu-gateway","tlsSecretName":"tls-certificate"}` | Configuration for Gateway resource |
 | gateway-api.gateway.annotations | object | `{}` | Specific annotations for the Gateway resource |
 | gateway-api.gateway.attachLbIp | bool | `false` | Attach global.lbIp to Gateway spec.addresses with IPAddress type (enable this if loadbalancer doesn't assign IP address to Gateway automatically) |
 | gateway-api.gateway.className | string | `"nginx"` | Set the gatewayClassName corresponding to your installed controller. |
 | gateway-api.gateway.enabled | bool | `true` | Enable Gateway API and create a Gateway resource (if disabled, you will have to create and manage the Gateway resource externally). HTTPRoutes are still rendered so they can target the external Gateway. |
+| gateway-api.gateway.gatewayNamespace | string | `""` | Namespace the Gateway resource resides in. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces, otherwise the HTTPRoutes will not attach. |
 | gateway-api.gateway.httpPort | int | `80` | Gateway http port number |
+| gateway-api.gateway.httpSectionName | string | `"http"` | Names of the Gateway listeners the HTTPRoutes attach to. Only change these if your controller requires different listener names (e.g. some controllers require the listener name to be `default`). When the Gateway is externally managed (gateway.enabled=false), these must match the listener names on that Gateway. |
 | gateway-api.gateway.httpsPort | int | `443` | Gateway https port number |
 | gateway-api.gateway.infrastructure | object | `{"annotations":{},"labels":{},"parametersRef":{}}` | Gateway spec.infrastructure |
 | gateway-api.gateway.infrastructure.annotations | object | `{}` | Specific annotations for the infrastructure |
@@ -337,7 +339,7 @@ Kubernetes: `>=v1.23.0-0`
 | gateway-api.gateway.labels | object | `{}` | Specific labels for the Gateway resource |
 | gateway-api.gateway.name | string | `"gluu-gateway"` | The name of the Gateway resource to be created |
 | gateway-api.gateway.tlsSecretName | string | `"tls-certificate"` | Secret containing the TLS certificate for the Gateway |
-| gateway-api.routes | object | `{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"gatewayNamespace":"","httpSectionName":"http","httpsSectionName":"https","labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}` | Configuration for HTTPRoute and its related resources |
+| gateway-api.routes | object | `{"adminUiEnabled":true,"annotations":{},"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"authzenConfigEnabled":true,"casaEnabled":false,"configApiEnabled":true,"deviceCodeEnabled":true,"fido2ConfigEnabled":false,"fido2Enabled":false,"fido2WebauthnEnabled":false,"firebaseMessagingEnabled":true,"labels":{},"lockAuditEnabled":false,"lockConfigEnabled":false,"openidConfigEnabled":true,"scimConfigEnabled":false,"scimEnabled":false,"uma2ConfigEnabled":true,"webfingerEnabled":true}` | Configuration for HTTPRoute and its related resources |
 | gateway-api.routes.adminUiEnabled | bool | `true` | Enable Admin UI endpoints /admin |
 | gateway-api.routes.annotations | object | `{}` | Specific annotations for the HTTPRoute resource |
 | gateway-api.routes.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
@@ -351,8 +353,6 @@ Kubernetes: `>=v1.23.0-0`
 | gateway-api.routes.fido2Enabled | bool | `false` | Enable all fido2 endpoints /jans-fido2 |
 | gateway-api.routes.fido2WebauthnEnabled | bool | `false` | Enable endpoint /.well-known/webauthn |
 | gateway-api.routes.firebaseMessagingEnabled | bool | `true` | Enable endpoint /firebase-messaging-sw.js |
-| gateway-api.routes.gatewayNamespace | string | `""` | Namespace where the Gateway resource resides. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. If set, ensure the target namespace exists and your Gateway controller has the required cross-namespace RBAC permissions. |
-| gateway-api.routes.httpSectionName | string | `"http"` | Only set the httpSectionName and httpsSectionName if it doesn't work with the default values, according to your installed controller (e.g. some controller may require the listener name to be `default`). |
 | gateway-api.routes.labels | object | `{}` | Specific labels for the HTTPRoute resource |
 | gateway-api.routes.lockAuditEnabled | bool | `false` | Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, auth-server.lockEnabled must be enabled) |
 | gateway-api.routes.lockConfigEnabled | bool | `false` | Enable endpoint /.well-known/lock-server-configuration (if enabled, auth-server.lockEnabled must be enabled) |
@@ -414,8 +414,8 @@ Kubernetes: `>=v1.23.0-0`
 | scim.appLoggers.scriptLogTarget | string | `"FILE"` | scim_script.log target |
 | scim.cnCustomJavaOptions | string | `""` | passing custom java options to scim. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
 | scim.enabled | bool | `true` | Boolean flag to enable/disable the SCIM chart. |
-| scim.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name) |
-| scim.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace) |
+| scim.gatewayName | string | `""` | Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName. |
+| scim.gatewayNamespace | string | `""` | Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces. |
 | scim.ingress.scimAdditionalAnnotations | object | `{}` | SCIM ingress resource additional annotations. |
 | scim.ingress.scimConfigAdditionalAnnotations | object | `{}` | SCIM config ingress resource additional annotations. |
 | scim.ingress.scimConfigEnabled | bool | `false` | Enable endpoint /.well-known/scim-configuration |
