@@ -149,4 +149,39 @@ describe('archive round-trip', () => {
       /not a valid archive/i,
     )
   })
+
+  it('preserves a non-ASCII path and flags the name as UTF-8', async () => {
+    // The Add-file box accepts any text and the UI ships es/fr/pt, so accented paths are reachable.
+    const path = 'policies/política-señor.cedar'
+    const packed = await writeArchive([entry(path, 'permit(principal, action, resource);')])
+
+    const unpacked = await readArchive(packed)
+    expect(unpacked[0].path).toBe(path)
+
+    // Bit 11 of the general-purpose flag must be set, or an external unzip decodes the name as
+    // CP437 and mangles it. Checked on the local header (offset 6) and the central header.
+    const view = new DataView(packed.buffer, packed.byteOffset, packed.byteLength)
+    expect(view.getUint16(6, true) & 0x0800).toBe(0x0800)
+  })
+
+  it('rejects an entry compressed with an unsupported method', async () => {
+    // Rewrite the compression method to zstd (93) in both headers; without the guard the reader
+    // falls through to STORED and hands back still-compressed bytes as file contents.
+    const packed = await writeArchive([entry('a.cedar', 'permit();')])
+    const view = new DataView(packed.buffer, packed.byteOffset, packed.byteLength)
+    const centralOffset = view.getUint32(packed.length - 22 + 16, true)
+    view.setUint16(8, 93, true)
+    view.setUint16(centralOffset + 10, 93, true)
+
+    await expect(readArchive(packed)).rejects.toThrow(/unsupported compression method 93/i)
+  })
+
+  it('rejects a truncated archive instead of throwing a RangeError', async () => {
+    const packed = await writeArchive([entry('a.cedar', 'permit(principal, action, resource);')])
+    const view = new DataView(packed.buffer, packed.byteOffset, packed.byteLength)
+    // Point the central directory past the end of the file.
+    view.setUint32(packed.length - 22 + 16, packed.length + 500, true)
+
+    await expect(readArchive(packed)).rejects.toThrow(/not a valid archive/i)
+  })
 })

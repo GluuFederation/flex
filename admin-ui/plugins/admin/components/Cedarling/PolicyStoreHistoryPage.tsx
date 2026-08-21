@@ -247,7 +247,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
         key: 'policyStore',
         label: t('fields.size'),
         width: COLUMN_MIN_WIDTHS.SIZE,
-        align: 'right',
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
             {formatBytes(decodedByteLength(row.policyStore))}

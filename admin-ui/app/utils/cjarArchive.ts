@@ -30,6 +30,14 @@ const SIGNATURE = {
 
 const COMPRESSION = { STORED: 0, DEFLATE: 8 } as const
 
+/**
+ * General-purpose bit 11. Filenames are written with `TextEncoder`, which is always UTF-8, so this
+ * flag has to be set — a reader that sees it clear is entitled to decode the name as CP437 and
+ * would mangle any non-ASCII path. Our own reader decodes UTF-8 either way, but the archive is
+ * also consumed by the backend and by ordinary zip tools.
+ */
+const UTF8_NAME_FLAG = 0x0800
+
 const LOCAL_HEADER_SIZE = 30
 const CENTRAL_HEADER_SIZE = 46
 const EOCD_SIZE = 22
@@ -146,6 +154,11 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
   const entries: ArchiveEntry[] = []
 
   for (let index = 0; index < entryCount; index++) {
+    // Offsets come from the file itself, so bound-check before every read. Without this a corrupt
+    // archive surfaces as a raw DataView RangeError instead of a message the UI can show.
+    if (cursor < 0 || cursor + CENTRAL_HEADER_SIZE > bytes.length) {
+      throw new Error('Not a valid archive: central directory runs past the end of the file.')
+    }
     if (view.getUint32(cursor, true) !== SIGNATURE.CENTRAL_HEADER) {
       throw new Error('Not a valid archive: malformed central directory.')
     }
@@ -160,6 +173,14 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
     )
 
     if (!path.endsWith('/')) {
+      // Anything beyond store/deflate (bzip2, LZMA, zstd) would otherwise fall through to the
+      // STORED branch and hand back still-compressed bytes as if they were the file's contents.
+      if (method !== COMPRESSION.STORED && method !== COMPRESSION.DEFLATE) {
+        throw new Error(`Unsupported compression method ${method} for "${path}".`)
+      }
+      if (localOffset < 0 || localOffset + LOCAL_HEADER_SIZE > bytes.length) {
+        throw new Error(`Not a valid archive: local header for "${path}" is out of bounds.`)
+      }
       if (view.getUint32(localOffset, true) !== SIGNATURE.LOCAL_HEADER) {
         throw new Error(`Not a valid archive: bad local header for "${path}".`)
       }
@@ -168,6 +189,9 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       const localNameLength = view.getUint16(localOffset + 26, true)
       const localExtraLength = view.getUint16(localOffset + 28, true)
       const dataStart = localOffset + LOCAL_HEADER_SIZE + localNameLength + localExtraLength
+      if (dataStart + compressedSize > bytes.length) {
+        throw new Error(`Not a valid archive: "${path}" is truncated.`)
+      }
       const raw = bytes.subarray(dataStart, dataStart + compressedSize)
       entries.push({
         path,
@@ -231,7 +255,7 @@ export const writeArchive = async (
     const at = entry.localOffset
     view.setUint32(at, SIGNATURE.LOCAL_HEADER, true)
     view.setUint16(at + 4, 20, true)
-    view.setUint16(at + 6, 0, true)
+    view.setUint16(at + 6, UTF8_NAME_FLAG, true)
     view.setUint16(at + 8, entry.method, true)
     view.setUint16(at + 10, 0, true)
     view.setUint16(at + 12, 0, true)
@@ -249,7 +273,7 @@ export const writeArchive = async (
     view.setUint32(centralCursor, SIGNATURE.CENTRAL_HEADER, true)
     view.setUint16(centralCursor + 4, 20, true)
     view.setUint16(centralCursor + 6, 20, true)
-    view.setUint16(centralCursor + 8, 0, true)
+    view.setUint16(centralCursor + 8, UTF8_NAME_FLAG, true)
     view.setUint16(centralCursor + 10, entry.method, true)
     view.setUint16(centralCursor + 12, 0, true)
     view.setUint16(centralCursor + 14, 0, true)
