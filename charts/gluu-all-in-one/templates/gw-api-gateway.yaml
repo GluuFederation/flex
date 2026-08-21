@@ -50,10 +50,10 @@ spec:
     value: {{ .Values.lbIp }}
   {{- end }}
   listeners:
-  - name: {{ index .Values "gateway-api" "routes" "httpSectionName" | default "http" }}
+  - name: {{ index .Values "gateway-api" "gateway" "httpSectionName" | default "http" }}
     port: {{ index .Values "gateway-api" "gateway" "httpPort" }}
     protocol: HTTP
-  - name: {{ index .Values "gateway-api" "routes" "httpsSectionName" | default "https" }}
+  - name: {{ index .Values "gateway-api" "gateway" "httpsSectionName" | default "https" }}
     port: {{ index .Values "gateway-api" "gateway" "httpsPort" }}
     protocol: HTTPS
     tls:

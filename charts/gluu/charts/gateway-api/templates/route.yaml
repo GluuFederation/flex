@@ -1,9 +1,9 @@
 {{- $fullName := include "gateway-api.fullname" . -}}
 {{- $namespace := .Release.Namespace -}}
 {{- $defaultGatewayName := .Values.gateway.name -}}
-{{- $defaultGatewayNamespace := .Values.routes.gatewayNamespace | default $namespace -}}
-{{- $httpSection := .Values.routes.httpSectionName | default "http" -}}
-{{- $httpsSection := .Values.routes.httpsSectionName | default "https" -}}
+{{- $defaultGatewayNamespace := .Values.gateway.gatewayNamespace | default $namespace -}}
+{{- $httpSection := .Values.gateway.httpSectionName | default "http" -}}
+{{- $httpsSection := .Values.gateway.httpsSectionName | default "https" -}}
 {{- $adminSvc := index .Values.global "admin-ui" "adminUiServiceName" -}}
 {{- $authSvc := index .Values.global "auth-server" "authServerServiceName" -}}
 {{- $configSvc := index .Values.global "config-api" "configApiServerServiceName" -}}

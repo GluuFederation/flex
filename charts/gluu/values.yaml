@@ -884,9 +884,9 @@ global:
     enabled: true
     # -- Name of the admin-ui service. Please keep it as default.
     adminUiServiceName: admin-ui
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     ingress:
       # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
@@ -909,9 +909,9 @@ global:
       secret: {}
     # -- Name of the auth-server service. Please keep it as default.
     authServerServiceName: auth-server
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     # -- Boolean flag to enable/disable auth-server chart. You should never set this to false.
     enabled: true
@@ -1075,9 +1075,9 @@ global:
       rootLogLevel: "INFO"
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     # -- Boolean flag to enable/disable the casa chart.
     enabled: true
@@ -1161,9 +1161,9 @@ global:
       service: {}
     # -- Name of the config-api service. Please keep it as default.
     configApiServerServiceName: config-api
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     # -- Boolean flag to enable/disable the config-api chart.
     enabled: true
@@ -1229,9 +1229,9 @@ global:
       secret: {}
     # -- Name of the fido2 service. Please keep it as default.
     fido2ServiceName: fido2
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     # -- Boolean flag to enable/disable the fido2 chart.
     enabled: true
@@ -1332,9 +1332,9 @@ global:
       secret: {}
     # -- Name of the scim service. Please keep it as default.
     scimServiceName: scim
-    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name)
+    # -- Override Gateway name for Gateway API (defaults to gateway-api.gateway.name). The target Gateway must expose listeners named after gateway-api.gateway.httpSectionName and httpsSectionName.
     gatewayName: ""
-    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.routes.gatewayNamespace or release namespace)
+    # -- Override Gateway namespace for Gateway API (defaults to gateway-api.gateway.gatewayNamespace or release namespace). That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces.
     gatewayNamespace: ""
     # -- Boolean flag to enable/disable the SCIM chart.
     enabled: true
@@ -1422,6 +1422,11 @@ gateway-api:
     className: nginx
     # -- The name of the Gateway resource to be created
     name: gluu-gateway
+    # -- Namespace the Gateway resource resides in. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. That Gateway's listeners must allow routes from this release's namespace via spec.listeners[].allowedRoutes.namespaces, otherwise the HTTPRoutes will not attach.
+    gatewayNamespace: ""
+    # -- Names of the Gateway listeners the HTTPRoutes attach to. Only change these if your controller requires different listener names (e.g. some controllers require the listener name to be `default`). When the Gateway is externally managed (gateway.enabled=false), these must match the listener names on that Gateway.
+    httpSectionName: http
+    httpsSectionName: https
     # -- Gateway http port number
     httpPort: 80
     # -- Gateway https port number
@@ -1449,11 +1454,6 @@ gateway-api:
       annotations: {}
   # -- Configuration for HTTPRoute and its related resources
   routes:
-    # -- Namespace where the Gateway resource resides. Set this ONLY if the Gateway is externally managed in a different namespace than this Helm release. If set, ensure the target namespace exists and your Gateway controller has the required cross-namespace RBAC permissions.
-    gatewayNamespace: ""
-    # -- Only set the httpSectionName and httpsSectionName if it doesn't work with the default values, according to your installed controller (e.g. some controller may require the listener name to be `default`).
-    httpSectionName: http
-    httpsSectionName: https
     # The endpoint flags below supersede the matching global.<service>.ingress.* flags for Gateway API routes. Those ingress flags are still honoured as a deprecated fallback during the transition and will stop affecting HTTPRoutes in a future release.
     # -- Enable Admin UI endpoints /admin
     adminUiEnabled: true

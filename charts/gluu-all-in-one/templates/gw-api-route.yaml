@@ -5,11 +5,12 @@
 {{- $svcName := .Values.service.name -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $routes := index .Values "gateway-api" "routes" -}}
-{{- $className := index .Values "gateway-api" "gateway" "className" -}}
-{{- $defaultGatewayName := index .Values "gateway-api" "gateway" "name" -}}
-{{- $defaultGatewayNamespace := $routes.gatewayNamespace | default $namespace -}}
-{{- $httpSection := $routes.httpSectionName | default "http" -}}
-{{- $httpsSection := $routes.httpsSectionName | default "https" -}}
+{{- $gateway := index .Values "gateway-api" "gateway" -}}
+{{- $className := $gateway.className -}}
+{{- $defaultGatewayName := $gateway.name -}}
+{{- $defaultGatewayNamespace := $gateway.gatewayNamespace | default $namespace -}}
+{{- $httpSection := $gateway.httpSectionName | default "http" -}}
+{{- $httpsSection := $gateway.httpsSectionName | default "https" -}}
 
 {{- /* Per-service Gateway overrides; fall back to the chart's own Gateway when unset. */}}
 {{- $adminUiGatewayName := index .Values "admin-ui" "gatewayName" | default $defaultGatewayName -}}
