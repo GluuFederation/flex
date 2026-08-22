@@ -32,7 +32,7 @@ app_versions = {
     "NODE_VERSION": "v18.16.0"
 }
 
-AGAMA_PW_DEPLOYMENT_ID = '48b53270-0ab3-4f34-b3d1-03b179eecbc9'
+AGAMA_PW_DEPLOYMENT_ID = 'ab7aec3d-43f5-3c3f-81de-93a24dfd3f84'
 
 os.environ["FLEX_PRE_JANS"] = "True"
 
