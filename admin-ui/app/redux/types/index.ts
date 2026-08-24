@@ -56,6 +56,7 @@ export type GenericItem = {
 
 type InitState = {
   isTimeout: boolean
+  isSessionExpired: boolean
 }
 
 // Logout State (stateless)

@@ -88,34 +88,15 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
         >
           {t('titles.auth_vs_registration_performance')}
         </GluuText>
-        <div style={{ position: 'relative', width: '100%', height: 320 }}>
-          <div
-            style={{
-              position: 'absolute',
-              top: 12,
-              left: 80,
-              zIndex: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6,
-              padding: '10px 14px',
-              border: `1px solid ${themeColors.borderColor}`,
-              borderRadius: 6,
-              backgroundColor: cardBg,
-            }}
-          >
+        <div className={classes.onboardingCanvas}>
+          <div className={classes.onboardingLegend}>
             {legendItems.map((item) => (
-              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div key={item.label} className={classes.onboardingLegendItem}>
                 <span
-                  style={{
-                    width: 14,
-                    height: 4,
-                    backgroundColor: item.color,
-                    borderRadius: 2,
-                    display: 'inline-block',
-                  }}
+                  className={classes.onboardingLegendDash}
+                  style={{ backgroundColor: item.color }}
                 />
-                <span style={{ color: item.color, fontSize: 13, fontWeight: 600 }}>
+                <span className={classes.onboardingLegendLabel} style={{ color: item.color }}>
                   {item.label}
                 </span>
               </div>
@@ -168,7 +149,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                 <LabelList
                   dataKey="minDuration"
                   position="top"
-                  style={{ fill: axisColor, fontSize: 11 }}
+                  className={classes.chartLabelMd}
                   formatter={formatChartValue}
                 />
               </Bar>
@@ -181,7 +162,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                 <LabelList
                   dataKey="avgDuration"
                   position="top"
-                  style={{ fill: axisColor, fontSize: 11 }}
+                  className={classes.chartLabelMd}
                   formatter={formatChartValue}
                 />
               </Bar>
@@ -194,7 +175,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
                 <LabelList
                   dataKey="maxDuration"
                   position="top"
-                  style={{ fill: axisColor, fontSize: 11 }}
+                  className={classes.chartLabelMd}
                   formatter={formatChartValue}
                 />
               </Bar>

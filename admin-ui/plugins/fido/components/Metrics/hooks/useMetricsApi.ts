@@ -11,16 +11,25 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
 import { toApiDatetime } from '@/utils/dayjsUtils'
 import { AXIOS_INSTANCE } from 'Orval'
-import { METRICS_CACHE_CONFIG } from '../constants'
+import {
+  AGGREGATION_BUCKET_UNITS,
+  AGGREGATION_LIMIT_BOUNDS,
+  METRICS_CACHE_CONFIG,
+  METRICS_ENTRIES_PAGE_SIZE,
+} from '../constants'
 import type {
   AdoptionMetricsParams,
   AdoptionMetricsResponse,
   AggregationParams,
   AggregationResponse,
   AggregationTypeParam,
+  DevicesAnalyticsParams,
+  DevicesAnalyticsResponse,
   ErrorsAnalyticsParams,
   ErrorsAnalyticsResponse,
   MetricsDateRange,
+  MetricsEntriesParams,
+  MetricsEntriesResponse,
   PerformanceAnalyticsParams,
   PerformanceAnalyticsResponse,
 } from '../types'
@@ -35,6 +44,20 @@ const getGetErrorsAnalyticsQueryKey = (params: ErrorsAnalyticsParams) =>
 
 const getGetPerformanceAnalyticsQueryKey = (params: PerformanceAnalyticsParams) =>
   ['fido2', 'metrics', 'analytics', 'performance', params] as const
+
+const getGetDevicesAnalyticsQueryKey = (params: DevicesAnalyticsParams) =>
+  ['fido2', 'metrics', 'analytics', 'devices', params] as const
+
+const getGetMetricsEntriesQueryKey = (params: MetricsEntriesParams) =>
+  ['fido2', 'metrics', 'entries', params] as const
+
+const getGetMetricsEntriesByOperationQueryKey = (
+  operationType: string,
+  params: MetricsEntriesParams,
+) => ['fido2', 'metrics', 'entries', 'operation', operationType, params] as const
+
+const getGetMetricsEntriesByUserQueryKey = (userId: string, params: MetricsEntriesParams) =>
+  ['fido2', 'metrics', 'entries', 'user', userId, params] as const
 
 const metricsApi = {
   getAdoption: async (params: AdoptionMetricsParams): Promise<AdoptionMetricsResponse> => {
@@ -56,6 +79,39 @@ const metricsApi = {
   ): Promise<PerformanceAnalyticsResponse> => {
     const { data } = await AXIOS_INSTANCE.get<PerformanceAnalyticsResponse>(
       '/fido2/metrics/analytics/performance',
+      { params },
+    )
+    return data ?? {}
+  },
+  getDevices: async (params: DevicesAnalyticsParams): Promise<DevicesAnalyticsResponse> => {
+    const { data } = await AXIOS_INSTANCE.get<DevicesAnalyticsResponse>(
+      '/fido2/metrics/analytics/devices',
+      { params },
+    )
+    return data ?? {}
+  },
+  getEntries: async (params: MetricsEntriesParams): Promise<MetricsEntriesResponse> => {
+    const { data } = await AXIOS_INSTANCE.get<MetricsEntriesResponse>('/fido2/metrics/entries', {
+      params,
+    })
+    return data ?? {}
+  },
+  getEntriesByOperation: async (
+    operationType: string,
+    params: MetricsEntriesParams,
+  ): Promise<MetricsEntriesResponse> => {
+    const { data } = await AXIOS_INSTANCE.get<MetricsEntriesResponse>(
+      `/fido2/metrics/entries/operation/${encodeURIComponent(operationType)}`,
+      { params },
+    )
+    return data ?? {}
+  },
+  getEntriesByUser: async (
+    userId: string,
+    params: MetricsEntriesParams,
+  ): Promise<MetricsEntriesResponse> => {
+    const { data } = await AXIOS_INSTANCE.get<MetricsEntriesResponse>(
+      `/fido2/metrics/entries/user/${encodeURIComponent(userId)}`,
       { params },
     )
     return data ?? {}
@@ -93,7 +149,7 @@ const buildDateParams = (dateRange: MetricsDateRange | null) =>
 const isDateRangeReady = (dateRange: MetricsDateRange | null): boolean =>
   !!dateRange && !!dateRange.startDate && !!dateRange.endDate
 
-export const useAdoptionMetrics = (
+const useAdoptionMetrics = (
   dateRange: MetricsDateRange | null,
   options?: { enabled?: boolean },
 ) => {
@@ -116,7 +172,7 @@ export const useAdoptionMetrics = (
   return query
 }
 
-export const useErrorsAnalytics = (
+const useErrorsAnalytics = (
   dateRange: MetricsDateRange | null,
   options?: { enabled?: boolean },
 ) => {
@@ -139,7 +195,7 @@ export const useErrorsAnalytics = (
   return query
 }
 
-export const usePerformanceAnalytics = (
+const usePerformanceAnalytics = (
   dateRange: MetricsDateRange | null,
   options?: { enabled?: boolean },
 ) => {
@@ -162,7 +218,7 @@ export const usePerformanceAnalytics = (
   return query
 }
 
-export const useAggregationMetrics = (
+const useAggregationMetrics = (
   aggregationType: AggregationTypeParam,
   dateRange: MetricsDateRange | null,
   options?: { enabled?: boolean },
@@ -174,7 +230,7 @@ export const useAggregationMetrics = (
     aggregationType,
     start_date: dateRange ? formatDateForApi(dateRange.startDate) : '',
     end_date: dateRange ? formatDateForApi(dateRange.endDate) : '',
-    limit: 50,
+    limit: bucketsInRange(aggregationType, dateRange),
     startIndex: 0,
   }
 
@@ -211,4 +267,135 @@ export const useAggregationMetrics = (
 
   useErrorToast(query, queryKey)
   return query
+}
+
+const bucketsInRange = (
+  aggregationType: AggregationTypeParam,
+  dateRange: MetricsDateRange | null,
+): number => {
+  if (!dateRange) return AGGREGATION_LIMIT_BOUNDS.MIN
+  const span = dateRange.endDate.diff(
+    dateRange.startDate,
+    AGGREGATION_BUCKET_UNITS[aggregationType],
+  )
+  return Math.min(AGGREGATION_LIMIT_BOUNDS.MAX, Math.max(AGGREGATION_LIMIT_BOUNDS.MIN, span + 2))
+}
+
+const buildEntriesParams = (
+  dateRange: MetricsDateRange | null,
+  options?: { limit?: number; startIndex?: number },
+): MetricsEntriesParams => ({
+  ...buildDateParams(dateRange),
+  limit: options?.limit ?? METRICS_ENTRIES_PAGE_SIZE,
+  startIndex: options?.startIndex ?? 0,
+})
+
+const useDevicesAnalytics = (
+  dateRange: MetricsDateRange | null,
+  options?: { enabled?: boolean },
+) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const params = buildDateParams(dateRange)
+  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+
+  const queryKey = getGetDevicesAnalyticsQueryKey(params)
+  const query = useQuery({
+    queryKey,
+    queryFn: () => metricsApi.getDevices(params),
+    enabled: isEnabled,
+    staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
+    gcTime: METRICS_CACHE_CONFIG.GC_TIME,
+    placeholderData: keepPreviousData,
+    retry: false,
+  })
+
+  useErrorToast(query, queryKey)
+  return query
+}
+
+const useMetricsEntries = (
+  dateRange: MetricsDateRange | null,
+  options?: { enabled?: boolean; limit?: number; startIndex?: number },
+) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const params = buildEntriesParams(dateRange, options)
+  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+
+  const queryKey = getGetMetricsEntriesQueryKey(params)
+  const query = useQuery({
+    queryKey,
+    queryFn: () => metricsApi.getEntries(params),
+    enabled: isEnabled,
+    staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
+    gcTime: METRICS_CACHE_CONFIG.GC_TIME,
+    placeholderData: keepPreviousData,
+    retry: false,
+  })
+
+  useErrorToast(query, queryKey)
+  return query
+}
+
+const useMetricsEntriesByOperation = (
+  operationType: string,
+  dateRange: MetricsDateRange | null,
+  options?: { enabled?: boolean; limit?: number; startIndex?: number },
+) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const params = buildEntriesParams(dateRange, options)
+  const isEnabled =
+    (options?.enabled ?? true) &&
+    hasSession === true &&
+    isDateRangeReady(dateRange) &&
+    !!operationType
+
+  const queryKey = getGetMetricsEntriesByOperationQueryKey(operationType, params)
+  const query = useQuery({
+    queryKey,
+    queryFn: () => metricsApi.getEntriesByOperation(operationType, params),
+    enabled: isEnabled,
+    staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
+    gcTime: METRICS_CACHE_CONFIG.GC_TIME,
+    placeholderData: keepPreviousData,
+    retry: false,
+  })
+
+  useErrorToast(query, queryKey)
+  return query
+}
+
+const useMetricsEntriesByUser = (
+  userId: string,
+  dateRange: MetricsDateRange | null,
+  options?: { enabled?: boolean; limit?: number; startIndex?: number },
+) => {
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const params = buildEntriesParams(dateRange, options)
+  const isEnabled =
+    (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange) && !!userId
+
+  const queryKey = getGetMetricsEntriesByUserQueryKey(userId, params)
+  const query = useQuery({
+    queryKey,
+    queryFn: () => metricsApi.getEntriesByUser(userId, params),
+    enabled: isEnabled,
+    staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
+    gcTime: METRICS_CACHE_CONFIG.GC_TIME,
+    placeholderData: keepPreviousData,
+    retry: false,
+  })
+
+  useErrorToast(query, queryKey)
+  return query
+}
+
+export {
+  useAdoptionMetrics,
+  useErrorsAnalytics,
+  usePerformanceAnalytics,
+  useAggregationMetrics,
+  useDevicesAnalytics,
+  useMetricsEntries,
+  useMetricsEntriesByOperation,
+  useMetricsEntriesByUser,
 }

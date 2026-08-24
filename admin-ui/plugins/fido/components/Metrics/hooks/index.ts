@@ -3,4 +3,6 @@ export {
   useErrorsAnalytics,
   usePerformanceAnalytics,
   useAggregationMetrics,
+  useDevicesAnalytics,
+  useMetricsEntriesByOperation,
 } from './useMetricsApi'

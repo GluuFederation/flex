@@ -32,7 +32,7 @@ const ApiKeyRedirect = ({
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
-  const { isTimeout } = useAppSelector((state) => state.initReducer)
+  const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
   const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useAppSelector(
     (state) => state.licenseReducer,
   )
@@ -45,7 +45,10 @@ const ApiKeyRedirect = ({
     !isValidatingFlow &&
     isNoValidLicenseKeyFound
 
+  // An expired session leaves isConfigValid unresolved, so the loader must yield to the modal
+  // instead of spinning forever waiting for an answer that needs a fresh sign-in.
   const showRedirectingLoader =
+    !isSessionExpired &&
     isConfigValid !== false &&
     (!islicenseCheckResultLoaded ||
       isConfigValid === null ||
@@ -73,7 +76,9 @@ const ApiKeyRedirect = ({
   return (
     <React.Fragment>
       <Container>
-        {isConfigValid === false && backendStatus.active ? (
+        {/* Auth state is settled first: an expired session is handled by GluuTimeoutModal and
+            must never be mistaken for an invalid config, which would prompt for an SSA upload. */}
+        {isSessionExpired ? null : isConfigValid === false && backendStatus.active ? (
           <Suspense fallback={<GluuLoader blocking />}>
             <UploadSSA />
           </Suspense>
@@ -83,7 +88,7 @@ const ApiKeyRedirect = ({
           ) : null
         ) : null}
 
-        {!backendStatus.active && (
+        {!isSessionExpired && !backendStatus.active && (
           <GluuServiceDownModal
             statusCode={backendStatus.statusCode ?? undefined}
             message={backendStatus.errorMessage || t('serviceDownFallback')}

@@ -8,8 +8,16 @@ import {
   useErrorsAnalytics,
   usePerformanceAnalytics,
   useAggregationMetrics,
+  useDevicesAnalytics,
+  useMetricsEntries,
+  useMetricsEntriesByOperation,
+  useMetricsEntriesByUser,
 } from 'Plugins/fido/components/Metrics/hooks/useMetricsApi'
 import { createDate } from '@/utils/dayjsUtils'
+import {
+  METRICS_ENTRIES_PAGE_SIZE,
+  METRIC_OPERATION_TYPES,
+} from 'Plugins/fido/components/Metrics/constants'
 import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
 
 const mockGet = jest.fn()
@@ -161,6 +169,123 @@ describe('useMetricsApi', () => {
       await waitFor(() => {
         expect(dispatchSpy).toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('useDevicesAnalytics', () => {
+    it('fetches the devices analytics endpoint', async () => {
+      const store = buildStore(true)
+      const { result } = renderHook(() => useDevicesAnalytics(dateRange), {
+        wrapper: createWrapper(store),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+      expect(mockGet).toHaveBeenCalledWith(
+        '/fido2/metrics/analytics/devices',
+        expect.objectContaining({ params: expect.any(Object) }),
+      )
+    })
+
+    it('does not fetch when there is no session', () => {
+      const store = buildStore(false)
+      renderHook(() => useDevicesAnalytics(dateRange), { wrapper: createWrapper(store) })
+      expect(mockGet).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('useMetricsEntries', () => {
+    it('fetches entries with default paging params', async () => {
+      const store = buildStore(true)
+      const { result } = renderHook(() => useMetricsEntries(dateRange), {
+        wrapper: createWrapper(store),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+      expect(mockGet).toHaveBeenCalledWith(
+        '/fido2/metrics/entries',
+        expect.objectContaining({
+          params: expect.objectContaining({ limit: METRICS_ENTRIES_PAGE_SIZE, startIndex: 0 }),
+        }),
+      )
+    })
+
+    it('honours a caller supplied limit and startIndex', async () => {
+      const store = buildStore(true)
+      const { result } = renderHook(
+        () => useMetricsEntries(dateRange, { limit: 10, startIndex: 20 }),
+        {
+          wrapper: createWrapper(store),
+        },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+      expect(mockGet).toHaveBeenCalledWith(
+        '/fido2/metrics/entries',
+        expect.objectContaining({
+          params: expect.objectContaining({ limit: 10, startIndex: 20 }),
+        }),
+      )
+    })
+
+    it('does not fetch when the date range is null', () => {
+      const store = buildStore(true)
+      renderHook(() => useMetricsEntries(null), { wrapper: createWrapper(store) })
+      expect(mockGet).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('useMetricsEntriesByOperation', () => {
+    it('fetches entries for the given operation type', async () => {
+      const store = buildStore(true)
+      const { result } = renderHook(
+        () => useMetricsEntriesByOperation(METRIC_OPERATION_TYPES.AUTHENTICATION, dateRange),
+        { wrapper: createWrapper(store) },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+      expect(mockGet).toHaveBeenCalledWith(
+        '/fido2/metrics/entries/operation/AUTHENTICATION',
+        expect.objectContaining({ params: expect.any(Object) }),
+      )
+    })
+
+    it('does not fetch when the operation type is empty', () => {
+      const store = buildStore(true)
+      renderHook(() => useMetricsEntriesByOperation('', dateRange), {
+        wrapper: createWrapper(store),
+      })
+      expect(mockGet).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('useMetricsEntriesByUser', () => {
+    it('encodes the user id in the request url', async () => {
+      const store = buildStore(true)
+      const { result } = renderHook(() => useMetricsEntriesByUser('user id/1', dateRange), {
+        wrapper: createWrapper(store),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+      expect(mockGet).toHaveBeenCalledWith(
+        '/fido2/metrics/entries/user/user%20id%2F1',
+        expect.objectContaining({ params: expect.any(Object) }),
+      )
+    })
+
+    it('does not fetch when the user id is empty', () => {
+      const store = buildStore(true)
+      renderHook(() => useMetricsEntriesByUser('', dateRange), { wrapper: createWrapper(store) })
+      expect(mockGet).not.toHaveBeenCalled()
     })
   })
 })

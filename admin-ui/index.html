@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <base href="%BASE_URL%" />
     <title>AdminUI</title>
-    <link rel="icon" type="image/x-icon" href="%BASE_URL%favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="%BASE_URL%favicon-16x16.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, minimal-ui"
@@ -40,7 +40,7 @@
       }
     </style>
     <script>
-      ;(() => {
+      (() => {
         try {
           const theme = localStorage.getItem('initTheme') === 'light' ? 'theme-light' : 'theme-dark'
           document.documentElement.classList.add(theme)

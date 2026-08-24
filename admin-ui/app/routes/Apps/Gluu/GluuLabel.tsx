@@ -62,13 +62,8 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
                   place="right"
                 />
                 <HelpOutline
-                  style={{
-                    width: 18,
-                    height: 18,
-                    marginLeft: 0,
-                    marginRight: 6,
-                    color: labelColor,
-                  }}
+                  className={classes.helpIcon}
+                  style={{ color: labelColor }}
                   data-tooltip-id={doc_entry}
                   data-for={doc_entry}
                 />

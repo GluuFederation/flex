@@ -147,7 +147,7 @@ export const RoutedContent = () => {
           <Route element={<LazyRoutes.ProfilePage />} path={ROUTES.PROFILE} />
 
           {/*    404    */}
-          <Route path={ROUTES.WILDCARD} element={<LazyRoutes.Gluu404Error />} />
+          <Route path={ROUTES.WILDCARD} element={<GluuErrorScreen variant="not-found" />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>

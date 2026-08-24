@@ -22,16 +22,22 @@ Use the listing below for a detailed estimation of the minimum required resource
 
   -  To complete this installation in a production environment, you must obtain official Open Banking certificates. This requires generating private keys locally and submitting a Certificate Signing Request (CSR) to your Open Banking Directory (e.g., OBIE) to receive the corresponding signed certificates. Self-signed certificates should only be used for testing. Ensure you have the following files ready:
 
-    | Certificate / key                | Description                                                                             |
-    |----------------------------------|-----------------------------------------------------------------------------------------|
-    |OB Root CA                        | Used in nginx as a certificate authority                                                |
-    |OB Issuing CA                     | Used in nginx as a certificate authority                                                |
-    |OB Signing CA                     | Used in nginx as a certificate authority                                                |
-    |OB AS Transport key `obtransport.key`              | Used for mTLS. This will also be added to the JVM                                       |
-    |OB AS Transport crt `obtransport.pem`              | Used for mTLS. This will also be added to the JVM                                       |
-    |OB transport truststore `ob-transport-truststore.p12`       | Used in SSA Validation. Generated from OB Root CA and Issuing CA                        |
-    |OB AS signing crt `obsigning.pem`            | Added to the JVM. Used in SSA Validation                                                | 
-    |OB AS signing key `obsigning.key`                | Added to the JVM. Used in SSA Validation                                                |
+| **Certificate / Key**                                     | **Description**                                                                                    | **Override Property Name**        |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------- |
+| OB Root CA                                            | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
+| OB Issuing CA                                         | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
+| OB Signing CA                                         | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
+| OB AS Transport key `obtransport.key`                 | Used for mTLS. This is also added to the JVM.                                                      | `cnObTransportKey`                |
+| OB AS Transport crt `obtransport.pem`                 | Used for mTLS. This is also added to the JVM.                                                      | `cnObTransportCrt`                |
+| OB transport truststore `ob-transport-truststore.p12` | Generated from the OB Root CA, Issuing CA, and Signing CA. Used in SSA validation.                 | `cnObTransportTrustStore`         |
+| OB AS signing crt `obsigning.pem`                    | Used for SSA validation and provided through the external signing JWKS configuration.              | `cnObExtSigningJwksCrt`           |
+| OB AS signing key `obsigning.key`                     | Used for SSA validation and provided through the external signing JWKS configuration.              | `cnObExtSigningJwksKey`           |
+| OB AS signing key passphrase                         | Passphrase used to unlock the OB AS signing key.                                                   | `cnObExtSigningJwksKeyPassPhrase` |
+| OB AS signing JWKS URI                               | URI where the external signing public keys are published.                                          | `cnObExtSigningJwksUri`           |
+| External signing key ID (`kid`)                       | Identifies the signing key used in outgoing JWTs.                                                  | `cnObStaticSigningKeyKid`         |
+| Internal signing alias                                | JVM/JKS alias used to locate the Open Banking private signing key. Should match the signing `kid`. | `cnObInternalSigningAlias`        |
+| OB AS transport key passphrase                        | Passphrase used to unlock the OB AS transport private key.                                         | `cnObTransportKeyPassPhrase`      |
+| OB transport alias                                    | Alias for the Open Banking transport certificate/key inside the JVM.                               | `cnObTransportAlias`              |
 
   - Download the Open Banking values file `openbanking-values.yaml`:
         ```bash

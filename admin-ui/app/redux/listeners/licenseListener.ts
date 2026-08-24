@@ -10,6 +10,7 @@ import {
 import type { GenericResponse, GetStatParams } from 'JansConfigApi'
 import { setApiToken } from 'Orval'
 import { getOAuth2Config, setApiDefaultToken, setBackendStatus } from '../features/authSlice'
+import { handleSessionExpired } from '../features/initSlice'
 import {
   checkLicenseConfigValidResponse,
   checkLicensePresentResponse,
@@ -44,6 +45,15 @@ const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
     err?.response?.data?.message ??
     (err instanceof Error ? err.message : error != null ? String(error) : 'Network error')
   return { active: false as const, errorMessage, statusCode }
+}
+
+// An expired session fails these calls with an auth status. That is a sign-in problem, not a
+// broken SSA config, so it must not fall through to the branch that renders the SSA upload screen.
+const AUTH_FAILURE_STATUSES: readonly number[] = [401, 403]
+
+const isAuthFailure = (error: Error | ApiErrorLike): boolean => {
+  const status = (error as ApiErrorLike)?.response?.status
+  return typeof status === 'number' && AUTH_FAILURE_STATUSES.includes(status)
 }
 
 const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
@@ -215,6 +225,10 @@ const checkAdminuiLicenseConfigWorker = async (dispatch: AppDispatch): Promise<v
     dispatch(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
     logger.error('Error checking license config:', error instanceof Error ? error : String(error))
+    if (isAuthFailure(error as Error | ApiErrorLike)) {
+      dispatch(handleSessionExpired({ isSessionExpired: true }))
+      return
+    }
     dispatch(checkLicenseConfigValidResponse(false))
   }
 }

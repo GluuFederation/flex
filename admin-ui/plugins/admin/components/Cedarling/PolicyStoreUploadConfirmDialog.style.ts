@@ -11,6 +11,9 @@ type StylesParams = {
 const HALF_GAP = Math.round((CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5) / 2)
 
 export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
+  dialogSurface: {
+    outline: 'none',
+  },
   contentArea: {
     gap: 0,
   },

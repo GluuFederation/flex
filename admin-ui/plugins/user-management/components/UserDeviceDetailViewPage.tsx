@@ -5,6 +5,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
+import { useStyles } from './UserDeviceDetailViewPage.style'
 import { UserDeviceDetailViewPageProps } from '../types'
 
 const DOC_SECTION = 'user'
@@ -15,9 +16,10 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
+  const { classes } = useStyles({ themeColors })
 
   return (
-    <div style={{ backgroundColor: themeColors.lightBackground, padding: '16px', width: '100%' }}>
+    <div className={classes.container}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -55,7 +57,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
 
       {deviceData?.deviceData && (
         <Row>
-          <GluuText variant="h5" style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>
+          <GluuText variant="h5" className={classes.sectionHeading}>
             {t('messages.device_information')}
           </GluuText>
           <Col sm={6} xl={4}>

@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import { SPACING, BORDER_RADIUS } from '@/constants'
+import { SPACING, BORDER_RADIUS, createMobilePageTitleStyle } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -22,6 +22,7 @@ export const useStyles = makeStyles<FidoFormPageStylesParams>()((
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
 
   return {
+    mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
       backgroundColor: cardBg,
       ...cardBorderStyle,

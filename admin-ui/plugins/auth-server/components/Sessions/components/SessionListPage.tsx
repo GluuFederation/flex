@@ -21,11 +21,8 @@ import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { formatDate } from '@/utils/dayjsUtils'
 import { logger } from '@/utils/logger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
-import {
-  REGEX_CSV_FORMULA_INJECTION,
-  REGEX_CSV_SPECIAL_CHARS,
-  REGEX_DOUBLE_QUOTE,
-} from '@/utils/regex'
+import { CSV_MIME_TYPE, toCsv } from '@/utils/csv'
+import { downloadTextFile } from '@/utils/fileDownload'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import { useAppSelector } from '@/redux/hooks'
@@ -340,17 +337,6 @@ const SessionListPage: React.FC = () => {
     ],
   )
 
-  const sanitizeCsvCell = (value: JsonValue): string => {
-    let cell = value == null ? '' : String(value)
-    if (REGEX_CSV_FORMULA_INJECTION.test(cell)) {
-      cell = "'" + cell
-    }
-    if (REGEX_CSV_SPECIAL_CHARS.test(cell)) {
-      cell = '"' + cell.replace(REGEX_DOUBLE_QUOTE, '""') + '"'
-    }
-    return cell
-  }
-
   const downloadCSV = useCallback(() => {
     const keys = [
       t('fields.username'),
@@ -360,29 +346,16 @@ const SessionListPage: React.FC = () => {
       t('fields.acr'),
       t('fields.state'),
     ]
-    const header = keys.map((k) => sanitizeCsvCell(k.replaceAll('-', ' ').toUpperCase())).join(',')
-    const rows = authenticatedSessions.map((row) =>
-      [
-        row.sessionAttributes.auth_user,
-        row.sessionAttributes.remote_ip,
-        row.sessionAttributes.client_id,
-        row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
-        row.sessionAttributes.acr_values,
-        row.state,
-      ]
-        .map(sanitizeCsvCell)
-        .join(','),
-    )
-    const csv = [header, ...rows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', 'sessions.csv')
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    URL.revokeObjectURL(url)
+    const headers = keys.map((key) => key.replaceAll('-', ' ').toUpperCase())
+    const rows = authenticatedSessions.map((row) => [
+      row.sessionAttributes.auth_user,
+      row.sessionAttributes.remote_ip,
+      row.sessionAttributes.client_id,
+      row.authenticationTime ? formatDate(row.authenticationTime, 'YYYY-MM-DD h:mm:ss A') : '',
+      row.sessionAttributes.acr_values,
+      row.state,
+    ])
+    downloadTextFile(toCsv(headers, rows), 'sessions.csv', CSV_MIME_TYPE)
   }, [authenticatedSessions, t])
 
   const handlePageChange = useCallback((page: number) => setPageNumber(page), [setPageNumber])
