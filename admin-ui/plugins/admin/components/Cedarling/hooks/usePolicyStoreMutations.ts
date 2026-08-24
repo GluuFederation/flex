@@ -110,7 +110,6 @@ export const usePolicyStoreMutations = () => {
           displayname,
           description,
           policyStore,
-          jansStatus: POLICY_STORE_STATUS.ACTIVE,
         }
         const result = await createMutation.mutateAsync({ data })
         audit(CREATE, t('documentation.cedarlingConfig.auditPolicyStoreUploaded'), {

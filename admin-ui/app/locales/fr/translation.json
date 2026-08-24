@@ -2461,20 +2461,15 @@
       "auditPolicyStoreUrlUpdated": "URL du magasin de politiques mise à jour",
       "policyStoreUrlInvalidError": "Veuillez saisir une URL valide",
       "useRemotePolicyStore": "Il est recommandé de le définir sur Default pour la production. S'il est défini sur Default, il utilisera le stockage de l'Admin-UI pour l'autorisation Cedarling. Activez le mode Default et utilisez le bouton d'actualisation pour stocker ou mettre à jour les politiques GitHub sur le serveur Admin-UI.",
-      "uploadConfirmTitle": "Confirmer le téléversement du magasin de politiques",
-      "uploadConfirmMessage": "Après le téléversement et le traitement réussis du magasin de politiques, vous serez déconnecté de l'interface d'administration.",
+      "uploadConfirmMessage": "Le nouveau magasin de politiques est créé inactif. Activez-le depuis l'historique des magasins de politiques lorsque vous êtes prêt à l'appliquer.",
       "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut",
       "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à téléverser",
       "uploadPolicyStore": "Téléverser",
-      "downloadPolicyStore": "Télécharger",
-      "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
-      "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
-      "downloadFailed": "Échec du téléchargement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",
       "auditPolicyStoreUploaded": "Magasin de politiques téléversé",
       "defaultPolicyStoreDescription": "Magasin de politiques de l’interface d’administration",
-      "uploadRestartWarning": "Le téléversement de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et vous serez déconnecté de l'Admin UI une fois le traitement terminé."
+      "uploadSuccess": "Magasin de politiques téléversé avec succès."
     },
     "mappings": {
       "note_prefix": "Configurez",
@@ -2544,9 +2539,7 @@
       "unsavedChangesNote": "Modifications non enregistrées — téléchargez l’archive pour les conserver.",
       "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
       "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu.",
-      "activateConfirmTitle": "Confirmer l’activation du magasin de politiques",
-      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques",
-      "activateRestartWarning": "L'activation de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et toutes les permissions seront réévaluées à partir de celui-ci à la prochaine connexion."
+      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques"
     }
   },
   "script": {

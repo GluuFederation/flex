@@ -2458,20 +2458,15 @@
       "auditPolicyStoreUrlUpdated": "URL do armazenamento de políticas atualizada",
       "policyStoreUrlInvalidError": "Por favor, insira uma URL válida",
       "useRemotePolicyStore": "Recomenda-se defini-lo como Default para produção. Se definido como Default, utilizará o armazenamento do Admin-UI para autorização do Cedarling. Ative o modo Default e use o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor Admin-UI.",
-      "uploadConfirmTitle": "Confirmar envio do repositório de políticas",
-      "uploadConfirmMessage": "Após o envio e processamento bem-sucedidos do repositório de políticas, você será desconectado da interface de administração.",
+      "uploadConfirmMessage": "O novo repositório de políticas é criado inativo. Ative-o no histórico de repositórios de políticas quando estiver pronto para aplicá-lo.",
       "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão",
       "selectCjarFile": "Selecione um arquivo .cjar de repositório de políticas para enviar",
       "uploadPolicyStore": "Enviar",
-      "downloadPolicyStore": "Baixar",
-      "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
-      "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
       "uploadFailed": "Falha ao enviar o repositório de políticas",
-      "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
       "auditPolicyStoreUploaded": "Repositório de políticas enviado",
       "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração",
-      "uploadRestartWarning": "Enviar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e você será desconectado do Admin UI assim que o processamento terminar."
+      "uploadSuccess": "Repositório de políticas enviado com sucesso."
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2528,9 +2523,7 @@
       "unsavedChangesNote": "Alterações não salvas — baixe o arquivo compactado para mantê-las.",
       "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
       "selectFileToView": "Selecione um arquivo para ver o conteúdo.",
-      "activateConfirmTitle": "Confirmar ativação do repositório de políticas",
-      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas",
-      "activateRestartWarning": "Ativar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e todas as permissões serão reavaliadas a partir dele no próximo login."
+      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas"
     }
   },
   "script": {

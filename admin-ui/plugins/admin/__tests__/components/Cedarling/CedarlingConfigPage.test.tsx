@@ -88,7 +88,7 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
-  it('applies the uploaded .cjar immediately and re-syncs the role mappings', async () => {
+  it('uploads the .cjar as an inactive policy store and re-syncs the role mappings', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
@@ -113,9 +113,6 @@ describe('CedarlingConfigPage', () => {
     const uploadButton = screen.getByText('Upload')
     fireEvent.click(uploadButton)
 
-    expect(await screen.findByText('Confirm Policy Store Upload')).toBeInTheDocument()
-    fireEvent.click(screen.getByText('Yes'))
-
     const commentsBox = await screen.findByRole('textbox')
     fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
 
@@ -127,10 +124,12 @@ describe('CedarlingConfigPage', () => {
           displayname: 'test-policy.cjar',
           description: 'Rolling out updated admin policies',
           policyStore: expect.any(String),
-          jansStatus: 'active',
         }),
       })
     })
+
+    const [createdData] = mockCreatePolicyStore.mock.calls[0]
+    expect(createdData.data).not.toHaveProperty('jansStatus')
 
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalled()
@@ -152,7 +151,6 @@ describe('CedarlingConfigPage', () => {
     })
 
     fireEvent.click(await screen.findByText('Upload'))
-    fireEvent.click(await screen.findByText('Yes'))
     const commentsBox = await screen.findByRole('textbox')
     fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
     fireEvent.click(screen.getByText('Yes'))
@@ -173,9 +171,9 @@ describe('CedarlingConfigPage', () => {
       createdFeatureValue: expect.objectContaining({
         displayname: 'test-policy.cjar',
         description: 'Rolling out updated admin policies',
-        jansStatus: 'active',
       }),
     })
+    expect(triggers[0].payload?.createdFeatureValue).not.toHaveProperty('jansStatus')
     dispatchSpy.mockRestore()
   })
 })

@@ -10,7 +10,6 @@ import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
-import apiAxios from '@/redux/api/axios'
 import { Box, Link } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
@@ -28,15 +27,12 @@ import { useStyles } from './CedarlingConfigPage.style'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from '@/constants'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
-import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
-import { fetchActivePolicyStoreBytes } from '@/redux/api/backend-api'
-import { base64ToUint8Array, fileToBase64 } from '@/utils/policyStore'
+import { fileToBase64 } from '@/utils/policyStore'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
 const ZIP_MIME_TYPE = 'application/zip'
 const CJAR_EXTENSION = '.cjar'
-const POLICY_STORE_FILE_NAME = `policy-store${CJAR_EXTENSION}`
 
 const POLICY_STORE_REPO_URL =
   'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer'
@@ -44,18 +40,6 @@ const AGAMA_LAB_URL = 'https://cloud.gluu.org/agama-lab'
 
 const CJAR_ACCEPT = {
   [ZIP_MIME_TYPE]: [CJAR_EXTENSION],
-}
-
-const buildPolicyStoreFileName = (): string => {
-  const base = apiAxios.defaults.baseURL
-  if (!base) {
-    return POLICY_STORE_FILE_NAME
-  }
-  try {
-    return `${new URL(base).hostname}-${POLICY_STORE_FILE_NAME}`
-  } catch {
-    return POLICY_STORE_FILE_NAME
-  }
 }
 
 const CedarlingConfigPage: React.FC = () => {
@@ -67,7 +51,6 @@ const CedarlingConfigPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
-  const [showRestartConfirm, setShowRestartConfirm] = useState(false)
 
   const { state: themeState } = useTheme()
   const currentTheme = themeState?.theme || DEFAULT_THEME
@@ -82,9 +65,9 @@ const CedarlingConfigPage: React.FC = () => {
   const uploadOperations = useMemo(
     () => [
       {
-        label: t('documentation.cedarlingConfig.uploadPolicyStore'),
-        path: selectedFile?.name ?? '',
-        value: '',
+        label: t('fields.filename'),
+        path: 'displayname',
+        value: selectedFile?.name ?? '',
       },
     ],
     [t, selectedFile],
@@ -112,17 +95,8 @@ const CedarlingConfigPage: React.FC = () => {
       dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.selectFileFirst')))
       return
     }
-    setShowRestartConfirm(true)
-  }, [selectedFile, dispatch, t])
-
-  const handleRestartConfirmClose = useCallback(() => {
-    setShowRestartConfirm(false)
-  }, [])
-
-  const handleRestartConfirmAccept = useCallback(() => {
-    setShowRestartConfirm(false)
     setShowConfirm(true)
-  }, [])
+  }, [selectedFile, dispatch, t])
 
   const handleConfirmCancel = useCallback(() => {
     setShowConfirm(false)
@@ -142,7 +116,8 @@ const CedarlingConfigPage: React.FC = () => {
         })
 
         setSelectedFile(null)
-        navigateToRoute(ROUTES.LOGOUT)
+        dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.uploadSuccess')))
+        navigateToRoute(ROUTES.ADMIN_POLICIES_LIST)
       } catch (error) {
         logger.error(
           'Policy store upload flow failed:',
@@ -160,46 +135,6 @@ const CedarlingConfigPage: React.FC = () => {
     },
     [selectedFile, dispatch, t, createPolicyStore, navigateToRoute],
   )
-
-  const handleDownload = useCallback(async () => {
-    try {
-      setIsLoading(true)
-
-      const responseBytes = await fetchActivePolicyStoreBytes()
-
-      if (!responseBytes) {
-        dispatch(
-          updateToast(true, 'error', t('documentation.cedarlingConfig.noPolicyStoreToDownload')),
-        )
-        return
-      }
-
-      const bytes = base64ToUint8Array(responseBytes)
-
-      const blob = new Blob([bytes], { type: ZIP_MIME_TYPE })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = buildPolicyStoreFileName()
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-
-      dispatch(
-        updateToast(true, 'success', t('documentation.cedarlingConfig.policyStoreDownloaded')),
-      )
-    } catch (error) {
-      const errorMessage = getErrorMessage(
-        error as Error | ApiError,
-        'documentation.cedarlingConfig.downloadFailed',
-        t,
-      )
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [dispatch, t])
 
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.HOME_DASHBOARD)
@@ -307,10 +242,7 @@ const CedarlingConfigPage: React.FC = () => {
                   className={classes.footer}
                   showBack
                   onBack={handleBack}
-                  showCancel={!isMobile}
-                  cancelButtonLabel={t('documentation.cedarlingConfig.downloadPolicyStore')}
-                  onCancel={handleDownload}
-                  disableCancel={isLoading}
+                  showCancel={false}
                   showApply={!isMobile && canWriteSecurity}
                   applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
                   onApply={handleUploadClick}
@@ -324,21 +256,13 @@ const CedarlingConfigPage: React.FC = () => {
         </GluuPageContent>
       </GluuViewWrapper>
 
-      <PolicyStoreConfirmDialog
-        open={showRestartConfirm}
-        title={t('documentation.cedarlingConfig.uploadConfirmTitle')}
-        message={t('documentation.cedarlingConfig.uploadRestartWarning')}
-        onConfirm={handleRestartConfirmAccept}
-        onClose={handleRestartConfirmClose}
-      />
-
       {showConfirm && (
         <GluuCommitDialog
           modal
           handler={handleConfirmCancel}
           onAccept={handleConfirmUpload}
           feature={adminUiFeatures.policy_store_write}
-          alertSeverity="warning"
+          alertSeverity="info"
           alertMessage={t('documentation.cedarlingConfig.uploadConfirmMessage')}
           operations={uploadOperations}
         />

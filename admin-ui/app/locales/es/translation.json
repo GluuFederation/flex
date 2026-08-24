@@ -2489,20 +2489,15 @@
       "auditPolicyStoreUrlUpdated": "URL del almacén de políticas actualizada",
       "policyStoreUrlInvalidError": "Por favor, introduzca una URL válida",
       "useRemotePolicyStore": "Se recomienda establecerlo en Default para producción. Si se establece en Default, utilizará el almacenamiento de Admin-UI para la autorización de Cedarling. Habilite el modo Default y use el botón de actualización para almacenar o actualizar las políticas de GitHub en el servidor de Admin-UI.",
-      "uploadConfirmTitle": "Confirmar carga del almacén de políticas",
-      "uploadConfirmMessage": "Tras la carga y el procesamiento exitosos del almacén de políticas, se cerrará su sesión en la interfaz de administración.",
+      "uploadConfirmMessage": "El nuevo almacén de políticas se crea inactivo. Actívelo desde el historial de almacenes de políticas cuando esté listo para aplicarlo.",
       "auditSetPolicyStoreAsDefault": "Establecer almacén de políticas predeterminado",
       "selectCjarFile": "Seleccione un archivo .cjar de almacén de políticas para cargar",
       "uploadPolicyStore": "Cargar",
-      "downloadPolicyStore": "Descargar",
-      "policyStoreDownloaded": "Almacén de políticas descargado exitosamente",
-      "noPolicyStoreToDownload": "No hay almacén de políticas disponible para descargar",
       "uploadFailed": "Error al cargar el almacén de políticas",
-      "downloadFailed": "Error al descargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
       "auditPolicyStoreUploaded": "Almacén de políticas cargado",
       "defaultPolicyStoreDescription": "Almacén de políticas de la interfaz de administración",
-      "uploadRestartWarning": "Subir este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y se cerrará su sesión en Admin UI cuando finalice el procesamiento."
+      "uploadSuccess": "Almacén de políticas subido correctamente."
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2527,9 +2522,7 @@
       "unsavedChangesNote": "Cambios sin guardar: descargue el archivo comprimido para conservarlos.",
       "binaryFileNotice": "Este archivo no es de texto y no se puede editar aquí.",
       "selectFileToView": "Seleccione un archivo para ver su contenido.",
-      "activateConfirmTitle": "Confirmar activación del almacén de políticas",
-      "deleteConfirmTitle": "Confirmar eliminación del almacén de políticas",
-      "activateRestartWarning": "Activar este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y todos los permisos se volverán a evaluar a partir de él en el próximo inicio de sesión."
+      "deleteConfirmTitle": "Confirmar eliminación del almacén de políticas"
     }
   },
   "validations": {

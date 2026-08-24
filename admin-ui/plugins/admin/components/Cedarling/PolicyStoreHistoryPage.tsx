@@ -5,7 +5,6 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
@@ -88,7 +87,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const [pattern, setPattern] = useState('')
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
-  const [activationConfirmed, setActivationConfirmed] = useState(false)
 
   const { setPolicyStoreActive, deletePolicyStore, isMutating } = usePolicyStoreMutations()
 
@@ -153,10 +151,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const closeDialog = useCallback(() => {
     setPendingAction(null)
-    setActivationConfirmed(false)
   }, [])
-
-  const handleActivationConfirmAccept = useCallback(() => setActivationConfirmed(true), [])
 
   const handleRowsPerPageChange = useCallback(
     (rowsPerPage: number) => {
@@ -197,7 +192,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
           await deletePolicyStore(store, comments)
         }
         setPendingAction(null)
-        setActivationConfirmed(false)
         refetch()
       } catch (error) {
         logger.error(`Policy store ${type} failed:`, error instanceof Error ? error : String(error))
@@ -393,9 +387,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
   const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
-  const showActivationConfirm = pendingAction?.type === 'activate' && !activationConfirmed
-
-  const showCommitDialog = Boolean(pendingAction) && !showActivationConfirm
+  const showCommitDialog = Boolean(pendingAction)
 
   const dialogFeature =
     pendingAction?.type === 'delete'
@@ -444,14 +436,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
             />
           </div>
         </GluuViewWrapper>
-
-        <PolicyStoreConfirmDialog
-          open={showActivationConfirm}
-          title={t('documentation.policyStore.activateConfirmTitle')}
-          message={t('documentation.policyStore.activateRestartWarning')}
-          onConfirm={handleActivationConfirmAccept}
-          onClose={closeDialog}
-        />
 
         <GluuCommitDialog
           modal={showCommitDialog}

@@ -2484,21 +2484,16 @@
       "requiredFieldNote": "A .cjar file is required to upload a new policy store.",
       "selectCjarFile": "Select a .cjar policy store file to upload",
       "uploadPolicyStore": "Upload",
-      "downloadPolicyStore": "Download",
-      "policyStoreDownloaded": "Policy store downloaded successfully",
-      "noPolicyStoreToDownload": "No policy store available to download",
       "uploadFailed": "Failed to upload policy store",
-      "downloadFailed": "Failed to download policy store",
       "selectFileFirst": "Please select a .cjar file first",
       "auditPolicyStoreUploaded": "Policy store uploaded",
       "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
       "auditPolicyStoreUrlUpdated": "Policy store URL updated",
       "policyStoreUrlInvalidError": "Please enter a valid URL",
       "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
-      "uploadConfirmTitle": "Confirm Policy Store Upload",
-      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI.",
+      "uploadConfirmMessage": "The new policy store is created inactive. Activate it from Policy Store history when you're ready to apply it.",
       "defaultPolicyStoreDescription": "Admin UI Policy Store",
-      "uploadRestartWarning": "Uploading this policy store restarts the system. Accepting triggers the associated webhooks, and you will be signed out of the Admin UI once processing completes."
+      "uploadSuccess": "Policy store uploaded successfully."
     },
     "mappings": {
       "note_prefix": "Configure",
@@ -2523,9 +2518,7 @@
       "unsavedChangesNote": "Unsaved changes — download the archive to keep them.",
       "binaryFileNotice": "This file is not a text file and cannot be edited here.",
       "selectFileToView": "Select a file from the archive to view its contents.",
-      "activateConfirmTitle": "Confirm Policy Store Activation",
-      "deleteConfirmTitle": "Confirm Policy Store Deletion",
-      "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and all permissions are re-evaluated from it at the next sign-in."
+      "deleteConfirmTitle": "Confirm Policy Store Deletion"
     }
   },
   "claims": {
