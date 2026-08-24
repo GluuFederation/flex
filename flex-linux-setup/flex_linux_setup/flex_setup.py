@@ -26,6 +26,8 @@ install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
+ADMIN_UI_POLICY_STORE_INUM = '86007dee-fc3f-4668-8323-c4d2836748da'
+
 app_versions = {
     "JANS_APP_VERSION": "0.0.0",
     "JANS_BUILD": "-nightly",
@@ -640,7 +642,7 @@ class flex_installer(JettyInstaller):
 
             shutil.move(tmp_cjar, self.policy_store_cjar_path)
 
-        Config.templateRenderingDict['admin_ui_policy_store_inum'] = str(uuid.uuid4())
+        Config.templateRenderingDict['admin_ui_policy_store_inum'] = ADMIN_UI_POLICY_STORE_INUM
         Config.templateRenderingDict['admin_ui_policy_store_base64'] = self.generate_base64_file(self.policy_store_cjar_path, 1)
         Config.templateRenderingDict['admin_ui_policy_store_creation_date'] = self.get_ldap_time()
 
