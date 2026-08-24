@@ -56,6 +56,9 @@ const PolicyStoreConfirmDialog = ({
         >
           {t('actions.yes')}
         </GluuButton>
+        <GluuButton theme="dark" onClick={onClose} className={commitClasses.noButton}>
+          {t('actions.no')}
+        </GluuButton>
       </div>
     </GluuModalShell>
   )

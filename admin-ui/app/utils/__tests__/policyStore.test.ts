@@ -1,5 +1,6 @@
 import {
   base64ToUint8Array,
+  buildArchiveDownloadName,
   decodedByteLength,
   isActivePolicyStore,
   selectActivePolicyStore,
@@ -99,5 +100,31 @@ describe('decodedByteLength', () => {
   it('agrees with the decoded length', () => {
     const base64 = btoa('a policy store archive')
     expect(decodedByteLength(base64)).toBe(base64ToUint8Array(base64).length)
+  })
+})
+
+describe('buildArchiveDownloadName', () => {
+  const at = new Date(2026, 7, 24, 9, 5)
+
+  it('inserts a short timestamp before the existing extension', () => {
+    expect(buildArchiveDownloadName('default_ps.zip', 'inum-1', at)).toBe(
+      'default_ps-20260824-0905.zip',
+    )
+  })
+
+  it('keeps names that already carry a browser suffix intact', () => {
+    expect(buildArchiveDownloadName('default_ps (1).cjar', 'inum-1', at)).toBe(
+      'default_ps (1)-20260824-0905.cjar',
+    )
+  })
+
+  it('appends the cjar extension when the store name has none', () => {
+    expect(buildArchiveDownloadName('default_ps', 'inum-1', at)).toBe(
+      'default_ps-20260824-0905.cjar',
+    )
+  })
+
+  it('falls back to the inum when the store has no display name', () => {
+    expect(buildArchiveDownloadName(undefined, 'inum-1', at)).toBe('inum-1-20260824-0905.cjar')
   })
 })

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useMatch, useParams } from 'react-router-dom'
 import AceEditor from 'react-ace'
 import type { Ace } from 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
@@ -21,7 +21,12 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
-import { base64ToUint8Array, isActivePolicyStore, toPolicyStoreEntries } from '@/utils/policyStore'
+import {
+  base64ToUint8Array,
+  buildArchiveDownloadName,
+  isActivePolicyStore,
+  toPolicyStoreEntries,
+} from '@/utils/policyStore'
 import {
   buildArchiveTree,
   editorModeFor,
@@ -36,6 +41,7 @@ import { logger } from '@/utils/logger'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import ArchiveFileTree from './components/ArchiveFileTree'
+import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
@@ -44,7 +50,6 @@ const EDITOR_FONT_SIZE = 16
 
 const EMPTY_LOCATION = { dir: '', name: '' } as const
 const ZIP_MIME_TYPE = 'application/zip'
-const CJAR_EXTENSION = '.cjar'
 const EDITOR_OPTIONS = {
   useWorker: false,
   showPrintMargin: false,
@@ -67,7 +72,8 @@ const splitArchivePath = (entry: ArchiveEntry | null) => {
 const ArchiveExplorerPage: React.FC = () => {
   const { t } = useTranslation()
   const { inum } = useParams<{ inum: string }>()
-  const { navigateBack } = useAppNavigation()
+  const { navigateBack, navigateToRoute } = useAppNavigation()
+  const isEditRoute = Boolean(useMatch(ROUTES.ADMIN_POLICIES_EDIT_TEMPLATE))
   SetTitle(t('titles.policy_store_contents'))
 
   const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
@@ -84,16 +90,17 @@ const ArchiveExplorerPage: React.FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [edits, setEdits] = useState<Record<string, string>>({})
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
   const { data, isLoading } = useGetAdminuiPolicyStore(
-    { limit: 1, fieldValuePair: inum ? `inum=${inum}` : undefined },
+    { fieldValuePair: inum ? `inum=${inum}` : undefined },
     { query: { enabled: canReadSecurity && Boolean(inum) } },
   )
 
-  const store: AdminUIPolicyStore | undefined = useMemo(() => {
-    const list = toPolicyStoreEntries(data)
-    return list.find((entry) => entry.inum === inum) ?? (list.length === 1 ? list[0] : undefined)
-  }, [data, inum])
+  const store: AdminUIPolicyStore | undefined = useMemo(
+    () => toPolicyStoreEntries(data).find((entry) => entry.inum === inum),
+    [data, inum],
+  )
 
   useEffect(() => {
     const archive = store?.policyStore
@@ -148,7 +155,8 @@ const ArchiveExplorerPage: React.FC = () => {
       : selectedOriginalText
 
   const isActive = useMemo(() => (store ? isActivePolicyStore(store) : false), [store])
-  const canEdit = canWriteSecurity && !isActive && !loadError
+  const canEdit = isEditRoute && canWriteSecurity && !isActive && !loadError
+  const showEditAction = !isEditRoute && canWriteSecurity && !isActive && !loadError
   const hasEdits = Object.keys(edits).length > 0
 
   const handleEditorChange = useCallback(
@@ -177,11 +185,12 @@ const ArchiveExplorerPage: React.FC = () => {
       const url = URL.createObjectURL(new Blob([bytes], { type: ZIP_MIME_TYPE }))
       const link = document.createElement('a')
       link.href = url
-      link.download = store?.displayname || `${inum}${CJAR_EXTENSION}`
+      link.download = buildArchiveDownloadName(store?.displayname, inum, new Date())
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
+      setEdits({})
     } catch (error) {
       logger.error(
         'Failed to download policy store archive:',
@@ -203,7 +212,30 @@ const ArchiveExplorerPage: React.FC = () => {
     editor.renderer.setScrollMargin(PANE_BODY_PADDING, PANE_BODY_PADDING, 0, 0)
   }, [])
 
-  const handleBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
+  const goBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
+
+  const handleBack = useCallback(() => {
+    if (hasEdits) {
+      setShowDiscardConfirm(true)
+      return
+    }
+    goBack()
+  }, [hasEdits, goBack])
+
+  const handleDiscardConfirm = useCallback(() => {
+    setShowDiscardConfirm(false)
+    setEdits({})
+    goBack()
+  }, [goBack])
+
+  const handleDiscardCancel = useCallback(() => setShowDiscardConfirm(false), [])
+
+  const handleResetEdits = useCallback(() => setEdits({}), [])
+
+  const handleEdit = useCallback(() => {
+    if (!inum) return
+    navigateToRoute(ROUTES.ADMIN_POLICIES_EDIT(inum))
+  }, [inum, navigateToRoute])
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -257,15 +289,19 @@ const ArchiveExplorerPage: React.FC = () => {
                         <GluuText variant="span" disableThemeColor className={classes.viewerFile}>
                           {selectedLocation.name}
                         </GluuText>
+                        {hasEdits && (
+                          <GluuText
+                            variant="span"
+                            disableThemeColor
+                            className={classes.viewerUnsavedNote}
+                          >
+                            {t('documentation.policyStore.unsavedChangesNote')}
+                          </GluuText>
+                        )}
                       </div>
                       {isActive && (
                         <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
                           {t('documentation.policyStore.activeStoreReadOnly')}
-                        </GluuText>
-                      )}
-                      {hasEdits && (
-                        <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
-                          {t('documentation.policyStore.unsavedChangesNote')}
                         </GluuText>
                       )}
                     </div>
@@ -307,16 +343,25 @@ const ArchiveExplorerPage: React.FC = () => {
               className={classes.footer}
               showBack
               onBack={handleBack}
-              showCancel={false}
-              showApply
+              showCancel={isEditRoute}
+              onCancel={handleResetEdits}
+              disableCancel={!hasEdits}
+              showApply={isEditRoute || showEditAction}
               applyButtonType="button"
-              applyButtonLabel={t('actions.download')}
-              onApply={handleDownload}
-              disableApply={!entries?.length}
+              applyButtonLabel={isEditRoute ? t('actions.download') : t('actions.edit')}
+              onApply={isEditRoute ? handleDownload : handleEdit}
+              disableApply={isEditRoute ? !hasEdits : !entries?.length}
             />
           </div>
         </GluuPageContent>
       </GluuViewWrapper>
+      <PolicyStoreConfirmDialog
+        open={showDiscardConfirm}
+        title={t('documentation.policyStore.discardChangesTitle')}
+        message={t('documentation.policyStore.discardChangesWarning')}
+        onConfirm={handleDiscardConfirm}
+        onClose={handleDiscardCancel}
+      />
     </GluuLoader>
   )
 }

@@ -14,6 +14,9 @@ export const LEGACY_POLICY_STORE_PATH = '/admin-ui/security/policyStore'
 
 export const POLICY_STORE_PATH = `/admin-ui/security${POLICY_STORE_PATH_SUFFIX}/policyStore`
 
+/** Extension of a Cedarling policy-store archive, used for uploads, accept filters and downloads. */
+export const CJAR_EXTENSION = '.cjar'
+
 export const POLICY_STORE_STATUS = {
   ACTIVE: 'active',
   INACTIVE: 'inactive',

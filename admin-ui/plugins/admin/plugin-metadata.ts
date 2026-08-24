@@ -152,6 +152,12 @@ const pluginMetadata = {
     },
     {
       component: ArchiveExplorerPage,
+      path: ROUTES.ADMIN_POLICIES_EDIT_TEMPLATE,
+      action: CEDAR_ACTIONS.WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: ArchiveExplorerPage,
       path: ROUTES.ADMIN_POLICIES_VIEW_TEMPLATE,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,

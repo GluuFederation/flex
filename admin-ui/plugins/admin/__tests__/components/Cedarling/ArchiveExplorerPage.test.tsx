@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -28,9 +28,13 @@ jest.mock('@/cedarling/hooks/usePermission', () => ({
   usePermission: jest.fn(() => ({ canRead: true, canWrite: true, canDelete: true })),
 }))
 
+type RouteMatch = { params: Record<string, string> } | null
+
+const mockUseMatch = jest.fn((_pattern: string): RouteMatch => null)
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: () => ({ inum: 'store-1' }),
+  useMatch: (pattern: string) => mockUseMatch(pattern),
 }))
 
 jest.mock('ace-builds/src-noconflict/mode-json', () => ({}))
@@ -109,6 +113,11 @@ const mockStoreWithStatus = async (jansStatus: string) => {
 }
 
 describe('ArchiveExplorerPage', () => {
+  beforeAll(() => {
+    URL.createObjectURL = jest.fn(() => 'blob:archive')
+    URL.revokeObjectURL = jest.fn()
+  })
+
   beforeEach(async () => {
     jest.clearAllMocks()
     const policyStore = await buildStore()
@@ -127,6 +136,10 @@ describe('ArchiveExplorerPage', () => {
     expect(screen.getByRole('button', { name: 'allow.cedar' })).toBeInTheDocument()
   })
 
+  const onEditRoute = () => {
+    mockUseMatch.mockReturnValue({ params: { inum: 'store-1' } })
+  }
+
   it('keeps the active policy store read-only', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
@@ -142,8 +155,28 @@ describe('ArchiveExplorerPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('offers the edit action for an inactive store on the view route', async () => {
+    await mockStoreWithStatus('inactive')
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+
+    expect(await screen.findByTestId('archive-editor')).toHaveAttribute('readonly')
+    expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Download' })).not.toBeInTheDocument()
+  })
+
+  it('hides the edit action for an active store', async () => {
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+
+    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+  })
+
   it('allows editing an inactive policy store and flags unsaved changes', async () => {
     await mockStoreWithStatus('inactive')
+    onEditRoute()
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
@@ -156,17 +189,88 @@ describe('ArchiveExplorerPage', () => {
     expect(await screen.findByTestId('archive-editor')).toHaveValue(
       'forbid(principal, action, resource);',
     )
-    expect(
-      screen.getByText('Unsaved changes — download the archive to keep them.'),
-    ).toBeInTheDocument()
+    expect(screen.getByText('(Not downloaded yet)')).toBeInTheDocument()
   })
 
-  it('offers a download control but no delete or add controls', async () => {
+  it('reverts pending edits when cancel is clicked', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
 
-    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument()
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+    expect(cancel).toBeDisabled()
+
+    fireEvent.change(await screen.findByTestId('archive-editor'), {
+      target: { value: 'forbid(principal, action, resource);' },
+    })
+    expect(screen.getByText('(Not downloaded yet)')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(await screen.findByTestId('archive-editor')).toHaveValue(
+      'permit(principal, action, resource);',
+    )
+    expect(screen.queryByText('(Not downloaded yet)')).not.toBeInTheDocument()
+  })
+
+  it('confirms before leaving with pending edits and discards them on confirm', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.change(await screen.findByTestId('archive-editor'), {
+      target: { value: 'forbid(principal, action, resource);' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(await screen.findByText('Discard unsaved changes?')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByText('Yes'))
+
+    expect(screen.queryByText('Discard unsaved changes?')).not.toBeInTheDocument()
+  })
+
+  it('leaves without confirmation when there are no pending edits', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(screen.queryByText('Discard unsaved changes?')).not.toBeInTheDocument()
+  })
+
+  it('clears pending edits once the archive is downloaded', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.change(await screen.findByTestId('archive-editor'), {
+      target: { value: 'forbid(principal, action, resource);' },
+    })
+    expect(screen.getByText('(Not downloaded yet)')).toBeInTheDocument()
+
+    const download = screen.getByRole('button', { name: 'Download' })
+    expect(download).toBeEnabled()
+    fireEvent.click(download)
+
+    await waitFor(() => expect(screen.queryByText('(Not downloaded yet)')).not.toBeInTheDocument())
+  })
+
+  it('offers a download control but no delete or add controls on the edit route', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+
+    expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled()
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
     expect(screen.queryByText('Add file')).not.toBeInTheDocument()
   })

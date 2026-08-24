@@ -155,6 +155,12 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontSize: fontSizes.base,
       color: themeColors.fontColor,
     },
+    viewerUnsavedNote: {
+      ...paneHeaderFont,
+      fontWeight: fontWeights.regular,
+      color: themeColors.fontColor,
+      marginLeft: 8,
+    },
     viewerNotice: {
       ...paneHeaderFont,
       color: themeColors.textMuted,

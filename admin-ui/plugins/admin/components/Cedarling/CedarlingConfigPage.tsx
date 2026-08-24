@@ -28,11 +28,11 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from '@/constants'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { fileToBase64 } from '@/utils/policyStore'
+import { CJAR_EXTENSION } from '@/constants/policyStore'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
 const ZIP_MIME_TYPE = 'application/zip'
-const CJAR_EXTENSION = '.cjar'
 
 const POLICY_STORE_REPO_URL =
   'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer'

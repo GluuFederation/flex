@@ -1,5 +1,6 @@
 import type { AdminUIPolicyStore } from 'JansConfigApi'
-import { POLICY_STORE_STATUS } from '@/constants/policyStore'
+import { CJAR_EXTENSION, POLICY_STORE_STATUS } from '@/constants/policyStore'
+import { REGEX_ARCHIVE_FILE_EXTENSION } from '@/utils/regex'
 
 /**
  * Shape of `GET /admin-ui/security1/policyStore`.
@@ -108,4 +109,20 @@ export const decodedByteLength = (base64: string | undefined): number => {
     padding = 1
   }
   return Math.max(0, Math.floor((normalized.length * 3) / 4) - padding)
+}
+
+/**
+ * Names a downloaded archive after its store plus a short local timestamp, so repeated downloads
+ * of the same store stay distinguishable instead of collecting browser `(1)` suffixes.
+ */
+export const buildArchiveDownloadName = (
+  displayname: string | undefined,
+  inum: string | undefined,
+  now: Date,
+): string => {
+  const pad = (value: number) => String(value).padStart(2, '0')
+  const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`
+  const source = displayname?.trim() || inum || 'policy-store'
+  const [, base, extension] = REGEX_ARCHIVE_FILE_EXTENSION.exec(source) ?? []
+  return `${base || source}-${stamp}${extension || CJAR_EXTENSION}`
 }

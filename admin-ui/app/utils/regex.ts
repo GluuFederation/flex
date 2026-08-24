@@ -178,3 +178,5 @@ export const REGEX_BASE64URL_MINUS = /-/g
 export const REGEX_BASE64URL_UNDERSCORE = /_/g
 /** Matches a same-origin route (path, optional query and hash) with no scheme or authority, used to reject open-redirect values before restoring the route a user asked for prior to the OIDC round-trip. */
 export const REGEX_INTERNAL_ROUTE = /^\/[^\s/\\][^\s\\]*$|^\/$/
+/** Splits a policy-store archive filename into its base name and trailing extension, so a download can insert a timestamp before the extension. */
+export const REGEX_ARCHIVE_FILE_EXTENSION = /^(.*?)(\.[^./\\]+)?$/

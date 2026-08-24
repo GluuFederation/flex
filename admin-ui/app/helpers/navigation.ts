@@ -41,6 +41,9 @@ const ROUTES = {
   ADMIN_POLICIES_VIEW: (inum: string) =>
     `${PLUGIN_BASE_PATHS.HOME}/policies/${encodeURIComponent(inum)}`,
   ADMIN_POLICIES_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/policies/:inum`,
+  ADMIN_POLICIES_EDIT: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.HOME}/policies/${encodeURIComponent(inum)}/edit`,
+  ADMIN_POLICIES_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/policies/:inum/edit`,
   ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
 
   // Assets
