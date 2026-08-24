@@ -13,7 +13,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
-import { Add, DeleteOutlined } from '@/components/icons'
+import { CreateNewFolderIcon, NoteAdd } from '@/components/icons'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -30,9 +30,11 @@ import {
 } from '@/utils/policyStore'
 import {
   buildArchiveTree,
+  countTreeFiles,
   editorModeFor,
   entryToText,
   flattenArchiveTree,
+  isDirectoryPath,
   isTextEntry,
   readArchive,
   textToBytes,
@@ -44,8 +46,9 @@ import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import ArchiveFileTree from './components/ArchiveFileTree'
 import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
-import ArchiveAddFileDialog from './components/ArchiveAddFileDialog'
+import ArchivePathDialog from './components/ArchivePathDialog'
 import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
+import type { ArchivePathDialogState } from './types/CedarlingTypes'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 const EDITOR_HEIGHT = '100%'
@@ -65,7 +68,15 @@ const TREE_WIDTH_MIN = 180
 const TREE_WIDTH_MAX_RATIO = 0.6
 const TREE_WIDTH_STEP = 16
 
-const countArchiveFiles = (entries: ArchiveEntry[] | null) => entries?.length ?? 0
+const pathsUnder = (paths: readonly string[], target: string): string[] =>
+  isDirectoryPath(target)
+    ? paths.filter((path) => path === target || path.startsWith(target))
+    : paths.filter((path) => path === target)
+
+const entryToTextAt = (entries: ArchiveEntry[] | null, path: string): string => {
+  const entry = entries?.find((candidate) => candidate.path === path)
+  return entry && isTextEntry(path) ? entryToText(entry) : ''
+}
 
 const splitArchivePath = (entry: ArchiveEntry | null) => {
   if (!entry) return EMPTY_LOCATION
@@ -100,7 +111,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const [edits, setEdits] = useState<Record<string, string>>({})
   const [addedPaths, setAddedPaths] = useState<string[]>([])
   const [removedPaths, setRemovedPaths] = useState<string[]>([])
-  const [showAddFile, setShowAddFile] = useState(false)
+  const [pathDialog, setPathDialog] = useState<ArchivePathDialogState | null>(null)
   const [treeWidth, setTreeWidth] = useState(TREE_WIDTH_DEFAULT)
   const splitPaneRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<Ace.Editor | null>(null)
@@ -130,7 +141,7 @@ const ArchiveExplorerPage: React.FC = () => {
         if (!isMounted) return
         setEntries(unpacked)
         setLoadError(null)
-        setSelectedPath(unpacked[0]?.path ?? null)
+        setSelectedPath(unpacked.find((entry) => !isDirectoryPath(entry.path))?.path ?? null)
         setEdits({})
         setAddedPaths([])
         setRemovedPaths([])
@@ -225,7 +236,7 @@ const ArchiveExplorerPage: React.FC = () => {
     }
   }, [workingEntries, edits, store, inum, dispatch, t])
 
-  const fileCount = useMemo(() => countArchiveFiles(workingEntries), [workingEntries])
+  const fileCount = useMemo(() => countTreeFiles(tree), [tree])
 
   const existingPaths = useMemo(
     () => (workingEntries ?? []).map((entry) => entry.path),
@@ -307,42 +318,132 @@ const ArchiveExplorerPage: React.FC = () => {
     setRemovedPaths([])
   }, [])
 
-  const handleAddFileOpen = useCallback(() => setShowAddFile(true), [])
+  const openAddFile = useCallback(() => setPathDialog({ mode: 'file' }), [])
 
-  const handleAddFileClose = useCallback(() => setShowAddFile(false), [])
+  const openAddFolder = useCallback(() => setPathDialog({ mode: 'folder' }), [])
 
-  const handleAddFile = useCallback(
-    (path: string) => {
-      setShowAddFile(false)
-      setRemovedPaths((previous) => previous.filter((removed) => removed !== path))
-      setAddedPaths((previous) => (previous.includes(path) ? previous : [...previous, path]))
-      setEdits((previous) => ({ ...previous, [path]: '' }))
-      setSelectedPath(path)
-      dispatch(updateToast(true, 'success', t('documentation.policyStore.fileSaved')))
-    },
-    [dispatch, t],
+  const openRename = useCallback(
+    (path: string) => setPathDialog({ mode: 'rename', initialPath: path }),
+    [],
   )
 
-  const handleDeleteFile = useCallback(() => {
-    if (!selectedPath) return
-    const path = selectedPath
-    setAddedPaths((previous) => previous.filter((added) => added !== path))
-    setEdits((previous) => {
-      if (!(path in previous)) return previous
-      const rest = { ...previous }
-      delete rest[path]
-      return rest
-    })
-    setRemovedPaths((previous) =>
-      entries?.some((entry) => entry.path === path) && !previous.includes(path)
-        ? [...previous, path]
-        : previous,
-    )
-    const ordered = flattenArchiveTree(tree)
-    const index = ordered.indexOf(path)
-    setSelectedPath(ordered[index - 1] ?? ordered[index + 1] ?? null)
-    dispatch(updateToast(true, 'success', t('documentation.policyStore.fileDeleted')))
-  }, [selectedPath, entries, tree, dispatch, t])
+  const closePathDialog = useCallback(() => setPathDialog(null), [])
+
+  const addEntry = useCallback((path: string) => {
+    setRemovedPaths((previous) => previous.filter((removed) => removed !== path))
+    setAddedPaths((previous) => (previous.includes(path) ? previous : [...previous, path]))
+    setEdits((previous) => ({ ...previous, [path]: '' }))
+  }, [])
+
+  const handlePathSubmit = useCallback(
+    (path: string) => {
+      const intent = pathDialog
+      setPathDialog(null)
+      if (!intent) return
+
+      if (intent.mode === 'rename') {
+        const from = intent.initialPath
+        if (!from || from === path) return
+        const moved = pathsUnder(existingPaths, from)
+        const destinationFor = (source: string) => `${path}${source.slice(from.length)}`
+        const textFor = (source: string) => edits[source] ?? entryToTextAt(entries, source)
+        const carried = moved.map((source) => [destinationFor(source), textFor(source)] as const)
+
+        setAddedPaths((previous) => {
+          const kept = previous.filter((added) => !moved.includes(added))
+          const destinations = carried
+            .map(([destination]) => destination)
+            .filter((destination) => !kept.includes(destination))
+          return [...kept, ...destinations]
+        })
+        setRemovedPaths((previous) => {
+          const fromArchive = moved.filter(
+            (source) =>
+              entries?.some((entry) => entry.path === source) && !previous.includes(source),
+          )
+          return fromArchive.length ? [...previous, ...fromArchive] : previous
+        })
+        setEdits((previous) => {
+          const next = { ...previous }
+          moved.forEach((source) => delete next[source])
+          carried.forEach(([destination, text]) => {
+            next[destination] = text
+          })
+          return next
+        })
+        setSelectedPath((previous) =>
+          previous && moved.includes(previous) ? destinationFor(previous) : previous,
+        )
+        dispatch(
+          updateToast(
+            true,
+            'success',
+            t(
+              isDirectoryPath(from)
+                ? 'documentation.policyStore.folderRenamed'
+                : 'documentation.policyStore.fileRenamed',
+            ),
+          ),
+        )
+        return
+      }
+
+      addEntry(path)
+      if (intent.mode === 'file') {
+        setSelectedPath(path)
+      }
+      dispatch(
+        updateToast(
+          true,
+          'success',
+          t(
+            intent.mode === 'folder'
+              ? 'documentation.policyStore.folderAdded'
+              : 'documentation.policyStore.fileSaved',
+          ),
+        ),
+      )
+    },
+    [pathDialog, entries, edits, existingPaths, addEntry, dispatch, t],
+  )
+
+  const handleDelete = useCallback(
+    (target: string) => {
+      const doomed = pathsUnder(existingPaths, target)
+      if (!doomed.length) return
+
+      setAddedPaths((previous) => previous.filter((added) => !doomed.includes(added)))
+      setEdits((previous) => {
+        const next = { ...previous }
+        doomed.forEach((path) => delete next[path])
+        return next
+      })
+      setRemovedPaths((previous) => {
+        const fromArchive = doomed.filter(
+          (path) => entries?.some((entry) => entry.path === path) && !previous.includes(path),
+        )
+        return fromArchive.length ? [...previous, ...fromArchive] : previous
+      })
+      setSelectedPath((previous) => {
+        if (!previous || !doomed.includes(previous)) return previous
+        const ordered = flattenArchiveTree(tree).filter((path) => !doomed.includes(path))
+        const index = flattenArchiveTree(tree).indexOf(previous)
+        return ordered[Math.min(index, ordered.length - 1)] ?? ordered[0] ?? null
+      })
+      dispatch(
+        updateToast(
+          true,
+          'success',
+          t(
+            isDirectoryPath(target)
+              ? 'documentation.policyStore.folderDeleted'
+              : 'documentation.policyStore.fileDeleted',
+          ),
+        ),
+      )
+    },
+    [existingPaths, entries, tree, dispatch, t],
+  )
 
   const handleDiscardConfirm = useCallback(() => {
     setShowDiscardConfirm(false)
@@ -378,22 +479,31 @@ const ArchiveExplorerPage: React.FC = () => {
                   <GluuText variant="span" disableThemeColor className={classes.paneTitle}>
                     {t('fields.files')}
                   </GluuText>
-                  <div className={classes.paneActions}>
-                    <GluuText variant="span" disableThemeColor className={classes.paneCount}>
-                      {fileCount}
-                    </GluuText>
-                    {canEdit && (
+                  <GluuText variant="span" disableThemeColor className={classes.paneCount}>
+                    {fileCount}
+                  </GluuText>
+                  {canEdit && (
+                    <div className={classes.paneActions}>
                       <button
                         type="button"
                         className={classes.paneAction}
-                        onClick={handleAddFileOpen}
+                        onClick={openAddFile}
                         title={t('actions.add_file')}
                         aria-label={t('actions.add_file')}
                       >
-                        <Add className={classes.paneActionIcon} aria-hidden />
+                        <NoteAdd className={classes.headerActionIcon} aria-hidden />
                       </button>
-                    )}
-                  </div>
+                      <button
+                        type="button"
+                        className={classes.paneAction}
+                        onClick={openAddFolder}
+                        title={t('actions.add_folder')}
+                        aria-label={t('actions.add_folder')}
+                      >
+                        <CreateNewFolderIcon className={classes.headerActionIconWide} aria-hidden />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className={classes.treeScroll}>
                   {loadError ? (
@@ -406,6 +516,12 @@ const ArchiveExplorerPage: React.FC = () => {
                       selectedPath={selectedPath}
                       onSelect={handleSelect}
                       classes={classes}
+                      canEdit={canEdit}
+                      onRename={openRename}
+                      onDelete={handleDelete}
+                      renameLabel={t('actions.rename')}
+                      deleteLabel={t('actions.delete')}
+                      rootLabel={t('documentation.policyStore.storeRoot')}
                     />
                   )}
                 </div>
@@ -448,19 +564,6 @@ const ArchiveExplorerPage: React.FC = () => {
                           </GluuText>
                         )}
                       </div>
-                      {canEdit && (
-                        <div className={classes.paneActions}>
-                          <button
-                            type="button"
-                            className={classes.paneAction}
-                            onClick={handleDeleteFile}
-                            title={t('actions.delete')}
-                            aria-label={t('actions.delete')}
-                          >
-                            <DeleteOutlined className={classes.paneActionIcon} aria-hidden />
-                          </button>
-                        </div>
-                      )}
                       {isActive && (
                         <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
                           {t('documentation.policyStore.activeStoreReadOnly')}
@@ -517,11 +620,13 @@ const ArchiveExplorerPage: React.FC = () => {
           </div>
         </GluuPageContent>
       </GluuViewWrapper>
-      <ArchiveAddFileDialog
-        open={showAddFile}
+      <ArchivePathDialog
+        open={Boolean(pathDialog)}
+        mode={pathDialog?.mode ?? 'file'}
+        initialPath={pathDialog?.initialPath}
         existingPaths={existingPaths}
-        onAdd={handleAddFile}
-        onClose={handleAddFileClose}
+        onSubmit={handlePathSubmit}
+        onClose={closePathDialog}
       />
 
       <PolicyStoreConfirmDialog

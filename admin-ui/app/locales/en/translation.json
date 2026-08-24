@@ -84,7 +84,9 @@
     "download": "Download",
     "add_file": "Add file",
     "create": "Create",
-    "discard": "Discard"
+    "discard": "Discard",
+    "add_folder": "Add folder",
+    "rename": "Rename"
   },
   "password": {
     "show": "Show password",
@@ -2527,7 +2529,15 @@
       "activateConfirmTitle": "Confirm Policy Store Activation",
       "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and you will be signed out of the Admin UI once processing completes.",
       "restartNotice": "The system will restart in {{seconds}} seconds. You will be signed out of the Admin UI.",
-      "deleteConfirmTitle": "Confirm Policy Store Deletion"
+      "deleteConfirmTitle": "Confirm Policy Store Deletion",
+      "folderPathPlaceholder": "e.g. policies",
+      "folderAdded": "Folder added",
+      "fileRenamed": "File renamed",
+      "storeRoot": "Store root",
+      "folderPathLabel": "Folder path",
+      "folderPathRequired": "Enter a folder path.",
+      "folderDeleted": "Folder deleted",
+      "folderRenamed": "Folder renamed"
     }
   },
   "claims": {

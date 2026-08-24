@@ -5,5 +5,6 @@ export type GluuModalShellProps = {
   ariaLabelledBy?: string
   closeOnOverlayClick?: boolean
   containerClassName?: string
+  contentClassName?: string
   children: ReactNode
 }

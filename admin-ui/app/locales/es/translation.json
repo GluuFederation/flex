@@ -84,7 +84,9 @@
     "download": "Descargar",
     "add_file": "Añadir archivo",
     "create": "Crear",
-    "discard": "Descartar"
+    "discard": "Descartar",
+    "add_folder": "Añadir carpeta",
+    "rename": "Renombrar"
   },
   "password": {
     "show": "Mostrar contraseña",
@@ -2531,7 +2533,15 @@
       "activateConfirmTitle": "Confirmar activación del almacén de políticas",
       "activateRestartWarning": "Activar este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y se cerrará su sesión en Admin UI cuando finalice el procesamiento.",
       "restartNotice": "El sistema se reiniciará en {{seconds}} segundos. Se cerrará su sesión en Admin UI.",
-      "deleteConfirmTitle": "Confirmar eliminación del almacén de políticas"
+      "deleteConfirmTitle": "Confirmar eliminación del almacén de políticas",
+      "folderPathPlaceholder": "p. ej. policies",
+      "folderAdded": "Carpeta añadida",
+      "fileRenamed": "Archivo renombrado",
+      "storeRoot": "Raíz del almacén",
+      "folderPathLabel": "Ruta de la carpeta",
+      "folderPathRequired": "Introduzca una ruta de carpeta.",
+      "folderDeleted": "Carpeta eliminada",
+      "folderRenamed": "Carpeta renombrada"
     }
   },
   "validations": {

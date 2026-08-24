@@ -236,7 +236,9 @@
     "download": "Baixar",
     "add_file": "Adicionar arquivo",
     "create": "Criar",
-    "discard": "Descartar"
+    "discard": "Descartar",
+    "add_folder": "Adicionar pasta",
+    "rename": "Renomear"
   },
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
   "roleNotFoundMessage": "Usuário não autorizado",
@@ -2532,7 +2534,15 @@
       "activateConfirmTitle": "Confirmar ativação do repositório de políticas",
       "activateRestartWarning": "Ativar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e você será desconectado do Admin UI assim que o processamento terminar.",
       "restartNotice": "O sistema será reiniciado em {{seconds}} segundos. Você será desconectado do Admin UI.",
-      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas"
+      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas",
+      "folderPathPlaceholder": "ex. policies",
+      "folderAdded": "Pasta adicionada",
+      "fileRenamed": "Ficheiro renomeado",
+      "storeRoot": "Raiz do armazenamento",
+      "folderPathLabel": "Caminho da pasta",
+      "folderPathRequired": "Introduza um caminho de pasta.",
+      "folderDeleted": "Pasta eliminada",
+      "folderRenamed": "Pasta renomeada"
     }
   },
   "script": {

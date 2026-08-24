@@ -9,7 +9,7 @@ import { REGEX_ARCHIVE_FILE_EXTENSION } from '@/utils/regex'
  * way) but the example alongside it returns a paged envelope. Until upstream settles on one, treat
  * either as valid — see `toPolicyStoreEntries`.
  */
-export type PolicyStoreListEnvelope = {
+type PolicyStoreListEnvelope = {
   start?: number
   totalEntriesCount?: number
   entriesCount?: number

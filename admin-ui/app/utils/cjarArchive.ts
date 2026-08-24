@@ -67,7 +67,10 @@ const TEXT_EXTENSIONS = new Set([
 
 const TEXT_FILENAMES = new Set(['MANIFEST.MF', 'LICENSE', 'README'])
 
+export const isDirectoryPath = (path: string): boolean => path.endsWith('/')
+
 export const isTextEntry = (path: string): boolean => {
+  if (isDirectoryPath(path)) return false
   const name = path.split('/').pop() ?? ''
   if (TEXT_FILENAMES.has(name.toUpperCase())) {
     return true
@@ -166,8 +169,8 @@ const findEndOfCentralDirectory = (view: DataView): number => {
 
 /**
  * Unpacks an archive into a flat, path-sorted entry list. Directory records (entries ending in `/`)
- * are dropped — the tree is derived from file paths instead, so an archive that omits explicit
- * directory records still renders correctly.
+ * are kept as zero-byte entries so an empty directory survives a read/write round-trip; the tree is
+ * still derived from file paths, so an archive that omits explicit directory records renders too.
  */
 export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> => {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
@@ -200,7 +203,12 @@ export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> =>
       bytes.subarray(cursor + CENTRAL_HEADER_SIZE, cursor + CENTRAL_HEADER_SIZE + nameLength),
     )
 
-    if (!path.endsWith('/')) {
+    if (isDirectoryPath(path)) {
+      if (!seenPaths.has(path)) {
+        seenPaths.add(path)
+        entries.push({ path, bytes: new Uint8Array(0) })
+      }
+    } else {
       if (method !== COMPRESSION.STORED && method !== COMPRESSION.DEFLATE) {
         throw new Error(`Unsupported compression method ${method} for "${path}".`)
       }
@@ -362,17 +370,18 @@ export const buildArchiveTree = (entries: readonly ArchiveEntry[]): ArchiveTreeN
   }
 
   for (const entry of entries) {
+    const isDirectory = isDirectoryPath(entry.path)
     const segments = entry.path.split('/').filter(Boolean)
     if (segments.length === 0) continue
 
     let siblings = root
     segments.forEach((segment, index) => {
-      const isLeaf = index === segments.length - 1
+      const isLast = index === segments.length - 1
       const path = segments.slice(0, index + 1).join('/')
-      if (isLeaf) {
+      if (isLast && !isDirectory) {
         siblings.push({ name: segment, path: entry.path, isDirectory: false, children: [] })
       } else {
-        siblings = findOrCreateDirectory(siblings, segment, path).children
+        siblings = findOrCreateDirectory(siblings, segment, `${path}/`).children
       }
     })
   }
@@ -403,6 +412,14 @@ export const normalizeArchivePath = (input: string): string =>
     .map((segment) => segment.trim())
     .filter(Boolean)
     .join('/')
+
+export const normalizeArchiveDirectoryPath = (input: string): string => {
+  const normalized = normalizeArchivePath(input)
+  return normalized ? `${normalized}/` : ''
+}
+
+export const countTreeFiles = (nodes: readonly ArchiveTreeNode[]): number =>
+  nodes.reduce((total, node) => total + (node.isDirectory ? countTreeFiles(node.children) : 1), 0)
 
 export const formatBytes = (bytes: number): string => {
   if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'

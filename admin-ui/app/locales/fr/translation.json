@@ -237,7 +237,9 @@
     "download": "Télécharger",
     "add_file": "Ajouter un fichier",
     "create": "Créer",
-    "discard": "Annuler les modifications"
+    "discard": "Annuler les modifications",
+    "add_folder": "Ajouter un dossier",
+    "rename": "Renommer"
   },
   "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
   "roleNotFoundMessage": "Utilisateur non autorisé",
@@ -2548,7 +2550,15 @@
       "activateConfirmTitle": "Confirmer l’activation du magasin de politiques",
       "activateRestartWarning": "L'activation de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et vous serez déconnecté de l'Admin UI une fois le traitement terminé.",
       "restartNotice": "Le système redémarrera dans {{seconds}} secondes. Vous serez déconnecté de l'Admin UI.",
-      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques"
+      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques",
+      "folderPathPlaceholder": "ex. policies",
+      "folderAdded": "Dossier ajouté",
+      "fileRenamed": "Fichier renommé",
+      "storeRoot": "Racine du magasin",
+      "folderPathLabel": "Chemin du dossier",
+      "folderPathRequired": "Saisissez un chemin de dossier.",
+      "folderDeleted": "Dossier supprimé",
+      "folderRenamed": "Dossier renommé"
     }
   },
   "script": {

@@ -13,6 +13,7 @@ const GluuModalShell = ({
   ariaLabelledBy,
   closeOnOverlayClick = true,
   containerClassName,
+  contentClassName,
   children,
 }: GluuModalShellProps) => {
   const { t } = useTranslation()
@@ -75,7 +76,15 @@ const GluuModalShell = ({
           >
             <Close fontSize="small" aria-hidden />
           </button>
-          <div className={commitClasses.contentArea}>{children}</div>
+          <div
+            className={
+              contentClassName
+                ? `${commitClasses.contentArea} ${contentClassName}`
+                : commitClasses.contentArea
+            }
+          >
+            {children}
+          </div>
         </div>
       </div>
     </>,

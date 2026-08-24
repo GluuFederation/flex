@@ -299,7 +299,9 @@ describe('ArchiveExplorerPage', () => {
 
     expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Add file' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add folder' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Delete: allow.cedar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Rename: allow.cedar' })).toBeInTheDocument()
   })
 
   it('hides add and delete controls on the view route', async () => {
@@ -309,7 +311,9 @@ describe('ArchiveExplorerPage', () => {
     fireEvent.click(await screen.findByText('allow.cedar'))
 
     expect(screen.queryByRole('button', { name: 'Add file' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Add folder' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete: allow.cedar' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Rename: allow.cedar' })).not.toBeInTheDocument()
   })
 
   it('adds a file to the archive and marks the archive dirty', async () => {
@@ -346,13 +350,77 @@ describe('ArchiveExplorerPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('renames a file, keeping its edited contents and selection', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.click(screen.getByRole('button', { name: 'Rename: allow.cedar' }))
+    fireEvent.change(screen.getByLabelText('File path'), {
+      target: { value: 'policies/renamed.cedar' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Rename' }))
+
+    expect(await screen.findByRole('button', { name: 'renamed.cedar' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument()
+    expect(await screen.findByTestId('archive-editor')).toHaveValue(
+      'permit(principal, action, resource);',
+    )
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
+  it('adds an empty folder to the archive', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Add folder' }))
+    fireEvent.change(screen.getByLabelText('Folder path'), { target: { value: 'entities' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByRole('button', { name: 'entities' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
+  it('deletes a folder together with every file inside it', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    await screen.findByRole('button', { name: 'allow.cedar' })
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: policies' }))
+
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument(),
+    )
+    expect(screen.queryByRole('button', { name: 'policies' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
+  it('renames a folder and re-prefixes the files inside it', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    await screen.findByRole('button', { name: 'allow.cedar' })
+    fireEvent.click(screen.getByRole('button', { name: 'Rename: policies' }))
+    fireEvent.change(screen.getByLabelText('Folder path'), { target: { value: 'rules' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Rename' }))
+
+    expect(await screen.findByRole('button', { name: 'rules' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'policies' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'allow.cedar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
   it('removes the selected file and selects the one above it', async () => {
     await mockStoreWithStatus('inactive')
     onEditRoute()
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: allow.cedar' }))
 
     await waitFor(() =>
       expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument(),
@@ -368,7 +436,7 @@ describe('ArchiveExplorerPage', () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByRole('button', { name: 'MANIFEST.MF' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: MANIFEST.MF' }))
 
     await waitFor(() =>
       expect(screen.queryByRole('button', { name: 'MANIFEST.MF' })).not.toBeInTheDocument(),
@@ -384,9 +452,9 @@ describe('ArchiveExplorerPage', () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByRole('button', { name: 'MANIFEST.MF' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: MANIFEST.MF' }))
     await screen.findByTestId('archive-editor')
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: allow.cedar' }))
 
     await waitFor(() => expect(screen.queryByTestId('archive-editor')).not.toBeInTheDocument())
     expect(

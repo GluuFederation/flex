@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
-import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MODAL, OPACITY } from '@/constants'
+import { BORDER_RADIUS, CEDARLING_CONFIG_SPACING, MODAL, OPACITY, SPACING } from '@/constants'
 
 type StylesParams = {
   isDark: boolean
@@ -9,9 +9,7 @@ type StylesParams = {
 }
 
 const DIALOG_WIDTH = 640
-const INPUT_HEIGHT = 48
-
-const HALF_GAP = Math.round((CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5) / 2)
+const INPUT_PADDING_X = 21
 
 const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
   modalContainer: {
@@ -19,6 +17,9 @@ const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
       width: `min(${DIALOG_WIDTH}px, ${MODAL.MAX_VW})`,
       maxWidth: `${DIALOG_WIDTH}px`,
     },
+  },
+  contentArea: {
+    '&&': { gap: 0 },
   },
   title: {
     fontFamily,
@@ -28,10 +29,20 @@ const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
     color: themeColors.fontColor,
     margin: 0,
   },
+  field: {
+    marginTop: SPACING.SECTION_GAP,
+  },
+  label: {
+    display: 'block',
+    marginBottom: CEDARLING_CONFIG_SPACING.LABEL_MB,
+    fontFamily,
+    fontSize: fontSizes.base,
+    fontWeight: fontWeights.bold,
+    color: themeColors.fontColor,
+  },
   inputContainer: {
     width: '100%',
-    height: INPUT_HEIGHT,
-    marginTop: HALF_GAP,
+    height: CEDARLING_CONFIG_SPACING.INPUT_HEIGHT,
     backgroundColor: themeColors.inputBackground,
     border: `1px solid ${themeColors.borderColor}`,
     borderRadius: BORDER_RADIUS.SMALL,
@@ -40,7 +51,7 @@ const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
   input: {
     'width': '100%',
     'height': '100%',
-    'padding': '0 21px',
+    'padding': `0 ${INPUT_PADDING_X}px`,
     'backgroundColor': 'transparent',
     'border': 'none',
     'borderRadius': BORDER_RADIUS.SMALL,
@@ -63,11 +74,11 @@ const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
     lineHeight: lineHeights.relaxed,
     color: themeColors.errorColor,
     margin: 0,
-    marginTop: 6,
-    minHeight: fontSizes.base,
+    marginTop: CEDARLING_CONFIG_SPACING.HELPER_MT,
+    minHeight: fontSizes.md,
   },
   buttonRow: {
-    marginTop: HALF_GAP,
+    '&&': { marginTop: SPACING.SECTION_GAP },
   },
 }))
 

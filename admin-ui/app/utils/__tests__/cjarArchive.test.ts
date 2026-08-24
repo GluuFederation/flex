@@ -1,5 +1,8 @@
 import {
   buildArchiveTree,
+  countTreeFiles,
+  isDirectoryPath,
+  normalizeArchiveDirectoryPath,
   editorModeFor,
   entryToText,
   formatBytes,
@@ -91,6 +94,60 @@ describe('buildArchiveTree', () => {
 
   it('returns an empty tree for no entries', () => {
     expect(buildArchiveTree([])).toEqual([])
+  })
+
+  it('renders a directory entry as a directory, not a file', () => {
+    const tree = buildArchiveTree([entry('policies/', '')])
+    expect(tree).toHaveLength(1)
+    expect(tree[0]).toMatchObject({ name: 'policies', isDirectory: true, path: 'policies/' })
+    expect(tree[0].children).toEqual([])
+  })
+
+  it('merges a directory entry with the files inside it', () => {
+    const tree = buildArchiveTree([entry('policies/', ''), entry('policies/allow.cedar', 'x')])
+    expect(tree).toHaveLength(1)
+    expect(tree[0].children.map((node) => node.name)).toEqual(['allow.cedar'])
+  })
+})
+
+describe('directory helpers', () => {
+  it('detects directory paths by trailing slash', () => {
+    expect(isDirectoryPath('policies/')).toBe(true)
+    expect(isDirectoryPath('policies/allow.cedar')).toBe(false)
+  })
+
+  it('never treats a directory as editable text', () => {
+    expect(isTextEntry('policies/')).toBe(false)
+  })
+
+  it('normalizes a typed folder path to a trailing slash', () => {
+    expect(normalizeArchiveDirectoryPath('/policies//nested/')).toBe('policies/nested/')
+    expect(normalizeArchiveDirectoryPath('   ')).toBe('')
+  })
+
+  it('keeps an empty directory through write then read', async () => {
+    const packed = await writeArchive([entry('brand-new/', ''), entry('a.cedar', 'permit();')])
+    const unpacked = await readArchive(packed)
+    expect(unpacked.map((item) => item.path)).toEqual(['a.cedar', 'brand-new/'])
+    expect(unpacked.find((item) => item.path === 'brand-new/')?.bytes.length).toBe(0)
+  })
+
+  it('preserves directory records already present in an uploaded archive', async () => {
+    const original = await writeArchive([entry('entities/', ''), entry('entities/x.json', '{}')])
+    const first = await readArchive(original)
+    const second = await readArchive(await writeArchive(first))
+    expect(second.map((item) => item.path)).toEqual(first.map((item) => item.path))
+    expect(second.map((item) => item.path)).toContain('entities/')
+  })
+
+  it('counts only files, skipping directories', () => {
+    const tree = buildArchiveTree([
+      entry('empty/', ''),
+      entry('policies/a.cedar', 'a'),
+      entry('policies/b.cedar', 'b'),
+      entry('root.json', '{}'),
+    ])
+    expect(countTreeFiles(tree)).toBe(3)
   })
 })
 

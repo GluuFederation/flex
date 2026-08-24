@@ -6,6 +6,7 @@ import {
   ICON_SIZE,
   MOBILE_MEDIA_QUERY,
   MOBILE_PAGE_PADDING_X,
+  OPACITY,
   SPACING,
   createMobilePageTitleStyle,
 } from '@/constants'
@@ -15,13 +16,18 @@ import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/font
 const PANE_MIN_HEIGHT = 320
 const SPLIT_PANE_HEIGHT = '65vh'
 const PANE_HEADER_PADDING = '10px 12px'
+const PANE_HEADER_MIN_HEIGHT = 56
 export const PANE_BODY_PADDING = 8
 const TREE_ROW_HEIGHT = 32
-const PANE_ACTION_SIZE = 28
+const PANE_ACTION_SIZE = 34
 const SPLITTER_WIDTH = 12
 const SPLITTER_GRIP_WIDTH = 3
 const SPLITTER_GRIP_HEIGHT = 36
 const SELECTED_ROW_ACCENT_WIDTH = 2
+const TREE_ROW_ACTION_SIZE = 24
+const HEADER_ICON_SIZE = 26
+const HEADER_ICON_WIDE = 24
+export const TREE_ROW_ACTIONS_CLASS = 'archive-tree-row-actions'
 
 export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
   theme: Theme,
@@ -40,6 +46,8 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     display: 'flex' as const,
     alignItems: 'center' as const,
     gap: 8,
+    minHeight: PANE_HEADER_MIN_HEIGHT,
+    boxSizing: 'border-box' as const,
     padding: PANE_HEADER_PADDING,
     borderBottom: `1px solid ${themeColors.borderColor}`,
     backgroundColor: themeColors.background,
@@ -179,6 +187,16 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       '&:focus-visible': { outline: `1px solid ${themeColors.borderColor}` },
     },
     paneActionIcon: { fontSize: ICON_SIZE.SM },
+    headerActionIcon: {
+      width: HEADER_ICON_SIZE,
+      height: HEADER_ICON_SIZE,
+      fontSize: HEADER_ICON_SIZE,
+    },
+    headerActionIconWide: {
+      width: HEADER_ICON_WIDE,
+      height: HEADER_ICON_WIDE,
+      fontSize: HEADER_ICON_WIDE,
+    },
     viewerBody: { flex: 1, minHeight: 0 },
     emptyViewer: {
       display: 'flex',
@@ -224,6 +242,9 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       'userSelect': 'none',
       'transition': 'background-color 0.12s ease',
       '&:hover': { backgroundColor: themeColors.background },
+      [`&:hover .${TREE_ROW_ACTIONS_CLASS}, &:focus-within .${TREE_ROW_ACTIONS_CLASS}`]: {
+        opacity: OPACITY.FULL,
+      },
     },
     treeRowSelected: {
       backgroundColor: themeColors.background,
@@ -236,6 +257,48 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
+    },
+    treeRowCount: {
+      flexShrink: 0,
+      fontFamily,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.regular,
+      color: themeColors.textMuted,
+    },
+    treeRowActions: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      flexShrink: 0,
+      marginLeft: 'auto',
+      opacity: OPACITY.NONE,
+      transition: 'opacity 0.12s ease',
+    },
+    treeRowAction: {
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'width': TREE_ROW_ACTION_SIZE,
+      'height': TREE_ROW_ACTION_SIZE,
+      'padding': 0,
+      'border': 'none',
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'background': 'none',
+      'color': themeColors.fontColor,
+      'cursor': 'pointer',
+      'lineHeight': 0,
+      '&:hover': { backgroundColor: themeColors.borderColor },
+      '&:focus-visible': { outline: `1px solid ${themeColors.borderColor}` },
+    },
+    treeSectionLabel: {
+      display: 'block',
+      padding: '12px 8px 4px',
+      fontFamily,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semiBold,
+      letterSpacing: letterSpacing.loose,
+      textTransform: 'uppercase',
+      color: themeColors.textMuted,
     },
     treeIcon: { fontSize: ICON_SIZE.SM, flexShrink: 0 },
     treeFileIcon: { fontSize: ICON_SIZE.SM, flexShrink: 0, color: themeColors.textMuted },

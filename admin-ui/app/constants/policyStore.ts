@@ -32,5 +32,3 @@ export const POLICY_STORE_STATUS = {
  * identical to a successful one.
  */
 export const POLICY_STORE_ACTIVE_FILTER = `jansStatus=${POLICY_STORE_STATUS.ACTIVE}`
-
-export type PolicyStoreStatus = (typeof POLICY_STORE_STATUS)[keyof typeof POLICY_STORE_STATUS]
