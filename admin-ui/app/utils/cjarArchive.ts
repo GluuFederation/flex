@@ -52,6 +52,8 @@ const textDecoder = new TextDecoder()
 /** Extensions we are willing to open in the text editor. Anything else is shown as binary. */
 const TEXT_EXTENSIONS = new Set([
   'cedar',
+  'cedarschema',
+  'cedarentities',
   'json',
   'txt',
   'md',
@@ -386,6 +388,13 @@ export const buildArchiveTree = (entries: readonly ArchiveEntry[]): ArchiveTreeN
 
   return sortLevel(root)
 }
+
+/**
+ * File paths in the order the tree renders them, so removing a file can fall back to its visible
+ * neighbour rather than to whichever entry happens to sit next in the archive.
+ */
+export const flattenArchiveTree = (nodes: readonly ArchiveTreeNode[]): string[] =>
+  nodes.flatMap((node) => (node.isDirectory ? flattenArchiveTree(node.children) : [node.path]))
 
 /** Normalizes a user-typed path (e.g. `/policies//new.cedar`) into an archive path. */
 export const normalizeArchivePath = (input: string): string =>

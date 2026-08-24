@@ -120,11 +120,37 @@ describe('ArchiveExplorerPage', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks()
+    mockUseMatch.mockReturnValue(null)
     const policyStore = await buildStore()
     mockGetPolicyStore.mockReturnValue({
       data: { entries: [policyStore] },
       isLoading: false,
     })
+  })
+
+  it('resizes the file pane with the splitter keyboard controls', async () => {
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    const splitter = await screen.findByRole('separator', { name: 'Resize file list' })
+    expect(splitter).toHaveAttribute('aria-valuenow', '300')
+
+    fireEvent.keyDown(splitter, { key: 'ArrowRight' })
+    expect(splitter).toHaveAttribute('aria-valuenow', '316')
+
+    fireEvent.keyDown(splitter, { key: 'ArrowLeft' })
+    fireEvent.keyDown(splitter, { key: 'ArrowLeft' })
+    expect(splitter).toHaveAttribute('aria-valuenow', '284')
+  })
+
+  it('does not shrink the file pane below its minimum', async () => {
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    const splitter = await screen.findByRole('separator', { name: 'Resize file list' })
+    for (let press = 0; press < 20; press++) {
+      fireEvent.keyDown(splitter, { key: 'ArrowLeft' })
+    }
+
+    expect(splitter).toHaveAttribute('aria-valuenow', '180')
   })
 
   it('renders the archive directory tree', async () => {
@@ -209,13 +235,7 @@ describe('ArchiveExplorerPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    expect(await screen.findByText('Discard unsaved changes?')).toBeInTheDocument()
-    expect(
-      screen.getByText('Your edits have not been downloaded. Discarding clears them.'),
-    ).toBeInTheDocument()
-
-    fireEvent.click(screen.getByText('Yes'))
-
+    expect(screen.queryByText('Discard unsaved changes?')).not.toBeInTheDocument()
     expect(await screen.findByTestId('archive-editor')).toHaveValue(
       'permit(principal, action, resource);',
     )
@@ -270,7 +290,7 @@ describe('ArchiveExplorerPage', () => {
     await waitFor(() => expect(screen.queryByText('(Not downloaded yet)')).not.toBeInTheDocument())
   })
 
-  it('offers a download control but no delete or add controls on the edit route', async () => {
+  it('offers add and delete controls on the edit route only', async () => {
     await mockStoreWithStatus('inactive')
     onEditRoute()
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
@@ -278,8 +298,100 @@ describe('ArchiveExplorerPage', () => {
     fireEvent.click(await screen.findByText('allow.cedar'))
 
     expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Add file' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
+  })
+
+  it('hides add and delete controls on the view route', async () => {
+    await mockStoreWithStatus('inactive')
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+
+    expect(screen.queryByRole('button', { name: 'Add file' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
-    expect(screen.queryByText('Add file')).not.toBeInTheDocument()
+  })
+
+  it('adds a file to the archive and marks the archive dirty', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Add file' }))
+    fireEvent.change(screen.getByLabelText('File path'), {
+      target: { value: 'policies/deny.cedar' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByRole('button', { name: 'deny.cedar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
+  it('rejects an empty or duplicate file path', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Add file' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Enter a file path.')).toBeInTheDocument()
+
+    fireEvent.change(screen.getByLabelText('File path'), {
+      target: { value: 'policies/allow.cedar' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(
+      await screen.findByText('A file with that path already exists in the archive.'),
+    ).toBeInTheDocument()
+  })
+
+  it('removes the selected file and selects the one above it', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument(),
+    )
+    expect(screen.getByText('META-INF/')).toBeInTheDocument()
+    expect(await screen.findByTestId('archive-editor')).toHaveValue('Manifest-Version: 1.0\n')
+    expect(screen.getByRole('button', { name: 'Download' })).toBeEnabled()
+  })
+
+  it('falls back to the file below when the first file is removed', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'MANIFEST.MF' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'MANIFEST.MF' })).not.toBeInTheDocument(),
+    )
+    expect(await screen.findByTestId('archive-editor')).toHaveValue(
+      'permit(principal, action, resource);',
+    )
+  })
+
+  it('empties the viewer once the last file is removed', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'MANIFEST.MF' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await screen.findByTestId('archive-editor')
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await waitFor(() => expect(screen.queryByTestId('archive-editor')).not.toBeInTheDocument())
+    expect(
+      screen.getByText('Select a file from the archive to view its contents.'),
+    ).toBeInTheDocument()
   })
 
   it('packs the edited archive back into a readable zip', async () => {

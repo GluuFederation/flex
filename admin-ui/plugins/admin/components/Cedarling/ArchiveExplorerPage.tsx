@@ -13,6 +13,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuPageContent } from '@/components'
+import { Add, DeleteOutlined } from '@/components/icons'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -31,6 +32,7 @@ import {
   buildArchiveTree,
   editorModeFor,
   entryToText,
+  flattenArchiveTree,
   isTextEntry,
   readArchive,
   textToBytes,
@@ -41,8 +43,8 @@ import { logger } from '@/utils/logger'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import ArchiveFileTree from './components/ArchiveFileTree'
-import type { ArchiveDiscardIntent } from './types/CedarlingTypes'
 import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
+import ArchiveAddFileDialog from './components/ArchiveAddFileDialog'
 import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
@@ -57,6 +59,11 @@ const EDITOR_OPTIONS = {
   hScrollBarAlwaysVisible: false,
 } as const
 const EDITOR_PROPS = { $blockScrolling: true } as const
+
+const TREE_WIDTH_DEFAULT = 300
+const TREE_WIDTH_MIN = 180
+const TREE_WIDTH_MAX_RATIO = 0.6
+const TREE_WIDTH_STEP = 16
 
 const countArchiveFiles = (entries: ArchiveEntry[] | null) => entries?.length ?? 0
 
@@ -91,7 +98,13 @@ const ArchiveExplorerPage: React.FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [edits, setEdits] = useState<Record<string, string>>({})
-  const [discardIntent, setDiscardIntent] = useState<ArchiveDiscardIntent | null>(null)
+  const [addedPaths, setAddedPaths] = useState<string[]>([])
+  const [removedPaths, setRemovedPaths] = useState<string[]>([])
+  const [showAddFile, setShowAddFile] = useState(false)
+  const [treeWidth, setTreeWidth] = useState(TREE_WIDTH_DEFAULT)
+  const splitPaneRef = useRef<HTMLDivElement>(null)
+  const editorRef = useRef<Ace.Editor | null>(null)
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
   const { data, isLoading } = useGetAdminuiPolicyStore(
     { fieldValuePair: inum ? `inum=${inum}` : undefined },
@@ -119,6 +132,8 @@ const ArchiveExplorerPage: React.FC = () => {
         setLoadError(null)
         setSelectedPath(unpacked[0]?.path ?? null)
         setEdits({})
+        setAddedPaths([])
+        setRemovedPaths([])
       })
       .catch((error) => {
         logger.error(
@@ -134,11 +149,18 @@ const ArchiveExplorerPage: React.FC = () => {
     }
   }, [store, t])
 
-  const tree = useMemo(() => buildArchiveTree(entries ?? []), [entries])
+  const workingEntries = useMemo(() => {
+    if (!entries) return null
+    const kept = entries.filter((entry) => !removedPaths.includes(entry.path))
+    const added = addedPaths.map((path) => ({ path, bytes: textToBytes(edits[path] ?? '') }))
+    return [...kept, ...added]
+  }, [entries, removedPaths, addedPaths, edits])
+
+  const tree = useMemo(() => buildArchiveTree(workingEntries ?? []), [workingEntries])
 
   const selectedEntry = useMemo(
-    () => entries?.find((entry) => entry.path === selectedPath) ?? null,
-    [entries, selectedPath],
+    () => workingEntries?.find((entry) => entry.path === selectedPath) ?? null,
+    [workingEntries, selectedPath],
   )
 
   const selectedIsText = useMemo(
@@ -158,7 +180,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const isActive = useMemo(() => (store ? isActivePolicyStore(store) : false), [store])
   const canEdit = isEditRoute && canWriteSecurity && !isActive && !loadError
   const showEditAction = !isEditRoute && canWriteSecurity && !isActive && !loadError
-  const hasEdits = Object.keys(edits).length > 0
+  const hasEdits = Object.keys(edits).length > 0 || addedPaths.length > 0 || removedPaths.length > 0
 
   const handleEditorChange = useCallback(
     (value: string) => {
@@ -177,9 +199,9 @@ const ArchiveExplorerPage: React.FC = () => {
   )
 
   const handleDownload = useCallback(async () => {
-    if (!entries) return
+    if (!workingEntries) return
     try {
-      const merged = entries.map((entry) =>
+      const merged = workingEntries.map((entry) =>
         entry.path in edits ? { ...entry, bytes: textToBytes(edits[entry.path]) } : entry,
       )
       const bytes = await writeArchive(merged)
@@ -192,6 +214,8 @@ const ArchiveExplorerPage: React.FC = () => {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
       setEdits({})
+      setAddedPaths([])
+      setRemovedPaths([])
     } catch (error) {
       logger.error(
         'Failed to download policy store archive:',
@@ -199,9 +223,14 @@ const ArchiveExplorerPage: React.FC = () => {
       )
       dispatch(updateToast(true, 'error', t('documentation.policyStore.downloadFailed')))
     }
-  }, [entries, edits, store, inum, dispatch, t])
+  }, [workingEntries, edits, store, inum, dispatch, t])
 
-  const fileCount = useMemo(() => countArchiveFiles(entries), [entries])
+  const fileCount = useMemo(() => countArchiveFiles(workingEntries), [workingEntries])
+
+  const existingPaths = useMemo(
+    () => (workingEntries ?? []).map((entry) => entry.path),
+    [workingEntries],
+  )
 
   const selectedLocation = useMemo(() => splitArchivePath(selectedEntry), [selectedEntry])
 
@@ -210,31 +239,120 @@ const ArchiveExplorerPage: React.FC = () => {
   }, [])
 
   const handleEditorLoad = useCallback((editor: Ace.Editor) => {
+    editorRef.current = editor
     editor.renderer.setScrollMargin(PANE_BODY_PADDING, PANE_BODY_PADDING, 0, 0)
   }, [])
+
+  const clampTreeWidth = useCallback((width: number) => {
+    const available = splitPaneRef.current?.clientWidth ?? 0
+    const max = available > 0 ? available * TREE_WIDTH_MAX_RATIO : Number.POSITIVE_INFINITY
+    return Math.round(Math.min(Math.max(width, TREE_WIDTH_MIN), max))
+  }, [])
+
+  const handleSplitterPointerDown = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      event.preventDefault()
+      const pane = splitPaneRef.current
+      if (!pane) return
+      const paneLeft = pane.getBoundingClientRect().left
+      const handle = event.currentTarget
+      handle.setPointerCapture(event.pointerId)
+
+      const onMove = (moveEvent: PointerEvent) => {
+        setTreeWidth(clampTreeWidth(moveEvent.clientX - paneLeft))
+      }
+      const onUp = () => {
+        handle.releasePointerCapture(event.pointerId)
+        handle.removeEventListener('pointermove', onMove)
+        handle.removeEventListener('pointerup', onUp)
+        handle.removeEventListener('pointercancel', onUp)
+      }
+
+      handle.addEventListener('pointermove', onMove)
+      handle.addEventListener('pointerup', onUp)
+      handle.addEventListener('pointercancel', onUp)
+    },
+    [clampTreeWidth],
+  )
+
+  const handleSplitterKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      event.preventDefault()
+      const delta = event.key === 'ArrowLeft' ? -TREE_WIDTH_STEP : TREE_WIDTH_STEP
+      setTreeWidth((previous) => clampTreeWidth(previous + delta))
+    },
+    [clampTreeWidth],
+  )
+
+  useEffect(() => {
+    editorRef.current?.resize()
+  }, [treeWidth])
+
+  const treePaneStyle = useMemo(() => ({ width: treeWidth, minWidth: treeWidth }), [treeWidth])
 
   const goBack = useCallback(() => navigateBack(ROUTES.ADMIN_POLICIES_LIST), [navigateBack])
 
   const handleBack = useCallback(() => {
     if (hasEdits) {
-      setDiscardIntent('back')
+      setShowDiscardConfirm(true)
       return
     }
     goBack()
   }, [hasEdits, goBack])
 
-  const handleResetEdits = useCallback(() => setDiscardIntent('reset'), [])
+  const handleResetEdits = useCallback(() => {
+    setEdits({})
+    setAddedPaths([])
+    setRemovedPaths([])
+  }, [])
+
+  const handleAddFileOpen = useCallback(() => setShowAddFile(true), [])
+
+  const handleAddFileClose = useCallback(() => setShowAddFile(false), [])
+
+  const handleAddFile = useCallback(
+    (path: string) => {
+      setShowAddFile(false)
+      setRemovedPaths((previous) => previous.filter((removed) => removed !== path))
+      setAddedPaths((previous) => (previous.includes(path) ? previous : [...previous, path]))
+      setEdits((previous) => ({ ...previous, [path]: '' }))
+      setSelectedPath(path)
+      dispatch(updateToast(true, 'success', t('documentation.policyStore.fileSaved')))
+    },
+    [dispatch, t],
+  )
+
+  const handleDeleteFile = useCallback(() => {
+    if (!selectedPath) return
+    const path = selectedPath
+    setAddedPaths((previous) => previous.filter((added) => added !== path))
+    setEdits((previous) => {
+      if (!(path in previous)) return previous
+      const rest = { ...previous }
+      delete rest[path]
+      return rest
+    })
+    setRemovedPaths((previous) =>
+      entries?.some((entry) => entry.path === path) && !previous.includes(path)
+        ? [...previous, path]
+        : previous,
+    )
+    const ordered = flattenArchiveTree(tree)
+    const index = ordered.indexOf(path)
+    setSelectedPath(ordered[index - 1] ?? ordered[index + 1] ?? null)
+    dispatch(updateToast(true, 'success', t('documentation.policyStore.fileDeleted')))
+  }, [selectedPath, entries, tree, dispatch, t])
 
   const handleDiscardConfirm = useCallback(() => {
-    const intent = discardIntent
-    setDiscardIntent(null)
+    setShowDiscardConfirm(false)
     setEdits({})
-    if (intent === 'back') {
-      goBack()
-    }
-  }, [discardIntent, goBack])
+    setAddedPaths([])
+    setRemovedPaths([])
+    goBack()
+  }, [goBack])
 
-  const handleDiscardCancel = useCallback(() => setDiscardIntent(null), [])
+  const handleDiscardCancel = useCallback(() => setShowDiscardConfirm(false), [])
 
   const handleEdit = useCallback(() => {
     if (!inum) return
@@ -254,15 +372,28 @@ const ArchiveExplorerPage: React.FC = () => {
               {store?.displayname || inum}
             </GluuText>
 
-            <div className={classes.splitPane}>
-              <div className={classes.treePane}>
+            <div className={classes.splitPane} ref={splitPaneRef}>
+              <div className={classes.treePane} style={treePaneStyle}>
                 <div className={classes.paneHeader}>
                   <GluuText variant="span" disableThemeColor className={classes.paneTitle}>
                     {t('fields.files')}
                   </GluuText>
-                  <GluuText variant="span" disableThemeColor className={classes.paneCount}>
-                    {fileCount}
-                  </GluuText>
+                  <div className={classes.paneActions}>
+                    <GluuText variant="span" disableThemeColor className={classes.paneCount}>
+                      {fileCount}
+                    </GluuText>
+                    {canEdit && (
+                      <button
+                        type="button"
+                        className={classes.paneAction}
+                        onClick={handleAddFileOpen}
+                        title={t('actions.add_file')}
+                        aria-label={t('actions.add_file')}
+                      >
+                        <Add className={classes.paneActionIcon} aria-hidden />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className={classes.treeScroll}>
                   {loadError ? (
@@ -278,6 +409,20 @@ const ArchiveExplorerPage: React.FC = () => {
                     />
                   )}
                 </div>
+              </div>
+
+              <div
+                className={classes.splitter}
+                onPointerDown={handleSplitterPointerDown}
+                onKeyDown={handleSplitterKeyDown}
+                role="separator"
+                tabIndex={0}
+                aria-orientation="vertical"
+                aria-label={t('documentation.policyStore.resizeFileList')}
+                aria-valuenow={treeWidth}
+                aria-valuemin={TREE_WIDTH_MIN}
+              >
+                <span className={classes.splitterGrip} aria-hidden />
               </div>
 
               <div className={classes.viewerPane}>
@@ -303,6 +448,19 @@ const ArchiveExplorerPage: React.FC = () => {
                           </GluuText>
                         )}
                       </div>
+                      {canEdit && (
+                        <div className={classes.paneActions}>
+                          <button
+                            type="button"
+                            className={classes.paneAction}
+                            onClick={handleDeleteFile}
+                            title={t('actions.delete')}
+                            aria-label={t('actions.delete')}
+                          >
+                            <DeleteOutlined className={classes.paneActionIcon} aria-hidden />
+                          </button>
+                        </div>
+                      )}
                       {isActive && (
                         <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
                           {t('documentation.policyStore.activeStoreReadOnly')}
@@ -359,14 +517,17 @@ const ArchiveExplorerPage: React.FC = () => {
           </div>
         </GluuPageContent>
       </GluuViewWrapper>
+      <ArchiveAddFileDialog
+        open={showAddFile}
+        existingPaths={existingPaths}
+        onAdd={handleAddFile}
+        onClose={handleAddFileClose}
+      />
+
       <PolicyStoreConfirmDialog
-        open={discardIntent !== null}
+        open={showDiscardConfirm}
         title={t('documentation.policyStore.discardChangesTitle')}
-        message={
-          discardIntent === 'reset'
-            ? t('documentation.policyStore.discardEditsWarning')
-            : t('documentation.policyStore.discardChangesWarning')
-        }
+        message={t('documentation.policyStore.discardChangesWarning')}
         onConfirm={handleDiscardConfirm}
         onClose={handleDiscardCancel}
       />

@@ -16,6 +16,8 @@ const entry = (path: string, text: string): ArchiveEntry => ({ path, bytes: text
 describe('isTextEntry', () => {
   it.each([
     ['policies/allow.cedar', true],
+    ['schema.cedarschema', true],
+    ['entities.cedarentities', true],
     ['schema.json', true],
     ['META-INF/MANIFEST.MF', true],
     ['notes.md', true],

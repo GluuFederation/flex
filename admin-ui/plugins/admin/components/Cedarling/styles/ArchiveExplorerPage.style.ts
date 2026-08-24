@@ -12,12 +12,15 @@ import {
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { fontFamily, fontSizes, fontWeights, letterSpacing } from '@/styles/fonts'
 
-const TREE_WIDTH = 300
 const PANE_MIN_HEIGHT = 320
 const SPLIT_PANE_HEIGHT = '65vh'
 const PANE_HEADER_PADDING = '10px 12px'
 export const PANE_BODY_PADDING = 8
 const TREE_ROW_HEIGHT = 32
+const PANE_ACTION_SIZE = 28
+const SPLITTER_WIDTH = 12
+const SPLITTER_GRIP_WIDTH = 3
+const SPLITTER_GRIP_HEIGHT = 36
 const SELECTED_ROW_ACCENT_WIDTH = 2
 
 export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>()((
@@ -75,12 +78,16 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
     paneCount: {
       ...paneHeaderFont,
       color: themeColors.fontColor,
+    },
+    paneActions: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 4,
       marginLeft: 'auto',
     },
 
     splitPane: {
       display: 'flex',
-      gap: SPACING.PAGE,
       alignItems: 'stretch',
       height: SPLIT_PANE_HEIGHT,
       minHeight: PANE_MIN_HEIGHT,
@@ -90,14 +97,32 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       ...cardBorderStyle,
       borderRadius: BORDER_RADIUS.DEFAULT,
       backgroundColor: cardBg,
-      width: TREE_WIDTH,
-      minWidth: TREE_WIDTH,
       maxHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
       boxSizing: 'border-box',
       [`@media ${MOBILE_MEDIA_QUERY}`]: { width: '100%', minWidth: 0, maxHeight: 300 },
+    },
+    splitter: {
+      'flexShrink': 0,
+      'width': SPLITTER_WIDTH,
+      'padding': 0,
+      'border': 'none',
+      'background': 'none',
+      'cursor': 'ew-resize',
+      'display': 'flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'touchAction': 'none',
+      '&:hover span, &:focus-visible span': { backgroundColor: themeColors.textMuted },
+      [`@media ${MOBILE_MEDIA_QUERY}`]: { display: 'none' },
+    },
+    splitterGrip: {
+      width: SPLITTER_GRIP_WIDTH,
+      height: SPLITTER_GRIP_HEIGHT,
+      borderRadius: SPLITTER_GRIP_WIDTH,
+      backgroundColor: themeColors.borderColor,
     },
     treeScroll: {
       flex: 1,
@@ -136,6 +161,24 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       color: themeColors.fontColor,
       wordBreak: 'break-all',
     },
+    paneAction: {
+      'display': 'inline-flex',
+      'alignItems': 'center',
+      'justifyContent': 'center',
+      'width': PANE_ACTION_SIZE,
+      'height': PANE_ACTION_SIZE,
+      'flexShrink': 0,
+      'padding': 0,
+      'border': 'none',
+      'borderRadius': BORDER_RADIUS.SMALL,
+      'background': 'none',
+      'color': themeColors.fontColor,
+      'cursor': 'pointer',
+      'lineHeight': 0,
+      '&:hover': { backgroundColor: themeColors.borderColor },
+      '&:focus-visible': { outline: `1px solid ${themeColors.borderColor}` },
+    },
+    paneActionIcon: { fontSize: ICON_SIZE.SM },
     viewerBody: { flex: 1, minHeight: 0 },
     emptyViewer: {
       display: 'flex',

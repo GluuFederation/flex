@@ -5,8 +5,12 @@ export type CedarlingConfigPageStyleParams = {
   isDark: boolean
 }
 
-/** Which action a pending discard confirmation belongs to: leaving the page, or clearing edits in place. */
-export type ArchiveDiscardIntent = 'back' | 'reset'
+export type ArchiveAddFileDialogProps = {
+  open: boolean
+  existingPaths: readonly string[]
+  onAdd: (path: string) => void
+  onClose: () => void
+}
 
 export type PolicyStoreConfirmDialogProps = {
   open: boolean
