@@ -49,7 +49,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       'overflow': 'visible',
       'boxSizing': 'border-box',
       '& table': { minWidth: 0 },
-      '& table td': { verticalAlign: 'middle', minWidth: 0, lineHeight: '28px' },
+      '& table td': { verticalAlign: 'top', minWidth: 0, lineHeight: '28px' },
       '& table th': { verticalAlign: 'middle', lineHeight: '28px' },
     },
 
@@ -58,11 +58,14 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     cellComments: {
       color: themeColors.fontColor,
       fontFamily,
+      display: 'block',
+      wordBreak: 'break-word',
+    },
+    cellCommentsCollapsed: {
       display: '-webkit-box',
       WebkitLineClamp: 2,
       WebkitBoxOrient: 'vertical',
       overflow: 'hidden',
-      wordBreak: 'break-word',
     },
     statusBadge: { minWidth: 80 },
     addIcon: { fontSize: ICON_SIZE.MD },

@@ -155,6 +155,11 @@ export const useStyles = makeStyles<{ isDark: boolean; themeColors: ThemeConfig 
       fontSize: fontSizes.base,
       color: themeColors.fontColor,
     },
+    viewerNotice: {
+      ...paneHeaderFont,
+      color: themeColors.textMuted,
+      width: '100%',
+    },
 
     treeRow: {
       'display': 'flex',

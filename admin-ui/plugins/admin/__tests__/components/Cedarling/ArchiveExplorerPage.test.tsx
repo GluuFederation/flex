@@ -90,7 +90,7 @@ const toBase64 = (bytes: Uint8Array): string => {
   return btoa(binary)
 }
 
-const buildStore = async () => {
+const buildStore = async (jansStatus = 'active') => {
   const packed = await writeArchive([
     { path: 'META-INF/MANIFEST.MF', bytes: textToBytes('Manifest-Version: 1.0\n') },
     { path: 'policies/allow.cedar', bytes: textToBytes('permit(principal, action, resource);') },
@@ -98,9 +98,14 @@ const buildStore = async () => {
   return {
     inum: 'store-1',
     displayname: 'current-policies.cjar',
-    jansStatus: 'active',
+    jansStatus,
     policyStore: toBase64(packed),
   }
+}
+
+const mockStoreWithStatus = async (jansStatus: string) => {
+  const policyStore = await buildStore(jansStatus)
+  mockGetPolicyStore.mockReturnValue({ data: { entries: [policyStore] }, isLoading: false })
 }
 
 describe('ArchiveExplorerPage', () => {
@@ -122,7 +127,7 @@ describe('ArchiveExplorerPage', () => {
     expect(screen.getByRole('button', { name: 'allow.cedar' })).toBeInTheDocument()
   })
 
-  it('shows the selected file contents read-only', async () => {
+  it('keeps the active policy store read-only', async () => {
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
@@ -130,17 +135,40 @@ describe('ArchiveExplorerPage', () => {
     const editor = await screen.findByTestId('archive-editor')
     expect(editor).toHaveValue('permit(principal, action, resource);')
     expect(editor).toHaveAttribute('readonly')
+    expect(
+      screen.getByText(
+        'The active policy store is read-only. Download it, edit the copy, then upload it as a new policy store.',
+      ),
+    ).toBeInTheDocument()
   })
 
-  it('offers no edit, delete, add, or download controls', async () => {
+  it('allows editing an inactive policy store and flags unsaved changes', async () => {
+    await mockStoreWithStatus('inactive')
     render(<ArchiveExplorerPage />, { wrapper: Wrapper })
 
     fireEvent.click(await screen.findByText('allow.cedar'))
 
-    expect(screen.queryByText('Edit')).not.toBeInTheDocument()
+    const editor = await screen.findByTestId('archive-editor')
+    expect(editor).not.toHaveAttribute('readonly')
+
+    fireEvent.change(editor, { target: { value: 'forbid(principal, action, resource);' } })
+
+    expect(await screen.findByTestId('archive-editor')).toHaveValue(
+      'forbid(principal, action, resource);',
+    )
+    expect(
+      screen.getByText('Unsaved changes — download the archive to keep them.'),
+    ).toBeInTheDocument()
+  })
+
+  it('offers a download control but no delete or add controls', async () => {
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+
+    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
     expect(screen.queryByText('Add file')).not.toBeInTheDocument()
-    expect(screen.queryByText('Download')).not.toBeInTheDocument()
   })
 
   it('packs the edited archive back into a readable zip', async () => {

@@ -2517,7 +2517,11 @@
       "fileAlreadyExists": "A file with that path already exists in the archive.",
       "unsavedChangesNote": "Unsaved changes — download the archive to keep them.",
       "binaryFileNotice": "This file is not a text file and cannot be edited here.",
+      "activeStoreReadOnly": "The active policy store is read-only. Download it, edit the copy, then upload it as a new policy store.",
       "selectFileToView": "Select a file from the archive to view its contents.",
+      "activateConfirmTitle": "Confirm Policy Store Activation",
+      "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and you will be signed out of the Admin UI once processing completes.",
+      "restartNotice": "The system will restart in {{seconds}} seconds. You will be signed out of the Admin UI.",
       "deleteConfirmTitle": "Confirm Policy Store Deletion"
     }
   },

@@ -2521,7 +2521,11 @@
       "fileAlreadyExists": "Ya existe un archivo con esa ruta.",
       "unsavedChangesNote": "Cambios sin guardar: descargue el archivo comprimido para conservarlos.",
       "binaryFileNotice": "Este archivo no es de texto y no se puede editar aquí.",
+      "activeStoreReadOnly": "El almacén de políticas activo es de solo lectura. Descárguelo, edite la copia y luego súbala como un nuevo almacén de políticas.",
       "selectFileToView": "Seleccione un archivo para ver su contenido.",
+      "activateConfirmTitle": "Confirmar activación del almacén de políticas",
+      "activateRestartWarning": "Activar este almacén de políticas reinicia el sistema. Al aceptar se activan los webhooks asociados y se cerrará su sesión en Admin UI cuando finalice el procesamiento.",
+      "restartNotice": "El sistema se reiniciará en {{seconds}} segundos. Se cerrará su sesión en Admin UI.",
       "deleteConfirmTitle": "Confirmar eliminación del almacén de políticas"
     }
   },

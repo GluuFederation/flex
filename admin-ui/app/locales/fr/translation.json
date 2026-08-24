@@ -2538,7 +2538,11 @@
       "fileAlreadyExists": "Un fichier avec ce chemin existe déjà dans l’archive.",
       "unsavedChangesNote": "Modifications non enregistrées — téléchargez l’archive pour les conserver.",
       "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
+      "activeStoreReadOnly": "Le magasin de politiques actif est en lecture seule. Téléchargez-le, modifiez la copie, puis téléversez-la comme nouveau magasin de politiques.",
       "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu.",
+      "activateConfirmTitle": "Confirmer l’activation du magasin de politiques",
+      "activateRestartWarning": "L'activation de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et vous serez déconnecté de l'Admin UI une fois le traitement terminé.",
+      "restartNotice": "Le système redémarrera dans {{seconds}} secondes. Vous serez déconnecté de l'Admin UI.",
       "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques"
     }
   },

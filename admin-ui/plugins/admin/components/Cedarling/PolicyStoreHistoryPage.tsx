@@ -5,6 +5,7 @@ import SetTitle from 'Utils/SetTitle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
@@ -35,7 +36,7 @@ import {
 } from '@/utils/policyStore'
 import { formatBytes } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
-import { useAppDispatch } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
 import type { FilterDef } from '@/components/GluuSearchToolbar/types'
@@ -43,6 +44,8 @@ import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
 
 const COLUMN_MIN_WIDTHS = { FILENAME: 280, SIZE: 110, COMMENTS: 200 } as const
+
+const RESTART_DELAY_MS = 3000
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 
@@ -87,6 +90,8 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const [pattern, setPattern] = useState('')
   const [serverSort, setServerSort] = useState(DEFAULT_SERVER_SORT)
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
+  const [activationConfirmed, setActivationConfirmed] = useState(false)
+  const [restartPending, setRestartPending] = useState(false)
 
   const { setPolicyStoreActive, deletePolicyStore, isMutating } = usePolicyStoreMutations()
 
@@ -100,6 +105,39 @@ const PolicyStoreHistoryPage: React.FC = () => {
     },
     { query: { enabled: canReadSecurity } },
   )
+
+  const webhookInProgress = useAppSelector(
+    (state) => state.webhookReducer?.triggerWebhookInProgress ?? false,
+  )
+  const webhookExecutionDialogOpen = useAppSelector(
+    (state) => state.webhookReducer?.showWebhookExecutionDialog ?? false,
+  )
+
+  useEffect(() => {
+    if (!restartPending || pendingAction || webhookInProgress || webhookExecutionDialogOpen) {
+      return
+    }
+    dispatch(
+      updateToast(
+        true,
+        'info',
+        t('documentation.policyStore.restartNotice', { seconds: RESTART_DELAY_MS / 1000 }),
+      ),
+    )
+    const timer = setTimeout(() => {
+      setRestartPending(false)
+      navigateToRoute(ROUTES.LOGOUT)
+    }, RESTART_DELAY_MS)
+    return () => clearTimeout(timer)
+  }, [
+    restartPending,
+    pendingAction,
+    webhookInProgress,
+    webhookExecutionDialogOpen,
+    navigateToRoute,
+    dispatch,
+    t,
+  ])
 
   const stores = useMemo(() => toPolicyStoreEntries(data), [data])
   const totalItems = useMemo(() => toPolicyStoreTotal(data), [data])
@@ -151,7 +189,10 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const closeDialog = useCallback(() => {
     setPendingAction(null)
+    setActivationConfirmed(false)
   }, [])
+
+  const handleActivationConfirmAccept = useCallback(() => setActivationConfirmed(true), [])
 
   const handleRowsPerPageChange = useCallback(
     (rowsPerPage: number) => {
@@ -188,10 +229,12 @@ const PolicyStoreHistoryPage: React.FC = () => {
       try {
         if (type === 'activate') {
           await setPolicyStoreActive(store, comments)
+          setRestartPending(true)
         } else {
           await deletePolicyStore(store, comments)
         }
         setPendingAction(null)
+        setActivationConfirmed(false)
         refetch()
       } catch (error) {
         logger.error(`Policy store ${type} failed:`, error instanceof Error ? error : String(error))
@@ -257,8 +300,12 @@ const PolicyStoreHistoryPage: React.FC = () => {
         key: 'description',
         label: t('fields.comments'),
         minWidth: COLUMN_MIN_WIDTHS.COMMENTS,
-        render: (_value, row) => (
-          <GluuText variant="span" disableThemeColor className={classes.cellComments}>
+        render: (_value, row, _rowIdx, context) => (
+          <GluuText
+            variant="div"
+            disableThemeColor
+            className={`${classes.cellComments} ${context?.isExpanded ? '' : classes.cellCommentsCollapsed}`}
+          >
             {row.description || '-'}
           </GluuText>
         ),
@@ -387,7 +434,9 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const searchLabel = useMemo(() => `${t('fields.pattern')}:`, [t])
   const searchPlaceholder = useMemo(() => t('placeholders.search_pattern'), [t])
 
-  const showCommitDialog = Boolean(pendingAction)
+  const showActivationConfirm = pendingAction?.type === 'activate' && !activationConfirmed
+
+  const showCommitDialog = Boolean(pendingAction) && !showActivationConfirm
 
   const dialogFeature =
     pendingAction?.type === 'delete'
@@ -428,6 +477,8 @@ const PolicyStoreHistoryPage: React.FC = () => {
               columns={columns}
               data={stores}
               loading={false}
+              expandable
+              expandColumnWidth={40}
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
@@ -436,6 +487,14 @@ const PolicyStoreHistoryPage: React.FC = () => {
             />
           </div>
         </GluuViewWrapper>
+
+        <PolicyStoreConfirmDialog
+          open={showActivationConfirm}
+          title={t('documentation.policyStore.activateConfirmTitle')}
+          message={t('documentation.policyStore.activateRestartWarning')}
+          onConfirm={handleActivationConfirmAccept}
+          onClose={closeDialog}
+        />
 
         <GluuCommitDialog
           modal={showCommitDialog}

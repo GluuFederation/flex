@@ -21,16 +21,20 @@ import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
-import { base64ToUint8Array, toPolicyStoreEntries } from '@/utils/policyStore'
+import { base64ToUint8Array, isActivePolicyStore, toPolicyStoreEntries } from '@/utils/policyStore'
 import {
   buildArchiveTree,
   editorModeFor,
   entryToText,
   isTextEntry,
   readArchive,
+  textToBytes,
+  writeArchive,
   type ArchiveEntry,
 } from '@/utils/cjarArchive'
 import { logger } from '@/utils/logger'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from '@/redux/features/toastSlice'
 import ArchiveFileTree from './components/ArchiveFileTree'
 import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
 
@@ -39,6 +43,8 @@ const EDITOR_HEIGHT = '100%'
 const EDITOR_FONT_SIZE = 16
 
 const EMPTY_LOCATION = { dir: '', name: '' } as const
+const ZIP_MIME_TYPE = 'application/zip'
+const CJAR_EXTENSION = '.cjar'
 const EDITOR_OPTIONS = {
   useWorker: false,
   showPrintMargin: false,
@@ -64,7 +70,9 @@ const ArchiveExplorerPage: React.FC = () => {
   const { navigateBack } = useAppNavigation()
   SetTitle(t('titles.policy_store_contents'))
 
-  const { canRead: canReadSecurity } = usePermission(SECURITY_RESOURCE_ID)
+  const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
+    usePermission(SECURITY_RESOURCE_ID)
+  const dispatch = useAppDispatch()
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -75,6 +83,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const loadedInumRef = useRef<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
+  const [edits, setEdits] = useState<Record<string, string>>({})
 
   const { data, isLoading } = useGetAdminuiPolicyStore(
     { limit: 1, fieldValuePair: inum ? `inum=${inum}` : undefined },
@@ -101,6 +110,7 @@ const ArchiveExplorerPage: React.FC = () => {
         setEntries(unpacked)
         setLoadError(null)
         setSelectedPath(unpacked[0]?.path ?? null)
+        setEdits({})
       })
       .catch((error) => {
         logger.error(
@@ -127,10 +137,59 @@ const ArchiveExplorerPage: React.FC = () => {
     () => (selectedEntry ? isTextEntry(selectedEntry.path) : false),
     [selectedEntry],
   )
-  const selectedText = useMemo(
+  const selectedOriginalText = useMemo(
     () => (selectedEntry && selectedIsText ? entryToText(selectedEntry) : ''),
     [selectedEntry, selectedIsText],
   )
+
+  const selectedText =
+    selectedEntry && selectedPath && selectedPath in edits
+      ? edits[selectedPath]
+      : selectedOriginalText
+
+  const isActive = useMemo(() => (store ? isActivePolicyStore(store) : false), [store])
+  const canEdit = canWriteSecurity && !isActive && !loadError
+  const hasEdits = Object.keys(edits).length > 0
+
+  const handleEditorChange = useCallback(
+    (value: string) => {
+      if (!selectedPath) return
+      setEdits((previous) => {
+        if (value === selectedOriginalText) {
+          if (!(selectedPath in previous)) return previous
+          const rest = { ...previous }
+          delete rest[selectedPath]
+          return rest
+        }
+        return { ...previous, [selectedPath]: value }
+      })
+    },
+    [selectedPath, selectedOriginalText],
+  )
+
+  const handleDownload = useCallback(async () => {
+    if (!entries) return
+    try {
+      const merged = entries.map((entry) =>
+        entry.path in edits ? { ...entry, bytes: textToBytes(edits[entry.path]) } : entry,
+      )
+      const bytes = await writeArchive(merged)
+      const url = URL.createObjectURL(new Blob([bytes], { type: ZIP_MIME_TYPE }))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = store?.displayname || `${inum}${CJAR_EXTENSION}`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      logger.error(
+        'Failed to download policy store archive:',
+        error instanceof Error ? error : String(error),
+      )
+      dispatch(updateToast(true, 'error', t('documentation.policyStore.downloadFailed')))
+    }
+  }, [entries, edits, store, inum, dispatch, t])
 
   const fileCount = useMemo(() => countArchiveFiles(entries), [entries])
 
@@ -199,6 +258,16 @@ const ArchiveExplorerPage: React.FC = () => {
                           {selectedLocation.name}
                         </GluuText>
                       </div>
+                      {isActive && (
+                        <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
+                          {t('documentation.policyStore.activeStoreReadOnly')}
+                        </GluuText>
+                      )}
+                      {hasEdits && (
+                        <GluuText variant="span" disableThemeColor className={classes.viewerNotice}>
+                          {t('documentation.policyStore.unsavedChangesNote')}
+                        </GluuText>
+                      )}
                     </div>
                     {selectedIsText ? (
                       <div className={classes.viewerBody}>
@@ -206,7 +275,8 @@ const ArchiveExplorerPage: React.FC = () => {
                           mode={editorModeFor(selectedEntry.path)}
                           theme={isDark ? 'monokai' : 'xcode'}
                           value={selectedText}
-                          readOnly
+                          readOnly={!canEdit}
+                          onChange={handleEditorChange}
                           name={`archive-editor-${selectedEntry.path}`}
                           width="100%"
                           height={EDITOR_HEIGHT}
@@ -238,6 +308,11 @@ const ArchiveExplorerPage: React.FC = () => {
               showBack
               onBack={handleBack}
               showCancel={false}
+              showApply
+              applyButtonType="button"
+              applyButtonLabel={t('actions.download')}
+              onApply={handleDownload}
+              disableApply={!entries?.length}
             />
           </div>
         </GluuPageContent>
