@@ -41,6 +41,7 @@ import { logger } from '@/utils/logger'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import ArchiveFileTree from './components/ArchiveFileTree'
+import type { ArchiveDiscardIntent } from './types/CedarlingTypes'
 import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import { useStyles, PANE_BODY_PADDING } from './styles/ArchiveExplorerPage.style'
 
@@ -90,7 +91,7 @@ const ArchiveExplorerPage: React.FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [edits, setEdits] = useState<Record<string, string>>({})
-  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
+  const [discardIntent, setDiscardIntent] = useState<ArchiveDiscardIntent | null>(null)
 
   const { data, isLoading } = useGetAdminuiPolicyStore(
     { fieldValuePair: inum ? `inum=${inum}` : undefined },
@@ -216,21 +217,24 @@ const ArchiveExplorerPage: React.FC = () => {
 
   const handleBack = useCallback(() => {
     if (hasEdits) {
-      setShowDiscardConfirm(true)
+      setDiscardIntent('back')
       return
     }
     goBack()
   }, [hasEdits, goBack])
 
+  const handleResetEdits = useCallback(() => setDiscardIntent('reset'), [])
+
   const handleDiscardConfirm = useCallback(() => {
-    setShowDiscardConfirm(false)
+    const intent = discardIntent
+    setDiscardIntent(null)
     setEdits({})
-    goBack()
-  }, [goBack])
+    if (intent === 'back') {
+      goBack()
+    }
+  }, [discardIntent, goBack])
 
-  const handleDiscardCancel = useCallback(() => setShowDiscardConfirm(false), [])
-
-  const handleResetEdits = useCallback(() => setEdits({}), [])
+  const handleDiscardCancel = useCallback(() => setDiscardIntent(null), [])
 
   const handleEdit = useCallback(() => {
     if (!inum) return
@@ -356,9 +360,13 @@ const ArchiveExplorerPage: React.FC = () => {
         </GluuPageContent>
       </GluuViewWrapper>
       <PolicyStoreConfirmDialog
-        open={showDiscardConfirm}
+        open={discardIntent !== null}
         title={t('documentation.policyStore.discardChangesTitle')}
-        message={t('documentation.policyStore.discardChangesWarning')}
+        message={
+          discardIntent === 'reset'
+            ? t('documentation.policyStore.discardEditsWarning')
+            : t('documentation.policyStore.discardChangesWarning')
+        }
         onConfirm={handleDiscardConfirm}
         onClose={handleDiscardCancel}
       />

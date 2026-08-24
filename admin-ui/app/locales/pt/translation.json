@@ -2523,6 +2523,7 @@
       "unsavedChangesNote": "(Ainda não baixado)",
       "discardChangesTitle": "Descartar alterações não salvas?",
       "discardChangesWarning": "Suas edições não foram baixadas. Sair desta página as descarta.",
+      "discardEditsWarning": "Suas edições não foram baixadas. Descartá-las as apaga.",
       "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
       "activeStoreReadOnly": "O repositório de políticas ativo é somente leitura. Baixe-o, edite a cópia e depois envie-a como um novo repositório de políticas.",
       "selectFileToView": "Selecione um arquivo para ver o conteúdo.",

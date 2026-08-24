@@ -2522,6 +2522,7 @@
       "unsavedChangesNote": "(Aún no descargado)",
       "discardChangesTitle": "¿Descartar los cambios sin guardar?",
       "discardChangesWarning": "Sus ediciones no se han descargado. Si sale de esta página, se descartarán.",
+      "discardEditsWarning": "Sus ediciones no se han descargado. Al descartarlas se borran.",
       "binaryFileNotice": "Este archivo no es de texto y no se puede editar aquí.",
       "activeStoreReadOnly": "El almacén de políticas activo es de solo lectura. Descárguelo, edite la copia y luego súbala como un nuevo almacén de políticas.",
       "selectFileToView": "Seleccione un archivo para ver su contenido.",

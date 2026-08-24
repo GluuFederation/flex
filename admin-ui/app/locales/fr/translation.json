@@ -2539,6 +2539,7 @@
       "unsavedChangesNote": "(Pas encore téléchargé)",
       "discardChangesTitle": "Abandonner les modifications non enregistrées ?",
       "discardChangesWarning": "Vos modifications n'ont pas été téléchargées. Quitter cette page les abandonne.",
+      "discardEditsWarning": "Vos modifications n'ont pas été téléchargées. Les abandonner les efface.",
       "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
       "activeStoreReadOnly": "Le magasin de politiques actif est en lecture seule. Téléchargez-le, modifiez la copie, puis téléversez-la comme nouveau magasin de politiques.",
       "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu.",

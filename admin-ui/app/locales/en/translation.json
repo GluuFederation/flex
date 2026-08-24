@@ -2518,6 +2518,7 @@
       "unsavedChangesNote": "(Not downloaded yet)",
       "discardChangesTitle": "Discard unsaved changes?",
       "discardChangesWarning": "Your edits have not been downloaded. Leaving this page discards them.",
+      "discardEditsWarning": "Your edits have not been downloaded. Discarding clears them.",
       "binaryFileNotice": "This file is not a text file and cannot be edited here.",
       "activeStoreReadOnly": "The active policy store is read-only. Download it, edit the copy, then upload it as a new policy store.",
       "selectFileToView": "Select a file from the archive to view its contents.",

@@ -209,6 +209,13 @@ describe('ArchiveExplorerPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
+    expect(await screen.findByText('Discard unsaved changes?')).toBeInTheDocument()
+    expect(
+      screen.getByText('Your edits have not been downloaded. Discarding clears them.'),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByText('Yes'))
+
     expect(await screen.findByTestId('archive-editor')).toHaveValue(
       'permit(principal, action, resource);',
     )
