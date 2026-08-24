@@ -29,7 +29,8 @@ jans_config_properties = '/etc/jans/conf/jans.properties'
 app_versions = {
     "JANS_APP_VERSION": "0.0.0",
     "JANS_BUILD": "-nightly",
-    "NODE_VERSION": "v18.16.0"
+    "NODE_VERSION": "v18.16.0",
+    "GLUU_FLEX_POLICY_STORE": 'v2.0.0',
 }
 
 os.environ["FLEX_PRE_JANS"] = "True"
@@ -347,7 +348,7 @@ class flex_installer(JettyInstaller):
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         # resolved lazily (network request) only when Admin UI assets are needed
         self.adimin_ui_bin_url = ''
-        self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/v0.0.0/admin_ui_2_0.cjar'
+        self.policy_store_cjar_url = 'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/{}/admin_ui_2_0.cjar'.format(app_versions['GLUU_FLEX_POLICY_STORE'])
         self.policy_store_cjar_path = os.path.join(self.templates_dir, 'policy-store.cjar')
         self.schema_file = os.path.join(self.flex_setup_dir, 'flex_schema.json')
         self.java_security_fn = os.path.join(self.templates_dir, 'java.security')
@@ -363,6 +364,8 @@ class flex_installer(JettyInstaller):
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir,
                                                  os.path.basename(self.admin_ui_plugin_source_path))
         self.admin_ui_web_hook_ldif_fn = os.path.join(self.templates_dir, 'aui_webhook.ldif')
+
+        self.admin_ui_policy_store_ldif_fn = os.path.join(self.source_dir, 'adminUIPolicyStore.ldif')
 
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
@@ -636,9 +639,13 @@ class flex_installer(JettyInstaller):
                         zout.writestr(item, data)  # preserves ZipInfo metadata + data
 
             shutil.move(tmp_cjar, self.policy_store_cjar_path)
-            config_api_installer.copyFile(self.policy_store_cjar_path, admin_ui_config_dir, backup=False)
 
-        config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group, recursive=True)
+        Config.templateRenderingDict['admin_ui_policy_store_inum'] = str(uuid.uuid4())
+        Config.templateRenderingDict['admin_ui_policy_store_base64'] = self.generate_base64_file(self.policy_store_cjar_path, 1)
+        Config.templateRenderingDict['admin_ui_policy_store_creation_date'] = self.get_ldap_time()
+
+        config_api_installer.renderTemplateInOut(self.admin_ui_policy_store_ldif_fn, self.templates_dir, self.source_dir)
+        self.dbUtils.import_ldif([self.admin_ui_policy_store_ldif_fn])
 
         resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
 
