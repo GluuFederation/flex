@@ -28,6 +28,11 @@ import {
 } from 'Utils/pagingUtils'
 import { getLogLevel, saveLogLevel, type LogLevel } from 'Utils/logLevel'
 import { LOG_LEVELS } from 'Plugins/auth-server/components/Logging/utils'
+import {
+  buildAgamaFlowsArray,
+  buildDropdownOptions,
+} from 'Plugins/auth-server/components/Authentication/Acrs/helper/acrUtils'
+import { MAX_AGAMA_PROJECTS_FOR_ACR } from 'Plugins/auth-server/components/Authentication/DefaultAcr/constants'
 import packageJson from '../../../../package.json'
 import { getSettingsValidationSchema } from 'Plugins/admin/helper/validations/settingsValidation'
 import {
@@ -39,6 +44,7 @@ import {
   useGetAdminuiConf,
   useEditAdminuiConf,
   useGetConfigScriptsByType,
+  useGetAgamaPrj,
   getGetAdminuiConfQueryKey,
   type AppConfigResponse,
 } from 'JansConfigApi'
@@ -91,6 +97,11 @@ const SettingsPage: React.FC = () => {
     refetch: refetchScripts,
   } = useGetConfigScriptsByType(SCRIPT_TYPES.PERSON_AUTHENTICATION, { limit: SCRIPTS_FETCH_LIMIT })
 
+  const { data: agamaProjectsData, isLoading: loadingAgamaProjects } = useGetAgamaPrj({
+    count: MAX_AGAMA_PROJECTS_FOR_ACR,
+    start: 0,
+  })
+
   const pageTitle = t('titles.application_settings')
   SetTitle(pageTitle)
 
@@ -120,9 +131,11 @@ const SettingsPage: React.FC = () => {
     const names = entries
       .filter((s) => s.enabled)
       .map((s) => s.name)
-      .filter((name): name is string => Boolean(name))
-    return Array.from(new Set([...names, SIMPLE_PASSWORD_AUTH]))
-  }, [scriptsData])
+      .filter((name): name is string => Boolean(name) && name !== SIMPLE_PASSWORD_AUTH)
+    const filteredScripts = Array.from(new Set(names)).map((name) => ({ key: name, value: name }))
+    const agamaFlows = buildAgamaFlowsArray(agamaProjectsData?.entries || [])
+    return buildDropdownOptions(filteredScripts, agamaFlows)
+  }, [scriptsData, agamaProjectsData])
 
   const [baselinePagingSize, setBaselinePagingSize] = useState(savedPagingSize)
   const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
@@ -337,7 +350,7 @@ const SettingsPage: React.FC = () => {
   }
 
   return (
-    <GluuLoader blocking={loadingScripts || loadingConfig || isSubmitting}>
+    <GluuLoader blocking={loadingScripts || loadingConfig || loadingAgamaProjects || isSubmitting}>
       <GluuViewWrapper canShow={canReadSettings}>
         <GluuPageContent>
           <div className={classes.mobileContentPad}>
