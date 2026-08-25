@@ -48,7 +48,7 @@ Admin UI supports localization. The default language is English. The other suppo
 
 ![image](../../assets/admin-ui/localization.png)
 
-The administrator can also select from four website themes in Admin UI.
+The administrator can also switch Admin UI between a light and a dark theme.
 
 ![image](../../assets/admin-ui/theme-selection.png)
 
@@ -82,6 +82,7 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 
 - **List paging size:** This field allows to define the default paging size for all search pages within the Admin UI.
 - **Config API URL:** The read-only URL of the Jans Config API is used by the Admin UI for interaction.
+- **Gluu Flex Version:** The read-only version of the running Gluu Flex installation.
 - **Admin UI Session Timeout (In Minutes):** This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.
 - **Cedarling Log enabled?:** This switch enables or disables Cedarling logs in the browser console.
 - **Admin UI Logging Level:** This field is used to set frontend log level on browser console.
@@ -92,7 +93,7 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 
 ## Security
 
-Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu.
+Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu. Uploaded policy stores are managed on the [Admin UI Policy Management](./policy-store-menu.md) screen.
 
 ### GUI Access Control
 
@@ -100,7 +101,7 @@ This topic is covered in detail [here](./access-control.md). New Admin UI roles 
 
 ### Capabilities
 
-In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the [Cedarling Configuration](./configuration.md#cedarling-configuration) page to control access to Admin UI features. After the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. 
+In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the [Cedarling Configuration](./configuration.md#cedarling-configuration) page to control access to Admin UI features. Once the uploaded Policy Store is activated on the [Admin UI Policy Management](./policy-store-menu.md) screen, the backend parses it to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. 
 
 ![image](../../assets/admin-ui/role-permission.png)
 
@@ -114,7 +115,7 @@ Follow this [tutorial](./webhooks.md) for setup instructions.
 
 ## Assets
 
-The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI) — without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.
+The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI), without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.
 
 ### Key Use Cases:
 
@@ -128,8 +129,8 @@ The Custom Asset Upload feature enables users to upload various types of assets 
 
 ## Audit Logs
 
-Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change — such as updating a client, modifying a script, or changing a configuration property — that action is recorded.
+Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change, such as updating a client, modifying a script, or changing a configuration property, that action is recorded.
 
-The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which includes details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.
+The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which include details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.
 
 ![image](../../assets/admin-ui/audit-log.png)

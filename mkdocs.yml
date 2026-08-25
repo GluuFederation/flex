@@ -183,6 +183,7 @@ nav:
             - 'SCIM': 'admin/admin-ui/scim-menu.md'
             - 'FIDO': 'admin/admin-ui/fido-menu.md'
             - 'Jans Lock': 'admin/admin-ui/jans-lock-menu.md'
+            - 'Admin UI Policy Management': 'admin/admin-ui/policy-store-menu.md'
           - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
       - 'Flex Recipes':
           - 'admin/recipes/README.md'

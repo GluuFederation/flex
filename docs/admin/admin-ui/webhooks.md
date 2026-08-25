@@ -65,11 +65,15 @@ The webhooks can be mapped with one or more Admin UI feature(s) using the [webho
 |Custom Script|Add/Edit|https://jans.io/oauth/config/scripts.write|
 |Custom Script|Delete|https://jans.io/oauth/config/scripts.delete|
 |FIDO Configuration|Edit|https://jans.io/oauth/jans-auth-server/config/properties.write|
+|Jans Keycloak Link|Edit|https://jans.io/oauth/config/jans-keycloak-link.write|
 |Jans Link|Edit|https://jans.io/oauth/config/jans-link.write|
 |OIDC Clients|Add/Edit|https://jans.io/oauth/config/openid/clients.write|
 |OIDC Clients|Delete|https://jans.io/oauth/config/openid/clients.delete|
 |Scopes|Add/Edit|https://jans.io/oauth/config/scopes.write|
 |Scopes|Delete|https://jans.io/oauth/config/scopes.delete|
+|SAML Configuration|Edit|https://jans.io/oauth/config/saml.write|
+|SAML IDP|Add/Edit|https://jans.io/idp/saml.write|
+|SAML IDP|Delete|https://jans.io/idp/saml.delete|
 |Schema:Person|Add/Edit|https://jans.io/oauth/config/attributes.write|
 |Schema:Person|Delete|https://jans.io/oauth/config/attributes.delete|
 |SCIM Configuration|Edit|https://jans.io/scim/config.write|
@@ -77,6 +81,6 @@ The webhooks can be mapped with one or more Admin UI feature(s) using the [webho
 |Users|Add/Edit|https://jans.io/oauth/config/user.write|
 |Users|Delete|https://jans.io/oauth/config/user.delete|
 
-When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, all the enabled webhooks will be triggered during the event execution. The Admin UI is unable to proceed with event execution if any webhook fails during the process.
+When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, the operation runs first, and the webhooks mapped to that feature fire once it succeeds. Only webhooks with `Enabled` switched on are triggered. The response of each webhook is reported in a dialog afterwards; a webhook that fails does not roll back the operation that triggered it.
 
 ![image](../../assets/admin-ui/webhooks-trigger.png)

@@ -17,7 +17,6 @@ The Admin UI features (or resources) are categorised into following parent group
 
 - System and monitoring
     - Dashboard
-    - Health
     - License
     - MAU
     - Settings
@@ -29,16 +28,16 @@ The Admin UI features (or resources) are categorised into following parent group
     - Clients
     - Scopes
     - Keys
-    - AuthServerProperties
+    - AuthenticationServerConfiguration
     - Logging
     - SSA
-    - Authn
-    - ConfigAPIProperties
-    - Sessions
+    - Authentication
+    - ConfigApiConfiguration
+    - Session
 - Identity and Access
     - Users
     - Scripts
-    - UserClaims
+    - Attributes
 - Service
     - Cache
     - Persistence
@@ -49,6 +48,8 @@ The Admin UI features (or resources) are categorised into following parent group
     - Lock
 - Essential Admin UI Scopes
     - AdminUISession
+
+The names above are the entity IDs the Admin UI sends to Cedarling, so a policy has to spell them exactly this way to match.
 
 In the Policy Store we use [default_entities](https://docs.jans.io/stable/cedarling/reference/cedarling-policy-store/#default-entities) to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under `System and monitoring` parent group.
 
@@ -130,7 +131,7 @@ In the Policy Store we use [default_entities](https://docs.jans.io/stable/cedarl
 
 ## Managing Admin UI's Policy Store
 
-After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the [Cedarling configuration screen](./configuration.md#cedarling-configuration) to upload the new Policy Store file with .cjar extension, generated and released using [Agama-Lab's](https://cloud.gluu.org/agama-lab) Policy designer. When the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.
+After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the [Cedarling configuration screen](./configuration.md#cedarling-configuration) to upload the new Policy Store file with .cjar extension, generated and released using [Agama-Lab's](https://cloud.gluu.org/agama-lab) Policy designer. An uploaded Policy Store is kept as a backup until it is activated on the [Admin UI Policy Management](./policy-store-menu.md) screen. Activating it makes the backend parse that Policy Store to determine the roles and the role-to-scope mappings, and the active Policy Store is the one used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.
 
 ```mermaid
 C4Context
@@ -225,7 +226,7 @@ when {
 
 ### Adding new Roles in Admin UI
 
-To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. On saving the Policy Store the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.
+To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. Once that Policy Store is activated, the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.
 
 ### Writing policies: Parent Groups as Resource
 
@@ -283,5 +284,5 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 |AuthServerAndConfiguration|Clients, Scopes, Keys, AuthenticationServerConfiguration, Logging, SSA, Authentication, ConfigApiConfiguration, Session|
 |IdentityAndAccess|Users, Scripts, Attributes|
 |SystemAndMonitoring|Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs|
-|Service|Persistence, SMTP, SCIM, FIDO, SAML, Lock|
+|Service|Cache, Persistence, SMTP, SCIM, FIDO, SAML, Lock|
 |Essential Admin UI Scopes|AdminUISession|

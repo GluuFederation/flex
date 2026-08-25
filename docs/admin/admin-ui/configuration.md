@@ -15,7 +15,9 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 
 Gluu Flex Admin UI uses [Cedarling](https://docs.jans.io/stable/cedarling/) for GUI access control. The role of the user is mapped with specific permissions (scopes) to ensure that the user can only access and modify functionalities relevant to their roles.
 
-The Cedarling Policy Store configuration screen helps to upload the Policy Store archive file used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control. You can upload a new Cedarling Policy Store and Admin UI backend will automatically synchronize roles and role-to-scope mapping as per the schema and policies defined in the Policy Store.
+The Cedarling Policy Store configuration screen helps to upload the Policy Store archive file used for the Admin UI access control. The Gluu Flex Admin UI uses a default Policy Store after installation for GUI access control.
+
+An uploaded Policy Store is stored as a backup and does not affect access control until it is activated. Activating it makes the Admin UI backend synchronize roles and role-to-scope mapping as per the schema and policies defined in that Policy Store. Uploaded stores are listed on the [Admin UI Policy Management](./policy-store-menu.md) screen, where they are activated, downloaded, inspected and deleted.
 
 ![image](../../assets/admin-ui/cedarling-config.png)
 
@@ -29,6 +31,7 @@ The Cedarling Policy Store configuration screen helps to upload the Policy Store
  5. Download the released Policy Store archive file (with .cjar extension) from the releases section GitHub policy-store repository.
  ![image](../../assets/admin-ui/policy-store-release-2.png)
  6. Open Cedarling Policy Store configuration screen on Admin UI and upload the Policy Store archive file.
+ 7. Open the [Admin UI Policy Management](./policy-store-menu.md) screen and activate the uploaded Policy Store. Activating restarts the system and signs you out of the Admin UI.
 
 
 ### OIDC Client Details for Auth Server
