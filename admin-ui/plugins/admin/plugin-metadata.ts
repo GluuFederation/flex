@@ -65,7 +65,7 @@ const pluginMetadata = {
           title: 'menus.settings',
           path: ROUTES.ADMIN_SETTINGS,
           action: CEDAR_ACTIONS.READ,
-          resourceKey: ADMIN_UI_RESOURCES.Settings,
+          resourceKey: CEDARLING_BYPASS,
         },
         {
           title: 'menus.security',
@@ -129,7 +129,7 @@ const pluginMetadata = {
       component: SettingsPage,
       path: ROUTES.ADMIN_SETTINGS,
       action: CEDAR_ACTIONS.READ,
-      resourceKey: ADMIN_UI_RESOURCES.Settings,
+      resourceKey: CEDARLING_BYPASS,
     },
 
     {
