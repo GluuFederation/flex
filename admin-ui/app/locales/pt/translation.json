@@ -233,7 +233,7 @@
     "export": "Exportar"
   },
   "roleNotFoundMessage": "Sessão encerrada",
-  "roleNotFoundDescription": "Sua conta não possui um perfil do Admin UI, por isso a sessão foi encerrada. Clique em Tentar novamente para entrar com outra conta, ou contate seu administrador para que atribua um perfil.",
+  "roleNotFoundDescription": "Sua conta não possui uma função do Admin UI, por isso a sessão foi encerrada. Clique em Tentar novamente para entrar com outra conta, ou contate seu administrador para que atribua uma função.",
   "tryAgain": "Tentar novamente",
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
   "licenseCard": {

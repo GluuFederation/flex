@@ -193,7 +193,7 @@ describe('useLicenseDetails', () => {
     )
   })
 
-  it('stays silent on a 403 reset failure and leaves the logout to the axios interceptor', () => {
+  it('dispatches nothing from the error callback on a 403 reset failure', () => {
     mockIsFourZeroThreeError.mockReturnValue(true)
     mockQueryReturn(rawLicense)
     const store = buildStore(true)

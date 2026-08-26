@@ -39,7 +39,7 @@ import {
 } from 'Redux/api/backend-api'
 import { useTranslation } from 'react-i18next'
 import decodeJwt from '@/utils/jwtDecode'
-import type { UserInfo } from '@/redux/features/types/authTypes'
+import type { UserInfo, UserInfoValue } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { rememberIntendedRoute, consumeIntendedRoute } from '@/utils/intendedRoute'
 import { markNoRoleSignOut, isNoRoleSignOut, clearNoRoleSignOut } from '@/utils/noRoleSignOut'
@@ -76,7 +76,9 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (!userinfo) return
 
     const roles = userinfo.jansAdminUIRole
-    const hasValidRole = Array.isArray(roles) ? roles.length > 0 : Boolean(roles)
+    const isNonEmptyRole = (role: UserInfoValue): boolean =>
+      typeof role === 'string' && role.trim().length > 0
+    const hasValidRole = Array.isArray(roles) ? roles.some(isNonEmptyRole) : isNonEmptyRole(roles)
 
     if (!hasValidRole) {
       setShowAdminUI(false)

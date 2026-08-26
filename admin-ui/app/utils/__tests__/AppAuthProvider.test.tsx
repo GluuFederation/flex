@@ -103,6 +103,35 @@ describe('AppAuthProvider', () => {
       expect(queryByTestId('admin-content')).not.toBeInTheDocument()
     })
 
+    it.each([
+      ['an empty string', ''],
+      ['a whitespace-only string', '   '],
+      ['an array holding only an empty string', ['']],
+      ['an array holding only whitespace', ['  ']],
+    ])('treats %s as no role at all', (_label, jansAdminUIRole) => {
+      const store = buildStore({}, withRoles(jansAdminUIRole))
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
+      renderProvider(store)
+
+      act(() => {
+        jest.advanceTimersByTime(LOGOUT_DELAY_MS)
+      })
+
+      expect(dispatchSpy).toHaveBeenCalledWith(auditLogoutLogs({ message: NO_VALID_ROLE }))
+    })
+
+    it('keeps a user whose role list also contains an empty entry', () => {
+      const store = buildStore({}, withRoles(['', 'api-admin']))
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
+      renderProvider(store)
+
+      act(() => {
+        jest.advanceTimersByTime(LOGOUT_DELAY_MS * 3)
+      })
+
+      expect(dispatchSpy).not.toHaveBeenCalledWith(auditLogoutLogs({ message: NO_VALID_ROLE }))
+    })
+
     it('never logs out a user that does have a role', () => {
       const store = buildStore({}, withRoles(['api-admin']))
       const dispatchSpy = jest.spyOn(store, 'dispatch')
