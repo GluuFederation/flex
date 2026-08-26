@@ -85,7 +85,7 @@ class PersistenceSetup:
 
         ctx = {
             "hostname": hostname,
-            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
+            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "agama_org.gluu.agama.pw.main"),
             "jans_auth_base_url": os.environ.get("CN_AUTH_BASE_URL", f"https://{hostname}"),
         }
 
