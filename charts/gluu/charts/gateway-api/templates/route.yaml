@@ -51,7 +51,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ $fullName }}-admin-ui-public
+  name: {{ $fullName }}-admin-ui-secure
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
@@ -66,6 +66,7 @@ spec:
   parentRefs:
   - name: {{ $adminUiGatewayName }}
     namespace: {{ $adminUiGatewayNamespace }}
+    sectionName: {{ $httpsSection }}  # ONLY LISTEN ON HTTPS
   hostnames:
   - {{ .Values.global.fqdn | quote }}
   rules:
@@ -76,6 +77,38 @@ spec:
     backendRefs:
     - name: {{ $adminSvc }}
       port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}-admin-ui-redirect
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $fullName }}-routes
+{{- if .Values.routes.labels }}
+{{- toYaml .Values.routes.labels | nindent 4 }}
+{{- end }}
+{{- if .Values.routes.annotations }}
+  annotations:
+{{- toYaml .Values.routes.annotations | nindent 4 }}
+{{- end }}
+spec:
+  parentRefs:
+  - name: {{ $adminUiGatewayName }}
+    namespace: {{ $adminUiGatewayNamespace }}
+    sectionName: {{ $httpSection }}  # ONLY LISTEN ON HTTP
+  hostnames:
+  - {{ .Values.global.fqdn | quote }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /admin
+    filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
 {{- end }}
 
 
