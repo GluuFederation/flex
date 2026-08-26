@@ -16,6 +16,7 @@ import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
 const ByeBye = () => {
   const config = useAppSelector((state) => state.authReducer.config) as AuthConfig
   const hasSession = useAppSelector((state) => state.authReducer.hasSession)
+  const idToken = useAppSelector((state) => state.authReducer.idToken)
 
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -46,6 +47,7 @@ const ByeBye = () => {
           config.endSessionEndpoint,
           config.postLogoutRedirectUri,
           state,
+          idToken,
         )
 
         if (sessionEndpoint) {

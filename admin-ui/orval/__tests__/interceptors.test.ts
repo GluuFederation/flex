@@ -111,10 +111,7 @@ describe('orval interceptors', () => {
     expect(config.headers.get('User-inum')).toBeUndefined()
   })
 
-  it('audits the forced logout and cleans up the session on a 403 response', async () => {
-    mockFetchApiTokenWithDefaultScopes.mockResolvedValue({ access_token: 'token-403' })
-    mockDeleteAdminUiSession.mockResolvedValue(undefined)
-
+  it('audits the forced logout on a 403 response and leaves the logout to the listener', async () => {
     const dispatch = jest.fn()
     const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
 
@@ -127,7 +124,6 @@ describe('orval interceptors', () => {
     await expect(rejected?.(error)).rejects.toBe(error)
 
     expect(dispatch).toHaveBeenCalledWith(auditLogoutLogs({ message: SESSION_EXPIRED }))
-    expect(mockFetchApiTokenWithDefaultScopes).toHaveBeenCalled()
-    expect(mockDeleteAdminUiSession).toHaveBeenCalledWith('token-403')
+    expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
   })
 })

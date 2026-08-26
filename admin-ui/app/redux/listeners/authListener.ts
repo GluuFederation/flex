@@ -10,20 +10,18 @@ import {
   createAdminUiSession,
   createAdminUiSessionResponse,
 } from '../features/authSlice'
-import { auditLogoutLogs } from '../features/sessionSlice'
 import { updateToast } from '../features/toastSlice'
 import {
   fetchServerConfiguration,
   fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
   createAdminUiSession as createAdminUiSessionApi,
-  deleteAdminUiSession,
 } from '../api/backend-api'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { setApiToken } from 'Orval'
-import { SESSION_EXPIRED } from '@/audit/messages'
+import auditSessionExpired from '@/utils/auditSessionExpired'
 import type { Config } from '../features/types/authTypes'
 import type { PutConfigMeta } from '../features/types/authSliceTypes'
 import type { ApiErrorLike } from '../types/audit'
@@ -43,21 +41,6 @@ const asApiError = (error: Throwable): ApiErrorLike => {
   const obj = error as ApiErrorLike
   const message = typeof obj.message === 'string' ? obj.message : String(error)
   return { message, response: obj.response }
-}
-
-const redirectToLogout = async (
-  dispatch: AppDispatch,
-  message = SESSION_EXPIRED,
-): Promise<void> => {
-  dispatch(auditLogoutLogs({ message }))
-  try {
-    const response = await fetchApiTokenWithDefaultScopes()
-    await deleteAdminUiSession(response.access_token)
-  } catch (e) {
-    logger.error('Error during logout cleanup:', e instanceof Error ? e : String(e))
-  } finally {
-    window.location.href = '/admin/logout'
-  }
 }
 
 const getApiTokenWithDefaultScopes = async (dispatch: AppDispatch): Promise<string | null> => {
@@ -99,7 +82,7 @@ export const putConfigEffect = async (
   } catch (error) {
     dispatch(updateToast(true, 'error'))
     if (isFourZeroThreeError(asApiError(error as Throwable))) {
-      await redirectToLogout(dispatch)
+      auditSessionExpired(dispatch)
       return
     }
     return
@@ -135,7 +118,7 @@ startAppListening({
       const err = asApiError(error as Throwable)
       logger.error('Problems getting OAuth2 configuration:', resolveApiErrorMessage(err))
       if (isFourZeroThreeError(err)) {
-        await redirectToLogout(dispatch)
+        auditSessionExpired(dispatch)
         return
       }
     }
@@ -187,7 +170,7 @@ startAppListening({
         }),
       )
       if (isFourZeroThreeError(err)) {
-        await redirectToLogout(dispatch)
+        auditSessionExpired(dispatch)
         return
       }
     }
@@ -216,7 +199,7 @@ startAppListening({
         err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
       logger.error('Problems creating Admin UI session:', resolveApiErrorMessage(err))
       if (isFourZeroThreeError(err)) {
-        await redirectToLogout(dispatch)
+        auditSessionExpired(dispatch)
         return
       }
       dispatch(createAdminUiSessionResponse({ success: false, error: errorMessage }))

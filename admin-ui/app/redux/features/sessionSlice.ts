@@ -1,32 +1,36 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 interface SessionState {
-  logoutAuditSucceeded: boolean | null
   landingPath: string | null
+  logoutRequested: boolean
 }
 
 const initialState: SessionState = {
-  logoutAuditSucceeded: null,
   landingPath: null,
+  logoutRequested: false,
 }
+
+const auditLogoutLogs = createAction<{ message: string }>('session/auditLogoutLogs')
 
 const sessionSlice = createSlice({
   name: 'session',
   initialState,
   reducers: {
-    auditLogoutLogs: (state, _action: PayloadAction<{ message: string }>) => {
-      state.logoutAuditSucceeded = null
-    },
-    auditLogoutLogsResponse: (state, action: PayloadAction<boolean>) => {
-      state.logoutAuditSucceeded = action.payload
-    },
     setLandingPath: (state, action: PayloadAction<string | null>) => {
       state.landingPath = action.payload
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(auditLogoutLogs, (state) => {
+      state.logoutRequested = true
+    })
+  },
 })
 
-export const { auditLogoutLogs, auditLogoutLogsResponse, setLandingPath } = sessionSlice.actions
+const { setLandingPath } = sessionSlice.actions
+
+reducerRegistry.register('sessionReducer', sessionSlice.reducer)
+
+export { auditLogoutLogs, setLandingPath }
 export default sessionSlice.reducer
-reducerRegistry.register('logoutAuditReducer', sessionSlice.reducer)

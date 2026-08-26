@@ -32,7 +32,7 @@ const GluuNavBar = () => {
   const pageTitle = usePageTitle()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const navbarRef = useRef<HTMLDivElement>(null)
-  const landingPath = useAppSelector((state) => state.logoutAuditReducer.landingPath)
+  const landingPath = useAppSelector((state) => state.sessionReducer.landingPath)
   const logoPath = landingPath ?? ROUTES.ROOT
   const handleLogoClick = useSamePathGuard(logoPath)
 

@@ -1,14 +1,9 @@
 import { AxiosHeaders } from 'axios'
 import { AXIOS_INSTANCE, setApiToken } from './axiosInstance'
-import {
-  fetchApiTokenWithDefaultScopes,
-  deleteAdminUiSession,
-  createAdminUiSession,
-} from '@/redux/api/backend-api'
+import { fetchApiTokenWithDefaultScopes, createAdminUiSession } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { SESSION_EXPIRED } from '@/audit/messages'
 import { logger } from '@/utils/logger'
-import { ROUTES } from '@/helpers/navigation'
 import { getIssuer } from '@/utils/TokenController'
 import type { RootState } from '@/redux/types'
 import type { AppDispatch } from '@/redux/hooks'
@@ -109,14 +104,6 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
 
       if (error.response?.status === 403) {
         dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
-        try {
-          const response = await fetchApiTokenWithDefaultScopes()
-          await deleteAdminUiSession(response?.access_token)
-        } catch (e) {
-          logger.error('Failed to cleanup session on 403:', e instanceof Error ? e : String(e))
-        } finally {
-          window.location.href = ROUTES.LOGOUT
-        }
       }
 
       return Promise.reject(error)

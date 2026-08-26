@@ -1,15 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { UseIdleTimerOptions, UseIdleTimerResult } from './types'
 
-const DEFAULT_EVENTS = [
-  'mousemove',
-  'mousedown',
-  'keydown',
-  'wheel',
-  'touchstart',
-  'touchmove',
-  'visibilitychange',
-]
+const DEFAULT_EVENTS = ['mousemove', 'mousedown', 'keydown', 'wheel', 'touchstart', 'touchmove']
 
 const eventTarget = (eventName: string): Window | Document =>
   eventName === 'visibilitychange' ? document : window

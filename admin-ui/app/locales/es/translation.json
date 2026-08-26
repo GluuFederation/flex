@@ -84,9 +84,10 @@
     "show": "Mostrar contraseña",
     "hide": "Ocultar contraseña"
   },
+  "roleNotFoundMessage": "Sesión cerrada",
+  "roleNotFoundDescription": "Su cuenta no tiene un rol de Admin UI, por lo que se ha cerrado la sesión. Haga clic en Reintentar para iniciar sesión con otra cuenta, o contacte a su administrador para que le asigne un rol.",
+  "tryAgain": "Reintentar",
   "serviceDownFallback": "Gluu Flex Admin UI no recibe respuesta del backend (Jans Config Api).",
-  "roleNotFoundMessage": "Usuario no autorizado",
-  "roleNotFoundDescription": "El usuario conectado no tiene un rol válido. Cerrando sesión de Admin UI",
   "licenseCard": {
     "freeTrial": "Prueba gratuita",
     "description": "Comience su prueba gratuita para gestionar y configurar su servidor de autenticación con una interfaz web simplificada.",
@@ -1294,7 +1295,8 @@
     "logging_level_required": "El nivel de registro es obligatorio",
     "logging_level_invalid": "Nivel de registro no válido",
     "logging_layout_required": "El formato de registro es obligatorio",
-    "logging_layout_invalid": "Formato de registro no válido"
+    "logging_layout_invalid": "Formato de registro no válido",
+    "user_info_fetch_failed": "No se pudo obtener la información del usuario desde el servidor de autenticación. Se ha detenido el inicio de sesión."
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",
@@ -2576,6 +2578,8 @@
     "mail": "Correo electrónico",
     "o": "Organización",
     "memberOf": "Miembro de",
-    "picture": "URL de la foto"
+    "picture": "URL de la foto",
+    "status": "Estado",
+    "userId": "ID de usuario"
   }
 }

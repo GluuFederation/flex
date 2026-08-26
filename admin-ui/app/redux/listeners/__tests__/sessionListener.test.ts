@@ -2,11 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { listenerMiddleware } from '../index'
 import sessionReducer, { auditLogoutLogs } from '../../features/sessionSlice'
 import authReducer from '../../features/authSlice'
-import {
-  postUserAction,
-  fetchApiTokenWithDefaultScopes,
-  deleteAdminUiSession,
-} from '../../api/backend-api'
+import { postUserAction } from '../../api/backend-api'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 
 jest.mock('../../api/backend-api')
@@ -18,15 +14,11 @@ jest.mock('Utils/TokenController', () => ({
 import '../sessionListener'
 
 const mockedPostUserAction = postUserAction as jest.MockedFunction<typeof postUserAction>
-const mockedFetchToken = fetchApiTokenWithDefaultScopes as jest.MockedFunction<
-  typeof fetchApiTokenWithDefaultScopes
->
-const mockedDeleteSession = deleteAdminUiSession as jest.MockedFunction<typeof deleteAdminUiSession>
 const mockedIs403 = isFourZeroThreeError as jest.MockedFunction<typeof isFourZeroThreeError>
 
 const buildStore = () =>
   configureStore({
-    reducer: { authReducer, logoutAuditReducer: sessionReducer },
+    reducer: { authReducer, sessionReducer },
     middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware),
   })
 
@@ -38,7 +30,7 @@ describe('sessionListener - auditLogoutLogs', () => {
     mockedIs403.mockReturnValue(false)
   })
 
-  it('dispatches a successful audit result on a 2xx response', async () => {
+  it('posts the logout audit log', async () => {
     mockedPostUserAction.mockResolvedValue({ status: 200 })
     const store = buildStore()
 
@@ -46,42 +38,26 @@ describe('sessionListener - auditLogoutLogs', () => {
     await flush()
 
     expect(mockedPostUserAction).toHaveBeenCalled()
-    expect(store.getState().logoutAuditReducer.logoutAuditSucceeded).toBe(true)
   })
 
-  it('dispatches a failed audit result on a non-2xx response', async () => {
+  it('flags the logout request even when the audit post fails', async () => {
+    mockedIs403.mockReturnValue(true)
+    mockedPostUserAction.mockRejectedValue({ response: { status: 403 } })
+    const store = buildStore()
+
+    store.dispatch(auditLogoutLogs({ message: 'logout' }))
+    await flush()
+
+    expect(store.getState().sessionReducer.logoutRequested).toBe(true)
+  })
+
+  it('flags the logout request even when the audit post returns a non-2xx response', async () => {
     mockedPostUserAction.mockResolvedValue({ status: 500 })
     const store = buildStore()
 
     store.dispatch(auditLogoutLogs({ message: 'logout' }))
     await flush()
 
-    expect(store.getState().logoutAuditReducer.logoutAuditSucceeded).toBe(false)
-  })
-
-  it('dispatches a failed audit result on a non-403 error', async () => {
-    mockedPostUserAction.mockRejectedValue(new Error('boom'))
-    const store = buildStore()
-
-    store.dispatch(auditLogoutLogs({ message: 'logout' }))
-    await flush()
-
-    expect(store.getState().logoutAuditReducer.logoutAuditSucceeded).toBe(false)
-  })
-
-  it('runs session cleanup and skips the audit result on a 403 error', async () => {
-    mockedIs403.mockReturnValue(true)
-    mockedPostUserAction.mockRejectedValue({ response: { status: 403 } })
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
-    mockedDeleteSession.mockResolvedValue({})
-    const store = buildStore()
-
-    store.dispatch(auditLogoutLogs({ message: 'logout' }))
-    await flush()
-
-    expect(mockedFetchToken).toHaveBeenCalled()
-    expect(mockedDeleteSession).toHaveBeenCalledWith('tok')
-    // the 403 branch redirects and returns without dispatching an audit result
-    expect(store.getState().logoutAuditReducer.logoutAuditSucceeded).toBeNull()
+    expect(store.getState().sessionReducer.logoutRequested).toBe(true)
   })
 })

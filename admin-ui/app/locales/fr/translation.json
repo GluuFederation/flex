@@ -233,9 +233,10 @@
     "finish": "Terminer",
     "export": "Exporter"
   },
+  "roleNotFoundMessage": "Session fermée",
+  "roleNotFoundDescription": "Votre compte ne dispose d'aucun rôle Admin UI, la session a donc été fermée. Cliquez sur Réessayer pour vous connecter avec un autre compte, ou contactez votre administrateur pour qu'un rôle vous soit attribué.",
+  "tryAgain": "Réessayer",
   "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
-  "roleNotFoundMessage": "Utilisateur non autorisé",
-  "roleNotFoundDescription": "L'utilisateur connecté n'a pas de rôle valide. Déconnexion de Admin UI",
   "licenseCard": {
     "freeTrial": "Essai gratuit",
     "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",
@@ -1301,7 +1302,8 @@
     "logging_level_required": "Le niveau de journalisation est obligatoire",
     "logging_level_invalid": "Niveau de journalisation non valide",
     "logging_layout_required": "Le format de journalisation est obligatoire",
-    "logging_layout_invalid": "Format de journalisation non valide"
+    "logging_layout_invalid": "Format de journalisation non valide",
+    "user_info_fetch_failed": "Impossible de récupérer les informations utilisateur depuis le serveur d'authentification. La connexion a été interrompue."
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -2592,6 +2594,8 @@
     "mail": "E-mail",
     "o": "Organisation",
     "memberOf": "Membre de",
-    "picture": "URL de la photo"
+    "picture": "URL de la photo",
+    "status": "Statut",
+    "userId": "ID d'utilisateur"
   }
 }

@@ -28,7 +28,7 @@ const persistConfig = {
   blacklist: [
     'cedarPermissions',
     'toastReducer',
-    'logoutAuditReducer',
+    'sessionReducer',
     'initReducer',
     'webhookReducer',
     'scopeReducer',
