@@ -20,26 +20,8 @@ For local deployments, minimum resources are:
 - 4 CPU cores
 - 50 GB hard-disk
 
-## Quick Start Script
-
-Start a fresh Ubuntu VM with ports 443 and 80 open, then run:
-
-```bash
-sudo su -
-wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh && chmod u+x startflexdemo.sh && ./startflexdemo.sh
-```
-
-This installs Docker, MicroK8s, Helm, and Flex with default settings.
-
-## Accessing Endpoints
-
-The installer adds a hosts record in the VM. To access from outside the VM, map the VM IP to your FQDN.
-
-| Service     | Endpoint                                    |
-|-------------|---------------------------------------------|
-| Auth server | `https://FQDN/.well-known/openid-configuration` |
-| FIDO2       | `https://FQDN/.well-known/fido2-configuration`  |
-| SCIM        | `https://FQDN/.well-known/scim-configuration`   |
+!!! Tip
+    For a one-liner demo deployment, use the [Local Kubernetes Quick Start](../../quick-start/local-k8s.md). The steps below cover manual setup.
 
 ## Manual Setup
 

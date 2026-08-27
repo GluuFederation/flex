@@ -8,13 +8,13 @@ tags:
 - all-in-one
 ---
 
-# Docker Deployment Quick Start
+# Docker Quick Start (All-In-One)
 
 !!! Warning
     **This image is for testing and development purposes only. Use Flex [helm deployments](https://docs.gluu.org/stable/install/helm-install/) for production setups.**
 
     
-The quickest way to get the Gluu Flex up and running is to install a Docker container-based full-featured Flex using the All-In-One (AIO) script.
+The quickest way to get Gluu Flex up and running is a Docker container-based full-featured Flex using the All-In-One (AIO) script.
 
 ## System Requirements
 
