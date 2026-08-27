@@ -1,5 +1,5 @@
 import { AxiosHeaders } from 'axios'
-import { AXIOS_INSTANCE, setApiToken } from './axiosInstance'
+import { AXIOS_INSTANCE, setApiToken, getApiToken } from './axiosInstance'
 import { fetchApiTokenWithDefaultScopes, createAdminUiSession } from '@/redux/api/backend-api'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { SESSION_EXPIRED } from '@/audit/messages'
@@ -68,17 +68,19 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
 
     config.withCredentials = shouldSendSession
 
-    if (config.headers instanceof AxiosHeaders) {
-      if (issuer) config.headers.set('issuer', issuer)
-      config.headers.set('jans-client', 'admin-ui')
-      if (userInum) config.headers.set('User-inum', userInum)
-    } else {
-      config.headers = new AxiosHeaders({
-        ...(config.headers as Record<string, string>),
-        ...(issuer ? { issuer } : {}),
-        'jans-client': 'admin-ui',
-        ...(userInum ? { 'User-inum': userInum } : {}),
-      })
+    if (!(config.headers instanceof AxiosHeaders)) {
+      config.headers = new AxiosHeaders(config.headers as Record<string, string>)
+    }
+
+    if (issuer) config.headers.set('issuer', issuer)
+    config.headers.set('jans-client', 'admin-ui')
+    if (userInum) config.headers.set('User-inum', userInum)
+
+    const apiToken = getApiToken()
+    if (shouldSendSession) {
+      config.headers.delete('Authorization')
+    } else if (apiToken) {
+      config.headers.set('Authorization', `Bearer ${apiToken}`)
     }
 
     return config

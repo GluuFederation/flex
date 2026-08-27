@@ -111,6 +111,91 @@ describe('orval interceptors', () => {
     expect(config.headers.get('User-inum')).toBeUndefined()
   })
 
+  it('never sends the api protection token alongside the session cookie', async () => {
+    const { AXIOS_INSTANCE, installInterceptors, setApiToken } = await import('../index')
+
+    setApiToken('api-protection-token')
+    installInterceptors(
+      () =>
+        ({
+          authReducer: {
+            hasSession: true,
+            issuer: 'https://issuer.example.com',
+            userInum: '12345',
+          },
+        }) as object as RootState,
+      noopDispatch,
+    )
+
+    const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
+      .handlers[0]?.fulfilled
+
+    const config = requestHandler?.({ headers: new AxiosHeaders() }) as {
+      withCredentials?: boolean
+      headers: AxiosHeaders
+    }
+
+    expect(config.withCredentials).toBe(true)
+    expect(config.headers.get('Authorization')).toBeUndefined()
+  })
+
+  it('strips an Authorization header a caller set explicitly once a session exists', async () => {
+    const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
+
+    installInterceptors(
+      () => ({ authReducer: { hasSession: true } }) as object as RootState,
+      noopDispatch,
+    )
+
+    const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
+      .handlers[0]?.fulfilled
+
+    const config = requestHandler?.({
+      headers: new AxiosHeaders({ Authorization: 'Bearer leaked' }),
+    }) as { headers: AxiosHeaders }
+
+    expect(config.headers.get('Authorization')).toBeUndefined()
+  })
+
+  it('falls back to the api protection token when there is no session yet', async () => {
+    const { AXIOS_INSTANCE, installInterceptors, setApiToken } = await import('../index')
+
+    setApiToken('api-protection-token')
+    installInterceptors(
+      () =>
+        ({ authReducer: { hasSession: false, issuer: null, userInum: '' } }) as object as RootState,
+      noopDispatch,
+    )
+
+    const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
+      .handlers[0]?.fulfilled
+
+    const config = requestHandler?.({ headers: new AxiosHeaders() }) as {
+      withCredentials?: boolean
+      headers: AxiosHeaders
+    }
+
+    expect(config.withCredentials).toBe(false)
+    expect(config.headers.get('Authorization')).toBe('Bearer api-protection-token')
+  })
+
+  it('sends no Authorization at all when there is neither a session nor a token', async () => {
+    const { AXIOS_INSTANCE, installInterceptors, setApiToken } = await import('../index')
+
+    setApiToken(null)
+    installInterceptors(
+      () => ({ authReducer: { hasSession: false } }) as object as RootState,
+      noopDispatch,
+    )
+
+    const requestHandler = (AXIOS_INSTANCE.interceptors.request as RequestInterceptorManager)
+      .handlers[0]?.fulfilled
+
+    const config = requestHandler?.({ headers: new AxiosHeaders() }) as { headers: AxiosHeaders }
+
+    expect(config.headers.get('Authorization')).toBeUndefined()
+  })
+
   it('audits the forced logout on a 403 response and leaves the logout to the listener', async () => {
     const dispatch = jest.fn()
     const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
