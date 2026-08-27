@@ -1,28 +1,24 @@
-import reducer, { auditLogoutLogs, auditLogoutLogsResponse, setLandingPath } from '../sessionSlice'
+import reducer, { auditLogoutLogs, setLandingPath } from '../sessionSlice'
 
 const getInitial = () => reducer(undefined, { type: '@@INIT' })
 
 describe('sessionSlice', () => {
   it('returns the initial state', () => {
-    expect(getInitial()).toEqual({ logoutAuditSucceeded: null, landingPath: null })
+    expect(getInitial()).toEqual({ landingPath: null, logoutRequested: false })
   })
 
-  it('auditLogoutLogs resets the audit result to null', () => {
+  it('auditLogoutLogs flags that a logout was requested', () => {
     const state = reducer(
-      { logoutAuditSucceeded: true, landingPath: null },
+      { landingPath: '/home/dashboard', logoutRequested: false },
       auditLogoutLogs({ message: 'm' }),
     )
-    expect(state.logoutAuditSucceeded).toBeNull()
+    expect(state.logoutRequested).toBe(true)
+    expect(state.landingPath).toBe('/home/dashboard')
   })
 
   it('setLandingPath stores the resolved landing route', () => {
     expect(reducer(getInitial(), setLandingPath('/home/dashboard')).landingPath).toBe(
       '/home/dashboard',
     )
-  })
-
-  it('auditLogoutLogsResponse stores the boolean result', () => {
-    expect(reducer(getInitial(), auditLogoutLogsResponse(true)).logoutAuditSucceeded).toBe(true)
-    expect(reducer(getInitial(), auditLogoutLogsResponse(false)).logoutAuditSucceeded).toBe(false)
   })
 })

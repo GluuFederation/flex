@@ -10,9 +10,10 @@ import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import { GluuDropdown, type GluuDropdownOption, ChevronIcon, ArrowRightIcon } from 'Components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { MANUAL_LOGOUT } from '@/audit/messages'
 import { useTheme } from '@/context/theme/themeContext'
 import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { useThemePersistence } from '@/hooks/useThemePersistence'
@@ -25,7 +26,6 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
 
   const { state: themeState } = useTheme()
   const currentTheme = themeState.theme
@@ -64,12 +64,6 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   )
 
   useEffect(() => {
-    if (logoutAuditSucceeded === true) {
-      navigateToRoute(ROUTES.LOGOUT)
-    }
-  }, [logoutAuditSucceeded, navigateToRoute])
-
-  useEffect(() => {
     if (!isOpen) return
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -102,7 +96,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
 
   const handleLogout = useCallback(() => {
     setIsOpen(false)
-    dispatch(auditLogoutLogs({ message: 'User logged out manually' }))
+    dispatch(auditLogoutLogs({ message: MANUAL_LOGOUT }))
   }, [dispatch])
 
   const themeOptions: GluuDropdownOption<string>[] = useMemo(

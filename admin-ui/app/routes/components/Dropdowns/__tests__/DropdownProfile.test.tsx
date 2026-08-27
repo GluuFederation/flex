@@ -14,12 +14,10 @@ jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({ navigateToRoute: mockNavigateToRoute }),
 }))
 
-type StoreOptions = { logoutAuditSucceeded?: boolean | null }
-
-const makeStore = ({ logoutAuditSucceeded = null }: StoreOptions = {}) =>
+const makeStore = () =>
   configureStore({
-    reducer: combineReducers({ logoutAuditReducer: sessionReducer }),
-    preloadedState: { logoutAuditReducer: { logoutAuditSucceeded, landingPath: null } },
+    reducer: combineReducers({ sessionReducer }),
+    preloadedState: { sessionReducer: { landingPath: null, logoutRequested: false } },
   })
 
 const renderProfile = (store = makeStore()) => {
@@ -70,15 +68,5 @@ describe('DropdownProfile', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       auditLogoutLogs({ message: 'User logged out manually' }),
     )
-  })
-
-  it('navigates to the logout route once the logout audit succeeds', () => {
-    renderProfile(makeStore({ logoutAuditSucceeded: true }))
-    expect(mockNavigateToRoute).toHaveBeenCalledWith(ROUTES.LOGOUT)
-  })
-
-  it('does not navigate to logout while the audit has not succeeded', () => {
-    renderProfile(makeStore({ logoutAuditSucceeded: null }))
-    expect(mockNavigateToRoute).not.toHaveBeenCalledWith(ROUTES.LOGOUT)
   })
 })

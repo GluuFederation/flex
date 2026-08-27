@@ -16,7 +16,7 @@ describe('navigation', () => {
   describe('ROUTES', () => {
     it('exposes the core app routes', () => {
       expect(ROUTES.PROFILE).toBe('/profile')
-      expect(ROUTES.LOGOUT).toBe('/admin/logout')
+      expect(ROUTES.LOGOUT).toBe('/logout')
       expect(ROUTES.ROOT).toBe('/')
       expect(ROUTES.WILDCARD).toBe('/*')
     })

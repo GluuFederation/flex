@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { BackendStatus, UserInfo, Config, AuthState } from './types/authTypes'
 import type { ApiTokenPayload, PutConfigMeta } from './types'
 
+const LOGOUT_USER_ACTION = 'logout/logoutUser'
+
 const initialState: AuthState = {
   isAuthenticated: false,
   userinfo: null,
@@ -100,6 +102,12 @@ const authSlice = createSlice({
         state.hasSession = true
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type === LOGOUT_USER_ACTION,
+      () => initialState,
+    )
   },
 })
 

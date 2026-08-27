@@ -101,18 +101,22 @@ describe('AXIOS_INSTANCE base url resolution', () => {
 })
 
 describe('setApiToken', () => {
-  it('sets a bearer Authorization header when given a token', async () => {
+  it('stores the token for the request interceptor to read', async () => {
     const mod = await loadModule()
     mod.setApiToken('abc123')
-    expect(mockCreate.mock.results[0].value.defaults.headers.common['Authorization']).toBe(
-      'Bearer abc123',
-    )
+    expect(mod.getApiToken()).toBe('abc123')
   })
 
-  it('removes the Authorization header when given null', async () => {
+  it('clears the stored token when given null', async () => {
     const mod = await loadModule()
     mod.setApiToken('abc123')
     mod.setApiToken(null)
+    expect(mod.getApiToken()).toBeNull()
+  })
+
+  it('never writes the token into the shared axios defaults', async () => {
+    const mod = await loadModule()
+    mod.setApiToken('abc123')
     expect(
       mockCreate.mock.results[0].value.defaults.headers.common['Authorization'],
     ).toBeUndefined()

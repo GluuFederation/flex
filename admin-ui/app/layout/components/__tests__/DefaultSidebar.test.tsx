@@ -5,7 +5,7 @@ import { DefaultSidebar } from '../DefaultSidebar'
 type CedarState = { initialized: boolean; cedarFailedStatusAfterMaxTries: boolean }
 type SidebarState = {
   cedarPermissions: CedarState
-  logoutAuditReducer: { landingPath: string | null }
+  sessionReducer: { landingPath: string | null }
 }
 type Selector = (state: SidebarState) => CedarState | string | null
 
@@ -47,7 +47,7 @@ jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k
 
 const setCedarState = (state: CedarState) => {
   mockSelector.mockImplementation((fn: Selector) =>
-    fn({ cedarPermissions: state, logoutAuditReducer: { landingPath: '/home/dashboard' } }),
+    fn({ cedarPermissions: state, sessionReducer: { landingPath: '/home/dashboard' } }),
   )
 }
 

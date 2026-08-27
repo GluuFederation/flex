@@ -36,11 +36,6 @@ STAGED_SCRIPT_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)
 # Markdown subset for markdownlint
 STAGED_MD_FILES=$(printf '%s\n' "$STAGED_FILES" | grep -E '\.md$' || true)
 
-if [ -z "$STAGED_FILES" ] && [ -z "$STAGED_SCRIPT_FILES" ]; then
-  echo "✅ No checkable files staged."
-  exit 0
-fi
-
 CPUS=$(nproc 2>/dev/null || sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
 
 # Call the local binaries directly: `npx` re-resolves the package on every call,
@@ -56,7 +51,7 @@ FILE_COUNT=${FILE_COUNT:-0}
 SCRIPT_COUNT=${SCRIPT_COUNT:-0}
 MD_COUNT=${MD_COUNT:-0}
 
-echo "🔍 Running prettier / eslint / deprecations / tsc / markdownlint in parallel across $CPUS workers..."
+echo "🔍 Running prettier / eslint / deprecations / tsc / markdownlint / knip in parallel across $CPUS workers..."
 
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -66,6 +61,8 @@ ESLINT_OUT="$TMP_DIR/eslint.txt"
 TSC_OUT="$TMP_DIR/tsc.txt"
 MDLINT_OUT="$TMP_DIR/mdlint.txt"
 DEPRECATED_OUT="$TMP_DIR/deprecated.txt"
+KNIP_OUT="$TMP_DIR/knip.txt"
+KNIP_ERR="$TMP_DIR/knip.err"
 
 # --- Prettier: fan staged files across $CPUS parallel processes ---
 # Writes one line per offending file: "<file>\t<hunk-count>"
@@ -120,6 +117,14 @@ run_tsc() {
     --tsBuildInfoFile "$CACHE_DIR/tsc-precommit.tsbuildinfo" > "$TSC_OUT" 2>&1
 }
 
+# --- knip: whole-project unused files / exports / dependencies ---
+# Whole-project like tsc, so it cannot be gated on the staged file list: removing
+# the last consumer of an export leaves the export itself unstaged and unchecked.
+run_knip() {
+  "$BIN/knip" > "$KNIP_OUT" 2> "$KNIP_ERR"
+  return $?
+}
+
 # --- markdownlint-cli2: run on staged .md files only ---
 run_mdlint() {
   if [ "$MD_COUNT" -eq 0 ]; then return 0; fi
@@ -134,12 +139,14 @@ run_eslint             & PID_ESLINT=$!
 run_deprecation_check  & PID_DEPRECATED=$!
 run_tsc                & PID_TSC=$!
 run_mdlint             & PID_MDLINT=$!
+run_knip               & PID_KNIP=$!
 
 wait $PID_PRETTIER;   EXIT_PRETTIER=$? || true
 wait $PID_ESLINT;     EXIT_ESLINT=$? || true
 wait $PID_DEPRECATED; EXIT_DEPRECATED=$? || true
 wait $PID_TSC;        EXIT_TSC=$? || true
 wait $PID_MDLINT;     EXIT_MDLINT=$? || true
+wait $PID_KNIP;       EXIT_KNIP=$? || true
 
 # --- Format per-tool output ---
 
@@ -209,6 +216,18 @@ print_tsc_failures() {
   echo "❌ TypeScript — type errors"
 }
 
+# knip's own report, printed verbatim: every category it knows about is already
+# grouped and labelled there, so reformatting it only loses detail.
+print_knip_failures() {
+  if [ -s "$KNIP_OUT" ]; then
+    cat "$KNIP_OUT"
+  elif [ -s "$KNIP_ERR" ]; then
+    cat "$KNIP_ERR"
+  fi
+  echo ""
+  echo "❌ Knip — unused files, exports or dependencies"
+}
+
 # markdownlint-cli2 output: "<file>:line[:col] error MDxxxx/rule message"
 # (older releases omit the "error" word, so both shapes are matched)
 print_mdlint_failures() {
@@ -268,8 +287,16 @@ else
   print_mdlint_failures
 fi
 
+echo ""
+
+if [ $EXIT_KNIP -eq 0 ]; then
+  echo "✅ Knip       : no unused files, exports or dependencies"
+else
+  print_knip_failures
+fi
+
 if [ $EXIT_PRETTIER -ne 0 ] || [ $EXIT_ESLINT -ne 0 ] || [ $EXIT_DEPRECATED -ne 0 ] ||
-   [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ]; then
+   [ $EXIT_TSC -ne 0 ] || [ $EXIT_MDLINT -ne 0 ] || [ $EXIT_KNIP -ne 0 ]; then
   echo ""
   echo "💥 Commit blocked. Fix the errors above and try again."
   exit 1

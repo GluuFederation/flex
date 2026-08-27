@@ -30,7 +30,7 @@ const createStore = (logoutAuditSucceeded: boolean | null = null): Store =>
   configureStore({
     reducer: combineReducers({
       authReducer: (state = { config: { sessionTimeoutInMins: 5 } }) => state,
-      logoutAuditReducer: (state = { logoutAuditSucceeded }) => state,
+      sessionReducer: (state = { logoutAuditSucceeded }) => state,
     }),
   })
 
@@ -117,11 +117,6 @@ describe('GluuSessionTimeout', () => {
       expect.objectContaining({ type: expect.stringContaining('auditLogoutLogs') }),
     )
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-  })
-
-  it('navigates to logout once the logout audit succeeds', () => {
-    renderTimeout(true, true)
-    expect(mockNavigateToRoute).toHaveBeenCalledWith('/admin/logout')
   })
 
   it('resets the idle timer when authenticated', () => {

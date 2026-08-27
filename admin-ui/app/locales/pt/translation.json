@@ -232,9 +232,10 @@
     "search": "Pesquisar",
     "export": "Exportar"
   },
+  "roleNotFoundMessage": "Sessão encerrada",
+  "roleNotFoundDescription": "Sua conta não possui uma função do Admin UI, por isso a sessão foi encerrada. Clique em Tentar novamente para entrar com outra conta, ou contate seu administrador para que atribua uma função.",
+  "tryAgain": "Tentar novamente",
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
-  "roleNotFoundMessage": "Usuário não autorizado",
-  "roleNotFoundDescription": "O usuário conectado não possui um perfil válido. Encerrando sessão do Admin UI",
   "licenseCard": {
     "freeTrial": "Avaliação gratuita",
     "description": "Inicie sua avaliação gratuita para gerenciar e configurar seu servidor de autenticação com interface web simplificada.",
@@ -1297,7 +1298,8 @@
     "logging_level_required": "O nível de log é obrigatório",
     "logging_level_invalid": "Nível de log inválido",
     "logging_layout_required": "O formato de log é obrigatório",
-    "logging_layout_invalid": "Formato de log inválido"
+    "logging_layout_invalid": "Formato de log inválido",
+    "user_info_fetch_failed": "Não foi possível obter as informações do utilizador a partir do servidor de autenticação. A autenticação foi interrompida."
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -2577,7 +2579,9 @@
     "mail": "E-mail",
     "o": "Organização",
     "memberOf": "Membro de",
-    "picture": "URL da foto"
+    "picture": "URL da foto",
+    "status": "Status",
+    "userId": "ID do usuário"
   },
   "Nickname": "Apelido",
   "Username": "Nome de Usuário"

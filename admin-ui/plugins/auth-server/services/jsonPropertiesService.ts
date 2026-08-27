@@ -22,7 +22,7 @@ type HttpErrorLike = Parameters<typeof isFourZeroThreeError>[0]
 
 const handleForbidden = async (e: HttpErrorLike): Promise<void> => {
   if (isFourZeroThreeError(e)) {
-    await redirectSessionExpired()
+    redirectSessionExpired()
   }
 }
 

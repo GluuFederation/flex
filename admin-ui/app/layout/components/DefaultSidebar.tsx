@@ -15,7 +15,7 @@ import { useSamePathGuard } from '@/hooks/useSamePathGuard'
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
   const { classes } = useStyles()
-  const landingPath = useAppSelector((state) => state.logoutAuditReducer.landingPath)
+  const landingPath = useAppSelector((state) => state.sessionReducer.landingPath)
   const brandPath = landingPath ?? ROUTES.ROOT
   const handleBrandClick = useSamePathGuard(brandPath)
 

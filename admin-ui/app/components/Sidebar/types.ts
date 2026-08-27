@@ -43,15 +43,3 @@ export type VisibilityConditions = {
 export type MenuIconMap = {
   readonly [key: string]: React.ReactNode
 }
-
-export type SidebarRootState = {
-  authReducer: {
-    token?: {
-      scopes: string[]
-    }
-    permissions?: string[]
-  }
-  logoutAuditReducer: {
-    logoutAuditSucceeded: boolean | null
-  }
-}
