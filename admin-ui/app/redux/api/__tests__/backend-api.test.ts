@@ -21,6 +21,7 @@ import {
   deleteAdminUiSession,
   SESSION_ENDPOINT,
 } from '../backend-api'
+import { setHasSessionReader } from '../sessionState'
 
 type MockedAxios = { get: jest.Mock; put: jest.Mock; post: jest.Mock; delete: jest.Mock }
 const ax = mockAxiosDefault as object as MockedAxios
@@ -40,6 +41,69 @@ describe('backend-api auth config', () => {
     ax.get.mockResolvedValue({ data: {} })
     await fetchServerConfiguration()
     expect(ax.get).toHaveBeenCalledWith('/admin-ui/config', { withCredentials: true })
+  })
+})
+
+describe('once a session cookie exists', () => {
+  beforeEach(() => setHasSessionReader(() => true))
+  afterEach(() => setHasSessionReader(() => false))
+
+  it.each([
+    [
+      'fetchServerConfiguration',
+      () => fetchServerConfiguration('tok'),
+      () => ax.get,
+      '/admin-ui/config',
+    ],
+    [
+      'fetchPolicyStore',
+      () => fetchPolicyStore('tok'),
+      () => ax.get,
+      '/admin-ui/security/policyStore',
+    ],
+    ['deleteAdminUiSession', () => deleteAdminUiSession('tok'), () => ax.delete, SESSION_ENDPOINT],
+  ])('ignores the token %s was given and sends the cookie', async (_label, call, method, url) => {
+    method().mockResolvedValue({ data: {} })
+    await call()
+    expect(method()).toHaveBeenCalledWith(url, { withCredentials: true })
+  })
+
+  it('ignores the token putServerConfiguration was given and sends the cookie', async () => {
+    ax.put.mockResolvedValue({ data: {} })
+    await putServerConfiguration({ props: { a: 1 }, token: 'tok' } as never)
+    expect(ax.put).toHaveBeenCalledWith('/admin-ui/config', { a: 1 }, { withCredentials: true })
+  })
+
+  it('keeps the bearer on createAdminUiSession, which mints the cookie', async () => {
+    ax.post.mockResolvedValue({ data: {} })
+    await createAdminUiSession('ujwt', 'api-token')
+    expect(ax.post).toHaveBeenCalledWith(
+      SESSION_ENDPOINT,
+      { ujwt: 'ujwt' },
+      { headers: { Authorization: 'Bearer api-token' }, withCredentials: true },
+    )
+  })
+
+  it('keeps the bearer on fetchUserInformation, which calls the auth server', async () => {
+    ax.get.mockResolvedValue({ data: 'jwt' })
+    await fetchUserInformation({
+      userInfoEndpoint: 'https://as.example.com/userinfo',
+      token_type: 'Bearer',
+      access_token: 'oauth-token',
+    } as never)
+    expect(ax.get).toHaveBeenCalledWith('https://as.example.com/userinfo', {
+      headers: { Authorization: 'Bearer oauth-token' },
+    })
+  })
+
+  it('keeps fetchApiTokenWithDefaultScopes uncredentialed', async () => {
+    ax.post.mockResolvedValue({ data: {} })
+    await fetchApiTokenWithDefaultScopes()
+    expect(ax.post).toHaveBeenCalledWith(
+      '/app/admin-ui/oauth2/api-protection-token',
+      {},
+      { withCredentials: false },
+    )
   })
 })
 

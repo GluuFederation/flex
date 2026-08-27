@@ -148,7 +148,6 @@ startAppListening({
                 apiProtectionToken: response.access_token,
               }),
             )
-            dispatch(getOAuth2Config({ access_token: response.access_token }))
           } else {
             setApiToken(null)
             logger.error('Failed to obtain API token for session creation')
@@ -184,25 +183,33 @@ startAppListening({
   },
 })
 
+export const createSessionEffect = async (
+  payload: { ujwt: string; apiProtectionToken: string },
+  dispatch: AppDispatch,
+): Promise<void> => {
+  try {
+    const { ujwt, apiProtectionToken } = payload
+    await createAdminUiSessionApi(ujwt, apiProtectionToken)
+    dispatch(createAdminUiSessionResponse({ success: true }))
+    dispatch(getOAuth2Config({}))
+  } catch (error) {
+    const err = asApiError(error as Throwable)
+    const errorMessage =
+      err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
+    logger.error('Problems creating Admin UI session:', resolveApiErrorMessage(err))
+    if (isFourZeroThreeError(err)) {
+      auditSessionExpired(dispatch)
+      return
+    }
+    dispatch(createAdminUiSessionResponse({ success: false, error: errorMessage }))
+    dispatch(getOAuth2Config({ access_token: payload.apiProtectionToken }))
+  }
+}
+
 startAppListening({
   actionCreator: createAdminUiSession,
   effect: async (action, listenerApi) => {
     listenerApi.cancelActiveListeners()
-    const { dispatch } = listenerApi
-    try {
-      const { ujwt, apiProtectionToken } = action.payload
-      await createAdminUiSessionApi(ujwt, apiProtectionToken)
-      dispatch(createAdminUiSessionResponse({ success: true }))
-    } catch (error) {
-      const err = asApiError(error as Throwable)
-      const errorMessage =
-        err?.response?.data?.message ?? err?.response?.data?.responseMessage ?? err?.message ?? ''
-      logger.error('Problems creating Admin UI session:', resolveApiErrorMessage(err))
-      if (isFourZeroThreeError(err)) {
-        auditSessionExpired(dispatch)
-        return
-      }
-      dispatch(createAdminUiSessionResponse({ success: false, error: errorMessage }))
-    }
+    await createSessionEffect(action.payload, listenerApi.dispatch)
   },
 })
