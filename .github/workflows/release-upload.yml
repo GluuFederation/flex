@@ -1,4 +1,4 @@
-name: upload-release
+name: "Release: Upload"
 # This builds, packages and releases pygluu-kubernetes
 on:
   push:

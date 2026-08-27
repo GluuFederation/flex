@@ -1,4 +1,4 @@
-name: Build and Publish Releases to Hub
+name: "Build: Docker Images"
 
 on:
   schedule:

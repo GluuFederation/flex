@@ -1,4 +1,4 @@
-name: Activate Nightly Build
+name: "Build: Nightly"
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   # Builds admin-ui and recreates the nightly release+tag first, so its assets are on
-  # the release before the nightly tag fans out to build-packages / docker_build_image.
+  # the release before the nightly tag fans out to build-packages / build-docker-images.
   nightly_admin_ui:
     uses: ./.github/workflows/build-admin-ui.yml
     permissions:

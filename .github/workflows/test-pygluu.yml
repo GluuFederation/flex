@@ -1,4 +1,4 @@
-name: testcases
+name: "Test: pygluu"
 
 on:
   push:
