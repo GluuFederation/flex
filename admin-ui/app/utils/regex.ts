@@ -178,5 +178,3 @@ export const REGEX_BASE64URL_MINUS = /-/g
 export const REGEX_BASE64URL_UNDERSCORE = /_/g
 /** Matches a same-origin route (path, optional query and hash) with no scheme or authority, used to reject open-redirect values before restoring the route a user asked for prior to the OIDC round-trip. */
 export const REGEX_INTERNAL_ROUTE = /^\/[^\s/\\][^\s\\]*$|^\/$/
-/** Matches one or more trailing slashes, used to join the router base path with a browser-absolute path segment without doubling the separator. */
-export const REGEX_TRAILING_SLASHES = /\/+$/

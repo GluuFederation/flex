@@ -1,12 +1,7 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
-import { REGEX_TRAILING_SLASHES } from '@/utils/regex'
-
-const BASE_PATH = process.env.BASE_PATH ?? '/admin/'
 
 const LOGOUT_PATH = '/logout'
-
-const LOGOUT_URL = `${BASE_PATH.replace(REGEX_TRAILING_SLASHES, '')}${LOGOUT_PATH}`
 
 const PLUGIN_BASE_PATHS = {
   SAML: '/saml',
@@ -193,4 +188,4 @@ export const useAppNavigation = () => {
   )
 }
 
-export { ROUTES, LOGOUT_URL }
+export { ROUTES }
