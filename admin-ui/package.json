@@ -37,7 +37,8 @@
     "check:deprecated": "ts-node --files --project script/tsconfig.json script/check-deprecated.ts",
     "format": "ts-node --files --project script/tsconfig.json script/format.ts",
     "api:orval": "npm run clean:paths -- jans_config_api_orval && openapi-merge-cli && ts-node --files --project script/tsconfig.json script/patch-adminui-policystore-path.ts && orval --config ./orval.config.ts && ts-node --files --project script/tsconfig.json script/fix-orval-enums.ts && ts-node --files --project script/tsconfig.json script/gen-orval-barrel.ts && ts-node --files --project script/tsconfig.json script/verify-orval-mutations.ts",
-    "prepare": "cd .. && node admin-ui/node_modules/husky/bin.js admin-ui/.husky"
+    "prepare": "cd .. && node admin-ui/node_modules/husky/bin.js admin-ui/.husky",
+    "knip": "knip"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

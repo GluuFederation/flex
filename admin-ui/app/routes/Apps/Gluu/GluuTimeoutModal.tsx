@@ -8,16 +8,16 @@ import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { Close } from '@/components/icons'
 import { ModalLayer } from '@/components/ModalLayer'
-import { BASE_PATH } from '@/constants'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
+import { APP_BASE_URL } from '@/helpers/navigation'
 
-// BASE_PATH is normalised to a trailing slash, so targeting it directly avoids relying on the
+// APP_BASE_URL is normalised to a trailing slash, so targeting it directly avoids relying on the
 // server to redirect /admin to /admin/. Exported because jsdom forbids stubbing window.location,
 // so the URL is asserted here instead of through the navigation itself.
 export const buildAdminUrl = (authServerHost?: string | number | boolean): string | null =>
-  authServerHost ? `${authServerHost}${BASE_PATH}` : null
+  authServerHost ? `${authServerHost}${APP_BASE_URL}` : null
 
 const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()

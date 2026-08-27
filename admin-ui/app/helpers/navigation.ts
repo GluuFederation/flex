@@ -1,6 +1,14 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
+const configuredBasePath = process.env.BASE_PATH ?? '/admin/'
+
+const APP_BASE_URL: string = configuredBasePath.endsWith('/')
+  ? configuredBasePath
+  : `${configuredBasePath}/`
+
+const LOGOUT_PATH = '/logout'
+
 const PLUGIN_BASE_PATHS = {
   SAML: '/saml',
   HOME: '/home',
@@ -155,7 +163,7 @@ const ROUTES = {
   // ========== Core app pages ==========
 
   PROFILE: '/profile',
-  LOGOUT: '/admin/logout',
+  LOGOUT: LOGOUT_PATH,
 
   // ========== Wildcard routes ==========
   WILDCARD: '/*',
@@ -193,4 +201,4 @@ export const useAppNavigation = () => {
   )
 }
 
-export { ROUTES }
+export { ROUTES, APP_BASE_URL }

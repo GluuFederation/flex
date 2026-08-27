@@ -1,7 +1,11 @@
 import type { AppConfigResponse } from 'JansConfigApi'
-import { putConfigEffect } from '../authListener'
-import { putServerConfiguration } from '../../api/backend-api'
-import { getOAuth2ConfigResponse, putConfigWorkerResponse } from '../../features/authSlice'
+import { putConfigEffect, createSessionEffect } from '../authListener'
+import { putServerConfiguration, createAdminUiSession } from '../../api/backend-api'
+import {
+  getOAuth2Config,
+  getOAuth2ConfigResponse,
+  putConfigWorkerResponse,
+} from '../../features/authSlice'
 import { updateToast } from '../../features/toastSlice'
 import type { Config } from '../../features/types/authTypes'
 
@@ -9,6 +13,9 @@ jest.mock('../../api/backend-api')
 
 const mockedPutServerConfiguration = putServerConfiguration as jest.MockedFunction<
   typeof putServerConfiguration
+>
+const mockedCreateAdminUiSession = createAdminUiSession as jest.MockedFunction<
+  typeof createAdminUiSession
 >
 
 describe('authListener - putConfigEffect', () => {
@@ -162,5 +169,53 @@ describe('authListener - putConfigEffect', () => {
 
       expect(dispatch).toHaveBeenCalledWith(putConfigWorkerResponse())
     })
+  })
+})
+
+describe('authListener - createSessionEffect', () => {
+  const payload = { ujwt: 'user-jwt', apiProtectionToken: 'api-token' }
+
+  beforeEach(() => jest.clearAllMocks())
+
+  it('requests the config only after the session cookie exists', async () => {
+    mockedCreateAdminUiSession.mockResolvedValue({})
+    const dispatch = jest.fn()
+
+    await createSessionEffect(payload, dispatch)
+
+    const dispatched = dispatch.mock.calls.map(([action]) => action.type)
+    expect(dispatched.indexOf('auth/getOAuth2Config')).toBeGreaterThan(
+      dispatched.indexOf('auth/createAdminUiSessionResponse'),
+    )
+    expect(dispatch).toHaveBeenCalledWith(getOAuth2Config({}))
+  })
+
+  it('sends no token on that config request, so the cookie is used', async () => {
+    mockedCreateAdminUiSession.mockResolvedValue({})
+    const dispatch = jest.fn()
+
+    await createSessionEffect(payload, dispatch)
+
+    const configCall = dispatch.mock.calls.find(([a]) => a.type === 'auth/getOAuth2Config')
+    expect(configCall?.[0].payload).toEqual({})
+  })
+
+  it('falls back to the bearer token when the session cannot be created', async () => {
+    mockedCreateAdminUiSession.mockRejectedValue(new Error('boom'))
+    const dispatch = jest.fn()
+
+    await createSessionEffect(payload, dispatch)
+
+    expect(dispatch).toHaveBeenCalledWith(getOAuth2Config({ access_token: 'api-token' }))
+  })
+
+  it('signs the user out instead of loading config on a 403', async () => {
+    mockedCreateAdminUiSession.mockRejectedValue({ response: { status: 403 } })
+    const dispatch = jest.fn()
+
+    await createSessionEffect(payload, dispatch)
+
+    const dispatched = dispatch.mock.calls.map(([action]) => action.type)
+    expect(dispatched).not.toContain('auth/getOAuth2Config')
   })
 })

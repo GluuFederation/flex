@@ -14,6 +14,32 @@ describe('urlSecurity', () => {
     expect(buildSafeNavigationUrl('/admin', { baseUrl: 'javascript:alert(1)' })).toBeNull()
   })
 
+  it('sends the id token hint so the provider can identify the session to end', () => {
+    const logoutUrl = buildSafeLogoutUrl(
+      'https://auth.example.com/logout',
+      'https://admin.example.com/post-logout',
+      'state-123',
+      'the-id-token',
+    )
+
+    expect(new URL(logoutUrl as string).searchParams.get('id_token_hint')).toBe('the-id-token')
+  })
+
+  it('omits the id token hint when no id token is available', () => {
+    const cases = [undefined, null, '', '   ']
+
+    cases.forEach((idTokenHint) => {
+      const logoutUrl = buildSafeLogoutUrl(
+        'https://auth.example.com/logout',
+        'https://admin.example.com/post-logout',
+        'state-123',
+        idTokenHint,
+      )
+
+      expect(new URL(logoutUrl as string).searchParams.has('id_token_hint')).toBe(false)
+    })
+  })
+
   it('builds a logout url with safe endpoints only', () => {
     const logoutUrl = buildSafeLogoutUrl(
       'https://auth.example.com/logout',

@@ -8,6 +8,7 @@ import type {
   UserActionPayload,
 } from './types/BackendApi'
 import axios from '../api/axios'
+import { hasActiveSession } from './sessionState'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import {
@@ -41,7 +42,9 @@ const ENDPOINTS = {
 export const SESSION_ENDPOINT = ENDPOINTS.SESSION
 
 const getAuthConfig = (token?: string) =>
-  token ? { headers: { Authorization: `Bearer ${token}` } } : { withCredentials: true }
+  !hasActiveSession() && token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : { withCredentials: true }
 
 export const fetchServerConfiguration = async (token?: string): Promise<AppConfigResponse> => {
   try {

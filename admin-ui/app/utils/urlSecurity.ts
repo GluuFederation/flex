@@ -29,6 +29,7 @@ export const buildSafeLogoutUrl = (
   endSessionEndpoint: string | null | undefined,
   postLogoutRedirectUri: string | null | undefined,
   state: string,
+  idTokenHint?: string | null,
 ): string | null => {
   const safeEndSessionEndpoint = buildSafeNavigationUrl(endSessionEndpoint)
   if (!safeEndSessionEndpoint) {
@@ -37,6 +38,11 @@ export const buildSafeLogoutUrl = (
 
   const logoutUrl = new URL(safeEndSessionEndpoint)
   logoutUrl.searchParams.set('state', state)
+
+  const trimmedIdTokenHint = idTokenHint?.trim()
+  if (trimmedIdTokenHint) {
+    logoutUrl.searchParams.set('id_token_hint', trimmedIdTokenHint)
+  }
 
   const configuredPostLogoutRedirectUri = postLogoutRedirectUri?.trim()
   if (

@@ -1,5 +1,6 @@
 import { use, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import OpenInNew from '@mui/icons-material/OpenInNew'
 import { EmptyLayout } from 'Components'
@@ -10,11 +11,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import customColors from '@/customColors'
-import { BASE_PATH, EXTERNAL_LINKS } from '@/constants'
+import { EXTERNAL_LINKS } from '@/constants'
 import { isDevelopment } from '@/utils/env'
 import { createDate } from '@/utils/dayjsUtils'
 import { useStyles } from './styles/GluuErrorScreen.style'
 import type { GluuErrorScreenProps } from './GluuErrorScreen.types'
+import { APP_BASE_URL } from '@/helpers/navigation'
 
 const currentYear = createDate().year()
 
@@ -25,6 +27,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
   const { classes } = useStyles({ themeColors })
 
   const isNotFound = variant === 'not-found'
+  const hasErrorOverlay = isDevelopment && !isNotFound
   const title = isNotFound ? t('messages.resource_not_found_title') : t('messages.crash_title')
   const message = isNotFound
     ? t('messages.resource_not_found_message')
@@ -32,7 +35,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
 
   return (
     <EmptyLayout className={classes.screen}>
-      {isDevelopment && !isNotFound && (
+      {hasErrorOverlay && (
         <details className={classes.errorOverlay}>
           <summary className={classes.errorSummary}>{t('actions.show_error')}</summary>
           <pre className={classes.errorStack}>
@@ -41,7 +44,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
         </details>
       )}
       <div className={classes.scroller}>
-        <div className={classes.root}>
+        <div className={clsx(classes.root, hasErrorOverlay && classes.rootWithOverlay)}>
           <LogoThemed width={153} height={60} />
           <svg
             className={classes.ghost}
@@ -74,7 +77,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
               padding="0 28px"
               useOpacityOnHover
               className={classes.actionButton}
-              onClick={() => window.location.assign(BASE_PATH)}
+              onClick={() => window.location.assign(APP_BASE_URL)}
             >
               <ArrowBack className={classes.buttonIcon} />
               {t('actions.back_to_home')}

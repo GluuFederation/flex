@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import { fontFamily, fontWeights, fontSizes, letterSpacing, lineHeights } from '@/styles/fonts'
+import { MOBILE_MEDIA_QUERY, SMALL_MAX_MEDIA_QUERY, MOBILE_PAGE_PADDING_X } from '@/constants/ui'
 import type { ThemeConfig } from '@/context/theme/config'
 
 type StyleParams = { themeColors: ThemeConfig }
@@ -26,11 +27,26 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
     padding: theme.spacing(12, 8),
     boxSizing: 'border-box',
     fontFamily,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      paddingBlock: theme.spacing(6),
+      paddingInline: MOBILE_PAGE_PADDING_X.MD,
+    },
+    [`@media ${SMALL_MAX_MEDIA_QUERY}`]: {
+      paddingInline: MOBILE_PAGE_PADDING_X.SM,
+    },
+  },
+  rootWithOverlay: {
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      paddingTop: theme.spacing(10),
+    },
   },
   ghost: {
     width: 89.5,
     height: 105.5,
     marginTop: theme.spacing(5),
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      marginTop: theme.spacing(4),
+    },
   },
   title: {
     margin: 0,
@@ -61,13 +77,19 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     gap: theme.spacing(2),
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: theme.spacing(4),
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      gap: theme.spacing(2.5),
+    },
   },
   actionButton: {
     letterSpacing: letterSpacing.button,
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
   },
   buttonIcon: {
     fontSize: 18,
@@ -86,6 +108,14 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
     border: `1px solid ${themeColors.borderColor}`,
     boxShadow: theme.shadows[6],
     textAlign: 'left',
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      left: MOBILE_PAGE_PADDING_X.MD,
+      right: MOBILE_PAGE_PADDING_X.MD,
+    },
+    [`@media ${SMALL_MAX_MEDIA_QUERY}`]: {
+      left: MOBILE_PAGE_PADDING_X.SM,
+      right: MOBILE_PAGE_PADDING_X.SM,
+    },
   },
   errorSummary: {
     cursor: 'pointer',
@@ -112,6 +142,9 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
   footer: {
     margin: 0,
     marginTop: theme.spacing(5),
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      marginTop: theme.spacing(6),
+    },
     maxWidth: '100%',
     fontSize: '13px',
     fontWeight: fontWeights.medium,
@@ -120,5 +153,6 @@ export const useStyles = makeStyles<StyleParams>()((theme, { themeColors }) => (
   },
   footerCompany: {
     fontWeight: fontWeights.semiBold,
+    whiteSpace: 'nowrap',
   },
 }))

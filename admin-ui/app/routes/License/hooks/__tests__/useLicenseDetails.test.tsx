@@ -193,7 +193,7 @@ describe('useLicenseDetails', () => {
     )
   })
 
-  it('dispatches a session-expired logout audit on a 403 reset failure', () => {
+  it('dispatches nothing from the error callback on a 403 reset failure', () => {
     mockIsFourZeroThreeError.mockReturnValue(true)
     mockQueryReturn(rawLicense)
     const store = buildStore(true)
@@ -207,7 +207,7 @@ describe('useLicenseDetails', () => {
     const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) =>
       typeof action === 'object' && action !== null && 'type' in action ? action.type : undefined,
     )
-    expect(dispatchedTypes).toContain('session/auditLogoutLogs')
+    expect(dispatchedTypes).not.toContain('session/auditLogoutLogs')
     expect(dispatchSpy).not.toHaveBeenCalledWith(
       expect.objectContaining({ type: 'toast/updateToast' }),
     )

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, use, useMemo, useCallback, useRef, type JSX } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
-import { useAppSelector } from '@/redux/hooks'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -25,7 +24,6 @@ import {
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { filterMenusByHealth, filterMenusByAuth } from '@/utils/menuFilters'
 import type {
@@ -33,7 +31,6 @@ import type {
   PluginMenu,
   MenuIconMap,
   ThemeContextState,
-  SidebarRootState,
 } from '../../../components/Sidebar'
 
 const MENU_ICON_MAP: MenuIconMap = {
@@ -52,9 +49,6 @@ const MENU_ICON_MAP: MenuIconMap = {
   saml: <SamlIcon className="menu-icon" />,
 } as const
 
-const selectLogoutAuditSucceeded = (state: SidebarRootState): boolean | null =>
-  state.logoutAuditReducer.logoutAuditSucceeded
-
 const GluuAppSidebar = (): JSX.Element => {
   const { allServices } = useHealthStatus()
   const { data: fido2HealthData } = useFido2HealthStatus()
@@ -62,7 +56,6 @@ const GluuAppSidebar = (): JSX.Element => {
     () => (fido2HealthData ? [...allServices, fido2HealthData] : allServices),
     [allServices, fido2HealthData],
   )
-  const logoutAuditSucceeded = useAppSelector(selectLogoutAuditSucceeded)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const [menusLoaded, setMenusLoaded] = useState<boolean>(false)
   const didAnimateMenusRef = useRef<boolean>(false)
@@ -73,7 +66,6 @@ const GluuAppSidebar = (): JSX.Element => {
   const selectedTheme = theme.state.theme
   const { classes } = styles()
   const { authorizeHelper } = useCedarling()
-  const { navigateToRoute } = useAppNavigation()
 
   const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
 
@@ -123,12 +115,6 @@ const GluuAppSidebar = (): JSX.Element => {
   useEffect(() => {
     loadMenus()
   }, [memoizedFilteredMenus, authorizeHelper])
-
-  useEffect(() => {
-    if (logoutAuditSucceeded === true) {
-      navigateToRoute(ROUTES.LOGOUT)
-    }
-  }, [logoutAuditSucceeded, navigateToRoute])
 
   return (
     <SidebarMenu>

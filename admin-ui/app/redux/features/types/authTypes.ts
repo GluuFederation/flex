@@ -13,6 +13,8 @@ export type UserInfo = {
   [key: string]: string | string[] | number | boolean | undefined | null
 }
 
+export type UserInfoValue = UserInfo[string]
+
 type ConfigValue = string | number | boolean | null | object | undefined
 
 export type Config = {

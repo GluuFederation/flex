@@ -32,6 +32,8 @@ app_versions = {
     "NODE_VERSION": "v18.16.0"
 }
 
+AGAMA_PW_DEPLOYMENT_ID = 'ab7aec3d-43f5-3c3f-81de-93a24dfd3f84'
+
 os.environ["FLEX_PRE_JANS"] = "True"
 
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
@@ -63,8 +65,8 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic',
-                        choices=['basic', 'agama_io.jans.casa.authn.main'])
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='agama_org.gluu.agama.pw.main',
+                        choices=['basic', 'agama_io.jans.casa.authn.main', 'agama_org.gluu.agama.pw.main'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     parser.add_argument('--no-restart-services',
@@ -367,6 +369,8 @@ class flex_installer(JettyInstaller):
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
+        self.agama_pw_deployment_ldif_fn = os.path.join(self.templates_dir, 'agama_pw_deployment.ldif')
+        self.agama_pw_fn = os.path.join(Config.dist_jans_dir, 'agama-pw.gama')
         self.source_files = []
 
     def resolve_admin_ui_bin_url(self):
@@ -403,6 +407,9 @@ class flex_installer(JettyInstaller):
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.resolve_admin_ui_bin_url(), os.path.join(Config.dist_jans_dir, os.path.basename(self.resolve_admin_ui_bin_url()))),
                 (self.policy_store_cjar_url, self.policy_store_cjar_path),
+                (base.determine_jans_artifact_url(
+                         'maven/io/jans/jans-config-api/plugins/admin-ui-plugin/{0}/admin-ui-plugin-{0}-agama-pw.gama'.format(
+                             base.current_app.app_info['jans_version'])), self.agama_pw_fn)
             ]
 
             if argsp.update_admin_ui:
@@ -659,6 +666,8 @@ class flex_installer(JettyInstaller):
 
         self.tls13_settings()
 
+        self.deploy_agama_pw()
+
 
     def install_config_api_plugin(self):
 
@@ -848,6 +857,23 @@ class flex_installer(JettyInstaller):
         jansAuthInstaller.writeFile(keystore_pw_fn, json.dumps(keystore_pw_data))
         jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
         jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
+
+
+    def deploy_agama_pw(self):
+        print("Deploying Agama-PW Project")
+        Config.templateRenderingDict['agama_pw_deployment_id'] = AGAMA_PW_DEPLOYMENT_ID
+        Config.templateRenderingDict['agama_pw_deployment_start_date'] = self.get_ldap_time()
+        Config.templateRenderingDict['agama_pw_assets_base64'] = config_api_installer.generate_base64_file(self.agama_pw_fn, 1)
+        config_api_installer.renderTemplateInOut(
+            self.agama_pw_deployment_ldif_fn,
+            self.templates_dir,
+            self.source_dir
+        )
+
+        agama_pw_deployment_ldif_rendered_fn = os.path.join(self.source_dir, os.path.basename(self.agama_pw_deployment_ldif_fn))
+        self.dbUtils.import_ldif([agama_pw_deployment_ldif_rendered_fn])
+        print("Enabling Agama Script")
+        self.dbUtils.enable_script('BADA-BADA')
 
 
 def prompt_for_installation():

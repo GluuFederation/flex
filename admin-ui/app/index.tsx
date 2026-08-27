@@ -10,7 +10,7 @@ import { queryDefaults } from '@/utils/queryUtils'
 import { configStore } from 'Redux/store'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { startAtRoot } from '@/utils/startAtRoot'
-import { BASE_PATH } from '@/constants'
+import { APP_BASE_URL } from '@/helpers/navigation'
 import './styles/index.css'
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -35,7 +35,7 @@ const queryClient = new QueryClient({
   },
 })
 
-startAtRoot(BASE_PATH)
+startAtRoot(APP_BASE_URL)
 
 const container = document.querySelector('#root') as HTMLElement
 const root = createRoot(container)

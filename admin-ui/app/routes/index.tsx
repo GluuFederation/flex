@@ -11,10 +11,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 import type { PluginRoute } from 'Plugins/internal'
-import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
-import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 import { useFirstAuthorizedPath } from '@/utils/hooks'
 
 const ALWAYS_MOUNTED_LAZY_ROUTES: ReadonlySet<keyof typeof LazyRoutes> = new Set([
@@ -94,25 +92,9 @@ export const RoutedContent = () => {
   }, [])
 
   const location = useLocation()
-  const { userinfo, config } = useAppSelector((state) => state.authReducer)
   const { initialized, cedarFailedStatusAfterMaxTries } = useAppSelector(
     (state) => state.cedarPermissions,
   )
-
-  useEffect(() => {
-    if (!userinfo) return
-    const roles = userinfo.jansAdminUIRole
-    if (!roles || (Array.isArray(roles) && roles.length === 0)) {
-      const state = uuidv4()
-      const sessionEndpoint = buildSafeLogoutUrl(
-        typeof config.endSessionEndpoint === 'string' ? config.endSessionEndpoint : null,
-        typeof config.postLogoutRedirectUri === 'string' ? config.postLogoutRedirectUri : null,
-        state,
-      )
-
-      window.location.href = sessionEndpoint || '/admin/logout'
-    }
-  }, [userinfo])
 
   if (cedarFailedStatusAfterMaxTries && !initialized) {
     return <GluuViewWrapper canShow={false}>{null}</GluuViewWrapper>

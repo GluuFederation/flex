@@ -92,9 +92,10 @@
     "show": "Show password",
     "hide": "Hide password"
   },
+  "roleNotFoundMessage": "Signed Out",
+  "roleNotFoundDescription": "Your account does not have an Admin UI role, so you have been signed out. Click Try Again to sign in with a different account, or contact your administrator to have a role assigned.",
+  "tryAgain": "Try Again",
   "serviceDownFallback": "Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).",
-  "roleNotFoundMessage": "Unauthorized User",
-  "roleNotFoundDescription": "The logged-in user does not have a valid role. Logging out of Admin UI",
   "licenseCard": {
     "freeTrial": "Free Trial",
     "description": "Start your free trial to manage and configure your Auth Server using simplified web interface.",
@@ -1308,7 +1309,8 @@
     "logging_level_required": "Logging level is required",
     "logging_level_invalid": "Invalid logging level",
     "logging_layout_required": "Logging layout is required",
-    "logging_layout_invalid": "Invalid logging layout"
+    "logging_layout_invalid": "Invalid logging layout",
+    "user_info_fetch_failed": "Unable to retrieve user information from the authentication server. Sign-in has been stopped."
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",
@@ -2577,6 +2579,8 @@
     "mail": "Email",
     "o": "Organization",
     "memberOf": "Member Of",
-    "picture": "Picture URL"
+    "picture": "Picture URL",
+    "status": "Status",
+    "userId": "User ID"
   }
 }
