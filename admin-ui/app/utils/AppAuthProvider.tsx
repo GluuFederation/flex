@@ -47,9 +47,9 @@ import { markForceLogin, isForceLogin, clearForceLogin } from '@/utils/forceLogi
 import clearAppStorage from '@/utils/clearAppStorage'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
+import { APP_BASE_URL } from '@/helpers/navigation'
 
 const LOGOUT_DELAY_SECONDS = 3
-const BASE_PATH = process.env.BASE_PATH ?? '/admin/'
 
 const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
@@ -121,7 +121,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     clearAppStorage()
     clearNoRoleSignOut()
     markForceLogin()
-    window.location.href = BASE_PATH
+    window.location.href = APP_BASE_URL
   }, [])
 
   const hasDispatchedConfigCheck = useRef(false)

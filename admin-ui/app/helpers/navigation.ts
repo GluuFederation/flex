@@ -1,6 +1,8 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
+const APP_BASE_URL = process.env.BASE_PATH ?? '/admin/'
+
 const LOGOUT_PATH = '/logout'
 
 const PLUGIN_BASE_PATHS = {
@@ -188,4 +190,4 @@ export const useAppNavigation = () => {
   )
 }
 
-export { ROUTES }
+export { ROUTES, APP_BASE_URL }

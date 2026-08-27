@@ -16,8 +16,8 @@ import { isDevelopment } from '@/utils/env'
 import { createDate } from '@/utils/dayjsUtils'
 import { useStyles } from './styles/GluuErrorScreen.style'
 import type { GluuErrorScreenProps } from './GluuErrorScreen.types'
+import { APP_BASE_URL } from '@/helpers/navigation'
 
-const basePath = process.env.BASE_PATH ?? '/admin/'
 const currentYear = createDate().year()
 
 const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => {
@@ -77,7 +77,7 @@ const GluuErrorScreen = ({ error, variant = 'crash' }: GluuErrorScreenProps) => 
               padding="0 28px"
               useOpacityOnHover
               className={classes.actionButton}
-              onClick={() => window.location.assign(basePath)}
+              onClick={() => window.location.assign(APP_BASE_URL)}
             >
               <ArrowBack className={classes.buttonIcon} />
               {t('actions.back_to_home')}
