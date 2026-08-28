@@ -258,7 +258,7 @@ describe('fetchActivePolicyStoreBytes', () => {
       .mockRejectedValueOnce(new Error('404'))
       .mockResolvedValueOnce({ status: 200, data: { success: true, responseBytes: 'bGVnYWN5' } })
     await expect(fetchActivePolicyStoreBytes()).resolves.toBe('bGVnYWN5')
-    expect(ax.get).toHaveBeenNthCalledWith(2, '/admin-ui/security/policyStore', expect.anything())
+    expect(ax.get).toHaveBeenNthCalledWith(2, POLICY_STORE_PATH, expect.anything())
   })
 
   it('falls back when the list endpoint returns no usable archive', async () => {

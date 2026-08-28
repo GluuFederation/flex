@@ -63,7 +63,9 @@ jest.mock('JansConfigApi', () => ({
   useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockDeleteMutate, isPending: false })),
   useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockSyncMutate, isPending: false })),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
-  getGetAdminuiPolicyStoreQueryKey: () => ['/admin-ui/security/policyStore'],
+  getGetAdminuiPolicyStoreQueryKey: () => [
+    jest.requireActual('@/constants/policyStore').POLICY_STORE_PATH,
+  ],
 }))
 
 jest.mock('@/utils/AuditLogger', () => ({

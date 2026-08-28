@@ -44,7 +44,9 @@ jest.mock('JansConfigApi', () => ({
   useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
   useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
-  getGetAdminuiPolicyStoreQueryKey: () => ['/admin-ui/security/policyStore'],
+  getGetAdminuiPolicyStoreQueryKey: () => [
+    jest.requireActual('@/constants/policyStore').POLICY_STORE_PATH,
+  ],
 }))
 
 jest.mock('@/redux/api/backend-api', () => ({
