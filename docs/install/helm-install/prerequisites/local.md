@@ -36,4 +36,6 @@ If you prefer manual setup:
 
 ## Next Steps
 
-Proceed to [Ingress Setup](../ingress-setup.md) to configure traffic routing.
+1. [Ingress Setup](../ingress-setup.md) — configure traffic routing.
+2. [Database Setup](../database-setup.md) — provision persistence.
+3. [Install Flex](../install-flex.md) — deploy the Flex Helm chart.

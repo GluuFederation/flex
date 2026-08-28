@@ -60,6 +60,9 @@ Then test the standard endpoints:
 
 Flex can be configured using the [Text-based User Interface (TUI)](https://docs.jans.io/stable/janssen-server/config-guide/config-tools/jans-tui/). The default `admin` password is `Test1234#`.
 
+!!! Warning
+    The default `Test1234#` credential is for local testing only. Never expose this deployment publicly, and rotate the `admin` password before reusing the cluster for anything beyond a throwaway demo.
+
 ## Next Steps
 
 For a manual local cluster setup (or to move toward production), see the [Helm local setup](../helm-install/prerequisites/local.md).
