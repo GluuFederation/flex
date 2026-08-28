@@ -29,14 +29,6 @@ type CreatePolicyStoreInput = {
   policyStore: string
 }
 
-/**
- * Create / activate / delete for policy stores, each paired with an audit entry carrying the
- * administrator's comments — the ticket's requirement that every change records who, what and why.
- *
- * Each action also fires the webhooks registered against its Admin UI feature. `GluuCommitDialog`
- * only lists them for confirmation ahead of the action; the trigger itself has to be dispatched
- * once the operation has actually succeeded.
- */
 export const usePolicyStoreMutations = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -83,12 +75,6 @@ export const usePolicyStoreMutations = () => {
     [dispatch, t],
   )
 
-  /**
-   * Regenerates the role-to-scope mappings from whichever store is now active. Called after both
-   * upload and activation, since either can change the active store. The operation that triggered
-   * it has already succeeded by this point, so a sync failure is logged rather than surfaced —
-   * reporting it as a failure would invite a retry of something that already took effect.
-   */
   const syncRoleScopes = useCallback(
     async (policyStoreName: string) => {
       try {

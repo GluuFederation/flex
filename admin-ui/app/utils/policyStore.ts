@@ -2,13 +2,6 @@ import type { AdminUIPolicyStore } from 'JansConfigApi'
 import { CJAR_EXTENSION, POLICY_STORE_STATUS } from '@/constants/policyStore'
 import { REGEX_ARCHIVE_FILE_EXTENSION } from '@/utils/regex'
 
-/**
- * Shape of `GET /admin-ui/security/policyStore`.
- *
- * The spec declares the response as `AdminUIPolicyStore[]` (so orval types it that way) but the
- * example alongside it returns a paged envelope. Until upstream settles on one, treat either as
- * valid — see `toPolicyStoreEntries`.
- */
 type PolicyStoreListEnvelope = {
   start?: number
   totalEntriesCount?: number
@@ -22,7 +15,6 @@ const BASE64_PADDING = '='
 
 type MaybePolicyStoreListResponse = PolicyStoreListResponse | null | undefined
 
-/** Reads the entry list out of either response shape. Never throws; returns [] on anything else. */
 export const toPolicyStoreEntries = (
   payload: MaybePolicyStoreListResponse,
 ): AdminUIPolicyStore[] => {
@@ -33,10 +25,6 @@ export const toPolicyStoreEntries = (
   return Array.isArray(entries) ? entries : []
 }
 
-/**
- * Total number of stores on the server, for server-side pagination. Falls back to the length of
- * the current page when the response is a bare array with no envelope to read a total from.
- */
 export const toPolicyStoreTotal = (payload: MaybePolicyStoreListResponse): number => {
   if (!Array.isArray(payload)) {
     const total = payload?.totalEntriesCount
@@ -47,15 +35,6 @@ export const toPolicyStoreTotal = (payload: MaybePolicyStoreListResponse): numbe
   return toPolicyStoreEntries(payload).length
 }
 
-/**
- * The store Cedarling loads at sign-in. Exactly one row should carry `active`.
- *
- * Returns undefined rather than guessing when the page contains no active entry — which happens
- * if the result set is truncated by the server's default `limit`, or if a status filter is ignored.
- * Booting Cedarling from a deactivated store would silently hand the admin permissions from a
- * policy set someone explicitly turned off; undefined instead lets the caller fall through to the
- * legacy endpoint, which reports the genuinely active store.
- */
 export const selectActivePolicyStore = (
   entries: readonly AdminUIPolicyStore[],
 ): AdminUIPolicyStore | undefined =>
@@ -73,10 +52,6 @@ export const base64ToUint8Array = (base64: string): Uint8Array<ArrayBuffer> => {
   return bytes
 }
 
-/**
- * Base64-encodes a `.cjar` for the JSON create payload. Uses FileReader rather than
- * `btoa(String.fromCharCode(...bytes))`, which overflows the call stack on archives of any size.
- */
 export const fileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -93,7 +68,6 @@ export const fileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file)
   })
 
-/** Decoded size of a base64 payload, so the history table can show an archive size. */
 export const decodedByteLength = (base64: string | undefined): number => {
   if (!base64) {
     return 0
@@ -111,10 +85,6 @@ export const decodedByteLength = (base64: string | undefined): number => {
   return Math.max(0, Math.floor((normalized.length * 3) / 4) - padding)
 }
 
-/**
- * Names a downloaded archive after its store plus a short local timestamp, so repeated downloads
- * of the same store stay distinguishable instead of collecting browser `(1)` suffixes.
- */
 export const buildArchiveDownloadName = (
   displayname: string | undefined,
   inum: string | undefined,

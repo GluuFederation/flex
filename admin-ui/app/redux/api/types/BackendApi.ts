@@ -33,11 +33,6 @@ export type FetchUserInfoParams = {
 
 export type FetchUserInfoResult = string | -1
 
-/**
- * Response of the legacy single-store `GET /admin-ui/security/policyStore`. Still consulted as a
- * fallback while both the legacy and the new multi-store endpoints are supported — see
- * `fetchActivePolicyStoreBytes`.
- */
 export type PolicyStoreApiResponse =
   | { success: true; responseBytes: string; responseMessage?: string; responseCode?: number }
   | { success: false; responseMessage?: string; responseCode?: number }

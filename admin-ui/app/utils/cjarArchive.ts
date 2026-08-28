@@ -1,15 +1,3 @@
-/**
- * Minimal ZIP reader/writer for `.cjar` policy stores.
- *
- * A `.cjar` is a zip archive holding Cedar policies, the schema, entity definitions and a manifest.
- * The Archive Explorer reads and rewrites it entirely in the browser — the backend only ever sees
- * the base64 of a complete archive.
- *
- * Implemented against the platform rather than a zip library: the container format is parsed here
- * and DEFLATE is delegated to the browser's native `DecompressionStream` / `CompressionStream`.
- * That keeps admin-ui free of another dependency at the cost of these functions being async.
- */
-
 export type ArchiveEntry = {
   path: string
   bytes: Uint8Array
@@ -30,12 +18,6 @@ const SIGNATURE = {
 
 const COMPRESSION = { STORED: 0, DEFLATE: 8 } as const
 
-/**
- * General-purpose bit 11. Filenames are written with `TextEncoder`, which is always UTF-8, so this
- * flag has to be set — a reader that sees it clear is entitled to decode the name as CP437 and
- * would mangle any non-ASCII path. Our own reader decodes UTF-8 either way, but the archive is
- * also consumed by the backend and by ordinary zip tools.
- */
 const UTF8_NAME_FLAG = 0x0800
 
 const MAX_ENTRY_BYTES = 16 * 1024 * 1024
@@ -49,7 +31,6 @@ const DEFLATE_RAW = 'deflate-raw'
 const textEncoder = new TextEncoder()
 const textDecoder = new TextDecoder()
 
-/** Extensions we are willing to open in the text editor. Anything else is shown as binary. */
 const TEXT_EXTENSIONS = new Set([
   'cedar',
   'cedarschema',
@@ -79,7 +60,6 @@ export const isTextEntry = (path: string): boolean => {
   return extension ? TEXT_EXTENSIONS.has(extension) : false
 }
 
-/** Ace editor mode for a path, so `.json` and friends get sensible highlighting. */
 export const editorModeFor = (path: string): string => {
   const extension = path.split('.').pop()?.toLowerCase()
   if (extension === 'json') return 'json'
@@ -167,11 +147,6 @@ const findEndOfCentralDirectory = (view: DataView): number => {
   return -1
 }
 
-/**
- * Unpacks an archive into a flat, path-sorted entry list. Directory records (entries ending in `/`)
- * are kept as zero-byte entries so an empty directory survives a read/write round-trip; the tree is
- * still derived from file paths, so an archive that omits explicit directory records renders too.
- */
 export const readArchive = async (bytes: Uint8Array): Promise<ArchiveEntry[]> => {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const eocdOffset = findEndOfCentralDirectory(view)
@@ -256,12 +231,6 @@ type StagedEntry = {
   localOffset: number
 }
 
-/**
- * Packs entries back into a zip. Deflates when the platform offers `CompressionStream`, and stores
- * uncompressed otherwise — both produce a valid archive, the latter merely a larger one.
- *
- * Returned as an explicitly ArrayBuffer-backed view so the result is a valid BlobPart for download.
- */
 export const writeArchive = async (
   entries: readonly ArchiveEntry[],
 ): Promise<Uint8Array<ArrayBuffer>> => {
@@ -348,10 +317,6 @@ export const entryToText = (entry: ArchiveEntry): string => textDecoder.decode(e
 
 export const textToBytes = (text: string): Uint8Array => textEncoder.encode(text)
 
-/**
- * Builds the directory tree the left pane renders. Intermediate directories are synthesized from
- * the path segments, and every level is sorted directories-first then alphabetically.
- */
 export const buildArchiveTree = (entries: readonly ArchiveEntry[]): ArchiveTreeNode[] => {
   const root: ArchiveTreeNode[] = []
 
@@ -398,14 +363,9 @@ export const buildArchiveTree = (entries: readonly ArchiveEntry[]): ArchiveTreeN
   return sortLevel(root)
 }
 
-/**
- * File paths in the order the tree renders them, so removing a file can fall back to its visible
- * neighbour rather than to whichever entry happens to sit next in the archive.
- */
 export const flattenArchiveTree = (nodes: readonly ArchiveTreeNode[]): string[] =>
   nodes.flatMap((node) => (node.isDirectory ? flattenArchiveTree(node.children) : [node.path]))
 
-/** Normalizes a user-typed path (e.g. `/policies//new.cedar`) into an archive path. */
 export const normalizeArchivePath = (input: string): string =>
   input
     .split('/')

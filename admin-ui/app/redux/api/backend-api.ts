@@ -144,10 +144,6 @@ export const fetchPolicyStores = async (
   }
 }
 
-/**
- * Response shape served by backends that predate the multi-store work, used only as the
- * fallback below. Same URL, but a `responseBytes` body instead of the paged envelope.
- */
 const fetchLegacyPolicyStore = async (
   token?: string,
 ): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
@@ -158,15 +154,6 @@ const fetchLegacyPolicyStore = async (
   return { status: response.status, data: response.data }
 }
 
-/**
- * Base64 archive of the policy store Cedarling should boot with, resolved for the sign-in path.
- *
- * Prefers the active entry from the multi-store endpoint. Falls back to the legacy single-store
- * endpoint so the UI still boots against a backend that predates the policy-store work — without
- * that fallback a missing endpoint would leave Cedarling uninitialized, which denies every
- * permission and blanks the whole admin UI rather than just this feature. Returns undefined only
- * when neither endpoint yields an archive.
- */
 export const fetchActivePolicyStoreBytes = async (token?: string): Promise<string | undefined> => {
   try {
     const { data } = await fetchPolicyStores({ fieldValuePair: POLICY_STORE_ACTIVE_FILTER }, token)
