@@ -127,6 +127,30 @@
         "top"
       ],
       "x_origin": "Gluu Flex created objectclass"
+    },
+    {
+      "kind": "STRUCTURAL",
+      "may": [
+        "inum",
+        "displayname",
+        "description",
+        "document",
+        "jansUsrDN",
+        "creationDate",
+        "jansLastUpd",
+        "jansStatus"
+      ],
+      "must": [
+        "objectclass"
+      ],
+      "names": [
+        "adminUIPolicyStore"
+      ],
+      "oid": "jansObjClass",
+      "sup": [
+        "top"
+      ],
+      "x_origin": "Gluu Flex created objectclass"
     }
   ],
   "oidMacros": {

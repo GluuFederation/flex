@@ -138,3 +138,17 @@ objectClass: top
 auiFeatureId: jans_keycloak_link_write
 displayName: Jans Keycloak Link - Edit
 jansScope: https://jans.io/oauth/config/jans-keycloak-link.write
+
+dn: auiFeatureId=policy_store_edit,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: policy_store_edit
+displayName: Policy Store - Add/Edit
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.write
+
+dn: auiFeatureId=policy_store_delete,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: policy_store_delete
+displayName: Policy Store - Delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.delete

@@ -1,0 +1,10 @@
+dn: inum=%(admin_ui_policy_store_inum)s,ou=adminUIPolicyStore,ou=admin-ui,o=jans
+objectClass: top
+objectClass: adminUIPolicyStore
+inum: %(admin_ui_policy_store_inum)s
+displayname: Default_Policy_store
+description: Default Admin UI Policy Store
+document: %(admin_ui_policy_store_base64)s
+creationDate: %(admin_ui_policy_store_creation_date)s
+jansStatus: active
+jansUsrDN: inum=%(admin_inum)s,ou=people,o=jans
