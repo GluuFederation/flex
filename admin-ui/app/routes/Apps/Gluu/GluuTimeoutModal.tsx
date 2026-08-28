@@ -13,7 +13,6 @@ import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
 import { APP_BASE_URL } from '@/helpers/navigation'
 
-// BASE_PATH is normalised to a trailing slash, so targeting it directly avoids relying on the
 // server to redirect /admin to /admin/. Exported because jsdom forbids stubbing window.location,
 // so the URL is asserted here instead of through the navigation itself.
 export const buildAdminUrl = (authServerHost?: string | number | boolean): string | null =>

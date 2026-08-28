@@ -25,28 +25,33 @@ describe('RolePermissionCard', () => {
     expect(header).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('expands to reveal the full permission catalog on click', () => {
+  it('expands to reveal only the assigned permissions on click', () => {
     renderCard()
     const header = screen.getByRole('button', { name: /admin/i })
     fireEvent.click(header)
     expect(header).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByRole('checkbox', { name: /users-read/i })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: /users-write/i })).toBeInTheDocument()
-    // Unassigned permissions from the catalog are still rendered
-    expect(screen.getByRole('checkbox', { name: /clients-read/i })).toBeInTheDocument()
+    expect(screen.queryByRole('checkbox', { name: /clients-read/i })).not.toBeInTheDocument()
   })
 
-  it('marks assigned permissions checked and unassigned ones unchecked', () => {
+  it('marks every rendered permission as assigned', () => {
     renderCard()
     fireEvent.click(screen.getByRole('button', { name: /admin/i }))
-    expect(screen.getByRole('checkbox', { name: /users-read/i })).toHaveAttribute(
-      'aria-checked',
-      'true',
-    )
-    expect(screen.getByRole('checkbox', { name: /clients-read/i })).toHaveAttribute(
-      'aria-checked',
-      'false',
-    )
+    screen
+      .getAllByRole('checkbox')
+      .forEach((box) => expect(box).toHaveAttribute('aria-checked', 'true'))
+  })
+
+  it('counts assigned permissions against the full catalog', () => {
+    renderCard()
+    expect(screen.getByText('2')).toBeInTheDocument()
+  })
+
+  it('shows the empty state when the role has no assigned permissions', () => {
+    renderCard({ candidate: { role: 'viewer', permissions: [] } as never })
+    fireEvent.click(screen.getByRole('button', { name: /viewer/i }))
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
   })
 
   it('toggles on keyboard activation', () => {

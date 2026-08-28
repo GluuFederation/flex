@@ -16,6 +16,8 @@ export const adminUiFeatures = {
   smtp_configuration_edit: 'smtp_configuration_edit',
   users_edit: 'users_edit',
   users_delete: 'users_delete',
+  policy_store_write: 'policy_store_write',
+  policy_store_delete: 'policy_store_delete',
 } as const
 
 export type AdminUiFeatureKey = keyof typeof adminUiFeatures

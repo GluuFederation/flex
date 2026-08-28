@@ -1,7 +1,11 @@
 import { useNavigate, NavigateOptions } from 'react-router-dom'
 import { useCallback, useMemo } from 'react'
 
-const APP_BASE_URL = process.env.BASE_PATH ?? '/admin/'
+const configuredBasePath = process.env.BASE_PATH ?? '/admin/'
+
+const APP_BASE_URL: string = configuredBasePath.endsWith('/')
+  ? configuredBasePath
+  : `${configuredBasePath}/`
 
 const LOGOUT_PATH = '/logout'
 
@@ -40,7 +44,14 @@ const ROUTES = {
   ADMIN_MAU_GRAPH: `${PLUGIN_BASE_PATHS.HOME}/maugraph`,
   ADMIN_SETTINGS: `${PLUGIN_BASE_PATHS.HOME}/settings`,
   ADMIN_MAPPING: `${PLUGIN_BASE_PATHS.HOME}/mapping`,
-  ADMIN_CEDARLING_CONFIG: `${PLUGIN_BASE_PATHS.HOME}/cedarlingconfig`,
+  ADMIN_POLICIES_LIST: `${PLUGIN_BASE_PATHS.HOME}/policies`,
+  ADMIN_POLICIES_CREATE: `${PLUGIN_BASE_PATHS.HOME}/policies/create`,
+  ADMIN_POLICIES_VIEW: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.HOME}/policies/${encodeURIComponent(inum)}`,
+  ADMIN_POLICIES_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/policies/:inum`,
+  ADMIN_POLICIES_EDIT: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.HOME}/policies/${encodeURIComponent(inum)}/edit`,
+  ADMIN_POLICIES_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.HOME}/policies/:inum/edit`,
   ADMIN_AUDIT_LOGS: `${PLUGIN_BASE_PATHS.HOME}/audit-logs`,
 
   // Assets

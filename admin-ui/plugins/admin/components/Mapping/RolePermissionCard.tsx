@@ -68,10 +68,12 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
       [candidate?.permissions],
     )
 
-    const assignedCount = useMemo(
-      () => allPermissions.reduce((count, p) => (rolePermissions.has(p) ? count + 1 : count), 0),
+    const assignedPermissions = useMemo(
+      () => allPermissions.filter((permission) => rolePermissions.has(permission)),
       [allPermissions, rolePermissions],
     )
+
+    const assignedCount = assignedPermissions.length
 
     const handleToggle = useCallback(() => {
       setIsExpanded((prev) => !prev)
@@ -98,15 +100,10 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
 
     const permissionCheckboxes = useMemo(() => {
       if (!isExpanded) return null
-      return allPermissions.map((permission) => (
-        <PermissionCheckbox
-          key={permission}
-          permission={permission}
-          checked={rolePermissions.has(permission)}
-          classes={classes}
-        />
+      return assignedPermissions.map((permission) => (
+        <PermissionCheckbox key={permission} permission={permission} checked classes={classes} />
       ))
-    }, [isExpanded, allPermissions, rolePermissions, classes])
+    }, [isExpanded, assignedPermissions, classes])
 
     return (
       <Box className={classes.roleCard}>
@@ -134,7 +131,7 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
         </Box>
         <Collapse in={isExpanded}>
           <Box id={contentId} className={classes.roleCardContent}>
-            {allPermissions.length === 0 ? (
+            {assignedCount === 0 ? (
               <GluuText variant="p" className={classes.noPermissions} disableThemeColor>
                 {t('messages.no_permissions_assigned')}
               </GluuText>

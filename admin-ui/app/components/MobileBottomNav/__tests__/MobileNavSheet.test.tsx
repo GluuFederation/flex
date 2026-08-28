@@ -142,14 +142,14 @@ describe('MobileNavSheet', () => {
   })
 
   it('opens with Security pre-expanded and the active child highlighted when on its route', () => {
-    mockPathname = '/home/cedarlingconfig'
+    mockPathname = '/home/policies'
     render(<MobileNavSheet openKey="home" onClose={noop} onSelect={noop} />)
     expect(screen.getByRole('button', { name: 'menus.security' })).toHaveAttribute(
       'aria-expanded',
       'true',
     )
     const child = screen.getByRole('button', {
-      name: 'menus.securityDropdown.cedarlingConfig',
+      name: 'menus.securityDropdown.policyStoreHistory',
     })
     expect(child).toHaveAttribute('aria-current', 'page')
   })

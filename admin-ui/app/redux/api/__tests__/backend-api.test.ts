@@ -5,7 +5,7 @@ jest.mock('../axios', () => ({
   __esModule: true,
   default: { get: jest.fn(), put: jest.fn(), post: jest.fn(), delete: jest.fn() },
 }))
-jest.mock('@/utils/logger', () => ({ logger: { error: jest.fn() } }))
+jest.mock('@/utils/logger', () => ({ logger: { error: jest.fn(), warn: jest.fn() } }))
 jest.mock('@/utils/apiErrorMessage', () => ({ resolveApiErrorMessage: (e: Error) => e.message }))
 
 import mockAxiosDefault from '../axios'
@@ -16,12 +16,14 @@ import {
   fetchUserInformation,
   postUserAction,
   fetchApiTokenWithDefaultScopes,
-  fetchPolicyStore,
+  fetchPolicyStores,
+  fetchActivePolicyStoreBytes,
   createAdminUiSession,
   deleteAdminUiSession,
   SESSION_ENDPOINT,
 } from '../backend-api'
 import { setHasSessionReader } from '../sessionState'
+import { POLICY_STORE_PATH } from '@/constants/policyStore'
 
 type MockedAxios = { get: jest.Mock; put: jest.Mock; post: jest.Mock; delete: jest.Mock }
 const ax = mockAxiosDefault as object as MockedAxios
@@ -56,10 +58,10 @@ describe('once a session cookie exists', () => {
       '/admin-ui/config',
     ],
     [
-      'fetchPolicyStore',
-      () => fetchPolicyStore('tok'),
+      'fetchPolicyStores',
+      () => fetchPolicyStores(undefined, 'tok'),
       () => ax.get,
-      '/admin-ui/security/policyStore',
+      POLICY_STORE_PATH,
     ],
     ['deleteAdminUiSession', () => deleteAdminUiSession('tok'), () => ax.delete, SESSION_ENDPOINT],
   ])('ignores the token %s was given and sends the cookie', async (_label, call, method, url) => {
@@ -187,10 +189,90 @@ describe('fetchApiTokenWithDefaultScopes', () => {
   })
 })
 
-describe('fetchPolicyStore', () => {
+describe('fetchPolicyStores', () => {
   it('returns status + data on success', async () => {
-    ax.get.mockResolvedValue({ status: 200, data: { policies: [] } })
-    await expect(fetchPolicyStore('tok')).resolves.toEqual({ status: 200, data: { policies: [] } })
+    ax.get.mockResolvedValue({ status: 200, data: { entries: [] } })
+    await expect(fetchPolicyStores(undefined, 'tok')).resolves.toEqual({
+      status: 200,
+      data: { entries: [] },
+    })
+  })
+
+  it('forwards paging params to the policy-store path', async () => {
+    ax.get.mockResolvedValue({ status: 200, data: { entries: [] } })
+    await fetchPolicyStores({ limit: 10, startIndex: 0 }, 'tok')
+    expect(ax.get).toHaveBeenCalledWith(
+      POLICY_STORE_PATH,
+      expect.objectContaining({ params: { limit: 10, startIndex: 0 } }),
+    )
+  })
+})
+
+describe('fetchActivePolicyStoreBytes', () => {
+  it('returns the archive of the active entry from the paged envelope', async () => {
+    ax.get.mockResolvedValue({
+      status: 200,
+      data: {
+        entries: [
+          { inum: 'a', jansStatus: 'inactive', policyStore: 'aW5hY3RpdmU=' },
+          { inum: 'b', jansStatus: 'active', policyStore: 'YWN0aXZl' },
+        ],
+      },
+    })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBe('YWN0aXZl')
+  })
+
+  it('asks the server for only the active store rather than every archive', async () => {
+    ax.get.mockResolvedValue({
+      status: 200,
+      data: { entries: [{ inum: 'b', jansStatus: 'active', policyStore: 'YWN0aXZl' }] },
+    })
+    await fetchActivePolicyStoreBytes()
+    expect(ax.get).toHaveBeenNthCalledWith(
+      1,
+      POLICY_STORE_PATH,
+      expect.objectContaining({ params: { fieldValuePair: 'jansStatus=active' } }),
+    )
+  })
+
+  it('never boots from a deactivated store when the status filter is ignored', async () => {
+    ax.get
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { entries: [{ inum: 'a', jansStatus: 'inactive', policyStore: 'aW5hY3RpdmU=' }] },
+      })
+      .mockResolvedValueOnce({ status: 200, data: { success: true, responseBytes: 'bGVnYWN5' } })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBe('bGVnYWN5')
+  })
+
+  it('reads a bare array response too', async () => {
+    ax.get.mockResolvedValue({
+      status: 200,
+      data: [{ inum: 'b', jansStatus: 'active', policyStore: 'YWN0aXZl' }],
+    })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBe('YWN0aXZl')
+  })
+
+  it('falls back to the legacy endpoint when the list endpoint fails', async () => {
+    ax.get
+      .mockRejectedValueOnce(new Error('404'))
+      .mockResolvedValueOnce({ status: 200, data: { success: true, responseBytes: 'bGVnYWN5' } })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBe('bGVnYWN5')
+    expect(ax.get).toHaveBeenNthCalledWith(2, POLICY_STORE_PATH, expect.anything())
+  })
+
+  it('falls back when the list endpoint returns no usable archive', async () => {
+    ax.get
+      .mockResolvedValueOnce({ status: 200, data: { entries: [] } })
+      .mockResolvedValueOnce({ status: 200, data: { success: true, responseBytes: 'bGVnYWN5' } })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBe('bGVnYWN5')
+  })
+
+  it('resolves undefined when neither endpoint yields an archive', async () => {
+    ax.get
+      .mockResolvedValueOnce({ status: 200, data: { entries: [] } })
+      .mockResolvedValueOnce({ status: 200, data: { success: false } })
+    await expect(fetchActivePolicyStoreBytes()).resolves.toBeUndefined()
   })
 })
 

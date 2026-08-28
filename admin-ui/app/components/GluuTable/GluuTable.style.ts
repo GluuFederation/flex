@@ -328,6 +328,12 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         borderRadius: '4px',
       },
     },
+    actionButtonDisabled: {
+      'opacity': OPACITY.DISABLED,
+      'cursor': 'not-allowed',
+      'color': themeColors.textMuted,
+      '&:hover': { opacity: OPACITY.DISABLED },
+    },
     loadingOverlay: {
       position: 'absolute',
       inset: 0,

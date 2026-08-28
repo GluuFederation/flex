@@ -78,7 +78,15 @@
     "add_custom_attributes": "Add custom attributes",
     "refresh": "Refresh",
     "view_current": "View Current",
-    "export": "Export"
+    "export": "Export",
+    "open": "Open",
+    "set_active": "Set active",
+    "download": "Download",
+    "add_file": "Add file",
+    "create": "Create",
+    "discard": "Discard",
+    "add_folder": "Add folder",
+    "rename": "Rename"
   },
   "password": {
     "show": "Show password",
@@ -833,7 +841,12 @@
     "metric": "Metric",
     "label": "Label",
     "secondary_value": "Secondary value",
-    "suspicious_ips": "Suspicious IP addresses"
+    "suspicious_ips": "Suspicious IP addresses",
+    "filename": "Filename",
+    "uploaded": "Uploaded",
+    "files": "Files",
+    "size": "Size",
+    "comments": "Comments"
   },
   "languages": {
     "language": "Language",
@@ -877,7 +890,7 @@
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
       "mapping": "Roles and Permissions",
-      "cedarlingConfig": "Cedarling"
+      "policyStoreHistory": "Admin UI Policy Management"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -971,6 +984,7 @@
     "webhook_dialog_dec": "As part of the submission process, the system will automatically trigger the following associated webhooks to perform additional processing tasks.",
     "webhook_execution_dialog_dec": "The associated webhooks were triggered as part of the submission process. The execution results for each webhook are shown below.",
     "add_webhook": "Add Webhook",
+    "add_policy_store": "Add Policy Store",
     "webhook_form_description": "Configure webhook to receive notifications when specific events occur.",
     "no_webhooks_found": "No webhooks found",
     "no_assets_found": "No assets found",
@@ -1533,7 +1547,8 @@
     "valid_origin_uri": "Enter a valid origin URI (e.g. https://...)",
     "valid_request_uri": "Enter a valid request URI (e.g. https://...)",
     "valid_claim_uri": "Enter a valid claim URI (e.g. https://...)",
-    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)"
+    "valid_uri_pattern": "Enter a valid URI in format (e.g. https:// or schema://)",
+    "archive_file_path": "e.g. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "SMTP Test Result",
@@ -1698,7 +1713,9 @@
     "error_intelligence": "Error Types",
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types",
-    "threat_origins_ips": "Threat Origins by IP"
+    "threat_origins_ips": "Threat Origins by IP",
+    "policy_store_history": "Admin UI Policy Management",
+    "policy_store_contents": "Policy Store Contents"
   },
   "options": {
     "admin": "ADMIN",
@@ -1751,7 +1768,8 @@
     "jwt": "JWT",
     "reference": "Reference",
     "expired": "EXPIRED",
-    "register": "REGISTER"
+    "register": "REGISTER",
+    "backup": "BACKUP"
   },
   "documentation": {
     "fido": {
@@ -2470,23 +2488,58 @@
       "requiredFieldNote": "A .cjar file is required to upload a new policy store.",
       "selectCjarFile": "Select a .cjar policy store file to upload",
       "uploadPolicyStore": "Upload",
-      "downloadPolicyStore": "Download",
-      "policyStoreDownloaded": "Policy store downloaded successfully",
-      "noPolicyStoreToDownload": "No policy store available to download",
       "uploadFailed": "Failed to upload policy store",
-      "downloadFailed": "Failed to download policy store",
       "selectFileFirst": "Please select a .cjar file first",
       "auditPolicyStoreUploaded": "Policy store uploaded",
       "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
       "auditPolicyStoreUrlUpdated": "Policy store URL updated",
       "policyStoreUrlInvalidError": "Please enter a valid URL",
       "useRemotePolicyStore": "It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
-      "uploadConfirmTitle": "Confirm Policy Store Upload",
-      "uploadConfirmMessage": "Upon successful upload and processing of the Policy Store, you will be logged out of the Admin UI."
+      "uploadConfirmMessage": "The new policy store is created inactive. Activate it from Policy Store history when you're ready to apply it.",
+      "defaultPolicyStoreDescription": "Admin UI Policy Store",
+      "uploadSuccess": "Policy store uploaded successfully."
     },
     "mappings": {
       "note_prefix": "Configure",
       "note_suffix": "to manage roles and permissions. Once you save the cedarling configuration, roles and permissions will be automatically synced from the policy store."
+    },
+    "policyStore": {
+      "noPolicyStores": "No policy stores found.",
+      "activateWarning": "Activating this policy store deactivates the current one. All permissions will be re-evaluated from it at the next sign-in.",
+      "deleteWarning": "This permanently deletes the policy store. This cannot be undone.",
+      "activateSuccess": "Policy store activated successfully.",
+      "activateFailed": "Failed to activate the policy store.",
+      "deleteSuccess": "Policy store deleted successfully.",
+      "deleteFailed": "Failed to delete the policy store.",
+      "downloadFailed": "Failed to download the policy store.",
+      "auditActivated": "Policy store activated",
+      "auditDeleted": "Policy store deleted",
+      "archiveUnreadable": "This policy store archive could not be read.",
+      "fileSaved": "File saved in the archive. Download the archive to keep your changes.",
+      "fileDeleted": "File removed from the archive.",
+      "filePathRequired": "Enter a file path.",
+      "filePathPlaceholder": "For example policies/AdminCanManageService.cedar",
+      "filePathLabel": "File path",
+      "resizeFileList": "Resize file list",
+      "fileAlreadyExists": "A file with that path already exists in the archive.",
+      "unsavedChangesNote": "(Not downloaded yet)",
+      "discardChangesTitle": "Discard unsaved changes?",
+      "discardChangesWarning": "Your edits have not been downloaded. Leaving this page discards them.",
+      "binaryFileNotice": "This file is not a text file and cannot be edited here.",
+      "activeStoreReadOnly": "The active policy store is read-only. Download it, edit the copy, then upload it as a new policy store.",
+      "selectFileToView": "Select a file from the archive to view its contents.",
+      "activateConfirmTitle": "Confirm Policy Store Activation",
+      "activateRestartWarning": "Activating this policy store restarts the system. Accepting triggers the associated webhooks, and you will be signed out of the Admin UI once processing completes.",
+      "restartNotice": "The system will restart in {{seconds}} seconds. You will be signed out of the Admin UI.",
+      "deleteConfirmTitle": "Confirm Policy Store Deletion",
+      "folderPathPlaceholder": "e.g. policies",
+      "folderAdded": "Folder added",
+      "fileRenamed": "File renamed",
+      "storeRoot": "Store root",
+      "folderPathLabel": "Folder path",
+      "folderPathRequired": "Enter a folder path.",
+      "folderDeleted": "Folder deleted",
+      "folderRenamed": "Folder renamed"
     }
   },
   "claims": {

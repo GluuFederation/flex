@@ -12,6 +12,8 @@ const GluuModalShell = ({
   onClose,
   ariaLabelledBy,
   closeOnOverlayClick = true,
+  containerClassName,
+  contentClassName,
   children,
 }: GluuModalShellProps) => {
   const { t } = useTranslation()
@@ -54,7 +56,11 @@ const GluuModalShell = ({
         role="presentation"
       >
         <div
-          className={commitClasses.modalContainer}
+          className={
+            containerClassName
+              ? `${commitClasses.modalContainer} ${containerClassName}`
+              : commitClasses.modalContainer
+          }
           onClick={(e) => e.stopPropagation()}
           onKeyDown={handleModalKeyDown}
           role="dialog"
@@ -70,7 +76,15 @@ const GluuModalShell = ({
           >
             <Close fontSize="small" aria-hidden />
           </button>
-          <div className={commitClasses.contentArea}>{children}</div>
+          <div
+            className={
+              contentClassName
+                ? `${commitClasses.contentArea} ${contentClassName}`
+                : commitClasses.contentArea
+            }
+          >
+            {children}
+          </div>
         </div>
       </div>
     </>,

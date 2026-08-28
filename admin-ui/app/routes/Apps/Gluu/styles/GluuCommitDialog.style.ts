@@ -2,6 +2,7 @@ import { makeStyles } from 'tss-react/mui'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createInfoAlertStyles } from '@/styles/formStyles'
 import {
   BORDER_RADIUS,
   CEDARLING_CONFIG_SPACING,
@@ -21,9 +22,10 @@ interface StylesParams {
 const OVERLAY_BG_LIGHT = getLoadingOverlayRgba(customColors.black, OPACITY.OVERLAY)
 const OVERLAY_BG_DARK = getLoadingOverlayRgba(customColors.darkCardBg, OPACITY.OVERLAY)
 
+const TITLE_HALF_LEADING = (parseFloat(lineHeights.XXXLoose) - parseFloat(fontSizes['3xl'])) / 2
+
 const CONTENT_WIDTH = 898
 const CONTENT_GAP = 16
-const TITLE_BOTTOM_SPACING = 24
 const TEXTAREA_HEIGHT = 161
 const CLOSE_BUTTON_SIZE = 32
 const CLOSE_BUTTON_OFFSET = 16
@@ -47,13 +49,14 @@ const BORDER_RADIUS_SMALL_ADJUST = BORDER_RADIUS.SMALL - 2
 const CHECKBOX_LABEL_GAP_PLUS = MAPPING_SPACING.CHECKBOX_LABEL_GAP + 3
 const OPERATIONS_VISIBLE_ROWS = 5
 const OPERATIONS_ROW_HEIGHT = 36
+const OPERATIONS_GAP = CHECKBOX_LABEL_GAP_PLUS
 const OPERATIONS_SCROLL_MAX_HEIGHT =
-  OPERATIONS_ROW_HEIGHT * OPERATIONS_VISIBLE_ROWS +
-  (MAPPING_SPACING.CHECKBOX_LABEL_GAP - 1) * (OPERATIONS_VISIBLE_ROWS - 1)
+  OPERATIONS_ROW_HEIGHT * OPERATIONS_VISIBLE_ROWS + OPERATIONS_GAP * (OPERATIONS_VISIBLE_ROWS - 1)
 
 export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark })
   const modalBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const infoAlertStyles = createInfoAlertStyles(themeColors.infoAlert)
 
   return {
     modalScroll: {
@@ -114,7 +117,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       lineHeight: lineHeights.XXXLoose,
       color: themeColors.fontColor,
       margin: 0,
-      paddingBottom: TITLE_BOTTOM_SPACING,
       paddingLeft: 0,
       textAlign: 'left',
       wordWrap: 'break-word',
@@ -122,7 +124,6 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes['2xl'],
         lineHeight: lineHeights.snug,
-        paddingBottom: 0,
       },
     },
     description: {
@@ -191,6 +192,21 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
         padding: `${MOBILE_TEXTAREA_PADDING_Y}px ${MOBILE_TEXTAREA_PADDING_X}px`,
       },
     },
+    alertBanner: infoAlertStyles.infoAlert,
+    alertText: infoAlertStyles.infoText,
+    alertIconInfo: infoAlertStyles.infoIcon,
+    alertIconSuccess: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.badges.statusActive,
+    },
+    alertIconWarning: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.warningColor,
+    },
+    alertIconError: {
+      ...infoAlertStyles.infoIcon,
+      color: themeColors.errorColor,
+    },
     errorMessage: {
       fontFamily,
       fontWeight: fontWeights.medium,
@@ -201,7 +217,9 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
     operationsList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: CHECKBOX_LABEL_GAP_ADJUST,
+      gap: OPERATIONS_GAP,
+      paddingTop: TITLE_HALF_LEADING,
+      paddingBottom: TITLE_HALF_LEADING,
       overflowX: 'hidden',
       width: '80%',
       alignSelf: 'flex-start',
@@ -212,13 +230,13 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       fontSize: fontSizes.xl,
       lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
-      margin: `0 0 ${CHECKBOX_LABEL_GAP_ADJUST}px 0`,
+      margin: 0,
     },
     operationsScroll: {
       ...getScrollbarStyles(themeColors),
       display: 'flex',
       flexDirection: 'column',
-      gap: CHECKBOX_LABEL_GAP_ADJUST,
+      gap: OPERATIONS_GAP,
       maxHeight: OPERATIONS_SCROLL_MAX_HEIGHT,
       overflowY: 'auto',
       overflowX: 'hidden',
@@ -228,8 +246,7 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       display: 'grid',
       gridTemplateColumns: 'auto 1fr auto 2fr',
       alignItems: 'start',
-      columnGap: 12,
-      paddingBottom: 4,
+      columnGap: OPERATIONS_GAP,
     },
     operationLabel: {
       fontFamily,

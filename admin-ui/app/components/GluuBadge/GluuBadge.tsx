@@ -6,9 +6,9 @@ import { THEME_DARK } from '@/context/theme/constants'
 import type { GluuBadgeProps } from './types'
 
 const SIZES = {
-  sm: { fontSize: '11px', padding: '3px 6px' },
-  md: { fontSize: '12px', padding: '4px 8px' },
-  lg: { fontSize: '14px', padding: '6px 12px' },
+  sm: { fontSize: '11px', padding: '4px 6px 3px' },
+  md: { fontSize: '12px', padding: '5px 8px 4px' },
+  lg: { fontSize: '14px', padding: '7px 12px 6px' },
 }
 
 const GluuBadge: React.FC<GluuBadgeProps> = (props) => {

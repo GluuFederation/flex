@@ -16,7 +16,7 @@ import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 const LOGOUT_DELAY_MS = 3 * 1000
 
 jest.mock('@/redux/api/backend-api', () => ({
-  fetchPolicyStore: jest.fn().mockResolvedValue({ data: {} }),
+  fetchActivePolicyStoreBytes: jest.fn().mockResolvedValue(undefined),
   fetchUserInformation: jest.fn().mockResolvedValue(-1),
 }))
 

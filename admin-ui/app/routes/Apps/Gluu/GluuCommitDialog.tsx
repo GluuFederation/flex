@@ -5,8 +5,13 @@ import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useAppSelector } from '@/redux/hooks'
-import Alert from '@mui/material/Alert'
-import { Close } from '@/components/icons'
+import {
+  CheckCircleOutline,
+  Close,
+  ErrorIcon,
+  InfoOutlined,
+  WarningAmberOutlined,
+} from '@/components/icons'
 import { useWebhookDialogAction } from 'Utils/hooks'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
@@ -24,6 +29,13 @@ import { GluuButton } from '@/components'
 import GluuLoader from './GluuLoader'
 
 const USER_MESSAGE = 'user_action_message'
+
+const ALERT_ICONS = {
+  error: ErrorIcon,
+  warning: WarningAmberOutlined,
+  info: InfoOutlined,
+  success: CheckCircleOutline,
+}
 
 const GluuCommitDialog = ({
   handler,
@@ -47,6 +59,17 @@ const GluuCommitDialog = ({
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
   const hasOperations = operations.length > 0
   const { classes } = useStyles({ isDark, themeColors })
+  const AlertIcon = ALERT_ICONS[alertSeverity]
+  const alertIconClass = useMemo(
+    () =>
+      ({
+        error: classes.alertIconError,
+        warning: classes.alertIconWarning,
+        info: classes.alertIconInfo,
+        success: classes.alertIconSuccess,
+      })[alertSeverity],
+    [classes, alertSeverity],
+  )
   const [userMessage, setUserMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const webhookModal = useAppSelector((state) => state.webhookReducer?.webhookModal ?? false)
@@ -184,9 +207,12 @@ const GluuCommitDialog = ({
             </button>
             <div className={classes.contentArea}>
               {alertMessage && (
-                <Alert severity={alertSeverity} sx={{ mb: 1 }}>
-                  {alertMessage}
-                </Alert>
+                <div className={classes.alertBanner} role="alert">
+                  <AlertIcon className={alertIconClass} aria-hidden />
+                  <GluuText variant="span" className={classes.alertText} disableThemeColor>
+                    {alertMessage}
+                  </GluuText>
+                </div>
               )}
               <GluuText variant="h2" className={classes.title} id="commit-dialog-title">
                 {titleText}

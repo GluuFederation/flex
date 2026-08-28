@@ -1,18 +1,23 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily, fontSizes, fontWeights } from '@/styles/fonts'
-import { CEDARLING_CONFIG_SPACING } from '@/constants'
+import { CEDARLING_CONFIG_SPACING, MODAL } from '@/constants'
 
 type StylesParams = {
   isDark: boolean
   themeColors: ThemeConfig
 }
 
+const CONFIRM_WIDTH = 800
+
 const HALF_GAP = Math.round((CEDARLING_CONFIG_SPACING.BUTTONS_MT + 5) / 2)
 
-export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
-  dialogSurface: {
-    outline: 'none',
+const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) => ({
+  modalContainer: {
+    '&&': {
+      width: `min(${CONFIRM_WIDTH}px, ${MODAL.MAX_VW})`,
+      maxWidth: `${CONFIRM_WIDTH}px`,
+    },
   },
   contentArea: {
     gap: 0,
@@ -32,3 +37,5 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { themeColors }) =>
     marginTop: HALF_GAP,
   },
 }))
+
+export { useStyles }
