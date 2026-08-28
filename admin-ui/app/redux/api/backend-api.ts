@@ -11,11 +11,7 @@ import axios from '../api/axios'
 import { hasActiveSession } from './sessionState'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import {
-  LEGACY_POLICY_STORE_PATH,
-  POLICY_STORE_ACTIVE_FILTER,
-  POLICY_STORE_PATH,
-} from '@/constants/policyStore'
+import { POLICY_STORE_ACTIVE_FILTER, POLICY_STORE_PATH } from '@/constants/policyStore'
 import {
   selectActivePolicyStore,
   toPolicyStoreEntries,
@@ -35,7 +31,6 @@ const ENDPOINTS = {
   AUDIT_LOG: '/admin-ui/logging/audit',
   API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
   POLICY_STORE: POLICY_STORE_PATH,
-  LEGACY_POLICY_STORE: LEGACY_POLICY_STORE_PATH,
   SESSION: '/app/admin-ui/oauth2/session',
 } as const
 
@@ -150,13 +145,14 @@ export const fetchPolicyStores = async (
 }
 
 /**
- * Response of the legacy single-store endpoint, used only as the fallback below.
+ * Response shape served by backends that predate the multi-store work, used only as the
+ * fallback below. Same URL, but a `responseBytes` body instead of the paged envelope.
  */
 const fetchLegacyPolicyStore = async (
   token?: string,
 ): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
   const response = await axios.get<PolicyStoreApiResponse>(
-    ENDPOINTS.LEGACY_POLICY_STORE,
+    ENDPOINTS.POLICY_STORE,
     getAuthConfig(token),
   )
   return { status: response.status, data: response.data }

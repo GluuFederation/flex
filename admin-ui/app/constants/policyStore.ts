@@ -1,18 +1,4 @@
-/**
- * Cedarling policy-store API paths (GluuFederation/flex#2985).
- *
- * The jans-config-api feature branch registers the new policy-store resource under
- * `/admin-ui/security1` so it can run alongside the legacy `/admin-ui/security` resource while
- * both are supported. Upstream will drop the `1` once development lands; set
- * POLICY_STORE_PATH_SUFFIX to '' at that point and everything — including the orval codegen
- * step in `script/patch-adminui-policystore-path.ts`, which reads this constant — follows.
- */
-export const POLICY_STORE_PATH_SUFFIX: string = '1'
-
-/** Legacy single-store endpoint: GET returns `responseBytes`, PUT takes a multipart upload. */
-export const LEGACY_POLICY_STORE_PATH = '/admin-ui/security/policyStore'
-
-export const POLICY_STORE_PATH = `/admin-ui/security${POLICY_STORE_PATH_SUFFIX}/policyStore`
+export const POLICY_STORE_PATH = '/admin-ui/security/policyStore'
 
 /** Extension of a Cedarling policy-store archive, used for uploads, accept filters and downloads. */
 export const CJAR_EXTENSION = '.cjar'

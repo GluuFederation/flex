@@ -3,11 +3,11 @@ import { CJAR_EXTENSION, POLICY_STORE_STATUS } from '@/constants/policyStore'
 import { REGEX_ARCHIVE_FILE_EXTENSION } from '@/utils/regex'
 
 /**
- * Shape of `GET /admin-ui/security1/policyStore`.
+ * Shape of `GET /admin-ui/security/policyStore`.
  *
- * The feature-branch spec declares the response as `AdminUIPolicyStore[]` (so orval types it that
- * way) but the example alongside it returns a paged envelope. Until upstream settles on one, treat
- * either as valid — see `toPolicyStoreEntries`.
+ * The spec declares the response as `AdminUIPolicyStore[]` (so orval types it that way) but the
+ * example alongside it returns a paged envelope. Until upstream settles on one, treat either as
+ * valid — see `toPolicyStoreEntries`.
  */
 type PolicyStoreListEnvelope = {
   start?: number

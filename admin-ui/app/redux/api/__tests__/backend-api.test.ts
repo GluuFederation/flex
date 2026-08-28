@@ -198,11 +198,11 @@ describe('fetchPolicyStores', () => {
     })
   })
 
-  it('forwards paging params and hits the versioned policy-store path', async () => {
+  it('forwards paging params to the policy-store path', async () => {
     ax.get.mockResolvedValue({ status: 200, data: { entries: [] } })
     await fetchPolicyStores({ limit: 10, startIndex: 0 }, 'tok')
     expect(ax.get).toHaveBeenCalledWith(
-      '/admin-ui/security1/policyStore',
+      POLICY_STORE_PATH,
       expect.objectContaining({ params: { limit: 10, startIndex: 0 } }),
     )
   })
@@ -230,7 +230,7 @@ describe('fetchActivePolicyStoreBytes', () => {
     await fetchActivePolicyStoreBytes()
     expect(ax.get).toHaveBeenNthCalledWith(
       1,
-      '/admin-ui/security1/policyStore',
+      POLICY_STORE_PATH,
       expect.objectContaining({ params: { fieldValuePair: 'jansStatus=active' } }),
     )
   })
