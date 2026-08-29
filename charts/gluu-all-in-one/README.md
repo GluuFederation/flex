@@ -429,7 +429,7 @@ Kubernetes: `>=v1.23.0-0`
 | service.sessionAffinityConfig | object | `{"clientIP":{"timeoutSeconds":10800}}` | the maximum session sticky time if sessionAffinity is ClientIP |
 | serviceAccountName | string | `"default"` | service account used by Kubernetes resources |
 | state | string | `"TX"` | State code. Used for certificate creation. |
-| testEnviroment | bool | `false` | Boolean flag if enabled will strip resources requests and limits from all services. |
+| testEnvironment | bool | `false` | Boolean flag if enabled will strip resources requests and limits from all services. |
 | tolerations | list | `[]` | Add tolerations for the pods |
 | topologySpreadConstraints | object | `{}` | Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
 | usrEnvs | object | `{"normal":{},"secret":{}}` | Add custom normal and secret envs to the service |
