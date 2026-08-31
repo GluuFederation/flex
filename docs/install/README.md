@@ -13,8 +13,8 @@ in enough different ways to make at least the bulk of the community happy.
 
 Currently, that means the following installation options:
 
-1. [Helm deployments](helm-install/README.md) for Amazon, Google, Microsoft, Local, and Rancher
-2. [Docker deployment](docker-install/quick-start.md) for development/testing (not production)
+1. [Quick Start](quick-start/docker.md) for development/testing (not production) — [Docker All-in-One](quick-start/docker.md) or [Local Kubernetes (Minikube/MicroK8s)](quick-start/local-k8s.md)
+2. [Helm deployments](helm-install/README.md) for Amazon, Google, Microsoft, Local, and Rancher
 3. [VM packages](vm-install/vm-requirements.md) for Ubuntu, SUSE and Red Hat
 
 ## Minimal Configuration

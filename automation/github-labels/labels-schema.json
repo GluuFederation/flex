@@ -80,15 +80,6 @@
       "title-prefixes": []
     }
   },
-  "comp-docker-flex-monolith": {
-    "color": "0052CC",
-    "description": "Touching folder /docker-flex-monolith",
-    "auto-label": {
-      "branch": "",
-      "paths": ["docker-flex-monolith"],
-      "title-prefixes": []
-    }
-  },
   "comp-docker-admin-ui": {
     "color": "0052CC",
     "description": "Touching folder /docker-admin-ui",

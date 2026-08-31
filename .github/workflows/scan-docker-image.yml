@@ -1,6 +1,6 @@
 # Please do not attempt to edit this flow without the direct consent from the DevOps team. This file is managed centrally.
 # Contact @moabu
-name: Scan Image
+name: "Scan: Docker Image"
 on:
   push:
     branches:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        docker-images: ["admin-ui", "persistence-loader", "flex-monolith", "flex-all-in-one"]
+        docker-images: ["admin-ui", "persistence-loader", "flex-all-in-one"]
     steps:
     - uses: actions/checkout@v5
     - name: Build the Container image
