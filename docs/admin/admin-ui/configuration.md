@@ -31,7 +31,7 @@ An uploaded Policy Store is stored as a backup and does not affect access contro
  5. Download the released Policy Store archive file (with .cjar extension) from the releases section GitHub policy-store repository.
  ![image](../../assets/admin-ui/policy-store-release-2.png)
  6. Open Cedarling Policy Store configuration screen on Admin UI and upload the Policy Store archive file.
- 7. Open the [Admin UI Policy Management](./policy-store-menu.md) screen and activate the uploaded Policy Store. Activating restarts the system and signs you out of the Admin UI.
+ 7. Open the [Admin UI Policy Management](./policy-store-menu.md) screen and activate the uploaded Policy Store. Activating triggers the webhooks registered against the `policy_store_write` feature and signs you out of the Admin UI.
 
 
 ### OIDC Client Details for Auth Server

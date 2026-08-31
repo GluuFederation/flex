@@ -49,7 +49,7 @@ The Admin UI features (or resources) are categorised into following parent group
 - Essential Admin UI Scopes
     - AdminUISession
 
-The names above are the entity IDs the Admin UI sends to Cedarling, so a policy has to spell them exactly this way to match.
+The feature names above are the entity IDs the Admin UI sends to Cedarling, so a policy has to spell them exactly this way to match. The parent headings are display labels: their entity IDs are `SystemAndMonitoring`, `AuthServerAndConfiguration` and `IdentityAndAccess`, listed in full in the table at the end of this page.
 
 In the Policy Store we use [default_entities](https://docs.jans.io/stable/cedarling/reference/cedarling-policy-store/#default-entities) to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under `System and monitoring` parent group.
 

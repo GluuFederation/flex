@@ -45,7 +45,7 @@ Activation runs in two steps:
 On success the Admin UI:
 
 - Marks the selected store active and the previously active store a backup
-- Regenerates the role-to-scope mappings from the newly active store
+- Regenerates the role-to-scope mappings from the newly active store. A failed regeneration is logged and does not block the activation
 - Triggers any enabled webhooks mapped to `policy_store_write`
 - Signs you out after three seconds
 
@@ -73,7 +73,7 @@ Drag the divider between the two panes to widen either side, or focus it and use
 
 ## Editing archive contents
 
-`Edit`, in the footer of the `Policy Store Contents` screen, opens the archive for editing. It is available on backup stores only. The active store stays read only, with a notice explaining that it must be downloaded, edited as a copy and uploaded as a new store.
+`Edit`, in the footer of the `Policy Store Contents` screen, opens the archive for editing. It is available on backup stores only. The active store stays read-only, with a notice explaining that it must be downloaded, edited as a copy and uploaded as a new store.
 
 While editing you can:
 
