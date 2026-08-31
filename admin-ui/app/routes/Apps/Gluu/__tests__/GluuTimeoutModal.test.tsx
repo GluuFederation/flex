@@ -1,10 +1,15 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import GluuTimeoutModal, { buildAdminUrl } from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import { reducer as initReducer } from 'Redux/features/initSlice'
+
+const mockDeleteAdminUiSession = jest.fn()
+jest.mock('Redux/api/backend-api', () => ({
+  deleteAdminUiSession: () => mockDeleteAdminUiSession(),
+}))
 
 const createTestStore = (isTimeout: boolean, authServerHost = ''): Store =>
   configureStore({
@@ -182,5 +187,89 @@ describe('GluuTimeoutModal session-expiry redirect', () => {
     fireEvent.click(getTrigger()!)
 
     expect(store.getState().initReducer.isSessionExpired).toBe(false)
+  })
+})
+
+describe('GluuTimeoutModal session teardown on refresh', () => {
+  const renderWith = (
+    state: { isTimeout: boolean; isSessionExpired: boolean },
+    hasSession = true,
+  ) => {
+    const store = configureStore({
+      reducer: combineReducers({
+        initReducer,
+        authReducer: (state = { config: { authServerHost: '' }, hasSession }) => state,
+      }),
+      preloadedState: { initReducer: state },
+    })
+    render(
+      <Provider store={store}>
+        <AppTestWrapper>
+          <GluuTimeoutModal />
+        </AppTestWrapper>
+      </Provider>,
+    )
+    return store
+  }
+
+  beforeEach(() => {
+    mockDeleteAdminUiSession.mockReset()
+    mockDeleteAdminUiSession.mockResolvedValue(undefined)
+  })
+
+  it('deletes the Admin UI session before leaving an expired dialog', async () => {
+    const store = renderWith({ isTimeout: false, isSessionExpired: true })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
+  })
+
+  it('leaves the session alone when the request merely timed out', async () => {
+    const store = renderWith({ isTimeout: true, isSessionExpired: false })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(store.getState().initReducer.isTimeout).toBe(false))
+    expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
+  })
+
+  it('skips the delete when no session cookie was ever established', async () => {
+    const store = renderWith({ isTimeout: false, isSessionExpired: true }, false)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
+    expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
+  })
+
+  it('waits for the delete to finish before tearing the dialog down', async () => {
+    let releaseDelete: (() => void) | undefined
+    mockDeleteAdminUiSession.mockReturnValue(
+      new Promise<void>((resolve) => {
+        releaseDelete = () => resolve()
+      }),
+    )
+    const store = renderWith({ isTimeout: false, isSessionExpired: true })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
+    expect(store.getState().initReducer.isSessionExpired).toBe(true)
+
+    releaseDelete?.()
+
+    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
+  })
+
+  it('still clears the dialog when the delete request fails', async () => {
+    mockDeleteAdminUiSession.mockRejectedValue(new Error('401'))
+    const store = renderWith({ isTimeout: false, isSessionExpired: true })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
   })
 })

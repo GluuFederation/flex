@@ -462,6 +462,26 @@ describe('ArchiveExplorerPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('does not duplicate an archive path when a deleted file is added back', async () => {
+    await mockStoreWithStatus('inactive')
+    onEditRoute()
+    render(<ArchiveExplorerPage />, { wrapper: Wrapper })
+
+    fireEvent.click(await screen.findByText('allow.cedar'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete: allow.cedar' }))
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'allow.cedar' })).not.toBeInTheDocument(),
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add file' }))
+    fireEvent.change(screen.getByLabelText('File path'), {
+      target: { value: 'policies/allow.cedar' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(await screen.findAllByRole('button', { name: 'allow.cedar' })).toHaveLength(1)
+  })
+
   it('packs the edited archive back into a readable zip', async () => {
     const edited = await writeArchive([
       { path: 'policies/allow.cedar', bytes: textToBytes('forbid();') },
