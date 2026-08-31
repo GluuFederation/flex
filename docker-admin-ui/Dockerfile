@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=7a45cf2c280330fe62eb31d9b46dfb478ee14e66
+ENV FLEX_SOURCE_VERSION=3f30cb6b208433d0ba65e05344980224bd4acfd8
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -76,6 +76,12 @@ RUN case "${ADMIN_UI_VERSION}" in \
     && mkdir -p /opt/flex/admin-ui \
     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
     && rm -rf /tmp/admin-ui.tar.gz
+
+# add default policy store (for admin-ui and cedarling integration) from https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore
+ARG AUI_POLICY_VERSION=v2.0.0
+ARG AUI_POLICY_FILE=admin_ui_2_0.cjar
+
+RUN wget -nv https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE} -O /app/templates/admin-ui/policy-store.cjar
 
 # ======
 # Python

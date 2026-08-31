@@ -334,6 +334,10 @@ class Upgrade:
                 "dn": "inum=77aa2e0e-a67d-4f90-a28c-a9b6077c3a7d,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
                 "jansScope": "https://jans.io/oauth/config/uma.admin",
             },
+            {
+                "dn": "inum=adbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/jans-auth-server/config/adminui/security.delete",
+            },
         ]:
             add_scope(scope["dn"], scope["jansScope"])
 
