@@ -157,14 +157,6 @@
          <lastmod>2026-08-31</lastmod>
     </url>
     <url>
-         <loc>https://docs.gluu.org/head/install/docker-install/compose/</loc>
-         <lastmod>2026-08-31</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.gluu.org/head/install/docker-install/quick-start/</loc>
-         <lastmod>2026-08-31</lastmod>
-    </url>
-    <url>
          <loc>https://docs.gluu.org/head/install/flex/prerequisites/</loc>
          <lastmod>2026-08-31</lastmod>
     </url>
@@ -206,6 +198,14 @@
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/prerequisites/rancher/</loc>
+         <lastmod>2026-08-31</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/install/quick-start/docker/</loc>
+         <lastmod>2026-08-31</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/install/quick-start/local-k8s/</loc>
          <lastmod>2026-08-31</lastmod>
     </url>
     <url>
