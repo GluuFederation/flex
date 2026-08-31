@@ -576,6 +576,7 @@ dn: inum=adbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou
 inum: adbbcf8f-6c5f-4d1b-90f6-985dd694d20a
 jansAccessType: DELETE
 jansResource: security
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.delete
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete

@@ -13,13 +13,13 @@ const baseUrl = windowUrl || process.env.CONFIG_API_BASE_URL || ''
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: baseUrl, timeout: 60000 })
 
+let apiToken: string | null = null
+
 export const setApiToken = (token: string | null): void => {
-  if (token) {
-    AXIOS_INSTANCE.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  } else {
-    delete (AXIOS_INSTANCE.defaults.headers.common as Record<string, string>)['Authorization']
-  }
+  apiToken = token
 }
+
+export const getApiToken = (): string | null => apiToken
 
 export const customInstance = <T>(
   config: AxiosRequestConfig,

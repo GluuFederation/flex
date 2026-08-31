@@ -16,7 +16,6 @@ jest.mock('@/helpers/navigation', () => ({
     ADMIN_MAU_GRAPH: '/home/mau',
     ADMIN_SETTINGS: '/home/settings',
     ADMIN_MAPPING: '/home/mapping',
-    ADMIN_CEDARLING_CONFIG: '/home/cedarlingconfig',
     WEBHOOK_LIST: '/home/webhooks',
     ASSETS_LIST: '/home/assets',
     ADMIN_AUDIT_LOGS: '/home/auditlogs',

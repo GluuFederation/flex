@@ -1,31 +1,36 @@
 import React from 'react'
 import { render, screen, fireEvent, within } from '@testing-library/react'
-import PolicyStoreUploadConfirmDialog from '../PolicyStoreUploadConfirmDialog'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import PolicyStoreConfirmDialog from 'Plugins/admin/components/Cedarling/components/PolicyStoreConfirmDialog'
 
-const renderDialog = (
-  props: Partial<React.ComponentProps<typeof PolicyStoreUploadConfirmDialog>> = {},
-) =>
+const TITLE = 'Confirm Policy Store Upload'
+const MESSAGE = 'Accepting triggers the associated webhooks.'
+
+const renderDialog = (props: Partial<React.ComponentProps<typeof PolicyStoreConfirmDialog>> = {}) =>
   render(
-    <PolicyStoreUploadConfirmDialog open onConfirm={jest.fn()} onClose={jest.fn()} {...props} />,
+    <PolicyStoreConfirmDialog
+      open
+      title={TITLE}
+      message={MESSAGE}
+      onConfirm={jest.fn()}
+      onClose={jest.fn()}
+      {...props}
+    />,
     { wrapper: AppTestWrapper },
   )
 
-describe('PolicyStoreUploadConfirmDialog', () => {
+describe('PolicyStoreConfirmDialog', () => {
   it('renders nothing when closed', () => {
-    const { container } = render(
-      <PolicyStoreUploadConfirmDialog open={false} onConfirm={jest.fn()} onClose={jest.fn()} />,
-      { wrapper: AppTestWrapper },
-    )
+    const { container } = renderDialog({ open: false })
     expect(container).toBeEmptyDOMElement()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
-  it('renders a modal dialog when open', () => {
+  it('shows the title and the webhook warning when open', () => {
     renderDialog()
     const dialog = screen.getByRole('dialog')
-    expect(dialog).toHaveAttribute('aria-modal', 'true')
-    expect(dialog).toHaveAttribute('aria-labelledby', 'confirm-upload-title')
+    expect(within(dialog).getByText(TITLE)).toBeInTheDocument()
+    expect(within(dialog).getByText(MESSAGE)).toBeInTheDocument()
   })
 
   it('calls onConfirm when the confirm button is clicked', () => {

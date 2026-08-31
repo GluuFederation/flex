@@ -48,7 +48,7 @@ The Admin UI features (or resources) are categorised into following parent group
     - SAML
     - Lock
 - Essential Admin UI Scopes
-    - Admin UI Session
+    - AdminUISession
 
 In the Policy Store we use [default_entities](https://docs.jans.io/stable/cedarling/reference/cedarling-policy-store/#default-entities) to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under `System and monitoring` parent group.
 
@@ -284,4 +284,4 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 |IdentityAndAccess|Users, Scripts, Attributes|
 |SystemAndMonitoring|Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs|
 |Service|Persistence, SMTP, SCIM, FIDO, SAML, Lock|
-|Essential Admin UI Scopes|Admin UI Session Scopes|
+|Essential Admin UI Scopes|AdminUISession|

@@ -1,25 +1,20 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { useSyncRoleToScopesMappings } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
-import { logAuditUserAction } from '@/utils/AuditLogger'
 import { logger } from '@/utils/logger'
-import apiAxios from '@/redux/api/axios'
-import { UPDATE } from '@/audit/UserActionType'
 import { Box, Link } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
 import { InfoOutlined } from '@/components/icons'
 import { Form } from 'Components'
-import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { GluuPageContent } from '@/components'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -29,14 +24,15 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './CedarlingConfigPage.style'
-import PolicyStoreUploadConfirmDialog from './PolicyStoreUploadConfirmDialog'
-import { uploadPolicyStore, fetchPolicyStore } from '@/redux/api/backend-api'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { adminUiFeatures } from '@/constants'
+import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
+import { fileToBase64 } from '@/utils/policyStore'
+import { CJAR_EXTENSION } from '@/constants/policyStore'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
 const ZIP_MIME_TYPE = 'application/zip'
-const CJAR_EXTENSION = '.cjar'
-const POLICY_STORE_FILE_NAME = `policy-store${CJAR_EXTENSION}`
 
 const POLICY_STORE_REPO_URL =
   'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer'
@@ -44,18 +40,6 @@ const AGAMA_LAB_URL = 'https://cloud.gluu.org/agama-lab'
 
 const CJAR_ACCEPT = {
   [ZIP_MIME_TYPE]: [CJAR_EXTENSION],
-}
-
-const buildPolicyStoreFileName = (): string => {
-  const base = apiAxios.defaults.baseURL
-  if (!base) {
-    return POLICY_STORE_FILE_NAME
-  }
-  try {
-    return `${new URL(base).hostname}-${POLICY_STORE_FILE_NAME}`
-  } catch {
-    return POLICY_STORE_FILE_NAME
-  }
 }
 
 const CedarlingConfigPage: React.FC = () => {
@@ -76,11 +60,22 @@ const CedarlingConfigPage: React.FC = () => {
 
   const { classes } = useStyles({ themeColors, isDark })
 
+  const alertIconSx = useMemo(() => ({ color: themeColors.infoAlert.text }), [themeColors])
+
+  const uploadOperations = useMemo(
+    () => [
+      {
+        label: t('fields.filename'),
+        path: 'displayname',
+        value: selectedFile?.name ?? '',
+      },
+    ],
+    [t, selectedFile],
+  )
+
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
 
-  const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
-  const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
-  const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
+  const { createPolicyStore } = usePolicyStoreMutations()
 
   const dispatch = useAppDispatch()
 
@@ -107,113 +102,39 @@ const CedarlingConfigPage: React.FC = () => {
     setShowConfirm(false)
   }, [])
 
-  const handleConfirmUpload = useCallback(async () => {
-    setShowConfirm(false)
-    if (!selectedFile) return
-
-    try {
-      setIsLoading(true)
-
-      await uploadPolicyStore(selectedFile)
+  const handleConfirmUpload = useCallback(
+    async (comments: string) => {
+      if (!selectedFile) return
 
       try {
-        await logAuditUserAction({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: t('documentation.cedarlingConfig.auditPolicyStoreUploaded'),
-          client_id: client_id,
-          payload: { fileName: selectedFile.name },
+        setIsLoading(true)
+
+        await createPolicyStore({
+          displayname: selectedFile.name,
+          description: comments,
+          policyStore: await fileToBase64(selectedFile),
         })
-      } catch (e) {
+
+        setSelectedFile(null)
+        dispatch(updateToast(true, 'success', t('documentation.cedarlingConfig.uploadSuccess')))
+        navigateToRoute(ROUTES.ADMIN_POLICIES_LIST)
+      } catch (error) {
         logger.error(
-          'Audit log failed after policy store upload:',
-          e instanceof Error ? e : String(e),
+          'Policy store upload flow failed:',
+          error instanceof Error ? error : String(error),
         )
-      }
-
-      await syncRoleToScopesMappingsMutation.mutateAsync()
-
-      try {
-        await logAuditUserAction({
-          userinfo: userinfo ?? undefined,
-          action: UPDATE,
-          resource: ADMIN_UI_CEDARLING_CONFIG,
-          message: t('documentation.cedarlingConfig.auditSyncRoleToScopesMappings'),
-          client_id: client_id,
-          payload: { fileName: selectedFile.name },
-        })
-      } catch (e) {
-        logger.error('Audit log failed after role/scope sync:', e instanceof Error ? e : String(e))
-      }
-
-      setSelectedFile(null)
-      navigateToRoute(ROUTES.LOGOUT)
-    } catch (error) {
-      logger.error(
-        'Policy store upload flow failed:',
-        error instanceof Error ? error : String(error),
-      )
-      const errorMessage = getErrorMessage(
-        error as Error | ApiError,
-        'documentation.cedarlingConfig.uploadFailed',
-        t,
-      )
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [
-    selectedFile,
-    dispatch,
-    t,
-    userinfo,
-    client_id,
-    syncRoleToScopesMappingsMutation,
-    navigateToRoute,
-  ])
-
-  const handleDownload = useCallback(async () => {
-    try {
-      setIsLoading(true)
-
-      const response = await fetchPolicyStore()
-      const responseBytes =
-        response.data && 'responseBytes' in response.data ? response.data.responseBytes : undefined
-
-      if (!responseBytes) {
-        dispatch(
-          updateToast(true, 'error', t('documentation.cedarlingConfig.noPolicyStoreToDownload')),
+        const errorMessage = getErrorMessage(
+          error as Error | ApiError,
+          'documentation.cedarlingConfig.uploadFailed',
+          t,
         )
-        return
+        dispatch(updateToast(true, 'error', errorMessage))
+      } finally {
+        setIsLoading(false)
       }
-
-      const bytes = Uint8Array.from(atob(responseBytes), (c) => c.charCodeAt(0))
-
-      const blob = new Blob([bytes], { type: ZIP_MIME_TYPE })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = buildPolicyStoreFileName()
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-
-      dispatch(
-        updateToast(true, 'success', t('documentation.cedarlingConfig.policyStoreDownloaded')),
-      )
-    } catch (error) {
-      const errorMessage = getErrorMessage(
-        error as Error | ApiError,
-        'documentation.cedarlingConfig.downloadFailed',
-        t,
-      )
-      dispatch(updateToast(true, 'error', errorMessage))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [dispatch, t])
+    },
+    [selectedFile, dispatch, t, createPolicyStore, navigateToRoute],
+  )
 
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.HOME_DASHBOARD)
@@ -240,10 +161,7 @@ const CedarlingConfigPage: React.FC = () => {
                   <Box className={classes.formContent}>
                     <Box className={classes.alertWrapper}>
                       <Box className={classes.alertBox}>
-                        <InfoOutlined
-                          className={classes.alertIcon}
-                          sx={{ color: themeColors.infoAlert.text }}
-                        />
+                        <InfoOutlined className={classes.alertIcon} sx={alertIconSx} />
                         <GluuText variant="p" className={classes.alertStepTitle} disableThemeColor>
                           {t('documentation.cedarlingConfig.steps')}
                         </GluuText>
@@ -324,10 +242,7 @@ const CedarlingConfigPage: React.FC = () => {
                   className={classes.footer}
                   showBack
                   onBack={handleBack}
-                  showCancel={!isMobile}
-                  cancelButtonLabel={t('documentation.cedarlingConfig.downloadPolicyStore')}
-                  onCancel={handleDownload}
-                  disableCancel={isLoading}
+                  showCancel={false}
                   showApply={!isMobile && canWriteSecurity}
                   applyButtonLabel={t('documentation.cedarlingConfig.uploadPolicyStore')}
                   onApply={handleUploadClick}
@@ -341,11 +256,17 @@ const CedarlingConfigPage: React.FC = () => {
         </GluuPageContent>
       </GluuViewWrapper>
 
-      <PolicyStoreUploadConfirmDialog
-        open={showConfirm}
-        onConfirm={handleConfirmUpload}
-        onClose={handleConfirmCancel}
-      />
+      {showConfirm && (
+        <GluuCommitDialog
+          modal
+          handler={handleConfirmCancel}
+          onAccept={handleConfirmUpload}
+          feature={adminUiFeatures.policy_store_write}
+          alertSeverity="info"
+          alertMessage={t('documentation.cedarlingConfig.uploadConfirmMessage')}
+          operations={uploadOperations}
+        />
+      )}
     </GluuLoader>
   )
 }

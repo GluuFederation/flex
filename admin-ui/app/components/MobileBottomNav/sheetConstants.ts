@@ -111,9 +111,9 @@ export const SECTION_MENUS: Readonly<Record<SectionKey, SectionMenu>> = {
             path: ROUTES.ADMIN_MAPPING,
           },
           {
-            key: 'security-cedarling',
-            titleKey: 'menus.securityDropdown.cedarlingConfig',
-            path: ROUTES.ADMIN_CEDARLING_CONFIG,
+            key: 'security-policy-stores',
+            titleKey: 'menus.securityDropdown.policyStoreHistory',
+            path: ROUTES.ADMIN_POLICIES_LIST,
           },
         ],
       },

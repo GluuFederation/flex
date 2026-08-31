@@ -3,7 +3,7 @@ import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { useIdleTimer } from '@/hooks/useIdleTimer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
-import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { MANUAL_LOGOUT, SESSION_TIMED_OUT } from '@/audit/messages'
 import { logger } from '@/utils/logger'
 
 type SessionTimeoutProps = {
@@ -23,10 +23,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
   const sessionTimeout =
     Number(useAppSelector((state) => state.authReducer?.config?.sessionTimeoutInMins)) ||
     DEFAULT_TIMEOUT_MINS
-  const { logoutAuditSucceeded } = useAppSelector((state) => state.logoutAuditReducer)
-
   const dispatch = useAppDispatch()
-  const { navigateToRoute } = useAppNavigation()
 
   const clearTimers = useCallback(() => {
     if (timeoutRef.current) {
@@ -46,7 +43,7 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
         clearTimers()
         dispatch(
           auditLogoutLogs({
-            message: isTimedOut ? 'User session timed out' : 'User logged out manually',
+            message: isTimedOut ? SESSION_TIMED_OUT : MANUAL_LOGOUT,
           }),
         )
       } catch (err) {
@@ -100,12 +97,6 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     setTimeoutCountdown(0)
     return () => clearTimers()
   }, [sessionTimeout, clearTimers])
-
-  useEffect(() => {
-    if (logoutAuditSucceeded === true) {
-      navigateToRoute(ROUTES.LOGOUT)
-    }
-  }, [logoutAuditSucceeded, navigateToRoute])
 
   const { reset } = useIdleTimer({
     timeout: sessionTimeout * 60 * 1000,

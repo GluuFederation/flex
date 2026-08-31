@@ -1,4 +1,4 @@
-import type { AppConfigResponse } from 'JansConfigApi'
+import type { AppConfigResponse, GetAdminuiPolicyStoreParams } from 'JansConfigApi'
 import type {
   ApiTokenResponse,
   FetchUserInfoParams,
@@ -8,8 +8,15 @@ import type {
   UserActionPayload,
 } from './types/BackendApi'
 import axios from '../api/axios'
+import { hasActiveSession } from './sessionState'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
+import { POLICY_STORE_ACTIVE_FILTER, POLICY_STORE_PATH } from '@/constants/policyStore'
+import {
+  selectActivePolicyStore,
+  toPolicyStoreEntries,
+  type PolicyStoreListResponse,
+} from '@/utils/policyStore'
 
 export type {
   ApiTokenResponse,
@@ -23,14 +30,16 @@ const ENDPOINTS = {
   CONFIG: '/admin-ui/config',
   AUDIT_LOG: '/admin-ui/logging/audit',
   API_PROTECTION_TOKEN: '/app/admin-ui/oauth2/api-protection-token',
-  POLICY_STORE: '/admin-ui/security/policyStore',
+  POLICY_STORE: POLICY_STORE_PATH,
   SESSION: '/app/admin-ui/oauth2/session',
 } as const
 
 export const SESSION_ENDPOINT = ENDPOINTS.SESSION
 
 const getAuthConfig = (token?: string) =>
-  token ? { headers: { Authorization: `Bearer ${token}` } } : { withCredentials: true }
+  !hasActiveSession() && token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : { withCredentials: true }
 
 export const fetchServerConfiguration = async (token?: string): Promise<AppConfigResponse> => {
   try {
@@ -119,40 +128,51 @@ export const fetchApiTokenWithDefaultScopes = async (): Promise<ApiTokenResponse
   }
 }
 
-export const fetchPolicyStore = async (
+export const fetchPolicyStores = async (
+  params?: GetAdminuiPolicyStoreParams,
   token?: string,
-): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
+): Promise<{ status?: number; data?: PolicyStoreListResponse }> => {
   try {
-    const response = await axios.get<PolicyStoreApiResponse>(
-      ENDPOINTS.POLICY_STORE,
-      getAuthConfig(token),
-    )
+    const response = await axios.get<PolicyStoreListResponse>(ENDPOINTS.POLICY_STORE, {
+      ...getAuthConfig(token),
+      params,
+    })
     return { status: response.status, data: response.data }
   } catch (error) {
-    logger.error('Problems fetching policy store: ' + resolveApiErrorMessage(error as Error))
+    logger.error('Problems fetching policy stores: ' + resolveApiErrorMessage(error as Error))
     throw error
   }
 }
 
-export const uploadPolicyStore = async (
-  file: File,
+const fetchLegacyPolicyStore = async (
+  token?: string,
 ): Promise<{ status?: number; data?: PolicyStoreApiResponse }> => {
+  const response = await axios.get<PolicyStoreApiResponse>(
+    ENDPOINTS.POLICY_STORE,
+    getAuthConfig(token),
+  )
+  return { status: response.status, data: response.data }
+}
+
+export const fetchActivePolicyStoreBytes = async (token?: string): Promise<string | undefined> => {
   try {
-    const formData = new FormData()
-    const document = {
-      fileName: file.name,
-      description: 'Admin UI Policy Store',
+    const { data } = await fetchPolicyStores({ fieldValuePair: POLICY_STORE_ACTIVE_FILTER }, token)
+    const activeStore = selectActivePolicyStore(toPolicyStoreEntries(data))
+    const bytes = activeStore?.policyStore
+    if (bytes && bytes.trim().length > 0) {
+      return bytes
     }
-    formData.append('document', new Blob([JSON.stringify(document)], { type: 'application/json' }))
-    formData.append('policyStore', file)
-    const response = await axios.put<PolicyStoreApiResponse>(ENDPOINTS.POLICY_STORE, formData, {
-      withCredentials: true,
-    })
-    return { status: response.status, data: response.data }
+    logger.warn('Policy store list returned no usable archive; trying the legacy endpoint.')
   } catch (error) {
-    logger.error('Problems uploading policy store: ' + resolveApiErrorMessage(error as Error))
-    throw error
+    logger.warn(
+      'Policy store list endpoint unavailable, falling back to the legacy endpoint: ' +
+        resolveApiErrorMessage(error as Error),
+    )
   }
+
+  const { data } = await fetchLegacyPolicyStore(token)
+  const legacyBytes = data && 'responseBytes' in data ? data.responseBytes : undefined
+  return legacyBytes && legacyBytes.trim().length > 0 ? legacyBytes : undefined
 }
 
 export const createAdminUiSession = async (ujwt: string, apiProtectionToken: string) => {

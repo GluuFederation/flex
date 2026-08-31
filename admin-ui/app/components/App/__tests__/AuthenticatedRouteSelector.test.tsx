@@ -3,12 +3,24 @@ import { render, screen } from '@testing-library/react'
 import AuthenticatedRouteSelector from '../AuthenticatedRouteSelector'
 
 const mockLocation = { pathname: '/' }
-jest.mock('react-router-dom', () => ({ useLocation: () => mockLocation }))
+const mockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  useLocation: () => mockLocation,
+  useNavigate: () => mockNavigate,
+}))
+
+type MockRootState = { sessionReducer: { logoutRequested: boolean } }
+
+let mockLogoutRequested = false
+jest.mock('@/redux/hooks', () => ({
+  useAppSelector: (selector: (state: MockRootState) => boolean) =>
+    selector({ sessionReducer: { logoutRequested: mockLogoutRequested } }),
+}))
 
 jest.mock('@/helpers/navigation', () => ({
   ROUTES: {
     ROOT: '/',
-    LOGOUT: '/admin/logout',
+    LOGOUT: '/logout',
     HOME_DASHBOARD: '/home/dashboard',
     PROFILE: '/profile',
   },
@@ -23,6 +35,7 @@ const mockPreloads = {
   DefaultSidebar: jest.fn(),
   GluuNavBar: jest.fn(),
   GluuWebhookExecutionDialog: jest.fn(),
+  ByeBye: jest.fn(),
 }
 jest.mock('Utils/RouteLoader', () => {
   const marker = (testid?: string) => () => (testid ? <div data-testid={testid} /> : null)
@@ -38,7 +51,7 @@ jest.mock('Utils/RouteLoader', () => {
         () => mockPreloads.GluuWebhookExecutionDialog(),
         'webhook-dialog',
       ),
-      ByeBye: lazy(() => {}, 'byebye'),
+      ByeBye: lazy(() => mockPreloads.ByeBye(), 'byebye'),
     },
   }
 })
@@ -62,14 +75,34 @@ jest.mock('../PermissionsPolicyInitializer', () => ({
 beforeEach(() => {
   Object.values(mockPreloads).forEach((p) => p.mockClear())
   mockLocation.pathname = '/'
+  mockNavigate.mockClear()
+  mockLogoutRequested = false
 })
 
 describe('AuthenticatedRouteSelector', () => {
   it('renders the ByeBye component on the logout route', () => {
-    mockLocation.pathname = '/admin/logout'
+    mockLocation.pathname = '/logout'
     render(<AuthenticatedRouteSelector />)
     expect(screen.getByTestId('byebye')).toBeInTheDocument()
     expect(screen.queryByTestId('routed-content')).not.toBeInTheDocument()
+  })
+
+  it('navigates to the logout route when a logout has been requested', () => {
+    mockLogoutRequested = true
+    render(<AuthenticatedRouteSelector />)
+    expect(mockNavigate).toHaveBeenCalledWith('/logout', { replace: true })
+  })
+
+  it('does not navigate when no logout has been requested', () => {
+    render(<AuthenticatedRouteSelector />)
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('does not navigate again once already on the logout route', () => {
+    mockLogoutRequested = true
+    mockLocation.pathname = '/logout'
+    render(<AuthenticatedRouteSelector />)
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('renders the authenticated app shell on a normal route', () => {

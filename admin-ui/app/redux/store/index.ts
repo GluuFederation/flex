@@ -10,6 +10,7 @@ import storage from 'redux-persist/lib/storage'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
 import { installInterceptors } from 'Orval'
+import { setHasSessionReader } from '../api/sessionState'
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ReducerMap, RootState } from '../types'
 import { hmrAccept } from '@/utils/hmr'
@@ -28,7 +29,7 @@ const persistConfig = {
   blacklist: [
     'cedarPermissions',
     'toastReducer',
-    'logoutAuditReducer',
+    'sessionReducer',
     'initReducer',
     'webhookReducer',
     'scopeReducer',
@@ -66,6 +67,10 @@ const store = configureStore({
 })
 
 installInterceptors(() => store.getState() as object as RootState, store.dispatch)
+
+setHasSessionReader(
+  () => (store.getState() as object as RootState).authReducer?.hasSession ?? false,
+)
 
 processListeners(startAppListening)
 

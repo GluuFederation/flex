@@ -30,6 +30,7 @@ export type ActionDef<T> = {
   id?: string | number
   onClick: (row: T) => void
   show?: (row: T) => boolean
+  disabled?: (row: T) => boolean
   color?: string
 }
 

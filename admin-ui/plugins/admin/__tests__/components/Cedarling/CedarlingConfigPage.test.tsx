@@ -37,13 +37,20 @@ jest.mock('@/cedarling/utility', () => ({
 }))
 
 const mockMutateAsync = jest.fn().mockResolvedValue(undefined)
+const mockCreatePolicyStore = jest.fn().mockResolvedValue(undefined)
 jest.mock('JansConfigApi', () => ({
   useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockMutateAsync })),
+  useCreateAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockCreatePolicyStore })),
+  useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
+  useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn() })),
+  useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
+  getGetAdminuiPolicyStoreQueryKey: () => [
+    jest.requireActual('@/constants/policyStore').POLICY_STORE_PATH,
+  ],
 }))
 
 jest.mock('@/redux/api/backend-api', () => ({
-  uploadPolicyStore: jest.fn().mockResolvedValue({ status: 200 }),
-  fetchPolicyStore: jest.fn().mockResolvedValue({ data: { responseBytes: '' } }),
+  fetchActivePolicyStoreBytes: jest.fn().mockResolvedValue(''),
   postUserAction: jest.fn().mockResolvedValue({ status: 200 }),
 }))
 
@@ -66,6 +73,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 )
 
+type WebhookTriggerAction = {
+  type?: string
+  payload?: { feature?: string; createdFeatureValue?: Record<string, string> }
+}
+
 describe('CedarlingConfigPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -78,11 +90,7 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
-  it('uploads a .cjar file and triggers sync', async () => {
-    const { uploadPolicyStore } = jest.requireMock('@/redux/api/backend-api') as {
-      uploadPolicyStore: jest.Mock
-    }
-
+  it('uploads the .cjar as an inactive policy store and re-syncs the role mappings', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
@@ -107,16 +115,67 @@ describe('CedarlingConfigPage', () => {
     const uploadButton = screen.getByText('Upload')
     fireEvent.click(uploadButton)
 
-    await screen.findByText('Confirm Policy Store Upload')
+    const commentsBox = await screen.findByRole('textbox')
+    fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
 
     fireEvent.click(screen.getByText('Yes'))
 
     await waitFor(() => {
-      expect(uploadPolicyStore).toHaveBeenCalledWith(expect.any(File))
+      expect(mockCreatePolicyStore).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          displayname: 'test-policy.cjar',
+          description: 'Rolling out updated admin policies',
+          policyStore: expect.any(String),
+        }),
+      })
     })
+
+    const [createdData] = mockCreatePolicyStore.mock.calls[0]
+    expect(createdData.data).not.toHaveProperty('jansStatus')
 
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalled()
     })
+  })
+
+  it('triggers the policy store add/edit webhook after the upload succeeds', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    fireEvent.click(await screen.findByText('Upload'))
+    const commentsBox = await screen.findByRole('textbox')
+    fireEvent.change(commentsBox, { target: { value: 'Rolling out updated admin policies' } })
+    fireEvent.click(screen.getByText('Yes'))
+
+    await waitFor(() => {
+      expect(mockCreatePolicyStore).toHaveBeenCalled()
+    })
+
+    const triggers = dispatchSpy.mock.calls
+      .map(([action]) => action as WebhookTriggerAction)
+      .filter((action) => action?.type === 'webhook/triggerWebhook')
+
+    await waitFor(() => {
+      expect(triggers).toHaveLength(1)
+    })
+    expect(triggers[0].payload).toEqual({
+      feature: 'policy_store_write',
+      createdFeatureValue: expect.objectContaining({
+        displayname: 'test-policy.cjar',
+        description: 'Rolling out updated admin policies',
+      }),
+    })
+    expect(triggers[0].payload?.createdFeatureValue).not.toHaveProperty('jansStatus')
+    dispatchSpy.mockRestore()
   })
 })
