@@ -108,7 +108,6 @@ export const usePolicyStoreMutations = () => {
             feature: adminUiFeatures.policy_store_write,
           }),
         )
-        await syncRoleScopes(displayname)
         invalidatePolicyStores()
         return result
       } catch (error) {
@@ -116,7 +115,7 @@ export const usePolicyStoreMutations = () => {
         throw error
       }
     },
-    [createMutation, audit, dispatch, syncRoleScopes, invalidatePolicyStores, toastError, t],
+    [createMutation, audit, dispatch, invalidatePolicyStores, toastError, t],
   )
 
   const setPolicyStoreActive = useCallback(
