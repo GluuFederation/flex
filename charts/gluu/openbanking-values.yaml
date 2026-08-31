@@ -51,7 +51,7 @@ global:
     enabled: false
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
-    testEnviroment: false
+    testEnvironment: false
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: "https://mykeystore.openbanking.wow/xxxxx/xxxxx.jwks"
   # -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.

@@ -55,7 +55,7 @@ nginx-ingress:
       nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
 global:
   cloud:
-    testEnviroment: true
+    testEnvironment: true
   admin-ui:
     enabled: false
   auth-server:
