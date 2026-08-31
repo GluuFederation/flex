@@ -81,7 +81,15 @@ RUN case "${ADMIN_UI_VERSION}" in \
 ARG AUI_POLICY_VERSION=v2.0.0
 ARG AUI_POLICY_FILE=admin_ui_2_0.cjar
 
-RUN wget -nv https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE} -O /app/templates/admin-ui/policy-store.cjar
+WORKDIR /app/templates/admin-ui
+
+RUN wget -nv "https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE}" \
+    && wget -nv "https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE}.sha256sum" \
+    && sha256sum -c admin_ui_2_0.cjar.sha256sum \
+    && rm -f admin_ui_2_0.cjar.sha256sum \
+    && mv admin_ui_2_0.cjar policy-store.cjar
+
+WORKDIR /
 
 # ======
 # Python
