@@ -11,7 +11,7 @@ const createTestStore = (userinfo: UserInfo | null): Store =>
   configureStore({
     reducer: combineReducers({
       authReducer: (state = { userinfo }) => state,
-      logoutAuditReducer: (state = { logoutAuditSucceeded: null }) => state,
+      sessionReducer: (state = { logoutAuditSucceeded: null }) => state,
     }),
   })
 

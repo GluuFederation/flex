@@ -103,7 +103,7 @@ echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 cat << EOF >> override.yaml
 global:
   cloud:
-    testEnviroment: true
+    testEnvironment: true
   istio:
     enable: $INSTALL_ISTIO
   admin-ui:

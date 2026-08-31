@@ -95,7 +95,7 @@
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
       "mapping": "Rôles et permissions",
-      "cedarlingConfig": "Cedarling"
+      "policyStoreHistory": "Gestion des politiques Admin UI"
     },
     "lock": "Verrouillage",
     "cache": "Cache",
@@ -231,11 +231,20 @@
     "currentYear": "Année en cours",
     "export_csv": "Exporter CSV",
     "finish": "Terminer",
-    "export": "Exporter"
+    "export": "Exporter",
+    "open": "Ouvrir",
+    "set_active": "Activer",
+    "download": "Télécharger",
+    "add_file": "Ajouter un fichier",
+    "create": "Créer",
+    "discard": "Annuler les modifications",
+    "add_folder": "Ajouter un dossier",
+    "rename": "Renommer"
   },
+  "roleNotFoundMessage": "Session fermée",
+  "roleNotFoundDescription": "Votre compte ne dispose d'aucun rôle Admin UI, la session a donc été fermée. Cliquez sur Réessayer pour vous connecter avec un autre compte, ou contactez votre administrateur pour qu'un rôle vous soit attribué.",
+  "tryAgain": "Réessayer",
   "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
-  "roleNotFoundMessage": "Utilisateur non autorisé",
-  "roleNotFoundDescription": "L'utilisateur connecté n'a pas de rôle valide. Déconnexion de Admin UI",
   "licenseCard": {
     "freeTrial": "Essai gratuit",
     "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",
@@ -945,7 +954,12 @@
     "metric": "Métrique",
     "label": "Libellé",
     "secondary_value": "Valeur secondaire",
-    "suspicious_ips": "Adresses IP suspectes"
+    "suspicious_ips": "Adresses IP suspectes",
+    "filename": "Nom du fichier",
+    "uploaded": "Téléversé",
+    "files": "Fichiers",
+    "size": "Taille",
+    "comments": "Commentaires"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -980,6 +994,7 @@
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
     "add_trust_relationship": "Ajouter une relation de confiance",
     "add_webhook": "Ajouter un Webhook",
+    "add_policy_store": "Ajouter un magasin de politiques",
     "webhook_form_description": "Configurez le webhook pour recevoir des notifications lorsque des événements spécifiques se produisent.",
     "no_webhooks_found": "Aucun webhook trouvé",
     "no_assets_found": "Aucune ressource trouvée",
@@ -1301,7 +1316,8 @@
     "logging_level_required": "Le niveau de journalisation est obligatoire",
     "logging_level_invalid": "Niveau de journalisation non valide",
     "logging_layout_required": "Le format de journalisation est obligatoire",
-    "logging_layout_invalid": "Format de journalisation non valide"
+    "logging_layout_invalid": "Format de journalisation non valide",
+    "user_info_fetch_failed": "Impossible de récupérer les informations utilisateur depuis le serveur d'authentification. La connexion a été interrompue."
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -1538,7 +1554,8 @@
     "valid_origin_uri": "Entrez un URI d’origine valide (ex. https://...)",
     "valid_request_uri": "Entrez un URI de requête valide (ex. https://...)",
     "valid_claim_uri": "Entrez un URI de réclamation valide (ex. https://...)",
-    "valid_uri_pattern": "Entrez un URI valide au format (ex. https:// ou schema://)"
+    "valid_uri_pattern": "Entrez un URI valide au format (ex. https:// ou schema://)",
+    "archive_file_path": "ex. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "Résultat du test SMTP",
@@ -1704,7 +1721,9 @@
     "error_intelligence": "Types d'erreur",
     "velocity_watch": "Tentatives par utilisateur",
     "device_fingerprint_shift": "Types d'authentificateur",
-    "threat_origins_ips": "Origines des menaces par IP"
+    "threat_origins_ips": "Origines des menaces par IP",
+    "policy_store_history": "Gestion des politiques Admin UI",
+    "policy_store_contents": "Contenu du magasin de politiques"
   },
   "options": {
     "admin": "ADMINISTRER",
@@ -1757,7 +1776,8 @@
     "jwt": "JWT",
     "reference": "Référence",
     "expired": "EXPIRÉ",
-    "register": "INSCRIPTION"
+    "register": "INSCRIPTION",
+    "backup": "SAUVEGARDE"
   },
   "documentation": {
     "fido": {
@@ -2445,21 +2465,18 @@
       "auditPolicyStoreUrlUpdated": "URL du magasin de politiques mise à jour",
       "policyStoreUrlInvalidError": "Veuillez saisir une URL valide",
       "useRemotePolicyStore": "Il est recommandé de le définir sur Default pour la production. S'il est défini sur Default, il utilisera le stockage de l'Admin-UI pour l'autorisation Cedarling. Activez le mode Default et utilisez le bouton d'actualisation pour stocker ou mettre à jour les politiques GitHub sur le serveur Admin-UI.",
-      "uploadConfirmTitle": "Confirmer le téléversement du magasin de politiques",
-      "uploadConfirmMessage": "Après le téléversement et le traitement réussis du magasin de politiques, vous serez déconnecté de l'interface d'administration.",
+      "uploadConfirmMessage": "Le nouveau magasin de politiques est créé inactif. Activez-le depuis l'historique des magasins de politiques lorsque vous êtes prêt à l'appliquer.",
       "auditSetPolicyStoreAsDefault": "Définir le magasin de politiques par défaut",
       "selectCjarFile": "Sélectionnez un fichier .cjar de magasin de politiques à téléverser",
       "uploadPolicyStore": "Téléverser",
-      "downloadPolicyStore": "Télécharger",
-      "policyStoreDownloaded": "Magasin de politiques téléchargé avec succès",
-      "noPolicyStoreToDownload": "Aucun magasin de politiques disponible au téléchargement",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
-      "downloadFailed": "Échec du téléchargement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",
-      "auditPolicyStoreUploaded": "Magasin de politiques téléversé"
+      "auditPolicyStoreUploaded": "Magasin de politiques téléversé",
+      "defaultPolicyStoreDescription": "Magasin de politiques de l’interface d’administration",
+      "uploadSuccess": "Magasin de politiques téléversé avec succès."
     },
     "mappings": {
-      "note_prefix": "Configure",
+      "note_prefix": "Configurez",
       "note_suffix": "Pour gérer les rôles et les permissions. Une fois la configuration Cedarling enregistrée, les rôles et les permissions seront automatiquement synchronisés à partir du référentiel de stratégies."
     },
     "attribute": {
@@ -2506,6 +2523,44 @@
       "jansState": "État Jans",
       "jansUsrDN": "DN utilisateur Jans",
       "permissionGrantedMap": "Carte des autorisations accordées"
+    },
+    "policyStore": {
+      "noPolicyStores": "Aucun magasin de politiques trouvé.",
+      "activateWarning": "Activer ce magasin de politiques désactive l’actuel. Toutes les permissions seront réévaluées à la prochaine connexion.",
+      "deleteWarning": "Ceci supprime définitivement le magasin de politiques. Cette action est irréversible.",
+      "activateSuccess": "Magasin de politiques activé avec succès.",
+      "activateFailed": "Échec de l’activation du magasin de politiques.",
+      "deleteSuccess": "Magasin de politiques supprimé avec succès.",
+      "deleteFailed": "Échec de la suppression du magasin de politiques.",
+      "downloadFailed": "Échec du téléchargement du magasin de politiques.",
+      "auditActivated": "Magasin de politiques activé",
+      "auditDeleted": "Magasin de politiques supprimé",
+      "archiveUnreadable": "Impossible de lire cette archive de magasin de politiques.",
+      "fileSaved": "Fichier enregistré. Téléchargez l’archive pour conserver vos modifications.",
+      "fileDeleted": "Fichier retiré de l’archive.",
+      "filePathRequired": "Saisissez un chemin de fichier.",
+      "filePathPlaceholder": "Par exemple policies/AdminCanManageService.cedar",
+      "filePathLabel": "Chemin du fichier",
+      "resizeFileList": "Redimensionner la liste des fichiers",
+      "fileAlreadyExists": "Un fichier avec ce chemin existe déjà dans l’archive.",
+      "unsavedChangesNote": "(Pas encore téléchargé)",
+      "discardChangesTitle": "Abandonner les modifications non enregistrées ?",
+      "discardChangesWarning": "Vos modifications n'ont pas été téléchargées. Quitter cette page les abandonne.",
+      "binaryFileNotice": "Ce fichier n’est pas un fichier texte et ne peut pas être modifié ici.",
+      "activeStoreReadOnly": "Le magasin de politiques actif est en lecture seule. Téléchargez-le, modifiez la copie, puis téléversez-la comme nouveau magasin de politiques.",
+      "selectFileToView": "Sélectionnez un fichier de l’archive pour afficher son contenu.",
+      "activateConfirmTitle": "Confirmer l’activation du magasin de politiques",
+      "activateRestartWarning": "L'activation de ce magasin de politiques redémarre le système. En acceptant, les webhooks associés sont déclenchés et vous serez déconnecté de l'Admin UI une fois le traitement terminé.",
+      "restartNotice": "Le système redémarrera dans {{seconds}} secondes. Vous serez déconnecté de l'Admin UI.",
+      "deleteConfirmTitle": "Confirmer la suppression du magasin de politiques",
+      "folderPathPlaceholder": "ex. policies",
+      "folderAdded": "Dossier ajouté",
+      "fileRenamed": "Fichier renommé",
+      "storeRoot": "Racine du magasin",
+      "folderPathLabel": "Chemin du dossier",
+      "folderPathRequired": "Saisissez un chemin de dossier.",
+      "folderDeleted": "Dossier supprimé",
+      "folderRenamed": "Dossier renommé"
     }
   },
   "script": {
@@ -2592,6 +2647,8 @@
     "mail": "E-mail",
     "o": "Organisation",
     "memberOf": "Membre de",
-    "picture": "URL de la photo"
+    "picture": "URL de la photo",
+    "status": "Statut",
+    "userId": "ID d'utilisateur"
   }
 }

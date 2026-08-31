@@ -129,7 +129,7 @@ const store = configureStore({
     authReducer: (state = { permissions: [] }) => state,
     noReducer: (state = {}) => state,
     healthReducer: (state = { health: {} }) => state,
-    logoutAuditReducer: (state = { logoutAuditSucceeded: null }) => state,
+    sessionReducer: (state = { logoutAuditSucceeded: null }) => state,
   }),
 })
 

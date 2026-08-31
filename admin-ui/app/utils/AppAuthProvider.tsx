@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
-import { uuidv4 } from './Util'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
@@ -10,6 +9,8 @@ import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import { updateToast } from 'Redux/features/toastSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { NO_VALID_ROLE } from '@/audit/messages'
 import {
   setPolicyStoreBytes,
   setCedarFailedStatusAfterMaxTries,
@@ -32,20 +33,23 @@ import type { AuthorizationResponse } from '@openid/appauth'
 
 setFlag('IS_LOG', false)
 import {
-  fetchPolicyStore,
+  fetchActivePolicyStoreBytes,
   fetchUserInformation,
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
 import { useTranslation } from 'react-i18next'
 import decodeJwt from '@/utils/jwtDecode'
-import type { UserInfo } from '@/redux/features/types/authTypes'
+import type { UserInfo, UserInfoValue } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
-import { buildSafeLogoutUrl } from '@/utils/urlSecurity'
 import { rememberIntendedRoute, consumeIntendedRoute } from '@/utils/intendedRoute'
+import { markNoRoleSignOut, isNoRoleSignOut, clearNoRoleSignOut } from '@/utils/noRoleSignOut'
+import { markForceLogin, isForceLogin, clearForceLogin } from '@/utils/forceLogin'
+import clearAppStorage from '@/utils/clearAppStorage'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
+import { APP_BASE_URL } from '@/helpers/navigation'
 
-const LOGOUT_DELAY_SECONDS = 10
+const LOGOUT_DELAY_SECONDS = 3
 
 const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
@@ -53,6 +57,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
+  const [signedOutForNoRole] = useState(isNoRoleSignOut)
+  const [userInfoUnavailable, setUserInfoUnavailable] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
   const {
     config: rawConfig,
@@ -62,8 +68,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     hasSession,
   } = useAppSelector((state) => state.authReducer)
   const config = rawConfig as OAuthConfig
-  const configRef = useRef(config)
-  configRef.current = config
 
   const { islicenseCheckResultLoaded, isLicenseValid, isConfigValid, isUnderThresholdLimit } =
     useAppSelector((state) => state.licenseReducer)
@@ -72,15 +76,53 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (!userinfo) return
 
     const roles = userinfo.jansAdminUIRole
-    const hasValidRole = Array.isArray(roles) ? roles.length > 0 : Boolean(roles)
-    if (!hasValidRole) return
+    const isNonEmptyRole = (role: UserInfoValue): boolean =>
+      typeof role === 'string' && role.trim().length > 0
+    const hasValidRole = Array.isArray(roles) ? roles.some(isNonEmptyRole) : isNonEmptyRole(roles)
+
+    if (!hasValidRole) {
+      setShowAdminUI(false)
+      setRoleNotFound(true)
+      dispatch(
+        updateToast(
+          true,
+          'error',
+          t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }),
+        ),
+      )
+      return
+    }
 
     setShowAdminUI(true)
 
     if (!hasSession && userinfo_jwt) {
       dispatch(getAPIAccessToken(userinfo_jwt))
     }
-  }, [dispatch, hasSession, userinfo, userinfo_jwt])
+  }, [dispatch, hasSession, userinfo, userinfo_jwt, t])
+
+  useEffect(() => {
+    if (signedOutForNoRole) {
+      clearNoRoleSignOut()
+    }
+  }, [signedOutForNoRole])
+
+  useEffect(() => {
+    if (!roleNotFound) return undefined
+
+    const timer = setTimeout(() => {
+      markNoRoleSignOut()
+      dispatch(auditLogoutLogs({ message: NO_VALID_ROLE }))
+    }, LOGOUT_DELAY_SECONDS * 1000)
+
+    return () => clearTimeout(timer)
+  }, [roleNotFound, dispatch])
+
+  const handleRetrySignIn = useCallback(() => {
+    clearAppStorage()
+    clearNoRoleSignOut()
+    markForceLogin()
+    window.location.href = APP_BASE_URL
+  }, [])
 
   const hasDispatchedConfigCheck = useRef(false)
   useEffect(() => {
@@ -113,14 +155,10 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     let isMounted = true
 
     if (hasSession) {
-      fetchPolicyStore()
-        .then((policyStoreResponse) => {
+      fetchActivePolicyStoreBytes()
+        .then((policyStoreBytes) => {
           if (!isMounted) return
-          const policyStoreBytes =
-            policyStoreResponse.data && 'responseBytes' in policyStoreResponse.data
-              ? policyStoreResponse.data.responseBytes
-              : undefined
-          if (policyStoreBytes && policyStoreBytes.trim().length > 0) {
+          if (policyStoreBytes) {
             dispatch(setPolicyStoreBytes(policyStoreBytes))
           } else {
             dispatch(setCedarFailedStatusAfterMaxTries())
@@ -150,6 +188,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
 
     if (!isLicenseValid) return
     if (!issuer) return
+    if (userInfoUnavailable) return
+    if (signedOutForNoRole) return
     if (userinfo_jwt || hasSession) return
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
@@ -171,7 +211,9 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         const extras: Record<string, string> = {
           ...(config.acrValues ? { acr_values: config.acrValues } : {}),
           ...additionalParameters,
+          ...(isForceLogin() ? { prompt: 'login' } : {}),
         }
+        clearForceLogin()
         const authRequest = new AuthorizationRequest({
           client_id: config.clientId ?? '',
           redirect_uri: config.redirectUrl ?? '',
@@ -204,6 +246,8 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     location.search,
     location.hash,
     config,
+    userInfoUnavailable,
+    signedOutForNoRole,
   ])
   const [code, setCode] = useState<string | null>(null)
 
@@ -256,7 +300,11 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               })
             })
             .then((value: FetchUserInfoResult) => {
-              if (value === -1) return
+              if (value === -1) {
+                setUserInfoUnavailable(true)
+                dispatch(updateToast(true, 'error', t('messages.user_info_fetch_failed')))
+                return
+              }
               const ujwt = value
 
               const decoded = decodeJwt<UserInfo>(ujwt)
@@ -270,30 +318,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                 }),
               )
 
-              const roles = decoded.jansAdminUIRole
-              const hasValidRole = Array.isArray(roles) ? roles.length > 0 : Boolean(roles)
-
-              if (!hasValidRole) {
-                setShowAdminUI(false)
-                setRoleNotFound(true)
-                const state = uuidv4()
-                const sessionEndpoint = buildSafeLogoutUrl(
-                  authConfigs?.endSessionEndpoint || null,
-                  configRef.current.postLogoutRedirectUri,
-                  state,
-                )
-                dispatch(
-                  updateToast(
-                    true,
-                    'error',
-                    t('messages.no_valid_role_logout', { seconds: LOGOUT_DELAY_SECONDS }),
-                    sessionEndpoint || '',
-                  ),
-                )
-                return
-              }
-
-              setShowAdminUI(true)
               const intendedRoute = consumeIntendedRoute()
               if (intendedRoute) {
                 navigate(intendedRoute, { replace: true })
@@ -336,17 +360,24 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         <GluuErrorModal
           message={'Alert'}
           description={
-            '<p style="text-align: center">The monthly active users exceed the allowed threshold of your license subscription plan. <br /> Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.</p>'
+            'The monthly active users exceed the allowed threshold of your license subscription plan. <br /> Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.'
           }
         />
       )}
       {showAdminUI && children}
-      {!showAdminUI && (
+      {!showAdminUI && signedOutForNoRole && (
+        <GluuErrorModal
+          message={t('roleNotFoundMessage')}
+          description={t('roleNotFoundDescription')}
+          retryLabel={t('tryAgain')}
+          onRetry={handleRetrySignIn}
+        />
+      )}
+      {!showAdminUI && !signedOutForNoRole && (
         <ApiKeyRedirect
           isLicenseValid={isLicenseValid}
           isConfigValid={isConfigValid}
           islicenseCheckResultLoaded={islicenseCheckResultLoaded}
-          roleNotFound={roleNotFound}
         />
       )}
     </React.Fragment>

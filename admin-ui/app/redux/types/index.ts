@@ -127,8 +127,8 @@ type ProfileDetailsState = {
 
 // Session State (logout audit)
 type SessionState = {
-  logoutAuditSucceeded: boolean | null
   landingPath: string | null
+  logoutRequested: boolean
 }
 
 // Auth server plugin state types
@@ -187,7 +187,7 @@ type CoreAppState = {
   toastReducer: ToastState
   profileDetailsReducer: ProfileDetailsState
   cedarPermissions: CedarPermissionsState
-  logoutAuditReducer: SessionState
+  sessionReducer: SessionState
 }
 
 // Admin plugin reducers

@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, use, useMemo } from 'react'
 import { Container, ApiKey } from 'Components'
 import { useTranslation } from 'react-i18next'
-import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import GluuLoader from '../routes/Apps/Gluu/GluuLoader'
 import { useAppSelector } from '@/redux/hooks'
@@ -17,14 +16,12 @@ const UploadSSA = lazy(() => import('./UploadSSA'))
 type ApiKeyRedirectProps = {
   isLicenseValid: boolean
   islicenseCheckResultLoaded: boolean
-  roleNotFound: boolean
   isConfigValid: boolean | null
 }
 
 const ApiKeyRedirect = ({
   isLicenseValid,
   islicenseCheckResultLoaded,
-  roleNotFound,
   isConfigValid,
 }: ApiKeyRedirectProps) => {
   const { t } = useTranslation()
@@ -56,20 +53,12 @@ const ApiKeyRedirect = ({
 
   if (showRedirectingLoader) {
     return (
-      <>
-        <div className={classes.redirectingScreen} aria-live="polite" aria-busy="true">
-          <img className={classes.loaderImage} src={loaderGif} alt="" />
-          <GluuText className={`initial-loader__row ${classes.redirectingText}`}>
-            {t('licenseScreen.redirecting')}
-          </GluuText>
-        </div>
-        {roleNotFound && (
-          <GluuErrorModal
-            message={t('roleNotFoundMessage')}
-            description={t('roleNotFoundDescription')}
-          />
-        )}
-      </>
+      <div className={classes.redirectingScreen} aria-live="polite" aria-busy="true">
+        <img className={classes.loaderImage} src={loaderGif} alt="" />
+        <GluuText className={`initial-loader__row ${classes.redirectingText}`}>
+          {t('licenseScreen.redirecting')}
+        </GluuText>
+      </div>
     )
   }
 
@@ -92,13 +81,6 @@ const ApiKeyRedirect = ({
           <GluuServiceDownModal
             statusCode={backendStatus.statusCode ?? undefined}
             message={backendStatus.errorMessage || t('serviceDownFallback')}
-          />
-        )}
-
-        {roleNotFound && (
-          <GluuErrorModal
-            message={t('roleNotFoundMessage')}
-            description={t('roleNotFoundDescription')}
           />
         )}
       </Container>

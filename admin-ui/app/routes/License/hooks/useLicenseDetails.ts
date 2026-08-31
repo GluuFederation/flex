@@ -10,17 +10,10 @@ import {
 } from 'JansConfigApi'
 import { isFourZeroThreeError } from '@/utils/TokenController'
 import { postUserAction } from '@/redux/api/backend-api'
-import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { updateToast } from '@/redux/features/toastSlice'
 import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
 import { logger } from '@/utils/logger'
-import {
-  API_LICENSE,
-  createSuccessAuditInit,
-  selectAuditContext,
-  DELETION,
-  SESSION_EXPIRED,
-} from '@/audit'
+import { API_LICENSE, createSuccessAuditInit, selectAuditContext, DELETION } from '@/audit'
 import type { RootState } from '@/redux/types'
 import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
@@ -92,7 +85,6 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
       },
       onError: (error: Error) => {
         if (isFourZeroThreeError(error as Parameters<typeof isFourZeroThreeError>[0])) {
-          dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
           return
         }
         const message =

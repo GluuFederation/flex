@@ -1,15 +1,7 @@
 import { redirectSessionExpired } from '../sessionExpiredRedirect'
 import store from '@/redux/store'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
-import { fetchApiTokenWithDefaultScopes, deleteAdminUiSession } from '@/redux/api/backend-api'
 import { SESSION_EXPIRED } from '@/audit/messages'
-
-jest.mock('@/redux/api/backend-api')
-
-const mockedFetchToken = fetchApiTokenWithDefaultScopes as jest.MockedFunction<
-  typeof fetchApiTokenWithDefaultScopes
->
-const mockedDeleteSession = deleteAdminUiSession as jest.MockedFunction<typeof deleteAdminUiSession>
 
 describe('redirectSessionExpired', () => {
   let dispatchSpy: jest.SpyInstance
@@ -21,24 +13,15 @@ describe('redirectSessionExpired', () => {
 
   afterEach(() => dispatchSpy.mockRestore())
 
-  it('dispatches the audit log and cleans up the session', async () => {
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
-    mockedDeleteSession.mockResolvedValue({})
-
-    await redirectSessionExpired()
+  it('dispatches the logout audit with the default message', () => {
+    redirectSessionExpired()
 
     expect(dispatchSpy).toHaveBeenCalledWith(auditLogoutLogs({ message: SESSION_EXPIRED }))
-    expect(mockedFetchToken).toHaveBeenCalled()
-    expect(mockedDeleteSession).toHaveBeenCalledWith('tok')
   })
 
-  it('dispatches with a custom message and swallows a session cleanup failure', async () => {
-    mockedFetchToken.mockResolvedValue({ access_token: 'tok' })
-    mockedDeleteSession.mockRejectedValue(new Error('delete failed'))
-
-    await expect(redirectSessionExpired('custom message')).resolves.toBeUndefined()
+  it('dispatches the logout audit with a custom message', () => {
+    redirectSessionExpired('custom message')
 
     expect(dispatchSpy).toHaveBeenCalledWith(auditLogoutLogs({ message: 'custom message' }))
-    expect(mockedDeleteSession).toHaveBeenCalledWith('tok')
   })
 })

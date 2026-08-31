@@ -430,14 +430,16 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
           {actions.map((action, idx) => {
             if (action.show && !action.show(row)) return null
             const actionLabel = action.ariaLabel ?? action.tooltip ?? t(T_KEYS.FIELDS_ACTIONS)
+            const isDisabled = action.disabled?.(row) ?? false
             return (
               <button
                 key={action.id ?? idx}
                 type="button"
-                className={classes.actionButton}
-                style={action.color ? { color: action.color } : undefined}
+                className={cx(classes.actionButton, isDisabled && classes.actionButtonDisabled)}
+                style={action.color && !isDisabled ? { color: action.color } : undefined}
                 title={action.tooltip}
                 aria-label={actionLabel}
+                disabled={isDisabled}
                 onClick={() => action.onClick(row)}
               >
                 {typeof action.icon === 'string' ? (

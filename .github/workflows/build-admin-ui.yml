@@ -1,4 +1,4 @@
-name: Build Admin UI
+name: "Build: Admin UI"
 
 # Builds admin-ui assets and publishes them to a GitHub release + Maven, or deploys
 # them to an ephemeral easycloud VM. Runnable standalone or via workflow_call.
@@ -692,13 +692,6 @@ jobs:
             if [ "$CONFIG_API" = "active" ]; then
               echo "Flex is up"
               exit 0
-            fi
-            # legacy monolith (unit missing + jans container running) is not flex-linux-setup
-            if ! $SSH "systemctl cat jans-config-api" >/dev/null 2>&1 \
-               && $SSH "docker ps --format '{{.Names}}' 2>/dev/null | grep -q jans"; then
-              echo "::error::VM is running the legacy docker monolith, not flex-linux-setup;" >&2
-              echo "::error::check the easycloud jans.sh.tpl or pass a fixed easycloud_ref." >&2
-              exit 1
             fi
             sleep 60
           done

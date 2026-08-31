@@ -7,7 +7,7 @@ import logoutReducer from '../features/logoutSlice'
 import licenseReducer from '../features/licenseSlice'
 import toastReducer from '../features/toastSlice'
 import cedarPermissionsReducer from '../features/cedarPermissionsSlice'
-import logoutAuditReducer from '../features/sessionSlice'
+import sessionReducer from '../features/sessionSlice'
 
 const appReducers = {
   authReducer,
@@ -16,7 +16,7 @@ const appReducers = {
   licenseReducer,
   toastReducer,
   cedarPermissions: cedarPermissionsReducer,
-  logoutAuditReducer,
+  sessionReducer,
 }
 
 export default appReducers

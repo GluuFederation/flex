@@ -9,8 +9,10 @@ const SESSION_DIALOG_WIDTH = 580
 const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
   (theme, { themeColors }) => ({
     modalContainer: {
-      width: `min(${SESSION_DIALOG_WIDTH}px, ${MODAL.MAX_VW})`,
-      maxWidth: `${SESSION_DIALOG_WIDTH}px`,
+      '&&': {
+        width: `min(${SESSION_DIALOG_WIDTH}px, ${MODAL.MAX_VW})`,
+        maxWidth: `${SESSION_DIALOG_WIDTH}px`,
+      },
     },
     contentWrapper: {
       display: 'flex',

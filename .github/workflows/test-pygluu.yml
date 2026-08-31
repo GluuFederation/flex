@@ -1,0 +1,49 @@
+name: "Test: pygluu"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "pygluu/**"
+      - "tests/**"
+      - "setup.py"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "pygluu/**"
+      - "tests/**"
+      - "setup.py"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install tox
+    - name: Test with pytest
+      run: |
+        tox
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v6.0.0
+      with:
+        file: ./coverage.xml
+        files: ./coverage1.xml,./coverage2.xml
+        directory: ./coverage/reports/
+        flags: unittests
+        env_vars: OS,PYTHON
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true

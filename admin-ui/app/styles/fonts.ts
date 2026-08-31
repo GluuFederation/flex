@@ -1,4 +1,4 @@
-export const fontFamily = "'Mona-Sans', sans-serif"
+export const fontFamily = 'Helvetica, Arial, sans-serif'
 
 export const fontWeights = {
   regular: 400,
@@ -31,6 +31,7 @@ export const letterSpacing = {
   normal: '0.3px',
   wide: '0.32px',
   content: '0.36px',
+  loose: '0.8px',
 } as const
 
 export const lineHeights = {

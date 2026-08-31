@@ -99,9 +99,26 @@ markdown_extensions:
     emoji_index: !!python/name:material.extensions.emoji.twemoji
 
 extra:
-  enable_scarf_pixel: false
-  enable_reo_flag: false
+  enable_scarf_pixel: true
+  enable_reo_flag: true
   generator: false
+  consent:
+    title: Cookie consent
+    description: >-
+      This site uses Scarf and Reo.dev to measure documentation traffic and to
+      understand which content is most useful, so we can improve the docs. These
+      analytics cookies are only set with your consent. Essential cookies needed
+      for the site to function are always active. For details on how your data is
+      handled, see the
+      <a href="https://gluu.org/gluu-privacy-policy/" target="_blank" rel="noopener noreferrer">Gluu Privacy Policy</a>.
+    actions:
+      - accept
+      - reject
+      - manage
+    cookies:
+      analytics:
+        name: Scarf &amp; Reo.dev analytics
+        checked: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/GluuFederation/flex
@@ -119,6 +136,9 @@ nav:
   - 'Installation':
       - 'install/README.md'
       - 'Prerequisites': 'install/flex/prerequisites.md'
+      - 'Quick Start':
+          - 'Docker (All-in-One)': 'install/quick-start/docker.md'
+          - 'Local Kubernetes (Minikube/MicroK8s)': 'install/quick-start/local-k8s.md'
       - 'Helm Deployments':
           - 'install/helm-install/README.md'
           - 'Platform Setup':
@@ -131,9 +151,6 @@ nav:
           - 'Database Setup': 'install/helm-install/database-setup.md'
           - 'Install Flex': 'install/helm-install/install-flex.md'
           - 'Post-Installation': 'install/helm-install/post-install.md'
-      - 'Docker':
-        - 'Quick Start': 'install/docker-install/quick-start.md'
-
       - 'VM Installation':
           - 'install/vm-install/vm-requirements.md'
           - 'Ubuntu': 'install/vm-install/ubuntu.md'

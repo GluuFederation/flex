@@ -19,6 +19,12 @@ const RolePermissionMappingPage = createLazyRoute(
 const CedarlingConfigPage = createLazyRoute(
   () => import('./components/Cedarling/CedarlingConfigPage'),
 )
+const PolicyStoreHistoryPage = createLazyRoute(
+  () => import('./components/Cedarling/PolicyStoreHistoryPage'),
+)
+const ArchiveExplorerPage = createLazyRoute(
+  () => import('./components/Cedarling/ArchiveExplorerPage'),
+)
 const WebhookListPage = createLazyRoute(() => import('./components/Webhook/WebhookListPage'))
 const WebhookFormPage = createLazyRoute(() => import('./components/Webhook/WebhookFormPage'))
 const AuditListPage = createLazyRoute(() => import('../admin/components/Audit/AuditListPage'))
@@ -59,7 +65,7 @@ const pluginMetadata = {
           title: 'menus.settings',
           path: ROUTES.ADMIN_SETTINGS,
           action: CEDAR_ACTIONS.READ,
-          resourceKey: ADMIN_UI_RESOURCES.Settings,
+          resourceKey: CEDARLING_BYPASS,
         },
         {
           title: 'menus.security',
@@ -71,8 +77,8 @@ const pluginMetadata = {
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
             {
-              title: 'menus.securityDropdown.cedarlingConfig',
-              path: ROUTES.ADMIN_CEDARLING_CONFIG,
+              title: 'menus.securityDropdown.policyStoreHistory',
+              path: ROUTES.ADMIN_POLICIES_LIST,
               action: CEDAR_ACTIONS.READ,
               resourceKey: ADMIN_UI_RESOURCES.Security,
             },
@@ -123,7 +129,7 @@ const pluginMetadata = {
       component: SettingsPage,
       path: ROUTES.ADMIN_SETTINGS,
       action: CEDAR_ACTIONS.READ,
-      resourceKey: ADMIN_UI_RESOURCES.Settings,
+      resourceKey: CEDARLING_BYPASS,
     },
 
     {
@@ -134,7 +140,25 @@ const pluginMetadata = {
     },
     {
       component: CedarlingConfigPage,
-      path: ROUTES.ADMIN_CEDARLING_CONFIG,
+      path: ROUTES.ADMIN_POLICIES_CREATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: PolicyStoreHistoryPage,
+      path: ROUTES.ADMIN_POLICIES_LIST,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: ArchiveExplorerPage,
+      path: ROUTES.ADMIN_POLICIES_EDIT_TEMPLATE,
+      action: CEDAR_ACTIONS.WRITE,
+      resourceKey: ADMIN_UI_RESOURCES.Security,
+    },
+    {
+      component: ArchiveExplorerPage,
+      path: ROUTES.ADMIN_POLICIES_VIEW_TEMPLATE,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Security,
     },

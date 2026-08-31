@@ -44,7 +44,6 @@ describe('ApiKeyRedirect', () => {
     const { container } = renderWith({
       isLicenseValid: false,
       islicenseCheckResultLoaded: false,
-      roleNotFound: false,
       isConfigValid: null,
     })
 
@@ -59,7 +58,6 @@ describe('ApiKeyRedirect', () => {
       {
         isLicenseValid: true,
         islicenseCheckResultLoaded: true,
-        roleNotFound: false,
         isConfigValid: true,
       },
       store,
@@ -80,7 +78,6 @@ describe('ApiKeyRedirect', () => {
       {
         isLicenseValid: false,
         islicenseCheckResultLoaded: true,
-        roleNotFound: false,
         isConfigValid: false,
       },
       store,
@@ -99,7 +96,6 @@ describe('ApiKeyRedirect screen arbitration', () => {
     const { container } = renderWith({
       isLicenseValid: false,
       islicenseCheckResultLoaded: true,
-      roleNotFound: false,
       isConfigValid: false,
     })
 
@@ -122,7 +118,6 @@ describe('ApiKeyRedirect screen arbitration', () => {
       {
         isLicenseValid: false,
         islicenseCheckResultLoaded: true,
-        roleNotFound: false,
         isConfigValid: true,
       },
       store,
@@ -134,24 +129,12 @@ describe('ApiKeyRedirect screen arbitration', () => {
     expect(screen.queryByText(/upload ssa here/i)).not.toBeInTheDocument()
   })
 
-  it('surfaces the role error alongside whatever else is showing', () => {
-    renderWith({
-      isLicenseValid: true,
-      islicenseCheckResultLoaded: true,
-      roleNotFound: true,
-      isConfigValid: true,
-    })
-
-    expect(screen.getByText('Unauthorized User')).toBeInTheDocument()
-  })
-
   it('keeps the SSA screen hidden when the session timed out', () => {
     const store = buildStore({ initReducer: { isTimeout: false, isSessionExpired: true } })
     const { container } = renderWith(
       {
         isLicenseValid: false,
         islicenseCheckResultLoaded: false,
-        roleNotFound: false,
         isConfigValid: null,
       },
       store,
@@ -174,7 +157,6 @@ describe('ApiKeyRedirect screen arbitration', () => {
       {
         isLicenseValid: false,
         islicenseCheckResultLoaded: true,
-        roleNotFound: false,
         isConfigValid: null,
       },
       store,

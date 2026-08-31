@@ -26,11 +26,6 @@ export type AuditLog = AuditRecord & {
   payload?: Record<string, JsonValue>
 }
 
-export type HttpErrorLike = {
-  response?: { status?: number }
-  status?: number
-}
-
 export type ApiErrorLike = {
   response?: { data?: { responseMessage?: string; message?: string }; status?: number }
   message?: string

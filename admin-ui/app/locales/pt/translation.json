@@ -94,7 +94,7 @@
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
       "mapping": "Funções e permissões",
-      "cedarlingConfig": "Cedarling"
+      "policyStoreHistory": "Gerenciamento de políticas do Admin UI"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -230,11 +230,20 @@
     "export_csv": "Exportar CSV",
     "finish": "Concluir",
     "search": "Pesquisar",
-    "export": "Exportar"
+    "export": "Exportar",
+    "open": "Abrir",
+    "set_active": "Ativar",
+    "download": "Baixar",
+    "add_file": "Adicionar arquivo",
+    "create": "Criar",
+    "discard": "Descartar",
+    "add_folder": "Adicionar pasta",
+    "rename": "Renomear"
   },
+  "roleNotFoundMessage": "Sessão encerrada",
+  "roleNotFoundDescription": "Sua conta não possui uma função do Admin UI, por isso a sessão foi encerrada. Clique em Tentar novamente para entrar com outra conta, ou contate seu administrador para que atribua uma função.",
+  "tryAgain": "Tentar novamente",
   "serviceDownFallback": "Gluu Flex Admin UI não está recebendo resposta do backend (Jans Config Api).",
-  "roleNotFoundMessage": "Usuário não autorizado",
-  "roleNotFoundDescription": "O usuário conectado não possui um perfil válido. Encerrando sessão do Admin UI",
   "licenseCard": {
     "freeTrial": "Avaliação gratuita",
     "description": "Inicie sua avaliação gratuita para gerenciar e configurar seu servidor de autenticação com interface web simplificada.",
@@ -941,7 +950,12 @@
     "metric": "Métrica",
     "label": "Rótulo",
     "secondary_value": "Valor secundário",
-    "suspicious_ips": "Endereços IP suspeitos"
+    "suspicious_ips": "Endereços IP suspeitos",
+    "filename": "Nome do arquivo",
+    "uploaded": "Enviado",
+    "files": "Arquivos",
+    "size": "Tamanho",
+    "comments": "Comentários"
   },
   "footer": {
     "company_name": "Gluu Inc."
@@ -1008,6 +1022,7 @@
     "select_message_provider_type": "Por favor, selecione o tipo de provedor de mensagens",
     "new_role": "Novo papel",
     "add_webhook": "Adicionar Webhook",
+    "add_policy_store": "Adicionar repositório de políticas",
     "webhook_form_description": "Configure o webhook para receber notificações quando eventos específicos ocorrerem.",
     "no_webhooks_found": "Nenhum webhook encontrado",
     "no_assets_found": "Nenhum recurso encontrado",
@@ -1297,7 +1312,8 @@
     "logging_level_required": "O nível de log é obrigatório",
     "logging_level_invalid": "Nível de log inválido",
     "logging_layout_required": "O formato de log é obrigatório",
-    "logging_layout_invalid": "Formato de log inválido"
+    "logging_layout_invalid": "Formato de log inválido",
+    "user_info_fetch_failed": "Não foi possível obter as informações do utilizador a partir do servidor de autenticação. A autenticação foi interrompida."
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -1534,7 +1550,8 @@
     "valid_request_uri": "Insira um URI de solicitação válido (ex.: https://...)",
     "valid_claim_uri": "Insira um URI de reivindicação válido (ex.: https://...)",
     "valid_uri_pattern": "Insira um URI válido no formato (ex.: https:// ou schema://)",
-    "search_filter": "Filtro de Pesquisa"
+    "search_filter": "Filtro de Pesquisa",
+    "archive_file_path": "ex. policies/new-policy.cedar"
   },
   "titles": {
     "smtp_test_result": "Resultado do teste SMTP",
@@ -1700,7 +1717,9 @@
     "error_intelligence": "Tipos de erro",
     "velocity_watch": "Tentativas por usuário",
     "device_fingerprint_shift": "Tipos de autenticador",
-    "threat_origins_ips": "Origens de ameaças por IP"
+    "threat_origins_ips": "Origens de ameaças por IP",
+    "policy_store_history": "Gerenciamento de políticas do Admin UI",
+    "policy_store_contents": "Conteúdo do repositório de políticas"
   },
   "options": {
     "admin": "ADMIN",
@@ -1753,7 +1772,8 @@
     "jwt": "JWT",
     "reference": "Referência",
     "expired": "EXPIRADO",
-    "register": "REGISTRO"
+    "register": "REGISTRO",
+    "backup": "BACKUP"
   },
   "documentation": {
     "fido": {
@@ -2442,18 +2462,15 @@
       "auditPolicyStoreUrlUpdated": "URL do armazenamento de políticas atualizada",
       "policyStoreUrlInvalidError": "Por favor, insira uma URL válida",
       "useRemotePolicyStore": "Recomenda-se defini-lo como Default para produção. Se definido como Default, utilizará o armazenamento do Admin-UI para autorização do Cedarling. Ative o modo Default e use o botão de atualização para armazenar ou atualizar as políticas do GitHub no servidor Admin-UI.",
-      "uploadConfirmTitle": "Confirmar envio do repositório de políticas",
-      "uploadConfirmMessage": "Após o envio e processamento bem-sucedidos do repositório de políticas, você será desconectado da interface de administração.",
+      "uploadConfirmMessage": "O novo repositório de políticas é criado inativo. Ative-o no histórico de repositórios de políticas quando estiver pronto para aplicá-lo.",
       "auditSetPolicyStoreAsDefault": "Definir repositório de políticas padrão",
       "selectCjarFile": "Selecione um arquivo .cjar de repositório de políticas para enviar",
       "uploadPolicyStore": "Enviar",
-      "downloadPolicyStore": "Baixar",
-      "policyStoreDownloaded": "Repositório de políticas baixado com sucesso",
-      "noPolicyStoreToDownload": "Nenhum repositório de políticas disponível para download",
       "uploadFailed": "Falha ao enviar o repositório de políticas",
-      "downloadFailed": "Falha ao baixar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
-      "auditPolicyStoreUploaded": "Repositório de políticas enviado"
+      "auditPolicyStoreUploaded": "Repositório de políticas enviado",
+      "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração",
+      "uploadSuccess": "Repositório de políticas enviado com sucesso."
     },
     "mappings": {
       "note_prefix": "Configurar",
@@ -2490,6 +2507,44 @@
       "jansState": "Estado Jans",
       "jansUsrDN": "DN de Usuário Jans",
       "permissionGrantedMap": "Mapa de Permissões Concedidas"
+    },
+    "policyStore": {
+      "noPolicyStores": "Nenhum repositório de políticas encontrado.",
+      "activateWarning": "Ativar este repositório de políticas desativa o atual. Todas as permissões serão reavaliadas no próximo login.",
+      "deleteWarning": "Isto exclui permanentemente o repositório de políticas. Não pode ser desfeito.",
+      "activateSuccess": "Repositório de políticas ativado com sucesso.",
+      "activateFailed": "Falha ao ativar o repositório de políticas.",
+      "deleteSuccess": "Repositório de políticas excluído com sucesso.",
+      "deleteFailed": "Falha ao excluir o repositório de políticas.",
+      "downloadFailed": "Falha ao baixar o repositório de políticas.",
+      "auditActivated": "Repositório de políticas ativado",
+      "auditDeleted": "Repositório de políticas excluído",
+      "archiveUnreadable": "Não foi possível ler este arquivo de repositório de políticas.",
+      "fileSaved": "Arquivo salvo. Baixe o arquivo compactado para manter as alterações.",
+      "fileDeleted": "Arquivo removido do arquivo compactado.",
+      "filePathRequired": "Informe um caminho de arquivo.",
+      "filePathPlaceholder": "Por exemplo policies/AdminCanManageService.cedar",
+      "filePathLabel": "Caminho do arquivo",
+      "resizeFileList": "Redimensionar a lista de arquivos",
+      "fileAlreadyExists": "Já existe um arquivo com esse caminho.",
+      "unsavedChangesNote": "(Ainda não baixado)",
+      "discardChangesTitle": "Descartar alterações não salvas?",
+      "discardChangesWarning": "Suas edições não foram baixadas. Sair desta página as descarta.",
+      "binaryFileNotice": "Este arquivo não é de texto e não pode ser editado aqui.",
+      "activeStoreReadOnly": "O repositório de políticas ativo é somente leitura. Baixe-o, edite a cópia e depois envie-a como um novo repositório de políticas.",
+      "selectFileToView": "Selecione um arquivo para ver o conteúdo.",
+      "activateConfirmTitle": "Confirmar ativação do repositório de políticas",
+      "activateRestartWarning": "Ativar este repositório de políticas reinicia o sistema. Ao aceitar, os webhooks associados são acionados e você será desconectado do Admin UI assim que o processamento terminar.",
+      "restartNotice": "O sistema será reiniciado em {{seconds}} segundos. Você será desconectado do Admin UI.",
+      "deleteConfirmTitle": "Confirmar exclusão do repositório de políticas",
+      "folderPathPlaceholder": "ex. policies",
+      "folderAdded": "Pasta adicionada",
+      "fileRenamed": "Ficheiro renomeado",
+      "storeRoot": "Raiz do armazenamento",
+      "folderPathLabel": "Caminho da pasta",
+      "folderPathRequired": "Introduza um caminho de pasta.",
+      "folderDeleted": "Pasta eliminada",
+      "folderRenamed": "Pasta renomeada"
     }
   },
   "script": {
@@ -2577,7 +2632,9 @@
     "mail": "E-mail",
     "o": "Organização",
     "memberOf": "Membro de",
-    "picture": "URL da foto"
+    "picture": "URL da foto",
+    "status": "Status",
+    "userId": "ID do usuário"
   },
   "Nickname": "Apelido",
   "Username": "Nome de Usuário"
