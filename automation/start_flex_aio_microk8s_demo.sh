@@ -13,7 +13,7 @@ GLUU_CI_CD_RUN=$5
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
-if ! [[ $GLUU_FQDN == *"."*"."* ]]; then
+if ! [[ $GLUU_FQDN =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?){2,}$ ]]; then
   echo "[E] Hostname provided is invalid or empty.
     Please enter a FQDN with the format demoexample.gluu.org"
   exit 1
@@ -50,10 +50,11 @@ sudo apt-get update
 sudo snap install microk8s --classic
 sudo microk8s.status --wait-ready
 sudo microk8s.enable dns ingress hostpath-storage helm3
-sudo microk8s config | sudo tee ~/.kube/config > /dev/null
+mkdir -p -m 0700 "$HOME/.kube"
+sudo microk8s config | sudo install -m 0600 /dev/stdin "$HOME/.kube/config"
 sudo snap alias microk8s.kubectl kubectl
 sudo snap alias microk8s.helm3 helm
-KUBECONFIG=~/.kube/config
+KUBECONFIG="$HOME/.kube/config"
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
@@ -130,21 +131,23 @@ sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
 sudo helm install flex gluu-flex/gluu-all-in-one -n gluu -f override.yaml --kubeconfig="$KUBECONFIG" --version="$GLUU_VERSION"
 
-cat << EOF > testendpoints.sh
+cat << 'EOF' > testendpoints.sh
+#!/bin/bash
+set -euo pipefail
+FQDN="$1"
 sudo microk8s config > config
-KUBECONFIG="$PWD"/config
+export KUBECONFIG="$PWD/config"
 echo -e "Testing openid-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/openid-configuration
+curl --fail --silent --show-error -k "https://$FQDN/.well-known/openid-configuration"
 echo -e "Testing scim-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/scim-configuration
+curl --fail --silent --show-error -k "https://$FQDN/.well-known/scim-configuration"
 echo -e "Testing fido2-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
+curl --fail --silent --show-error -k "https://$FQDN/.well-known/fido2-configuration"
 echo -e "Testing Admin UI endpoint.. \n"
-curl -k -s -o /dev/null -w "%{http_code}\n" https://$GLUU_FQDN/admin
-cd ..
+curl --fail --silent --show-error -k -o /dev/null "https://$FQDN/admin"
 EOF
 echo "Waiting for Gluu Flex all-in-one to come up. Please do not cancel out. This can take up to 10 minutes."
 sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=600s deploy/flex-gluu-all-in-one --kubeconfig="$KUBECONFIG" || echo "all-in-one deployment is not ready. Running tests anyways..."
-sudo bash testendpoints.sh
-echo -e "You may re-execute 'bash testendpoints.sh' to do a quick test to check the openid-configuration endpoint."
+sudo bash testendpoints.sh "$GLUU_FQDN"
+echo -e "You may re-execute 'sudo bash testendpoints.sh $GLUU_FQDN' to do a quick test to check the openid-configuration endpoint."
 echo -e "Add '$EXT_IP $GLUU_FQDN' to your /etc/hosts file if the FQDN is not registered, then browse to https://$GLUU_FQDN/admin"
