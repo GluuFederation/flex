@@ -72,7 +72,7 @@ The following environment variables are supported by the container:
 - `CN_SQL_DB_USER`: Username to interact with SQL backend (default to `jans`).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
-- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (default to `basic`). Note, changing the value require restart to jans-config-api.
+- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (choose `basic` or `agama_org.gluu.agama.pw.main`; default to `agama_org.gluu.agama.pw.main`). Note, changing the value require restart to jans-config-api.
 
 ### Hybrid mapping
 

@@ -65,8 +65,8 @@ NIGHTLY_BADGE = "0.0.0--nightly"
 EXCLUDE_NIGHTLY = {
     ".github/workflows/build-docs.yml",
     ".github/workflows/build-packages.yml",
-    ".github/workflows/docker_build_image.yml",
-    ".github/workflows/update_janssen_helm_chart.yml",
+    ".github/workflows/build-docker-images.yml",
+    ".github/workflows/ops-sync-helm-chart.yml",
     "CHANGELOG.md",
 }
 

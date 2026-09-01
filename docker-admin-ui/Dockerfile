@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=fb97e1d4b6e0bd272fc99996e413bee52c1edc72
+ENV FLEX_SOURCE_VERSION=3f30cb6b208433d0ba65e05344980224bd4acfd8
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -62,7 +62,7 @@ WORKDIR /
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2025-11-06 18:51'
+ENV GLUU_BUILD_DATE='2026-08-24T23:07:11Z'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
 # v* tag builds attach to that tag's release; everything else (main, nightly, branches)
@@ -76,6 +76,20 @@ RUN case "${ADMIN_UI_VERSION}" in \
     && mkdir -p /opt/flex/admin-ui \
     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
     && rm -rf /tmp/admin-ui.tar.gz
+
+# add default policy store (for admin-ui and cedarling integration) from https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore
+ARG AUI_POLICY_VERSION=v2.0.0
+ARG AUI_POLICY_FILE=admin_ui_2_0.cjar
+
+WORKDIR /app/templates/admin-ui
+
+RUN wget -nv "https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE}" \
+    && wget -nv "https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/releases/download/${AUI_POLICY_VERSION}/${AUI_POLICY_FILE}.sha256sum" \
+    && sha256sum -c admin_ui_2_0.cjar.sha256sum \
+    && rm -f admin_ui_2_0.cjar.sha256sum \
+    && mv admin_ui_2_0.cjar policy-store.cjar
+
+WORKDIR /
 
 # ======
 # Python

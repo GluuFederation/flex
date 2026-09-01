@@ -3,6 +3,8 @@ import logging.config
 import os
 from uuid import uuid4
 from functools import cached_property
+from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 from jans.pycloudlib import get_manager
 from jans.pycloudlib import wait_for_persistence
@@ -11,11 +13,15 @@ from jans.pycloudlib.persistence.sql import SqlClient
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.utils import get_random_chars
+from jans.pycloudlib.utils import generate_base64_contents
 
 from settings import LOGGING_CONFIG
+from utils import generalized_time_utc
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
+
+AUI_POLICY_STORE_INUM = "86007dee-fc3f-4668-8323-c4d2836748da"
 
 
 def main():
@@ -85,7 +91,7 @@ class PersistenceSetup:
 
         ctx = {
             "hostname": hostname,
-            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
+            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "agama_org.gluu.agama.pw.main"),
             "jans_auth_base_url": os.environ.get("CN_AUTH_BASE_URL", f"https://{hostname}"),
         }
 
@@ -133,12 +139,26 @@ class PersistenceSetup:
             "org_id": "",
         })
 
+        ctx.update({
+            "admin_ui_policy_store_inum": AUI_POLICY_STORE_INUM,
+            # policy store is now saved into persistence
+            # (previously `/opt/jans/jetty/jans-config-api/custom/config/adminUI/policy-store.cjar` file)
+            "admin_ui_policy_store_base64": configure_policy_store(hostname),
+            "admin_ui_policy_store_creation_date": generalized_time_utc(),
+            "admin_inum": self.manager.config.get("admin_inum"),
+        })
+
         # finalized contexts
         return ctx
 
     @cached_property
     def ldif_files(self):
-        filenames = ["clients.ldif", "aui_webhook.ldif", "adminUIResourceScopesMapping.ldif"]
+        filenames = [
+            "clients.ldif",
+            "aui_webhook.ldif",
+            "adminUIResourceScopesMapping.ldif",
+            "adminUIPolicyStore.ldif",
+        ]
         return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
@@ -286,6 +306,35 @@ def render_env_config(manager):
 
     with open("/opt/flex/admin-ui/dist/env-config.js", "w") as fw:
         fw.write(txt)
+
+
+def configure_policy_store(hostname):
+    logger.info("Configuring admin-ui policy store")
+
+    policy_file = "trusted-issuers/GluuFlexAdminUI.json"
+    policy_file_found = False
+
+    with TemporaryDirectory() as tmp_dir:
+        src_archive_path = "/app/templates/admin-ui/policy-store.cjar"
+        tmp_archive_path = os.path.join(tmp_dir, "policy-store.cjar")
+
+        with ZipFile(src_archive_path, "r") as src_archive, ZipFile(tmp_archive_path, "w", compression=src_archive.compression) as tmp_archive:
+            for item in src_archive.infolist():
+                if item.filename == policy_file:
+                    policy_file_found = True
+                    policy = src_archive.read(item.filename).decode()
+                    data = policy.replace("your-openid-provider.server", hostname).encode()
+                else:
+                    data = src_archive.read(item.filename)
+
+                # copy item and preserve the original compression
+                tmp_archive.writestr(item, data, compress_type=item.compress_type)
+
+        if not policy_file_found:
+            raise FileNotFoundError(f"The required policy file {policy_file} is not found in {src_archive_path} archive.")
+
+        with open(tmp_archive_path, "rb") as f:
+            return generate_base64_contents(f.read())
 
 
 if __name__ == "__main__":

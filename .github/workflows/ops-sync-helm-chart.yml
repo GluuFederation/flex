@@ -1,4 +1,4 @@
-name: updatejanshelmchart
+name: "Ops: Sync Helm Chart"
 on:
   workflow_dispatch:
   push:

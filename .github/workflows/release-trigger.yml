@@ -1,4 +1,4 @@
-name: "Release: bump & tag"
+name: "Release: Bump & Tag"
 
 # Manually cut a release WITHOUT ever committing the version bump to main.
 #
