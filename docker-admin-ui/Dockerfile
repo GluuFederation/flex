@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=fb97e1d4b6e0bd272fc99996e413bee52c1edc72
+ENV FLEX_SOURCE_VERSION=7a45cf2c280330fe62eb31d9b46dfb478ee14e66
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -62,7 +62,7 @@ WORKDIR /
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2025-11-06 18:51'
+ENV GLUU_BUILD_DATE='2026-08-24T23:07:11Z'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
 # v* tag builds attach to that tag's release; everything else (main, nightly, branches)
