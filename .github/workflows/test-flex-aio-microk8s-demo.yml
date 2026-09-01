@@ -59,6 +59,11 @@ jobs:
           sudo microk8s kubectl -n gluu get pods -o wide || true
           sudo microk8s kubectl -n gluu describe pods || true
           sudo microk8s kubectl -n gluu logs -l app=flex-gluu-all-in-one-aio --tail=1000 || true
+          sudo microk8s kubectl get ingressclass -o wide || true
+          sudo microk8s kubectl -n gluu get ingress -o wide || true
+          sudo microk8s kubectl -n gluu describe ingress || true
+          sudo microk8s kubectl -n ingress-nginx get pods -o wide || true
+          sudo microk8s kubectl -n ingress-nginx logs -l app.kubernetes.io/component=controller --tail=500 || true
 
       - name: Report to Zulip
         if: always()

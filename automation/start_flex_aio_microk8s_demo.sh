@@ -49,7 +49,7 @@ fi
 sudo apt-get update
 sudo snap install microk8s --classic
 sudo microk8s.status --wait-ready
-sudo microk8s.enable dns ingress hostpath-storage helm3
+sudo microk8s.enable dns hostpath-storage helm3
 mkdir -p "$HOME/.kube"
 chmod 700 "$HOME/.kube"
 sudo microk8s config | sudo install -m 0600 /dev/stdin "$HOME/.kube/config"
@@ -57,6 +57,20 @@ sudo snap alias microk8s.kubectl kubectl
 sudo snap alias microk8s.helm3 helm
 KUBECONFIG="$HOME/.kube/config"
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
+
+# microk8s 1.35's built-in "ingress" addon runs Traefik, which doesn't honor
+# the nginx-specific rewrite/regex annotations this chart's Ingress resources
+# rely on. Install the real ingress-nginx controller instead, bound directly
+# to the node's 80/443 via hostPort since there's no cloud LB here.
+sudo helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+sudo helm repo update
+sudo helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx --create-namespace --kubeconfig="$KUBECONFIG" \
+  --set controller.hostPort.enabled=true \
+  --set controller.service.type=ClusterIP \
+  --set controller.ingressClassResource.name=nginx \
+  --set controller.ingressClassResource.default=true
+sudo microk8s.kubectl -n ingress-nginx wait --for=condition=available --timeout=180s deploy/ingress-nginx-controller --kubeconfig="$KUBECONFIG"
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   DB_MANIFEST="mysql.yaml"
@@ -126,9 +140,8 @@ casa:
     casaEnabled: true
 nginx-ingress:
   ingress:
-    # microk8s 1.35+ ingress addon defaults to Traefik; its "nginx" IngressClass
-    # is a compatibility shim that understands the nginx-style annotations this
-    # chart renders (the "public"/"traefik" classes don't).
+    # matches controller.ingressClassResource.name set on the ingress-nginx
+    # install above
     ingressClassName: nginx
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
