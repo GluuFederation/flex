@@ -137,6 +137,7 @@ nav:
       - 'install/README.md'
       - 'Prerequisites': 'install/flex/prerequisites.md'
       - 'Quick Start':
+          - 'MicroK8s (All-in-One)': 'install/quick-start/microk8s-aio.md'
           - 'Docker (All-in-One)': 'install/quick-start/docker.md'
           - 'Local Kubernetes (Minikube/MicroK8s)': 'install/quick-start/local-k8s.md'
       - 'Helm Deployments':

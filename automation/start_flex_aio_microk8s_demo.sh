@@ -1,7 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-# get script directory
 basedir=$(dirname "$(readlink -f -- "$0")")
 
 GLUU_FQDN=$1
@@ -49,7 +48,7 @@ fi
 sudo apt-get update
 sudo snap install microk8s --classic
 sudo microk8s.status --wait-ready
-sudo microk8s.enable dns ingress hostpath-storage helm3
+sudo microk8s.enable dns hostpath-storage helm3
 mkdir -p "$HOME/.kube"
 chmod 700 "$HOME/.kube"
 sudo microk8s config | sudo install -m 0600 /dev/stdin "$HOME/.kube/config"
@@ -57,6 +56,18 @@ sudo snap alias microk8s.kubectl kubectl
 sudo snap alias microk8s.helm3 helm
 KUBECONFIG="$HOME/.kube/config"
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
+
+# microk8s's built-in ingress addon runs Traefik, which doesn't honor this
+# chart's nginx-specific rewrite/regex annotations; install real ingress-nginx.
+sudo helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+sudo helm repo update
+sudo helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx --create-namespace --kubeconfig="$KUBECONFIG" \
+  --set controller.hostPort.enabled=true \
+  --set controller.service.type=ClusterIP \
+  --set controller.ingressClassResource.name=nginx \
+  --set controller.ingressClassResource.default=true
+sudo microk8s.kubectl -n ingress-nginx wait --for=condition=available --timeout=180s deploy/ingress-nginx-controller --kubeconfig="$KUBECONFIG"
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   DB_MANIFEST="mysql.yaml"
@@ -126,7 +137,7 @@ casa:
     casaEnabled: true
 nginx-ingress:
   ingress:
-    ingressClassName: public
+    ingressClassName: nginx
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
@@ -141,14 +152,15 @@ chmod 600 "$KUBECONFIG"
 trap 'rm -f "$KUBECONFIG"' EXIT
 sudo microk8s config > "$KUBECONFIG"
 export KUBECONFIG
+CURL_RETRY_OPTS=(--retry 10 --retry-delay 5 --retry-connrefused)
 echo -e "Testing openid-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/openid-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/openid-configuration"
 echo -e "Testing scim-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/scim-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/scim-configuration"
 echo -e "Testing fido2-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/fido2-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/fido2-configuration"
 echo -e "Testing Admin UI endpoint.. \n"
-curl --fail --silent --show-error -k -o /dev/null "https://$FQDN/admin"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" -o /dev/null "https://$FQDN/admin"
 EOF
 echo "Waiting for Gluu Flex all-in-one to come up. Please do not cancel out. This can take up to 10 minutes."
 sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=600s deploy/flex-gluu-all-in-one --kubeconfig="$KUBECONFIG" || echo "all-in-one deployment is not ready. Running tests anyways..."
