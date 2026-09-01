@@ -1,0 +1,77 @@
+name: "Test: Flex AIO microk8s demo"
+
+# Runs automation/start_flex_aio_microk8s_demo.sh end-to-end on a GitHub-hosted
+# runner and reports pass/fail to Zulip.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'flex-all-in-one image tag to test'
+        required: false
+        type: string
+        default: '0.0.0-nightly'
+  schedule:
+    - cron: "0 2 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - 'automation/start_flex_aio_microk8s_demo.sh'
+      - 'automation/mysql.yaml'
+      - 'automation/pgsql.yaml'
+      - 'charts/gluu-all-in-one/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        persistence: [MYSQL, PGSQL]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FQDN: flex-aio-microk8s-demo.gluu.org
+      VERSION: ${{ inputs.version || '0.0.0-nightly' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Point demo FQDN at localhost
+        run: echo "127.0.0.1 $FQDN" | sudo tee -a /etc/hosts
+
+      - name: Run flex AIO microk8s demo
+        id: run_demo
+        run: |
+          sudo bash automation/start_flex_aio_microk8s_demo.sh \
+            "$FQDN" \
+            "${{ matrix.persistence }}" \
+            "$VERSION" \
+            "127.0.0.1" \
+            "true"
+
+      - name: Collect diagnostics
+        if: always()
+        run: |
+          sudo microk8s kubectl -n gluu get pods -o wide || true
+          sudo microk8s kubectl -n gluu describe pods || true
+          sudo microk8s kubectl -n gluu logs -l app=flex-gluu-all-in-one-aio --tail=1000 || true
+
+      - name: Report to Zulip
+        if: always()
+        continue-on-error: true
+        uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5  # v1
+        with:
+          api-key: ${{ secrets.ZULIP_API_KEY }}
+          email: "git-gluu@gluu.org"
+          organization-url: "https://chat.gluu.org"
+          to: "bot_reporter"
+          type: "stream"
+          topic: "flex-aio-microk8s-demo"
+          content: |
+            **Flex AIO microk8s demo (${{ matrix.persistence }}, ${{ env.VERSION }})**: ${{ steps.run_demo.outcome == 'success' && '✅ passed' || '❌ failed' }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Ref: `${{ github.ref_name }}` @ `${{ github.sha }}`
