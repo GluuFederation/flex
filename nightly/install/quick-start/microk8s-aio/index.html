@@ -12,28 +12,28 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/nightly/admin/kubernetes-ops/">
+        <link rel="canonical" href="https://docs.gluu.org/nightly/install/quick-start/microk8s-aio/">
       
       
-        <link rel="prev" href="../config/">
+        <link rel="prev" href="../../flex/prerequisites/">
       
       
-        <link rel="next" href="upgrade/">
+        <link rel="next" href="../docker/">
       
       
-      <link rel="icon" href="../../assets/logo/favicon.ico">
+      <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>Operation Guide - Gluu Flex Documentation</title>
+        <title>MicroK8s (All-in-One) - Gluu Flex Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,13 +52,13 @@
       
     
     
-      <link rel="stylesheet" href="../../css/timeago.css">
+      <link rel="stylesheet" href="../../../css/timeago.css">
     
-      <link rel="stylesheet" href="../../css/tabs.css">
+      <link rel="stylesheet" href="../../../css/tabs.css">
     
-      <link rel="stylesheet" href="../../stylesheets/mermaid-extra.css">
+      <link rel="stylesheet" href="../../../stylesheets/mermaid-extra.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#operation-guide" class="md-skip">
+        <a href="#microk8s-quick-start-all-in-one" class="md-skip">
           Skip to content
         </a>
       
@@ -99,12 +99,12 @@
             <div class="md-banner__inner md-grid md-typeset">
               
   You're not viewing the latest version.
-  <a href="../../..">
+  <a href="../../../..">
     <strong>Click here to go to latest.</strong>
   </a>
 
             </div>
-            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
           </aside>
         
       </div>
@@ -116,9 +116,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+    <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../assets/logo/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Operation Guide
+              MicroK8s (All-in-One)
             
           </span>
         </div>
@@ -254,7 +254,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../.." class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../openbanking/" class="md-tabs__link">
+        <a href="../../../openbanking/" class="md-tabs__link">
           
   
   
@@ -298,7 +298,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../solo/solo-getting-started/" class="md-tabs__link">
+        <a href="../../../solo/solo-getting-started/" class="md-tabs__link">
           
   
   
@@ -340,9 +340,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+    <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../assets/logo/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     Gluu Flex Documentation
@@ -401,7 +401,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../.." class="md-nav__link ">
+            <a href="../../.." class="md-nav__link ">
               
   
   
@@ -433,6 +433,8 @@
                 
   
   
+    
+  
   
   
     
@@ -459,15 +461,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../install/" class="md-nav__link ">
+            <a href="../../" class="md-nav__link ">
               
   
   
@@ -486,7 +488,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
             Installation
@@ -502,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/flex/prerequisites/" class="md-nav__link">
+      <a href="../../flex/prerequisites/" class="md-nav__link">
         
   
   
@@ -522,8 +524,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -540,11 +544,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
@@ -560,7 +564,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_2_3">
             <span class="md-nav__icon md-icon"></span>
             Quick Start
@@ -571,10 +575,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../install/quick-start/microk8s-aio/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    MicroK8s (All-in-One)
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -585,6 +611,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Flex
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall-remove-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstall / Remove Flex
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -597,7 +697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/quick-start/docker/" class="md-nav__link">
+      <a href="../docker/" class="md-nav__link">
         
   
   
@@ -620,7 +720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/quick-start/local-k8s/" class="md-nav__link">
+      <a href="../local-k8s/" class="md-nav__link">
         
   
   
@@ -682,7 +782,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../install/helm-install/" class="md-nav__link ">
+            <a href="../../helm-install/" class="md-nav__link ">
               
   
   
@@ -770,7 +870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/prerequisites/amazon-eks/" class="md-nav__link">
+      <a href="../../helm-install/prerequisites/amazon-eks/" class="md-nav__link">
         
   
   
@@ -793,7 +893,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/prerequisites/google-gke/" class="md-nav__link">
+      <a href="../../helm-install/prerequisites/google-gke/" class="md-nav__link">
         
   
   
@@ -816,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/prerequisites/microsoft-aks/" class="md-nav__link">
+      <a href="../../helm-install/prerequisites/microsoft-aks/" class="md-nav__link">
         
   
   
@@ -839,7 +939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/prerequisites/local/" class="md-nav__link">
+      <a href="../../helm-install/prerequisites/local/" class="md-nav__link">
         
   
   
@@ -862,7 +962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/prerequisites/rancher/" class="md-nav__link">
+      <a href="../../helm-install/prerequisites/rancher/" class="md-nav__link">
         
   
   
@@ -893,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/ingress-setup/" class="md-nav__link">
+      <a href="../../helm-install/ingress-setup/" class="md-nav__link">
         
   
   
@@ -916,7 +1016,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/database-setup/" class="md-nav__link">
+      <a href="../../helm-install/database-setup/" class="md-nav__link">
         
   
   
@@ -939,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/install-flex/" class="md-nav__link">
+      <a href="../../helm-install/install-flex/" class="md-nav__link">
         
   
   
@@ -962,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/helm-install/post-install/" class="md-nav__link">
+      <a href="../../helm-install/post-install/" class="md-nav__link">
         
   
   
@@ -1044,7 +1144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/vm-install/vm-requirements/" class="md-nav__link">
+      <a href="../../vm-install/vm-requirements/" class="md-nav__link">
         
   
   
@@ -1067,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/vm-install/ubuntu/" class="md-nav__link">
+      <a href="../../vm-install/ubuntu/" class="md-nav__link">
         
   
   
@@ -1090,7 +1190,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/vm-install/rhel/" class="md-nav__link">
+      <a href="../../vm-install/rhel/" class="md-nav__link">
         
   
   
@@ -1113,7 +1213,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/vm-install/suse/" class="md-nav__link">
+      <a href="../../vm-install/suse/" class="md-nav__link">
         
   
   
@@ -1144,7 +1244,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/eol/" class="md-nav__link">
+      <a href="../../eol/" class="md-nav__link">
         
   
   
@@ -1172,8 +1272,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1200,15 +1298,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../../admin/" class="md-nav__link ">
               
   
   
@@ -1227,7 +1325,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Administration
@@ -1243,7 +1341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../config/" class="md-nav__link">
+      <a href="../../../admin/config/" class="md-nav__link">
         
   
   
@@ -1263,8 +1361,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1285,15 +1381,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../../admin/kubernetes-ops/" class="md-nav__link ">
               
   
   
@@ -1306,13 +1402,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3_3">
             <span class="md-nav__icon md-icon"></span>
             K8s Operations Guide
@@ -1328,7 +1424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="upgrade/" class="md-nav__link">
+      <a href="../../../admin/kubernetes-ops/upgrade/" class="md-nav__link">
         
   
   
@@ -1351,7 +1447,7 @@
   
   
     <li class="md-nav__item">
-      <a href="admin-ui-private/" class="md-nav__link">
+      <a href="../../../admin/kubernetes-ops/admin-ui-private/" class="md-nav__link">
         
   
   
@@ -1439,7 +1535,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/introduction/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/introduction/" class="md-nav__link">
         
   
   
@@ -1507,7 +1603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/auth-server-interaction/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/auth-server-interaction/" class="md-nav__link">
         
   
   
@@ -1585,7 +1681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/policy-store-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/policy-store-menu/" class="md-nav__link">
         
   
   
@@ -1608,7 +1704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/access-control/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/access-control/" class="md-nav__link">
         
   
   
@@ -1639,7 +1735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/configuration/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/configuration/" class="md-nav__link">
         
   
   
@@ -1662,7 +1758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/logs/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/logs/" class="md-nav__link">
         
   
   
@@ -1750,7 +1846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/left-nav-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/left-nav-menu/" class="md-nav__link">
         
   
   
@@ -1773,7 +1869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/home/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/home/" class="md-nav__link">
         
   
   
@@ -1796,7 +1892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/auth-server-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/auth-server-menu/" class="md-nav__link">
         
   
   
@@ -1819,7 +1915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/user-management-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/user-management-menu/" class="md-nav__link">
         
   
   
@@ -1842,7 +1938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/scripts/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/scripts/" class="md-nav__link">
         
   
   
@@ -1865,7 +1961,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/user-claims/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/user-claims/" class="md-nav__link">
         
   
   
@@ -1888,7 +1984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/services-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/services-menu/" class="md-nav__link">
         
   
   
@@ -1911,7 +2007,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/smtp-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/smtp-menu/" class="md-nav__link">
         
   
   
@@ -1934,7 +2030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/scim-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/scim-menu/" class="md-nav__link">
         
   
   
@@ -1957,7 +2053,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/fido-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
         
   
   
@@ -1980,7 +2076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/jans-lock-menu/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/jans-lock-menu/" class="md-nav__link">
         
   
   
@@ -2011,7 +2107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/faq/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/faq/" class="md-nav__link">
         
   
   
@@ -2067,7 +2163,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../recipes/" class="md-nav__link ">
+            <a href="../../../admin/recipes/" class="md-nav__link ">
               
   
   
@@ -2102,7 +2198,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../recipes/testing-flex-saml-sso-sptest/" class="md-nav__link">
+      <a href="../../../admin/recipes/testing-flex-saml-sso-sptest/" class="md-nav__link">
         
   
   
@@ -2125,7 +2221,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../recipes/add-claims-to-token/" class="md-nav__link">
+      <a href="../../../admin/recipes/add-claims-to-token/" class="md-nav__link">
         
   
   
@@ -2156,7 +2252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gluu-migration/" class="md-nav__link">
+      <a href="../../../admin/gluu-migration/" class="md-nav__link">
         
   
   
@@ -2212,7 +2308,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/kubernetes/" class="md-nav__link ">
+            <a href="../../../reference/kubernetes/" class="md-nav__link ">
               
   
   
@@ -2247,7 +2343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/kubernetes/helm-chart/" class="md-nav__link">
+      <a href="../../../reference/kubernetes/helm-chart/" class="md-nav__link">
         
   
   
@@ -2270,7 +2366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
+      <a href="../../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
         
   
   
@@ -2335,7 +2431,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../openbanking/" class="md-nav__link ">
+            <a href="../../../openbanking/" class="md-nav__link ">
               
   
   
@@ -2417,7 +2513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/install-cn/" class="md-nav__link">
+      <a href="../../../openbanking/install-cn/" class="md-nav__link">
         
   
   
@@ -2440,7 +2536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/install-vm/" class="md-nav__link">
+      <a href="../../../openbanking/install-vm/" class="md-nav__link">
         
   
   
@@ -2520,7 +2616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/configuration-instructions/" class="md-nav__link">
+      <a href="../../../openbanking/configuration-instructions/" class="md-nav__link">
         
   
   
@@ -2543,7 +2639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/curl/" class="md-nav__link">
+      <a href="../../../openbanking/curl/" class="md-nav__link">
         
   
   
@@ -2566,7 +2662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/jans-cli/" class="md-nav__link">
+      <a href="../../../openbanking/jans-cli/" class="md-nav__link">
         
   
   
@@ -2597,7 +2693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openbanking/par-jarm/" class="md-nav__link">
+      <a href="../../../openbanking/par-jarm/" class="md-nav__link">
         
   
   
@@ -2676,7 +2772,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../solo/solo-getting-started/" class="md-nav__link">
+      <a href="../../../solo/solo-getting-started/" class="md-nav__link">
         
   
   
@@ -2699,7 +2795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../solo/solo-subscription/" class="md-nav__link">
+      <a href="../../../solo/solo-subscription/" class="md-nav__link">
         
   
   
@@ -2722,7 +2818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../solo/solo-administration-guide/" class="md-nav__link">
+      <a href="../../../solo/solo-administration-guide/" class="md-nav__link">
         
   
   
@@ -2772,9 +2868,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-operations" class="md-nav__link">
+  <a href="#system-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Operations
+      System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Flex
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall-remove-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstall / Remove Flex
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -2806,13 +2947,37 @@
       
       
       
+        <span class="md-tag">aio</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">all-in-one</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+      
+      
+      
         <span class="md-tag">kubernetes</span>
       
     
       
       
       
-        <span class="md-tag">operations</span>
+        <span class="md-tag">microk8s</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">quick-start</span>
       
     
   </nav>
@@ -2822,30 +2987,94 @@
   
 
 
-<h1 id="operation-guide">Operation Guide<a class="headerlink" href="#operation-guide" title="Permanent link">#</a></h1>
-<p>This Operation guide helps you learn about the common operations for Gluu Flex on Kubernetes.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Since Flex = Janssen + Admin-UI. The Kubernetes Operations in Gluu Flex are identical to <a href="https://docs.jans.io/stable/janssen-server/kubernetes-ops">Janssen</a>. You will mostly only need to change the helm chart reference from <code>janssen/janssen</code> to <code>gluu-flex/gluu</code>, along with the helm release name and namespace.
-Here's an example how would the <a href="upgrade/">upgrade</a> of Flex looks like.</p>
+<h1 id="microk8s-quick-start-all-in-one">MicroK8s Quick Start (All-In-One)<a class="headerlink" href="#microk8s-quick-start-all-in-one" title="Permanent link">#</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>This deployment is for testing and development purposes only. Use Flex <a href="https://docs.gluu.org/stable/install/helm-install/">helm deployments</a> for production setups.</strong></p>
 </div>
-<h2 id="common-operations">Common Operations<a class="headerlink" href="#common-operations" title="Permanent link">#</a></h2>
+<p>The fastest way to try Flex All-In-One (AIO) on Kubernetes is the demo script. It installs MicroK8s, ingress-nginx, Helm, and the Flex AIO image with default settings.</p>
+<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
+<p>System should meet the following requirements:</p>
 <ul>
-<li><a href="upgrade/">Upgrade</a></li>
-<li><a href="admin-ui-private/">Admin-UI Private</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/scaling/">Scaling</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/backup-restore/">Backup and Restore</a>  </li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/cert-management/">Certificate Management</a>  </li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/customization/">Customization</a>  </li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/start-order/">Start Order</a>  </li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/logs/">Logs</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/external-secrets-configmaps/">External Secrets and Configmaps</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/health-check/">Health Check</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/tui-k8s/">TUI K8s</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/custom-attributes/">Custom Attributes</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/shibboleth-idp/helm-deployment/">Shibboleth IDP</a></li>
-<li><a href="https://docs.jans.io/head/janssen-server/kubernetes-ops/memory-dump/">Memory Dump</a></li>
+<li>8 GB RAM</li>
+<li>4 CPU</li>
+<li>30 GB Disk</li>
 </ul>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h2>
+<p>Start a fresh Ubuntu VM with ports <code>443</code> and <code>80</code> open, then download the installation script and make it executable:</p>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/start_flex_aio_microk8s_demo.sh
+chmod<span class="w"> </span>u+x<span class="w"> </span>start_flex_aio_microk8s_demo.sh
+</code></pre></div>
+<p>Next, execute the script. You will need to provide the following details:</p>
+<ul>
+<li>Fully qualified domain name (FQDN)</li>
+<li>Persistence type (<code>MYSQL</code> or <code>PGSQL</code>)</li>
+<li>Flex version (leave empty <code>""</code> for the default)</li>
+<li>Virtual Machine's Public IP address in place of <code>&lt;VM_IP&gt;</code></li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">MySQL</label><label for="__tabbed_1_2">PostgreSQL</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>bash<span class="w"> </span>start_flex_aio_microk8s_demo.sh<span class="w"> </span>demoexample.gluu.org<span class="w"> </span>MYSQL<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>&lt;VM_IP&gt;
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>bash<span class="w"> </span>start_flex_aio_microk8s_demo.sh<span class="w"> </span>demoexample.gluu.org<span class="w"> </span>PGSQL<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>&lt;VM_IP&gt;
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Console messages like below will confirm the successful startup and readiness of the services:</p>
+<div class="highlight"><pre><span></span><code>Waiting for Gluu Flex all-in-one to come up. Please do not cancel out. This can take up to 10 minutes.
+deployment.apps/flex-gluu-all-in-one condition met
+Testing openid-configuration endpoint..
+</code></pre></div>
+<h2 id="verify-installation">Verify Installation<a class="headerlink" href="#verify-installation" title="Permanent link">#</a></h2>
+<p>The installer adds a hosts record inside the VM. To access endpoints from outside the VM, map the VM IP to your FQDN in your local <code>/etc/hosts</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># For example</span>
+VM_IP<span class="w">      </span>demoexample.gluu.org
+</code></pre></div>
+<p>Then test the standard endpoints:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth server</td>
+<td><code>https://FQDN/.well-known/openid-configuration</code></td>
+</tr>
+<tr>
+<td>FIDO2</td>
+<td><code>https://FQDN/.well-known/fido2-configuration</code></td>
+</tr>
+<tr>
+<td>SCIM</td>
+<td><code>https://FQDN/.well-known/scim-configuration</code></td>
+</tr>
+<tr>
+<td>Admin UI</td>
+<td><code>https://FQDN/admin</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="configure-flex">Configure Flex<a class="headerlink" href="#configure-flex" title="Permanent link">#</a></h2>
+<p>Flex can be configured using the <a href="https://docs.jans.io/stable/janssen-server/config-guide/config-tools/jans-tui/">Text-based User Interface (TUI)</a>. The default <code>admin</code> password is <code>Test1234#</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The default <code>Test1234#</code> credential is for local testing only. Never expose this deployment publicly, and rotate the <code>admin</code> password before reusing the cluster for anything beyond a throwaway demo.</p>
+</div>
+<h2 id="uninstall-remove-flex">Uninstall / Remove Flex<a class="headerlink" href="#uninstall-remove-flex" title="Permanent link">#</a></h2>
+<p>This installation uses MicroK8s and Helm under the hood. Run the commands below to remove the Flex release, the ingress-nginx controller, and MicroK8s itself:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>helm<span class="w"> </span>uninstall<span class="w"> </span>flex<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--kubeconfig<span class="w"> </span>~/.kube/config
+sudo<span class="w"> </span>helm<span class="w"> </span>uninstall<span class="w"> </span>ingress-nginx<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>--kubeconfig<span class="w"> </span>~/.kube/config
+sudo<span class="w"> </span>snap<span class="w"> </span>remove<span class="w"> </span>microk8s<span class="w"> </span>--purge
+</code></pre></div>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<p>For a manual local cluster setup (or to move toward production), see the <a href="../../helm-install/prerequisites/local/">Helm local setup</a>.</p>
 
 
 
@@ -2868,7 +3097,7 @@ Here's an example how would the <a href="upgrade/">upgrade</a> of Flex looks lik
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 8, 2026 12:15:37 UTC"><span class="timeago" datetime="2026-05-08T12:15:37+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 8, 2026 12:15:37 UTC">2026-05-08</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 1, 2026 11:54:36 UTC"><span class="timeago" datetime="2026-09-01T11:54:36+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 1, 2026 11:54:36 UTC">2026-09-01</span>
   </span>
 
     
@@ -2878,7 +3107,7 @@ Here's an example how would the <a href="upgrade/">upgrade</a> of Flex looks lik
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 20, 2023 09:29:46 UTC"><span class="timeago" datetime="2023-11-20T09:29:46+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 20, 2023 09:29:46 UTC">2023-11-20</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 31, 2026 12:27:44 UTC"><span class="timeago" datetime="2026-08-31T12:27:44+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 31, 2026 12:27:44 UTC">2026-08-31</span>
   </span>
 
     
@@ -3031,15 +3260,15 @@ Here's an example how would the <a href="upgrade/">upgrade</a> of Flex looks lik
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
     
     
 
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
-        <script src="../../js/timeago.min.js"></script>
+        <script src="../../../js/timeago.min.js"></script>
       
-        <script src="../../js/timeago_mkdocs_material.js"></script>
+        <script src="../../../js/timeago_mkdocs_material.js"></script>
       
     
 <script>
@@ -3062,7 +3291,7 @@ Here's an example how would the <a href="upgrade/">upgrade</a> of Flex looks lik
       if (!document.getElementById("__reo_loader")) {
         var s = document.createElement("script");
         s.id = "__reo_loader";
-        s.src = "../../assets/js/reo.js";
+        s.src = "../../../assets/js/reo.js";
         s.defer = true;
         document.head.appendChild(s);
       }

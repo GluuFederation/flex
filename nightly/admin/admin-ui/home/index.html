@@ -531,6 +531,8 @@
       
         
       
+        
+      
     
     
     
@@ -564,6 +566,29 @@
             Quick Start
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install/quick-start/microk8s-aio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    MicroK8s (All-in-One)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1371,6 +1396,8 @@
       
         
       
+        
+      
     
     
     
@@ -1439,8 +1466,6 @@
       
         
       
-        
-      
     
     
     
@@ -1488,6 +1513,84 @@
   
   <span class="md-ellipsis">
     Auth Server Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_4_3" id="__nav_1_3_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Access Control
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Access Control
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-store-menu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Policy Store Management
     
   </span>
   
@@ -1619,10 +1722,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_1_3_4_5" id="__nav_1_3_4_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4_6" id="__nav_1_3_4_6_label" tabindex="0">
             
   
   
@@ -1635,8 +1738,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_3_4_5">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_3_4_6">
             <span class="md-nav__icon md-icon"></span>
             Left Navigation Menu
           </label>
@@ -3168,7 +3271,7 @@
 <h3 id="localization-and-theme-selection">Localization and Theme selection<a class="headerlink" href="#localization-and-theme-selection" title="Permanent link">#</a></h3>
 <p>Admin UI supports localization. The default language is English. The other supported languages are French, Spanish and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.</p>
 <p><img alt="image" src="../../../assets/admin-ui/localization.png" /></p>
-<p>The administrator can also select from four website themes in Admin UI.</p>
+<p>The administrator can also switch Admin UI between a light and a dark theme.</p>
 <p><img alt="image" src="../../../assets/admin-ui/theme-selection.png" /></p>
 <h2 id="health">Health<a class="headerlink" href="#health" title="Permanent link">#</a></h2>
 <p>The health section show the statuses of the <code>OAuth Server</code> and <code>Database</code>.</p>
@@ -3191,6 +3294,7 @@
 <ul>
 <li><strong>List paging size:</strong> This field allows to define the default paging size for all search pages within the Admin UI.</li>
 <li><strong>Config API URL:</strong> The read-only URL of the Jans Config API is used by the Admin UI for interaction.</li>
+<li><strong>Gluu Flex Version:</strong> The read-only version of the running Gluu Flex installation.</li>
 <li><strong>Admin UI Session Timeout (In Minutes):</strong> This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.</li>
 <li><strong>Cedarling Log enabled?:</strong> This switch enables or disables Cedarling logs in the browser console.</li>
 <li><strong>Admin UI Logging Level:</strong> This field is used to set frontend log level on browser console.</li>
@@ -3199,18 +3303,18 @@
 </ul>
 <p><img alt="image" src="../../../assets/admin-ui/settings.png" /></p>
 <h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h2>
-<p>Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu.</p>
+<p>Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu. Uploaded policy stores are managed on the <a href="../policy-store-menu/">Admin UI Policy Management</a> screen.</p>
 <h3 id="gui-access-control">GUI Access Control<a class="headerlink" href="#gui-access-control" title="Permanent link">#</a></h3>
 <p>This topic is covered in detail <a href="../access-control/">here</a>. New Admin UI roles can be added by introducing the corresponding policies in the policy store. These roles can then be assigned to users through the <a href="../user-management-menu/">User Management</a> feature of the Admin UI. After installation, the Admin UI uses a default policy store generated by the installer for access control. This policy store includes the <code>admin</code> role, and the default user (admin) is assigned that role.</p>
 <h3 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">#</a></h3>
-<p>In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the <a href="../configuration/#cedarling-configuration">Cedarling Configuration</a> page to control access to Admin UI features. After the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. </p>
+<p>In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the <a href="../configuration/#cedarling-configuration">Cedarling Configuration</a> page to control access to Admin UI features. Once the uploaded Policy Store is activated on the <a href="../policy-store-menu/">Admin UI Policy Management</a> screen, the backend parses it to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. </p>
 <p><img alt="image" src="../../../assets/admin-ui/role-permission.png" /></p>
 <h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">#</a></h2>
 <p>Gluu Flex Admin UI uses webhooks to automate custom business logic during create, update, and delete operations (e.g., when a new user is created). Administrators can map webhooks to specific features and events, enabling dynamic and extensible workflows.</p>
 <p>Follow this <a href="../webhooks/">tutorial</a> for setup instructions.</p>
 <p><img alt="image" src="../../../assets/admin-ui/webhook-view.png" /></p>
 <h2 id="assets">Assets<a class="headerlink" href="#assets" title="Permanent link">#</a></h2>
-<p>The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI) — without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.</p>
+<p>The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI), without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.</p>
 <h3 id="key-use-cases">Key Use Cases:<a class="headerlink" href="#key-use-cases" title="Permanent link">#</a></h3>
 <ul>
 <li>
@@ -3225,8 +3329,8 @@
 </ul>
 <p><img alt="image" src="../../../assets/admin-ui/jans-assets.png" /></p>
 <h2 id="audit-logs">Audit Logs<a class="headerlink" href="#audit-logs" title="Permanent link">#</a></h2>
-<p>Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change — such as updating a client, modifying a script, or changing a configuration property — that action is recorded.</p>
-<p>The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which includes details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.</p>
+<p>Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change, such as updating a client, modifying a script, or changing a configuration property, that action is recorded.</p>
+<p>The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which include details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.</p>
 <p><img alt="image" src="../../../assets/admin-ui/audit-log.png" /></p>
 
 
@@ -3250,7 +3354,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 22, 2026 09:54:22 UTC"><span class="timeago" datetime="2026-06-22T09:54:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 22, 2026 09:54:22 UTC">2026-06-22</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 1, 2026 08:33:49 UTC"><span class="timeago" datetime="2026-09-01T08:33:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 1, 2026 08:33:49 UTC">2026-09-01</span>
   </span>
 
     
