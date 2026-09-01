@@ -12,13 +12,13 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/home/">
+        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/policy-store-menu/">
       
       
-        <link rel="prev" href="../left-nav-menu/">
+        <link rel="prev" href="../auth-server-interaction/">
       
       
-        <link rel="next" href="../auth-server-menu/">
+        <link rel="next" href="../access-control/">
       
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Home - Gluu Flex Documentation</title>
+        <title>Policy Store Management - Gluu Flex Documentation</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#home" class="md-skip">
+        <a href="#admin-ui-policy-management" class="md-skip">
           Skip to content
         </a>
       
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Policy Store Management
             
           </span>
         </div>
@@ -1510,8 +1510,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1526,11 +1528,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_3_4_3" id="__nav_1_3_4_3_label" tabindex="0">
@@ -1546,7 +1548,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_3_4_3">
             <span class="md-nav__icon md-icon"></span>
             Access Control
@@ -1557,10 +1559,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../policy-store-menu/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Policy Store Management
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1571,6 +1595,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#policy-store-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      Policy store list
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-policy-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding a policy store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#activating-a-policy-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Activating a policy store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-a-policy-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting a policy store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-a-policy-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Downloading a policy store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#viewing-archive-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Viewing archive contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editing-archive-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Editing archive contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Permissions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1657,10 +1773,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -1693,11 +1807,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_6" >
         
           
           <label class="md-nav__link" for="__nav_1_3_4_6" id="__nav_1_3_4_6_label" tabindex="0">
@@ -1713,7 +1827,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3_4_6">
             <span class="md-nav__icon md-icon"></span>
             Left Navigation Menu
@@ -1747,32 +1861,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../home/" class="md-nav__link">
         
   
   
@@ -1783,179 +1875,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dashboard" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dashboard
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Dashboard">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dashboard-descriptions-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dashboard Descriptions Fields
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access-token-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      Access Token Graph
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#localization-and-theme-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Localization and Theme selection
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#health" class="md-nav__link">
-    <span class="md-ellipsis">
-      Health
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#license-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      License Details
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mau-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      MAU Graph
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Settings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#security" class="md-nav__link">
-    <span class="md-ellipsis">
-      Security
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Security">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gui-access-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      GUI Access Control
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Capabilities
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Webhooks
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#assets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Assets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-use-cases" class="md-nav__link">
-    <span class="md-ellipsis">
-      Key Use Cases:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#audit-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Audit Logs
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2944,153 +2863,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dashboard" class="md-nav__link">
+  <a href="#policy-store-list" class="md-nav__link">
     <span class="md-ellipsis">
-      Dashboard
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Dashboard">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dashboard-descriptions-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dashboard Descriptions Fields
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access-token-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      Access Token Graph
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#localization-and-theme-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Localization and Theme selection
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#health" class="md-nav__link">
-    <span class="md-ellipsis">
-      Health
+      Policy store list
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#license-details" class="md-nav__link">
+  <a href="#adding-a-policy-store" class="md-nav__link">
     <span class="md-ellipsis">
-      License Details
+      Adding a policy store
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mau-graph" class="md-nav__link">
+  <a href="#activating-a-policy-store" class="md-nav__link">
     <span class="md-ellipsis">
-      MAU Graph
+      Activating a policy store
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#settings" class="md-nav__link">
+  <a href="#deleting-a-policy-store" class="md-nav__link">
     <span class="md-ellipsis">
-      Settings
+      Deleting a policy store
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#security" class="md-nav__link">
+  <a href="#downloading-a-policy-store" class="md-nav__link">
     <span class="md-ellipsis">
-      Security
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Security">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gui-access-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      GUI Access Control
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Capabilities
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Webhooks
+      Downloading a policy store
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#assets" class="md-nav__link">
+  <a href="#viewing-archive-contents" class="md-nav__link">
     <span class="md-ellipsis">
-      Assets
+      Viewing archive contents
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Assets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-use-cases" class="md-nav__link">
-    <span class="md-ellipsis">
-      Key Use Cases:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#audit-logs" class="md-nav__link">
+  <a href="#editing-archive-contents" class="md-nav__link">
     <span class="md-ellipsis">
-      Audit Logs
+      Editing archive contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Permissions
     </span>
   </a>
   
@@ -3116,7 +2954,7 @@
       
       
       
-        <span class="md-tag">Jans-assets</span>
+        <span class="md-tag">access control</span>
       
     
       
@@ -3128,97 +2966,19 @@
       
       
       
-        <span class="md-tag">admin-ui-roles</span>
-      
-    
-      
-      
-      
         <span class="md-tag">administration</span>
       
     
       
       
       
-        <span class="md-tag">assets</span>
+        <span class="md-tag">cedarling</span>
       
     
       
       
       
-        <span class="md-tag">audit-log</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">capabilities</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">dashboard</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">health</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">license</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">logs</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">mappings</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">mau</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">permissions</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">roles</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">security</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">setting</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">webhooks</span>
+        <span class="md-tag">policy store</span>
       
     
   </nav>
@@ -3228,85 +2988,91 @@
   
 
 
-<h1 id="home">Home<a class="headerlink" href="#home" title="Permanent link">#</a></h1>
-<h2 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">#</a></h2>
-<p>After successful authentication, the administrator is taken to the dashboard. The dashboard brings an organized presentation of crucial details at one place adding to the convenience of users in tracking and analysis of auth server and other details.</p>
-<p><img alt="image" src="../../../assets/admin-ui/dashboard.png" /></p>
-<h3 id="dashboard-descriptions-fields">Dashboard Descriptions Fields<a class="headerlink" href="#dashboard-descriptions-fields" title="Permanent link">#</a></h3>
+<h1 id="admin-ui-policy-management">Admin UI Policy Management<a class="headerlink" href="#admin-ui-policy-management" title="Permanent link">#</a></h1>
+<p><code>Security</code> &gt; <code>Admin UI Policy Management</code> lists every Cedarling Policy Store held by the Admin UI backend and controls which one governs GUI access control.</p>
+<p>One store is active at a time. The active store supplies the schema, policies and role-to-scope mappings that decide what each administrator can see and change. Every other store is retained as a backup, so a previous configuration can be restored by activating it again.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-policy-store-management.png" /></p>
+<h2 id="policy-store-list">Policy store list<a class="headerlink" href="#policy-store-list" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Filename</td>
+<td>Name of the uploaded <code>.cjar</code> archive</td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code>ACTIVE</code> for the store in force, <code>BACKUP</code> for the rest</td>
+</tr>
+<tr>
+<td>Uploaded</td>
+<td>Date and time the store was added</td>
+</tr>
+<tr>
+<td>Size</td>
+<td>Size of the stored archive</td>
+</tr>
+<tr>
+<td>Comments</td>
+<td>Description supplied when the store was uploaded</td>
+</tr>
+</tbody>
+</table>
+<p>Search by pattern, sort by uploaded date, name or status, and page through the list using the toolbar above the table.</p>
+<h2 id="adding-a-policy-store">Adding a policy store<a class="headerlink" href="#adding-a-policy-store" title="Permanent link">#</a></h2>
+<p><code>Add Policy Store</code> button opens the upload screen, which accepts a <code>.cjar</code> archive produced by Agama Lab's Policy Designer. See <a href="../configuration/#steps-to-create-and-upload-policy-store-archive-file">Steps to create and upload Policy Store archive file</a>.</p>
+<p>A newly uploaded store is stored as a backup. It has no effect on access control until it is activated.</p>
+<h2 id="activating-a-policy-store">Activating a policy store<a class="headerlink" href="#activating-a-policy-store" title="Permanent link">#</a></h2>
+<p>On click of <code>Set active</code> action button, it promotes a backup to the active store. The action is unavailable on the store that is already active.</p>
+<p>Activation runs in two steps:</p>
+<ol>
+<li>A confirmation dialog states that activating restarts the system, triggers the webhooks registered against the <code>policy_store_write</code> feature, and signs you out of the Admin UI.</li>
+<li>A commit dialog collects a comment describing the change. The comment is between 10 and 512 characters and is written to the audit log.</li>
+</ol>
+<p>On success the Admin UI:</p>
 <ul>
-<li><strong>OIDC Clients Count:</strong> The count of OIDC clients created on auth server.</li>
-<li><strong>Active Users Count:</strong> The count of <code>active</code> users on auth server.</li>
-<li><strong>Token Issued Count:</strong> This figure is the sum of the access-tokens with grant-type <code>client credentials</code> and <code>authorization code</code> and id-token.</li>
-<li><strong>Server statuses:</strong> The health status of the <code>Auth Server</code> <code>CASA</code> <code>SCIM</code> <code>Config API</code> <code>FIDO</code> <code>Keycloak</code> <code>Jans Lock</code> . For e.g. <code>Running</code> or <code>Down</code>.</li>
-<li><strong>Database status:</strong> The health status of the persistence (e.g. PostgreSQL, MySQL etc).</li>
+<li>Marks the selected store active and the previously active store a backup</li>
+<li>Regenerates the role-to-scope mappings from the newly active store. A failed regeneration is logged and does not block the activation</li>
+<li>Triggers any enabled webhooks mapped to <code>policy_store_write</code></li>
+<li>Signs you out after three seconds</li>
 </ul>
-<h3 id="access-token-graph">Access Token Graph<a class="headerlink" href="#access-token-graph" title="Permanent link">#</a></h3>
-<p>The dashboard has a bar graph showing month-wise access-token with grant-type <code>client credentials</code>, <code>authorization code</code> and <code>id_token</code> generated from auth server.</p>
-<p><img alt="image" src="../../../assets/admin-ui/access-token-graph.png" /></p>
-<h3 id="localization-and-theme-selection">Localization and Theme selection<a class="headerlink" href="#localization-and-theme-selection" title="Permanent link">#</a></h3>
-<p>Admin UI supports localization. The default language is English. The other supported languages are French, Spanish and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.</p>
-<p><img alt="image" src="../../../assets/admin-ui/localization.png" /></p>
-<p>The administrator can also switch Admin UI between a light and a dark theme.</p>
-<p><img alt="image" src="../../../assets/admin-ui/theme-selection.png" /></p>
-<h2 id="health">Health<a class="headerlink" href="#health" title="Permanent link">#</a></h2>
-<p>The health section show the statuses of the <code>OAuth Server</code> and <code>Database</code>.</p>
-<p><img alt="image" src="../../../assets/admin-ui/health.png" /></p>
-<h2 id="license-details">License Details<a class="headerlink" href="#license-details" title="Permanent link">#</a></h2>
-<p>Admin UI uses <a href="https://licensespring.com/">LicenseSpring</a> platform for customer license management.</p>
+<p>Sign in again to pick up the permissions defined by the new store.</p>
+<h2 id="deleting-a-policy-store">Deleting a policy store<a class="headerlink" href="#deleting-a-policy-store" title="Permanent link">#</a></h2>
+<p><code>Delete</code> permanently removes a backup store. The action is unavailable on the active store, so access control cannot be left without a policy source.</p>
+<p>Deleting collects a comment on the same terms as activation, records it in the audit log, and triggers any enabled webhooks mapped to the <code>policy_store_delete</code> feature.</p>
+<h2 id="downloading-a-policy-store">Downloading a policy store<a class="headerlink" href="#downloading-a-policy-store" title="Permanent link">#</a></h2>
+<p><code>Download</code> saves the stored archive to your machine under the filename it was uploaded with.</p>
+<h2 id="viewing-archive-contents">Viewing archive contents<a class="headerlink" href="#viewing-archive-contents" title="Permanent link">#</a></h2>
+<p><code>Open</code> shows the <code>Policy Store Contents</code> screen: a file tree of the archive on the left, and the contents of the selected file on the right. Policies, entities, the schema, the manifest and the trusted-issuer definitions are all rendered as text. Binary files are listed but not rendered.</p>
+<p>The tree lists folders first, each with a count of the files it holds, then the archive's top-level files under a <code>Store root</code> heading. The count in the <code>Files</code> header covers the whole archive.</p>
+<p>Drag the divider between the two panes to widen either side, or focus it and use the left and right arrow keys.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-policy-store-contents.png" /></p>
+<h2 id="editing-archive-contents">Editing archive contents<a class="headerlink" href="#editing-archive-contents" title="Permanent link">#</a></h2>
+<p><code>Edit</code>, in the footer of the <code>Policy Store Contents</code> screen, opens the archive for editing. It is available on backup stores only. The active store stays read-only, with a notice explaining that it must be downloaded, edited as a copy and uploaded as a new store.</p>
+<p>While editing you can:</p>
 <ul>
-<li><strong>Product Name:</strong> The name of the product created on the LicenseSpring platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring <a href="https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform">docs</a> for more details.</li>
-<li><strong>License Type:</strong> The type of license issued. For e.g. Perpetual, Time Limited, Subscription and Consumption.</li>
-<li><strong>Customer Email:</strong> To issue a license, we need to enter customer details like first name, last name, company, email and phone number in the LicenseSpring platform. This field displays the email of the customer of the license.</li>
-<li><strong>Company Name:</strong> The company name of the registered product.</li>
-<li><strong>License Status:</strong> The status of the license (e.g. active or inactive).</li>
+<li>Change the contents of any text file in the archive</li>
+<li>Add a file or a folder with the two controls in the <code>Files</code> header, giving a path such as <code>policies/AdminCanManageService.cedar</code> or <code>policies</code></li>
+<li>Rename or delete any file or folder with the controls that appear on its row when you hover over it or focus it</li>
 </ul>
-<p><img alt="image" src="../../../assets/admin-ui/license-details.png" /></p>
-<h2 id="mau-graph">MAU Graph<a class="headerlink" href="#mau-graph" title="Permanent link">#</a></h2>
-<p>This is a line graph showing month-wise active users under a selected date range.</p>
-<p><img alt="image" src="../../../assets/admin-ui/mau.png" /></p>
-<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">#</a></h2>
-<p>The Gluu Flex Admin UI provides a user-friendly interface for managing various UI settings of this web application. This page has the following fields.</p>
+<p>Deleting a folder also removes every file inside it. Renaming a folder moves its contents with it, keeping any edits you have already made to them. An empty folder is written into the downloaded archive as a real directory entry, so it survives the round trip.</p>
+<p>Changes are held in the browser. The Admin UI does not write them back to the stored archive, so <code>Download</code> is the only way to keep them:</p>
 <ul>
-<li><strong>List paging size:</strong> This field allows to define the default paging size for all search pages within the Admin UI.</li>
-<li><strong>Config API URL:</strong> The read-only URL of the Jans Config API is used by the Admin UI for interaction.</li>
-<li><strong>Gluu Flex Version:</strong> The read-only version of the running Gluu Flex installation.</li>
-<li><strong>Admin UI Session Timeout (In Minutes):</strong> This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.</li>
-<li><strong>Cedarling Log enabled?:</strong> This switch enables or disables Cedarling logs in the browser console.</li>
-<li><strong>Admin UI Logging Level:</strong> This field is used to set frontend log level on browser console.</li>
-<li><strong>Admin UI authentication method (ACR):</strong> This dropdown enables user to select the default authentication method to be used in the Admin UI.</li>
-<li><strong>Custom Parameters (for authentication):</strong> The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.</li>
+<li>The viewer header shows <code>(Not downloaded yet)</code> for as long as the archive has pending changes</li>
+<li><code>Download</code> packs the archive, including added and removed files, into a new <code>.cjar</code> and clears the pending changes. The file is named after the store with a date and time stamp, so repeated downloads stay distinguishable</li>
+<li><code>Cancel</code> discards all pending changes and keeps you on the page</li>
+<li><code>Back</code> with pending changes asks for confirmation before leaving</li>
 </ul>
-<p><img alt="image" src="../../../assets/admin-ui/settings.png" /></p>
-<h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h2>
-<p>Features such as uploading a new policy store to manage access control and checking role-to-scope mappings in the Admin UI are covered under the Security menu. Uploaded policy stores are managed on the <a href="../policy-store-menu/">Admin UI Policy Management</a> screen.</p>
-<h3 id="gui-access-control">GUI Access Control<a class="headerlink" href="#gui-access-control" title="Permanent link">#</a></h3>
-<p>This topic is covered in detail <a href="../access-control/">here</a>. New Admin UI roles can be added by introducing the corresponding policies in the policy store. These roles can then be assigned to users through the <a href="../user-management-menu/">User Management</a> feature of the Admin UI. After installation, the Admin UI uses a default policy store generated by the installer for access control. This policy store includes the <code>admin</code> role, and the default user (admin) is assigned that role.</p>
-<h3 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">#</a></h3>
-<p>In Cedarling, a capability represents an action (such as view, edit, or delete) that a principal is authorized to perform on a resource. In the context of Admin UI, the resource is an Admin UI feature. We can introduce Cedarling policies in the policy store to manage capabilities of Admin UI role. The policy store can be uploaded through the <a href="../configuration/#cedarling-configuration">Cedarling Configuration</a> page to control access to Admin UI features. Once the uploaded Policy Store is activated on the <a href="../policy-store-menu/">Admin UI Policy Management</a> screen, the backend parses it to determine the roles and the role-to-scope mappings. The Role-Permission Mappings can be viewed under the Security menu. </p>
-<p><img alt="image" src="../../../assets/admin-ui/role-permission.png" /></p>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">#</a></h2>
-<p>Gluu Flex Admin UI uses webhooks to automate custom business logic during create, update, and delete operations (e.g., when a new user is created). Administrators can map webhooks to specific features and events, enabling dynamic and extensible workflows.</p>
-<p>Follow this <a href="../webhooks/">tutorial</a> for setup instructions.</p>
-<p><img alt="image" src="../../../assets/admin-ui/webhook-view.png" /></p>
-<h2 id="assets">Assets<a class="headerlink" href="#assets" title="Permanent link">#</a></h2>
-<p>The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI), without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.</p>
-<h3 id="key-use-cases">Key Use Cases:<a class="headerlink" href="#key-use-cases" title="Permanent link">#</a></h3>
-<ul>
-<li>
-<p><strong>Web UI Customization:</strong> Users can upload assets such as .js, .css, or .png files to modify the look and feel of authentication-related web pages (e.g., login or error pages) to meet branding or accessibility requirements.</p>
-</li>
-<li>
-<p><strong>Library or Plugin Addition:</strong> Developers can upload .jar files or other supporting resources to introduce new functionality into the running server such as custom authentication mechanisms, filters, or extensions.</p>
-</li>
-<li>
-<p><strong>Configuration Enhancements:</strong> The feature supports uploading configuration-related files like .xml, .properties, or .json which may define behaviors, rules, or component settings for the server or its modules.</p>
-</li>
-</ul>
-<p><img alt="image" src="../../../assets/admin-ui/jans-assets.png" /></p>
-<h2 id="audit-logs">Audit Logs<a class="headerlink" href="#audit-logs" title="Permanent link">#</a></h2>
-<p>Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change, such as updating a client, modifying a script, or changing a configuration property, that action is recorded.</p>
-<p>The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which include details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.</p>
-<p><img alt="image" src="../../../assets/admin-ui/audit-log.png" /></p>
+<p><code>Download</code> and <code>Cancel</code> stay disabled until something in the archive changes.</p>
+<p>To put edited policies into service, upload the downloaded archive as a new policy store and activate it.</p>
+<h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">#</a></h2>
+<p>The screen requires read access to the Admin UI <code>Security</code> resource. <code>Set active</code>, <code>Delete</code>, <code>Add Policy Store</code> and <code>Edit</code> additionally require write access. Administrators without write access see the list, the download action and the read-only contents viewer.</p>
+<p>On screens narrower than 768 pixels the row actions collapse to viewing and downloading.</p>
 
 
 
@@ -3339,7 +3105,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 7, 2025 09:23:27 UTC"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 7, 2025 09:23:27 UTC">2025-08-07</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 1, 2026 08:33:49 UTC"><span class="timeago" datetime="2026-09-01T08:33:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 1, 2026 08:33:49 UTC">2026-09-01</span>
   </span>
 
     

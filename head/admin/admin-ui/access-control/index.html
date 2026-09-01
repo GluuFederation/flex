@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/access-control/">
       
       
-        <link rel="prev" href="../auth-server-interaction/">
+        <link rel="prev" href="../policy-store-menu/">
       
       
         <link rel="next" href="../configuration/">
@@ -1371,6 +1371,8 @@
       
         
       
+        
+      
     
     
     
@@ -1432,6 +1434,82 @@
                 
   
   
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_4_2" id="__nav_1_3_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Design & Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Design & Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auth-server-interaction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Auth Server Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1454,15 +1532,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_1_3_4_2" id="__nav_1_3_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4_3" id="__nav_1_3_4_3_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Design & Implementation
+    Access Control
     
   </span>
   
@@ -1470,10 +1548,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_3_4_2">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_3_4_3">
             <span class="md-nav__icon md-icon"></span>
-            Design & Implementation
+            Access Control
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1484,12 +1562,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../auth-server-interaction/" class="md-nav__link">
+      <a href="../policy-store-menu/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Auth Server Interaction
+    Policy Store Management
     
   </span>
   
@@ -1730,10 +1808,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_4_6" >
         
           
-          <label class="md-nav__link" for="__nav_1_3_4_5" id="__nav_1_3_4_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_4_6" id="__nav_1_3_4_6_label" tabindex="0">
             
   
   
@@ -1746,8 +1824,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_3_4_5">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_3_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_4_6">
             <span class="md-nav__icon md-icon"></span>
             Left Navigation Menu
           </label>
@@ -2911,7 +2989,6 @@
 <ul>
 <li>System and monitoring<ul>
 <li>Dashboard</li>
-<li>Health</li>
 <li>License</li>
 <li>MAU</li>
 <li>Settings</li>
@@ -2925,18 +3002,18 @@
 <li>Clients</li>
 <li>Scopes</li>
 <li>Keys</li>
-<li>AuthServerProperties</li>
+<li>AuthenticationServerConfiguration</li>
 <li>Logging</li>
 <li>SSA</li>
-<li>Authn</li>
-<li>ConfigAPIProperties</li>
-<li>Sessions</li>
+<li>Authentication</li>
+<li>ConfigApiConfiguration</li>
+<li>Session</li>
 </ul>
 </li>
 <li>Identity and Access<ul>
 <li>Users</li>
 <li>Scripts</li>
-<li>UserClaims</li>
+<li>Attributes</li>
 </ul>
 </li>
 <li>Service<ul>
@@ -2951,9 +3028,12 @@
 </li>
 <li>Essential Admin UI Scopes<ul>
 <li>AdminUISession</li>
+<li>License</li>
+<li>Settings</li>
 </ul>
 </li>
 </ul>
+<p>The feature names above are the entity IDs the Admin UI sends to Cedarling, so a policy has to spell them exactly this way to match. The parent headings are display labels: their entity IDs are <code>SystemAndMonitoring</code>, <code>AuthServerAndConfiguration</code> and <code>IdentityAndAccess</code>, listed in full in the table at the end of this page.</p>
 <p>In the Policy Store we use <a href="https://docs.jans.io/stable/cedarling/reference/cedarling-policy-store/#default-entities">default_entities</a> to map the parent group with the sub features. For e.g. here we are showing the default entity json to map the features under <code>System and monitoring</code> parent group.</p>
 <div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -3030,7 +3110,7 @@
 <span class="p">]</span>
 </code></pre></div>
 <h2 id="managing-admin-uis-policy-store">Managing Admin UI's Policy Store<a class="headerlink" href="#managing-admin-uis-policy-store" title="Permanent link">#</a></h2>
-<p>After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the <a href="../configuration/#cedarling-configuration">Cedarling configuration screen</a> to upload the new Policy Store file with .cjar extension, generated and released using <a href="https://cloud.gluu.org/agama-lab">Agama-Lab's</a> Policy designer. When the Policy Store file is uploaded, the backend parses the Policy Store to determine the roles and the role-to-scope mappings. The Policy Store is used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.</p>
+<p>After installation, Admin UI uses a default Policy Store (file with .cjar extension) for GUI access control. The logged-in user can use the <a href="../configuration/#cedarling-configuration">Cedarling configuration screen</a> to upload the new Policy Store file with .cjar extension, generated and released using <a href="https://cloud.gluu.org/agama-lab">Agama-Lab's</a> Policy designer. An uploaded Policy Store is kept as a backup until it is activated on the <a href="../policy-store-menu/">Admin UI Policy Management</a> screen. Activating it makes the backend parse that Policy Store to determine the roles and the role-to-scope mappings, and the active Policy Store is the one used for managing GUI access control. The aggregated role-to-scope mapping (obtained by parsing the Policy Store) ensures that only the mapped scopes are added in the authorization tokens to access the appropriate protected Config API endpoints.</p>
 <pre class="mermaid"><code>C4Context
     title Access Control in Gluu Flex Admin UI
 
@@ -3108,7 +3188,7 @@ when {
 };
 </code></pre></div>
 <h3 id="adding-new-roles-in-admin-ui">Adding new Roles in Admin UI<a class="headerlink" href="#adding-new-roles-in-admin-ui" title="Permanent link">#</a></h3>
-<p>To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. On saving the Policy Store the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.</p>
+<p>To add new Admin UI user roles, the administrator just need to introduce the policies associated with those roles in the Policy Store. Once that Policy Store is activated, the Admin UI parses it and aggregates the roles and role-to-scope mapping. The aggregated data is saved into the persistence.</p>
 <h3 id="writing-policies-parent-groups-as-resource">Writing policies: Parent Groups as Resource<a class="headerlink" href="#writing-policies-parent-groups-as-resource" title="Permanent link">#</a></h3>
 <p>The principal element in a <a href="https://docs.cedarpolicy.com/">Cedar policy</a> represents a user, service, or other identity that can make a request to perform an action on a resource in your application. We will learn how to write an Admin UI policy using a sample scenario: a logged-in user with the <strong>admin</strong> role can manage the <strong>Auth Server and its configuration</strong>.</p>
 <p><div class="highlight"><pre><span></span><code>@id(&quot;AdminCanManageAuthServerConfiguration&quot;)
@@ -3170,11 +3250,11 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 </tr>
 <tr>
 <td>Service</td>
-<td>Persistence, SMTP, SCIM, FIDO, SAML, Lock</td>
+<td>Cache, Persistence, SMTP, SCIM, FIDO, SAML, Lock</td>
 </tr>
 <tr>
 <td>Essential Admin UI Scopes</td>
-<td>AdminUISession</td>
+<td>AdminUISession, License, Settings</td>
 </tr>
 </tbody>
 </table>
@@ -3200,7 +3280,7 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 28, 2026 18:10:38 UTC"><span class="timeago" datetime="2026-08-28T18:10:38+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 28, 2026 18:10:38 UTC">2026-08-28</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 1, 2026 08:33:49 UTC"><span class="timeago" datetime="2026-09-01T08:33:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 1, 2026 08:33:49 UTC">2026-09-01</span>
   </span>
 
     
