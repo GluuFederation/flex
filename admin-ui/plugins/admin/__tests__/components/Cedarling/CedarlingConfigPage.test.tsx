@@ -90,7 +90,7 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
-  it('uploads the .cjar as an inactive policy store and re-syncs the role mappings', async () => {
+  it('uploads the .cjar as an inactive policy store without re-syncing the role mappings', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
@@ -133,9 +133,7 @@ describe('CedarlingConfigPage', () => {
     const [createdData] = mockCreatePolicyStore.mock.calls[0]
     expect(createdData.data).not.toHaveProperty('jansStatus')
 
-    await waitFor(() => {
-      expect(mockMutateAsync).toHaveBeenCalled()
-    })
+    expect(mockMutateAsync).not.toHaveBeenCalled()
   })
 
   it('triggers the policy store add/edit webhook after the upload succeeds', async () => {
