@@ -48,6 +48,8 @@ The Admin UI features (or resources) are categorised into following parent group
     - Lock
 - Essential Admin UI Scopes
     - AdminUISession
+    - License
+    - Settings
 
 The feature names above are the entity IDs the Admin UI sends to Cedarling, so a policy has to spell them exactly this way to match. The parent headings are display labels: their entity IDs are `SystemAndMonitoring`, `AuthServerAndConfiguration` and `IdentityAndAccess`, listed in full in the table at the end of this page.
 
@@ -285,4 +287,4 @@ Please see the Entity Ids of the Parent Groups and their underlying features in 
 |IdentityAndAccess|Users, Scripts, Attributes|
 |SystemAndMonitoring|Dashboard, License, MAU, Security, Settings, Webhooks, Assets, AuditLogs|
 |Service|Cache, Persistence, SMTP, SCIM, FIDO, SAML, Lock|
-|Essential Admin UI Scopes|AdminUISession|
+|Essential Admin UI Scopes|AdminUISession, License, Settings|

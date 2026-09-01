@@ -22,5 +22,4 @@ Gluu Flex Admin UI has the following main menus on the left navigation:
 - [SMTP](./smtp-menu.md)
 - [SCIM](./scim-menu.md)
 - [FIDO](./fido-menu.md)
-- [SAML](./saml-menu.md)
 - [Jans Lock](./jans-lock-menu.md)

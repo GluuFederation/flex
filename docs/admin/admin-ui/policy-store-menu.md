@@ -25,17 +25,17 @@ One store is active at a time. The active store supplies the schema, policies an
 |Size|Size of the stored archive|
 |Comments|Description supplied when the store was uploaded|
 
-Search by pattern, sort by uploaded date, name or status, and page through the list using the toolbar above the table. Long comments are truncated to two lines; use the chevron at the start of a row to expand one.
+Search by pattern, sort by uploaded date, name or status, and page through the list using the toolbar above the table.
 
 ## Adding a policy store
 
-`Add Policy Store` opens the upload screen, which accepts a `.cjar` archive produced by Agama Lab's Policy Designer. See [Steps to create and upload Policy Store archive file](./configuration.md#steps-to-create-and-upload-policy-store-archive-file).
+`Add Policy Store` button opens the upload screen, which accepts a `.cjar` archive produced by Agama Lab's Policy Designer. See [Steps to create and upload Policy Store archive file](./configuration.md#steps-to-create-and-upload-policy-store-archive-file).
 
 A newly uploaded store is stored as a backup. It has no effect on access control until it is activated.
 
 ## Activating a policy store
 
-`Set active` promotes a backup to the active store. The action is unavailable on the store that is already active.
+On click of `Set active` action button, it promotes a backup to the active store. The action is unavailable on the store that is already active.
 
 Activation runs in two steps:
 
