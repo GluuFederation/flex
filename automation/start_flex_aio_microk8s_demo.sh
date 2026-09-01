@@ -1,7 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-# get script directory
 basedir=$(dirname "$(readlink -f -- "$0")")
 
 GLUU_FQDN=$1
@@ -58,10 +57,8 @@ sudo snap alias microk8s.helm3 helm
 KUBECONFIG="$HOME/.kube/config"
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
 
-# microk8s 1.35's built-in "ingress" addon runs Traefik, which doesn't honor
-# the nginx-specific rewrite/regex annotations this chart's Ingress resources
-# rely on. Install the real ingress-nginx controller instead, bound directly
-# to the node's 80/443 via hostPort since there's no cloud LB here.
+# microk8s's built-in ingress addon runs Traefik, which doesn't honor this
+# chart's nginx-specific rewrite/regex annotations; install real ingress-nginx.
 sudo helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 sudo helm repo update
 sudo helm install ingress-nginx ingress-nginx/ingress-nginx \
@@ -140,8 +137,6 @@ casa:
     casaEnabled: true
 nginx-ingress:
   ingress:
-    # matches controller.ingressClassResource.name set on the ingress-nginx
-    # install above
     ingressClassName: nginx
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
