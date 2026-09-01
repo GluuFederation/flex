@@ -157,14 +157,15 @@ chmod 600 "$KUBECONFIG"
 trap 'rm -f "$KUBECONFIG"' EXIT
 sudo microk8s config > "$KUBECONFIG"
 export KUBECONFIG
+CURL_RETRY_OPTS=(--retry 10 --retry-delay 5 --retry-connrefused)
 echo -e "Testing openid-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/openid-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/openid-configuration"
 echo -e "Testing scim-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/scim-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/scim-configuration"
 echo -e "Testing fido2-configuration endpoint.. \n"
-curl --fail --silent --show-error -k "https://$FQDN/.well-known/fido2-configuration"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" "https://$FQDN/.well-known/fido2-configuration"
 echo -e "Testing Admin UI endpoint.. \n"
-curl --fail --silent --show-error -k -o /dev/null "https://$FQDN/admin"
+curl --fail --silent --show-error -k "${CURL_RETRY_OPTS[@]}" -o /dev/null "https://$FQDN/admin"
 EOF
 echo "Waiting for Gluu Flex all-in-one to come up. Please do not cancel out. This can take up to 10 minutes."
 sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=600s deploy/flex-gluu-all-in-one --kubeconfig="$KUBECONFIG" || echo "all-in-one deployment is not ready. Running tests anyways..."
