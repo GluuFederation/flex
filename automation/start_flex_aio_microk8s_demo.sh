@@ -126,7 +126,10 @@ casa:
     casaEnabled: true
 nginx-ingress:
   ingress:
-    ingressClassName: public
+    # microk8s 1.35+ ingress addon defaults to Traefik; its "nginx" IngressClass
+    # is a compatibility shim that understands the nginx-style annotations this
+    # chart renders (the "public"/"traefik" classes don't).
+    ingressClassName: nginx
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
