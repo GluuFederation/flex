@@ -162,7 +162,9 @@ const ArchiveExplorerPage: React.FC = () => {
 
   const workingEntries = useMemo(() => {
     if (!entries) return null
-    const kept = entries.filter((entry) => !removedPaths.includes(entry.path))
+    const kept = entries.filter(
+      (entry) => !removedPaths.includes(entry.path) && !addedPaths.includes(entry.path),
+    )
     const added = addedPaths.map((path) => ({ path, bytes: textToBytes(edits[path] ?? '') }))
     return [...kept, ...added]
   }, [entries, removedPaths, addedPaths, edits])
