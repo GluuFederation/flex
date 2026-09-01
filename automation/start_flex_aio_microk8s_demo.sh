@@ -50,7 +50,8 @@ sudo apt-get update
 sudo snap install microk8s --classic
 sudo microk8s.status --wait-ready
 sudo microk8s.enable dns ingress hostpath-storage helm3
-mkdir -p -m 0700 "$HOME/.kube"
+mkdir -p "$HOME/.kube"
+chmod 700 "$HOME/.kube"
 sudo microk8s config | sudo install -m 0600 /dev/stdin "$HOME/.kube/config"
 sudo snap alias microk8s.kubectl kubectl
 sudo snap alias microk8s.helm3 helm
@@ -135,8 +136,11 @@ cat << 'EOF' > testendpoints.sh
 #!/bin/bash
 set -euo pipefail
 FQDN="$1"
-sudo microk8s config > config
-export KUBECONFIG="$PWD/config"
+KUBECONFIG=$(mktemp)
+chmod 600 "$KUBECONFIG"
+trap 'rm -f "$KUBECONFIG"' EXIT
+sudo microk8s config > "$KUBECONFIG"
+export KUBECONFIG
 echo -e "Testing openid-configuration endpoint.. \n"
 curl --fail --silent --show-error -k "https://$FQDN/.well-known/openid-configuration"
 echo -e "Testing scim-configuration endpoint.. \n"
