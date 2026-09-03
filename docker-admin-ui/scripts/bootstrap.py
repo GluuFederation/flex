@@ -264,28 +264,25 @@ def resolve_conf_app(old_conf, new_conf):
         # add missing uiConfig
         ui_conf = old_conf.get("uiConfig", {})
 
-        policy_store = "./custom/config/adminUI/policy-store.cjar"
-
         # add top-level config under uiConfig (if missing)
         ui_conf_attrs = {
             "sessionTimeoutInMins": 30,
             "allowSmtpKeystoreEdit": True,
             "cedarlingLogType": "off",
-            "auiPolicyStoreUrl": "",
-            "auiDefaultPolicyStorePath": policy_store,
         }
         for k, v in ui_conf_attrs.items():
             if k not in ui_conf:
                 ui_conf[k] = v
                 should_update = True
 
-        if "cedarlingPolicyStoreRetrievalPoint" in ui_conf:
-            ui_conf.pop("cedarlingPolicyStoreRetrievalPoint", None)
-            should_update = True
-
-        if ui_conf["auiDefaultPolicyStorePath"] != policy_store:
-            ui_conf["auiDefaultPolicyStorePath"] = policy_store
-            should_update = True
+        for del_attr in [
+            "cedarlingPolicyStoreRetrievalPoint",
+            "auiPolicyStoreUrl",
+            "auiDefaultPolicyStorePath",
+        ]:
+            if del_attr in ui_conf:
+                ui_conf.pop(del_attr, None)
+                should_update = True
 
         # update/add uiConfig
         old_conf["uiConfig"] = ui_conf
