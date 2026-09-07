@@ -649,6 +649,7 @@ jansScope: https://jans.io/oauth/config/data.readonly
 jansScope: https://jans.io/oauth/config/logging.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly
+jansScope: https://jans.io/oauth/config/fido2-metrics.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
