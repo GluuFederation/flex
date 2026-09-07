@@ -7,6 +7,16 @@ import { DropdownProfile } from '../DropdownProfile'
 import sessionReducer, { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { ROUTES } from '@/helpers/navigation'
 
+const mockToggleCedarLogs = jest.fn()
+
+jest.mock('@/utils/hooks/useCedarlingLogToggle', () => ({
+  useCedarlingLogToggle: () => ({
+    enabled: false,
+    toggle: mockToggleCedarLogs,
+    isSaving: false,
+  }),
+}))
+
 const mockNavigateToRoute = jest.fn()
 
 jest.mock('@/helpers/navigation', () => ({

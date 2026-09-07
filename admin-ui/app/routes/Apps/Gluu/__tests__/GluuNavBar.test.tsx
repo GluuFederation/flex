@@ -15,6 +15,10 @@ const createTestStore = (userinfo: UserInfo | null): Store =>
     }),
   })
 
+jest.mock('@/utils/hooks/useCedarlingLogToggle', () => ({
+  useCedarlingLogToggle: () => ({ enabled: false, toggle: jest.fn(), isSaving: false }),
+}))
+
 const renderNavBar = (userinfo: UserInfo | null) => {
   const store = createTestStore(userinfo)
   const Wrapper = ({ children }: { children: ReactNode }) => (

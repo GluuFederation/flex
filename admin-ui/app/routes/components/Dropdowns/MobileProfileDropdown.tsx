@@ -19,6 +19,8 @@ import { THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { useThemePersistence } from '@/hooks/useThemePersistence'
 import { useLangPersistence } from '@/hooks/useLangPersistence'
 import { LANG_CODES, DEFAULT_LANG } from '@/constants'
+import Switch from '@mui/material/Switch'
+import { useCedarlingLogToggle } from '@/utils/hooks/useCedarlingLogToggle'
 import { useStyles } from './styles/MobileProfileDropdown.style'
 import type { MobileProfileDropdownProps } from './types'
 
@@ -88,6 +90,8 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
   }, [isOpen])
 
   const onChangeTheme = useThemePersistence(userInfo)
+
+  const { enabled: cedarLogsEnabled, toggle: toggleCedarLogs } = useCedarlingLogToggle()
 
   const handleProfile = useCallback(() => {
     setIsOpen(false)
@@ -216,6 +220,20 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
                   </span>
                 </span>
               )}
+            />
+          </div>
+
+          <hr className={classes.divider} />
+
+          <div className={classes.row}>
+            <GluuText variant="span" className={classes.rowLabel}>
+              {t('fields.cedarlingLogs?')}
+            </GluuText>
+            <Switch
+              size="small"
+              checked={cedarLogsEnabled}
+              onChange={toggleCedarLogs}
+              slotProps={{ input: { 'aria-label': t('fields.cedarlingLogs?') } }}
             />
           </div>
 

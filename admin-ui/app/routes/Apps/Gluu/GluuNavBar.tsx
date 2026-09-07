@@ -151,7 +151,7 @@ const GluuNavBar = () => {
                   </Box>
                 </Box>
               )}
-              position="bottom"
+              position="bottom-end"
             />
           )}
         </Box>
