@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -12,9 +12,9 @@ import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
 import { APP_BASE_URL } from '@/helpers/navigation'
+import { deleteAdminUiSession } from 'Redux/api/backend-api'
+import { logger } from '@/utils/logger'
 
-// server to redirect /admin to /admin/. Exported because jsdom forbids stubbing window.location,
-// so the URL is asserted here instead of through the navigation itself.
 export const buildAdminUrl = (authServerHost?: string | number | boolean): string | null =>
   authServerHost ? `${authServerHost}${APP_BASE_URL}` : null
 
@@ -23,28 +23,48 @@ const GluuTimeoutModal = () => {
   const { t } = useTranslation()
   const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
   const { authServerHost } = useAppSelector((state) => state.authReducer.config)
+  const hasSession = useAppSelector((state) => state.authReducer.hasSession)
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
 
-  const handleRefresh = useCallback(() => {
-    dispatch(handleApiTimeout({ isTimeout: false }))
-    dispatch(handleSessionExpired({ isSessionExpired: false }))
+  const navigateToAdminRoot = useCallback(() => {
     const host = buildAdminUrl(authServerHost)
     if (host) {
       window.location.href = host
     } else {
       window.location.reload()
     }
-  }, [authServerHost, dispatch])
+  }, [authServerHost])
+
+  const handleRefresh = useCallback(async () => {
+    if (isSigningOut) return
+    setIsSigningOut(true)
+
+    if (isSessionExpired && hasSession) {
+      try {
+        await deleteAdminUiSession()
+      } catch (error) {
+        logger.error(
+          'Failed to delete the Admin UI session before refreshing:',
+          error instanceof Error ? error : String(error),
+        )
+      }
+    }
+
+    dispatch(handleApiTimeout({ isTimeout: false }))
+    dispatch(handleSessionExpired({ isSessionExpired: false }))
+    navigateToAdminRoot()
+  }, [dispatch, hasSession, isSessionExpired, isSigningOut, navigateToAdminRoot])
 
   // A slow request can simply be dismissed and retried. An expired session cannot — there is
   // nothing behind the modal to go back to — so every dismissal there routes to sign-in.
   const handleDismiss = useCallback(() => {
     if (isSessionExpired) {
-      handleRefresh()
+      void handleRefresh()
       return
     }
     dispatch(handleApiTimeout({ isTimeout: false }))
@@ -100,6 +120,7 @@ const GluuTimeoutModal = () => {
           applyButtonType="button"
           applyButtonLabel={t('actions.refresh')}
           onApply={handleRefresh}
+          isLoading={isSigningOut}
         />
       </div>
     </ModalLayer>
