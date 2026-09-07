@@ -10,7 +10,7 @@ on:
         description: 'flex-all-in-one image tag to test'
         required: false
         type: string
-        default: '0.0.0-nightly'
+        default: '6.4.0'
   schedule:
     - cron: "0 2 * * *"
   push:
@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 30
     env:
       FQDN: flex-aio-microk8s-demo.gluu.org
-      VERSION: ${{ inputs.version || '0.0.0-nightly' }}
+      VERSION: ${{ inputs.version || '6.4.0' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
