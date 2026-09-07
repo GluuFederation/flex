@@ -35,9 +35,6 @@ const getPositionStyles = (position: DropdownPosition) => {
         marginLeft: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
-    // Right-aligned to the trigger instead of centred on it, so a menu wider than
-    // its trigger grows inward. Centring overflows the viewport for a trigger that
-    // sits at the right edge, which scrolls the page horizontally.
     case 'bottom-end':
       return {
         top: '100%',
@@ -63,9 +60,6 @@ const getArrowStyles = (position: DropdownPosition) => {
         left: '50%',
         transform: 'translateX(-50%)',
       }
-    // Rendered against the wrapper rather than the menu (see GluuDropdown.tsx), so it
-    // centres on the trigger. 100% is the trigger's bottom edge; the menu starts 13px
-    // below that and the arrow sits 15px above the menu's top, hence the 2px back up.
     case 'bottom-end':
       return {
         top: 'calc(100% - 2px)',

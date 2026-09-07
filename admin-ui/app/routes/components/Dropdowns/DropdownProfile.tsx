@@ -51,8 +51,6 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
           </Box>
         ),
         searchValue: t('fields.cedarlingLogs?'),
-        // The menu stays open so the switch's new position and the resulting toast are
-        // both visible without reopening the dropdown.
         keepOpen: true,
         onClick: () => {
           toggleCedarLogs()

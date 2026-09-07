@@ -70,10 +70,6 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   const { classes } = useStyles({ isDark, position, dropdownBg, centerText, optionPadding })
 
   const isOpen = controlled ? (controlledIsOpen ?? false) : internalState.isOpen
-  // A 'bottom-end' menu is right-aligned to the trigger, so an arrow positioned against
-  // the menu can't find the trigger's centre — the menu is wider than the trigger by an
-  // amount that varies with the options. Rendering it against the wrapper instead, which
-  // is inline-block around the trigger alone, centres it with plain CSS.
   const arrowAnchoredToTrigger = position === 'bottom-end'
   const searchQuery = internalState.searchQuery
 

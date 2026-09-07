@@ -28,8 +28,6 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
   const { data: config } = useGetAdminuiConf()
   const editConfigMutation = useEditAdminuiConf()
 
-  // Holds the value the user just picked so the switch flips immediately. Cleared once the
-  // query cache carries the server's answer, or on failure so the switch snaps back.
   const [optimisticEnabled, setOptimisticEnabled] = useState<boolean | null>(null)
 
   const serverEnabled = useMemo(
@@ -57,8 +55,6 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
       { data: updatePayload },
       {
         onSuccess: (updatedConfig) => {
-          // Seed the cache before clearing the optimistic value, otherwise the switch
-          // flickers back to the stale value while the refetch is in flight.
           queryClient.setQueryData(getGetAdminuiConfQueryKey(), updatedConfig)
           setOptimisticEnabled(null)
           queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })

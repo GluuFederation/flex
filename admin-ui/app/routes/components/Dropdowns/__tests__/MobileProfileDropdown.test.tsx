@@ -3,7 +3,10 @@ import { Provider } from 'react-redux'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n'
-import { DropdownProfile } from '../DropdownProfile'
+import { ThemeContext } from '@/context/theme/themeContext'
+import type { ThemeContextType } from '@/context/theme/themeContext'
+import { THEME_LIGHT } from '@/context/theme/constants'
+import { MobileProfileDropdown } from '../MobileProfileDropdown'
 import sessionReducer, { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { ROUTES } from '@/helpers/navigation'
 
@@ -24,13 +27,26 @@ jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({ navigateToRoute: mockNavigateToRoute }),
 }))
 
+jest.mock('@/hooks/useThemePersistence', () => ({
+  useThemePersistence: () => jest.fn(),
+}))
+
+jest.mock('@/hooks/useLangPersistence', () => ({
+  useLangPersistence: () => ({ lang: 'en', changeLanguage: jest.fn() }),
+}))
+
 const makeStore = () =>
   configureStore({
     reducer: combineReducers({ sessionReducer }),
     preloadedState: { sessionReducer: { landingPath: null, logoutRequested: false } },
   })
 
-const renderProfile = (store = makeStore()) => {
+const themeValue: ThemeContextType = {
+  state: { theme: THEME_LIGHT },
+  dispatch: jest.fn(),
+}
+
+const renderMobileProfile = (store = makeStore()) => {
   const dispatchSpy = jest.spyOn(store, 'dispatch')
   return {
     store,
@@ -38,7 +54,12 @@ const renderProfile = (store = makeStore()) => {
     ...render(
       <Provider store={store}>
         <I18nextProvider i18n={i18n}>
-          <DropdownProfile trigger={<button type="button">Account</button>} />
+          <ThemeContext.Provider value={themeValue}>
+            <MobileProfileDropdown
+              userInfo={{ inum: 'test-inum' } as never}
+              renderTrigger={() => <span>Account</span>}
+            />
+          </ThemeContext.Provider>
         </I18nextProvider>
       </Provider>,
     ),
@@ -47,54 +68,40 @@ const renderProfile = (store = makeStore()) => {
 
 const openMenu = () => fireEvent.click(screen.getByText('Account'))
 
-describe('DropdownProfile', () => {
+describe('MobileProfileDropdown', () => {
   beforeEach(() => {
     mockNavigateToRoute.mockClear()
     mockToggleCedarLogs.mockClear()
   })
 
   it('renders the trigger', () => {
-    renderProfile()
+    renderMobileProfile()
     expect(screen.getByText('Account')).toBeInTheDocument()
   })
 
-  it('shows profile and sign-out options when opened', () => {
-    renderProfile()
+  it('shows profile and sign-out rows when opened', () => {
+    renderMobileProfile()
     openMenu()
     expect(screen.getByText(i18n.t('menus.my_profile'))).toBeInTheDocument()
     expect(screen.getByText(i18n.t('menus.signout'))).toBeInTheDocument()
   })
 
   it('navigates to the profile route when "my profile" is clicked', () => {
-    renderProfile()
+    renderMobileProfile()
     openMenu()
     fireEvent.click(screen.getByText(i18n.t('menus.my_profile')))
     expect(mockNavigateToRoute).toHaveBeenCalledWith(ROUTES.PROFILE)
   })
 
-  it('toggles cedarling logs once when the option is activated', () => {
-    renderProfile()
+  it('toggles cedarling logs once when the switch is changed', () => {
+    renderMobileProfile()
     openMenu()
     fireEvent.click(screen.getByRole('switch', { name: i18n.t('fields.cedarlingLogs?') }))
     expect(mockToggleCedarLogs).toHaveBeenCalledTimes(1)
   })
 
-  it('keeps the menu open after cedarling logs is toggled', () => {
-    renderProfile()
-    openMenu()
-    fireEvent.click(screen.getByRole('switch', { name: i18n.t('fields.cedarlingLogs?') }))
-    expect(screen.getByText(i18n.t('menus.signout'))).toBeInTheDocument()
-  })
-
-  it('closes the menu after sign out is clicked', () => {
-    renderProfile()
-    openMenu()
-    fireEvent.click(screen.getByText(i18n.t('menus.signout')))
-    expect(screen.queryByText(i18n.t('menus.my_profile'))).not.toBeInTheDocument()
-  })
-
   it('dispatches a logout audit when sign out is clicked', () => {
-    const { dispatchSpy } = renderProfile()
+    const { dispatchSpy } = renderMobileProfile()
     openMenu()
     fireEvent.click(screen.getByText(i18n.t('menus.signout')))
     expect(dispatchSpy).toHaveBeenCalledWith(

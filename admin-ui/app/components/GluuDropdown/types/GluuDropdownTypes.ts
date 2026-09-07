@@ -13,7 +13,6 @@ export type GluuDropdownOption<T extends DropdownValue = DropdownValue> = {
   icon?: React.ReactNode
   metadata?: Record<string, string | number | boolean | null | undefined>
   searchValue?: string
-  /** Keeps the menu open after this option is clicked, even when closeOnSelect is set. */
   keepOpen?: boolean
 }
 
@@ -45,7 +44,6 @@ export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
     selectedOption?: GluuDropdownOption<T> | GluuDropdownOption<T>[],
   ) => React.ReactNode
   centerText?: boolean
-  /** Overrides the default option padding, which reserves 48px on the right for a checkmark slot. */
   optionPadding?: string
 }
 
