@@ -29,17 +29,18 @@ import { adminUiFeatures } from '@/constants'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { fileToBase64 } from '@/utils/policyStore'
 import { CJAR_EXTENSION } from '@/constants/policyStore'
+import { hasCjarExtension } from '@/utils/policyStore'
 
 const SECURITY_RESOURCE_ID = ADMIN_UI_RESOURCES.Security
 
-const ZIP_MIME_TYPE = 'application/zip'
+const CJAR_MIME_TYPE = 'application/vnd.gluu.cjar'
 
 const POLICY_STORE_REPO_URL =
   'https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer'
 const AGAMA_LAB_URL = 'https://cloud.gluu.org/agama-lab'
 
 const CJAR_ACCEPT = {
-  [ZIP_MIME_TYPE]: [CJAR_EXTENSION],
+  [CJAR_MIME_TYPE]: [CJAR_EXTENSION],
 }
 
 const CedarlingConfigPage: React.FC = () => {
@@ -79,12 +80,26 @@ const CedarlingConfigPage: React.FC = () => {
 
   const dispatch = useAppDispatch()
 
-  const handleFileDrop = useCallback((files: File[]) => {
-    const [file] = files
-    if (file) {
+  const handleFileDrop = useCallback(
+    (files: File[]) => {
+      const [file] = files
+      if (!file) {
+        return
+      }
+      if (!hasCjarExtension(file.name)) {
+        setSelectedFile(null)
+        dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.invalidFileType')))
+        return
+      }
       setSelectedFile(file)
-    }
-  }, [])
+    },
+    [dispatch, t],
+  )
+
+  const handleDropRejected = useCallback(() => {
+    setSelectedFile(null)
+    dispatch(updateToast(true, 'error', t('documentation.cedarlingConfig.invalidFileType')))
+  }, [dispatch, t])
 
   const handleClearFiles = useCallback(() => {
     setSelectedFile(null)
@@ -213,6 +228,7 @@ const CedarlingConfigPage: React.FC = () => {
                             <GluuUploadFile
                               accept={CJAR_ACCEPT}
                               onDrop={handleFileDrop}
+                              onDropRejected={handleDropRejected}
                               placeholder={t('documentation.cedarlingConfig.selectCjarFile')}
                               onClearFiles={handleClearFiles}
                               disabled={!canWriteSecurity || isLoading}
