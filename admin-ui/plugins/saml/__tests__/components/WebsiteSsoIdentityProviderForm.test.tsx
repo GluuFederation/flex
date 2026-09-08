@@ -178,4 +178,45 @@ describe('WebsiteSsoIdentityProviderForm', () => {
       expect(displayNameInput).toHaveValue('New Display Name')
     })
   })
+
+  describe('metadata file upload', () => {
+    const openUploadField = () => {
+      const toggle = screen.getByTestId('metaDataFileImportedFlag')
+      fireEvent.click(toggle)
+      return document.querySelector('input[type="file"]') as HTMLInputElement
+    }
+
+    it('reports an unsupported metadata file instead of selecting it', async () => {
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
+      await renderForm()
+
+      const input = openUploadField()
+      const file = new File(['x'], 'logo.png', { type: 'image/png' })
+
+      fireEvent.change(input, { target: { files: [file] } })
+
+      expect(screen.queryByText('logo.png')).not.toBeInTheDocument()
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'toast/updateToast',
+          payload: expect.objectContaining({
+            type: 'error',
+            message: expect.stringContaining('.xml'),
+          }),
+        }),
+      )
+      dispatchSpy.mockRestore()
+    })
+
+    it('selects an xml metadata file', async () => {
+      await renderForm()
+
+      const input = openUploadField()
+      const file = new File(['<xml/>'], 'metadata.xml', { type: 'text/xml' })
+
+      fireEvent.change(input, { target: { files: [file] } })
+
+      expect(await screen.findByText('metadata.xml')).toBeInTheDocument()
+    })
+  })
 })

@@ -172,7 +172,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = ensureCjarExtension(store.displayname || store.inum)
+        link.download = ensureCjarExtension(store.displayname?.trim() || store.inum)
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
