@@ -11,6 +11,8 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { SETTINGS } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
@@ -69,6 +71,10 @@ const SettingsPage: React.FC = () => {
   const queryClient = useQueryClient()
 
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+
+  const { canRead: canReadSettings, canWrite: canWriteSettings } = usePermission(
+    ADMIN_UI_RESOURCES.Settings,
+  )
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -345,7 +351,7 @@ const SettingsPage: React.FC = () => {
 
   return (
     <GluuLoader blocking={loadingScripts || loadingConfig || loadingAgamaProjects || isSubmitting}>
-      <GluuViewWrapper canShow>
+      <GluuViewWrapper canShow={canReadSettings}>
         <GluuPageContent>
           <div className={classes.mobileContentPad}>
             <GluuText variant="h1" className={classes.mobilePageTitle}>
@@ -518,10 +524,10 @@ const SettingsPage: React.FC = () => {
 
                   <GluuThemeFormFooter
                     showBack
-                    showCancel={!isMobile}
+                    showCancel={!isMobile && canWriteSettings}
                     onCancel={handleCancel}
                     disableCancel={!isFormChanged}
-                    showApply={!isMobile}
+                    showApply={!isMobile && canWriteSettings}
                     onApply={formik.handleSubmit}
                     disableApply={!isFormChanged || hasErrors || isSubmitting}
                     applyButtonType="button"
