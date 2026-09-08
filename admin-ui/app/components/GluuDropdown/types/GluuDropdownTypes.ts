@@ -1,6 +1,6 @@
 import type React from 'react'
 
-export type DropdownPosition = 'top' | 'bottom' | 'left' | 'right'
+export type DropdownPosition = 'top' | 'bottom' | 'bottom-end' | 'left' | 'right'
 
 export type DropdownValue = string | number | boolean
 
@@ -13,6 +13,7 @@ export type GluuDropdownOption<T extends DropdownValue = DropdownValue> = {
   icon?: React.ReactNode
   metadata?: Record<string, string | number | boolean | null | undefined>
   searchValue?: string
+  keepOpen?: boolean
 }
 
 export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
@@ -43,6 +44,7 @@ export type GluuDropdownProps<T extends DropdownValue = DropdownValue> = {
     selectedOption?: GluuDropdownOption<T> | GluuDropdownOption<T>[],
   ) => React.ReactNode
   centerText?: boolean
+  optionPadding?: string
 }
 
 export type DropdownState = {

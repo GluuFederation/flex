@@ -5,12 +5,16 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { MANUAL_LOGOUT } from '@/audit/messages'
 import { GluuDropdown, type GluuDropdownOption } from 'Components'
+import Box from '@mui/material/Box'
+import Switch from '@mui/material/Switch'
+import { useCedarlingLogToggle } from '@/utils/hooks/useCedarlingLogToggle'
 import type { DropdownProfileProps } from './types'
 
 const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: DropdownProfileProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
+  const { enabled: cedarLogsEnabled, toggle: toggleCedarLogs } = useCedarlingLogToggle()
 
   const handleLogout = useCallback(() => {
     dispatch(auditLogoutLogs({ message: MANUAL_LOGOUT }))
@@ -26,6 +30,33 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
         },
       },
       {
+        value: 'cedarLogs',
+        label: (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 1,
+              gap: 2,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {t('fields.cedarlingLogs?')}
+            <Switch
+              size="small"
+              checked={cedarLogsEnabled}
+              slotProps={{ input: { 'aria-label': t('fields.cedarlingLogs?') } }}
+            />
+          </Box>
+        ),
+        searchValue: t('fields.cedarlingLogs?'),
+        keepOpen: true,
+        onClick: () => {
+          toggleCedarLogs()
+        },
+      },
+      {
         value: 'logout',
         label: t('menus.signout'),
         onClick: () => {
@@ -33,7 +64,7 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
         },
       },
     ],
-    [t, navigateToRoute, handleLogout],
+    [t, navigateToRoute, handleLogout, cedarLogsEnabled, toggleCedarLogs],
   )
 
   return (
@@ -43,6 +74,7 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
       options={options}
       position={position}
       minWidth={182}
+      optionPadding="12px"
       showArrow={true}
     />
   )

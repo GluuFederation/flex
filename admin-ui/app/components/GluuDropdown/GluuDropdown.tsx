@@ -49,6 +49,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   renderOption,
   renderTrigger,
   centerText = false,
+  optionPadding,
 }: GluuDropdownProps<T>): React.ReactElement => {
   const [internalState, setInternalState] = useState<DropdownState>({
     isOpen: false,
@@ -66,9 +67,10 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
   const dropdownBg = useMemo(() => {
     return isDark ? customColors.darkDropdownBg : customColors.white
   }, [isDark])
-  const { classes } = useStyles({ isDark, position, dropdownBg, centerText })
+  const { classes } = useStyles({ isDark, position, dropdownBg, centerText, optionPadding })
 
   const isOpen = controlled ? (controlledIsOpen ?? false) : internalState.isOpen
+  const arrowAnchoredToTrigger = position === 'bottom-end'
   const searchQuery = internalState.searchQuery
 
   const setIsOpen = useCallback(
@@ -152,7 +154,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
       option.onClick?.(option.value, option)
       onSelect?.(option.value, option)
 
-      if (closeOnSelect) {
+      if (closeOnSelect && !option.keepOpen) {
         setIsOpen(false)
         setInternalState((prev) => ({ ...prev, searchQuery: '' }))
       }
@@ -269,7 +271,7 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
           role="listbox"
           id={listboxId}
         >
-          {showArrow && (
+          {showArrow && !arrowAnchoredToTrigger && (
             <div className={classes.arrow}>
               <ArrowIcon />
             </div>
@@ -292,6 +294,11 @@ export const GluuDropdown = <T extends DropdownValue = DropdownValue>({
             {renderOptions}
           </div>
         </Box>
+      )}
+      {isOpen && showArrow && arrowAnchoredToTrigger && (
+        <div className={classes.arrow}>
+          <ArrowIcon />
+        </div>
       )}
     </div>
   )

@@ -759,6 +759,7 @@
     "platform": "Platform",
     "authType": "Auth Type",
     "showCedarLogs?": "Cedarling Log enabled?",
+    "cedarlingLogs?": "Cedarling logs?",
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -18,10 +18,19 @@ jest.mock('@/cedarling', () => ({
   CEDAR_RESOURCE_SCOPES: { settings: [] },
 }))
 
+const mockUsePermission = jest.fn(() => ({ canRead: true, canWrite: true, canDelete: true }))
+
+jest.mock('@/cedarling/hooks/usePermission', () => ({
+  usePermission: () => mockUsePermission(),
+}))
+
 jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { Settings: 'settings' },
   CEDAR_RESOURCE_SCOPES: { settings: [] },
+  buildCedarPermissionKey: (resource: string, action: string) => `${resource}::${action}`,
 }))
+
+const mockMutateAsync = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
   useGetAdminuiConf: jest.fn(() => ({
@@ -30,7 +39,7 @@ jest.mock('JansConfigApi', () => ({
     isFetching: false,
     isLoading: false,
   })),
-  useEditAdminuiConf: jest.fn(() => ({ mutateAsync: jest.fn() })),
+  useEditAdminuiConf: jest.fn(() => ({ mutateAsync: mockMutateAsync })),
   useGetConfigScriptsByType: jest.fn(() => ({
     data: { entries: [] },
     isLoading: false,
@@ -50,6 +59,9 @@ const store = configureStore({
         config: { clientId: '123', configApiBaseUrl: 'https://example.com' },
       },
     ) => state,
+    cedarPermissions: (
+      state = { permissions: { 'settings::read': true, 'settings::write': true } },
+    ) => state,
     noReducer: (state = {}) => state,
   }),
 })
@@ -57,6 +69,28 @@ const store = configureStore({
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 })
+
+const makeWrapper = (permissions: Record<string, boolean>) => {
+  const scopedStore = configureStore({
+    reducer: combineReducers({
+      authReducer: (
+        state = {
+          userinfo: { name: 'Test User' },
+          config: { clientId: '123', configApiBaseUrl: 'https://example.com' },
+        },
+      ) => state,
+      cedarPermissions: (state = { permissions }) => state,
+      noReducer: (state = {}) => state,
+    }),
+  })
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <AppTestWrapper>
+        <Provider store={scopedStore}>{children}</Provider>
+      </AppTestWrapper>
+    </QueryClientProvider>
+  )
+}
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
@@ -97,4 +131,56 @@ it('Should list installed agama project flows in the ACR dropdown', async () => 
     await screen.findByRole('option', { name: /agama_org\.gluu\.agama\.pw\.main \(agama\)/ }),
   ).toBeInTheDocument()
   expect(screen.queryByRole('option', { name: /agama_org\.gluu\.agama\.hidden/ })).toBeNull()
+})
+
+describe('read-only access', () => {
+  beforeEach(() => {
+    mockMutateAsync.mockClear()
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: false, canDelete: false })
+  })
+
+  afterEach(() => {
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
+  })
+
+  it('does not submit when the role lacks Settings write', async () => {
+    const { container } = render(<SettingsPage />, { wrapper: Wrapper })
+    await screen.findByText(/List paging size/)
+
+    const form = container.querySelector('form')
+    expect(form).not.toBeNull()
+    fireEvent.submit(form as HTMLFormElement)
+
+    expect(mockMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('disables the editable fields when the role lacks Settings write', async () => {
+    const { container } = render(<SettingsPage />, { wrapper: Wrapper })
+    await screen.findByText(/List paging size/)
+
+    const sessionTimeout = container.querySelector('input[name="sessionTimeoutInMins"]')
+    expect(sessionTimeout).toBeDisabled()
+  })
+})
+
+it('shows a loader instead of a permission error while the decision is pending', async () => {
+  mockUsePermission.mockReturnValue({ canRead: false, canWrite: false, canDelete: false })
+
+  render(<SettingsPage />, { wrapper: makeWrapper({}) })
+
+  expect(screen.queryByTestId('MISSING')).toBeNull()
+
+  mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
+})
+
+it('shows the permission error once the decision resolves to denied', async () => {
+  mockUsePermission.mockReturnValue({ canRead: false, canWrite: false, canDelete: false })
+
+  render(<SettingsPage />, {
+    wrapper: makeWrapper({ 'settings::read': false, 'settings::write': false }),
+  })
+
+  expect(await screen.findByTestId('MISSING')).toBeInTheDocument()
+
+  mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
 })

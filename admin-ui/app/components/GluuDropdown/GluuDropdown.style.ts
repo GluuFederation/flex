@@ -35,6 +35,12 @@ const getPositionStyles = (position: DropdownPosition) => {
         marginLeft: SHARED_DROPDOWN_STYLES.margin,
         ...baseTransform,
       }
+    case 'bottom-end':
+      return {
+        top: '100%',
+        marginTop: SHARED_DROPDOWN_STYLES.margin,
+        right: 0,
+      }
     default:
       return {}
   }
@@ -53,6 +59,13 @@ const getArrowStyles = (position: DropdownPosition) => {
         top: '-15px',
         left: '50%',
         transform: 'translateX(-50%)',
+      }
+    case 'bottom-end':
+      return {
+        top: 'calc(100% - 2px)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: SHARED_DROPDOWN_STYLES.menuZIndex + 1,
       }
     case 'left':
       return {
@@ -76,7 +89,8 @@ export const useStyles = makeStyles<{
   position: DropdownPosition
   dropdownBg: string
   centerText?: boolean
-}>()((_theme, { isDark, position, dropdownBg, centerText }) => ({
+  optionPadding?: string
+}>()((_theme, { isDark, position, dropdownBg, centerText, optionPadding }) => ({
   dropdownWrapper: {
     position: 'relative',
     display: 'inline-block',
@@ -93,7 +107,12 @@ export const useStyles = makeStyles<{
     maxHeight: SHARED_DROPDOWN_STYLES.maxHeight,
     overflow: 'visible',
     ...getPositionStyles(position),
-    marginTop: position === 'bottom' ? '13px' : position === 'top' ? undefined : '4px',
+    marginTop:
+      position === 'bottom' || position === 'bottom-end'
+        ? '13px'
+        : position === 'top'
+          ? undefined
+          : '4px',
   },
   dropdownMenuContent: {
     padding: SHARED_DROPDOWN_STYLES.padding,
@@ -140,6 +159,7 @@ export const useStyles = makeStyles<{
     ...createBaseOptionStyles({
       isDark,
       ...(centerText && { optionPadding: '12px 12px' }),
+      ...(optionPadding && { optionPadding }),
     }),
     '&.single-option': {
       justifyContent: 'center',
