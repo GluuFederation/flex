@@ -285,6 +285,10 @@ const WebsiteSsoServiceProviderForm = ({
     }
   }, [dispatch])
 
+  const handleDropRejected = useCallback(() => {
+    dispatch(updateToast(true, 'error', t('messages.metadata_file_type_invalid')))
+  }, [dispatch, t])
+
   const handleDrop = useCallback(
     (files: File[]) => {
       if (viewOnly) return
@@ -495,6 +499,7 @@ const WebsiteSsoServiceProviderForm = ({
                         }
                         placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
                         onDrop={handleDrop}
+                        onDropRejected={handleDropRejected}
                         onClearFiles={handleClearFiles}
                         disabled={viewOnly}
                         showClearButton={!viewOnly}

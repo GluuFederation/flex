@@ -2,6 +2,8 @@ import {
   base64ToUint8Array,
   buildArchiveDownloadName,
   decodedByteLength,
+  ensureCjarExtension,
+  hasCjarExtension,
   isActivePolicyStore,
   selectActivePolicyStore,
   toPolicyStoreEntries,
@@ -106,9 +108,9 @@ describe('decodedByteLength', () => {
 describe('buildArchiveDownloadName', () => {
   const at = new Date(2026, 7, 24, 9, 5)
 
-  it('inserts a short timestamp before the existing extension', () => {
+  it('rewrites a non-cjar extension to cjar', () => {
     expect(buildArchiveDownloadName('default_ps.zip', 'inum-1', at)).toBe(
-      'default_ps-20260824-0905.zip',
+      'default_ps-20260824-0905.cjar',
     )
   })
 
@@ -126,5 +128,36 @@ describe('buildArchiveDownloadName', () => {
 
   it('falls back to the inum when the store has no display name', () => {
     expect(buildArchiveDownloadName(undefined, 'inum-1', at)).toBe('inum-1-20260824-0905.cjar')
+  })
+})
+
+describe('hasCjarExtension', () => {
+  it.each([['store.cjar'], ['STORE.CJAR'], ['  store.cjar  ']])('accepts %p', (name) => {
+    expect(hasCjarExtension(name)).toBe(true)
+  })
+
+  it.each([['store.zip'], ['store'], ['store.cjar.zip'], [''], [undefined]])(
+    'rejects %p',
+    (name) => {
+      expect(hasCjarExtension(name)).toBe(false)
+    },
+  )
+})
+
+describe('ensureCjarExtension', () => {
+  it('leaves a cjar name untouched', () => {
+    expect(ensureCjarExtension('default_ps.cjar')).toBe('default_ps.cjar')
+  })
+
+  it('replaces a non-cjar extension', () => {
+    expect(ensureCjarExtension('default_ps.zip')).toBe('default_ps.cjar')
+  })
+
+  it('appends the extension when there is none', () => {
+    expect(ensureCjarExtension('default_ps')).toBe('default_ps.cjar')
+  })
+
+  it.each([[undefined], [''], ['   ']])('falls back to a default name for %p', (name) => {
+    expect(ensureCjarExtension(name)).toBe('policy-store.cjar')
   })
 })

@@ -890,7 +890,7 @@
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
       "mapping": "Roles and Permissions",
-      "policyStoreHistory": "Admin UI Policy Management"
+      "policyStoreHistory": "Policy Management"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -966,6 +966,8 @@
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
+    "asset_file_type_invalid": "Only .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif and .xhtml files can be uploaded.",
+    "metadata_file_type_invalid": "Only .xml and .json metadata files can be uploaded.",
     "service_required": "Related Services are required.",
     "add_configuration": "Add Configuration",
     "credentials": "Credentials",
@@ -1714,7 +1716,7 @@
     "velocity_watch": "Attempts by User",
     "device_fingerprint_shift": "Authenticator Types",
     "threat_origins_ips": "Threat Origins by IP",
-    "policy_store_history": "Admin UI Policy Management",
+    "policy_store_history": "Policy Management",
     "policy_store_contents": "Policy Store Contents"
   },
   "options": {
@@ -2490,6 +2492,7 @@
       "uploadPolicyStore": "Upload",
       "uploadFailed": "Failed to upload policy store",
       "selectFileFirst": "Please select a .cjar file first",
+      "invalidFileType": "Only .cjar policy store files can be uploaded.",
       "auditPolicyStoreUploaded": "Policy store uploaded",
       "auditSyncRoleToScopesMappings": "Sync role to scopes mappings",
       "auditPolicyStoreUrlUpdated": "Policy store URL updated",

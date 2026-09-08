@@ -94,7 +94,7 @@
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
       "mapping": "Funções e permissões",
-      "policyStoreHistory": "Gerenciamento de políticas do Admin UI"
+      "policyStoreHistory": "Gerenciamento de políticas"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -967,6 +967,8 @@
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Adicionar recurso Jans",
     "asset_document_error": "O documento é obrigatório.",
+    "asset_file_type_invalid": "Somente arquivos .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif e .xhtml podem ser enviados.",
+    "metadata_file_type_invalid": "Somente arquivos de metadados .xml e .json podem ser enviados.",
     "service_required": "Serviços relacionados são obrigatórios.",
     "add_configuration": "Adicionar configuração",
     "error_in_deleting": "Erro ao excluir.",
@@ -1718,7 +1720,7 @@
     "velocity_watch": "Tentativas por usuário",
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Origens de ameaças por IP",
-    "policy_store_history": "Gerenciamento de políticas do Admin UI",
+    "policy_store_history": "Gerenciamento de políticas",
     "policy_store_contents": "Conteúdo do repositório de políticas"
   },
   "options": {
@@ -2468,6 +2470,7 @@
       "uploadPolicyStore": "Enviar",
       "uploadFailed": "Falha ao enviar o repositório de políticas",
       "selectFileFirst": "Por favor, selecione primeiro um arquivo .cjar",
+      "invalidFileType": "Somente arquivos .cjar de repositório de políticas podem ser enviados.",
       "auditPolicyStoreUploaded": "Repositório de políticas enviado",
       "defaultPolicyStoreDescription": "Repositório de políticas da interface de administração",
       "uploadSuccess": "Repositório de políticas enviado com sucesso."

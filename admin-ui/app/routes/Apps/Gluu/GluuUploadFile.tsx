@@ -18,6 +18,7 @@ const DEFAULT_ACCEPT: Accept = {
 const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
   accept = DEFAULT_ACCEPT,
   onDrop,
+  onDropRejected,
   placeholder,
   onClearFiles,
   disabled = false,
@@ -63,6 +64,7 @@ const GluuUploadFile: React.FC<GluuUploadFileProps> = ({
     isDragActive: isDragActive1,
   } = useFileDrop({
     onDrop: handleDrop,
+    onDropRejected,
     accept,
     disabled,
   })

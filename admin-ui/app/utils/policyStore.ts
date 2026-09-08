@@ -85,6 +85,21 @@ export const decodedByteLength = (base64: string | undefined): number => {
   return Math.max(0, Math.floor((normalized.length * 3) / 4) - padding)
 }
 
+export const hasCjarExtension = (name: string | undefined): boolean =>
+  Boolean(name?.trim().toLowerCase().endsWith(CJAR_EXTENSION))
+
+export const ensureCjarExtension = (name: string | undefined): string => {
+  const source = name?.trim()
+  if (!source) {
+    return `policy-store${CJAR_EXTENSION}`
+  }
+  if (hasCjarExtension(source)) {
+    return source
+  }
+  const [, base] = REGEX_ARCHIVE_FILE_EXTENSION.exec(source) ?? []
+  return `${base || source}${CJAR_EXTENSION}`
+}
+
 export const buildArchiveDownloadName = (
   displayname: string | undefined,
   inum: string | undefined,
@@ -93,6 +108,6 @@ export const buildArchiveDownloadName = (
   const pad = (value: number) => String(value).padStart(2, '0')
   const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`
   const source = displayname?.trim() || inum || 'policy-store'
-  const [, base, extension] = REGEX_ARCHIVE_FILE_EXTENSION.exec(source) ?? []
-  return `${base || source}-${stamp}${extension || CJAR_EXTENSION}`
+  const [, base] = REGEX_ARCHIVE_FILE_EXTENSION.exec(source) ?? []
+  return `${base || source}-${stamp}${CJAR_EXTENSION}`
 }

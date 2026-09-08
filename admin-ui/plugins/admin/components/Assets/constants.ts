@@ -26,6 +26,7 @@ export const T_KEYS = {
   MSG_NO_SPACES: 'messages.no_spaces',
   MSG_SERVICE_REQUIRED: 'messages.service_required',
   MSG_ASSET_DOCUMENT_ERROR: 'messages.asset_document_error',
+  MSG_ASSET_FILE_TYPE_INVALID: 'messages.asset_file_type_invalid',
   ACTION_VIEW: 'actions.view',
   ACTION_EDIT: 'actions.edit',
   ACTION_DELETE: 'actions.delete',

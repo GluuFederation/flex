@@ -213,6 +213,10 @@ const WebsiteSsoIdentityProviderForm = ({
     [formik],
   )
 
+  const handleDropRejected = useCallback(() => {
+    dispatch(updateToast(true, 'error', t('messages.metadata_file_type_invalid')))
+  }, [dispatch, t])
+
   const handleDrop = useCallback(
     (files: File[]) => {
       const file = files[0]
@@ -409,6 +413,7 @@ const WebsiteSsoIdentityProviderForm = ({
                         }
                         placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
                         onDrop={handleDrop}
+                        onDropRejected={handleDropRejected}
                         onClearFiles={handleClearFiles}
                         disabled={viewOnly}
                         showClearButton={!viewOnly}

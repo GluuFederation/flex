@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -39,9 +39,9 @@ const buildStore = () =>
     }),
   })
 
-const renderForm = () =>
+const renderForm = (store = buildStore()) =>
   render(
-    <Provider store={buildStore()}>
+    <Provider store={store}>
       <QueryClientProvider
         client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
       >
@@ -57,6 +57,38 @@ describe('AssetForm', () => {
     renderForm()
     expect(document.querySelector('input[name="fileName"]')).toBeInTheDocument()
     expect(document.querySelector('select[name="service"], [name="service"]')).toBeInTheDocument()
+  })
+
+  it('reports an unsupported file instead of selecting it', () => {
+    const store = buildStore()
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    const { container } = renderForm(store)
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+
+    fireEvent.change(input, {
+      target: { files: [new File(['x'], 'notes.zip', { type: 'application/zip' })] },
+    })
+
+    expect(screen.queryByText('notes.zip')).not.toBeInTheDocument()
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          type: 'error',
+          message: expect.stringContaining('.xhtml'),
+        }),
+      }),
+    )
+  })
+
+  it('selects a supported asset file', () => {
+    const { container } = renderForm()
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+
+    fireEvent.change(input, {
+      target: { files: [new File(['x'], 'logo.png', { type: 'image/png' })] },
+    })
+
+    expect(screen.getByText('logo.png')).toBeInTheDocument()
   })
 
   it('disables the apply action while the form is pristine', () => {

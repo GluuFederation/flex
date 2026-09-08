@@ -28,6 +28,47 @@ describe('GluuUploadFile', () => {
     expect(container.querySelector('input[type="file"]')).toBeInTheDocument()
   })
 
+  it('exposes only the accepted extension on the file input', () => {
+    const { container } = renderUploadFile(
+      baseProps({ accept: { 'application/vnd.gluu.cjar': ['.cjar'] } }),
+    )
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+    expect(input.accept).toBe('application/vnd.gluu.cjar,.cjar')
+    expect(input.accept).not.toContain('application/zip')
+  })
+
+  it('reports a rejected file instead of selecting it', () => {
+    const onDrop = jest.fn()
+    const onDropRejected = jest.fn()
+    const { container } = renderUploadFile(
+      baseProps({ onDrop, onDropRejected, accept: { 'application/vnd.gluu.cjar': ['.cjar'] } }),
+    )
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['x'], 'files.zip', { type: 'application/zip' })
+
+    fireEvent.change(input, { target: { files: [file] } })
+
+    expect(onDropRejected).toHaveBeenCalledTimes(1)
+    expect(onDrop).not.toHaveBeenCalled()
+    expect(screen.queryByText('files.zip')).not.toBeInTheDocument()
+  })
+
+  it('selects a file that matches the accepted extension', () => {
+    const onDrop = jest.fn()
+    const onDropRejected = jest.fn()
+    const { container } = renderUploadFile(
+      baseProps({ onDrop, onDropRejected, accept: { 'application/vnd.gluu.cjar': ['.cjar'] } }),
+    )
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['x'], 'store.cjar', { type: '' })
+
+    fireEvent.change(input, { target: { files: [file] } })
+
+    expect(onDropRejected).not.toHaveBeenCalled()
+    expect(onDrop).toHaveBeenCalledWith([file])
+    expect(screen.getByText('store.cjar')).toBeInTheDocument()
+  })
+
   it('renders the file name and a remove button when fileName is provided', () => {
     renderUploadFile(baseProps({ fileName: 'cert.jwt' }))
     expect(screen.getByText('cert.jwt')).toBeInTheDocument()

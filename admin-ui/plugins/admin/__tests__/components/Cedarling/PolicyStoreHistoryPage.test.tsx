@@ -177,6 +177,41 @@ describe('PolicyStoreHistoryPage', () => {
     expect(screen.queryByRole('button', { name: 'Set active' })).not.toBeInTheDocument()
   })
 
+  it('names the download after the inum when the display name is only whitespace', async () => {
+    const { useGetAdminuiPolicyStore } = jest.requireMock('JansConfigApi') as {
+      useGetAdminuiPolicyStore: jest.Mock
+    }
+    const defaultImpl = useGetAdminuiPolicyStore.getMockImplementation()
+    useGetAdminuiPolicyStore.mockImplementation(() => ({
+      data: { entries: [{ ...mockBackupStore, displayname: '   ' }], totalEntriesCount: 1 },
+      isLoading: false,
+      isFetching: false,
+      refetch: jest.fn(),
+    }))
+
+    let downloadName: string | undefined
+    const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      downloadName = this.download
+    })
+
+    try {
+      render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+
+      const buttons = await screen.findAllByRole('button', { name: 'Download' })
+      fireEvent.click(buttons[0])
+
+      await waitFor(() => {
+        expect(clickSpy).toHaveBeenCalled()
+      })
+      expect(downloadName).toBe('backup-1.cjar')
+    } finally {
+      clickSpy.mockRestore()
+      useGetAdminuiPolicyStore.mockImplementation(defaultImpl)
+    }
+  })
+
   it('activates a backup through the confirm dialog', async () => {
     render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
     await screen.findByText('previous-policies.cjar')
