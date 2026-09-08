@@ -34,6 +34,8 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './JansAssetFormPage.style'
 import { T_KEYS } from './constants'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateToast } from 'Redux/features/toastSlice'
 
 const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
   const { id } = useParams<RouteParams>()
@@ -92,6 +94,8 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
     validationSchema,
   })
 
+  const dispatch = useAppDispatch()
+
   const handleFileDrop: FileDropHandler = useCallback(
     (files: File[]) => {
       const file = files[0]
@@ -103,6 +107,10 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
     },
     [formik],
   )
+
+  const handleFileDropRejected = useCallback(() => {
+    dispatch(updateToast(true, 'error', t(T_KEYS.MSG_ASSET_FILE_TYPE_INVALID)))
+  }, [dispatch, t])
 
   const handleClearFiles: FileClearHandler = useCallback(() => {
     formik.setFieldValue('document', null)
@@ -179,6 +187,7 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
                 accept={buildAcceptFileTypes()}
                 placeholder={t(T_KEYS.PLACEHOLDER_ASSET_UPLOAD)}
                 onDrop={handleFileDrop}
+                onDropRejected={handleFileDropRejected}
                 onClearFiles={handleClearFiles}
                 disabled={viewOnly}
                 showClearButton={!viewOnly}

@@ -90,6 +90,74 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
+  it('offers only the cjar extension on the file input', () => {
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+
+    expect(input.accept).toContain('.cjar')
+    expect(input.accept).not.toContain('application/zip')
+  })
+
+  it('rejects a dropped file that is not a cjar', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['payload'], 'files.zip', { type: 'application/zip' })
+
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    await waitFor(() => {
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'toast/updateToast',
+          payload: expect.objectContaining({
+            type: 'error',
+            message: expect.stringContaining('.cjar'),
+          }),
+        }),
+      )
+    })
+    expect(screen.queryByText('files.zip')).not.toBeInTheDocument()
+    dispatchSpy.mockRestore()
+  })
+
+  it('rejects a file that is not named .cjar even when its mime type matches', async () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['payload'], 'store.zip', { type: 'application/vnd.gluu.cjar' })
+
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    await waitFor(() => {
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'toast/updateToast',
+          payload: expect.objectContaining({
+            type: 'error',
+            message: expect.stringContaining('.cjar'),
+          }),
+        }),
+      )
+    })
+    dispatchSpy.mockRestore()
+  })
+
   it('uploads the .cjar as an inactive policy store without re-syncing the role mappings', async () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 

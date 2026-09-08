@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode, HTMLAttributes, Ref } from 'react'
 import type { AlertProps } from '@mui/material/Alert'
 import type { FormikProps } from 'formik'
-import type { Accept } from '@/hooks/useFileDrop'
+import type { Accept, FileRejection } from '@/hooks/useFileDrop'
 import type { JsonPatch } from 'JansConfigApi'
 import type { JsonValue } from './common'
 
@@ -236,6 +236,7 @@ export type GluuTooltipProps = {
 export type GluuUploadFileProps = {
   accept?: Accept
   onDrop: (files: File[]) => void
+  onDropRejected?: (rejections: FileRejection[]) => void
   placeholder: string
   onClearFiles: () => void
   disabled?: boolean

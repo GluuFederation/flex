@@ -891,7 +891,7 @@
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
       "mapping": "Roles y permisos",
-      "policyStoreHistory": "Gestión de políticas de Admin UI"
+      "policyStoreHistory": "Gestión de políticas"
     },
     "basic_configuration": "Configuración Básica",
     "inum_configuration": "Configuración Inum",
@@ -967,6 +967,8 @@
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
+    "asset_file_type_invalid": "Solo se pueden cargar archivos .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif y .xhtml.",
+    "metadata_file_type_invalid": "Solo se pueden cargar archivos de metadatos .xml y .json.",
     "service_required": "Los servicios relacionados son obligatorios.",
     "add_configuration": "Agregar Configuración",
     "credentials": "Credenciales",
@@ -1718,7 +1720,7 @@
     "velocity_watch": "Intentos por usuario",
     "device_fingerprint_shift": "Tipos de autenticador",
     "threat_origins_ips": "Orígenes de amenazas por IP",
-    "policy_store_history": "Gestión de políticas de Admin UI",
+    "policy_store_history": "Gestión de políticas",
     "policy_store_contents": "Contenido del almacén de políticas"
   },
   "options": {
@@ -2500,6 +2502,7 @@
       "uploadPolicyStore": "Cargar",
       "uploadFailed": "Error al cargar el almacén de políticas",
       "selectFileFirst": "Por favor, seleccione primero un archivo .cjar",
+      "invalidFileType": "Solo se pueden cargar archivos de almacén de políticas .cjar.",
       "auditPolicyStoreUploaded": "Almacén de políticas cargado",
       "defaultPolicyStoreDescription": "Almacén de políticas de la interfaz de administración",
       "uploadSuccess": "Almacén de políticas subido correctamente."

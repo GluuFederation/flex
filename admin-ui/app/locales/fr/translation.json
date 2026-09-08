@@ -95,7 +95,7 @@
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
       "mapping": "Rôles et permissions",
-      "policyStoreHistory": "Gestion des politiques Admin UI"
+      "policyStoreHistory": "Gestion des politiques"
     },
     "lock": "Verrouillage",
     "cache": "Cache",
@@ -972,6 +972,8 @@
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",
     "asset_document_error": "Le document est obligatoire.",
+    "asset_file_type_invalid": "Seuls les fichiers .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif et .xhtml peuvent être téléversés.",
+    "metadata_file_type_invalid": "Seuls les fichiers de métadonnées .xml et .json peuvent être téléversés.",
     "service_required": "Les services associés sont obligatoires.",
     "add_configuration": "Ajouter une configuration",
     "error_in_deleting": "Erreur lors de la suppression.",
@@ -1723,7 +1725,7 @@
     "velocity_watch": "Tentatives par utilisateur",
     "device_fingerprint_shift": "Types d'authentificateur",
     "threat_origins_ips": "Origines des menaces par IP",
-    "policy_store_history": "Gestion des politiques Admin UI",
+    "policy_store_history": "Gestion des politiques",
     "policy_store_contents": "Contenu du magasin de politiques"
   },
   "options": {
@@ -2472,6 +2474,7 @@
       "uploadPolicyStore": "Téléverser",
       "uploadFailed": "Échec du téléversement du magasin de politiques",
       "selectFileFirst": "Veuillez d'abord sélectionner un fichier .cjar à téléverser",
+      "invalidFileType": "Seuls les fichiers .cjar de magasin de politiques peuvent être téléversés.",
       "auditPolicyStoreUploaded": "Magasin de politiques téléversé",
       "defaultPolicyStoreDescription": "Magasin de politiques de l’interface d’administration",
       "uploadSuccess": "Magasin de politiques téléversé avec succès."

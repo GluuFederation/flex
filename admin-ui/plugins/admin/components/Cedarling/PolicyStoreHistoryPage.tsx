@@ -35,6 +35,7 @@ import {
   base64ToUint8Array,
 } from '@/utils/policyStore'
 import { formatBytes } from '@/utils/cjarArchive'
+import { ensureCjarExtension } from '@/utils/policyStore'
 import { logger } from '@/utils/logger'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
@@ -171,7 +172,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = store.displayname || `${store.inum}.cjar`
+        link.download = ensureCjarExtension(store.displayname?.trim() || store.inum)
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
