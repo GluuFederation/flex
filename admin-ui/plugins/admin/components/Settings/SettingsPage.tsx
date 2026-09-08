@@ -12,7 +12,8 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from '@/routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { usePermission } from '@/cedarling/hooks/usePermission'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { ADMIN_UI_RESOURCES, buildCedarPermissionKey } from '@/cedarling/utility'
+import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { SETTINGS } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import SetTitle from 'Utils/SetTitle'
@@ -75,6 +76,19 @@ const SettingsPage: React.FC = () => {
   const { canRead: canReadSettings, canWrite: canWriteSettings } = usePermission(
     ADMIN_UI_RESOURCES.Settings,
   )
+
+  const settingsDecisions = useAppSelector((state) => state.cedarPermissions?.permissions)
+  const settingsReadResolved =
+    settingsDecisions?.[
+      buildCedarPermissionKey(ADMIN_UI_RESOURCES.Settings, CEDAR_ACTIONS.READ)
+    ] !== undefined
+  const settingsWriteResolved =
+    settingsDecisions?.[
+      buildCedarPermissionKey(ADMIN_UI_RESOURCES.Settings, CEDAR_ACTIONS.WRITE)
+    ] !== undefined
+  const settingsPermissionResolved = settingsReadResolved && settingsWriteResolved
+  const canShowSettings = settingsPermissionResolved ? canReadSettings : null
+  const isSettingsEditable = settingsPermissionResolved && canWriteSettings
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -156,6 +170,8 @@ const SettingsPage: React.FC = () => {
     initialValues,
     enableReinitialize: true,
     onSubmit: async (values, formikHelpers) => {
+      if (!isSettingsEditable) return
+
       savePagingSizeToStorage(currentPagingSize)
       saveLogLevel(currentLogLevel)
 
@@ -351,7 +367,7 @@ const SettingsPage: React.FC = () => {
 
   return (
     <GluuLoader blocking={loadingScripts || loadingConfig || loadingAgamaProjects || isSubmitting}>
-      <GluuViewWrapper canShow={canReadSettings}>
+      <GluuViewWrapper canShow={canShowSettings}>
         <GluuPageContent>
           <div className={classes.mobileContentPad}>
             <GluuText variant="h1" className={classes.mobilePageTitle}>
@@ -403,7 +419,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="pageSize"
-                        disabled={isMobile}
+                        disabled={isMobile || !isSettingsEditable}
                         isDark={isDark}
                         reserveErrorSpace
                         handleChange={(e) => {
@@ -424,7 +440,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="logLevel"
-                        disabled={isMobile}
+                        disabled={isMobile || !isSettingsEditable}
                         isDark={isDark}
                         hideChooseOption
                         reserveErrorSpace
@@ -445,7 +461,7 @@ const SettingsPage: React.FC = () => {
                         doc_entry="sessionTimeoutInMins"
                         errorMessage={formik.errors.sessionTimeoutInMins}
                         showError={Boolean(formik.errors.sessionTimeoutInMins)}
-                        disabled={isMobile}
+                        disabled={isMobile || !isSettingsEditable}
                         isDark={isDark}
                         placeholder={getFieldPlaceholder(t, 'fields.sessionTimeoutInMins')}
                       />
@@ -462,7 +478,7 @@ const SettingsPage: React.FC = () => {
                         rsize={12}
                         doc_category={SETTINGS}
                         doc_entry="adminui_default_acr"
-                        disabled={isMobile}
+                        disabled={isMobile || !isSettingsEditable}
                         isDark={isDark}
                         reserveErrorSpace
                       />
@@ -487,7 +503,7 @@ const SettingsPage: React.FC = () => {
                           doc_entry="cedarSwitch"
                           lsize={12}
                           rsize={12}
-                          disabled={isMobile}
+                          disabled={isMobile || !isSettingsEditable}
                           isDark={isDark}
                           handler={(event: React.ChangeEvent<HTMLInputElement>) => {
                             formik.setFieldValue(
@@ -507,8 +523,8 @@ const SettingsPage: React.FC = () => {
                     title={t('fields.custom_params_auth')}
                     items={additionalParameters}
                     mode="pair"
-                    disabled={isMobile}
-                    hideControls={isMobile}
+                    disabled={isMobile || !isSettingsEditable}
+                    hideControls={isMobile || !isSettingsEditable}
                     emptyStateText={t('messages.no_custom_parameters')}
                     keyPlaceholder={t('placeholders.enter_property_key')}
                     valuePlaceholder={t('placeholders.enter_property_value')}
@@ -524,10 +540,10 @@ const SettingsPage: React.FC = () => {
 
                   <GluuThemeFormFooter
                     showBack
-                    showCancel={!isMobile && canWriteSettings}
+                    showCancel={!isMobile && isSettingsEditable}
                     onCancel={handleCancel}
                     disableCancel={!isFormChanged}
-                    showApply={!isMobile && canWriteSettings}
+                    showApply={!isMobile && isSettingsEditable}
                     onApply={formik.handleSubmit}
                     disableApply={!isFormChanged || hasErrors || isSubmitting}
                     applyButtonType="button"
