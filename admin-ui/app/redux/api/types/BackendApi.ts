@@ -3,6 +3,8 @@ import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 
 export type ApiTokenResponse = {
   access_token: string
+  issuer?: string
+  scopes?: string[]
 }
 
 export type PutServerConfigPayload = {

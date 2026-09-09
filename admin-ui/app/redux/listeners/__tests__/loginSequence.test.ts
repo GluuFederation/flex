@@ -2,7 +2,7 @@ jest.mock('../../api/axios', () => ({
   __esModule: true,
   default: { get: jest.fn(), put: jest.fn(), post: jest.fn(), delete: jest.fn() },
 }))
-jest.mock('Orval', () => ({ setApiToken: jest.fn() }))
+jest.mock('Orval', () => ({ setApiToken: jest.fn(), getApiToken: jest.fn(() => null) }))
 jest.mock('@/utils/logger', () => ({ logger: { error: jest.fn(), info: jest.fn() } }))
 
 import { configureStore } from '@reduxjs/toolkit'

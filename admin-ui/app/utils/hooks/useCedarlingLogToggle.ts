@@ -1,13 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
-import {
-  useGetAdminuiConf,
-  useEditAdminuiConf,
-  getGetAdminuiConfQueryKey,
-  type AppConfigResponse,
-} from 'JansConfigApi'
-import { useAppDispatch } from '@/redux/hooks'
+import { useEditAdminuiConf, type AppConfigResponse } from 'JansConfigApi'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
 import type { Config } from '@/redux/features/types/authTypes'
@@ -23,9 +17,8 @@ type UseCedarlingLogToggle = {
 export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const queryClient = useQueryClient()
 
-  const { data: config } = useGetAdminuiConf()
+  const config = useAppSelector((state) => state.authReducer.config) as AppConfigResponse
   const editConfigMutation = useEditAdminuiConf()
 
   const [optimisticEnabled, setOptimisticEnabled] = useState<boolean | null>(null)
@@ -55,9 +48,7 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
       { data: updatePayload },
       {
         onSuccess: (updatedConfig) => {
-          queryClient.setQueryData(getGetAdminuiConfQueryKey(), updatedConfig)
           setOptimisticEnabled(null)
-          queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
           dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
           dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
         },
@@ -74,7 +65,7 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
         },
       },
     )
-  }, [config, enabled, editConfigMutation, queryClient, dispatch, t])
+  }, [config, enabled, editConfigMutation, dispatch, t])
 
   return { enabled, toggle, isSaving: editConfigMutation.isPending }
 }
