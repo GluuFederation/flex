@@ -145,11 +145,14 @@ class Upgrade:
 
         should_update = False
 
-        # set attributes to False
-        for attr in ["jansAccessTknAsJwt", "jansTrustedClnt"]:
-            if as_boolean(entry.attrs[attr]):
-                entry.attrs[attr] = False
-                should_update = True
+        if as_boolean(entry.attrs["jansTrustedClnt"]):
+            entry.attrs["jansTrustedClnt"] = False
+            should_update = True
+
+        # handle https://github.com/GluuFederation/flex/issues/3019
+        if not as_boolean(entry.attrs["jansAccessTknAsJwt"]):
+            entry.attrs["jansAccessTknAsJwt"] = True
+            should_update = True
 
         if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
