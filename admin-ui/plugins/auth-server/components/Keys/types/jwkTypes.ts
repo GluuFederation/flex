@@ -1,9 +1,9 @@
 import type { JSONWebKey, WebKeysConfiguration } from 'JansConfigApi'
 
 // Re-export orval types for convenience
-export type { JSONWebKey, WebKeysConfiguration }
+export type { JSONWebKey }
 
-export type JwkItemProps = {
+type JwkItemProps = {
   item: JSONWebKey
   index: number
 }

@@ -12,6 +12,7 @@ type UseCedarlingLogToggle = {
   enabled: boolean
   toggle: () => void
   isSaving: boolean
+  isConfigReady: boolean
 }
 
 export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
@@ -30,8 +31,10 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
 
   const enabled = optimisticEnabled ?? serverEnabled
 
+  const isConfigReady = Boolean(config && Object.keys(config).length > 0)
+
   const toggle = useCallback(() => {
-    if (editConfigMutation.isPending) return
+    if (!isConfigReady || editConfigMutation.isPending) return
 
     const nextEnabled = !enabled
 
@@ -65,7 +68,7 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
         },
       },
     )
-  }, [config, enabled, editConfigMutation, dispatch, t])
+  }, [config, enabled, isConfigReady, editConfigMutation, dispatch, t])
 
-  return { enabled, toggle, isSaving: editConfigMutation.isPending }
+  return { enabled, toggle, isSaving: editConfigMutation.isPending, isConfigReady }
 }

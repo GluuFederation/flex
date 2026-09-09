@@ -1,6 +1,6 @@
 import type { JsonPatch } from 'JansConfigApi'
 
-export type CorsConfigurationFilter = {
+type CorsConfigurationFilter = {
   filterName?: string | null
   corsEnabled?: boolean | null
   corsAllowedOrigins?: string | null
@@ -11,17 +11,17 @@ export type CorsConfigurationFilter = {
   corsRequestDecorate?: boolean | null
 }
 
-export type AgamaConfiguration = {
+type AgamaConfiguration = {
   mandatoryAttributes?: string[] | null
   optionalAttributes?: string[] | null
 }
 
-export type AuditLogIgnoreObjectMapping = {
+type AuditLogIgnoreObjectMapping = {
   name: string
   text?: string[]
 }
 
-export type AuditLogConf = {
+type AuditLogConf = {
   enabled?: boolean | null
   logData?: boolean | null
   ignoreHttpMethod?: string[] | null
@@ -33,25 +33,25 @@ export type AuditLogConf = {
   auditLogDateFormat?: string | null
 }
 
-export type DataFormatConversionConf = {
+type DataFormatConversionConf = {
   enabled?: boolean | null
   ignoreHttpMethod?: string[] | null
 }
 
-export type Plugin = {
+type Plugin = {
   name?: string | null
   description?: string | null
   className?: string | null
 }
 
-export type AssetDirMapping = {
+type AssetDirMapping = {
   directory?: string | null
   type?: string[] | null
   description?: string | null
   jansServiceModule?: string[] | null
 }
 
-export type AssetMgtConfiguration = {
+type AssetMgtConfiguration = {
   assetMgtEnabled?: boolean | null
   assetServerUploadEnabled?: boolean | null
   fileExtensionValidationEnabled?: boolean | null
@@ -97,13 +97,11 @@ export type ApiAppConfiguration = {
 
 export type { JsonPatch }
 
-export type PatchConfigApiPropertiesData = JsonPatch[]
-
 export type ConfigApiAuditPayload = {
   requestBody: JsonPatch[]
 }
 
-export type ModifiedFieldsValue =
+type ModifiedFieldsValue =
   | string
   | number
   | boolean

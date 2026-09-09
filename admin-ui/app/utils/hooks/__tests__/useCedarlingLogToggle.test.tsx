@@ -25,13 +25,15 @@ jest.mock('JansConfigApi', () => ({
 
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }))
 
-const buildStore = (config: Config) => {
+const buildStore = (config?: Config) => {
   const store = configureStore({ reducer: { authReducer } })
-  store.dispatch({ type: 'auth/getOAuth2ConfigResponse', payload: { config } })
+  if (config) {
+    store.dispatch({ type: 'auth/getOAuth2ConfigResponse', payload: { config } })
+  }
   return store
 }
 
-const renderToggle = (config: Config) => {
+const renderToggle = (config?: Config) => {
   const store = buildStore(config)
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -122,5 +124,32 @@ describe('useCedarlingLogToggle reads the config redux already holds', () => {
     act(() => result.current.toggle())
 
     expect(mockMutate).not.toHaveBeenCalled()
+  })
+})
+
+describe('useCedarlingLogToggle before redux holds a config', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockIsPending = false
+  })
+
+  it('reports the config as not ready before getOAuth2Config has populated it', () => {
+    const { result } = renderToggle()
+
+    expect(result.current.isConfigReady).toBe(false)
+  })
+
+  it('does not submit a configuration write while the stored config is still empty', () => {
+    const { result } = renderToggle()
+
+    act(() => result.current.toggle())
+
+    expect(mockMutate).not.toHaveBeenCalled()
+  })
+
+  it('reports the config as ready once getOAuth2Config has populated it', () => {
+    const { result } = renderToggle({ cedarlingLogType: 'off' })
+
+    expect(result.current.isConfigReady).toBe(true)
   })
 })
