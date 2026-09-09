@@ -14,6 +14,7 @@ jest.mock('@/utils/hooks/useCedarlingLogToggle', () => ({
     enabled: false,
     toggle: mockToggleCedarLogs,
     isSaving: false,
+    isConfigReady: true,
   }),
 }))
 

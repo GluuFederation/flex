@@ -16,7 +16,12 @@ const createTestStore = (userinfo: UserInfo | null): Store =>
   })
 
 jest.mock('@/utils/hooks/useCedarlingLogToggle', () => ({
-  useCedarlingLogToggle: () => ({ enabled: false, toggle: jest.fn(), isSaving: false }),
+  useCedarlingLogToggle: () => ({
+    enabled: false,
+    toggle: jest.fn(),
+    isSaving: false,
+    isConfigReady: true,
+  }),
 }))
 
 const renderNavBar = (userinfo: UserInfo | null) => {

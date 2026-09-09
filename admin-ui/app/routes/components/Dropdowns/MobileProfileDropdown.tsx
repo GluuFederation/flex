@@ -91,7 +91,11 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
 
   const onChangeTheme = useThemePersistence(userInfo)
 
-  const { enabled: cedarLogsEnabled, toggle: toggleCedarLogs } = useCedarlingLogToggle()
+  const {
+    enabled: cedarLogsEnabled,
+    toggle: toggleCedarLogs,
+    isConfigReady: cedarLogsReady,
+  } = useCedarlingLogToggle()
 
   const handleProfile = useCallback(() => {
     setIsOpen(false)
@@ -233,6 +237,7 @@ const MobileProfileDropdown = ({ userInfo, renderTrigger }: MobileProfileDropdow
               size="small"
               checked={cedarLogsEnabled}
               onChange={toggleCedarLogs}
+              disabled={!cedarLogsReady}
               slotProps={{ input: { 'aria-label': t('fields.cedarlingLogs?') } }}
             />
           </div>

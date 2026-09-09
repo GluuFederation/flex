@@ -1,6 +1,7 @@
 import { AxiosHeaders } from 'axios'
-import { AXIOS_INSTANCE, setApiToken, getApiToken } from './axiosInstance'
-import { fetchApiTokenWithDefaultScopes, createAdminUiSession } from '@/redux/api/backend-api'
+import { AXIOS_INSTANCE, getApiToken } from './axiosInstance'
+import { createAdminUiSession } from '@/redux/api/backend-api'
+import { clearApiToken, ensureApiToken } from '@/redux/api/apiToken'
 import { auditLogoutLogs } from '@/redux/features/sessionSlice'
 import { SESSION_EXPIRED } from '@/audit/messages'
 import { logger } from '@/utils/logger'
@@ -38,14 +39,13 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
     if (!sessionRecoveryPromise) {
       sessionRecoveryPromise = (async () => {
         try {
-          const response = await fetchApiTokenWithDefaultScopes()
+          const response = await ensureApiToken(dispatch, { force: true, required: true })
           const apiProtectionToken = response?.access_token
           if (!apiProtectionToken) {
             return false
           }
 
           await createAdminUiSession(userJwt, apiProtectionToken)
-          setApiToken(apiProtectionToken)
           return true
         } catch (error) {
           logger.error(
@@ -97,6 +97,7 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
         !originalRequest._sessionRetryAttempted
       ) {
         originalRequest._sessionRetryAttempted = true
+        clearApiToken()
 
         const sessionRecovered = await recoverAdminUiSession()
         if (sessionRecovered) {

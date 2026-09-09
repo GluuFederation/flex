@@ -1,6 +1,8 @@
 import { startAppListening } from './index'
 import { auditLogoutLogs } from '../features/sessionSlice'
+import { logoutUser } from '../features/logoutSlice'
 import { postUserAction } from '../api/backend-api'
+import { clearApiToken } from '../api/apiToken'
 import type { UserActionPayload } from '../api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE } from '@/audit/UserActionType'
@@ -35,5 +37,12 @@ startAppListening({
     } catch (e) {
       logger.error('Error:', e instanceof Error ? e : String(e))
     }
+  },
+})
+
+startAppListening({
+  actionCreator: logoutUser,
+  effect: () => {
+    clearApiToken()
   },
 })

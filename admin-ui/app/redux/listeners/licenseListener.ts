@@ -8,8 +8,7 @@ import {
   getStat,
 } from 'JansConfigApi'
 import type { GenericResponse, GetStatParams } from 'JansConfigApi'
-import { setApiToken } from 'Orval'
-import { getOAuth2Config, setApiDefaultToken, setBackendStatus } from '../features/authSlice'
+import { getOAuth2Config } from '../features/authSlice'
 import { handleSessionExpired } from '../features/initSlice'
 import {
   checkLicenseConfigValidResponse,
@@ -27,8 +26,7 @@ import {
   generateTrialLicense,
 } from '../features/licenseSlice'
 import type { SSARequestPayload } from 'Redux/api/types/LicenseApi'
-import type { ApiTokenResponse } from '../api/types/BackendApi'
-import { fetchApiTokenWithDefaultScopes } from '../api/backend-api'
+import { ensureApiToken } from '../api/apiToken'
 import type { MauEntry } from '../types'
 import { getYearMonth } from '../../utils/Util'
 import { logger } from '@/utils/logger'
@@ -36,16 +34,6 @@ import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import type { ApiErrorLike } from '../types/audit'
 import type { AppDispatch } from '../hooks'
 import { startAppListening } from './index'
-
-const getBackendStatusFromError = (error: Error | ApiErrorLike) => {
-  const err = error as ApiErrorLike
-  const statusCode = typeof err?.response?.status === 'number' ? err.response.status : null
-  const errorMessage =
-    err?.response?.data?.responseMessage ??
-    err?.response?.data?.message ??
-    (err instanceof Error ? err.message : error != null ? String(error) : 'Network error')
-  return { active: false as const, errorMessage, statusCode }
-}
 
 // An expired session fails these calls with an auth status. That is a sign-in problem, not a
 // broken SSA config, so it must not fall through to the branch that renders the SSA upload screen.
@@ -64,30 +52,8 @@ const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
-const getAccessToken = async (dispatch: AppDispatch): Promise<ApiTokenResponse> => {
-  try {
-    const token = (await fetchApiTokenWithDefaultScopes()) as ApiTokenResponse
-    dispatch(setApiDefaultToken(token))
-    dispatch(setBackendStatus({ active: true, errorMessage: null, statusCode: null }))
-    return token
-  } catch (error) {
-    logger.error(
-      'Failed to fetch API token with default scopes',
-      error instanceof Error ? error : String(error),
-    )
-    dispatch(setBackendStatus(getBackendStatusFromError(error as Error | ApiErrorLike)))
-    throw error
-  }
-}
-
-const setupApiToken = async (dispatch: AppDispatch): Promise<ApiTokenResponse> => {
-  const token = await getAccessToken(dispatch)
-  setApiToken(token.access_token)
-  return token
-}
-
 const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): Promise<void> => {
-  await setupApiToken(dispatch)
+  await ensureApiToken(dispatch)
   try {
     const data = (await getStat({
       month: getYearMonth(new Date()),
@@ -114,7 +80,7 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
 
 const retrieveLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
   try {
-    await setupApiToken(dispatch)
+    await ensureApiToken(dispatch)
     const response = (await retrieveLicense()) as GenericResponse | null
     const responseObj = response?.responseObject
     const licenseKey =
@@ -159,7 +125,7 @@ const retrieveLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
 
 const generateTrialLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
   try {
-    await setupApiToken(dispatch)
+    await ensureApiToken(dispatch)
     const response = (await getTrialLicense()) as GenericResponse | null
 
     const responseObj = response?.responseObject
@@ -199,7 +165,7 @@ const uploadNewSsaTokenWorker = async (
   payload: SSARequestPayload,
 ): Promise<void> => {
   try {
-    const token = await setupApiToken(dispatch)
+    const token = await ensureApiToken(dispatch)
     const response = (await adminuiPostSsa(payload.payload)) as GenericResponse | null
     if (!response?.success) {
       dispatch(
@@ -209,7 +175,7 @@ const uploadNewSsaTokenWorker = async (
       )
     }
     dispatch(checkLicenseConfigValidResponse(response?.success ?? false))
-    dispatch(getOAuth2Config(token))
+    dispatch(getOAuth2Config(token ?? undefined))
   } catch (err) {
     dispatch(checkLicenseConfigValidResponse(false))
     logger.error('Error uploading SSA token:', err instanceof Error ? err : String(err))
@@ -219,8 +185,8 @@ const uploadNewSsaTokenWorker = async (
 
 const checkAdminuiLicenseConfigWorker = async (dispatch: AppDispatch): Promise<void> => {
   try {
-    const token = await setupApiToken(dispatch)
-    dispatch(getOAuth2Config(token))
+    const token = await ensureApiToken(dispatch)
+    dispatch(getOAuth2Config(token ?? undefined))
     const response = (await checkAdminuiLicenseConfigApi()) as GenericResponse | null
     dispatch(checkLicenseConfigValidResponse(response?.success ?? false))
   } catch (error) {
@@ -235,7 +201,7 @@ const checkAdminuiLicenseConfigWorker = async (dispatch: AppDispatch): Promise<v
 
 const checkLicensePresentWorker = async (dispatch: AppDispatch): Promise<void> => {
   try {
-    await setupApiToken(dispatch)
+    await ensureApiToken(dispatch)
     const response = (await isLicenseActive()) as GenericResponse | null
     if (!response?.success) {
       await retrieveLicenseKey(dispatch)

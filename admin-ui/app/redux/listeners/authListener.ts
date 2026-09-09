@@ -13,14 +13,13 @@ import {
 import { updateToast } from '../features/toastSlice'
 import {
   fetchServerConfiguration,
-  fetchApiTokenWithDefaultScopes,
   putServerConfiguration,
   createAdminUiSession as createAdminUiSessionApi,
 } from '../api/backend-api'
+import { clearApiToken, ensureApiToken } from '../api/apiToken'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import { setApiToken } from 'Orval'
 import auditSessionExpired from '@/utils/auditSessionExpired'
 import type { Config } from '../features/types/authTypes'
 import type { PutConfigMeta } from '../features/types/authSliceTypes'
@@ -29,7 +28,6 @@ import type { AppDispatch } from '../hooks'
 import { startAppListening } from './index'
 
 type Throwable = Error | ApiErrorLike | string | number | boolean | object | null | undefined
-type ApiTokenResult = { access_token?: string; scopes?: string[]; issuer?: string }
 
 const asApiError = (error: Throwable): ApiErrorLike => {
   if (error === null || error === undefined) return { message: String(error), response: undefined }
@@ -45,20 +43,9 @@ const asApiError = (error: Throwable): ApiErrorLike => {
 
 const getApiTokenWithDefaultScopes = async (dispatch: AppDispatch): Promise<string | null> => {
   try {
-    const response = (await fetchApiTokenWithDefaultScopes()) as ApiTokenResult
-    if (response?.access_token) {
-      return response.access_token
-    }
-    return null
-  } catch (error) {
-    const err = asApiError(error as Throwable)
-    dispatch(
-      setBackendStatus({
-        active: false,
-        errorMessage: err?.response?.data?.responseMessage ?? null,
-        statusCode: err?.response?.status ?? null,
-      }),
-    )
+    const response = await ensureApiToken(dispatch, { required: true })
+    return response?.access_token ?? null
+  } catch {
     return null
   }
 }
@@ -131,7 +118,7 @@ startAppListening({
   effect: async (action, { dispatch }) => {
     try {
       if (action.payload) {
-        const response = (await fetchApiTokenWithDefaultScopes()) as ApiTokenResult
+        const response = await ensureApiToken(dispatch, { required: true })
         if (response) {
           dispatch(
             getAPIAccessTokenResponse({
@@ -141,7 +128,6 @@ startAppListening({
           )
 
           if (response.access_token) {
-            setApiToken(response.access_token)
             dispatch(
               createAdminUiSession({
                 ujwt: action.payload,
@@ -149,7 +135,7 @@ startAppListening({
               }),
             )
           } else {
-            setApiToken(null)
+            clearApiToken()
             logger.error('Failed to obtain API token for session creation')
             dispatch(
               createAdminUiSessionResponse({ success: false, error: 'Failed to obtain API token' }),
@@ -158,7 +144,7 @@ startAppListening({
         }
       }
     } catch (error) {
-      setApiToken(null)
+      clearApiToken()
       const err = asApiError(error as Throwable)
       logger.error('Problems getting API Access Token:', resolveApiErrorMessage(err))
       dispatch(

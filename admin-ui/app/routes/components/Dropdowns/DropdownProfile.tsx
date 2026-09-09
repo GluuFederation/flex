@@ -14,7 +14,11 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { navigateToRoute } = useAppNavigation()
-  const { enabled: cedarLogsEnabled, toggle: toggleCedarLogs } = useCedarlingLogToggle()
+  const {
+    enabled: cedarLogsEnabled,
+    toggle: toggleCedarLogs,
+    isConfigReady: cedarLogsReady,
+  } = useCedarlingLogToggle()
 
   const handleLogout = useCallback(() => {
     dispatch(auditLogoutLogs({ message: MANUAL_LOGOUT }))
@@ -46,12 +50,14 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
             <Switch
               size="small"
               checked={cedarLogsEnabled}
+              disabled={!cedarLogsReady}
               slotProps={{ input: { 'aria-label': t('fields.cedarlingLogs?') } }}
             />
           </Box>
         ),
         searchValue: t('fields.cedarlingLogs?'),
         keepOpen: true,
+        disabled: !cedarLogsReady,
         onClick: () => {
           toggleCedarLogs()
         },
@@ -64,7 +70,7 @@ const DropdownProfile = ({ trigger, renderTrigger, position = 'bottom' }: Dropdo
         },
       },
     ],
-    [t, navigateToRoute, handleLogout, cedarLogsEnabled, toggleCedarLogs],
+    [t, navigateToRoute, handleLogout, cedarLogsEnabled, toggleCedarLogs, cedarLogsReady],
   )
 
   return (

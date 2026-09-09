@@ -22,7 +22,7 @@ import { setApiToken } from 'Orval'
 import { fetchApiTokenWithDefaultScopes } from '../../api/backend-api'
 
 jest.mock('JansConfigApi')
-jest.mock('Orval', () => ({ setApiToken: jest.fn() }))
+jest.mock('Orval', () => ({ setApiToken: jest.fn(), getApiToken: jest.fn(() => null) }))
 jest.mock('../../api/backend-api')
 
 import '../licenseListener'
