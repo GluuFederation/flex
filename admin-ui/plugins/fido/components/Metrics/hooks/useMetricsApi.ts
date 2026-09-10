@@ -33,6 +33,7 @@ import type {
   PerformanceAnalyticsParams,
   PerformanceAnalyticsResponse,
 } from '../types'
+import { isMetricsMockEnabled, mockMetricsApi } from '../mocks'
 
 const formatDateForApi = toApiDatetime
 
@@ -106,6 +107,16 @@ const metricsApi = {
     )
     return data ?? {}
   },
+  getAggregations: async (
+    aggregationType: AggregationTypeParam,
+    params: Pick<AggregationParams, 'start_date' | 'end_date' | 'limit' | 'startIndex'>,
+  ): Promise<AggregationResponse> => {
+    const { data } = await AXIOS_INSTANCE.get<AggregationResponse>(
+      `/fido2/metrics/aggregations/${aggregationType}`,
+      { params },
+    )
+    return data ?? {}
+  },
   getEntriesByUser: async (
     userId: string,
     params: MetricsEntriesParams,
@@ -117,6 +128,9 @@ const metricsApi = {
     return data ?? {}
   },
 }
+
+const resolveMetricsApi = () =>
+  isMetricsMockEnabled() ? { ...metricsApi, ...mockMetricsApi } : metricsApi
 
 const shownErrorHashes = new Set<string>()
 
@@ -146,6 +160,9 @@ const buildDateParams = (dateRange: MetricsDateRange | null) =>
       }
     : EMPTY_PARAMS
 
+const isSessionReady = (hasSession: boolean | undefined): boolean =>
+  hasSession === true || isMetricsMockEnabled()
+
 const isDateRangeReady = (dateRange: MetricsDateRange | null): boolean =>
   !!dateRange && !!dateRange.startDate && !!dateRange.endDate
 
@@ -155,12 +172,13 @@ const useAdoptionMetrics = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const params = buildDateParams(dateRange)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const queryKey = getGetAdoptionMetricsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => metricsApi.getAdoption(params),
+    queryFn: () => resolveMetricsApi().getAdoption(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -178,12 +196,13 @@ const useErrorsAnalytics = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const params = buildDateParams(dateRange)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const queryKey = getGetErrorsAnalyticsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => metricsApi.getErrors(params),
+    queryFn: () => resolveMetricsApi().getErrors(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -201,12 +220,13 @@ const usePerformanceAnalytics = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const params = buildDateParams(dateRange)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const queryKey = getGetPerformanceAnalyticsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => metricsApi.getPerformance(params),
+    queryFn: () => resolveMetricsApi().getPerformance(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -224,7 +244,8 @@ const useAggregationMetrics = (
   options?: { enabled?: boolean },
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const params: AggregationParams = {
     aggregationType,
@@ -244,20 +265,13 @@ const useAggregationMetrics = (
   ] as const
   const query = useQuery({
     queryKey,
-    queryFn: async (): Promise<AggregationResponse> => {
-      const { data } = await AXIOS_INSTANCE.get<AggregationResponse>(
-        `/fido2/metrics/aggregations/${aggregationType}`,
-        {
-          params: {
-            limit: params.limit,
-            startIndex: params.startIndex,
-            start_date: params.start_date,
-            end_date: params.end_date,
-          },
-        },
-      )
-      return data ?? {}
-    },
+    queryFn: () =>
+      resolveMetricsApi().getAggregations(aggregationType, {
+        limit: params.limit,
+        startIndex: params.startIndex,
+        start_date: params.start_date,
+        end_date: params.end_date,
+      }),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -296,7 +310,8 @@ const useDevicesAnalytics = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const params = buildDateParams(dateRange)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const queryKey = getGetDevicesAnalyticsQueryKey(params)
   const query = useQuery({
@@ -319,7 +334,8 @@ const useMetricsEntries = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
   const params = buildEntriesParams(dateRange, options)
-  const isEnabled = (options?.enabled ?? true) && hasSession === true && isDateRangeReady(dateRange)
+  const isEnabled =
+    (options?.enabled ?? true) && isSessionReady(hasSession) && isDateRangeReady(dateRange)
 
   const queryKey = getGetMetricsEntriesQueryKey(params)
   const query = useQuery({
@@ -345,7 +361,7 @@ const useMetricsEntriesByOperation = (
   const params = buildEntriesParams(dateRange, options)
   const isEnabled =
     (options?.enabled ?? true) &&
-    hasSession === true &&
+    isSessionReady(hasSession) &&
     isDateRangeReady(dateRange) &&
     !!operationType
 

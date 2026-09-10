@@ -1315,7 +1315,10 @@
     "logging_level_invalid": "Invalid logging level",
     "logging_layout_required": "Logging layout is required",
     "logging_layout_invalid": "Invalid logging layout",
-    "user_info_fetch_failed": "Unable to retrieve user information from the authentication server. Sign-in has been stopped."
+    "user_info_fetch_failed": "Unable to retrieve user information from the authentication server. Sign-in has been stopped.",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out",
+    "reset_zoom": "Reset zoom"
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",

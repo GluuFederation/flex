@@ -1315,7 +1315,10 @@
     "logging_level_invalid": "Nivel de registro no válido",
     "logging_layout_required": "El formato de registro es obligatorio",
     "logging_layout_invalid": "Formato de registro no válido",
-    "user_info_fetch_failed": "No se pudo obtener la información del usuario desde el servidor de autenticación. Se ha detenido el inicio de sesión."
+    "user_info_fetch_failed": "No se pudo obtener la información del usuario desde el servidor de autenticación. Se ha detenido el inicio de sesión.",
+    "zoom_in": "Acercar",
+    "zoom_out": "Alejar",
+    "reset_zoom": "Restablecer zoom"
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",

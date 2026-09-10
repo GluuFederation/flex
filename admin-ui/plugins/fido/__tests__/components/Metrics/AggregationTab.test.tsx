@@ -21,48 +21,68 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <AppTestWrapper>{children}</AppTestWrapper>
 )
 
+const getAggTrigger = (): HTMLElement => screen.getByRole('button', { expanded: false })
+
+const selectAggType = (name: RegExp) => {
+  fireEvent.click(getAggTrigger())
+  fireEvent.click(screen.getByRole('option', { name }))
+}
+
 describe('AggregationTab', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it('renders the aggregation type dropdown', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    const select = screen.getByRole('combobox')
-    expect(select).toBeInTheDocument()
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    expect(getAggTrigger()).toBeInTheDocument()
   })
 
   it('has Hourly selected by default', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    const select = screen.getByRole('combobox') as HTMLSelectElement
-    expect(select.value).toBe('hourly')
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    expect(getAggTrigger()).toHaveTextContent(/hourly/i)
   })
 
-  it('renders all aggregation type options including the empty placeholder', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    const select = screen.getByRole('combobox') as HTMLSelectElement
-    const options = Array.from(select.options).map((o) => o.value)
-    expect(options).toContain('')
-    expect(options).toContain('hourly')
-    expect(options).toContain('daily')
-    expect(options).toContain('weekly')
-    expect(options).toContain('monthly')
+  it('renders all aggregation type options', () => {
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    fireEvent.click(getAggTrigger())
+    const options = screen.getAllByRole('option').map((o) => o.textContent)
+    expect(options).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/hourly/i),
+        expect.stringMatching(/daily/i),
+        expect.stringMatching(/weekly/i),
+        expect.stringMatching(/monthly/i),
+      ]),
+    )
   })
 
   it('renders the Apply button', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
     expect(screen.getByText('Apply')).toBeInTheDocument()
   })
 
   it('renders ActivityBarChart and DurationHeatmap with hourly default applied range', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
     expect(screen.getAllByTestId('activity-bar-chart').length).toBeGreaterThan(0)
     expect(screen.getAllByTestId('duration-heatmap').length).toBeGreaterThan(0)
   })
 
   it('switches to daily view after selecting daily and clicking Apply', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'daily' } })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    selectAggType(/daily/i)
     fireEvent.click(screen.getByText('Apply'))
     const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
     const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
@@ -71,8 +91,10 @@ describe('AggregationTab', () => {
   })
 
   it('switches to weekly view after selecting weekly and clicking Apply', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'weekly' } })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    selectAggType(/weekly/i)
     fireEvent.click(screen.getByText('Apply'))
     const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
     const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
@@ -81,8 +103,10 @@ describe('AggregationTab', () => {
   })
 
   it('switches to monthly view after selecting monthly and clicking Apply', () => {
-    render(<AggregationTab />, { wrapper: Wrapper })
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'monthly' } })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    selectAggType(/monthly/i)
     fireEvent.click(screen.getByText('Apply'))
     const activityChart = screen.getAllByTestId('activity-bar-chart')[0]!
     const heatmap = screen.getAllByTestId('duration-heatmap')[0]!
@@ -110,7 +134,9 @@ describe('AggregationTab', () => {
       isLoading: false,
       isFetching: false,
     })
-    render(<AggregationTab />, { wrapper: Wrapper })
+    render(<AggregationTab filterSheetOpen={false} onFilterSheetClose={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
     expect(screen.getAllByTestId('activity-bar-chart').length).toBeGreaterThan(0)
   })
 })

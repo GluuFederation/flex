@@ -1,3 +1,4 @@
+import type { ReactNode, RefObject } from 'react'
 import type { Dayjs } from 'dayjs'
 import type { Fido2MetricsEntry } from 'JansConfigApi'
 
@@ -27,8 +28,41 @@ export type DurationHeatmapProps = {
   showExpand?: boolean
 }
 
+type ChartLegendItem = {
+  key: string
+  color: string
+  label: string
+  labelColor?: string
+}
+
+export type ChartLegendProps = {
+  items: readonly ChartLegendItem[]
+  marker?: 'dot' | 'dash'
+}
+
+export type ChartZoomControls = {
+  zoom: number
+  zoomIn: () => void
+  zoomOut: () => void
+  resetZoom: () => void
+  surfaceRef: RefObject<HTMLDivElement | null>
+}
+
+export type MetricsChartCardProps = {
+  title: string
+  caption?: string
+  cardClassName?: string
+  bodyClassName?: string
+  minHeight?: number
+  showExpand?: boolean
+  hideTitle?: boolean
+  zoomable?: boolean
+  children: (isFullscreen: boolean, zoom: number) => ReactNode
+}
+
 export type ActivityChartProps = {
   title: string
+  caption?: string
   data: readonly ActivityDataPoint[]
   height?: number
 }
@@ -57,6 +91,11 @@ export type ActivityDataPoint = {
   authAttempts: number
   authSuccess: number
   authFailed: number
+}
+
+export type AggregationTabProps = {
+  filterSheetOpen: boolean
+  onFilterSheetClose: () => void
 }
 
 export type MetricsDateRange = {
@@ -177,4 +216,21 @@ export type PerformanceAnalyticsResponse = {
   authenticationMaxDuration?: number | null
   authenticationMinDuration?: number | null
   [key: string]: number | string | boolean | null | undefined
+}
+
+export type AdoptionSurface = 'card' | 'fullscreen'
+
+export type ChartSurfaceSize = {
+  width: number
+  height: number
+}
+
+export type AdoptionDonutBox = {
+  left: number
+  right: number
+}
+
+export type ChartScrollAnchor = {
+  x: number
+  y: number
 }

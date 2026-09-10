@@ -2,17 +2,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody } from 'Components'
-import { Close, Fullscreen } from '@/components/icons'
+import { Close, Fullscreen, ZoomIn, ZoomOut } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import customColors from '@/customColors'
 import { REGEX_NON_DIGIT_COMMA } from '@/utils/regex'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { HEATMAP_COLOR_STOPS } from '../constants'
+import { HEATMAP_COLOR_STOPS, METRICS_ZOOM } from '../constants'
+import useChartZoom from '../hooks/useChartZoom'
 import { formatChartValue, getNiceStep, interpolateHeatmapColor } from '../utils'
-import type { DurationHeatmapProps } from '../types'
+import type { ChartSurfaceSize, DurationHeatmapProps } from '../types'
 
 const ColorBar: React.FC<{
   minVal: number
@@ -76,6 +79,12 @@ const ColorBar: React.FC<{
   )
 }
 
+const MOBILE_CELL_SIZE = { WIDTH: 24, HEIGHT: 20 } as const
+const MOBILE_ROW_LABEL_WIDTH = 46
+const COLOR_BAR_GAP = 8
+const FIT_SAFETY_GAP = 2
+const EMPTY_FRAME_SIZE: ChartSurfaceSize = { width: 0, height: 0 }
+
 const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   title,
   heatmapData,
@@ -97,7 +106,21 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
+  const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [frameSize, setFrameSize] = useState<ChartSurfaceSize>(EMPTY_FRAME_SIZE)
+  const { zoom, zoomIn, zoomOut, resetZoom, surfaceRef } = useChartZoom(isFullscreen)
+
+  const frameRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
+    const ro = new ResizeObserver((entries) => {
+      const { width, height } = entries[0]!.contentRect
+      setFrameSize({ width: Math.floor(width), height: Math.floor(height) })
+    })
+    ro.observe(node)
+    return () => ro.disconnect()
+  }, [])
 
   const openFullscreen = useCallback(() => setIsFullscreen(true), [])
   const closeFullscreen = useCallback(() => setIsFullscreen(false), [])
@@ -134,120 +157,111 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const textColor = themeColors.fontColor
   const borderColor = themeColors.chart.cellBorderColor
 
-  const renderHeatmapSvg = (fullscreen: boolean) => {
-    const colLabelH = fullscreen
-      ? hasColsSub || colLabelsBottom
-        ? 0
-        : 36
-      : compact
-        ? 20
-        : hasColsSub || colLabelsBottom
-          ? 0
-          : 28
-    const bottomColLabelH = fullscreen
-      ? hasColsSub
-        ? 56
-        : colLabelsBottom
-          ? 32
-          : 0
-      : hasColsSub
-        ? 40
-        : colLabelsBottom
-          ? 24
-          : 0
-    const xAxisH = xAxisLabel ? (fullscreen ? 36 : 28) : 0
+  const renderHeatmapSvg = (fullscreen: boolean, zoomLevel: number = METRICS_ZOOM.DEFAULT) => {
+    const colLabelH = compact ? 20 : hasColsSub || colLabelsBottom ? 0 : 28
+    const bottomColLabelH = hasColsSub ? 40 : colLabelsBottom ? 24 : 0
+    const useNaturalWidth = isMobile
+    const labelOutside = Boolean(xAxisLabel) && (fullscreen || isCompact)
+    const xAxisH = xAxisLabel && !labelOutside ? 28 : 0
     const reservedH = colLabelH + bottomColLabelH + xAxisH
     const effectiveCompactMinHeight = compact ? (minHeight ?? 460) : undefined
-    const baseCellH = fullscreen ? 40 : compact ? 36 : 56
+    const baseCellH = compact ? 36 : 56
     const fallbackCols = emptyStateCols ?? (compact ? 24 : minHeight ? 4 : 6)
     const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
     const rowsCount = Math.max(rows.length, 1)
     const safeColsLen = Math.max(layoutColsLen, 1)
-    const cellH = fullscreen
-      ? baseCellH
-      : compact
-        ? baseCellH
-        : minHeight
-          ? Math.min(
-              maxCellHeight ?? Infinity,
-              Math.max(baseCellH, Math.floor((minHeight - 80 - reservedH) / rowsCount)),
-            )
-          : baseCellH
-    const cellW = fullscreen
-      ? Math.max(60, Math.min(160, Math.round(1200 / safeColsLen)))
-      : compact
-        ? Math.min(56, Math.max(32, Math.round(900 / safeColsLen)))
-        : minHeight
-          ? Math.max(110, Math.round(500 / safeColsLen))
-          : Math.max(60, Math.floor(560 / safeColsLen))
+    const compactTargetHeight = minColorBarHeight ?? effectiveCompactMinHeight ?? 0
+    const compactCellH = maxCellHeight
+      ? Math.min(
+          maxCellHeight,
+          Math.max(baseCellH, Math.floor(compactTargetHeight / Math.max(rowsCount, 1))),
+        )
+      : baseCellH
     const isDailyLayout = !compact && !minHeight
-    const colorBarW = fullscreen ? 60 : isDailyLayout ? 36 : 44
-    const colorBarLabelW = colorBarLabel ? (fullscreen ? 24 : 16) : 0
-    const axisFontSize = fullscreen ? 14 : compact ? 10 : isDailyLayout ? 6 : 12
-    const rowLabelFontSize = fullscreen
-      ? verticalRowLabels
-        ? 12
-        : 14
-      : compact
-        ? 11
-        : minHeight
-          ? 14
-          : verticalRowLabels
-            ? 6
-            : 11
-    const rowLabelW = fullscreen
-      ? verticalRowLabels
-        ? rowLabelFontSize + 32
-        : 140
-      : compact
-        ? 64
-        : minHeight
-          ? 110
-          : verticalRowLabels
-            ? rowLabelFontSize + 24
-            : 100
-    const cellFontSize = fullscreen
-      ? Math.min(28, Math.max(12, Math.round(cellH * 0.28)))
-      : compact
-        ? Math.min(11, Math.max(8, Math.round(cellW * 0.28)))
-        : minHeight
-          ? Math.min(32, Math.max(14, Math.round(cellH * 0.26)))
-          : 11
+    const colorBarW = isDailyLayout ? 36 : 44
+    const colorBarLabelW = colorBarLabel ? 16 : 0
+    const axisFontSize = compact ? 10 : isDailyLayout ? 6 : 12
+    const rowLabelFontSize = compact ? 11 : minHeight ? 14 : verticalRowLabels ? 6 : 11
+    const derivedRowLabelW = compact
+      ? 64
+      : minHeight
+        ? 110
+        : verticalRowLabels
+          ? rowLabelFontSize + 24
+          : 100
+    const rowLabelW = useNaturalWidth ? MOBILE_ROW_LABEL_WIDTH : derivedRowLabelW
+    const yAxisLabelW = yAxisLabel ? (useNaturalWidth ? 12 : 16) + (verticalRowLabels ? 12 : 4) : 0
+
+    const fitToFrame = fullscreen && frameSize.width > 0 && frameSize.height > 0
+    const frameCellW = fitToFrame
+      ? Math.floor(
+          (frameSize.width -
+            rowLabelW -
+            colorBarW -
+            COLOR_BAR_GAP -
+            colorBarLabelW -
+            yAxisLabelW -
+            FIT_SAFETY_GAP) /
+            safeColsLen,
+        )
+      : 0
+    const frameCellH = fitToFrame
+      ? Math.floor((frameSize.height - colLabelH - bottomColLabelH - FIT_SAFETY_GAP) / rowsCount)
+      : 0
+
+    const derivedCellH = compact
+      ? compactCellH
+      : minHeight
+        ? Math.min(
+            maxCellHeight ?? Infinity,
+            Math.max(baseCellH, Math.floor((minHeight - 80 - reservedH) / rowsCount)),
+          )
+        : baseCellH
+    const cellH = fitToFrame ? frameCellH : useNaturalWidth ? MOBILE_CELL_SIZE.HEIGHT : derivedCellH
+    const derivedCellW = compact
+      ? Math.min(56, Math.max(32, Math.round(900 / safeColsLen)))
+      : minHeight
+        ? Math.max(110, Math.round(500 / safeColsLen))
+        : Math.max(60, Math.floor(560 / safeColsLen))
+    const cellW = fitToFrame
+      ? Math.max(useNaturalWidth ? MOBILE_CELL_SIZE.WIDTH : 0, frameCellW)
+      : useNaturalWidth
+        ? MOBILE_CELL_SIZE.WIDTH
+        : derivedCellW
+    const cellFontSize = compact
+      ? Math.min(11, Math.max(8, Math.round(cellW * 0.28)))
+      : minHeight
+        ? Math.min(32, Math.max(14, Math.round(cellH * 0.26)))
+        : 11
 
     const isEmpty = rows.length === 0 || cols.length === 0
     const fallbackRows = compact ? 12 : 2
-    const layoutGridHeight = isEmpty
-      ? fullscreen
-        ? Math.max(rowsCount, fallbackRows) * baseCellH
-        : minHeight
+    const layoutGridHeight = fitToFrame
+      ? rowsCount * cellH
+      : isEmpty
+        ? minHeight
           ? minHeight - 80 - reservedH
           : compact
             ? (effectiveCompactMinHeight ?? 460) - 80 - reservedH
             : fallbackRows * baseCellH
-      : rowsCount * cellH
+        : rowsCount * cellH
     const gridHeight = layoutGridHeight
-    const fullscreenMinColorBarHeight = 320
-    const colorBarHeight = fullscreen
-      ? Math.max(layoutGridHeight, fullscreenMinColorBarHeight)
-      : minColorBarHeight
-        ? Math.max(layoutGridHeight, minColorBarHeight)
-        : layoutGridHeight
+    const colorBarHeight = layoutGridHeight
     const gridRightX = rowLabelW + layoutColsLen * cellW
 
-    const svgWidth = gridRightX + colorBarW + 8 + colorBarLabelW
+    const svgWidth = gridRightX + colorBarW + COLOR_BAR_GAP + colorBarLabelW
     const svgHeight = colLabelH + Math.max(gridHeight, colorBarHeight) + bottomColLabelH + xAxisH
 
     const compactScrollMaxHeight = effectiveCompactMinHeight ?? 460
     const useVerticalScroll = compact && !fullscreen && svgHeight > compactScrollMaxHeight
-    const useFullscreenNaturalHeight = fullscreen
 
-    return (
+    const axisRow = (
       <div
         style={{
           display: 'flex',
           alignItems: 'flex-start',
           gap: verticalRowLabels ? 12 : 4,
-          ...(fullscreen ? { marginTop: 'auto', marginBottom: 'auto', flexShrink: 0 } : {}),
+          ...(fullscreen ? { flexShrink: 0, width: 'max-content', minWidth: '100%' } : {}),
         }}
       >
         {yAxisLabel && (
@@ -260,7 +274,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               transform: 'rotate(180deg)',
               fontSize: fullscreen ? 14 : verticalRowLabels ? 11 : rowLabelFontSize,
               color: textColor,
-              minWidth: 16,
+              minWidth: useNaturalWidth ? 12 : 16,
               alignSelf: 'stretch',
             }}
           >
@@ -269,25 +283,43 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
         )}
 
         <div
-          style={{
-            flex: 1,
-            minWidth: 0,
-            overflowX: 'auto',
-            ...(useVerticalScroll ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' } : {}),
-          }}
+          style={
+            fullscreen
+              ? { flex: 'none', overflow: 'visible' }
+              : {
+                  flex: 1,
+                  minWidth: 0,
+                  overflowX: 'auto',
+                  ...(useVerticalScroll
+                    ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' }
+                    : {}),
+                }
+          }
         >
           <svg
             viewBox={`0 0 ${svgWidth} ${svgHeight}`}
             preserveAspectRatio={
-              useVerticalScroll || useFullscreenNaturalHeight ? 'xMidYMin meet' : 'xMidYMid meet'
+              useNaturalWidth
+                ? 'xMinYMin meet'
+                : useVerticalScroll
+                  ? 'xMidYMin meet'
+                  : 'xMidYMid meet'
             }
             style={{
               display: 'block',
-              width: '100%',
-              ...(compact && !fullscreen ? { maxWidth: svgWidth } : {}),
-              ...(useVerticalScroll || useFullscreenNaturalHeight
-                ? { height: svgHeight }
-                : { height: 'auto' }),
+              ...(fullscreen
+                ? {
+                    width: svgWidth * zoomLevel,
+                    minWidth: svgWidth * zoomLevel,
+                    height: svgHeight * zoomLevel,
+                  }
+                : useNaturalWidth
+                  ? { width: svgWidth, minWidth: svgWidth, height: svgHeight }
+                  : {
+                      width: '100%',
+                      ...(compact ? { maxWidth: svgWidth } : {}),
+                      ...(useVerticalScroll ? { height: svgHeight } : { height: 'auto' }),
+                    }),
             }}
           >
             {!colLabelsBottom &&
@@ -472,7 +504,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               </text>
             )}
 
-            {xAxisLabel && (
+            {xAxisLabel && !labelOutside && (
               <text
                 x={rowLabelW + (layoutColsLen * cellW) / 2}
                 y={
@@ -491,6 +523,15 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
         </div>
       </div>
     )
+
+    if (!labelOutside || fullscreen) return axisRow
+
+    return (
+      <div className={classes.heatmapAxisStack}>
+        {axisRow}
+        <div className={classes.heatmapXAxisLabel}>{xAxisLabel}</div>
+      </div>
+    )
   }
 
   const fullscreenModal =
@@ -499,35 +540,68 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
       <>
         <button
           type="button"
-          className={classes.heatmapModalOverlay}
+          className={classes.chartModalOverlay}
           onClick={closeFullscreen}
           aria-label={t('actions.close')}
         />
         <div
-          className={classes.heatmapModalContainer}
+          className={classes.chartModalContainer}
           role="dialog"
           aria-modal="true"
           aria-labelledby="heatmap-fullscreen-title"
         >
-          <div className={classes.heatmapModalHeader}>
+          <div className={classes.chartModalHeader}>
             <GluuText
               variant="h2"
-              className={classes.heatmapModalTitle}
+              className={classes.chartModalTitle}
               id="heatmap-fullscreen-title"
             >
               {title}
             </GluuText>
-            <button
-              type="button"
-              onClick={closeFullscreen}
-              className={classes.heatmapModalCloseButton}
-              aria-label={t('actions.close')}
-              title={t('actions.close')}
-            >
-              <Close fontSize="small" aria-hidden />
-            </button>
+            <div className={classes.chartModalActions}>
+              <div className={classes.chartZoomControls}>
+                <button
+                  type="button"
+                  onClick={zoomOut}
+                  disabled={zoom <= METRICS_ZOOM.MIN}
+                  className={classes.chartZoomButton}
+                  aria-label={t('messages.zoom_out')}
+                  title={t('messages.zoom_out')}
+                >
+                  <ZoomOut fontSize="small" aria-hidden />
+                </button>
+                <button
+                  type="button"
+                  onClick={resetZoom}
+                  className={classes.chartZoomLevel}
+                  aria-label={t('messages.reset_zoom')}
+                  title={t('messages.reset_zoom')}
+                >
+                  {Math.round(zoom * 100)}%
+                </button>
+                <button
+                  type="button"
+                  onClick={zoomIn}
+                  disabled={zoom >= METRICS_ZOOM.MAX}
+                  className={classes.chartZoomButton}
+                  aria-label={t('messages.zoom_in')}
+                  title={t('messages.zoom_in')}
+                >
+                  <ZoomIn fontSize="small" aria-hidden />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={closeFullscreen}
+                className={classes.chartModalCloseButton}
+                aria-label={t('actions.close')}
+                title={t('actions.close')}
+              >
+                <Close fontSize="small" aria-hidden />
+              </button>
+            </div>
           </div>
-          <div className={classes.heatmapModalBody}>
+          <div className={classes.chartModalBody} ref={surfaceRef}>
             {caption && (
               <GluuText
                 variant="div"
@@ -541,7 +615,10 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                 {caption}
               </GluuText>
             )}
-            {renderHeatmapSvg(true)}
+            <div className={classes.chartFullscreenFrame} data-chart-frame ref={frameRef}>
+              {renderHeatmapSvg(true, zoom)}
+            </div>
+            {xAxisLabel && <div className={classes.heatmapXAxisLabel}>{xAxisLabel}</div>}
           </div>
         </div>
       </>,
@@ -554,7 +631,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
         {showExpand && (
           <button
             type="button"
-            className={classes.heatmapExpandButton}
+            className={classes.chartExpandButton}
             onClick={openFullscreen}
             aria-label={t('messages.expand')}
             title={t('messages.expand')}
