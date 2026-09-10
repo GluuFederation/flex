@@ -25,13 +25,6 @@ const MOBILE_QUERY = `@media ${MOBILE_MEDIA_QUERY}`
 const STACKED_CHART_QUERY = `@media ${STACKED_CHART_MAX_MEDIA_QUERY}`
 const TABLET_QUERY = `@media ${TABLET_MAX_MEDIA_QUERY}`
 const ACTION_PREFERRED_WIDTH = 120
-const ACTION_MIN_WIDTH = 88
-const ACTION_SCALE_START_VW = 1024
-const ACTION_SCALE_END_VW = 768
-const ACTION_SCALE_SLOPE =
-  (ACTION_PREFERRED_WIDTH - ACTION_MIN_WIDTH) / (ACTION_SCALE_START_VW - ACTION_SCALE_END_VW)
-const ACTION_SCALE_INTERCEPT = ACTION_MIN_WIDTH - ACTION_SCALE_SLOPE * ACTION_SCALE_END_VW
-const ACTION_FLUID_WIDTH = `clamp(${ACTION_MIN_WIDTH}px, calc(${ACTION_SCALE_SLOPE * 100}vw + ${ACTION_SCALE_INTERCEPT}px), ${ACTION_PREFERRED_WIDTH}px)`
 const DATE_MIN_WIDTH = 180
 const DATE_WIDE_MIN_WIDTH = 240
 const DATE_DESKTOP_MIN_WIDTH = 220
@@ -366,6 +359,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       position: 'relative' as const,
       width: '100%',
       minWidth: 0,
+      overflow: 'hidden' as const,
     },
     chartLegend: {
       display: 'flex',
@@ -657,7 +651,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
     },
     filterActionField: {
       flex: '0 0 auto',
-      width: ACTION_FLUID_WIDTH,
+      width: ACTION_PREFERRED_WIDTH,
       [MOBILE_QUERY]: {
         width: '100%',
       },
@@ -665,7 +659,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
     filterActionFieldEnd: {
       alignSelf: 'flex-end',
       flex: '0 0 auto',
-      width: ACTION_FLUID_WIDTH,
+      width: ACTION_PREFERRED_WIDTH,
       [MOBILE_QUERY]: {
         alignSelf: 'stretch',
         width: '100%',
