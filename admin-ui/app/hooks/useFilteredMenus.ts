@@ -33,7 +33,7 @@ const useFilteredMenus = (): FilteredMenus => {
     [allServices, fido2HealthData],
   )
 
-  const hasServices = allServices.length > 0
+  const hasServices = combinedServices.length > 0
 
   useEffect(() => {
     if (!hasServices || !initialized) return
