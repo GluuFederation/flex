@@ -96,7 +96,7 @@
         flex-direction: column;
         min-height: 0;
 
-        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
+        @media (max-width: $sidebar-overlay-max-width) {
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
 
@@ -111,8 +111,8 @@
     }
 }
 
-// collapse to Slim Sidebar at >= LG
-@media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
+// collapse to Slim Sidebar once the sidebar is docked
+@media (min-width: $sidebar-dock-min-width) {
     .sidebar--slim {
         &.sidebar--collapsed {
             width: $sidebar-slim-width;
@@ -143,8 +143,8 @@
     }
 }
 
-// overlay and collapse with transform at < LG
-@media (max-width: breakpoint-max("md", $grid-breakpoints)) {
+// overlay and collapse with transform below the dock width
+@media (max-width: $sidebar-overlay-max-width) {
     .sidebar {
         position: fixed;
         top: 0;

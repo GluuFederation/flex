@@ -353,19 +353,20 @@ const JsonPropertyBuilderConfigApi = ({
                 (itemObj.directory as string) || (itemObj.name as string) || `item-${index}`
               const stableKey = `${path}-${itemIdentifier}`
               return (
-                <JsonPropertyBuilderConfigApi
-                  key={stableKey}
-                  propKey={String(index)}
-                  propValue={item}
-                  handler={handler}
-                  lSize={lSize}
-                  parentIsArray={true}
-                  parent={propKey}
-                  path={itemPath}
-                  doc_category={doc_category}
-                  disabled={disabled}
-                  errors={errors}
-                />
+                <div key={stableKey} className={classes.nestedAccordionItem}>
+                  <JsonPropertyBuilderConfigApi
+                    propKey={String(index)}
+                    propValue={item}
+                    handler={handler}
+                    lSize={lSize}
+                    parentIsArray={true}
+                    parent={propKey}
+                    path={itemPath}
+                    doc_category={doc_category}
+                    disabled={disabled}
+                    errors={errors}
+                  />
+                </div>
               )
             })
           )}

@@ -2,7 +2,7 @@ import React from 'react'
 import { renderHook, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { useFirstAuthorizedPath } from '../useFirstAuthorizedPath'
+import useFilteredMenus from '../useFilteredMenus'
 import type { MenuItem } from '@/components/Sidebar'
 
 type HealthService = { name: string; status?: string }
@@ -52,7 +52,7 @@ const createWrapper = (store: ReturnType<typeof buildStore>) => {
 
 const menus: MenuItem[] = [{ title: 'Home', path: '/home' }]
 
-describe('useFirstAuthorizedPath', () => {
+describe('useFilteredMenus', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockUseHealthStatus.mockReturnValue({ allServices: [{ name: 'oxauth', status: 'up' }] })
@@ -63,32 +63,32 @@ describe('useFirstAuthorizedPath', () => {
     mockFindFirstLeafPath.mockReturnValue('/home')
   })
 
-  it('starts in a loading state with a null path', () => {
+  it('starts unready with a null first path', () => {
     const store = buildStore(false)
-    const { result } = renderHook(() => useFirstAuthorizedPath(), {
+    const { result } = renderHook(() => useFilteredMenus(), {
       wrapper: createWrapper(store),
     })
 
-    expect(result.current.loading).toBe(true)
-    expect(result.current.path).toBeNull()
+    expect(result.current.isReady).toBe(false)
+    expect(result.current.firstPath).toBeNull()
   })
 
   it('resolves the first authorized leaf path once initialized and services are ready', async () => {
     const store = buildStore(true)
-    const { result } = renderHook(() => useFirstAuthorizedPath(), {
+    const { result } = renderHook(() => useFilteredMenus(), {
       wrapper: createWrapper(store),
     })
 
     await waitFor(() => {
-      expect(result.current.loading).toBe(false)
+      expect(result.current.isReady).toBe(true)
     })
-    expect(result.current.path).toBe('/home')
+    expect(result.current.firstPath).toBe('/home')
     expect(mockFilterMenusByAuth).toHaveBeenCalledWith(menus, mockAuthorizeHelper)
   })
 
   it('does not resolve while cedar permissions are not initialized', async () => {
     const store = buildStore(false)
-    renderHook(() => useFirstAuthorizedPath(), { wrapper: createWrapper(store) })
+    renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
 
     await Promise.resolve()
     expect(mockProcessMenus).not.toHaveBeenCalled()
@@ -98,7 +98,7 @@ describe('useFirstAuthorizedPath', () => {
     mockUseHealthStatus.mockReturnValue({ allServices: [] })
     mockUseFido2HealthStatus.mockReturnValue({ data: undefined })
     const store = buildStore(true)
-    renderHook(() => useFirstAuthorizedPath(), { wrapper: createWrapper(store) })
+    renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
 
     await Promise.resolve()
     expect(mockProcessMenus).not.toHaveBeenCalled()
@@ -108,12 +108,12 @@ describe('useFirstAuthorizedPath', () => {
     const fido2 = { name: 'fido2', status: 'up' }
     mockUseFido2HealthStatus.mockReturnValue({ data: fido2 })
     const store = buildStore(true)
-    const { result } = renderHook(() => useFirstAuthorizedPath(), {
+    const { result } = renderHook(() => useFilteredMenus(), {
       wrapper: createWrapper(store),
     })
 
     await waitFor(() => {
-      expect(result.current.loading).toBe(false)
+      expect(result.current.isReady).toBe(true)
     })
     expect(mockFilterMenusByHealth).toHaveBeenCalledWith(menus, expect.arrayContaining([fido2]))
   })
@@ -121,13 +121,13 @@ describe('useFirstAuthorizedPath', () => {
   it('returns a null path when no leaf path can be resolved', async () => {
     mockFindFirstLeafPath.mockReturnValue(null)
     const store = buildStore(true)
-    const { result } = renderHook(() => useFirstAuthorizedPath(), {
+    const { result } = renderHook(() => useFilteredMenus(), {
       wrapper: createWrapper(store),
     })
 
     await waitFor(() => {
-      expect(result.current.loading).toBe(false)
+      expect(result.current.isReady).toBe(true)
     })
-    expect(result.current.path).toBeNull()
+    expect(result.current.firstPath).toBeNull()
   })
 })

@@ -271,6 +271,11 @@ export const useStyles = makeStyles<StylesParams>()((_theme, { isDark, themeColo
       wordBreak: 'break-word' as const,
       whiteSpace: 'normal' as const,
     },
+    operationBadgeEmpty: {
+      backgroundColor: 'transparent',
+      color: themeColors.fontColor,
+      padding: '4px 0',
+    },
     buttonRow: {
       display: 'flex',
       alignItems: 'center',

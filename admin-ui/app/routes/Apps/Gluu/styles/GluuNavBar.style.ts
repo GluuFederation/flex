@@ -1,11 +1,14 @@
 import { makeStyles } from 'tss-react/mui'
 import {
+  ICON_SIZE,
   MOBILE_MEDIA_QUERY,
+  NAVBAR_TABLET,
   MOBILE_PAGE_PADDING_X,
   SPACING,
   TABLET_COLLAPSE_BAND_MEDIA_QUERY,
   NAVBAR_TITLE_LG_MEDIA_QUERY,
   NAVBAR_TITLE_MD_MEDIA_QUERY,
+  SIDEBAR_TOGGLE_BAND_MEDIA_QUERY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, letterSpacing } from '@/styles/fonts'
 
@@ -30,6 +33,9 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     borderBottom: `1px solid ${navbarColors.border}`,
     [`@media ${TABLET_COLLAPSE_BAND_MEDIA_QUERY}`]: {
       padding: `0px ${SPACING.PAGE}px`,
+    },
+    [`@media ${SIDEBAR_TOGGLE_BAND_MEDIA_QUERY}`]: {
+      height: `${NAVBAR_TABLET.HEIGHT}px`,
     },
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       padding: `0px ${MOBILE_PAGE_PADDING_X.MD}px`,
@@ -82,6 +88,29 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     alignItems: 'center',
     minWidth: 0,
   },
+  sidebarToggle: {
+    'display': 'none',
+    'alignItems': 'center',
+    'justifyContent': 'center',
+    'width': ICON_SIZE.LG,
+    'height': ICON_SIZE.LG,
+    'padding': 0,
+    'border': 'none',
+    'background': 'transparent',
+    'cursor': 'pointer',
+    'color': 'var(--theme-navbar-icon)',
+    'flexShrink': 0,
+    '& svg': {
+      fontSize: ICON_SIZE.LG,
+    },
+    [`@media ${SIDEBAR_TOGGLE_BAND_MEDIA_QUERY}`]: {
+      display: 'flex',
+      width: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      height: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      minWidth: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      minHeight: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+    },
+  },
   leftSection: {
     display: 'flex',
     alignItems: 'center',
@@ -103,6 +132,9 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
     },
     [theme.breakpoints.down('sm')]: {
       gap: '8px',
+    },
+    [`@media ${SIDEBAR_TOGGLE_BAND_MEDIA_QUERY}`]: {
+      gap: `${NAVBAR_TABLET.GAP}px`,
     },
   },
   navbarItem: {
@@ -127,6 +159,12 @@ const useStyles = makeStyles<{ navbarColors: NavbarColors }>()((theme, { navbarC
       height: '28px',
       minWidth: '28px',
       minHeight: '28px',
+    },
+    [`@media ${SIDEBAR_TOGGLE_BAND_MEDIA_QUERY}`]: {
+      width: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      height: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      minWidth: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      minHeight: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
     },
   },
   languageMenuWrapper: {

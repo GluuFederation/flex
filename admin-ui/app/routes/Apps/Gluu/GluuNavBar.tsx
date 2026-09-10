@@ -1,9 +1,11 @@
-import { useEffect, useRef, useMemo, useCallback, memo } from 'react'
+import { useContext, useEffect, useRef, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Link } from 'react-router-dom'
 import { Notifications, ChevronIcon } from 'Components'
+import { MenuIcon } from '@/components/icons'
+import { PageConfigContext } from '@/components/Layout/PageConfigContext'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
@@ -31,6 +33,7 @@ const GluuNavBar = () => {
   const { classes } = useStyles({ navbarColors })
   const pageTitle = usePageTitle()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
+  const { sidebarCollapsed, toggleSidebar } = useContext(PageConfigContext)
   const navbarRef = useRef<HTMLDivElement>(null)
   const landingPath = useAppSelector((state) => state.sessionReducer.landingPath)
   const logoPath = landingPath ?? ROUTES.ROOT
@@ -84,6 +87,15 @@ const GluuNavBar = () => {
     <Box ref={navbarRef} className={`${classes.navbarWrapper} navbar-themed`}>
       <Box className={classes.navbarContainer}>
         <Box className={classes.leftSection}>
+          <button
+            type="button"
+            className={classes.sidebarToggle}
+            onClick={toggleSidebar}
+            aria-label={t(sidebarCollapsed ? 'menus.open_navigation' : 'menus.close_navigation')}
+            aria-expanded={!sidebarCollapsed}
+          >
+            <MenuIcon aria-hidden />
+          </button>
           <Link
             to={logoPath}
             className={classes.mobileLogo}

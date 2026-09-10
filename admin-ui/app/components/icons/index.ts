@@ -27,6 +27,7 @@ export { default as HighlightOffOutlined } from '@mui/icons-material/HighlightOf
 export { default as Info } from '@mui/icons-material/Info'
 export { default as InfoOutlined } from '@mui/icons-material/InfoOutlined'
 export { default as LockOpenIcon } from '@mui/icons-material/LockOpen'
+export { default as MenuIcon } from '@mui/icons-material/Menu'
 export { default as NoteAdd } from '@mui/icons-material/NoteAdd'
 export { default as RefreshIcon } from '@mui/icons-material/Refresh'
 export { default as Remove } from '@mui/icons-material/Remove'

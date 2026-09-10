@@ -14,7 +14,7 @@
         z-index: 1030;
         background: var(--theme-navbar-background, $body-bg);
 
-        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
+        @media (max-width: $sidebar-overlay-max-width) {
             left: 0;
             background: var(--theme-navbar-background, $navbar-background-color);
             border-bottom: 1px solid var(--theme-navbar-border, #{$navbar-border-color});
@@ -39,7 +39,7 @@
         height: 100vh;
         width: $sidebar-default-width;
 
-        @media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
+        @media (min-width: $sidebar-dock-min-width) {
             &--slim {
                 width: $sidebar-slim-width;
             }
@@ -57,7 +57,7 @@
             }
         }
 
-        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
+        @media (max-width: $sidebar-overlay-max-width) {
             width: 0;
         }
 
@@ -66,6 +66,21 @@
         // its width. Breakpoint mirrors MOBILE_MEDIA_QUERY (max-width: 767px).
         @media (max-width: 767px) {
             display: none;
+        }
+    }
+
+    &__sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1029;
+        padding: 0;
+        border: none;
+        background: rgba($black, 0.45);
+        cursor: pointer;
+
+        @media (max-width: $sidebar-overlay-max-width) {
+            display: block;
         }
     }
 

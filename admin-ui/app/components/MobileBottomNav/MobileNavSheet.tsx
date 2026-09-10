@@ -32,6 +32,9 @@ import {
   type SheetKey,
 } from './sheetConstants'
 import type { MobileNavSheetThemeColors } from './types'
+import useFilteredMenus from '@/hooks/useFilteredMenus'
+import { filterTreeByPaths } from '@/utils/menuFilters'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 type MobileNavSheetProps = {
   openKey: SheetKey | null
@@ -58,9 +61,23 @@ const MobileNavSheet = ({
   const [drillTile, setDrillTile] = useState<SheetItem | null>(null)
   const [renderKey, setRenderKey] = useState<SheetKey | null>(openKey)
   const [entered, setEntered] = useState(false)
+  const { allowedPaths, isReady } = useFilteredMenus()
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
   const prevHeightRef = useRef<number | null>(null)
+
+  const filterItems = useCallback(
+    (items: readonly SheetItem[]): SheetItem[] =>
+      allowedPaths ? filterTreeByPaths(items, allowedPaths) : [],
+    [allowedPaths],
+  )
+
+  const moreTiles = useMemo(() => filterItems(MORE_TILE_DEFS), [filterItems])
+
+  const sectionItems = useMemo(() => {
+    const menu = openKey && isSectionKey(openKey) ? SECTION_MENUS[openKey] : null
+    return filterItems(menu?.items ?? [])
+  }, [openKey, filterItems])
 
   const toggleExpanded = useCallback((key: string): void => {
     setExpandedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
@@ -169,17 +186,13 @@ const MobileNavSheet = ({
   )
 
   useEffect(() => {
-    if (!openKey) {
-      setExpandedKeys([])
-      setDrillTile(null)
-      return
-    }
+    if (!openKey) return
     if (openKey === SHEET_KEYS.MORE) {
       setExpandedKeys([])
-      const activeTile = MORE_TILE_DEFS.find((tile) =>
+      const activeTile = moreTiles.find((tile) =>
         tile.children?.some((child) => isItemActive(child)),
       )
-      setDrillTile(activeTile ?? null)
+      setDrillTile((prev) => (prev?.key === activeTile?.key ? prev : (activeTile ?? null)))
       return
     }
     setDrillTile(null)
@@ -187,17 +200,21 @@ const MobileNavSheet = ({
       setExpandedKeys([])
       return
     }
-    const menu = SECTION_MENUS[openKey]
-    const activeGroups = (menu?.items ?? [])
+    const activeGroups = sectionItems
       .filter((item) => item.children?.some((child) => isItemActive(child)))
       .map((item) => item.key)
-    setExpandedKeys(activeGroups)
-  }, [openKey, isItemActive])
+    setExpandedKeys((prev) =>
+      prev.length === activeGroups.length && prev.every((key, i) => key === activeGroups[i])
+        ? prev
+        : activeGroups,
+    )
+  }, [openKey, isItemActive, moreTiles, sectionItems])
 
   if (!renderKey || typeof document === 'undefined') return null
 
   const isMore = renderKey === SHEET_KEYS.MORE
   const section = isSectionKey(renderKey) ? SECTION_MENUS[renderKey] : null
+  const renderSectionItems = section ? filterItems(section.items) : []
   const isDrilled = isMore && drillTile !== null
 
   const headerTitleKey = isDrilled
@@ -244,7 +261,7 @@ const MobileNavSheet = ({
         aria-label={headerTitle}
         data-testid="mobile-nav-sheet"
       >
-        <div className={classes.header}>
+        <div className={cx(classes.header, isDrilled && classes.headerDrilled)}>
           {isDrilled ? (
             <button
               type="button"
@@ -255,13 +272,27 @@ const MobileNavSheet = ({
               <ArrowBackIcon />
             </button>
           ) : null}
-          {headerIcon ? <span className={classes.headerIcon}>{headerIcon}</span> : null}
-          <span
-            className={cx(classes.headerTitle, isMore && !isDrilled && classes.headerTitleMuted)}
-            data-testid="mobile-nav-sheet-title"
-          >
-            {headerTitle}
-          </span>
+          {isDrilled ? (
+            <div className={classes.headerCenter}>
+              {headerIcon ? <span className={classes.headerIcon}>{headerIcon}</span> : null}
+              <span
+                className={cx(classes.headerTitle, classes.headerTitleCentered)}
+                data-testid="mobile-nav-sheet-title"
+              >
+                {headerTitle}
+              </span>
+            </div>
+          ) : (
+            <>
+              {headerIcon ? <span className={classes.headerIcon}>{headerIcon}</span> : null}
+              <span
+                className={cx(classes.headerTitle, isMore && classes.headerTitleMuted)}
+                data-testid="mobile-nav-sheet-title"
+              >
+                {headerTitle}
+              </span>
+            </>
+          )}
           <button
             ref={closeButtonRef}
             type="button"
@@ -276,6 +307,8 @@ const MobileNavSheet = ({
         <div className={classes.body}>
           {children ? (
             children
+          ) : !isReady ? (
+            <GluuLoader blocking />
           ) : isDrilled ? (
             <div className={classes.list}>
               {drillTile?.children?.map((child) => {
@@ -295,7 +328,7 @@ const MobileNavSheet = ({
             </div>
           ) : isMore ? (
             <div className={classes.grid}>
-              {MORE_TILE_DEFS.map((tile) => {
+              {moreTiles.map((tile) => {
                 const active =
                   isItemActive(tile) || !!tile.children?.some((child) => isItemActive(child))
                 return (
@@ -319,7 +352,7 @@ const MobileNavSheet = ({
             </div>
           ) : (
             <div className={classes.list}>
-              {section?.items.map((item) => {
+              {renderSectionItems.map((item) => {
                 if (item.children?.length) {
                   const expanded = expandedKeys.includes(item.key)
                   return (

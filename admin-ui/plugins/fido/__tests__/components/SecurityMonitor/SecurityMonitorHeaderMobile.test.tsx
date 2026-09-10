@@ -1,10 +1,23 @@
 import React from 'react'
+import type { MenuItem } from '@/components/Sidebar'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 
 let mockIsMobile = true
 jest.mock('@mui/material/useMediaQuery', () => ({
   __esModule: true,
   default: () => mockIsMobile,
+}))
+
+const mockMenus: MenuItem[] = []
+const mockAllowedPaths = new Set<string>()
+jest.mock('@/hooks/useFilteredMenus', () => ({
+  __esModule: true,
+  default: () => ({
+    menus: mockMenus,
+    allowedPaths: mockAllowedPaths,
+    firstPath: null,
+    isReady: true,
+  }),
 }))
 
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'

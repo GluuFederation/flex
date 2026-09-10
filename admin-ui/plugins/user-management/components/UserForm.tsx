@@ -406,17 +406,19 @@ const UserForm = ({
                   </div>
                 </div>
 
-                <div className={classes.dynamicClaimsWrap}>
-                  {selectedClaims.map((data, index) => (
-                    <UserClaimEntry
-                      key={data.name}
-                      entry={index}
-                      data={data}
-                      formik={formik}
-                      handler={removeSelectedClaimsFromState}
-                    />
-                  ))}
-                </div>
+                {selectedClaims.length > 0 && (
+                  <div className={classes.dynamicClaimsWrap}>
+                    {selectedClaims.map((data, index) => (
+                      <UserClaimEntry
+                        key={data.name}
+                        entry={index}
+                        data={data}
+                        formik={formik}
+                        handler={removeSelectedClaimsFromState}
+                      />
+                    ))}
+                  </div>
+                )}
 
                 {userDetails && (
                   <div className={classes.changePasswordRow}>
