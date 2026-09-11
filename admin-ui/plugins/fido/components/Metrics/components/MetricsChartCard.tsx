@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useMetricsStyles } from '../MetricsPage.style'
 import { METRICS_ZOOM } from '../constants'
 import useChartZoom from '../hooks/useChartZoom'
+import useFullscreenModal from '../hooks/useFullscreenModal'
 import type { MetricsChartCardProps } from '../types'
 
 const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
@@ -30,27 +31,16 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [collapsedHeight, setCollapsedHeight] = useState<number>(0)
+  const cardContentRef = useRef<HTMLDivElement>(null)
   const { zoom, zoomIn, zoomOut, resetZoom, surfaceRef } = useChartZoom(isFullscreen && zoomable)
 
-  const openFullscreen = useCallback(() => setIsFullscreen(true), [])
+  const openFullscreen = useCallback(() => {
+    setCollapsedHeight(cardContentRef.current?.offsetHeight ?? 0)
+    setIsFullscreen(true)
+  }, [])
   const closeFullscreen = useCallback(() => setIsFullscreen(false), [])
-
-  useEffect(() => {
-    if (!isFullscreen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        setIsFullscreen(false)
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = previousOverflow
-    }
-  }, [isFullscreen])
+  const { containerRef, closeButtonRef } = useFullscreenModal(isFullscreen, closeFullscreen)
 
   const cardClasses = cardClassName ? `${classes.chartCard} ${cardClassName}` : classes.chartCard
 
@@ -64,7 +54,13 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
           onClick={closeFullscreen}
           aria-label={t('actions.close')}
         />
-        <div className={classes.chartModalContainer} role="dialog" aria-modal="true">
+        <div
+          ref={containerRef}
+          className={classes.chartModalContainer}
+          role="dialog"
+          aria-modal="true"
+          aria-label={typeof title === 'string' ? title : undefined}
+        >
           <div className={classes.chartModalHeader}>
             <GluuText variant="h2" className={classes.chartModalTitle}>
               {title}
@@ -104,6 +100,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
                 </div>
               )}
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={closeFullscreen}
                 className={classes.chartModalCloseButton}
@@ -152,7 +149,12 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
               {caption}
             </GluuText>
           )}
-          {children(false, METRICS_ZOOM.DEFAULT)}
+          <div
+            ref={cardContentRef}
+            style={isFullscreen ? { minHeight: collapsedHeight } : undefined}
+          >
+            {!isFullscreen && children(false, METRICS_ZOOM.DEFAULT)}
+          </div>
         </CardBody>
       </Card>
       {fullscreenModal}
@@ -160,4 +162,4 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   )
 }
 
-export default React.memo(MetricsChartCard)
+export default MetricsChartCard

@@ -52,7 +52,7 @@ const MetricsPage: React.FC = () => {
     endDate: dayjs().hour(23).minute(59).second(0).millisecond(0),
   }))
 
-  const isApplyEnabled = !!(startDate && endDate)
+  const isApplyEnabled = !!(startDate && endDate && !endDate.isBefore(startDate))
 
   const { canRead: canView } = usePermission(METRICS_RESOURCE_ID)
 
@@ -79,7 +79,7 @@ const MetricsPage: React.FC = () => {
   }, [])
 
   const handleApply = useCallback(() => {
-    if (!startDate || !endDate) return
+    if (!startDate || !endDate || endDate.isBefore(startDate)) return
     setAppliedRange({ startDate, endDate })
     setFilterSheetOpen(false)
   }, [startDate, endDate])

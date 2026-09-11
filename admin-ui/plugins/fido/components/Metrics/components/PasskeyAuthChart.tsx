@@ -233,11 +233,13 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
 
     return (
       <>
-        <div className={classes.authChartHeader}>
-          <GluuText variant="div" className={classes.chartTitle}>
-            {t('titles.passkey_authentication')}
-          </GluuText>
-        </div>
+        {!isFullscreen && (
+          <div className={classes.authChartHeader}>
+            <GluuText variant="div" className={classes.chartTitle}>
+              {t('titles.passkey_authentication')}
+            </GluuText>
+          </div>
+        )}
 
         {isFullscreen ? (
           <div className={classes.chartFullscreenFrame} data-chart-frame>

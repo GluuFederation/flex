@@ -266,7 +266,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
             fill={textColor}
             fontFamily={fontFamily}
           >
-            {`Total Users: `}
+            {`${t('fields.total_registered_users')}: `}
             <tspan
               fontSize={isMobile ? MOBILE_LABEL_VALUE_FONT_SIZE : 16}
               fontWeight={fontWeights.bold}

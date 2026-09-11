@@ -149,7 +149,7 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
           isFullscreen
             ? {
                 width: scrollWidth ? scrollWidth * zoom : `${zoom * 100}%`,
-                minWidth: '100%',
+                minWidth: `${zoom * 100}%`,
                 flexShrink: 0,
               }
             : scrollWidth
@@ -163,7 +163,7 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
           height={
             isFullscreen
               ? METRICS_CHART_HEIGHT.FULLSCREEN * zoom
-              : isCompact
+              : isCompact && !isMobile
                 ? METRICS_CHART_HEIGHT.COMPACT
                 : height
           }

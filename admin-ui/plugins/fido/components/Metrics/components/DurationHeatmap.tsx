@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody } from 'Components'
@@ -14,6 +14,7 @@ import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from 
 import { useMetricsStyles } from '../MetricsPage.style'
 import { CHART_SCROLLBAR_GUTTER, HEATMAP_COLOR_STOPS, METRICS_ZOOM } from '../constants'
 import useChartZoom from '../hooks/useChartZoom'
+import useFullscreenModal from '../hooks/useFullscreenModal'
 import { formatChartValue, getNiceStep, interpolateHeatmapColor } from '../utils'
 import type { ChartSurfaceSize, DurationHeatmapProps } from '../types'
 
@@ -83,6 +84,7 @@ const MOBILE_CELL_SIZE = { WIDTH: 24, HEIGHT: 20 } as const
 const MOBILE_ROW_LABEL_WIDTH = 46
 const COLOR_BAR_GAP = 8
 const FIT_SAFETY_GAP = 2
+const MIN_FIT_CELL = 8
 const EMPTY_FRAME_SIZE: ChartSurfaceSize = { width: 0, height: 0 }
 
 const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
@@ -101,7 +103,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   showExpand = true,
 }) => {
   const { state } = useTheme()
-  const themeColors = getThemeColor(state.theme)
+  const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
   const { t } = useTranslation()
@@ -109,6 +111,8 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [frameSize, setFrameSize] = useState<ChartSurfaceSize>(EMPTY_FRAME_SIZE)
+  const [collapsedHeight, setCollapsedHeight] = useState<number>(0)
+  const cardContentRef = useRef<HTMLDivElement>(null)
   const { zoom, zoomIn, zoomOut, resetZoom, surfaceRef } = useChartZoom(isFullscreen)
 
   const frameRef = useCallback((node: HTMLDivElement | null) => {
@@ -121,25 +125,12 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     return () => ro.disconnect()
   }, [])
 
-  const openFullscreen = useCallback(() => setIsFullscreen(true), [])
+  const openFullscreen = useCallback(() => {
+    setCollapsedHeight(cardContentRef.current?.offsetHeight ?? 0)
+    setIsFullscreen(true)
+  }, [])
   const closeFullscreen = useCallback(() => setIsFullscreen(false), [])
-
-  useEffect(() => {
-    if (!isFullscreen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        setIsFullscreen(false)
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = previousOverflow
-    }
-  }, [isFullscreen])
+  const { containerRef, closeButtonRef } = useFullscreenModal(isFullscreen, closeFullscreen)
 
   const { rows, cols, colsSub, data, minVal, maxVal } = heatmapData
   const hasColsSub = Boolean(colsSub && colsSub.length === cols.length)
@@ -151,7 +142,15 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     return rows.flatMap((_, ri) =>
       cols.map((_, ci) => {
         const value = data[ri]?.[ci] ?? minVal
-        return { ri, ci, value, color: interpolateHeatmapColor(value, minVal, maxVal) }
+        const color = interpolateHeatmapColor(value, minVal, maxVal)
+        const brightness = parseInt(color.replace(REGEX_NON_DIGIT_COMMA, '').split(',')[0] ?? '100')
+        return {
+          ri,
+          ci,
+          value,
+          color,
+          textColor: brightness < 160 ? customColors.white : customColors.nearBlack,
+        }
       }),
     )
   }, [rows, cols, data, minVal, maxVal])
@@ -195,19 +194,25 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
 
     const fitToFrame = fullscreen && frameSize.width > 0 && frameSize.height > 0
     const frameCellW = fitToFrame
-      ? Math.floor(
-          (frameSize.width -
-            rowLabelW -
-            colorBarW -
-            COLOR_BAR_GAP -
-            colorBarLabelW -
-            yAxisLabelW -
-            FIT_SAFETY_GAP) /
-            safeColsLen,
+      ? Math.max(
+          MIN_FIT_CELL,
+          Math.floor(
+            (frameSize.width -
+              rowLabelW -
+              colorBarW -
+              COLOR_BAR_GAP -
+              colorBarLabelW -
+              yAxisLabelW -
+              FIT_SAFETY_GAP) /
+              safeColsLen,
+          ),
         )
       : 0
     const frameCellH = fitToFrame
-      ? Math.floor((frameSize.height - colLabelH - bottomColLabelH - FIT_SAFETY_GAP) / rowsCount)
+      ? Math.max(
+          MIN_FIT_CELL,
+          Math.floor((frameSize.height - colLabelH - bottomColLabelH - FIT_SAFETY_GAP) / rowsCount),
+        )
       : 0
 
     const derivedCellH = compact
@@ -432,13 +437,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               )
             })}
 
-            {cells.map(({ ri, ci, value, color }) => {
+            {cells.map(({ ri, ci, value, color, textColor: cellTextColor }) => {
               const x = rowLabelW + ci * cellW
               const y = colLabelH + ri * cellH
-              const brightness = parseInt(
-                color.replace(REGEX_NON_DIGIT_COMMA, '').split(',')[0] ?? '100',
-              )
-              const cellTextColor = brightness < 160 ? customColors.white : customColors.nearBlack
               return (
                 <g key={`cell-${ri}-${ci}`}>
                   <rect
@@ -539,6 +540,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
           aria-label={t('actions.close')}
         />
         <div
+          ref={containerRef}
           className={classes.chartModalContainer}
           role="dialog"
           aria-modal="true"
@@ -587,6 +589,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                 </div>
               )}
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={closeFullscreen}
                 className={classes.chartModalCloseButton}
@@ -658,7 +661,12 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               {caption}
             </GluuText>
           )}
-          {isEmpty ? emptyState : renderHeatmapSvg(false)}
+          <div
+            ref={cardContentRef}
+            style={isFullscreen ? { minHeight: collapsedHeight } : undefined}
+          >
+            {isEmpty ? emptyState : isFullscreen ? null : renderHeatmapSvg(false)}
+          </div>
         </CardBody>
       </Card>
       {fullscreenModal}
