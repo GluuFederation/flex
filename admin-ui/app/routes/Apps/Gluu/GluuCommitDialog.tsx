@@ -17,6 +17,7 @@ import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import type { JsonValue } from './types/common'
 import type { GluuCommitDialogProps } from './types/index'
 import { useStyles } from './styles/GluuCommitDialog.style'
 import {
@@ -27,6 +28,11 @@ import {
 import GluuText from './GluuText'
 import { GluuButton } from '@/components'
 import GluuLoader from './GluuLoader'
+
+const isEmptyOperationValue = (value: JsonValue): boolean => {
+  if (value === null || value === undefined || value === '') return true
+  return Array.isArray(value) && value.length === 0
+}
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -230,10 +236,14 @@ const GluuCommitDialog = ({
                           {operation.label || operation.path}
                         </span>
                         <span className={classes.operationLabel}>{t('to')}</span>
-                        <span className={classes.operationBadge}>
-                          {operation.value === null || operation.value === ''
-                            ? '""'
-                            : String(operation.value)}
+                        <span
+                          className={`${classes.operationBadge} ${
+                            isEmptyOperationValue(operation.value)
+                              ? classes.operationBadgeEmpty
+                              : ''
+                          }`}
+                        >
+                          {isEmptyOperationValue(operation.value) ? '""' : String(operation.value)}
                         </span>
                       </div>
                     ))}

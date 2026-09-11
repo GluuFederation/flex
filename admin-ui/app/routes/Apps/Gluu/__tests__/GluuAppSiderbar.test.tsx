@@ -85,10 +85,10 @@ jest.mock('@/cedarling/utility', () => ({
 
 jest.mock('Plugins/admin/components/Health/hooks', () => ({
   useHealthStatus: () => ({
-    allServices: [],
-    services: [],
-    healthyCount: 0,
-    totalCount: 0,
+    allServices: [{ name: 'oxauth', status: 'up' }],
+    services: [{ name: 'oxauth', status: 'up' }],
+    healthyCount: 1,
+    totalCount: 1,
     isLoading: false,
     isFetching: false,
     isError: false,
@@ -129,7 +129,8 @@ const store = configureStore({
     authReducer: (state = { permissions: [] }) => state,
     noReducer: (state = {}) => state,
     healthReducer: (state = { health: {} }) => state,
-    sessionReducer: (state = { logoutAuditSucceeded: null }) => state,
+    sessionReducer: (state = { logoutRequested: false }) => state,
+    cedarPermissions: (state = { initialized: true }) => state,
   }),
 })
 

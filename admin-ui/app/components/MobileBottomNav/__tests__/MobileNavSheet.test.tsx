@@ -5,19 +5,14 @@ jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k
 jest.mock('@/context/theme/themeContext', () => ({
   useTheme: () => ({ state: { theme: 'light' } }),
 }))
-jest.mock('@/context/theme/config', () => ({
-  __esModule: true,
-  default: () => ({
-    navbar: { background: '#fff', border: '#eee' },
-    fontColor: '#0a2540',
-    textMuted: '#425466',
-    lightBackground: '#f5f5f5',
-  }),
-}))
-
 let mockPathname = '/home/dashboard'
 jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: mockPathname }),
+}))
+
+jest.mock('@/hooks/useFilteredMenus', () => ({
+  __esModule: true,
+  default: () => ({ menus: [], allowedPaths: mockAllPaths(), isReady: true }),
 }))
 
 jest.mock('../sheetIcons', () => ({
@@ -28,6 +23,24 @@ jest.mock('../sheetIcons', () => ({
 }))
 
 import MobileNavSheet from '../MobileNavSheet'
+import { MORE_TILE_DEFS, SECTION_MENUS, type SheetItem } from '../sheetConstants'
+
+function mockCollectPaths(items: readonly SheetItem[]): string[] {
+  return items.flatMap((item) => [
+    ...(item.path ? [item.path] : []),
+    ...mockCollectPaths(item.children ?? []),
+  ])
+}
+
+let mockAllPathsCache: ReadonlySet<string> | null = null
+
+function mockAllPaths(): ReadonlySet<string> {
+  mockAllPathsCache ??= new Set([
+    ...mockCollectPaths(MORE_TILE_DEFS),
+    ...Object.values(SECTION_MENUS).flatMap((menu) => mockCollectPaths(menu.items)),
+  ])
+  return mockAllPathsCache
+}
 
 const noop = () => {}
 

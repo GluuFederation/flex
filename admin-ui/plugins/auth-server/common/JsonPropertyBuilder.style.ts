@@ -4,6 +4,7 @@ import {
   CEDARLING_CONFIG_SPACING,
   MAPPING_SPACING,
   MOBILE_MEDIA_QUERY,
+  NON_MOBILE_MIN_MEDIA_QUERY,
   SPACING,
 } from '@/constants'
 
@@ -77,6 +78,29 @@ export const useStyles = makeStyles()(() => ({
     marginBottom: SPACING.CARD_CONTENT_GAP,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       marginBottom: 0,
+    },
+  },
+  arrayPairCol: {
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      marginBottom: SPACING.SECTION_GAP / 2,
+    },
+  },
+  arrayPairRow: {
+    [`@media ${NON_MOBILE_MIN_MEDIA_QUERY}`]: {
+      '&&&': {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        columnGap: SPACING.SECTION_GAP,
+        marginBottom: `${SPACING.SECTION_GAP}px !important`,
+      },
+      '&&& > [class*="col"]': {
+        flex: `0 0 calc(50% - ${SPACING.SECTION_GAP / 2}px)`,
+        maxWidth: `calc(50% - ${SPACING.SECTION_GAP / 2}px)`,
+        width: 'auto',
+      },
+      '&&&:last-child': {
+        marginBottom: '0 !important',
+      },
     },
   },
   removeButtonIcon: {
