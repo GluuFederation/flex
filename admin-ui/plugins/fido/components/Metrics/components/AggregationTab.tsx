@@ -1,9 +1,13 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { Row, Col } from 'Components'
+import { Row, Col, GluuDropdown } from 'Components'
 import { useTranslation } from 'react-i18next'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
+import { FILTER_SHEET, MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, OPACITY } from '@/constants'
+import MobileNavSheet from '@/components/MobileBottomNav/MobileNavSheet'
+import { SHEET_KEYS } from '@/components/MobileBottomNav/sheetConstants'
 import { GluuDatePicker } from '@/components/GluuDatePicker'
 import { GluuButton } from '@/components/GluuButton'
 import { createDate } from '@/utils/dayjsUtils'
@@ -11,10 +15,17 @@ import type { Dayjs } from 'dayjs'
 import { ChevronIcon } from '@/components/SVG'
 import { useMetricsStyles } from '../MetricsPage.style'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { AGGREGATION_TYPES, EMPTY_HEATMAP_DATA_DEFAULT, type AggregationType } from '../constants'
+import {
+  AGGREGATION_TYPES,
+  EMPTY_HEATMAP_DATA_DEFAULT,
+  METRICS_CHART_HEIGHT,
+  type AggregationType,
+} from '../constants'
 import { useAggregationMetrics } from '../hooks'
+import type { GluuDropdownOption } from '@/components/GluuDropdown/types'
 import type {
   ActivityDataPoint,
+  AggregationTabProps,
   AggregationTypeParam,
   HeatmapData,
   MetricsDateRange,
@@ -36,12 +47,14 @@ const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
   monthly: 'Monthly',
 }
 
-const AggregationTab: React.FC = () => {
+const AggregationTab: React.FC<AggregationTabProps> = ({ filterSheetOpen, onFilterSheetClose }) => {
   const { t } = useTranslation()
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
+  const chartHeight = isMobile ? METRICS_CHART_HEIGHT.MOBILE : METRICS_CHART_HEIGHT.DESKTOP
 
   const [startDate, setStartDate] = useState<Dayjs>(() =>
     createDate().startOf('month').startOf('day').millisecond(0),
@@ -68,7 +81,15 @@ const AggregationTab: React.FC = () => {
     if (!startDate || !endDate || endDate.isBefore(startDate)) return
     setAppliedRange({ startDate, endDate })
     setAppliedAggType(aggType || 'hourly')
-  }, [startDate, endDate, aggType])
+    onFilterSheetClose()
+  }, [startDate, endDate, aggType, onFilterSheetClose])
+
+  const handleFilterCancel = useCallback(() => {
+    setStartDate(appliedRange.startDate)
+    setEndDate(appliedRange.endDate)
+    setAggType(appliedAggType)
+    onFilterSheetClose()
+  }, [appliedRange, appliedAggType, onFilterSheetClose])
 
   const {
     data: aggApiData,
@@ -78,26 +99,18 @@ const AggregationTab: React.FC = () => {
 
   const isAggLoading = aggLoading || aggFetching
 
+  const rangeLabel = useMemo(
+    () => buildRangeLabel(appliedAggType, appliedRange, t),
+    [appliedAggType, appliedRange, t],
+  )
+
   const activityData: ActivityDataPoint[] = useMemo(() => {
     const entries = aggApiData?.entries
     if (!entries || entries.length === 0) return []
-    const rangeEntry: ActivityDataPoint = {
-      label: buildRangeLabel(appliedAggType, appliedRange, t),
-      regSuccess: 0,
-      regAttempts: 0,
-      authAttempts: 0,
-      authSuccess: 0,
-      authFailed: 0,
-    }
-    return [rangeEntry, ...entriesToActivityData(entries, appliedAggType)]
-  }, [aggApiData, appliedAggType, appliedRange, t])
+    return entriesToActivityData(entries, appliedAggType)
+  }, [aggApiData, appliedAggType])
 
-  // The bar chart leads with a zeroed range summary row; a line would read that as a dip to
-  // zero, so the trend chart plots the buckets only.
-  const trendData: readonly ActivityDataPoint[] = useMemo(
-    () => activityData.slice(1),
-    [activityData],
-  )
+  const trendData: readonly ActivityDataPoint[] = activityData
 
   const rawHeatmapData: HeatmapData = useMemo(() => {
     const entries = aggApiData?.entries
@@ -133,28 +146,84 @@ const AggregationTab: React.FC = () => {
     [themeColors],
   )
 
-  const aggOptions = AGGREGATION_TYPES.map((v) => ({
-    value: v,
-    label: t(`fields.agg_type_${v}`),
-  }))
+  const sheetCancelColors = useMemo(
+    () => ({
+      textColor: themeColors.formFooter?.cancel?.textColor ?? themeColors.fontColor,
+      borderColor: themeColors.formFooter?.cancel?.borderColor ?? themeColors.borderColor,
+    }),
+    [themeColors],
+  )
+
+  const sheetApplyColors = useMemo(
+    () => ({
+      backgroundColor: themeColors.badges?.filledBadgeBg ?? themeColors.fontColor,
+      textColor: themeColors.badges?.filledBadgeText ?? themeColors.background,
+    }),
+    [themeColors],
+  )
+
+  const aggOptions: GluuDropdownOption<AggregationType>[] = useMemo(
+    () =>
+      AGGREGATION_TYPES.map((v) => ({
+        value: v,
+        label: t(`fields.agg_type_${v}`),
+      })),
+    [t],
+  )
+
+  const handleAggTypeSelect = useCallback((value: AggregationType) => setAggType(value), [])
+
+  const aggTriggerLabel = aggType
+    ? t(`fields.agg_type_${aggType}`)
+    : t('fields.agg_type_placeholder')
+
+  const renderAggTrigger = useCallback(
+    (isOpen: boolean) => (
+      <div className={classes.aggSelect}>
+        <span className={aggType ? undefined : classes.aggSelectPlaceholder}>
+          {aggTriggerLabel}
+        </span>
+        <span className={classes.aggSelectChevron}>
+          <ChevronIcon width={20} height={20} direction={isOpen ? 'up' : 'down'} />
+        </span>
+      </div>
+    ),
+    [
+      classes.aggSelect,
+      classes.aggSelectChevron,
+      classes.aggSelectPlaceholder,
+      aggType,
+      aggTriggerLabel,
+    ],
+  )
 
   const chartContent = useMemo(() => {
     switch (appliedAggType) {
       case 'hourly':
         return (
           <>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_hourly_trend')} data={trendData} />
+                <ActivityLineChart
+                  title={t('titles.agg_hourly_trend')}
+                  caption={rangeLabel}
+                  data={trendData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityBarChart title={t('titles.agg_hourly_activity')} data={activityData} />
+                <ActivityBarChart
+                  title={t('titles.agg_hourly_activity')}
+                  caption={rangeLabel}
+                  data={activityData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row>
-              <Col xs={12} lg={6} className="mb-4 mb-lg-0">
+            <Row className={classes.chartRow}>
+              <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
                 <DurationHeatmap
                   title={t('titles.agg_hourly_reg_heatmap')}
                   heatmapData={heatmapData}
@@ -167,7 +236,7 @@ const AggregationTab: React.FC = () => {
                   minColorBarHeight={320}
                 />
               </Col>
-              <Col xs={12} lg={6}>
+              <Col xs={12} xxl={6}>
                 <DurationHeatmap
                   title={t('titles.agg_hourly_auth_heatmap')}
                   heatmapData={authHeatmapData}
@@ -187,17 +256,27 @@ const AggregationTab: React.FC = () => {
       case 'daily':
         return (
           <>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_daily_trend')} data={trendData} />
+                <ActivityLineChart
+                  title={t('titles.agg_daily_trend')}
+                  caption={rangeLabel}
+                  data={trendData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityBarChart title={t('titles.agg_daily_activity')} data={activityData} />
+                <ActivityBarChart
+                  title={t('titles.agg_daily_activity')}
+                  caption={rangeLabel}
+                  data={activityData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row>
+            <Row className={classes.chartRow}>
               <Col xs={12}>
                 <DurationHeatmap
                   title={t('titles.agg_daily_heatmap')}
@@ -217,14 +296,24 @@ const AggregationTab: React.FC = () => {
       case 'weekly':
         return (
           <>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_weekly_trend')} data={trendData} />
+                <ActivityLineChart
+                  title={t('titles.agg_weekly_trend')}
+                  caption={rangeLabel}
+                  data={trendData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
-                <ActivityBarChart title={t('titles.agg_weekly_activity')} data={activityData} />
+                <ActivityBarChart
+                  title={t('titles.agg_weekly_activity')}
+                  caption={rangeLabel}
+                  data={activityData}
+                  height={chartHeight}
+                />
               </Col>
               <Col xs={12} xxl={6}>
                 <DurationHeatmap
@@ -245,14 +334,24 @@ const AggregationTab: React.FC = () => {
       case 'monthly':
         return (
           <>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12}>
-                <ActivityLineChart title={t('titles.agg_monthly_trend')} data={trendData} />
+                <ActivityLineChart
+                  title={t('titles.agg_monthly_trend')}
+                  caption={rangeLabel}
+                  data={trendData}
+                  height={chartHeight}
+                />
               </Col>
             </Row>
-            <Row className="mb-4">
+            <Row className={`mb-4 ${classes.chartRow}`}>
               <Col xs={12} xxl={6} className="mb-4 mb-xxl-0">
-                <ActivityBarChart title={t('titles.agg_monthly_activity')} data={activityData} />
+                <ActivityBarChart
+                  title={t('titles.agg_monthly_activity')}
+                  caption={rangeLabel}
+                  data={activityData}
+                  height={chartHeight}
+                />
               </Col>
               <Col xs={12} xxl={6}>
                 <DurationHeatmap
@@ -274,73 +373,116 @@ const AggregationTab: React.FC = () => {
       default:
         return null
     }
-  }, [appliedAggType, t, activityData, trendData, heatmapData, authHeatmapData])
+  }, [appliedAggType, t, activityData, trendData, heatmapData, authHeatmapData, chartHeight])
 
-  return (
-    <GluuLoader blocking={isAggLoading}>
-      <div className={classes.filterCard}>
-        <div className={classes.filterCardContent}>
-          <div className={classes.filterRow}>
-            <div className={classes.filterDateFieldWide}>
-              <GluuDatePicker
-                mode="range"
-                layout="row"
-                labelAsTitle
-                showTime
-                inputHeight={52}
-                startDate={startDate}
-                endDate={endDate}
-                onStartDateChange={handleStartDateChange}
-                onEndDateChange={handleEndDateChange}
-                startDateLabel={t('dashboard.start_date_time')}
-                endDateLabel={t('dashboard.end_date_time')}
-                textColor={themeColors.fontColor}
-                backgroundColor={cardBg}
-              />
-            </div>
+  const filterFields = (
+    <>
+      <div className={classes.filterDateFieldWide}>
+        <GluuDatePicker
+          mode="range"
+          layout={isMobile ? 'grid' : 'row'}
+          labelAsTitle
+          showTime
+          inputHeight={52}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+          startDateLabel={t('dashboard.start_date_time')}
+          endDateLabel={t('dashboard.end_date_time')}
+          textColor={themeColors.fontColor}
+          backgroundColor={cardBg}
+        />
+      </div>
 
-            <div className={classes.aggTypeField}>
-              <span className={classes.aggFieldLabel}>{t('fields.agg_metrics_type_label')}:</span>
-              <div className={classes.aggSelectWrapper}>
-                <select
-                  value={aggType}
-                  onChange={(e) =>
-                    setAggType(e.target.value === '' ? '' : (e.target.value as AggregationType))
-                  }
-                  className={classes.aggSelect}
-                >
-                  <option value="">{t('fields.agg_type_placeholder')}</option>
-                  {aggOptions.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-                <span className={classes.aggSelectChevron}>
-                  <ChevronIcon width={20} height={20} direction="down" />
-                </span>
-              </div>
-            </div>
+      <div className={classes.aggTypeField}>
+        <span className={classes.aggFieldLabel}>{t('fields.agg_metrics_type_label')}:</span>
+        <GluuDropdown<AggregationType>
+          className={classes.aggSelectWrapper}
+          options={aggOptions}
+          selectedValue={aggType === '' ? undefined : aggType}
+          onSelect={handleAggTypeSelect}
+          renderTrigger={renderAggTrigger}
+          position={isMobile ? 'top' : 'bottom'}
+          minWidth="100%"
+          showArrow={false}
+        />
+      </div>
+    </>
+  )
 
-            <div className={classes.filterActionFieldEnd}>
-              <GluuButton
-                type="button"
-                size="md"
-                minHeight={52}
-                block
-                backgroundColor={applyButtonColors.backgroundColor}
-                textColor={applyButtonColors.textColor}
-                borderColor={applyButtonColors.backgroundColor}
-                useOpacityOnHover
-                disabled={!isApplyEnabled}
-                onClick={handleApply}
-              >
-                {t('actions.apply')}
-              </GluuButton>
-            </div>
+  const filterBar = isMobile ? (
+    <MobileNavSheet
+      openKey={filterSheetOpen ? SHEET_KEYS.CUSTOM : null}
+      onClose={handleFilterCancel}
+      title={t('titles.filters')}
+    >
+      <div className={classes.filterSheetContent}>
+        {filterFields}
+        <div className={classes.filterSheetButtonRow}>
+          <GluuButton
+            type="button"
+            size="md"
+            block
+            outlined
+            onClick={handleFilterCancel}
+            textColor={sheetCancelColors.textColor}
+            borderColor={sheetCancelColors.borderColor}
+            borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+            minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+            fontWeight={700}
+          >
+            {t('actions.cancel')}
+          </GluuButton>
+          <GluuButton
+            type="button"
+            size="md"
+            block
+            onClick={handleApply}
+            disabled={!isApplyEnabled}
+            backgroundColor={sheetApplyColors.backgroundColor}
+            textColor={sheetApplyColors.textColor}
+            borderColor={sheetApplyColors.backgroundColor}
+            borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+            minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+            fontWeight={700}
+            useOpacityOnHover
+            hoverOpacity={OPACITY.OVERLAY}
+          >
+            {t('actions.apply')}
+          </GluuButton>
+        </div>
+      </div>
+    </MobileNavSheet>
+  ) : (
+    <div className={classes.filterCard}>
+      <div className={classes.filterCardContent}>
+        <div className={classes.filterRow}>
+          {filterFields}
+          <div className={classes.filterActionFieldEnd}>
+            <GluuButton
+              type="button"
+              size="md"
+              minHeight={52}
+              block
+              backgroundColor={applyButtonColors.backgroundColor}
+              textColor={applyButtonColors.textColor}
+              borderColor={applyButtonColors.backgroundColor}
+              useOpacityOnHover
+              disabled={!isApplyEnabled}
+              onClick={handleApply}
+            >
+              {t('actions.apply')}
+            </GluuButton>
           </div>
         </div>
       </div>
+    </div>
+  )
+
+  return (
+    <GluuLoader blocking={isAggLoading}>
+      {filterBar}
 
       {chartContent}
     </GluuLoader>

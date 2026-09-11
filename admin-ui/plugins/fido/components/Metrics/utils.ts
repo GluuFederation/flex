@@ -49,6 +49,15 @@ export const getNiceStep = (min: number, max: number, targetTicks = 6): number =
   return Math.max(1, nice * pow10)
 }
 
+export const formatCompactNumber = (value: number): string => {
+  const abs = Math.abs(value)
+  if (abs >= 1000) {
+    const scaled = value / 1000
+    return `${Number(scaled.toFixed(scaled >= 10 ? 0 : 1))}k`
+  }
+  return String(value)
+}
+
 export const toNumber = (value: number | string | boolean | null | undefined): number => {
   if (typeof value === 'number' && Number.isFinite(value)) return value
   return 0
