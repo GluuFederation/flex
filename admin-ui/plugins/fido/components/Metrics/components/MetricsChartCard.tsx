@@ -21,6 +21,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   showExpand = true,
   hideTitle = false,
   zoomable = false,
+  isEmpty = false,
   children,
 }) => {
   const { t } = useTranslation()
@@ -69,7 +70,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
               {title}
             </GluuText>
             <div className={classes.chartModalActions}>
-              {zoomable && (
+              {zoomable && !isEmpty && (
                 <div className={classes.chartZoomControls}>
                   <button
                     type="button"

@@ -41,6 +41,9 @@ const FLUID_DONUT_RIGHT = 'clamp(4px, 6vw, 70px)'
 const TAB_LABEL_INSET = 16
 const HEATMAP_AXIS_LABEL_FONT_SIZE = 'clamp(10px, 1.6vw, 14px)'
 const HEATMAP_AXIS_LABEL_GAP = 6
+const MODAL_COMPACT_MAX_HEIGHT = '80vh'
+const MODAL_COMPACT_CHROME_HEIGHT = 180
+const FULLSCREEN_FRAME_COMPACT_HEIGHT = `max(${METRICS_CHART_HEIGHT.MOBILE}px, calc(${MODAL_COMPACT_MAX_HEIGHT} - ${MODAL_COMPACT_CHROME_HEIGHT}px))`
 
 const HEATMAP_MODAL_OVERLAY_LIGHT = getLoadingOverlayRgba(customColors.black, 0.55)
 const HEATMAP_MODAL_OVERLAY_DARK = getLoadingOverlayRgba(customColors.black, 0.7)
@@ -52,7 +55,10 @@ type MetricsStylesParams = {
   themeColors: ThemeConfig
 }
 
-export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, themeColors }) => {
+export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
+  theme,
+  { isDark, themeColors },
+) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
@@ -153,10 +159,18 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       maxHeight: METRICS_CHART_HEIGHT.FULLSCREEN,
       overflow: 'auto' as const,
       overscrollBehavior: 'contain' as const,
+      scrollbarGutter: 'stable' as const,
+      paddingBottom: CHART_SCROLLBAR_GUTTER,
+      marginBottom: CHART_SCROLLBAR_GUTTER,
       display: 'flex',
       flexDirection: 'column' as const,
       justifyContent: 'safe center',
       flexShrink: 0,
+      [TABLET_QUERY]: {
+        height: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+        minHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+        maxHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+      },
     },
     chartScrollArea: {
       width: '100%',
@@ -223,8 +237,12 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
         width: `calc(100vw - ${MOBILE_PAGE_PADDING_X.MD * 2}px)`,
         maxWidth: `calc(100vw - ${MOBILE_PAGE_PADDING_X.MD * 2}px)`,
         height: 'auto',
-        maxHeight: '80vh',
+        maxHeight: MODAL_COMPACT_MAX_HEIGHT,
         zIndex: SHEET.Z_BAR_ELEVATED + 2,
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: `calc(100vw - ${MOBILE_PAGE_PADDING_X.SM * 2}px)`,
+        maxWidth: `calc(100vw - ${MOBILE_PAGE_PADDING_X.SM * 2}px)`,
       },
       flexDirection: 'column' as const,
     },
@@ -349,6 +367,18 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       flexDirection: 'column' as const,
       minWidth: 0,
     },
+    heatmapEmptyState: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      minHeight: METRICS_CHART_HEIGHT.COMPACT,
+      fontFamily,
+      fontSize: fontSizes.description,
+      color: themeColors.fontColor,
+      opacity: OPACITY.PLACEHOLDER,
+      textAlign: 'center' as const,
+    },
     heatmapXAxisLabel: {
       fontFamily,
       fontSize: HEATMAP_AXIS_LABEL_FONT_SIZE,
@@ -422,7 +452,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       fontFamily,
       fontSize: COMPACT_LEGEND_FONT_SIZE,
       fontWeight: fontWeights.semiBold,
-      lineHeight: lineHeights.tight,
+      lineHeight: lineHeights.normal,
       color: themeColors.fontColor,
       whiteSpace: 'nowrap' as const,
     },

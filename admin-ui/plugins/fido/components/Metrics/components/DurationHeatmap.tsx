@@ -98,7 +98,6 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   minColorBarHeight,
   verticalRowLabels = false,
   colLabelsBottom = false,
-  emptyStateCols,
   showExpand = true,
 }) => {
   const { state } = useTheme()
@@ -144,6 +143,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
 
   const { rows, cols, colsSub, data, minVal, maxVal } = heatmapData
   const hasColsSub = Boolean(colsSub && colsSub.length === cols.length)
+  const isEmpty = rows.length === 0 || cols.length === 0
+
+  const emptyState = <div className={classes.heatmapEmptyState}>{t('fields.no_data')}</div>
 
   const cells = useMemo(() => {
     return rows.flatMap((_, ri) =>
@@ -166,8 +168,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const reservedH = colLabelH + bottomColLabelH + xAxisH
     const effectiveCompactMinHeight = compact ? (minHeight ?? 460) : undefined
     const baseCellH = compact ? 36 : 56
-    const fallbackCols = emptyStateCols ?? (compact ? 24 : minHeight ? 4 : 6)
-    const layoutColsLen = cols.length > 0 ? cols.length : fallbackCols
+    const layoutColsLen = cols.length
     const rowsCount = Math.max(rows.length, 1)
     const safeColsLen = Math.max(layoutColsLen, 1)
     const compactTargetHeight = minColorBarHeight ?? effectiveCompactMinHeight ?? 0
@@ -234,17 +235,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
         ? Math.min(32, Math.max(14, Math.round(cellH * 0.26)))
         : 11
 
-    const isEmpty = rows.length === 0 || cols.length === 0
-    const fallbackRows = compact ? 12 : 2
-    const layoutGridHeight = fitToFrame
-      ? rowsCount * cellH
-      : isEmpty
-        ? minHeight
-          ? minHeight - 80 - reservedH
-          : compact
-            ? (effectiveCompactMinHeight ?? 460) - 80 - reservedH
-            : fallbackRows * baseCellH
-        : rowsCount * cellH
+    const layoutGridHeight = rowsCount * cellH
     const gridHeight = layoutGridHeight
     const colorBarHeight = layoutGridHeight
     const gridRightX = rowLabelW + layoutColsLen * cellW
@@ -562,37 +553,39 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               {title}
             </GluuText>
             <div className={classes.chartModalActions}>
-              <div className={classes.chartZoomControls}>
-                <button
-                  type="button"
-                  onClick={zoomOut}
-                  disabled={zoom <= METRICS_ZOOM.MIN}
-                  className={classes.chartZoomButton}
-                  aria-label={t('messages.zoom_out')}
-                  title={t('messages.zoom_out')}
-                >
-                  <ZoomOut fontSize="small" aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  onClick={resetZoom}
-                  className={classes.chartZoomLevel}
-                  aria-label={t('messages.reset_zoom')}
-                  title={t('messages.reset_zoom')}
-                >
-                  {Math.round(zoom * 100)}%
-                </button>
-                <button
-                  type="button"
-                  onClick={zoomIn}
-                  disabled={zoom >= METRICS_ZOOM.MAX}
-                  className={classes.chartZoomButton}
-                  aria-label={t('messages.zoom_in')}
-                  title={t('messages.zoom_in')}
-                >
-                  <ZoomIn fontSize="small" aria-hidden />
-                </button>
-              </div>
+              {!isEmpty && (
+                <div className={classes.chartZoomControls}>
+                  <button
+                    type="button"
+                    onClick={zoomOut}
+                    disabled={zoom <= METRICS_ZOOM.MIN}
+                    className={classes.chartZoomButton}
+                    aria-label={t('messages.zoom_out')}
+                    title={t('messages.zoom_out')}
+                  >
+                    <ZoomOut fontSize="small" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetZoom}
+                    className={classes.chartZoomLevel}
+                    aria-label={t('messages.reset_zoom')}
+                    title={t('messages.reset_zoom')}
+                  >
+                    {Math.round(zoom * 100)}%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={zoomIn}
+                    disabled={zoom >= METRICS_ZOOM.MAX}
+                    className={classes.chartZoomButton}
+                    aria-label={t('messages.zoom_in')}
+                    title={t('messages.zoom_in')}
+                  >
+                    <ZoomIn fontSize="small" aria-hidden />
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={closeFullscreen}
@@ -618,10 +611,16 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                 {caption}
               </GluuText>
             )}
-            <div className={classes.chartFullscreenFrame} data-chart-frame ref={frameRef}>
-              {renderHeatmapSvg(true, zoom)}
-            </div>
-            {xAxisLabel && <div className={classes.heatmapXAxisLabel}>{xAxisLabel}</div>}
+            {isEmpty ? (
+              emptyState
+            ) : (
+              <>
+                <div className={classes.chartFullscreenFrame} data-chart-frame ref={frameRef}>
+                  {renderHeatmapSvg(true, zoom)}
+                </div>
+                {xAxisLabel && <div className={classes.heatmapXAxisLabel}>{xAxisLabel}</div>}
+              </>
+            )}
           </div>
         </div>
       </>,
@@ -659,7 +658,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               {caption}
             </GluuText>
           )}
-          {renderHeatmapSvg(false)}
+          {isEmpty ? emptyState : renderHeatmapSvg(false)}
         </CardBody>
       </Card>
       {fullscreenModal}

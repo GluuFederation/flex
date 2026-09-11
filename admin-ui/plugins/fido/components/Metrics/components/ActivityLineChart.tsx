@@ -232,7 +232,7 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
   )
 
   return (
-    <MetricsChartCard title={title} caption={caption} zoomable>
+    <MetricsChartCard title={title} caption={caption} zoomable isEmpty={data.length === 0}>
       {(isFullscreen, zoom) => (
         <>
           {renderChart(isFullscreen, zoom)}

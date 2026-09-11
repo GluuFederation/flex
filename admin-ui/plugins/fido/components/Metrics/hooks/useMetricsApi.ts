@@ -33,7 +33,6 @@ import type {
   PerformanceAnalyticsParams,
   PerformanceAnalyticsResponse,
 } from '../types'
-import { isMetricsMockEnabled, mockMetricsApi } from '../mocks'
 
 const formatDateForApi = toApiDatetime
 
@@ -129,9 +128,6 @@ const metricsApi = {
   },
 }
 
-const resolveMetricsApi = () =>
-  isMetricsMockEnabled() ? { ...metricsApi, ...mockMetricsApi } : metricsApi
-
 const shownErrorHashes = new Set<string>()
 
 const useErrorToast = <T>(query: UseQueryResult<T>, queryKey: QueryKey) => {
@@ -160,8 +156,7 @@ const buildDateParams = (dateRange: MetricsDateRange | null) =>
       }
     : EMPTY_PARAMS
 
-const isSessionReady = (hasSession: boolean | undefined): boolean =>
-  hasSession === true || isMetricsMockEnabled()
+const isSessionReady = (hasSession: boolean | undefined): boolean => hasSession === true
 
 const isDateRangeReady = (dateRange: MetricsDateRange | null): boolean =>
   !!dateRange && !!dateRange.startDate && !!dateRange.endDate
@@ -178,7 +173,7 @@ const useAdoptionMetrics = (
   const queryKey = getGetAdoptionMetricsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => resolveMetricsApi().getAdoption(params),
+    queryFn: () => metricsApi.getAdoption(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -202,7 +197,7 @@ const useErrorsAnalytics = (
   const queryKey = getGetErrorsAnalyticsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => resolveMetricsApi().getErrors(params),
+    queryFn: () => metricsApi.getErrors(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -226,7 +221,7 @@ const usePerformanceAnalytics = (
   const queryKey = getGetPerformanceAnalyticsQueryKey(params)
   const query = useQuery({
     queryKey,
-    queryFn: () => resolveMetricsApi().getPerformance(params),
+    queryFn: () => metricsApi.getPerformance(params),
     enabled: isEnabled,
     staleTime: METRICS_CACHE_CONFIG.STALE_TIME,
     gcTime: METRICS_CACHE_CONFIG.GC_TIME,
@@ -266,7 +261,7 @@ const useAggregationMetrics = (
   const query = useQuery({
     queryKey,
     queryFn: () =>
-      resolveMetricsApi().getAggregations(aggregationType, {
+      metricsApi.getAggregations(aggregationType, {
         limit: params.limit,
         startIndex: params.startIndex,
         start_date: params.start_date,

@@ -24,7 +24,6 @@ export type DurationHeatmapProps = {
   minColorBarHeight?: number
   verticalRowLabels?: boolean
   colLabelsBottom?: boolean
-  emptyStateCols?: number
   showExpand?: boolean
 }
 
@@ -58,6 +57,7 @@ export type MetricsChartCardProps = {
   showExpand?: boolean
   hideTitle?: boolean
   zoomable?: boolean
+  isEmpty?: boolean
   children: (isFullscreen: boolean, zoom: number) => ReactNode
 }
 

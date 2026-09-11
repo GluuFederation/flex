@@ -259,6 +259,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
       bodyClassName={classes.chartCardBody}
       hideTitle
       zoomable
+      isEmpty={data.every((entry) => entry.value === 0)}
     >
       {renderChart}
     </MetricsChartCard>

@@ -46,7 +46,7 @@ const ONBOARDING_DURATION_ROWS = [
   },
 ] as const
 
-const ONBOARDING_COMPACT_MARGIN = { top: 24, right: 8, bottom: 5, left: 12 }
+const ONBOARDING_COMPACT_MARGIN = { top: 24, right: 8, bottom: 5, left: 0 }
 const ONBOARDING_COMPACT_AXIS_WIDTH = 56
 
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
@@ -231,6 +231,9 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
       title={t('titles.onboarding_time_graph')}
       caption={t('titles.auth_vs_registration_performance')}
       zoomable
+      isEmpty={chartData.every(
+        (row) => row.minDuration === 0 && row.avgDuration === 0 && row.maxDuration === 0,
+      )}
     >
       {renderChart}
     </MetricsChartCard>

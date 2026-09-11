@@ -532,6 +532,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
       cardClassName="h-100"
       bodyClassName={classes.chartCardBody}
       zoomable
+      isEmpty={!hasUsers && adoptionPasskeyRate === 0}
     >
       {renderChart}
     </MetricsChartCard>
