@@ -12,7 +12,7 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
 import { useMetricsStyles } from '../MetricsPage.style'
-import { HEATMAP_COLOR_STOPS, METRICS_ZOOM } from '../constants'
+import { CHART_SCROLLBAR_GUTTER, HEATMAP_COLOR_STOPS, METRICS_ZOOM } from '../constants'
 import useChartZoom from '../hooks/useChartZoom'
 import { formatChartValue, getNiceStep, interpolateHeatmapColor } from '../utils'
 import type { ChartSurfaceSize, DurationHeatmapProps } from '../types'
@@ -290,6 +290,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                   flex: 1,
                   minWidth: 0,
                   overflowX: 'auto',
+                  scrollbarGutter: 'stable',
+                  paddingBottom: CHART_SCROLLBAR_GUTTER,
+                  marginBottom: CHART_SCROLLBAR_GUTTER,
                   ...(useVerticalScroll
                     ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' }
                     : {}),

@@ -69,7 +69,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { classes, cx } = useMetricsStyles({ isDark, themeColors })
 
   const { data: adoptionData } = useAdoptionMetrics(dateRange)
 
@@ -355,7 +355,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
 
   const legendRow = (compact: boolean) =>
     compact ? (
-      <ChartLegend items={legendItems} />
+      <ChartLegend items={legendItems} topGutter />
     ) : (
       <div className={classes.adoptionLegend}>
         {legendItems.map((item) => (
@@ -458,7 +458,13 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
               {arrowOverlays[surface]}
             </div>
 
-            <div ref={donutRefs[surface]} className={classes.adoptionDonutOverlay}>
+            <div
+              ref={donutRefs[surface]}
+              className={cx(
+                classes.adoptionDonutOverlay,
+                !hasUsers && classes.adoptionDonutOverlayCentered,
+              )}
+            >
               <div className={classes.adoptionDonutWrapper}>
                 <ResponsiveContainer
                   width="100%"

@@ -5,11 +5,11 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useMetricsStyles } from '../MetricsPage.style'
 import type { ChartLegendProps } from '../types'
 
-const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot' }) => {
+const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot', topGutter = false }) => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { classes, cx } = useMetricsStyles({ isDark, themeColors })
   const [isWrapped, setIsWrapped] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const probeRef = useRef<HTMLDivElement | null>(null)
@@ -42,7 +42,7 @@ const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot' }) => {
     ))
 
   return (
-    <div className={classes.chartLegendWrapper}>
+    <div className={cx(classes.chartLegendWrapper, topGutter && classes.chartLegendWrapperGutter)}>
       <div
         ref={containerRef}
         data-testid="chart-legend"

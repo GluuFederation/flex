@@ -15,7 +15,7 @@ import {
 import { SHEET } from '@/components/MobileBottomNav/sheetConstants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { METRICS_CHART_COLORS, METRICS_CHART_HEIGHT } from './constants'
+import { CHART_SCROLLBAR_GUTTER, METRICS_CHART_COLORS, METRICS_CHART_HEIGHT } from './constants'
 
 const Y_TICK_LINE_HEIGHT = 1
 const Y_AXIS_COLUMN_WIDTH = 28
@@ -40,7 +40,7 @@ const FLUID_DONUT_SIZE = 'clamp(88px, 22vw, 150px)'
 const FLUID_DONUT_RIGHT = 'clamp(4px, 6vw, 70px)'
 const TAB_LABEL_INSET = 16
 const HEATMAP_AXIS_LABEL_FONT_SIZE = 'clamp(10px, 1.6vw, 14px)'
-const CHART_SCROLLBAR_GUTTER = 10
+const HEATMAP_AXIS_LABEL_GAP = 6
 
 const HEATMAP_MODAL_OVERLAY_LIGHT = getLoadingOverlayRgba(customColors.black, 0.55)
 const HEATMAP_MODAL_OVERLAY_DARK = getLoadingOverlayRgba(customColors.black, 0.7)
@@ -163,6 +163,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       flexShrink: 0,
       overflowX: 'auto' as const,
       overflowY: 'hidden' as const,
+      scrollbarGutter: 'stable' as const,
       paddingBottom: CHART_SCROLLBAR_GUTTER,
       marginBottom: CHART_SCROLLBAR_GUTTER,
     },
@@ -353,13 +354,16 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       fontSize: HEATMAP_AXIS_LABEL_FONT_SIZE,
       color: themeColors.fontColor,
       textAlign: 'center' as const,
-      marginTop: 6,
+      marginTop: HEATMAP_AXIS_LABEL_GAP,
     },
     chartLegendWrapper: {
       position: 'relative' as const,
       width: '100%',
       minWidth: 0,
       overflow: 'hidden' as const,
+    },
+    chartLegendWrapperGutter: {
+      paddingTop: CHART_SCROLLBAR_GUTTER,
     },
     chartLegend: {
       display: 'flex',
@@ -818,6 +822,13 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((_, { isDark, 
       [MOBILE_QUERY]: {
         right: FLUID_DONUT_RIGHT,
         width: FLUID_DONUT_SIZE,
+      },
+    },
+    adoptionDonutOverlayCentered: {
+      '&&': {
+        right: 'auto',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
       },
     },
     adoptionDonutWrapper: {

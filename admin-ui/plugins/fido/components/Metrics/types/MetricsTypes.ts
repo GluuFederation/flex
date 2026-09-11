@@ -38,6 +38,7 @@ type ChartLegendItem = {
 export type ChartLegendProps = {
   items: readonly ChartLegendItem[]
   marker?: 'dot' | 'dash'
+  topGutter?: boolean
 }
 
 export type ChartZoomControls = {

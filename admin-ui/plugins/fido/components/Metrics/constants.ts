@@ -146,3 +146,5 @@ export const METRICS_DESKTOP_CHART = {
 export const METRICS_ZOOM = { MIN: 1, MAX: 3, STEP: 0.25, DEFAULT: 1 } as const
 
 export const RECHARTS_INITIAL_DIMENSION = { width: 100, height: 100 }
+
+export const CHART_SCROLLBAR_GUTTER = 10
