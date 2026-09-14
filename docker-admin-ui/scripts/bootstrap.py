@@ -14,9 +14,9 @@ from jans.pycloudlib.persistence.utils import PersistenceMapper
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import generate_base64_contents
+from jans.pycloudlib.utils import generalized_time_utc
 
 from settings import LOGGING_CONFIG
-from utils import generalized_time_utc
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
