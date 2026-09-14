@@ -70,6 +70,7 @@ describe('cedarlingClient', () => {
       const response = await cedarlingClient.token_authorize(request)
       expect(response).toHaveProperty('decision')
       expect(response.decision).toBe(true)
+      expect(response.request_id).toBe('test-request-id')
     })
 
     it('forwards request to authorizeMultiIssuer', async () => {
@@ -80,6 +81,16 @@ describe('cedarlingClient', () => {
 
       expect(mockCedarling.authorizeMultiIssuer).toHaveBeenCalledTimes(1)
       expect(mockCedarling.authorizeMultiIssuer).toHaveBeenCalledWith(JSON.stringify(request))
+    })
+
+    it('releases the wasm-owned result after reading it', async () => {
+      await cedarlingClient.initialize({}, testBytes)
+
+      const mockCedarling = await initFromArchiveBytes.mock.results[0].value
+      await cedarlingClient.token_authorize(request)
+
+      const result = await mockCedarling.authorizeMultiIssuer.mock.results[0].value
+      expect(result.free).toHaveBeenCalledTimes(1)
     })
 
     it('throws when not initialized', async () => {

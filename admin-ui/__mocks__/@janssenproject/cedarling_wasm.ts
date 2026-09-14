@@ -1,5 +1,7 @@
 const mockCedarling = {
-  authorizeMultiIssuer: jest.fn().mockResolvedValue({ decision: true, free: jest.fn() }),
+  authorizeMultiIssuer: jest
+    .fn()
+    .mockResolvedValue({ decision: true, request_id: 'test-request-id', free: jest.fn() }),
 }
 
 const initFromArchiveBytes = jest.fn().mockResolvedValue(mockCedarling)
