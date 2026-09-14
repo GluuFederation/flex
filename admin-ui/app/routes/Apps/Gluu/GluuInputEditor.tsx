@@ -48,7 +48,11 @@ const GluuInputEditor = <T extends object>({
       />
       <Col sm={rsize} className={classes.colWrapper}>
         {shortcode}
-        <Suspense fallback={<div className={classes.editorPlaceholder} aria-busy="true" />}>
+        <Suspense
+          fallback={
+            <div className={classes.editorPlaceholder} style={{ width }} aria-busy="true" />
+          }
+        >
           <GluuAceEditor
             name={name}
             language={language}
