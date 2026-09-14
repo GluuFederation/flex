@@ -270,10 +270,12 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       [theme.breakpoints.down('md')]: {
         padding: '20px',
         height: 'auto',
+        minHeight: 0,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: '28px',
         height: 'auto',
+        minHeight: 0,
       },
     },
     userInfoTitle: {
