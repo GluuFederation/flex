@@ -7,15 +7,15 @@ describe('cedarlingClient', () => {
     typeof import('@/cedarling/client/CedarlingClient')
   >['cedarlingClient']
   let initWasm: jest.Mock
-  let init_from_archive_bytes: jest.Mock
+  let initFromArchiveBytes: jest.Mock
 
   beforeEach(async () => {
     jest.resetModules()
     const wasmMock = await import('@janssenproject/cedarling_wasm')
     initWasm = wasmMock.default as jest.Mock
-    init_from_archive_bytes = wasmMock.init_from_archive_bytes as jest.Mock
+    initFromArchiveBytes = wasmMock.initFromArchiveBytes as jest.Mock
     initWasm.mockClear()
-    init_from_archive_bytes.mockClear()
+    initFromArchiveBytes.mockClear()
 
     const mod = await import('@/cedarling/client/CedarlingClient')
     cedarlingClient = mod.cedarlingClient
@@ -31,20 +31,20 @@ describe('cedarlingClient', () => {
       const testConfig = {}
       await expect(cedarlingClient.initialize(testConfig, testBytes)).resolves.toBeUndefined()
       expect(initWasm).toHaveBeenCalledTimes(1)
-      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
-      expect(init_from_archive_bytes).toHaveBeenCalledWith(testConfig, testBytes)
+      expect(initFromArchiveBytes).toHaveBeenCalledTimes(1)
+      expect(initFromArchiveBytes).toHaveBeenCalledWith(testConfig, testBytes)
     })
 
     it('does not re-initialize when already initialized', async () => {
       await cedarlingClient.initialize({}, testBytes)
 
       expect(initWasm).toHaveBeenCalledTimes(1)
-      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
+      expect(initFromArchiveBytes).toHaveBeenCalledTimes(1)
 
       await expect(cedarlingClient.initialize({}, testBytes)).resolves.toBeUndefined()
 
       expect(initWasm).toHaveBeenCalledTimes(1)
-      expect(init_from_archive_bytes).toHaveBeenCalledTimes(1)
+      expect(initFromArchiveBytes).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -72,14 +72,14 @@ describe('cedarlingClient', () => {
       expect(response.decision).toBe(true)
     })
 
-    it('forwards request to authorize_multi_issuer', async () => {
+    it('forwards request to authorizeMultiIssuer', async () => {
       await cedarlingClient.initialize({}, testBytes)
 
-      const mockCedarling = await init_from_archive_bytes.mock.results[0].value
+      const mockCedarling = await initFromArchiveBytes.mock.results[0].value
       await cedarlingClient.token_authorize(request)
 
-      expect(mockCedarling.authorize_multi_issuer).toHaveBeenCalledTimes(1)
-      expect(mockCedarling.authorize_multi_issuer).toHaveBeenCalledWith(request)
+      expect(mockCedarling.authorizeMultiIssuer).toHaveBeenCalledTimes(1)
+      expect(mockCedarling.authorizeMultiIssuer).toHaveBeenCalledWith(JSON.stringify(request))
     })
 
     it('throws when not initialized', async () => {

@@ -1,12 +1,12 @@
 const mockCedarling = {
-  authorize_multi_issuer: jest.fn().mockResolvedValue({ decision: true }),
+  authorizeMultiIssuer: jest.fn().mockResolvedValue({ decision: true, free: jest.fn() }),
 }
 
-const init_from_archive_bytes = jest.fn().mockResolvedValue(mockCedarling)
+const initFromArchiveBytes = jest.fn().mockResolvedValue(mockCedarling)
 const initWasm = jest.fn().mockResolvedValue(undefined)
 
 class Cedarling {}
 class MultiIssuerAuthorizeResult {}
 
-export { init_from_archive_bytes, Cedarling, MultiIssuerAuthorizeResult }
+export { initFromArchiveBytes, Cedarling, MultiIssuerAuthorizeResult }
 export default initWasm
