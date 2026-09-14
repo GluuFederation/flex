@@ -3,6 +3,7 @@ import { Theme } from '@mui/material'
 import type { ThemeConfig } from '@/context/theme/config'
 import { BORDER_RADIUS, MAPPING_SPACING, OPACITY } from '@/constants/ui'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createTextWrapStyles } from '@/styles/textWrapStyles'
 import { fontFamily, fontSizes, fontWeights, letterSpacing, lineHeights } from '@/styles/fonts'
 import customColors from '@/customColors'
 
@@ -71,6 +72,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       marginBottom: theme.spacing(1),
     },
     emailText: {
+      ...createTextWrapStyles(),
       color: themeColors.table.headerColor,
       fontFamily,
       fontSize: fontSizes.content,
@@ -172,6 +174,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       'display': 'flex',
       'justifyContent': 'space-between',
       'alignItems': 'center',
+      'gap': theme.spacing(2),
       'padding': theme.spacing(2),
       'borderBottom': `2px solid ${themeColors.borderColor}`,
       '&:last-child': {
@@ -185,6 +188,7 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       backgroundColor: themeColors.settings.formInputBackground,
     },
     dataLabel: {
+      flexShrink: 0,
       color: themeColors.personalInfoLabelColor,
       fontFamily,
       fontSize: fontSizes.md,
@@ -193,6 +197,8 @@ const styles = makeStyles<{ themeColors: ThemeConfig; isDark: boolean }>()(
       lineHeight: lineHeights.loose,
     },
     dataValue: {
+      ...createTextWrapStyles(),
+      textAlign: 'right' as const,
       color: themeColors.personalInfoValueColor,
       fontFamily,
       fontSize: fontSizes.md,

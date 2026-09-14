@@ -1,6 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
 import { fontFamily } from '@/styles/fonts'
+import { createTextWrapStyles } from '@/styles/textWrapStyles'
 import { getLoadingOverlayRgba } from '@/customColors'
 import { getDividerOpacity, getListHoverOpacity, OPACITY } from '@/constants'
 
@@ -111,6 +112,7 @@ export const useStyles = makeStyles<AvailableClaimsPanelStylesParams>()((
       borderBottom: 'none',
     },
     itemButton: {
+      ...createTextWrapStyles(),
       'width': '100%',
       'textAlign': 'left',
       'padding': '10px 12px',
