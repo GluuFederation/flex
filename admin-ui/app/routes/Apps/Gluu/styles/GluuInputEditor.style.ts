@@ -9,4 +9,8 @@ export const useStyles = makeStyles()(() => ({
     color: customColors.accentRed,
     margin: '1px 2px',
   },
+  editorPlaceholder: {
+    height: '300px',
+    width: '100%',
+  },
 }))

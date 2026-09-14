@@ -158,8 +158,6 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
   ['vendor-mui-icons', ['@mui/icons-material']],
   ['vendor-mui-pickers', ['@mui/x-date-pickers']],
   ['vendor-state', ['@reduxjs/toolkit', 'redux-persist', '@tanstack/react-query']],
-  ['vendor-table', ['@material-table/core']],
-  ['vendor-dnd', ['@hello-pangea/dnd']],
   ['vendor-editor', ['react-ace', 'ace-builds']],
   [
     'vendor-charts',
@@ -180,10 +178,6 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
       'd3-time-format',
       'internmap',
     ],
-  ],
-  [
-    'vendor-floating-ui',
-    ['@floating-ui/react-dom', '@floating-ui/dom', '@floating-ui/core', '@floating-ui/utils'],
   ],
   ['vendor-data', ['axios', 'dayjs', 'lodash']],
   ['vendor-forms', ['formik', 'yup']],

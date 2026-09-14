@@ -37,6 +37,34 @@
 @import "~bootstrap/scss/carousel";
 @import "~bootstrap/scss/utilities";
 
+$utilities: map-get-multiple(
+    $utilities,
+    (
+        "display",
+        "font-weight",
+        "height",
+        "margin",
+        "margin-x",
+        "margin-y",
+        "margin-top",
+        "margin-end",
+        "margin-bottom",
+        "margin-start",
+        "padding",
+        "padding-x",
+        "padding-y",
+        "padding-top",
+        "padding-end",
+        "padding-bottom",
+        "padding-start",
+        "rounded",
+        "color",
+        "text-align"
+    )
+);
+@import "~bootstrap/scss/helpers/color-bg";
+@import "~bootstrap/scss/utilities/api";
+
 /* Modifications */
 // Recovered Button Nowrap
 body .btn {

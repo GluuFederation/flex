@@ -106,66 +106,67 @@ const renderEditor = (props: GluuInputEditorProps<FormikValues>) =>
     </AppTestWrapper>,
   )
 
-const getEditor = (): HTMLTextAreaElement => screen.getByTestId('ace') as HTMLTextAreaElement
+const getEditor = async (): Promise<HTMLTextAreaElement> =>
+  (await screen.findByTestId('ace')) as HTMLTextAreaElement
 
 describe('GluuInputEditor', () => {
-  it('renders the label and the editor', () => {
+  it('renders the label and the editor', async () => {
     renderEditor(baseProps())
     expect(screen.getByText('Script')).toBeInTheDocument()
-    expect(getEditor()).toBeInTheDocument()
+    expect(await getEditor()).toBeInTheDocument()
   })
 
-  it('shows the current value in the editor', () => {
+  it('shows the current value in the editor', async () => {
     renderEditor(baseProps({ value: 'let x = 1' }))
-    expect(getEditor()).toHaveValue('let x = 1')
+    expect(await getEditor()).toHaveValue('let x = 1')
   })
 
-  it('falls back to an empty string when value is undefined', () => {
+  it('falls back to an empty string when value is undefined', async () => {
     renderEditor(baseProps({ value: undefined }))
-    expect(getEditor()).toHaveValue('')
+    expect(await getEditor()).toHaveValue('')
   })
 
-  it('writes changes to formik via setFieldValue', () => {
+  it('writes changes to formik via setFieldValue', async () => {
     const formik = createMockFormik({ script: '' })
     renderEditor(baseProps({ formik, name: 'script', value: '' }))
-    fireEvent.change(getEditor(), { target: { value: 'new code' } })
+    fireEvent.change(await getEditor(), { target: { value: 'new code' } })
     expect(formik.setFieldValue).toHaveBeenCalledTimes(1)
     expect(formik.setFieldValue).toHaveBeenCalledWith('script', 'new code')
   })
 
-  it('does not write to formik when readOnly is true', () => {
+  it('does not write to formik when readOnly is true', async () => {
     const formik = createMockFormik({ script: 'locked' })
     renderEditor(baseProps({ formik, readOnly: true, value: 'locked' }))
-    fireEvent.change(getEditor(), { target: { value: 'attempted edit' } })
+    fireEvent.change(await getEditor(), { target: { value: 'attempted edit' } })
     expect(formik.setFieldValue).not.toHaveBeenCalled()
   })
 
-  it('marks the editor read-only when readOnly is true', () => {
+  it('marks the editor read-only when readOnly is true', async () => {
     renderEditor(baseProps({ readOnly: true }))
-    expect(getEditor()).toHaveAttribute('readonly')
+    expect(await getEditor()).toHaveAttribute('readonly')
   })
 
-  it('passes the placeholder through to the editor', () => {
+  it('passes the placeholder through to the editor', async () => {
     renderEditor(baseProps({ value: undefined, placeholder: 'Type here' }))
-    expect(screen.getByPlaceholderText('Type here')).toBeInTheDocument()
+    expect(await screen.findByPlaceholderText('Type here')).toBeInTheDocument()
   })
 
-  it('uses the default placeholder when none is provided', () => {
+  it('uses the default placeholder when none is provided', async () => {
     renderEditor(baseProps({ value: undefined }))
-    expect(screen.getByPlaceholderText('Write your custom script here')).toBeInTheDocument()
+    expect(await screen.findByPlaceholderText('Write your custom script here')).toBeInTheDocument()
   })
 
-  it('renders an error message when showError and errorMessage are set', () => {
+  it('renders an error message when showError and errorMessage are set', async () => {
     renderEditor(baseProps({ showError: true, errorMessage: 'Required field' }))
     expect(screen.getByText('Required field')).toBeInTheDocument()
   })
 
-  it('does not render an error message when showError is false', () => {
+  it('does not render an error message when showError is false', async () => {
     renderEditor(baseProps({ showError: false, errorMessage: 'Required field' }))
     expect(screen.queryByText('Required field')).not.toBeInTheDocument()
   })
 
-  it('renders the shortcode node when provided', () => {
+  it('renders the shortcode node when provided', async () => {
     renderEditor(baseProps({ shortcode: <span data-testid="shortcode">SC</span> }))
     expect(screen.getByTestId('shortcode')).toBeInTheDocument()
   })
