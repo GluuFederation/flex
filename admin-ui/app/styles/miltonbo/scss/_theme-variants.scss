@@ -5,15 +5,7 @@
         Theme Colors
 **/
 $color-alternatives: (
-    "primary": $primary,
-    "success": $success,
-    "info": $info,
-    "danger": $danger,
-    "warning": $warning,
-    "indigo": $indigo,
-    "purple": $purple,
-    "pink": $pink,
-    "yellow": $yellow
+    "primary": $primary
 );
 
 /**
@@ -341,63 +333,6 @@ $color-alternatives: (
             "dropdown-active-background": $brand-color
         )
     );
-}
-
-@each $key, $color in $color-alternatives {
-    // Global Theme
-    .layout--theme--color--#{$key} {
-        @include setup-theme(
-            (
-                "theme-color": $color
-            )
-        );
-
-        @include theme-color-sidebar($color, $white, 1px solid rgba($white, 0.5));
-
-        @include theme-color-navbar($color, $white);
-
-        // Override Layout Sidebar Badges
-        .layout__sidebar .sidebar {
-            .badge {
-                background-color: rgba($white, 0.5);
-            }
-        }
-    }
-
-    .theme-color-#{$key} {
-        @include setup-theme(
-            (
-                "theme-color": $color
-            )
-        );
-    }
-
-    // Navbar theme
-    .navbar-color-#{$key} {
-        @include setup-theme(
-            (
-                "theme-color": $color
-            )
-        );
-
-        @include theme-color-navbar($color, $white);
-    }
-
-    // Sidebar theme
-    .sidebar-color-#{key} {
-        @include setup-theme(
-            (
-                "theme-color": $color
-            )
-        );
-
-        @include theme-color-sidebar($color, $white, 1px solid rgba($white, 0.5));
-
-        // Override Badges
-        .badge {
-            background-color: rgba($white, 0.4);
-        }
-    }
 }
 
 @include apply-layout-theme-accent();

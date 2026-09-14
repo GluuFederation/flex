@@ -29,3 +29,15 @@ export type GluuInputEditorProps<T extends object> = {
   width?: string
   isDark?: boolean
 }
+
+export type GluuAceEditorProps = {
+  name: string
+  language: string
+  value?: string
+  readOnly?: boolean
+  theme: string
+  placeholder?: string
+  onCursorChange?: (value: GluuInputEditorCursorValue) => void
+  width?: string
+  onChange: (value: string) => void
+}
