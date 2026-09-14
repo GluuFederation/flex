@@ -14,6 +14,7 @@ import type { Theme } from '@mui/material/styles'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { BORDER_RADIUS, USER_INFO_CHART_BREAKPOINT } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createTextWrapStyles, createShrinkableGridStyles } from '@/styles/textWrapStyles'
 
 export { MOBILE_MEDIA_QUERY }
 
@@ -264,15 +265,17 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       padding: '30px',
       display: 'flex',
       flexDirection: 'column',
-      height: 462,
+      minHeight: 462,
       boxSizing: 'border-box',
       [theme.breakpoints.down('md')]: {
         padding: '20px',
         height: 'auto',
+        minHeight: 0,
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         padding: '28px',
         height: 'auto',
+        minHeight: 0,
       },
     },
     userInfoTitle: {
@@ -293,7 +296,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
     },
     userInfoContent: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      ...createShrinkableGridStyles(2),
       columnGap: '120px',
       rowGap: '30px',
       width: '100%',
@@ -305,7 +308,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
         columnGap: '40px',
       },
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        gridTemplateColumns: '1fr 1fr',
+        ...createShrinkableGridStyles(2),
         columnGap: '24px',
         rowGap: '15px',
       },
@@ -314,6 +317,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
+      minWidth: 0,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         gap: 0,
       },
@@ -323,6 +327,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       fontSize: fontSizes.md,
       lineHeight: lineHeights.loose,
       marginBottom: 0,
+      ...createTextWrapStyles(),
       color: themeColors.text,
       fontWeight: fontWeights.medium,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
@@ -335,6 +340,7 @@ const useStyles = makeStyles<{ themeColors: DashboardThemeColors; isDark: boolea
       fontFamily,
       fontSize: fontSizes.lg,
       lineHeight: lineHeights.loose,
+      ...createTextWrapStyles(),
       color: themeColors.text,
       fontWeight: fontWeights.bold,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
