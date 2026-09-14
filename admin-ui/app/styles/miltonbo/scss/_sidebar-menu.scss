@@ -111,7 +111,7 @@
 }
 
 /* ------ Slim Sidebar ---------- */
-@media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
+@media (min-width: $sidebar-dock-min-width) {
     .sidebar--collapsed .sidebar-menu--slim {
         .sidebar-menu__entry {
             &.active.open {

@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { createDate, isSameDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { NON_MOBILE_MIN_MEDIA_QUERY } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -20,6 +21,8 @@ import type {
 } from './types'
 import { isGluuDatePickerRangeProps } from './types'
 import { useDatePickerStyles } from './GluuDatePicker.style'
+
+const DESKTOP_MODE_MEDIA_QUERY = `@media ${NON_MOBILE_MIN_MEDIA_QUERY}`
 
 const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProps): boolean => {
   const startDateSame =
@@ -109,6 +112,7 @@ const GluuDatePicker = memo(
           disabled={props.disabled ?? false}
           slotProps={effectiveSlotProps}
           sx={datePickerSx}
+          {...(props.forceIcon ? {} : { desktopModeMediaQuery: DESKTOP_MODE_MEDIA_QUERY })}
           {...(props.showTime ? { closeOnSelect: false } : {})}
         />
       </LocalizationProvider>
@@ -169,8 +173,9 @@ const GluuDatePickerRange = memo(
         format: displayFormat,
         slotProps,
         sx: datePickerSx,
+        ...(forceIcon ? {} : { desktopModeMediaQuery: DESKTOP_MODE_MEDIA_QUERY }),
       }),
-      [displayFormat, slotProps, datePickerSx],
+      [displayFormat, slotProps, datePickerSx, forceIcon],
     )
 
     const renderPicker = (type: 'start' | 'end') => {

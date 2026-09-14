@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import clsx from 'clsx'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import filter from 'lodash/filter'
 import forOwn from 'lodash/forOwn'
 import isUndefined from 'lodash/isUndefined'
@@ -21,6 +22,7 @@ import type {
   ScreenSize,
 } from './types'
 import SetTitle from 'Utils/SetTitle'
+import { SIDEBAR_OVERLAY_MAX_MEDIA_QUERY } from '@/constants'
 
 const getLayoutPartName = (type: React.ReactElement['type']): string | undefined => {
   if (typeof type === 'string' || type == null) return undefined
@@ -95,6 +97,7 @@ const initialLayoutState: LayoutState = {
 const Layout: React.FC<LayoutProps> = (props) => {
   const { children } = props
   const location = useLocation()
+  const { t } = useTranslation()
 
   const [state, setState] = useState<LayoutState>(initialLayoutState)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -145,6 +148,25 @@ const Layout: React.FC<LayoutProps> = (props) => {
       cancelAnimationFrame(raf)
     }
   }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const overlayQuery = window.matchMedia(SIDEBAR_OVERLAY_MAX_MEDIA_QUERY)
+    const applyOverlayState = (isOverlay: boolean) =>
+      setState((prev) =>
+        prev.sidebarCollapsed === isOverlay ? prev : { ...prev, sidebarCollapsed: isOverlay },
+      )
+    applyOverlayState(overlayQuery.matches)
+    const onOverlayChange = (event: MediaQueryListEvent) => applyOverlayState(event.matches)
+    overlayQuery.addEventListener('change', onOverlayChange)
+    return () => overlayQuery.removeEventListener('change', onOverlayChange)
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia(SIDEBAR_OVERLAY_MAX_MEDIA_QUERY).matches) return
+    setState((prev) => (prev.sidebarCollapsed ? prev : { ...prev, sidebarCollapsed: true }))
+  }, [location.pathname])
 
   useLayoutEffect(() => {
     if (bodyRef.current && documentRef.current) {
@@ -240,6 +262,15 @@ const Layout: React.FC<LayoutProps> = (props) => {
                 }>,
                 { sidebarSlim: false, sidebarCollapsed: state.sidebarCollapsed },
               )}
+
+            {!state.sidebarHidden && !state.sidebarCollapsed && (
+              <button
+                type="button"
+                className="layout__sidebar-backdrop"
+                onClick={toggleSidebar}
+                aria-label={t('menus.close_navigation')}
+              />
+            )}
 
             <div className="layout__wrap">
               {!state.navbarHidden && navbars}

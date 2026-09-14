@@ -55,6 +55,14 @@ export const MOBILE_BOTTOM_NAV_HEIGHT = 64
 
 export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
+export const NON_MOBILE_MIN_MEDIA_QUERY = '(min-width:768px)'
+
+export const TOOLBAR_DENSE_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1200px)'
+
+export const SIDEBAR_OVERLAY_MAX_MEDIA_QUERY = '(max-width:1023.98px)'
+
+export const SIDEBAR_TOGGLE_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1023.98px)'
+
 export const SMALL_MAX_MEDIA_QUERY = '(max-width:575.98px)'
 
 export const EXTRA_SMALL_MAX_MEDIA_QUERY = '(max-width:480px)'
@@ -159,6 +167,12 @@ export const ICON_SIZE = {
 } as const
 
 export const ICON_BUTTON_SIZE = 32
+
+export const NAVBAR_TABLET = {
+  HEIGHT: 88,
+  CONTROL_SIZE: 40,
+  GAP: 14,
+} as const
 
 export const TOGGLE = {
   TRACK_WIDTH: 50,

@@ -419,8 +419,12 @@ const JsonPropertyBuilder = ({
           </AccordionHeader>
           <AccordionBody>
             {paired.map(([leftItem, rightItem]) => (
-              <FormGroup row key={`pair-${leftItem.index}-${rightItem?.index ?? 'none'}`}>
-                <Col sm={12} md={6}>
+              <FormGroup
+                row
+                className={classes.arrayPairRow}
+                key={`pair-${leftItem.index}-${rightItem?.index ?? 'none'}`}
+              >
+                <Col sm={12} md={6} className={classes.arrayPairCol}>
                   <ArrayItemSelect
                     index={leftItem.index}
                     values={leftItem.nestedValue}
@@ -433,7 +437,7 @@ const JsonPropertyBuilder = ({
                     disabled={isMobile}
                   />
                 </Col>
-                <Col sm={12} md={6}>
+                <Col sm={12} md={6} className={classes.arrayPairCol}>
                   {rightItem && (
                     <ArrayItemSelect
                       index={rightItem.index}
@@ -467,17 +471,18 @@ const JsonPropertyBuilder = ({
             <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
           ) : (
             arrayValue.map((nestedValue, index) => (
-              <JsonPropertyBuilder
-                key={String(index)}
-                propKey={String(index)}
-                propValue={nestedValue}
-                handler={handler}
-                lSize={lSize}
-                parentIsArray={true}
-                path={path}
-                errors={errors}
-                formResetKey={formResetKey}
-              />
+              <div key={String(index)} className={classes.nestedAccordionItem}>
+                <JsonPropertyBuilder
+                  propKey={String(index)}
+                  propValue={nestedValue}
+                  handler={handler}
+                  lSize={lSize}
+                  parentIsArray={true}
+                  path={path}
+                  errors={errors}
+                  formResetKey={formResetKey}
+                />
+              </div>
             ))
           )}
         </AccordionBody>

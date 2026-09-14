@@ -54,6 +54,17 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     padding: `${SHEET.HEADER_PADDING_TOP}px ${BOTTOM_NAV.PADDING_X}px ${SHEET.HEADER_PADDING_BOTTOM}px`,
     borderBottom: `1px solid ${colors.border}`,
   },
+  headerDrilled: {
+    paddingRight: BOTTOM_NAV.PADDING_X + SHEET.BACK_SIZE + SHEET.HEADER_GAP - SHEET.CLOSE_SIZE,
+  },
+  headerCenter: {
+    flex: 1,
+    minWidth: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SHEET.HEADER_GAP,
+  },
   headerIcon: {
     'display': 'flex',
     'alignItems': 'center',
@@ -75,6 +86,12 @@ const useStyles = makeStyles<{ colors: MobileNavSheetThemeColors }>()((_theme, {
     lineHeight: 'normal',
     letterSpacing: '0.32px',
     color: colors.text,
+  },
+  headerTitleCentered: {
+    flex: '0 1 auto',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   headerTitleMuted: {
     color: colors.title,

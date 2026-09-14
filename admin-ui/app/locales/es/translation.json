@@ -956,7 +956,9 @@
     "allCategory": "Todas las categorías",
     "notification": "Notificación",
     "mobileNavigation": "Navegación móvil",
-    "security_monitor": "Monitor de Seguridad"
+    "security_monitor": "Monitor de Seguridad",
+    "open_navigation": "Abrir navegación",
+    "close_navigation": "Cerrar navegación"
   },
   "footer": {
     "company_name": "Gluu Inc."

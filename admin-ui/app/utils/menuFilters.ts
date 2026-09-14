@@ -18,6 +18,8 @@ const MENU_VISIBILITY_CONDITIONS: VisibilityConditions = {
 
 type HealthService = { name: string; status?: string }
 
+type PathTreeNode<T> = { path?: string; children?: readonly T[] }
+
 type AuthorizeHelper = (scopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
 
 export const filterMenusByHealth = (
@@ -62,6 +64,21 @@ export const filterMenusByAuth = async (
   )
   return evaluations.filter((x): x is MenuItem => !!x)
 }
+
+export const filterTreeByPaths = <T extends PathTreeNode<T>>(
+  nodes: readonly T[],
+  allowedPaths: ReadonlySet<string>,
+): T[] =>
+  nodes.flatMap((node) => {
+    if (node.children?.length) {
+      const children = filterTreeByPaths(node.children, allowedPaths)
+      return children.length > 0 ? [{ ...node, children }] : []
+    }
+    if (!node.path) {
+      return [node]
+    }
+    return allowedPaths.has(node.path) ? [node] : []
+  })
 
 export const findFirstLeafPath = (menus: MenuItem[]): string | null => {
   for (const item of menus) {

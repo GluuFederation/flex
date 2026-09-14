@@ -162,7 +162,9 @@
     "allCategory": "Toutes les catégories",
     "notification": "Notification",
     "mobileNavigation": "Navigation mobile",
-    "security_monitor": "Moniteur de Sécurité"
+    "security_monitor": "Moniteur de Sécurité",
+    "open_navigation": "Ouvrir la navigation",
+    "close_navigation": "Fermer la navigation"
   },
   "actions": {
     "accept": "J'accepte",

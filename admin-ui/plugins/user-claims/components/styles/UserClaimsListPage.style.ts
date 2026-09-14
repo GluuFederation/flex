@@ -7,6 +7,7 @@ import {
   ICON_SIZE,
   SPACING,
   MOBILE_MEDIA_QUERY,
+  TOOLBAR_DENSE_BAND_MEDIA_QUERY,
   createMobilePageTitleStyle,
 } from '@/constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
@@ -55,7 +56,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       // and keep everything else stretching, matching the Webhook behaviour.
       // Selectors are doubled (&&) because the shared rules have equal
       // specificity and would otherwise win on injection order.
-      '@media (max-width: 1200px)': {
+      [`@media ${TOOLBAR_DENSE_BAND_MEDIA_QUERY}`]: {
         // Filters share their row evenly, as the shared toolbar intends.
         '&& > div:has(> div > select)': {
           flex: '1 1 0',

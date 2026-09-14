@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import customColors from '@/customColors'
-import { OPACITY } from '@/constants'
+import { OPACITY, NAVBAR_TABLET, SIDEBAR_TOGGLE_BAND_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import {
   createChevronStyles,
@@ -28,6 +28,11 @@ export const useStyles = makeStyles<{ isDark: boolean }>()((_theme, { isDark }) 
     ...NO_TEXT_SELECT,
     '&:hover': {
       opacity: OPACITY.OVERLAY,
+    },
+    [`@media ${SIDEBAR_TOGGLE_BAND_MEDIA_QUERY}`]: {
+      height: `${NAVBAR_TABLET.CONTROL_SIZE}px`,
+      minWidth: '84px',
+      padding: '0px 10px',
     },
   },
   chevron: createChevronStyles(),

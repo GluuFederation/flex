@@ -1,6 +1,5 @@
-import React, { useState, useEffect, use, useMemo, useCallback, useRef, type JSX } from 'react'
+import React, { useEffect, use, useMemo, useCallback, useRef, type JSX } from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
-import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { CachedIcon } from '@/components/icons'
@@ -21,17 +20,8 @@ import {
   ScriptsIcon,
   LockIcon,
 } from '../../../components/SVG'
-import { useCedarling } from '@/cedarling/hooks/useCedarling'
-import { logger } from '@/utils/logger'
-import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
-import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
-import { filterMenusByHealth, filterMenusByAuth } from '@/utils/menuFilters'
-import type {
-  MenuItem,
-  PluginMenu,
-  MenuIconMap,
-  ThemeContextState,
-} from '../../../components/Sidebar'
+import useFilteredMenus from '@/hooks/useFilteredMenus'
+import type { MenuItem, MenuIconMap, ThemeContextState } from '../../../components/Sidebar'
 
 const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
@@ -50,24 +40,12 @@ const MENU_ICON_MAP: MenuIconMap = {
 } as const
 
 const GluuAppSidebar = (): JSX.Element => {
-  const { allServices } = useHealthStatus()
-  const { data: fido2HealthData } = useFido2HealthStatus()
-  const combinedServices = useMemo(
-    () => (fido2HealthData ? [...allServices, fido2HealthData] : allServices),
-    [allServices, fido2HealthData],
-  )
-  const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
-  const [menusLoaded, setMenusLoaded] = useState<boolean>(false)
+  const { menus: pluginMenus, isReady } = useFilteredMenus()
   const didAnimateMenusRef = useRef<boolean>(false)
-  // ready once a load attempt has settled, so the loader can't spin forever
-  const isReady = menusLoaded
   const { t } = useTranslation()
   const theme = use(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
-  const { authorizeHelper } = useCedarling()
-
-  const fetchedServersLength = useMemo((): boolean => allServices.length > 0, [allServices])
 
   const sidebarMenuActiveClass = useMemo(
     (): string => `sidebar-menu-active-${selectedTheme}`,
@@ -88,33 +66,11 @@ const GluuAppSidebar = (): JSX.Element => {
     return Array.isArray(plugin.children) && plugin.children.length > 0
   }, [])
 
-  const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {
-    const menus: PluginMenu[] = await processMenus()
-
-    if (!fetchedServersLength) {
-      return []
-    }
-
-    return filterMenusByHealth(menus, combinedServices)
-  }, [combinedServices, fetchedServersLength])
-
-  const loadMenus = async () => {
-    try {
-      const filteredMenus = await filterMenusByAuth(await memoizedFilteredMenus, authorizeHelper)
-      setPluginMenus(filteredMenus)
-    } catch (error) {
-      logger.error('Failed to load plugin menus: ' + resolveApiErrorMessage(error as Error))
-    } finally {
-      setMenusLoaded(true)
-      if (!didAnimateMenusRef.current) {
-        didAnimateMenusRef.current = true
-      }
-    }
-  }
-
   useEffect(() => {
-    loadMenus()
-  }, [memoizedFilteredMenus, authorizeHelper])
+    if (isReady && !didAnimateMenusRef.current) {
+      didAnimateMenusRef.current = true
+    }
+  }, [isReady])
 
   return (
     <SidebarMenu>

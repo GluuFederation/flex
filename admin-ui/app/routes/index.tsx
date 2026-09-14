@@ -13,7 +13,7 @@ import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 import type { PluginRoute } from 'Plugins/internal'
 import ProtectedRoute from './Pages/ProtectRoutes'
 import { LazyRoutes } from 'Utils/RouteLoader'
-import { useFirstAuthorizedPath } from '@/utils/hooks'
+import useFilteredMenus from '@/hooks/useFilteredMenus'
 
 const ALWAYS_MOUNTED_LAZY_ROUTES: ReadonlySet<keyof typeof LazyRoutes> = new Set([
   'GluuToast',
@@ -54,19 +54,19 @@ const schedulePreload = (pluginRoutes: PluginRoute[]) => {
 }
 
 const LandingRedirect = () => {
-  const { path, loading } = useFirstAuthorizedPath()
+  const { firstPath, isReady } = useFilteredMenus()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (path) {
-      dispatch(setLandingPath(path))
+    if (firstPath) {
+      dispatch(setLandingPath(firstPath))
     }
-  }, [path, dispatch])
+  }, [firstPath, dispatch])
 
-  if (loading) {
+  if (!isReady) {
     return <GluuLoader blocking />
   }
-  return <Navigate to={path ?? ROUTES.LOGOUT} replace />
+  return <Navigate to={firstPath ?? ROUTES.LOGOUT} replace />
 }
 
 export const RoutedContent = () => {
