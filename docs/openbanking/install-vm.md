@@ -8,9 +8,7 @@
 
 ## 1. What this guide installs
 
-The finished VM exposes one HTTPS hostname and runs the application services only on loopback interfaces:
-
-![Screenshot 2026-09-11 at 2.19.47 AM.png](https://help.gluu.org/kb/agent/attachment/article/146/inline?token=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ0MSIsIm9yZ2lkIjoiMTI1MDQiLCJpc3MiOiJoZWxwLmdsdXUub3JnIn0.RnzppSwz61yB8uEiv7P9kU5JSDhMCiz4piyB1O4Chsk)
+The finished VM exposes one HTTPS hostname and runs the application services only on loopback interfaces.
 
 The reference installation contained:
 
@@ -125,6 +123,9 @@ FQDN=id.example.org
 PUBLIC_IP=203.0.113.10
 JANS_VERSION=2.3.0
 FLEX_VERSION=6.3.0
+OPENBANKING_PROFILE_VERSION=6.3.0-1
+COSIGN_VERSION=3.1.2
+COSIGN_DEB_SHA256=f458f6bd2f3d11ac803ec0dba31c836a82364bcd3a5a09e2aa6adef57a0f7d1b
 CERT_DIR=/etc/certs/ob
 ```
 
@@ -163,7 +164,6 @@ Configure the firewall:
 
 ```bash
 sudo ufw allow 443/tcp
-sudo ufw allow 80/tcp
 sudo ufw allow from YOUR_ADMIN_IP to any port 22 proto tcp
 sudo ufw enable
 sudo ufw status verbose
@@ -171,25 +171,56 @@ sudo ufw status verbose
 
 Replace `YOUR_ADMIN_IP` before enabling UFW. Keep the current SSH session open until a second SSH login succeeds.
 
+Open TCP port 80 only if the selected certificate issuer needs an HTTP challenge or Apache will redirect HTTP to HTTPS:
+
+```bash
+sudo ufw allow 80/tcp
+```
+
+Otherwise, omit that rule and leave TCP port 80 closed.
+
+### 4.1 Install the pinned signature-verification tool
+
+The Jans and Flex release packages are signed with Sigstore. Install the pinned `cosign` package before downloading either product package:
+
+```bash
+cd /tmp
+wget "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_${COSIGN_VERSION}_amd64.deb"
+
+echo "${COSIGN_DEB_SHA256}  cosign_${COSIGN_VERSION}_amd64.deb" \
+  | sha256sum --check
+
+sudo apt install -y "/tmp/cosign_${COSIGN_VERSION}_amd64.deb"
+cosign version
+```
+
+The checksum is the SHA-256 digest published for the `v3.1.2` GitHub release asset. Do not continue unless `sha256sum` reports `OK` and `cosign version` reports `v3.1.2`. When updating `COSIGN_VERSION`, obtain the new digest independently from the official Sigstore release page and update both values together.
+
 ## 5. Install Janssen with the Open Banking profile
 
 Flex 6.3.0 corresponds to Janssen 2.3.0. Always confirm the compatible versions on the release pages before using newer versions.
 
-The official Open Banking VM workflow runs the Jans installer with `--profile openbanking`. For reproducibility, download the installer from the release tag instead of the moving `main` branch:
+The official Open Banking VM workflow runs Jans setup with `--profile openbanking`. Install the versioned, signed release package instead of downloading a Python installer from a mutable source branch:
 
 ```bash
-curl -fsSL \
-  "https://raw.githubusercontent.com/JanssenProject/jans/v${JANS_VERSION}/jans-linux-setup/jans_setup/install.py" \
-  -o /tmp/jans-openbanking-install.py
+cd /tmp
+wget "https://github.com/JanssenProject/jans/releases/download/v${JANS_VERSION}/jans_${JANS_VERSION}-stable.ubuntu24.04_amd64.deb"
+wget "https://github.com/JanssenProject/jans/releases/download/v${JANS_VERSION}/jans-ubuntu24-${JANS_VERSION}-stable.bundle"
 
-python3 -m py_compile /tmp/jans-openbanking-install.py
-sha256sum /tmp/jans-openbanking-install.py \
-  | sudo tee /var/backups/jans-openbanking-install.sha256 >/dev/null
+cosign verify-blob \
+  --bundle "jans-ubuntu24-${JANS_VERSION}-stable.bundle" \
+  --certificate-identity-regexp 'https://github.com/JanssenProject/jans' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  "jans_${JANS_VERSION}-stable.ubuntu24.04_amd64.deb"
 
-sudo python3 /tmp/jans-openbanking-install.py --profile openbanking
+sudo apt install -y "/tmp/jans_${JANS_VERSION}-stable.ubuntu24.04_amd64.deb"
+sudo python3 /opt/jans/jans-setup/install.py \
+  --profile openbanking \
+  --setup-branch "v${JANS_VERSION}" \
+  --openbanking-setup-branch "v${OPENBANKING_PROFILE_VERSION}"
 ```
 
-Archiving the checksum makes it possible to prove which installer was used. For formal supply-chain assurance, follow the signed-package verification process in the [Janssen Ubuntu guide](https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/) and maintain an approved, versioned Open Banking configuration overlay.
+Do not install the package unless `cosign` reports `Verified OK`. This verification binds the installer to the Janssen release workflow rather than merely calculating a checksum for an untrusted download. The setup command also pins both source overlays to release tags that match Flex 6.3.0. The Open Banking profile is in a private Gluu repository, so the installer prompts for an authorized GitHub token; enter it only at the prompt, never as a command-line argument or shell-history entry.
 
 The profile asks for:
 
@@ -363,6 +394,7 @@ Give `client.p12` a strong export password. Import it into the test browser or o
 Back up the vhost:
 
 ```bash
+sudo a2enmod ssl headers proxy proxy_http
 sudo cp -a /etc/apache2/sites-enabled/https_jans.conf \
   "/etc/apache2/sites-enabled/https_jans.conf.before-ob-mtls"
 ```
@@ -382,18 +414,22 @@ SSLVerifyDepth 10
 
 <Location /jans-auth/restv1/register>
     SSLVerifyClient require
+    SSLOptions -StdEnvVars +ExportCertData
+    RequestHeader set X-ClientCert "%{SSL_CLIENT_CERT}s"
     ProxyPass http://127.0.0.1:8081/jans-auth/restv1/register
     ProxyPassReverse http://127.0.0.1:8081/jans-auth/restv1/register
 </Location>
 
 <Location /jans-auth/restv1/token>
     SSLVerifyClient require
+    SSLOptions -StdEnvVars +ExportCertData
+    RequestHeader set X-ClientCert "%{SSL_CLIENT_CERT}s"
     ProxyPass http://127.0.0.1:8081/jans-auth/restv1/token
     ProxyPassReverse http://127.0.0.1:8081/jans-auth/restv1/token
 </Location>
 ```
 
-Keep the proxy routes generated by the installer; do not replace the whole file with this fragment.
+Keep the proxy routes generated by the installer; do not replace the whole file with this fragment. Ensure Apache's `ssl`, `headers`, `proxy`, and `proxy_http` modules are enabled. `RequestHeader set` overwrites any client-supplied `X-ClientCert` value with the certificate that Apache validated during the TLS handshake.
 
 The repaired reference profile explicitly allowed TLS 1.2. Enable TLS 1.3 only when the selected Open Banking profile, Flex/Jans release, and interoperability test suite support it.
 
@@ -407,7 +443,7 @@ sudo systemctl is-active apache2
 
 If the Admin UI performs its token exchange directly from the browser against an mTLS-required token endpoint, that browser must present a valid client certificate. A production design may instead use a dedicated mTLS alias or backend-mediated exchange; align this with the relevant Open Banking profile.
 
-## 9. Trust the issuing CA in Java
+## 9. Trust the issuing CA in Java {#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore}
 
 Jans Auth and Config API use the Java trust store when calling HTTPS endpoints. Import the issuing CA, not the server leaf certificate. Importing a leaf certificate creates a fragile pin that breaks whenever the server certificate is renewed.
 
@@ -568,18 +604,29 @@ curl -fsS "https://${FQDN}/jans-auth/restv1/jwks" \
   --cacert "$CERT_DIR/ca.crt" | jq -e '.keys | length > 0'
 ```
 
-Check that the token endpoint requires mTLS. A request without a client certificate should fail at TLS or return an authorization error; it must not issue a token.
-
-Then test with the client certificate:
+Check that both protected endpoints require mTLS. Requests without a client certificate should fail at TLS or return an authorization error; they must not reach a successful registration or token response:
 
 ```bash
+curl -v "https://${FQDN}/jans-auth/restv1/register" \
+  --cacert "$CERT_DIR/ca.crt"
+curl -v "https://${FQDN}/jans-auth/restv1/token" \
+  --cacert "$CERT_DIR/ca.crt"
+```
+
+Then test both routes with the client certificate:
+
+```bash
+curl -v "https://${FQDN}/jans-auth/restv1/register" \
+  --cacert "$CERT_DIR/ca.crt" \
+  --cert /path/to/client.crt \
+  --key /path/to/client.key
 curl -v "https://${FQDN}/jans-auth/restv1/token" \
   --cacert "$CERT_DIR/ca.crt" \
   --cert /path/to/client.crt \
   --key /path/to/client.key
 ```
 
-An OAuth error such as a missing grant is acceptable for this connectivity test. The important result is that TLS accepts the client certificate and the request reaches Jans Auth.
+An OAuth or registration error caused by the deliberately incomplete request is acceptable for this connectivity test. The important result is that TLS accepts the client certificate and both requests reach Jans Auth. Confirm in the Jans Auth log that the forwarded certificate was parsed; do not log or publish the certificate itself.
 
 ## 12. Activate and access Admin UI
 
@@ -661,13 +708,41 @@ At minimum, protect:
 Example database backup:
 
 ```bash
-sudo install -d -m 700 /var/backups/flex
-sudo mysqldump --single-transaction --routines --triggers jansdb \
-  | gzip -c | sudo tee /var/backups/flex/jansdb.sql.gz >/dev/null
-sudo chmod 600 /var/backups/flex/jansdb.sql.gz
+sudo apt install -y age
+
+sudo bash -Eeuo pipefail <<'BACKUP'
+BACKUP_DIR=/var/backups/flex
+BACKUP_RECIPIENT='age1REPLACE_WITH_OFFLINE_RECOVERY_PUBLIC_KEY'
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+PLAIN_ARCHIVE="${BACKUP_DIR}/.jansdb-${STAMP}.sql.gz"
+ENCRYPTED_ARCHIVE="${BACKUP_DIR}/jansdb-${STAMP}.sql.gz.age"
+
+install -d -m 700 "$BACKUP_DIR"
+trap 'rm -f "$PLAIN_ARCHIVE"' EXIT
+
+mysqldump --single-transaction --routines --triggers jansdb \
+  | gzip -c >"$PLAIN_ARCHIVE"
+gzip --test "$PLAIN_ARCHIVE"
+age --recipient "$BACKUP_RECIPIENT" \
+  --output "$ENCRYPTED_ARCHIVE" "$PLAIN_ARCHIVE"
+chmod 600 "$ENCRYPTED_ARCHIVE"
+BACKUP
 ```
 
-Store backups outside the VM and test restoration in a separate environment.
+Generate the age recovery key on a separate, protected administrator system with `age-keygen`; store the secret key in an offline secrets manager or encrypted recovery vault. Put only its `age1...` public recipient in the VM script. Never copy the recovery secret key to the production VM.
+
+Before considering a backup complete or deleting an older known-good backup, transfer the encrypted archive to the isolated recovery environment and test both decryption and restoration into an empty test database:
+
+```bash
+age --decrypt --identity /secure/offline/flex-backup-key.txt \
+  jansdb-YYYYMMDDTHHMMSSZ.sql.gz.age \
+  | gzip --decompress --stdout \
+  | mysql jansdb_restore_test
+
+mysql --database=jansdb_restore_test --execute='SHOW TABLES;'
+```
+
+The `pipefail` option makes a failure in `mysqldump`, `gzip`, `age`, or the restore pipeline fail the operation. Keep encrypted backups outside the VM according to the applicable retention policy, and record each successful restore test without recording database contents or key material.
 
 ## 15. Routine operations
 
@@ -764,4 +839,6 @@ This runbook combines direct verification of the repaired system with the follow
 - Gluu, [Admin UI](https://docs.gluu.org/stable/admin/admin-ui/home/)
 - Gluu Federation, [Flex releases](https://github.com/GluuFederation/flex/releases)
 - Janssen Project, [Ubuntu Janssen installation](https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/)
+- Janssen Project, [mTLS configuration](https://docs.jans.io/head/janssen-server/auth-server/oauth-features/mtls/)
 - Janssen Project, [Janssen releases](https://github.com/JanssenProject/jans/releases)
+- Sigstore, [Install Cosign](https://docs.sigstore.dev/cosign/system_config/installation/)
