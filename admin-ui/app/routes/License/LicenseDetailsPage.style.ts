@@ -5,6 +5,7 @@ import customColors from '@/customColors'
 import { SPACING, MOBILE_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createTextWrapStyles, createShrinkableGridStyles } from '@/styles/textWrapStyles'
 
 interface StylesParams {
   themeColors: ThemeConfig
@@ -42,10 +43,10 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
     },
     licenseContent: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)',
+      ...createShrinkableGridStyles(4),
       gap: `${SPACING.CARD_GAP}px`,
       [theme.breakpoints.down('lg')]: {
-        gridTemplateColumns: 'repeat(2, 1fr)',
+        ...createShrinkableGridStyles(2),
       },
       // Figma stacks the fields, separating each with a full-width rule.
       [theme.breakpoints.down('md')]: {
@@ -57,6 +58,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       display: 'flex',
       flexDirection: 'column',
       gap: `${SPACING.CARD_CONTENT_GAP}px`,
+      minWidth: 0,
       [theme.breakpoints.down('md')]: {
         'gap': 0,
         'boxSizing': 'border-box',
@@ -79,6 +81,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       color: themeColors.textMuted,
       margin: 0,
       padding: 0,
+      ...createTextWrapStyles(),
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes.base,
         lineHeight: lineHeights.relaxed,
@@ -92,6 +95,7 @@ export const useStyles = makeStyles<StylesParams>()((theme, { themeColors, isDar
       color: themeColors.fontColor,
       margin: 0,
       padding: 0,
+      ...createTextWrapStyles(),
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         fontSize: fontSizes.content,
         lineHeight: lineHeights.relaxed,
