@@ -47,6 +47,7 @@ const ONBOARDING_DURATION_ROWS = [
 ] as const
 
 const ONBOARDING_COMPACT_MARGIN = { top: 24, right: 8, bottom: 5, left: 0 }
+const ONBOARDING_MARGIN = { top: 24, right: 5, bottom: 5, left: 5 }
 const ONBOARDING_COMPACT_AXIS_WIDTH = 56
 
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
@@ -141,7 +142,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
               barSize={chartGeometry.ONBOARDING_BAR_SIZE}
               barGap={chartGeometry.ONBOARDING_BAR_GAP}
               barCategoryGap="30%"
-              margin={isCompact ? ONBOARDING_COMPACT_MARGIN : undefined}
+              margin={isCompact ? ONBOARDING_COMPACT_MARGIN : ONBOARDING_MARGIN}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis

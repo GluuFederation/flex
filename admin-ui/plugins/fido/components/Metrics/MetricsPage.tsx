@@ -94,7 +94,9 @@ const MetricsPage: React.FC = () => {
     setFilterSheetOpen(false)
   }, [appliedRange])
 
-  const handleTabChange = useCallback(() => setFilterSheetOpen(false), [])
+  const handleTabChange = useCallback(() => {
+    handleFilterCancel()
+  }, [handleFilterCancel])
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 

@@ -398,7 +398,11 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                 height="100%"
                 initialDimension={RECHARTS_INITIAL_DIMENSION}
               >
-                <BarChart data={barData} barSize={BAR_SIZE} margin={chartMargin}>
+                <BarChart
+                  data={barData}
+                  barSize={isMobile ? BAR_SIZE_NARROW : BAR_SIZE}
+                  margin={chartMargin}
+                >
                   <YAxis width={0} domain={[0, Y_MAX]} hide />
                   <XAxis dataKey="name" hide />
                   <Tooltip
