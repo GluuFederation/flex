@@ -57,11 +57,15 @@ export const MOBILE_MEDIA_QUERY = '(max-width:767px)'
 
 export const NON_MOBILE_MIN_MEDIA_QUERY = '(min-width:768px)'
 
+export const STACKED_CHART_MAX_MEDIA_QUERY = '(max-width:1499.98px)'
+
 export const TOOLBAR_DENSE_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1200px)'
 
 export const SIDEBAR_OVERLAY_MAX_MEDIA_QUERY = '(max-width:1023.98px)'
 
 export const SIDEBAR_TOGGLE_BAND_MEDIA_QUERY = '(min-width:768px) and (max-width:1023.98px)'
+
+export const MEDIA_QUERY_OPTIONS = { noSsr: true } as const
 
 export const SMALL_MAX_MEDIA_QUERY = '(max-width:575.98px)'
 
