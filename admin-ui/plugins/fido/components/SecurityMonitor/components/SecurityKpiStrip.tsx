@@ -9,6 +9,9 @@ import { countByThreatLevel, getBadgeBackground, getSecurityPalette } from '../u
 import KpiDeltaLabel from './KpiDeltaLabel'
 import type { SecurityKpiStripProps } from '../types'
 
+const alertColor = (value: number, activeColor: string, restingColor: string) =>
+  value > 0 ? activeColor : restingColor
+
 const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
   summary,
   usersUnderSiege,
@@ -39,16 +42,13 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
   const failureCount = summary.failures[period]
   const successRate = summary.successRate[period]
 
-  const alertColor = (value: number, activeColor: string) =>
-    value > 0 ? activeColor : themeColors.fontColor
-
   return (
     <div className={classes.kpiGrid}>
       <div className={classes.kpiCard}>
         <p className={classes.kpiLabel}>{t('fields.anomalies_captured')}</p>
         <p
           className={classes.kpiValue}
-          style={{ color: alertColor(anomalyCount, palette.chart.failures) }}
+          style={{ color: alertColor(anomalyCount, palette.chart.failures, themeColors.fontColor) }}
         >
           {anomalyCount.toLocaleString()}
         </p>
@@ -63,7 +63,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         <p className={classes.kpiLabel}>{t('fields.auth_failures_drop_off')}</p>
         <p
           className={classes.kpiValue}
-          style={{ color: alertColor(failureCount, palette.chart.failures) }}
+          style={{ color: alertColor(failureCount, palette.chart.failures, themeColors.fontColor) }}
         >
           {failureCount.toLocaleString()}
         </p>
@@ -78,7 +78,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         <p className={classes.kpiLabel}>{t('fields.auth_success_rate')}</p>
         <p
           className={classes.kpiValue}
-          style={{ color: alertColor(successRate, palette.chart.success) }}
+          style={{ color: alertColor(successRate, palette.chart.success, themeColors.fontColor) }}
         >
           {successRate}
           <span className={classes.kpiValueUnit}>%</span>
@@ -95,7 +95,13 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
         <p className={classes.kpiLabel}>{t('fields.users_under_siege')}</p>
         <p
           className={classes.kpiValue}
-          style={{ color: alertColor(usersUnderSiege.length, palette.chart.suspicious) }}
+          style={{
+            color: alertColor(
+              usersUnderSiege.length,
+              palette.chart.suspicious,
+              themeColors.fontColor,
+            ),
+          }}
         >
           {usersUnderSiege.length.toLocaleString()}
         </p>
@@ -105,6 +111,7 @@ const SecurityKpiStrip: React.FC<SecurityKpiStripProps> = ({
               <GluuBadge
                 key={stat.username}
                 pill
+                wrap
                 backgroundColor={getBadgeBackground(
                   palette.threatLevels[stat.threatLevel],
                   isDark,

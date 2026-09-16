@@ -15,21 +15,9 @@ import type { Dayjs } from 'dayjs'
 import { ChevronIcon } from '@/components/SVG'
 import { useMetricsStyles } from '../MetricsPage.style'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import {
-  AGGREGATION_TYPES,
-  EMPTY_HEATMAP_DATA_DEFAULT,
-  METRICS_CHART_HEIGHT,
-  type AggregationType,
-} from '../constants'
-import { useAggregationMetrics } from '../hooks'
+import { AGGREGATION_TYPES, EMPTY_HEATMAP_DATA_DEFAULT, type AggregationType } from '../constants'
 import type { GluuDropdownOption } from '@/components/GluuDropdown/types'
-import type {
-  ActivityDataPoint,
-  AggregationTabProps,
-  AggregationTypeParam,
-  HeatmapData,
-  MetricsDateRange,
-} from '../types'
+import type { ActivityDataPoint, AggregationTabProps, HeatmapData } from '../types'
 import {
   buildRangeLabel,
   entriesToActivityData,
@@ -39,6 +27,12 @@ import {
 import ActivityBarChart from './ActivityBarChart'
 import ActivityLineChart from './ActivityLineChart'
 import DurationHeatmap from './DurationHeatmap'
+import {
+  useAggregationMetrics,
+  type AggregationTypeParam,
+  type MetricsDateRange,
+} from 'Plugins/fido/shared/api'
+import { CHART_HEIGHT } from 'Plugins/fido/shared/charts'
 
 const AGG_TYPE_MAP: Record<AggregationType, AggregationTypeParam> = {
   hourly: 'Hourly',
@@ -54,7 +48,7 @@ const AggregationTab: React.FC<AggregationTabProps> = ({ filterSheetOpen, onFilt
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
-  const chartHeight = isMobile ? METRICS_CHART_HEIGHT.MOBILE : METRICS_CHART_HEIGHT.DESKTOP
+  const chartHeight = isMobile ? CHART_HEIGHT.MOBILE : CHART_HEIGHT.DESKTOP
 
   const [startDate, setStartDate] = useState<Dayjs>(() =>
     createDate().startOf('month').startOf('day').millisecond(0),

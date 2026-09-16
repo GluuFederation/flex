@@ -84,114 +84,116 @@ const SecurityMonitorHeader: React.FC<SecurityMonitorHeaderProps> = ({
 
   if (isMobile) {
     return (
-      <div className={classes.pageHeader}>
+      <>
         <GluuText variant="h1" className={classes.mobilePageTitle}>
           {t('titles.passkey_security_monitor')}
         </GluuText>
-        <div className={classes.mobileHeaderRow}>
-          <AnomalyBanner anomalies={anomalies} />
-          <button
-            type="button"
-            aria-label={t('titles.filters')}
-            aria-haspopup="dialog"
-            aria-expanded={sheetOpen}
-            className={classes.mobileTrigger}
-            onClick={openSheet}
-          >
-            <FilterListIcon />
-          </button>
-        </div>
-        <MobileNavSheet
-          openKey={sheetOpen ? SHEET_KEYS.CUSTOM : null}
-          onClose={closeSheet}
-          title={t('titles.filters')}
-        >
-          <div className={classes.sheetContent}>
-            <div className={classes.sheetPills} role="group" aria-label={t('fields.period')}>
-              {periodOptions.map((option) => {
-                const selected = draftPeriod === option.value
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    aria-pressed={selected}
-                    className={cx(classes.sheetPill, selected && classes.sheetPillSelected)}
-                    onClick={() => setDraftPeriod(option.value)}
-                  >
-                    {option.label}
-                  </button>
-                )
-              })}
-            </div>
-            <div className={classes.sheetActions}>
-              <GluuButton
-                type="button"
-                size="md"
-                block
-                outlined
-                onClick={handleSheetExport}
-                textColor={themeColors.fontColor}
-                borderColor={themeColors.borderColor}
-                borderRadius={FILTER_SHEET.BUTTON_RADIUS}
-                minHeight={FILTER_SHEET.BUTTON_HEIGHT}
-                fontWeight={fontWeights.bold}
-                aria-label={t('actions.export')}
-              >
-                <DownloadIcon className={classes.sheetButtonIcon} />
-                {t('actions.export')}
-              </GluuButton>
-              <GluuButton
-                type="button"
-                size="md"
-                block
-                outlined
-                onClick={handleSheetRefresh}
-                textColor={themeColors.fontColor}
-                borderColor={themeColors.borderColor}
-                borderRadius={FILTER_SHEET.BUTTON_RADIUS}
-                minHeight={FILTER_SHEET.BUTTON_HEIGHT}
-                fontWeight={fontWeights.bold}
-                aria-label={t('actions.refresh')}
-              >
-                <RefreshIcon className={classes.sheetButtonIcon} />
-                {t('actions.refresh')}
-              </GluuButton>
-            </div>
-            <div className={classes.sheetButtonRow}>
-              <GluuButton
-                type="button"
-                size="md"
-                block
-                outlined
-                onClick={cancelSheet}
-                textColor={themeColors.fontColor}
-                borderColor={themeColors.borderColor}
-                borderRadius={FILTER_SHEET.BUTTON_RADIUS}
-                minHeight={FILTER_SHEET.BUTTON_HEIGHT}
-                fontWeight={fontWeights.bold}
-              >
-                {t('actions.cancel')}
-              </GluuButton>
-              <GluuButton
-                type="button"
-                size="md"
-                block
-                onClick={applySheet}
-                backgroundColor={accentColor}
-                borderColor={accentColor}
-                textColor={accentTextColor}
-                borderRadius={FILTER_SHEET.BUTTON_RADIUS}
-                minHeight={FILTER_SHEET.BUTTON_HEIGHT}
-                fontWeight={fontWeights.bold}
-                useOpacityOnHover
-                hoverOpacity={OPACITY.OVERLAY}
-              >
-                {t('actions.apply')}
-              </GluuButton>
-            </div>
+        <div className={classes.pageHeader}>
+          <div className={classes.mobileHeaderRow}>
+            <AnomalyBanner anomalies={anomalies} />
+            <button
+              type="button"
+              aria-label={t('titles.filters')}
+              aria-haspopup="dialog"
+              aria-expanded={sheetOpen}
+              className={classes.mobileTrigger}
+              onClick={openSheet}
+            >
+              <FilterListIcon />
+            </button>
           </div>
-        </MobileNavSheet>
-      </div>
+          <MobileNavSheet
+            openKey={sheetOpen ? SHEET_KEYS.CUSTOM : null}
+            onClose={closeSheet}
+            title={t('titles.filters')}
+          >
+            <div className={classes.sheetContent}>
+              <div className={classes.sheetPills} role="group" aria-label={t('fields.period')}>
+                {periodOptions.map((option) => {
+                  const selected = draftPeriod === option.value
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={selected}
+                      className={cx(classes.sheetPill, selected && classes.sheetPillSelected)}
+                      onClick={() => setDraftPeriod(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className={classes.sheetButtonRow}>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  outlined
+                  onClick={handleSheetExport}
+                  textColor={themeColors.fontColor}
+                  borderColor={themeColors.borderColor}
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={fontWeights.bold}
+                  aria-label={t('actions.export')}
+                >
+                  <DownloadIcon className={classes.sheetButtonIcon} />
+                  {t('actions.export')}
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  outlined
+                  onClick={handleSheetRefresh}
+                  textColor={themeColors.fontColor}
+                  borderColor={themeColors.borderColor}
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={fontWeights.bold}
+                  aria-label={t('actions.refresh')}
+                >
+                  <RefreshIcon className={classes.sheetButtonIcon} />
+                  {t('actions.refresh')}
+                </GluuButton>
+              </div>
+              <div className={classes.sheetButtonRow}>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  outlined
+                  onClick={cancelSheet}
+                  textColor={themeColors.fontColor}
+                  borderColor={themeColors.borderColor}
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={fontWeights.bold}
+                >
+                  {t('actions.cancel')}
+                </GluuButton>
+                <GluuButton
+                  type="button"
+                  size="md"
+                  block
+                  onClick={applySheet}
+                  backgroundColor={accentColor}
+                  borderColor={accentColor}
+                  textColor={accentTextColor}
+                  borderRadius={FILTER_SHEET.BUTTON_RADIUS}
+                  minHeight={FILTER_SHEET.BUTTON_HEIGHT}
+                  fontWeight={fontWeights.bold}
+                  useOpacityOnHover
+                  hoverOpacity={OPACITY.OVERLAY}
+                >
+                  {t('actions.apply')}
+                </GluuButton>
+              </div>
+            </div>
+          </MobileNavSheet>
+        </div>
+      </>
     )
   }
 

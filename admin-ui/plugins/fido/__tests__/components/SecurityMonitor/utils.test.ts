@@ -24,7 +24,9 @@ import {
   spikeRatio,
   successRateOf,
   sumAggregation,
+  measureLabelColumn,
   takeTopIpsByFailure,
+  truncateLabel,
 } from 'Plugins/fido/components/SecurityMonitor/utils'
 import {
   ANOMALY_KINDS,
@@ -37,7 +39,7 @@ import type {
   UserFailureStat,
   SecurityTranslate,
 } from 'Plugins/fido/components/SecurityMonitor/types'
-import type { AggregationEntry, MetricsEntry } from 'Plugins/fido/components/Metrics/types'
+import type { AggregationEntry, MetricsEntry } from 'Plugins/fido/shared/api'
 
 const t = (key: string, options?: Record<string, string | number>) =>
   options ? `${key}:${Object.values(options).join('|')}` : key
@@ -765,5 +767,50 @@ describe('summarizeThreatBuckets', () => {
     expect(
       Object.values(buckets).every((b) => b.accounts === 0 && b.failed === 0 && b.dropOff === 0),
     ).toBe(true)
+  })
+})
+
+describe('truncateLabel', () => {
+  it('leaves a label that already fits untouched', () => {
+    expect(truncateLabel('john', 18)).toBe('john')
+    expect(truncateLabel('123456789012345678', 18)).toBe('123456789012345678')
+  })
+
+  it('caps a longer label at the limit and marks the cut', () => {
+    const inum = '8f2c1a4e-3b7d-4c5f-9a1e-6d0b2f8c7a35'
+    const label = truncateLabel(inum, 18)
+
+    expect(label).toHaveLength(18)
+    expect(label).toBe('8f2c1a4e-3b7d-4c5…')
+  })
+
+  it('never returns more characters than the limit allows', () => {
+    expect(truncateLabel('john', 1)).toBe('…')
+    expect(truncateLabel('john', 0)).toBe('')
+    expect(truncateLabel('john', -3)).toBe('')
+  })
+})
+
+describe('measureLabelColumn', () => {
+  const NAMES = ['aisha.rahman', 'meera.subramanian', 'grace.mbeki']
+
+  it('sizes the column to the longest label rather than a fixed worst case', () => {
+    const width = measureLabelColumn(NAMES, 10, 12, 132)
+
+    expect(width).toBe(Math.ceil(17 * 10 * 0.58) + 12)
+    expect(width).toBeLessThan(132)
+  })
+
+  it('never grows past the cap, so a long name still truncates instead of eating the plot', () => {
+    expect(measureLabelColumn(['a'.repeat(40)], 12, 12, 132)).toBe(132)
+  })
+
+  it('collapses to nothing when there are no labels', () => {
+    expect(measureLabelColumn([], 10, 12, 132)).toBe(0)
+    expect(measureLabelColumn(['', ''], 10, 12, 132)).toBe(0)
+  })
+
+  it('falls back to the estimate when the environment has no canvas to measure with', () => {
+    expect(measureLabelColumn(['ab'], 10, 0, 999)).toBe(Math.ceil(2 * 10 * 0.58))
   })
 })

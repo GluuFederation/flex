@@ -8,7 +8,7 @@ import {
   totalFailuresOf,
 } from 'Plugins/fido/components/SecurityMonitor/utils'
 import { createDate } from '@/utils/dayjsUtils'
-import type { AggregationEntry } from 'Plugins/fido/components/Metrics/types'
+import type { AggregationEntry } from 'Plugins/fido/shared/api'
 
 const todayStart = createDate().startOf('day')
 const todayEnd = createDate().endOf('day')
