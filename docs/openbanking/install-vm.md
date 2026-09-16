@@ -1,16 +1,21 @@
-# Gluu Flex Open Banking VM Installation Guide [ NOT FOR PRODUCTION ] 
+# Gluu Flex Open Banking VM Installation Guide
 
-**Audience:** Administrators installing a single-node Gluu Flex Open Banking environment for development, QA, interoperability testing, or demonstrations  
-**Validated:** 10 September 2026  
-**Reference platform:** Ubuntu Server 24.04 LTS, x86-64, MySQL, Apache HTTP Server, Jans Auth, Jans Config API, and Gluu Flex Admin UI
+This guide installs Gluu Flex Open Banking on Ubuntu 24.04 LTS using
+the command-line installer that ships with the distribution.
+The process requires no prior configuration outside of standard VM,
+networking, and DNS preparation.
+It covers certificates, software installation, Admin UI integration,
+and a comprehensive post-installation acceptance checklist.
 
-> This guide intentionally uses placeholders and contains no real passwords, client secrets, private keys, SSAs, or access tokens.
+!!! warning "Not recommended for production deployments"
 
-## 1. What this guide installs
+    VM installation is suitable only for
+    development, QA, interoperability testing, or demonstrations. For
+    production deployments please use the [cloud-native distribution](./install-cn.md)
 
-The finished VM exposes one HTTPS hostname and runs the application services only on loopback interfaces.
+## Installation at a glance
 
-The reference installation contained:
+Steps in this guide installs the following software components.
 
 - Ubuntu 24.04 LTS
 - Apache 2.4
@@ -25,31 +30,7 @@ The reference installation contained:
 - Gluu Flex Admin UI and its Config API plugin
 - A local 2 GB swap file
 
-The working reference VM had 2 or more vCPUs, 8 GB RAM, a 50 GB root disk, and 2 GB swap. The upstream minimum is 2 CPU units, 4 GB RAM, 2 GB swap, and 50 GB storage. Use at least 8 GB RAM for a smoother installation.
-
-## 2. Choose the correct deployment model
-
-Use this VM procedure for development, QA, or a small demonstration. Gluu recommends its cloud-native distribution for production Open Banking deployments.
-
-For production:
-
-- Use the stable release, never a nightly build.
-- Use official Open Banking ecosystem certificates and trust anchors.
-- Use a publicly trusted server certificate for the web hostname.
-- Use a separate trust store for Open Banking client-certificate issuers.
-- Place MySQL on protected storage and implement tested backups.
-- Put secrets in a secrets manager, not shell history or documentation.
-- Review HA, disaster recovery, monitoring, audit retention, and key rotation requirements.
-
-Official references:
-
-- [Open Banking VM installation](https://docs.gluu.org/stable/openbanking/install-vm/)
-- [Gluu Flex Ubuntu installation](https://docs.gluu.org/head/install/vm-install/ubuntu/)
-- [Janssen Ubuntu installation](https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/)
-- [Gluu Flex releases](https://github.com/GluuFederation/flex/releases)
-- [Janssen releases](https://github.com/JanssenProject/jans/releases)
-
-### Installation at a glance
+At a high-level, following steps are involved in installation of Gluu Flex Open Banking on Ubuntu VM.
 
 1. Create an Ubuntu 24.04 VM and static DNS record.
 2. Open 443 and restrict SSH.
@@ -64,61 +45,65 @@ Official references:
 11. Activate Flex with the SSA and sign in to `/admin/`.
 12. Complete the acceptance checklist and take an off-host backup.
 
-## 3. Prerequisites
+## Prerequisites
 
-### 3.1 Infrastructure
+### Hardware recommendation
 
-Prepare a fresh Ubuntu 24.04 LTS x86-64 VM with:
+Prepare a fresh Ubuntu 24.04 LTS x86-64 VM with following hardware configuration:
 
-- 2 vCPUs minimum; 4 recommended
-- 4 GB RAM minimum; 8 GB recommended
-- 50 GB storage minimum
-- 2 GB swap
+| Category    | CPU units | RAM  | Disk size | Swap size |
+| ----------- | --------- | ---- | --------- | --------- |
+| Minimum     | 2 vCPUs   | 4 GB | 50 GB     | 2 GB      |
+| Recommended | 4 vCPUs   | 8 GB | 100 GB    | 2 GB      |
+
+### Networking recommendations
+
+Followig are the recommendations for network connectivity from the VM:
+
 - One stable public IP address
 - Working outbound HTTPS access
 - Inbound TCP 443 from intended clients
 - Inbound TCP 22 restricted to administrator IP addresses
 - TCP 80 only if needed for certificate issuance or redirecting to HTTPS
+- Do not expose ports 8074, 8081, or 3306 publicly.
 
-Do not expose ports 8074, 8081, or 3306 publicly.
-
-### 3.2 DNS
+## DNS Setup
 
 Create an `A` record before installation:
 
-```text
+``` text
 id.example.org  ->  203.0.113.10
 ```
 
 Confirm it from a machine outside the VM:
 
-```bash
+``` bash
 dig +short id.example.org A
 ```
 
 The result must be the VM's stable public IP. The hostname must not change after installation.
 
-### 3.3 Flex license and SSA
+## Flex license and SSA
 
 Obtain a Software Statement Assertion (SSA) for the Flex license and save it as a text file in a protected location. The Admin UI will request it during initial activation. Treat the SSA as sensitive.
 
-### 3.4 Open Banking keys and certificates
+## Open Banking keys and certificates
 
 For production, obtain the certificates required by the applicable Open Banking trust framework. For a private QA environment, this guide shows how to create a private test CA, server certificate, and client certificate.
 
 Never use the same subject or Common Name for the CA, server, and client certificates. A safe pattern is:
 
-| Certificate | Example Common Name | Purpose |
-|---|---|---|
-| Test root CA | `Flex OB Test Root CA` | Signs test certificates |
-| HTTPS server | `id.example.org` | Apache server identity |
-| Test client | `ob-test-client-01` | Browser or TPP mTLS identity |
+| Certificate  | Example Common Name    | Purpose                      |
+| ------------ | ---------------------- | ---------------------------- |
+| Test root CA | `Flex OB Test Root CA` | Signs test certificates      |
+| HTTPS server | `id.example.org`       | Apache server identity       |
+| Test client  | `ob-test-client-01`    | Browser or TPP mTLS identity |
 
-## 4. Prepare Ubuntu
+## Prepare Ubuntu
 
 Log in using an administrative account and define values for this deployment:
 
-```bash
+``` bash
 FQDN=id.example.org
 PUBLIC_IP=203.0.113.10
 JANS_VERSION=2.3.0
@@ -131,7 +116,7 @@ CERT_DIR=/etc/certs/ob
 
 Update the host and install basic tools:
 
-```bash
+``` bash
 sudo apt update
 sudo apt -y full-upgrade
 sudo apt install -y curl wget jq unzip ca-certificates openssl chrony
@@ -142,7 +127,7 @@ If the upgrade installs a new kernel, reboot now and reconnect before continuing
 
 Set the hostname:
 
-```bash
+``` bash
 sudo hostnamectl set-hostname "$FQDN"
 hostnamectl
 ```
@@ -151,7 +136,7 @@ Make sure `/etc/hosts` contains the private interface address and FQDN. Do not m
 
 If the VM has less than 2 GB swap, create a swap file:
 
-```bash
+``` bash
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -162,7 +147,7 @@ free -h
 
 Configure the firewall:
 
-```bash
+``` bash
 sudo ufw allow 443/tcp
 sudo ufw allow from YOUR_ADMIN_IP to any port 22 proto tcp
 sudo ufw enable
@@ -173,17 +158,17 @@ Replace `YOUR_ADMIN_IP` before enabling UFW. Keep the current SSH session open u
 
 Open TCP port 80 only if the selected certificate issuer needs an HTTP challenge or Apache will redirect HTTP to HTTPS:
 
-```bash
+``` bash
 sudo ufw allow 80/tcp
 ```
 
 Otherwise, omit that rule and leave TCP port 80 closed.
 
-### 4.1 Install the pinned signature-verification tool
+## Install Sigstore
 
 The Jans and Flex release packages are signed with Sigstore. Install the pinned `cosign` package before downloading either product package:
 
-```bash
+``` bash
 cd /tmp
 wget "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_${COSIGN_VERSION}_amd64.deb"
 
@@ -196,13 +181,13 @@ cosign version
 
 The checksum is the SHA-256 digest published for the `v3.1.2` GitHub release asset. Do not continue unless `sha256sum` reports `OK` and `cosign version` reports `v3.1.2`. When updating `COSIGN_VERSION`, obtain the new digest independently from the official Sigstore release page and update both values together.
 
-## 5. Install Janssen with the Open Banking profile
+## Install Janssen Open Banking
 
 Flex 6.3.0 corresponds to Janssen 2.3.0. Always confirm the compatible versions on the release pages before using newer versions.
 
 The official Open Banking VM workflow runs Jans setup with `--profile openbanking`. Install the versioned, signed release package instead of downloading a Python installer from a mutable source branch:
 
-```bash
+``` bash
 cd /tmp
 wget "https://github.com/JanssenProject/jans/releases/download/v${JANS_VERSION}/jans_${JANS_VERSION}-stable.ubuntu24.04_amd64.deb"
 wget "https://github.com/JanssenProject/jans/releases/download/v${JANS_VERSION}/jans-ubuntu24-${JANS_VERSION}-stable.bundle"
@@ -234,38 +219,38 @@ The profile asks for:
 
 If you supply an external private key, copy it to a root-only directory and set mode `600` before setup. Never paste the private key or its password into a ticket, chat, or shared log.
 
-Choose values equivalent to the following:
+Enter values appropriate to your environment for the following inputs:
 
-| Prompt | Recommended value |
-|---|---|
-| IP address | The VM interface address requested by the installer |
-| Hostname | `id.example.org` |
-| Organization details | Your real organization details |
-| Application memory | `4096` MB on an 8 GB VM |
-| Persistence | MySQL |
-| Remote database | No for this single-node guide |
-| Open Banking static `kid` | A unique identifier matching the signing-key plan |
+| Prompt                    | Recommended value                                       |
+| ------------------------- | ------------------------------------------------------- |
+| IP address                | The VM interface address requested by the installer     |
+| Hostname                  | `id.example.org`                                        |
+| Organization details      | Your real organization details                          |
+| Application memory        | `4096` MB on an 8 GB VM                                 |
+| Persistence               | MySQL                                                   |
+| Remote database           | No for this single-node guide                           |
+| Open Banking static `kid` | A unique identifier matching the signing-key plan       |
 | External Open Banking key | Yes only when a protected key has already been prepared |
-| Jans Auth | Yes |
-| Config API | Yes |
-| Jans CLI/TUI | Yes |
-| FIDO2 | Yes if required |
-| SCIM, Casa, Link, Lock | Only when required |
-| Admin password | A unique password from a password manager |
+| Jans Auth                 | Yes                                                     |
+| Config API                | Yes                                                     |
+| Jans CLI/TUI              | Yes                                                     |
+| FIDO2                     | Yes if required                                         |
+| SCIM, Casa, Link, Lock    | Only when required                                      |
+| Admin password            | A unique password from a password manager               |
 
-Let setup finish completely. Do not interrupt Java service starts; first startup may take several minutes.
+Let setup finish completely and the Java service start. First startup may take several minutes.
 
-The base setup log is:
+Logs can be monitored at:
 
-```text
+``` text
 /opt/jans/jans-setup/logs/setup.log
 ```
 
-## 6. Verify the base Open Banking installation
+## Verify the base installation
 
 Before adding Flex Admin UI, confirm that the base services are healthy:
 
-```bash
+``` bash
 sudo systemctl is-active apache2 mysql jans-auth jans-config-api
 curl -fsS "https://${FQDN}/.well-known/openid-configuration" \
   --cacert /path/to/current/issuing-ca.crt | jq '.issuer, .token_endpoint, .jwks_uri'
@@ -273,11 +258,11 @@ curl -fsS "https://${FQDN}/.well-known/openid-configuration" \
 
 If the generated HTTPS certificate is only temporary, complete Section 8 before expecting browser validation to succeed. Do not continue to Admin UI while Jans Auth or Config API is inactive.
 
-## 7. Install Gluu Flex and Admin UI
+## Install Gluu Flex and Admin UI
 
 Download and verify the stable Flex package:
 
-```bash
+``` bash
 cd /tmp
 wget "https://github.com/GluuFederation/flex/releases/download/v${FLEX_VERSION}/flex_${FLEX_VERSION}-stable.ubuntu24.04_amd64.deb"
 wget "https://github.com/GluuFederation/flex/releases/download/v${FLEX_VERSION}/flex-ubuntu24-${FLEX_VERSION}-stable.bundle"
@@ -293,7 +278,7 @@ sudo apt install -y "/tmp/flex_${FLEX_VERSION}-stable.ubuntu24.04_amd64.deb"
 
 Run Flex setup:
 
-```bash
+``` bash
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 ```
 
@@ -301,19 +286,19 @@ Answer `y` to `Install Admin UI`. Install Casa only if it is part of the design.
 
 The Flex setup log is:
 
-```text
+``` text
 /opt/jans/jans-setup/logs/flex-setup.log
 ```
 
 Flex setup installs the Admin UI static application, Admin UI Config API plugin, OIDC clients, scopes and role mappings, the default Cedarling policy store, and the Agama password flow used by the UI.
 
-## 8. Configure certificates correctly
+## Configure certificates
 
-Skip test-certificate generation if you have real production certificates.
+Skip test-certificate generation if you have real certificates.
 
-### 8.1 Create a private test CA
+### Create a private test CA
 
-```bash
+``` bash
 sudo install -d -m 750 "$CERT_DIR"
 cd /tmp
 
@@ -328,11 +313,11 @@ sudo install -o root -g root -m 644 ob-test-ca.crt "$CERT_DIR/ca.crt"
 
 Keep the CA private key offline if possible. It is needed only to issue or revoke test certificates.
 
-### 8.2 Create the HTTPS server certificate with SAN
+### Create the HTTPS server certificate with SAN
 
 The Subject Alternative Name is mandatory for modern browsers. A correct Common Name alone is insufficient.
 
-```bash
+``` bash
 cd /tmp
 openssl genrsa -out server.key 3072
 openssl req -new -key server.key -out server.csr \
@@ -355,7 +340,7 @@ sudo install -o root -g root -m 644 server.crt "$CERT_DIR/server.crt"
 
 Validate it before touching Apache:
 
-```bash
+``` bash
 openssl verify -CAfile "$CERT_DIR/ca.crt" "$CERT_DIR/server.crt"
 openssl x509 -in "$CERT_DIR/server.crt" -noout -subject -issuer -dates -ext subjectAltName
 openssl verify -CAfile "$CERT_DIR/ca.crt" -verify_hostname "$FQDN" "$CERT_DIR/server.crt"
@@ -363,9 +348,9 @@ openssl verify -CAfile "$CERT_DIR/ca.crt" -verify_hostname "$FQDN" "$CERT_DIR/se
 
 All three commands must succeed, and the SAN must contain the FQDN.
 
-### 8.3 Create a test mTLS client certificate
+### Create a test mTLS client certificate
 
-```bash
+``` bash
 cd /tmp
 openssl genrsa -out client.key 3072
 openssl req -new -key client.key -out client.csr \
@@ -389,11 +374,11 @@ openssl pkcs12 -export \
 
 Give `client.p12` a strong export password. Import it into the test browser or operating-system certificate store. Delete unprotected temporary private-key copies after securely transferring the bundle.
 
-### 8.4 Configure Apache mTLS
+### Configure Apache mTLS
 
 Back up the vhost:
 
-```bash
+``` bash
 sudo a2enmod ssl headers proxy proxy_http
 sudo cp -a /etc/apache2/sites-enabled/https_jans.conf \
   "/etc/apache2/sites-enabled/https_jans.conf.before-ob-mtls"
@@ -401,7 +386,7 @@ sudo cp -a /etc/apache2/sites-enabled/https_jans.conf \
 
 Ensure the HTTPS virtual host contains:
 
-```apache
+``` apache
 SSLEngine on
 SSLProtocol -all +TLSv1.2
 SSLCertificateFile /etc/certs/ob/server.crt
@@ -435,7 +420,7 @@ The repaired reference profile explicitly allowed TLS 1.2. Enable TLS 1.3 only w
 
 Validate and reload:
 
-```bash
+``` bash
 sudo apache2ctl configtest
 sudo systemctl reload apache2
 sudo systemctl is-active apache2
@@ -443,20 +428,20 @@ sudo systemctl is-active apache2
 
 If the Admin UI performs its token exchange directly from the browser against an mTLS-required token endpoint, that browser must present a valid client certificate. A production design may instead use a dedicated mTLS alias or backend-mediated exchange; align this with the relevant Open Banking profile.
 
-## 9. Trust the issuing CA in Java {#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore}
+## Trust the issuing CA in Java
 
 Jans Auth and Config API use the Java trust store when calling HTTPS endpoints. Import the issuing CA, not the server leaf certificate. Importing a leaf certificate creates a fragile pin that breaks whenever the server certificate is renewed.
 
 Back up the trust store:
 
-```bash
+``` bash
 sudo cp -a /opt/jre/lib/security/cacerts \
   "/opt/jre/lib/security/cacerts.before-ob-ca"
 ```
 
 Replace any stale alias and import the CA:
 
-```bash
+``` bash
 sudo /opt/jre/bin/keytool -delete \
   -alias flex_ob_test_ca \
   -keystore /opt/jre/lib/security/cacerts \
@@ -476,25 +461,25 @@ sudo /opt/jre/bin/keytool -list \
 
 Compare the listed SHA-256 fingerprint with:
 
-```bash
+``` bash
 openssl x509 -in "$CERT_DIR/ca.crt" -noout -fingerprint -sha256
 ```
 
 Restart the Java services:
 
-```bash
+``` bash
 sudo systemctl restart jans-auth jans-config-api
 ```
 
-## 10. Admin UI configuration checks
+## Admin UI configuration checks
 
-### 10.1 Use loopback for the backend's own introspection call
+### Use loopback for the backend's own introspection call
 
 On a single-node VM, the Admin UI backend can introspect its token through the local Jans Auth listener. This avoids sending an internal call back through public Apache mTLS and prevents a certificate trust loop.
 
 First inspect the current Admin UI configuration. Do not print the entire record because it contains client secrets.
 
-```bash
+``` bash
 sudo mysql -N jansdb -e "
 SELECT JSON_UNQUOTE(JSON_EXTRACT(jansConfApp,
 '$.oidcConfig.auiBackendApiClient.introspectionEndpoint'))
@@ -503,13 +488,13 @@ FROM jansAppConf WHERE doc_id='admin-ui';"
 
 For the single-node topology, the expected value is:
 
-```text
+``` text
 http://127.0.0.1:8081/jans-auth/restv1/introspection
 ```
 
 If it is still the public HTTPS URL and `adminui.log` reports a PKIX error, back up and update only this field:
 
-```bash
+``` bash
 sudo mysqldump jansdb jansAppConf --where="doc_id='admin-ui'" \
   | sudo tee /root/admin-ui-config-before-introspection.sql >/dev/null
 
@@ -528,11 +513,11 @@ sudo systemctl restart jans-config-api
 
 If `/opt/jans/jans-setup/flex/auiConfiguration.json` exists, make the same targeted change there so rerunning setup does not restore the old value. Back up that file first and keep it mode `600`, because it contains secrets.
 
-### 10.2 Ensure discovery advertises `userinfo_endpoint`
+### Ensure discovery advertises `userinfo_endpoint`
 
 Check discovery without displaying sensitive data:
 
-```bash
+``` bash
 curl -fsS "https://${FQDN}/.well-known/openid-configuration" \
   --cacert "$CERT_DIR/ca.crt" \
   | jq '{issuer,authorization_endpoint,token_endpoint,userinfo_endpoint,introspection_endpoint,jwks_uri}'
@@ -542,7 +527,7 @@ Every displayed field must be a non-null URL. If `userinfo_endpoint` is absent, 
 
 For affected nightly builds only, back up and add the discovery key:
 
-```bash
+``` bash
 sudo mysqldump jansdb jansAppConf --where="doc_id='jans-auth'" \
   | sudo tee /root/jans-auth-config-before-userinfo.sql >/dev/null
 
@@ -569,11 +554,11 @@ sudo systemctl restart jans-auth
 
 Also update the installer-generated source configuration under `/opt/jans/jans-setup/output/jans-auth/` if it is present, after backing it up. This workaround should not be applied blindly to a newer stable release.
 
-## 11. Start and verify the system
+## Start and verify the system
 
 Enable and restart the core services:
 
-```bash
+``` bash
 sudo systemctl enable apache2 mysql jans-auth jans-config-api
 sudo systemctl restart mysql jans-auth jans-config-api apache2
 sudo systemctl is-active apache2 mysql jans-auth jans-config-api
@@ -583,7 +568,7 @@ Every result must be `active`.
 
 Confirm private listeners:
 
-```bash
+``` bash
 sudo ss -lntp | grep -E ':(443|8074|8081|3306)\b'
 ```
 
@@ -596,7 +581,7 @@ Expected topology:
 
 Check the public endpoints:
 
-```bash
+``` bash
 curl -fsSI "https://${FQDN}/admin/" --cacert "$CERT_DIR/ca.crt"
 curl -fsS "https://${FQDN}/.well-known/openid-configuration" \
   --cacert "$CERT_DIR/ca.crt" | jq -e '.issuer and .token_endpoint and .userinfo_endpoint'
@@ -606,7 +591,7 @@ curl -fsS "https://${FQDN}/jans-auth/restv1/jwks" \
 
 Check that both protected endpoints require mTLS. Requests without a client certificate should fail at TLS or return an authorization error; they must not reach a successful registration or token response:
 
-```bash
+``` bash
 curl -v "https://${FQDN}/jans-auth/restv1/register" \
   --cacert "$CERT_DIR/ca.crt"
 curl -v "https://${FQDN}/jans-auth/restv1/token" \
@@ -615,7 +600,7 @@ curl -v "https://${FQDN}/jans-auth/restv1/token" \
 
 Then test both routes with the client certificate:
 
-```bash
+``` bash
 curl -v "https://${FQDN}/jans-auth/restv1/register" \
   --cacert "$CERT_DIR/ca.crt" \
   --cert /path/to/client.crt \
@@ -628,7 +613,7 @@ curl -v "https://${FQDN}/jans-auth/restv1/token" \
 
 An OAuth or registration error caused by the deliberately incomplete request is acceptable for this connectivity test. The important result is that TLS accepts the client certificate and both requests reach Jans Auth. Confirm in the Jans Auth log that the forwarded certificate was parsed; do not log or publish the certificate itself.
 
-## 12. Activate and access Admin UI
+## Activate and access Admin UI
 
 1. Import the test CA into the browser's trust store if the HTTPS certificate is privately issued.
 2. Import `client.p12` into the browser or operating-system client certificate store.
@@ -640,11 +625,11 @@ An OAuth or registration error caused by the deliberately incomplete request is 
 
 The installer creates a default policy store with an `admin` role and assigns that role to the default administrator.
 
-## 13. Troubleshooting Admin UI
+## Troubleshooting Admin UI
 
-### 13.1 Fast diagnostic commands
+### Fast diagnostic commands
 
-```bash
+``` bash
 sudo systemctl --no-pager --full status apache2 jans-auth jans-config-api mysql
 sudo journalctl -u jans-auth -u jans-config-api --since '15 minutes ago' --no-pager
 sudo tail -n 200 /var/log/apache2/error.log
@@ -654,22 +639,22 @@ sudo tail -n 200 /var/log/adminui/adminui.log
 
 Do not post raw logs publicly until access tokens, client secrets, authorization codes, cookies, SSAs, email addresses, and certificate subjects have been redacted.
 
-### 13.2 Symptom matrix
+### Symptom matrix
 
-| Symptom | Likely cause | Check | Correction |
-|---|---|---|---|
-| Browser stays on **Redirecting…** | TLS or client-certificate failure | Apache error log and browser certificate selection | Confirm server SAN, client certificate chain, clientAuth EKU, and trusted CA |
-| Apache logs `certificate unknown` | Browser rejected the server chain or Apache rejected the client chain | `openssl verify` for both leaf certificates | Install the correct CA; never give CA, server, and client the same subject |
-| Admin UI API returns HTTP 500 and `adminui.log` shows `PKIX path validation failed` | Java trust store contains an old server leaf or lacks the issuing CA | `keytool -list` and CA SHA-256 fingerprint | Delete stale leaf alias, import the issuing CA, restart Config API |
-| OAuth callback succeeds, then browser requests `/jans-config-api/` and receives 404 | Discovery omitted `userinfo_endpoint` | Inspect `.well-known/openid-configuration` | Add `userinfo_endpoint` to allowed discovery keys on affected builds, restart Jans Auth |
-| Token request fails before OAuth validation | Browser did not send a client certificate | Apache SSL debug log | Import the PKCS#12 bundle and select it when prompted |
-| Admin UI asks for activation or rejects access | SSA or license missing/invalid | Admin UI license page and Admin UI log | Obtain a valid SSA for this installation; verify clock and outbound HTTPS |
-| `/admin/` is 200 but dashboard API calls fail | Config API or Admin UI plugin problem | `jans-config-api` status and `adminui.log` | Verify plugin installation, database configuration, and Config API listener |
-| Works with `curl -k` only | Server certificate is untrusted or invalid | `openssl s_client` and SAN output | Install a valid chain; do not use `-k` as a permanent fix |
+| Symptom                                                                             | Likely cause                                                          | Check                                              | Correction                                                                              |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Browser stays on **Redirecting…**                                                   | TLS or client-certificate failure                                     | Apache error log and browser certificate selection | Confirm server SAN, client certificate chain, clientAuth EKU, and trusted CA            |
+| Apache logs `certificate unknown`                                                   | Browser rejected the server chain or Apache rejected the client chain | `openssl verify` for both leaf certificates        | Install the correct CA; never give CA, server, and client the same subject              |
+| Admin UI API returns HTTP 500 and `adminui.log` shows `PKIX path validation failed` | Java trust store contains an old server leaf or lacks the issuing CA  | `keytool -list` and CA SHA-256 fingerprint         | Delete stale leaf alias, import the issuing CA, restart Config API                      |
+| OAuth callback succeeds, then browser requests `/jans-config-api/` and receives 404 | Discovery omitted `userinfo_endpoint`                                 | Inspect `.well-known/openid-configuration`         | Add `userinfo_endpoint` to allowed discovery keys on affected builds, restart Jans Auth |
+| Token request fails before OAuth validation                                         | Browser did not send a client certificate                             | Apache SSL debug log                               | Import the PKCS#12 bundle and select it when prompted                                   |
+| Admin UI asks for activation or rejects access                                      | SSA or license missing/invalid                                        | Admin UI license page and Admin UI log             | Obtain a valid SSA for this installation; verify clock and outbound HTTPS               |
+| `/admin/` is 200 but dashboard API calls fail                                       | Config API or Admin UI plugin problem                                 | `jans-config-api` status and `adminui.log`         | Verify plugin installation, database configuration, and Config API listener             |
+| Works with `curl -k` only                                                           | Server certificate is untrusted or invalid                            | `openssl s_client` and SAN output                  | Install a valid chain; do not use `-k` as a permanent fix                               |
 
-### 13.3 Certificate diagnostics
+### Certificate diagnostics
 
-```bash
+``` bash
 openssl s_client -connect "${FQDN}:443" -servername "$FQDN" \
   -CAfile "$CERT_DIR/ca.crt" -verify_return_error </dev/null
 
@@ -680,19 +665,19 @@ openssl verify -CAfile "$CERT_DIR/ca.crt" -verify_hostname "$FQDN" \
   "$CERT_DIR/server.crt"
 ```
 
-### 13.4 Important log locations
+### Important log locations
 
-| Component | Location |
-|---|---|
-| Base installer | `/opt/jans/jans-setup/logs/setup.log` |
-| Flex installer | `/opt/jans/jans-setup/logs/flex-setup.log` |
-| Admin UI backend | `/var/log/adminui/adminui.log` |
-| Apache access/error | `/var/log/apache2/` |
-| Jans Auth | `/opt/jans/jetty/jans-auth/logs/` |
-| Jans Config API | `/opt/jans/jetty/jans-config-api/logs/` |
-| Systemd services | `journalctl -u SERVICE` |
+| Component           | Location                                   |
+| ------------------- | ------------------------------------------ |
+| Base installer      | `/opt/jans/jans-setup/logs/setup.log`      |
+| Flex installer      | `/opt/jans/jans-setup/logs/flex-setup.log` |
+| Admin UI backend    | `/var/log/adminui/adminui.log`             |
+| Apache access/error | `/var/log/apache2/`                        |
+| Jans Auth           | `/opt/jans/jetty/jans-auth/logs/`          |
+| Jans Config API     | `/opt/jans/jetty/jans-config-api/logs/`    |
+| Systemd services    | `journalctl -u SERVICE`                    |
 
-## 14. Backup before changes
+## Backup before changes
 
 At minimum, protect:
 
@@ -707,7 +692,7 @@ At minimum, protect:
 
 Example database backup:
 
-```bash
+``` bash
 sudo apt install -y age
 
 sudo bash -Eeuo pipefail <<'BACKUP'
@@ -733,7 +718,7 @@ Generate the age recovery key on a separate, protected administrator system with
 
 Before considering a backup complete or deleting an older known-good backup, transfer the encrypted archive to the isolated recovery environment and test both decryption and restoration into an empty test database:
 
-```bash
+``` bash
 age --decrypt --identity /secure/offline/flex-backup-key.txt \
   jansdb-YYYYMMDDTHHMMSSZ.sql.gz.age \
   | gzip --decompress --stdout \
@@ -744,17 +729,17 @@ mysql --database=jansdb_restore_test --execute='SHOW TABLES;'
 
 The `pipefail` option makes a failure in `mysqldump`, `gzip`, `age`, or the restore pipeline fail the operation. Keep encrypted backups outside the VM according to the applicable retention policy, and record each successful restore test without recording database contents or key material.
 
-## 15. Routine operations
+## Routine operations
 
 Service health:
 
-```bash
+``` bash
 sudo systemctl is-active apache2 mysql jans-auth jans-config-api
 ```
 
 Admin UI update:
 
-```bash
+``` bash
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
 ```
 
@@ -776,69 +761,49 @@ Certificate renewal checklist:
 6. If the issuing CA changed, import the new CA into Java and restart Jans services.
 7. Never pin a renewable leaf certificate in Java's CA trust store.
 
-## 16. Uninstallation warning
+## Uninstallation
 
 Uninstallation is destructive and removes application data. Take and verify backups first.
 
 Remove Flex components:
 
-```bash
+``` bash
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
 
 Remove Janssen:
 
-```bash
+``` bash
 sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 
-Do not run either command merely to repair an unhealthy service.
+## Final acceptance checklist
 
-## 17. Exact reference-deployment notes
+After the complete installation, we recommend checking the following aspects to ensure smooth operation:
 
-The repaired QA deployment differed from the recommended stable path:
+- :white_check_mark: Stable public IP and FQDN are correct.
+- :white_check_mark: Host time is synchronized.
+- :white_check_mark: Only 22, 80 when needed, and 443 are publicly reachable.
+- :white_check_mark: MySQL, Jans Auth, and Config API listen only on protected interfaces.
+- :white_check_mark: Server certificate validates for the FQDN and contains SAN.
+- :white_check_mark: CA, server, and client certificate subjects are distinct.
+- :white_check_mark: Client certificate contains the `clientAuth` EKU.
+- :white_check_mark: Apache configuration test passes.
+- :white_check_mark: Required services report `active`.
+- :white_check_mark: Discovery contains issuer, authorization, token, userinfo, introspection, and JWKS endpoints.
+- :white_check_mark: JWKS contains at least one key.
+- :white_check_mark: Token and registration endpoints enforce mTLS as intended.
+- :white_check_mark: Java trusts the issuing CA, not a renewable leaf.
+- :white_check_mark: Admin UI loads, license/SSA is active, and the administrator can sign in.
+- :white_check_mark: Backups are encrypted, stored off-host, and restoration has been tested.
+- :white_check_mark: No secrets have been left in shell history, world-readable files, logs, or documentation.
 
-- It used the Jans `main` installer with `--profile openbanking`.
-- It downloaded `0.0.0-nightly` Jans and Flex artifacts.
-- Base installation completed first; Admin UI was installed later using `flex_setup.py`.
-- MySQL was local and all backend listeners were bound to loopback.
-- Apache required mTLS for token and dynamic registration endpoints.
-- The generated server certificate lacked SAN and was replaced with a SAN-enabled leaf signed by the existing private test CA.
-- Admin UI backend introspection was changed to `http://127.0.0.1:8081/.../introspection`.
-- A stale server-leaf entry in Java `cacerts` was replaced with the issuing CA.
-- `userinfo_endpoint` was added to the public OIDC discovery response.
+## Reference documentation
 
-After those corrections, the authorization code exchange, userinfo request, Admin UI configuration calls, license checks, and dashboard load all completed successfully.
-
-For a new installation, the goal is to get these certificate and discovery details right during initial setup so the repair steps are unnecessary.
-
-## 18. Final acceptance checklist
-
-- [ ] Stable public IP and FQDN are correct.
-- [ ] Host time is synchronized.
-- [ ] Only 22, 80 when needed, and 443 are publicly reachable.
-- [ ] MySQL, Jans Auth, and Config API listen only on protected interfaces.
-- [ ] Server certificate validates for the FQDN and contains SAN.
-- [ ] CA, server, and client certificate subjects are distinct.
-- [ ] Client certificate contains the `clientAuth` EKU.
-- [ ] Apache configuration test passes.
-- [ ] Required services report `active`.
-- [ ] Discovery contains issuer, authorization, token, userinfo, introspection, and JWKS endpoints.
-- [ ] JWKS contains at least one key.
-- [ ] Token and registration endpoints enforce mTLS as intended.
-- [ ] Java trusts the issuing CA, not a renewable leaf.
-- [ ] Admin UI loads, license/SSA is active, and the administrator can sign in.
-- [ ] Backups are encrypted, stored off-host, and restoration has been tested.
-- [ ] No secrets have been left in shell history, world-readable files, logs, or documentation.
-
-## 19. Source references
-
-This runbook combines direct verification of the repaired system with the following primary project documentation:
-
-- Gluu, [Install Gluu Flex on Ubuntu Linux](https://docs.gluu.org/head/install/vm-install/ubuntu/)
-- Gluu, [Admin UI](https://docs.gluu.org/stable/admin/admin-ui/home/)
-- Gluu Federation, [Flex releases](https://github.com/GluuFederation/flex/releases)
-- Janssen Project, [Ubuntu Janssen installation](https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/)
-- Janssen Project, [mTLS configuration](https://docs.jans.io/head/janssen-server/auth-server/oauth-features/mtls/)
-- Janssen Project, [Janssen releases](https://github.com/JanssenProject/jans/releases)
-- Sigstore, [Install Cosign](https://docs.sigstore.dev/cosign/system_config/installation/)
+- [Install Gluu Flex on Ubuntu Linux](https://docs.gluu.org/head/install/vm-install/ubuntu/)
+- [Admin UI](https://docs.gluu.org/stable/admin/admin-ui/home/)
+- [Flex releases](https://github.com/GluuFederation/flex/releases)
+- [Ubuntu Janssen installation](https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/)
+- [mTLS configuration](https://docs.jans.io/head/janssen-server/auth-server/oauth-features/mtls/)
+- [Janssen releases](https://github.com/JanssenProject/jans/releases)
+- [Install Cosign](https://docs.sigstore.dev/cosign/system_config/installation/)
