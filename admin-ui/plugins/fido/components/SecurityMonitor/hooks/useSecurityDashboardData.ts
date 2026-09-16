@@ -317,23 +317,41 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     dailyQuery.isFetching ||
     deviceQuery.isFetching ||
     devicesQuery.isFetching ||
+    errorsQuery.isFetching ||
     authEntriesQuery.isFetching
 
-  return {
-    anomalies,
-    summary,
-    spikeSeries,
-    dropOffSeries,
-    ipStats,
-    userStats,
-    usersUnderSiege,
-    suspiciousIps,
-    errorSlices,
-    velocityMatrix,
-    deviceTrend,
-    isLoading,
-    isFetching,
-  }
+  return useMemo(
+    () => ({
+      anomalies,
+      summary,
+      spikeSeries,
+      dropOffSeries,
+      ipStats,
+      userStats,
+      usersUnderSiege,
+      suspiciousIps,
+      errorSlices,
+      velocityMatrix,
+      deviceTrend,
+      isLoading,
+      isFetching,
+    }),
+    [
+      anomalies,
+      summary,
+      spikeSeries,
+      dropOffSeries,
+      ipStats,
+      userStats,
+      usersUnderSiege,
+      suspiciousIps,
+      errorSlices,
+      velocityMatrix,
+      deviceTrend,
+      isLoading,
+      isFetching,
+    ],
+  )
 }
 
 export { useSecurityDashboardData }

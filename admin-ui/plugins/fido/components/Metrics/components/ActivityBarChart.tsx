@@ -9,68 +9,25 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts'
-import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { getScrollCanvasStyle, useMetricsStyles } from '../MetricsPage.style'
-import {
-  ACTIVITY_DENSE_BUCKET_COUNT,
-  ACTIVITY_COMPACT_DENSE_BUCKET_COUNT,
-  ACTIVITY_MOBILE_DENSE_BUCKET_COUNT,
-  ACTIVITY_MIN_BUCKET_WIDTH,
-  AGGREGATION_SERIES_COLORS,
-} from '../constants'
+import { AGGREGATION_SERIES_COLORS } from '../constants'
 import { formatCompactNumber, formatNonZeroChartValue } from '../utils'
 import type { ActivityBarChartProps, ActivityDataPoint } from '../types'
 import {
   CHART_HEIGHT,
   ChartCard,
   ChartLegend,
-  DESKTOP_CHART_GEOMETRY,
-  MOBILE_CHART_GEOMETRY,
+  MultiLineTick,
   RECHARTS_INITIAL_DIMENSION,
 } from 'Plugins/fido/shared/charts'
-
-type TickProps = {
-  x?: number | string
-  y?: number | string
-  payload?: { value: string }
-}
-
-const MultiLineTick = ({
-  x = 0,
-  y = 0,
-  payload,
-  fill,
-  fontSize = 12,
-}: TickProps & { fill: string; fontSize?: number }): ReactNode => {
-  const lines = (payload?.value ?? '').split('\n')
-  return (
-    <g transform={`translate(${x},${y})`}>
-      {lines.map((line, i) => (
-        <text
-          key={i}
-          x={0}
-          y={0}
-          dy={i === 0 ? 12 : 12 + i * 14}
-          textAnchor="middle"
-          fill={fill}
-          fontSize={fontSize}
-        >
-          {line}
-        </text>
-      ))}
-    </g>
-  )
-}
-
-const COMPACT_MAX_TICKS = 4
+import type { ChartTickProps } from 'Plugins/fido/shared/charts'
+import { useActivityChartGeometry } from '../hooks'
 
 const BAR_SERIES = [
   { key: 'regAttempts', labelKey: 'fields.agg_reg_attempts' },
@@ -88,9 +45,6 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
   barCategoryGap = '25%',
 }) => {
   const { t } = useTranslation()
-  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
-  const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
-  const chartGeometry = isMobile ? MOBILE_CHART_GEOMETRY : DESKTOP_CHART_GEOMETRY
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
@@ -102,28 +56,16 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
 
   const hasMultiLineLabel = useMemo(() => data.some((d) => d.label.includes('\n')), [data])
 
-  const denseBucketCount = isMobile
-    ? ACTIVITY_MOBILE_DENSE_BUCKET_COUNT
-    : isCompact
-      ? ACTIVITY_COMPACT_DENSE_BUCKET_COUNT
-      : ACTIVITY_DENSE_BUCKET_COUNT
-  const isDense = data.length > denseBucketCount
-  const cardTickInterval =
-    isCompact && !isDense ? Math.max(0, Math.ceil(data.length / COMPACT_MAX_TICKS) - 1) : 0
-  const tickFontSize = isCompact
-    ? MOBILE_CHART_GEOMETRY.TICK_FONT_SIZE
-    : chartGeometry.TICK_FONT_SIZE
-
-  const axisTick = useMemo(
-    () => ({ fill: axisColor, fontSize: tickFontSize }),
-    [axisColor, tickFontSize],
-  )
-  const minBucketWidth = isMobile
-    ? ACTIVITY_MIN_BUCKET_WIDTH.MOBILE
-    : isCompact
-      ? ACTIVITY_MIN_BUCKET_WIDTH.COMPACT
-      : ACTIVITY_MIN_BUCKET_WIDTH.DESKTOP
-  const scrollWidth = data.length > 0 ? data.length * minBucketWidth : undefined
+  const {
+    isMobile,
+    isCompact,
+    chartGeometry,
+    isDense,
+    cardTickInterval,
+    tickFontSize,
+    axisTick,
+    scrollWidth,
+  } = useActivityChartGeometry(data.length, axisColor)
 
   const legendItems = useMemo(
     () =>
@@ -169,7 +111,7 @@ const ActivityBarChart: React.FC<ActivityBarChartProps> = ({
               tickLine={false}
               interval={cardTickInterval}
               height={hasMultiLineLabel ? 50 : 30}
-              tick={(props: TickProps) => (
+              tick={(props: ChartTickProps) => (
                 <MultiLineTick {...props} fill={axisColor} fontSize={tickFontSize} />
               )}
             />

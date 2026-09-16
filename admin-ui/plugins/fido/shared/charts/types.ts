@@ -57,3 +57,14 @@ export type ChartCardProps = {
   isEmpty?: boolean
   children: (isFullscreen: boolean, zoom: number) => ReactNode
 }
+
+export type ChartTickProps = {
+  x?: number | string
+  y?: number | string
+  payload?: { value: string }
+}
+
+export type MultiLineTickProps = ChartTickProps & {
+  fill: string
+  fontSize?: number
+}

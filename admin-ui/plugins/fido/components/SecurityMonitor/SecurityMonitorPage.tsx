@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { GluuPageContent } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -53,13 +53,8 @@ const SecurityMonitorPage: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: [FIDO2_QUERY_ROOT] })
   }, [queryClient])
 
-  const dataRef = useRef(data)
-  useEffect(() => {
-    dataRef.current = data
-  })
-
   const handleExport = useCallback(() => {
-    const rows = buildSecurityExportRows(dataRef.current, t, period)
+    const rows = buildSecurityExportRows(data, t, period)
 
     if (!rows.length) {
       dispatch(updateToast(true, 'error', t('messages.no_data_to_export')))
@@ -81,7 +76,7 @@ const SecurityMonitorPage: React.FC = () => {
       `passkey-security-monitor-${createDate(nowValue).format('YYYYMMDD-HHmm')}.csv`,
       CSV_MIME_TYPE,
     )
-  }, [t, period, dispatch, nowValue])
+  }, [data, t, period, dispatch, nowValue])
 
   const tabNames = useMemo(
     () => [

@@ -24,6 +24,10 @@ const press = (key: string, init: KeyboardEventInit = {}) =>
   fireEvent.keyDown(document, { key, ...init })
 
 describe('useFullscreenModal', () => {
+  afterEach(() => {
+    document.body.style.overflow = ''
+  })
+
   it('moves focus to the close button when it opens', () => {
     render(<Harness isOpen onClose={jest.fn()} />)
 
