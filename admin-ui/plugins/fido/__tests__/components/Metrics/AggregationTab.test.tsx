@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import AggregationTab from 'Plugins/fido/components/Metrics/components/AggregationTab'
 
-jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/shared/api/useMetricsApi', () => ({
   useAggregationMetrics: jest.fn(() => ({ data: undefined, isLoading: false, isFetching: false })),
 }))
 
@@ -115,7 +115,7 @@ describe('AggregationTab', () => {
   })
 
   it('renders chart data from API entries when available', () => {
-    const { useAggregationMetrics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
+    const { useAggregationMetrics } = jest.requireMock('Plugins/fido/shared/api/useMetricsApi')
     useAggregationMetrics.mockReturnValueOnce({
       data: {
         entries: [

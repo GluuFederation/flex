@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { METRICS_ZOOM } from '../constants'
-import type { ChartScrollAnchor, ChartZoomControls } from '../types'
+import { CHART_ZOOM } from './constants'
+import type { ChartScrollAnchor, ChartZoomControls } from './types'
 
 const CHART_FRAME_SELECTOR = '[data-chart-frame]'
 
 const clampZoom = (value: number): number =>
-  Math.min(METRICS_ZOOM.MAX, Math.max(METRICS_ZOOM.MIN, value))
+  Math.min(CHART_ZOOM.MAX, Math.max(CHART_ZOOM.MIN, value))
 
 const readAnchor = (frame: HTMLElement): ChartScrollAnchor => ({
   x: frame.scrollWidth > 0 ? (frame.scrollLeft + frame.clientWidth / 2) / frame.scrollWidth : 0.5,
@@ -13,7 +13,7 @@ const readAnchor = (frame: HTMLElement): ChartScrollAnchor => ({
 })
 
 const useChartZoom = (active: boolean): ChartZoomControls => {
-  const [zoom, setZoom] = useState<number>(METRICS_ZOOM.DEFAULT)
+  const [zoom, setZoom] = useState<number>(CHART_ZOOM.DEFAULT)
   const surfaceRef = useRef<HTMLDivElement | null>(null)
   const anchorRef = useRef<ChartScrollAnchor | null>(null)
 
@@ -31,15 +31,12 @@ const useChartZoom = (active: boolean): ChartZoomControls => {
     [getFrame],
   )
 
-  const zoomIn = useCallback(() => applyZoom((current) => current + METRICS_ZOOM.STEP), [applyZoom])
-  const zoomOut = useCallback(
-    () => applyZoom((current) => current - METRICS_ZOOM.STEP),
-    [applyZoom],
-  )
-  const resetZoom = useCallback(() => applyZoom(() => METRICS_ZOOM.DEFAULT), [applyZoom])
+  const zoomIn = useCallback(() => applyZoom((current) => current + CHART_ZOOM.STEP), [applyZoom])
+  const zoomOut = useCallback(() => applyZoom((current) => current - CHART_ZOOM.STEP), [applyZoom])
+  const resetZoom = useCallback(() => applyZoom(() => CHART_ZOOM.DEFAULT), [applyZoom])
 
   useEffect(() => {
-    if (!active) setZoom(METRICS_ZOOM.DEFAULT)
+    if (!active) setZoom(CHART_ZOOM.DEFAULT)
   }, [active])
 
   useLayoutEffect(() => {
@@ -58,7 +55,7 @@ const useChartZoom = (active: boolean): ChartZoomControls => {
       if (!event.ctrlKey && !event.metaKey) return
       event.preventDefault()
       const direction = event.deltaY < 0 ? 1 : -1
-      applyZoom((current) => current + direction * METRICS_ZOOM.STEP)
+      applyZoom((current) => current + direction * CHART_ZOOM.STEP)
     }
     surface.addEventListener('wheel', onWheel, { passive: false })
     return () => surface.removeEventListener('wheel', onWheel)

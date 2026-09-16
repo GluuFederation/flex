@@ -17,7 +17,7 @@ import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
-import { useMetricsStyles } from '../MetricsPage.style'
+import { getScrollCanvasStyle, useMetricsStyles } from '../MetricsPage.style'
 import {
   ACTIVITY_DENSE_BUCKET_COUNT,
   ACTIVITY_COMPACT_DENSE_BUCKET_COUNT,
@@ -28,15 +28,17 @@ import {
   ACTIVITY_LINE_MAX_DOTS,
   ACTIVITY_LINE_STROKE_WIDTH,
   ACTIVITY_TREND_SERIES_COLORS,
-  RECHARTS_INITIAL_DIMENSION,
-  METRICS_CHART_HEIGHT,
-  METRICS_DESKTOP_CHART,
-  METRICS_MOBILE_CHART,
 } from '../constants'
 import { formatCompactNumber } from '../utils'
 import type { ActivityChartProps, ActivityDataPoint } from '../types'
-import MetricsChartCard from './MetricsChartCard'
-import ChartLegend from './ChartLegend'
+import {
+  CHART_HEIGHT,
+  ChartCard,
+  ChartLegend,
+  DESKTOP_CHART_GEOMETRY,
+  MOBILE_CHART_GEOMETRY,
+  RECHARTS_INITIAL_DIMENSION,
+} from 'Plugins/fido/shared/charts'
 
 type TickProps = {
   x?: number | string
@@ -75,16 +77,18 @@ const MultiLineTick = ({
 // bucket", the lines answer "which way is it heading across buckets".
 const COMPACT_MAX_TICKS = 4
 
+const ACTIVITY_ACTIVE_DOT = { r: ACTIVITY_LINE_DOT_RADIUS + 2 }
+
 const ActivityLineChart: React.FC<ActivityChartProps> = ({
   title,
   caption,
   data,
-  height = METRICS_CHART_HEIGHT.DESKTOP,
+  height = CHART_HEIGHT.DESKTOP,
 }) => {
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
   const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
-  const chartGeometry = isMobile ? METRICS_MOBILE_CHART : METRICS_DESKTOP_CHART
+  const chartGeometry = isMobile ? MOBILE_CHART_GEOMETRY : DESKTOP_CHART_GEOMETRY
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
@@ -117,9 +121,13 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
   const cardTickInterval =
     isCompact && !isDense ? Math.max(0, Math.ceil(data.length / COMPACT_MAX_TICKS) - 1) : 0
   const tickFontSize = isCompact
-    ? METRICS_MOBILE_CHART.TICK_FONT_SIZE
+    ? MOBILE_CHART_GEOMETRY.TICK_FONT_SIZE
     : chartGeometry.TICK_FONT_SIZE
 
+  const axisTick = useMemo(
+    () => ({ fill: axisColor, fontSize: tickFontSize }),
+    [axisColor, tickFontSize],
+  )
   const minBucketWidth = isMobile
     ? ACTIVITY_MIN_BUCKET_WIDTH.MOBILE
     : isCompact
@@ -144,27 +152,15 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
       className={isFullscreen ? classes.chartFullscreenFrame : classes.chartScrollArea}
       data-chart-frame={isFullscreen ? true : undefined}
     >
-      <div
-        style={
-          isFullscreen
-            ? {
-                width: scrollWidth ? scrollWidth * zoom : `${zoom * 100}%`,
-                minWidth: `${zoom * 100}%`,
-                flexShrink: 0,
-              }
-            : scrollWidth
-              ? { width: scrollWidth, minWidth: '100%' }
-              : undefined
-        }
-      >
+      <div style={getScrollCanvasStyle(isFullscreen, zoom, scrollWidth)}>
         <ResponsiveContainer
           key={`${isMobile}-${isCompact}-${isDense}-${isFullscreen}`}
           width="100%"
           height={
             isFullscreen
-              ? METRICS_CHART_HEIGHT.FULLSCREEN * zoom
+              ? CHART_HEIGHT.FULLSCREEN * zoom
               : isCompact && !isMobile
-                ? METRICS_CHART_HEIGHT.COMPACT
+                ? CHART_HEIGHT.COMPACT
                 : height
           }
           initialDimension={RECHARTS_INITIAL_DIMENSION}
@@ -185,7 +181,7 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
               )}
             />
             <YAxis
-              tick={{ fill: axisColor, fontSize: tickFontSize }}
+              tick={axisTick}
               axisLine={false}
               tickLine={false}
               width={chartGeometry.AXIS_WIDTH}
@@ -221,7 +217,7 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
                       }
                     : false
                 }
-                activeDot={{ r: ACTIVITY_LINE_DOT_RADIUS + 2 }}
+                activeDot={ACTIVITY_ACTIVE_DOT}
                 isAnimationActive={false}
               />
             ))}
@@ -232,14 +228,14 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({
   )
 
   return (
-    <MetricsChartCard title={title} caption={caption} zoomable isEmpty={data.length === 0}>
+    <ChartCard title={title} caption={caption} zoomable isEmpty={data.length === 0}>
       {(isFullscreen, zoom) => (
         <>
           {renderChart(isFullscreen, zoom)}
           {chartLegend}
         </>
       )}
-    </MetricsChartCard>
+    </ChartCard>
   )
 }
 

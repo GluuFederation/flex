@@ -4,17 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import MetricsChartCard from './MetricsChartCard'
-import ChartLegend from './ChartLegend'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import {
-  METRICS_CHART_COLORS,
-  METRICS_CHART_HEIGHT,
-  RECHARTS_INITIAL_DIMENSION,
-} from '../constants'
-import { useAdoptionMetrics } from '../hooks'
+import { METRICS_CHART_COLORS } from '../constants'
 import { formatChartValue, toNumber } from '../utils'
 import type {
   AdoptionDonutBox,
@@ -25,6 +18,14 @@ import type {
 import { fontWeights, fontFamily } from '@/styles/fonts'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
+import { useAdoptionMetrics } from 'Plugins/fido/shared/api'
+import {
+  ChartCard,
+  ChartLegend,
+  RECHARTS_INITIAL_DIMENSION,
+  getFullscreenCanvasStyle,
+  useChartShellStyles,
+} from 'Plugins/fido/shared/charts'
 
 const ARROW_S = 6
 const BAR_SIZE = 68
@@ -42,6 +43,8 @@ const SIDE_LABEL_MIN_WIDTH = 150
 const NARROW_CONTAINER_WIDTH = 620
 const SIDE_LABEL_GUTTER = 12
 const Y_MAX = 14
+
+const ADOPTION_Y_DOMAIN: [number, number] = [0, Y_MAX]
 const EMPTY_SURFACE_SIZES: Record<AdoptionSurface, ChartSurfaceSize> = {
   card: { width: 0, height: 0 },
   fullscreen: { width: 0, height: 0 },
@@ -70,6 +73,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes, cx } = useMetricsStyles({ isDark, themeColors })
+  const { classes: shell } = useChartShellStyles({ isDark, themeColors })
 
   const { data: adoptionData } = useAdoptionMetrics(dateRange)
 
@@ -335,23 +339,26 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
     classes,
   ])
 
-  const legendItems = [
-    {
-      key: 'newRegisteredUsers',
-      color: METRICS_CHART_COLORS.newUsers,
-      label: `${t('fields.new_registered_users')} ${newRegisteredUsers}`,
-    },
-    {
-      key: 'totalRegisteredUsers',
-      color: METRICS_CHART_COLORS.totalUsers,
-      label: `${t('fields.total_registered_users')} ${totalRegisteredUsers}`,
-    },
-    {
-      key: 'adoptionPasskeyRate',
-      color: METRICS_CHART_COLORS.adoptionRate,
-      label: `${t('fields.adoption_passkey_rate')} ${adoptionPasskeyRate}%`,
-    },
-  ]
+  const legendItems = useMemo(
+    () => [
+      {
+        key: 'newRegisteredUsers',
+        color: METRICS_CHART_COLORS.newUsers,
+        label: `${t('fields.new_registered_users')} ${newRegisteredUsers}`,
+      },
+      {
+        key: 'totalRegisteredUsers',
+        color: METRICS_CHART_COLORS.totalUsers,
+        label: `${t('fields.total_registered_users')} ${totalRegisteredUsers}`,
+      },
+      {
+        key: 'adoptionPasskeyRate',
+        color: METRICS_CHART_COLORS.adoptionRate,
+        label: `${t('fields.adoption_passkey_rate')} ${adoptionPasskeyRate}%`,
+      },
+    ],
+    [t, newRegisteredUsers, totalRegisteredUsers, adoptionPasskeyRate],
+  )
 
   const legendRow = (compact: boolean) =>
     compact ? (
@@ -403,7 +410,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
                   barSize={isMobile ? BAR_SIZE_NARROW : BAR_SIZE}
                   margin={chartMargin}
                 >
-                  <YAxis width={0} domain={[0, Y_MAX]} hide />
+                  <YAxis width={0} domain={ADOPTION_Y_DOMAIN} hide />
                   <XAxis dataKey="name" hide />
                   <Tooltip
                     cursor={false}
@@ -516,11 +523,7 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
         <div className={classes.chartFullscreenFrame} data-chart-frame>
           <div
             className={classes.adoptionFullscreenArea}
-            style={{
-              height: METRICS_CHART_HEIGHT.FULLSCREEN * zoom,
-              width: `${zoom * 100}%`,
-              flexShrink: 0,
-            }}
+            style={getFullscreenCanvasStyle(isFullscreen, zoom)}
           >
             {detailedLayout(true)}
           </div>
@@ -531,15 +534,15 @@ const PasskeyAdoptionChart: React.FC<PasskeyAdoptionChartProps> = ({ dateRange }
   }
 
   return (
-    <MetricsChartCard
+    <ChartCard
       title={t('titles.passkey_adoption_rate')}
       cardClassName="h-100"
-      bodyClassName={classes.chartCardBody}
+      bodyClassName={shell.chartCardBody}
       zoomable
       isEmpty={!hasUsers && adoptionPasskeyRate === 0}
     >
       {renderChart}
-    </MetricsChartCard>
+    </ChartCard>
   )
 }
 

@@ -6,6 +6,7 @@ import { CHART_EMPTY_INSET } from '../constants'
 import { buildVelocityScaffoldRows, getSecurityPalette } from '../utils'
 import SecurityChartCard from './SecurityChartCard'
 import type { VelocityHeatmapProps } from '../types'
+import { getZoomWidthStyle } from 'Plugins/fido/shared/charts'
 
 const VELOCITY_EMPTY_INSET = {
   top: CHART_EMPTY_INSET.VELOCITY_HEADER_HEIGHT,
@@ -37,67 +38,74 @@ const VelocityWatchHeatmap: React.FC<VelocityHeatmapProps> = ({ matrix }) => {
       emptyLabel={t('fields.no_data')}
       emptyInset={VELOCITY_EMPTY_INSET}
     >
-      <div className={classes.tableWrapper}>
-        <table className={classes.velocityTable}>
-          <thead>
-            <tr>
-              <th className={classes.velocityHeadIdentity} scope="col">
-                {t('fields.user')}
-              </th>
-              {matrix.cols.map((col) => (
-                <th key={col} className={classes.velocityHeadCell} scope="col">
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={row}>
-                <th
-                  className={classes.velocityRowIdentity}
-                  scope="row"
-                  title={row.trim() || undefined}
-                >
-                  {row}
-                </th>
-                {matrix.cols.map((col, colIndex) => {
-                  const cell = matrix.cells[rowIndex]?.[colIndex]
-                  const value = cell?.value ?? 0
-                  const background = !value
-                    ? palette.velocityCells.empty
-                    : cell?.isAnomalous
-                      ? palette.velocityCells.anomalous
-                      : palette.velocityCells.normal
-                  return (
-                    <td
-                      key={col}
-                      className={classes.velocityCell}
-                      style={{ backgroundColor: background }}
-                      title={
-                        value
-                          ? t('fields.velocity_cell_tooltip', {
-                              user: row,
-                              window: col,
-                              count: value,
-                            })
-                          : undefined
-                      }
-                      aria-label={
-                        cell?.isAnomalous
-                          ? t('fields.velocity_cell_anomalous', { count: value, window: col })
-                          : undefined
-                      }
+      {(isFullscreen, zoom) => (
+        <div
+          className={isFullscreen ? classes.chartFullscreenFrame : undefined}
+          data-chart-frame={isFullscreen ? true : undefined}
+        >
+          <div className={classes.tableWrapper} style={getZoomWidthStyle(isFullscreen, zoom)}>
+            <table className={classes.velocityTable}>
+              <thead>
+                <tr>
+                  <th className={classes.velocityHeadIdentity} scope="col">
+                    {t('fields.user')}
+                  </th>
+                  {matrix.cols.map((col) => (
+                    <th key={col} className={classes.velocityHeadCell} scope="col">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIndex) => (
+                  <tr key={row}>
+                    <th
+                      className={classes.velocityRowIdentity}
+                      scope="row"
+                      title={row.trim() || undefined}
                     >
-                      {value || ''}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                      {row}
+                    </th>
+                    {matrix.cols.map((col, colIndex) => {
+                      const cell = matrix.cells[rowIndex]?.[colIndex]
+                      const value = cell?.value ?? 0
+                      const background = !value
+                        ? palette.velocityCells.empty
+                        : cell?.isAnomalous
+                          ? palette.velocityCells.anomalous
+                          : palette.velocityCells.normal
+                      return (
+                        <td
+                          key={col}
+                          className={classes.velocityCell}
+                          style={{ backgroundColor: background }}
+                          title={
+                            value
+                              ? t('fields.velocity_cell_tooltip', {
+                                  user: row,
+                                  window: col,
+                                  count: value,
+                                })
+                              : undefined
+                          }
+                          aria-label={
+                            cell?.isAnomalous
+                              ? t('fields.velocity_cell_anomalous', { count: value, window: col })
+                              : undefined
+                          }
+                        >
+                          {value || ''}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </SecurityChartCard>
   )
 }

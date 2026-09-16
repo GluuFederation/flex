@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Tooltip from '@mui/material/Tooltip'
 import { useChartTheme } from '@/hooks/useChartTheme'
 import { useSecurityStyles } from '../SecurityMonitorPage.style'
@@ -14,17 +14,16 @@ const SecurityInfoTooltip: React.FC<SecurityInfoTooltipProps> = ({
   const { themeColors, isDark, cardBg } = useChartTheme()
   const { classes } = useSecurityStyles({ isDark, themeColors })
 
+  const tooltipClasses = useMemo(() => ({ tooltip: classes.infoTooltip }), [classes.infoTooltip])
+  const slotProps = useMemo(
+    () => ({ tooltip: { style: { backgroundColor: cardBg, color: themeColors.fontColor } } }),
+    [cardBg, themeColors.fontColor],
+  )
+
   if (!title) return <>{children}</>
 
   return (
-    <Tooltip
-      title={title}
-      placement={placement}
-      classes={{ tooltip: classes.infoTooltip }}
-      slotProps={{
-        tooltip: { style: { backgroundColor: cardBg, color: themeColors.fontColor } },
-      }}
-    >
+    <Tooltip title={title} placement={placement} classes={tooltipClasses} slotProps={slotProps}>
       <span className={classes.infoTooltipAnchor}>{children}</span>
     </Tooltip>
   )

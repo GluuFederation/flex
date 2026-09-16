@@ -1,54 +1,139 @@
 import { makeStyles } from 'tss-react/mui'
-import customColors, { getLoadingOverlayRgba, hexToRgb } from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 import {
   BORDER_RADIUS,
   FILTER_SHEET,
   ICON_SIZE,
-  MOBILE_MEDIA_QUERY,
-  MOBILE_PAGE_PADDING_X,
+  MOBILE_QUERY,
   OPACITY,
   SPACING,
-  STACKED_CHART_MAX_MEDIA_QUERY,
-  TABLET_MAX_MEDIA_QUERY,
+  STACKED_CHART_QUERY,
+  TABLET_MAX_QUERY,
 } from '@/constants'
-import { SHEET } from '@/components/MobileBottomNav/sheetConstants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { CHART_SCROLLBAR_GUTTER, METRICS_CHART_COLORS, METRICS_CHART_HEIGHT } from './constants'
+import { METRICS_CHART_COLORS } from './constants'
+import {
+  CHART_HEIGHT,
+  CHART_SCROLLBAR_GUTTER,
+  getCompactFullscreenFrameHeight,
+} from 'Plugins/fido/shared/charts'
 
 const Y_TICK_LINE_HEIGHT = 1
 const Y_AXIS_COLUMN_WIDTH = 28
 const Y_AXIS_TICK_GAP = 10
 
-const MOBILE_QUERY = `@media ${MOBILE_MEDIA_QUERY}`
-const STACKED_CHART_QUERY = `@media ${STACKED_CHART_MAX_MEDIA_QUERY}`
-const TABLET_QUERY = `@media ${TABLET_MAX_MEDIA_QUERY}`
 const ACTION_PREFERRED_WIDTH = 120
 const DATE_MIN_WIDTH = 180
 const DATE_WIDE_MIN_WIDTH = 240
 const DATE_DESKTOP_MIN_WIDTH = 220
 const DATE_WIDE_DESKTOP_MIN_WIDTH = 280
 const MOBILE_CARD_PADDING = 18
-const MOBILE_CARD_PADDING_BOTTOM = 10
 const MOBILE_CARD_GAP = 16
 const MOBILE_DONUT_SIZE = 90
 const MOBILE_DONUT_HOLE = Math.round(MOBILE_DONUT_SIZE * 0.62)
-const COMPACT_LEGEND_FONT_SIZE = 'clamp(9px, 2.6vw, 12px)'
-const COMPACT_LEGEND_GAP = 'clamp(24px, 7vw, 44px)'
 const FLUID_DONUT_SIZE = 'clamp(88px, 22vw, 150px)'
 const FLUID_DONUT_RIGHT = 'clamp(4px, 6vw, 70px)'
 const TAB_LABEL_INSET = 16
 const HEATMAP_AXIS_LABEL_FONT_SIZE = 'clamp(10px, 1.6vw, 14px)'
 const HEATMAP_AXIS_LABEL_GAP = 6
-const MODAL_COMPACT_MAX_HEIGHT = '80vh'
-const MODAL_COMPACT_CHROME_HEIGHT = 180
-const FULLSCREEN_FRAME_COMPACT_HEIGHT = `max(${METRICS_CHART_HEIGHT.MOBILE}px, calc(${MODAL_COMPACT_MAX_HEIGHT} - ${MODAL_COMPACT_CHROME_HEIGHT}px))`
+const FULLSCREEN_FRAME_COMPACT_HEIGHT = getCompactFullscreenFrameHeight(CHART_HEIGHT.MOBILE)
 
-const HEATMAP_MODAL_OVERLAY_LIGHT = getLoadingOverlayRgba(customColors.black, 0.55)
-const HEATMAP_MODAL_OVERLAY_DARK = getLoadingOverlayRgba(customColors.black, 0.7)
-const HEATMAP_MODAL_SHADOW_DARK = `0 24px 64px rgba(${hexToRgb(customColors.black)}, 0.6), 0 12px 32px rgba(${hexToRgb(customColors.black)}, 0.4)`
-const HEATMAP_MODAL_SHADOW_LIGHT = `0 24px 64px rgba(${hexToRgb(customColors.black)}, 0.25), 0 12px 32px rgba(${hexToRgb(customColors.black)}, 0.15)`
+export const getScrollCanvasStyle = (isFullscreen: boolean, zoom: number, scrollWidth?: number) => {
+  if (isFullscreen) {
+    return {
+      width: scrollWidth ? scrollWidth * zoom : `${zoom * 100}%`,
+      minWidth: `${zoom * 100}%`,
+      flexShrink: 0,
+    }
+  }
+  return scrollWidth ? { width: scrollWidth, minWidth: '100%' } : undefined
+}
+
+export const getAuthCanvasStyle = (
+  canvasHeight: number | undefined,
+  isFullscreen: boolean,
+  zoom: number,
+) =>
+  canvasHeight
+    ? {
+        height: canvasHeight,
+        width: isFullscreen ? `${zoom * 100}%` : undefined,
+        flexShrink: isFullscreen ? 0 : undefined,
+      }
+    : undefined
+
+export const getHeatmapAxisRowStyle = (verticalRowLabels: boolean, fullscreen: boolean) => ({
+  display: 'flex',
+  alignItems: 'flex-start' as const,
+  gap: verticalRowLabels ? 12 : 4,
+  ...(fullscreen ? { flexShrink: 0, width: 'max-content', minWidth: '100%' } : {}),
+})
+
+export const getHeatmapYAxisLabelStyle = (
+  fontSize: number,
+  color: string,
+  useNaturalWidth: boolean,
+) => ({
+  display: 'flex',
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+  writingMode: 'vertical-lr' as const,
+  transform: 'rotate(180deg)',
+  fontSize,
+  color,
+  minWidth: useNaturalWidth ? 12 : 16,
+  alignSelf: 'stretch' as const,
+})
+
+export const getHeatmapScrollStyle = (
+  fullscreen: boolean,
+  useVerticalScroll: boolean,
+  scrollMaxHeight: number,
+) =>
+  fullscreen
+    ? { flex: 'none', overflow: 'visible' as const }
+    : {
+        flex: 1,
+        minWidth: 0,
+        overflowX: 'auto' as const,
+        scrollbarGutter: 'stable' as const,
+        paddingBottom: CHART_SCROLLBAR_GUTTER,
+        marginBottom: CHART_SCROLLBAR_GUTTER,
+        ...(useVerticalScroll ? { maxHeight: scrollMaxHeight, overflowY: 'auto' as const } : {}),
+      }
+
+export const getHeatmapSvgStyle = (
+  svgWidth: number,
+  svgHeight: number,
+  options: {
+    fullscreen: boolean
+    zoomLevel: number
+    useNaturalWidth: boolean
+    useVerticalScroll: boolean
+    compact: boolean
+  },
+) => {
+  const { fullscreen, zoomLevel, useNaturalWidth, useVerticalScroll, compact } = options
+
+  if (fullscreen) {
+    return {
+      display: 'block' as const,
+      width: svgWidth * zoomLevel,
+      minWidth: svgWidth * zoomLevel,
+      height: svgHeight * zoomLevel,
+    }
+  }
+  if (useNaturalWidth) {
+    return { display: 'block' as const, width: svgWidth, minWidth: svgWidth, height: svgHeight }
+  }
+  return {
+    display: 'block' as const,
+    width: '100%',
+    ...(compact ? { maxWidth: svgWidth } : {}),
+    ...(useVerticalScroll ? { height: svgHeight } : { height: 'auto' as const }),
+  }
+}
 
 type MetricsStylesParams = {
   isDark: boolean
@@ -120,43 +205,11 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       isolation: 'isolate',
       pointerEvents: 'auto' as const,
     },
-    chartCard: {
-      'width': '100%',
-      'backgroundColor': cardBg,
-      ...cardBorderStyle,
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': '24px 28px',
-      [MOBILE_QUERY]: {
-        padding: `${MOBILE_CARD_PADDING}px ${MOBILE_CARD_PADDING}px ${MOBILE_CARD_PADDING_BOTTOM}px`,
-      },
-      'boxSizing': 'border-box' as const,
-      'height': '100%',
-      'position': 'relative' as const,
-      '& svg:focus, & svg *:focus': {
-        outline: 'none',
-      },
-    },
-    chartCaption: {
-      textAlign: 'center' as const,
-      fontSize: fontSizes.pill,
-      marginBottom: 16,
-      color: themeColors.fontColor,
-      [MOBILE_QUERY]: {
-        fontSize: fontSizes.xs,
-        marginBottom: 12,
-      },
-    },
-    chartModalCaption: {
-      textAlign: 'center' as const,
-      fontSize: fontSizes.description,
-      marginBottom: 16,
-      color: themeColors.fontColor,
-    },
     chartFullscreenFrame: {
       width: '100%',
-      height: METRICS_CHART_HEIGHT.FULLSCREEN,
-      minHeight: METRICS_CHART_HEIGHT.FULLSCREEN,
-      maxHeight: METRICS_CHART_HEIGHT.FULLSCREEN,
+      height: CHART_HEIGHT.FULLSCREEN,
+      minHeight: CHART_HEIGHT.FULLSCREEN,
+      maxHeight: CHART_HEIGHT.FULLSCREEN,
       overflow: 'auto' as const,
       overscrollBehavior: 'contain' as const,
       scrollbarGutter: 'stable' as const,
@@ -166,7 +219,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       flexDirection: 'column' as const,
       justifyContent: 'safe center',
       flexShrink: 0,
-      [TABLET_QUERY]: {
+      [TABLET_MAX_QUERY]: {
         height: FULLSCREEN_FRAME_COMPACT_HEIGHT,
         minHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
         maxHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
@@ -180,177 +233,6 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       scrollbarGutter: 'stable' as const,
       paddingBottom: CHART_SCROLLBAR_GUTTER,
       marginBottom: CHART_SCROLLBAR_GUTTER,
-    },
-    chartExpandButton: {
-      'position': 'absolute' as const,
-      'top': 12,
-      'right': 12,
-      'width': 32,
-      'height': 32,
-      'padding': 0,
-      'border': 'none',
-      'background': 'transparent',
-      'cursor': 'pointer',
-      'display': 'flex',
-      'alignItems': 'center',
-      'justifyContent': 'center',
-      'borderRadius': BORDER_RADIUS.SMALL,
-      'color': themeColors.fontColor,
-      'zIndex': 2,
-      '&:hover': {
-        backgroundColor: isDark
-          ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
-          : `rgba(${hexToRgb(customColors.black)}, 0.06)`,
-      },
-    },
-    chartModalOverlay: {
-      position: 'fixed' as const,
-      inset: 0,
-      backgroundColor: isDark ? HEATMAP_MODAL_OVERLAY_DARK : HEATMAP_MODAL_OVERLAY_LIGHT,
-      zIndex: 1040,
-      [MOBILE_QUERY]: {
-        zIndex: SHEET.Z_BAR_ELEVATED + 1,
-      },
-      cursor: 'pointer',
-      border: 'none',
-      padding: 0,
-      margin: 0,
-    },
-    chartModalContainer: {
-      ...cardBorderStyle,
-      position: 'fixed' as const,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: cardBg,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      boxShadow: isDark ? HEATMAP_MODAL_SHADOW_DARK : HEATMAP_MODAL_SHADOW_LIGHT,
-      width: 'min(1400px, 95vw)',
-      maxWidth: '95vw',
-      height: 'auto',
-      maxHeight: '92vh',
-      zIndex: 1050,
-      padding: 0,
-      boxSizing: 'border-box' as const,
-      display: 'flex',
-      [TABLET_QUERY]: {
-        width: `calc(100vw - ${MOBILE_PAGE_PADDING_X.MD * 2}px)`,
-        maxWidth: `calc(100vw - ${MOBILE_PAGE_PADDING_X.MD * 2}px)`,
-        height: 'auto',
-        maxHeight: MODAL_COMPACT_MAX_HEIGHT,
-        zIndex: SHEET.Z_BAR_ELEVATED + 2,
-      },
-      [theme.breakpoints.down('sm')]: {
-        width: `calc(100vw - ${MOBILE_PAGE_PADDING_X.SM * 2}px)`,
-        maxWidth: `calc(100vw - ${MOBILE_PAGE_PADDING_X.SM * 2}px)`,
-      },
-      flexDirection: 'column' as const,
-    },
-    chartModalHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '16px 24px',
-      [TABLET_QUERY]: {
-        padding: `12px ${MOBILE_CARD_PADDING}px`,
-      },
-      borderBottom: `1px solid ${themeColors.borderColor}`,
-      flexShrink: 0,
-    },
-    chartModalTitle: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.xl,
-      [TABLET_QUERY]: {
-        fontSize: fontSizes.description,
-      },
-      lineHeight: lineHeights.tight,
-      color: themeColors.fontColor,
-      margin: 0,
-    },
-    chartModalActions: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      flexShrink: 0,
-    },
-    chartZoomControls: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 4,
-      border: `1px solid ${themeColors.borderColor}`,
-      borderRadius: BORDER_RADIUS.SMALL,
-      padding: 2,
-    },
-    chartZoomButton: {
-      'width': 28,
-      'height': 28,
-      'padding': 0,
-      'border': 'none',
-      'background': 'transparent',
-      'cursor': 'pointer',
-      'display': 'flex',
-      'alignItems': 'center',
-      'justifyContent': 'center',
-      'borderRadius': BORDER_RADIUS.SMALL,
-      'color': themeColors.fontColor,
-      '&:disabled': {
-        opacity: OPACITY.DISABLED,
-        cursor: 'not-allowed',
-      },
-      '&:hover:not(:disabled)': {
-        backgroundColor: isDark
-          ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
-          : `rgba(${hexToRgb(customColors.black)}, 0.06)`,
-      },
-    },
-    chartZoomLevel: {
-      'minWidth': 46,
-      'height': 28,
-      'padding': '0 6px',
-      'border': 'none',
-      'background': 'transparent',
-      'cursor': 'pointer',
-      'borderRadius': BORDER_RADIUS.SMALL,
-      'fontFamily': fontFamily,
-      'fontSize': fontSizes.xs,
-      'fontWeight': fontWeights.semiBold,
-      'color': themeColors.fontColor,
-      '&:hover': {
-        backgroundColor: isDark
-          ? `rgba(${hexToRgb(customColors.white)}, 0.08)`
-          : `rgba(${hexToRgb(customColors.black)}, 0.06)`,
-      },
-    },
-    chartModalCloseButton: {
-      'width': 32,
-      'height': 32,
-      'padding': 0,
-      'border': 'none',
-      'background': 'transparent',
-      'cursor': 'pointer',
-      'display': 'flex',
-      'alignItems': 'center',
-      'justifyContent': 'center',
-      'borderRadius': '50%',
-      'color': themeColors.fontColor,
-      '&:hover': {
-        opacity: OPACITY.FULL - OPACITY.DISABLED,
-      },
-    },
-    chartModalBody: {
-      flex: '0 1 auto',
-      minHeight: 0,
-      padding: 24,
-      overflow: 'auto' as const,
-      overscrollBehavior: 'contain' as const,
-      WebkitOverflowScrolling: 'touch' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      [TABLET_QUERY]: {
-        flex: '0 1 auto',
-        padding: MOBILE_CARD_PADDING,
-      },
     },
     generalChartCol: {
       'flex': '0 0 100%',
@@ -372,7 +254,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       alignItems: 'center',
       justifyContent: 'center',
       width: '100%',
-      minHeight: METRICS_CHART_HEIGHT.COMPACT,
+      minHeight: CHART_HEIGHT.COMPACT,
       fontFamily,
       fontSize: fontSizes.description,
       color: themeColors.fontColor,
@@ -386,76 +268,6 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       textAlign: 'center' as const,
       marginTop: HEATMAP_AXIS_LABEL_GAP,
     },
-    chartLegendWrapper: {
-      position: 'relative' as const,
-      width: '100%',
-      minWidth: 0,
-      overflow: 'hidden' as const,
-    },
-    chartLegendWrapperGutter: {
-      paddingTop: CHART_SCROLLBAR_GUTTER,
-    },
-    chartLegend: {
-      display: 'flex',
-      flexWrap: 'nowrap' as const,
-      justifyContent: 'center',
-      alignItems: 'center',
-      columnGap: COMPACT_LEGEND_GAP,
-      rowGap: 4,
-      width: '100%',
-      minWidth: 0,
-    },
-    chartLegendGrid: {
-      'display': 'grid',
-      'gridTemplateColumns': 'auto auto',
-      'justifyContent': 'center',
-      'justifyItems': 'start',
-      '& > *:nth-of-type(odd):last-child': {
-        gridColumn: '1 / -1',
-        justifySelf: 'center',
-      },
-    },
-    chartLegendProbe: {
-      position: 'absolute' as const,
-      top: 0,
-      left: 0,
-      display: 'flex',
-      flexWrap: 'nowrap' as const,
-      alignItems: 'center',
-      columnGap: COMPACT_LEGEND_GAP,
-      width: 'max-content',
-      visibility: 'hidden' as const,
-      pointerEvents: 'none' as const,
-    },
-    chartLegendItem: {
-      display: 'flex',
-      flexDirection: 'row' as const,
-      alignItems: 'center',
-      gap: 8,
-      minWidth: 0,
-    },
-    chartLegendDot: {
-      display: 'inline-block',
-      width: 10,
-      height: 10,
-      borderRadius: '50%',
-      flexShrink: 0,
-    },
-    chartLegendDash: {
-      display: 'inline-block',
-      width: 14,
-      height: 4,
-      borderRadius: 2,
-      flexShrink: 0,
-    },
-    chartLegendLabel: {
-      fontFamily,
-      fontSize: COMPACT_LEGEND_FONT_SIZE,
-      fontWeight: fontWeights.semiBold,
-      lineHeight: lineHeights.normal,
-      color: themeColors.fontColor,
-      whiteSpace: 'nowrap' as const,
-    },
     chartRow: {
       [MOBILE_QUERY]: {
         '&&': {
@@ -467,20 +279,6 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
         '&& > [class*="col"]:not(:last-child)': {
           marginBottom: MOBILE_CARD_GAP,
         },
-      },
-    },
-    chartTitle: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.xl,
-      lineHeight: lineHeights.tight,
-      color: themeColors.fontColor,
-      marginTop: 0,
-      marginBottom: 16,
-      [MOBILE_QUERY]: {
-        fontSize: fontSizes.description,
-        fontWeight: fontWeights.semiBold,
-        marginBottom: 12,
       },
     },
     adoptionStatsRow: {
@@ -517,12 +315,12 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       flex: 1,
       minHeight: 340,
       [STACKED_CHART_QUERY]: {
-        minHeight: METRICS_CHART_HEIGHT.DESKTOP,
-        height: METRICS_CHART_HEIGHT.DESKTOP,
+        minHeight: CHART_HEIGHT.DESKTOP,
+        height: CHART_HEIGHT.DESKTOP,
       },
-      [TABLET_QUERY]: {
-        minHeight: METRICS_CHART_HEIGHT.COMPACT,
-        height: METRICS_CHART_HEIGHT.COMPACT,
+      [TABLET_MAX_QUERY]: {
+        minHeight: CHART_HEIGHT.COMPACT,
+        height: CHART_HEIGHT.COMPACT,
       },
       display: 'flex',
       flexDirection: 'column' as const,
@@ -597,8 +395,8 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       position: 'relative' as const,
       width: '100%',
       height: 320,
-      [TABLET_QUERY]: {
-        height: METRICS_CHART_HEIGHT.COMPACT,
+      [TABLET_MAX_QUERY]: {
+        height: CHART_HEIGHT.COMPACT,
       },
     },
     onboardingChartArea: {
@@ -664,7 +462,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
     filterDateField: {
       flex: 1,
       minWidth: DATE_DESKTOP_MIN_WIDTH,
-      [TABLET_QUERY]: {
+      [TABLET_MAX_QUERY]: {
         minWidth: DATE_MIN_WIDTH,
       },
       [MOBILE_QUERY]: {
@@ -675,7 +473,7 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
     filterDateFieldWide: {
       flex: 2,
       minWidth: DATE_WIDE_DESKTOP_MIN_WIDTH,
-      [TABLET_QUERY]: {
+      [TABLET_MAX_QUERY]: {
         minWidth: DATE_WIDE_MIN_WIDTH,
       },
       [MOBILE_QUERY]: {
@@ -792,11 +590,6 @@ export const useMetricsStyles = makeStyles<MetricsStylesParams>()((
       fontFamily,
       fontSize: fontSizes.sm,
       color: themeColors.fontColor,
-    },
-    chartCardBody: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      height: '100%',
     },
     adoptionLegend: {
       display: 'flex',

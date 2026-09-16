@@ -15,21 +15,21 @@ import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from 
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import MetricsChartCard from './MetricsChartCard'
-import ChartLegend from './ChartLegend'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
-import {
-  METRICS_CHART_COLORS,
-  METRICS_CHART_HEIGHT,
-  METRICS_DESKTOP_CHART,
-  METRICS_MOBILE_CHART,
-  RECHARTS_INITIAL_DIMENSION,
-} from '../constants'
-import { usePerformanceAnalytics } from '../hooks'
+import { METRICS_CHART_COLORS } from '../constants'
 import { formatChartValue, toNumber } from '../utils'
 import type { OnboardingTimeChartProps, OnboardingTimeEntry } from '../types'
+import { usePerformanceAnalytics } from 'Plugins/fido/shared/api'
+import {
+  ChartCard,
+  ChartLegend,
+  DESKTOP_CHART_GEOMETRY,
+  MOBILE_CHART_GEOMETRY,
+  RECHARTS_INITIAL_DIMENSION,
+  getFullscreenCanvasStyle,
+} from 'Plugins/fido/shared/charts'
 
 const ONBOARDING_DURATION_ROWS = [
   {
@@ -50,11 +50,19 @@ const ONBOARDING_COMPACT_MARGIN = { top: 24, right: 8, bottom: 5, left: 0 }
 const ONBOARDING_MARGIN = { top: 24, right: 5, bottom: 5, left: 5 }
 const ONBOARDING_COMPACT_AXIS_WIDTH = 56
 
+const ONBOARDING_CATEGORY_TICK_FONT_SIZE = { MOBILE: 11, DEFAULT: 13 }
+
+const ONBOARDING_VALUE_TICK_FONT_SIZE = { MOBILE: 10, DEFAULT: 12 }
+
+const ONBOARDING_AXIS_LABEL_FONT_SIZE = 12
+
+const ONBOARDING_AXIS_LABEL_OFFSET = 60
+
 const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) => {
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
   const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
-  const chartGeometry = isMobile ? METRICS_MOBILE_CHART : METRICS_DESKTOP_CHART
+  const chartGeometry = isMobile ? MOBILE_CHART_GEOMETRY : DESKTOP_CHART_GEOMETRY
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
@@ -63,6 +71,25 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
   const gridColor = themeColors.chart.gridColor
   const axisColor = themeColors.fontColor
+
+  const categoryTick = useMemo(
+    () => ({
+      fill: axisColor,
+      fontSize: isMobile
+        ? ONBOARDING_CATEGORY_TICK_FONT_SIZE.MOBILE
+        : ONBOARDING_CATEGORY_TICK_FONT_SIZE.DEFAULT,
+    }),
+    [axisColor, isMobile],
+  )
+  const valueTick = useMemo(
+    () => ({
+      fill: axisColor,
+      fontSize: isMobile
+        ? ONBOARDING_VALUE_TICK_FONT_SIZE.MOBILE
+        : ONBOARDING_VALUE_TICK_FONT_SIZE.DEFAULT,
+    }),
+    [axisColor, isMobile],
+  )
 
   const { data: performanceData } = usePerformanceAnalytics(dateRange)
 
@@ -86,17 +113,18 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
     [t],
   )
 
-  const bottomLegend = (
-    <ChartLegend
-      marker="dash"
-      items={legendItems.map((item) => ({
+  const bottomLegendItems = useMemo(
+    () =>
+      legendItems.map((item) => ({
         key: item.label,
         color: item.color,
         label: item.label,
         labelColor: item.color,
-      }))}
-    />
+      })),
+    [legendItems],
   )
+
+  const bottomLegend = <ChartLegend marker="dash" items={bottomLegendItems} />
 
   const legend = isCompact ? (
     bottomLegend
@@ -122,15 +150,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
         {!isFullscreen && !isCompact && legend}
         <div
           className={classes.onboardingCanvas}
-          style={
-            isFullscreen
-              ? {
-                  height: METRICS_CHART_HEIGHT.FULLSCREEN * zoom,
-                  width: `${zoom * 100}%`,
-                  flexShrink: 0,
-                }
-              : undefined
-          }
+          style={getFullscreenCanvasStyle(isFullscreen, zoom)}
         >
           <ResponsiveContainer
             width="100%"
@@ -145,22 +165,17 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
               margin={isCompact ? ONBOARDING_COMPACT_MARGIN : ONBOARDING_MARGIN}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-              <XAxis
-                dataKey="category"
-                tick={{ fill: axisColor, fontSize: isMobile ? 11 : 13 }}
-                axisLine={false}
-                tickLine={false}
-              />
+              <XAxis dataKey="category" tick={categoryTick} axisLine={false} tickLine={false} />
               <YAxis
                 label={{
                   value: t('fields.duration_msec'),
                   angle: -90,
                   position: 'insideLeft',
                   fill: axisColor,
-                  fontSize: 12,
-                  dy: 60,
+                  fontSize: ONBOARDING_AXIS_LABEL_FONT_SIZE,
+                  dy: ONBOARDING_AXIS_LABEL_OFFSET,
                 }}
-                tick={{ fill: axisColor, fontSize: isMobile ? 10 : 12 }}
+                tick={valueTick}
                 width={isCompact ? ONBOARDING_COMPACT_AXIS_WIDTH : undefined}
                 axisLine={false}
                 tickLine={false}
@@ -228,7 +243,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
   )
 
   return (
-    <MetricsChartCard
+    <ChartCard
       title={t('titles.onboarding_time_graph')}
       caption={t('titles.auth_vs_registration_performance')}
       zoomable
@@ -237,7 +252,7 @@ const OnboardingTimeChart: React.FC<OnboardingTimeChartProps> = ({ dateRange }) 
       )}
     >
       {renderChart}
-    </MetricsChartCard>
+    </ChartCard>
   )
 }
 
