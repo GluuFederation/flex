@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm" class="md-skip">
+        <a href="#gluu-flex-open-banking-vm-installation-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -2488,55 +2488,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vm-based-distribution" class="md-nav__link">
+  <a href="#installation-at-a-glance" class="md-nav__link">
     <span class="md-ellipsis">
-      VM Based Distribution
+      Installation at a glance
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#vm-preparation" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      VM Preparation
+      Prerequisites
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation">
+    <nav class="md-nav" aria-label="Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#certificate-generation-setup" class="md-nav__link">
+  <a href="#hardware-recommendation" class="md-nav__link">
     <span class="md-ellipsis">
-      Certificate Generation Setup
+      Hardware recommendation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#architecture-setup" class="md-nav__link">
+  <a href="#networking-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
-      Architecture Setup
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#uninstalling-gluu-flex-server" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstalling Gluu Flex Server
+      Networking recommendations
     </span>
   </a>
   
@@ -2548,19 +2530,118 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mtls-configuration" class="md-nav__link">
+  <a href="#dns-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      MTLS Configuration
+      DNS Setup
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="MTLS Configuration">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flex-license-and-ssa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex license and SSA
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-banking-keys-and-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open Banking keys and certificates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-ubuntu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prepare Ubuntu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-sigstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Sigstore
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-janssen-open-banking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Janssen Open Banking
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verify-the-base-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify the base installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-gluu-flex-and-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Gluu Flex and Admin UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure certificates
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure certificates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore" class="md-nav__link">
+  <a href="#create-a-private-test-ca" class="md-nav__link">
     <span class="md-ellipsis">
-      Importing the CA certificate in JVM truststore and signing, encryption keys into auth-Server keystore:
+      Create a private test CA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-https-server-certificate-with-san" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the HTTPS server certificate with SAN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-test-mtls-client-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a test mTLS client certificate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-apache-mtls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Apache mTLS
     </span>
   </a>
   
@@ -2572,9 +2653,156 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#accessing-the-platform" class="md-nav__link">
+  <a href="#trust-the-issuing-ca-in-java" class="md-nav__link">
     <span class="md-ellipsis">
-      Accessing the Platform
+      Trust the issuing CA in Java
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-ui-configuration-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin UI configuration checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin UI configuration checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-loopback-for-the-backends-own-introspection-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use loopback for the backend's own introspection call
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ensure-discovery-advertises-userinfo_endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ensure discovery advertises userinfo_endpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-and-verify-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Start and verify the system
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#activate-and-access-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Activate and access Admin UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Admin UI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Admin UI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fast-diagnostic-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast diagnostic commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symptom-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symptom matrix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Certificate diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#important-log-locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important log locations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backup-before-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup before changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routine-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Routine operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-acceptance-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final acceptance checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference documentation
     </span>
   </a>
   
@@ -2905,55 +3133,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vm-based-distribution" class="md-nav__link">
+  <a href="#installation-at-a-glance" class="md-nav__link">
     <span class="md-ellipsis">
-      VM Based Distribution
+      Installation at a glance
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#vm-preparation" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      VM Preparation
+      Prerequisites
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation">
+    <nav class="md-nav" aria-label="Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#certificate-generation-setup" class="md-nav__link">
+  <a href="#hardware-recommendation" class="md-nav__link">
     <span class="md-ellipsis">
-      Certificate Generation Setup
+      Hardware recommendation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#architecture-setup" class="md-nav__link">
+  <a href="#networking-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
-      Architecture Setup
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#uninstalling-gluu-flex-server" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstalling Gluu Flex Server
+      Networking recommendations
     </span>
   </a>
   
@@ -2965,19 +3175,118 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mtls-configuration" class="md-nav__link">
+  <a href="#dns-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      MTLS Configuration
+      DNS Setup
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="MTLS Configuration">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flex-license-and-ssa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex license and SSA
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-banking-keys-and-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open Banking keys and certificates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-ubuntu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prepare Ubuntu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-sigstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Sigstore
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-janssen-open-banking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Janssen Open Banking
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verify-the-base-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify the base installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-gluu-flex-and-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Gluu Flex and Admin UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure certificates
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure certificates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore" class="md-nav__link">
+  <a href="#create-a-private-test-ca" class="md-nav__link">
     <span class="md-ellipsis">
-      Importing the CA certificate in JVM truststore and signing, encryption keys into auth-Server keystore:
+      Create a private test CA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-https-server-certificate-with-san" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the HTTPS server certificate with SAN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-test-mtls-client-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a test mTLS client certificate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-apache-mtls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Apache mTLS
     </span>
   </a>
   
@@ -2989,9 +3298,156 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#accessing-the-platform" class="md-nav__link">
+  <a href="#trust-the-issuing-ca-in-java" class="md-nav__link">
     <span class="md-ellipsis">
-      Accessing the Platform
+      Trust the issuing CA in Java
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-ui-configuration-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin UI configuration checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin UI configuration checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-loopback-for-the-backends-own-introspection-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use loopback for the backend's own introspection call
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ensure-discovery-advertises-userinfo_endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ensure discovery advertises userinfo_endpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-and-verify-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Start and verify the system
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#activate-and-access-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Activate and access Admin UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-admin-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Admin UI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Admin UI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fast-diagnostic-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast diagnostic commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symptom-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symptom matrix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Certificate diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#important-log-locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important log locations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backup-before-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup before changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routine-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Routine operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-acceptance-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final acceptance checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference documentation
     </span>
   </a>
   
@@ -3017,152 +3473,786 @@
   
 
 
-<h1 id="installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm">Installing and Configuring Gluu Open Banking Identity Platform on a VM<a class="headerlink" href="#installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm" title="Permanent link">#</a></h1>
-<h2 id="vm-based-distribution">VM Based Distribution<a class="headerlink" href="#vm-based-distribution" title="Permanent link">#</a></h2>
-<p>This section covers details on installing Gluu Openbanking Indentity Platform 1.0 in a VM. We recommend the Cloud Native Distribution for production environment. However, for development and testing VM distribution will be easier.</p>
-<h2 id="vm-preparation">VM Preparation<a class="headerlink" href="#vm-preparation" title="Permanent link">#</a></h2>
-<p>Prepare a VM with the following minimum specs:</p>
-<ul>
-<li>4 GB RAM</li>
-<li>2 GB swap space</li>
-<li>2 CPU units</li>
-<li>50 GB disk space</li>
-</ul>
-<p>The VM must have a static IP address and a resolvable hostname. A fully qualified domain name (FQDN) is required for production deployments.</p>
-<p>The Gluu Open Banking Identity Platform can be installed on main Linux distributions.</p>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
-<p>Download the installer (<code>install.py</code>)
-<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/JanssenProject/jans/main/jans-linux-setup/jans_setup/install.py
-</code></pre></div>
-Execute the installer:
-<div class="highlight"><pre><span></span><code>sudo python3 install.py --profile openbanking
-</code></pre></div></p>
-<p>The installation script will install required tools, programs, packages and then it will prompt the user for setup instructions. Answer the following questions:</p>
-<h3 id="certificate-generation-setup">Certificate Generation Setup<a class="headerlink" href="#certificate-generation-setup" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Prompt</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Enter IP Address</td>
-<td>The IP address for the VM. <strong>Use an IP address assigned to one of this server's network interfaces (usage of addresses assigned to loopback interfaces is not supported)</strong></td>
-</tr>
-<tr>
-<td>Enter Hostname</td>
-<td>The hostname for the VM. Recommended to be a FQDN</td>
-</tr>
-<tr>
-<td>Enter your city or locality</td>
-<td>Used to generate X.509 certificates.</td>
-</tr>
-<tr>
-<td>Enter your state or province two letter code</td>
-<td>Used to generate X.509 certificates.</td>
-</tr>
-<tr>
-<td>Enter two letter Country Code</td>
-<td>Used to generate X.509 certificates.</td>
-</tr>
-<tr>
-<td>Enter Organization Name</td>
-<td>Used to generate X.509 certificates.</td>
-</tr>
-<tr>
-<td>Enter email address for support at your organization</td>
-<td>Used to generate X.509 certificates.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="architecture-setup">Architecture Setup<a class="headerlink" href="#architecture-setup" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Prompt</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Enter maximum RAM for applications in MB</td>
-<td>Maximum RAM Size in MB</td>
-</tr>
-<tr>
-<td>RDBM Type</td>
-<td>Backend type. Currently only MySQL is supported</td>
-</tr>
-<tr>
-<td>Use remote RDBM</td>
-<td>Select if connecting to an external MySQL server</td>
-</tr>
-<tr>
-<td>Enter Openbanking static kid</td>
-<td>The fallback key when key is not passed in requests (as required by Openbanking)</td>
-</tr>
-<tr>
-<td>Use external key</td>
-<td>If yes, link to an external Open Banking key file</td>
-</tr>
-</tbody>
-</table>
-<p>Before the last question installer process will display the selected choices and confirm to proceed.</p>
-<table>
-<thead>
-<tr>
-<th>Prompt</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Proceed with these values [Y/n]</td>
-<td>Confirmation before setting up the services.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="uninstalling-gluu-flex-server">Uninstalling Gluu Flex Server<a class="headerlink" href="#uninstalling-gluu-flex-server" title="Permanent link">#</a></h3>
-<p>Execute the installation script with the <code>-uninstall</code> argument.</p>
-<h2 id="mtls-configuration">MTLS Configuration<a class="headerlink" href="#mtls-configuration" title="Permanent link">#</a></h2>
-<p>For MTLS, OBIE-issued (for openbanking UK) certificates and keys should be used. The following discussion assumes that the file <code>ca.crt</code> has a CA certificate and <code>ca.key</code> has a CA private key.
-Following command generates self-signed ca.crt and ca.key:
-<div class="highlight"><pre><span></span><code>openssl req -newkey rsa:2048 -nodes -keyform PEM -keyout ca.key -x509 -days 3650 -outform PEM -out ca.crt
-</code></pre></div></p>
-<p>The following set of commands is an example of how to create the server’s private key (<code>server.key</code>), Certificate Signing Request (CSR) (<code>server.csr</code>) and certificate (<code>server.crt)</code>:</p>
-<div class="highlight"><pre><span></span><code>openssl genrsa -out server.key 2048
-openssl req -new -key server.key -out server.csr
-openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -set_serial 100 -days 365 -outform PEM -out server.crt
-</code></pre></div>
-<p>Now, store the server key (<code>server.key</code>) and certificate (<code>server.crt</code>) file in some location (preferably inside <code>/etc/certs</code>) and set its path in the apache <code>.conf</code> file (<code>/etc/apache2/sites-enabled/https_jans.conf</code>) with  <code>SSLCertificateFile</code> and  <code>SSLCertificateKeyFile</code> directives:</p>
-<div class="highlight"><pre><span></span><code>SSLCertificateFile /etc/certs/bankgluu/server.crt
-SSLCertificateKeyFile /etc/certs/bankgluu/server.key
-</code></pre></div>
-<p>The path of CA certificate file should be set to SSLCACertificateFile directive as:</p>
-<div class="highlight"><pre><span></span><code>SSLCACertificateFile /etc/apache2/certs/matls.pem    
-</code></pre></div>
-<p>The following commands will create client’s private key (<code>client.key</code>), CSR (<code>client.csr</code>) and certificate (<code>client.crt</code>):</p>
-<div class="highlight"><pre><span></span><code>openssl genrsa -out client.key 2048
-openssl req -new -key client.key -out client.csr
-openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -set_serial 101 -days 365 -outform PEM -out client.crt
-</code></pre></div>
-<p>The following command will create a client certification chain (private key, public certificate and ca certificate) into the file <code>client.pem</code>:</p>
-<div class="highlight"><pre><span></span><code>cat client.key client.crt ca.crt &gt;client.pem
-</code></pre></div>
-<p>Use this pem file to create JWKs for the clients (if required). To create a JWK, you can use a free utility published at <a href="https://mkjwk.org">https://mkjwk.org</a>. Or you can download the command-line tool from <a href="https://github.com/mitreid-connect/json-web-key-generator">GitHub</a>. There are numerous other online PEM-to-JWKS tools available like <a href="https://8gwifi.org/jwkconvertfunctions.jsp">JWKConvertFunctions</a>. We may need to add/update some data in these generated JWKs.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is important to give different values of the Common Name field (“Common Name (e.g. server FQDN or YOUR name) []”) for the CA, Server and  clients. Other fields may have common values but the same values for Common Name of all certificates result in certificate verification failing at runtime.</p>
+<h1 id="gluu-flex-open-banking-vm-installation-guide">Gluu Flex Open Banking VM Installation Guide<a class="headerlink" href="#gluu-flex-open-banking-vm-installation-guide" title="Permanent link">#</a></h1>
+<p>This guide installs Gluu Flex Open Banking on Ubuntu 24.04 LTS using
+the command-line installer that ships with the distribution.
+The process requires no prior configuration outside of standard VM,
+networking, and DNS preparation.
+It covers certificates, software installation, Admin UI integration,
+and a comprehensive post-installation acceptance checklist.</p>
+<div class="admonition warning">
+<p class="admonition-title">Not recommended for production deployments</p>
+<p>VM installation is suitable only for
+development, QA, interoperability testing, or demonstrations. For
+production deployments please use the <a href="../install-cn/">cloud-native distribution</a></p>
 </div>
-<h3 id="importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore">Importing the CA certificate in JVM truststore and signing, encryption keys into auth-Server keystore:<a class="headerlink" href="#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore" title="Permanent link">#</a></h3>
-<p>The command line utility keytool is installed with JDK, it can be used to import the CA certificate in JVM truststore (/opt/jre/lib/security/cacerts) and  signing,encryption keys into the jans-auth server’s keystore(/etc/certs/jans-auth-keys.jks).</p>
-<div class="highlight"><pre><span></span><code>./keytool -importcert -file /path/to/file/filename.cer -keystore /etc/certs/jans-auth-keys.jks -alias yourkeystore
-
-./keytool -importkeystore -srckeystore /path/to/file/filename.jks -srcstoretype JKS -destkeystore /opt/jre/lib/security/cacerts -deststoretype JKS
+<h2 id="installation-at-a-glance">Installation at a glance<a class="headerlink" href="#installation-at-a-glance" title="Permanent link">#</a></h2>
+<p>Steps in this guide installs the following software components.</p>
+<ul>
+<li>Ubuntu 24.04 LTS</li>
+<li>Apache 2.4</li>
+<li>MySQL 8</li>
+<li>Amazon Corretto Java 17</li>
+<li>Jetty 12</li>
+<li>Jans Auth</li>
+<li>Jans Config API</li>
+<li>Jans CLI/TUI</li>
+<li>Jans FIDO2</li>
+<li>Open Banking scripts and profiles</li>
+<li>Gluu Flex Admin UI and its Config API plugin</li>
+<li>A local 2 GB swap file</li>
+</ul>
+<p>At a high-level, following steps are involved in installation of Gluu Flex Open Banking on Ubuntu VM.</p>
+<ol>
+<li>Create an Ubuntu 24.04 VM and static DNS record.</li>
+<li>Open 443 and restrict SSH.</li>
+<li>Obtain the Flex SSA and production certificates, or create test certificates.</li>
+<li>Run the version-pinned Jans installer with the Open Banking profile.</li>
+<li>Confirm Jans Auth, Config API, Apache, and MySQL are healthy.</li>
+<li>Install the matching Flex package and Admin UI.</li>
+<li>Install the SAN-enabled HTTPS certificate and mTLS CA in Apache.</li>
+<li>Import the issuing CA into Java's trust store.</li>
+<li>Validate OIDC discovery and the Admin UI backend introspection route.</li>
+<li>Import the test client certificate into the browser.</li>
+<li>Activate Flex with the SSA and sign in to <code>/admin/</code>.</li>
+<li>Complete the acceptance checklist and take an off-host backup.</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<h3 id="hardware-recommendation">Hardware recommendation<a class="headerlink" href="#hardware-recommendation" title="Permanent link">#</a></h3>
+<p>Prepare a fresh Ubuntu 24.04 LTS x86-64 VM with following hardware configuration:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>CPU units</th>
+<th>RAM</th>
+<th>Disk size</th>
+<th>Swap size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minimum</td>
+<td>2 vCPUs</td>
+<td>4 GB</td>
+<td>50 GB</td>
+<td>2 GB</td>
+</tr>
+<tr>
+<td>Recommended</td>
+<td>4 vCPUs</td>
+<td>8 GB</td>
+<td>100 GB</td>
+<td>2 GB</td>
+</tr>
+</tbody>
+</table>
+<h3 id="networking-recommendations">Networking recommendations<a class="headerlink" href="#networking-recommendations" title="Permanent link">#</a></h3>
+<p>Followig are the recommendations for network connectivity from the VM:</p>
+<ul>
+<li>One stable public IP address</li>
+<li>Working outbound HTTPS access</li>
+<li>Inbound TCP 443 from intended clients</li>
+<li>Inbound TCP 22 restricted to administrator IP addresses</li>
+<li>TCP 80 only if needed for certificate issuance or redirecting to HTTPS</li>
+<li>Do not expose ports 8074, 8081, or 3306 publicly.</li>
+</ul>
+<h2 id="dns-setup">DNS Setup<a class="headerlink" href="#dns-setup" title="Permanent link">#</a></h2>
+<p>Create an <code>A</code> record before installation:</p>
+<div class="highlight"><pre><span></span><code>id.example.org  -&gt;  203.0.113.10
 </code></pre></div>
-<h2 id="accessing-the-platform">Accessing the Platform<a class="headerlink" href="#accessing-the-platform" title="Permanent link">#</a></h2>
-<p>After successful installation, access the Gluu Open Banking Platform using either <a href="https://docs.gluu.org/nightly/openbanking/jans-cli/">jans-cli</a> or <a href="https://docs.gluu.org/nightly/openbanking/curl/">curl</a>.</p>
+<p>Confirm it from a machine outside the VM:</p>
+<div class="highlight"><pre><span></span><code>dig<span class="w"> </span>+short<span class="w"> </span>id.example.org<span class="w"> </span>A
+</code></pre></div>
+<p>The result must be the VM's stable public IP. The hostname must not change after installation.</p>
+<h2 id="flex-license-and-ssa">Flex license and SSA<a class="headerlink" href="#flex-license-and-ssa" title="Permanent link">#</a></h2>
+<p>Obtain a Software Statement Assertion (SSA) for the Flex license and save it as a text file in a protected location. The Admin UI will request it during initial activation. Treat the SSA as sensitive.</p>
+<h2 id="open-banking-keys-and-certificates">Open Banking keys and certificates<a class="headerlink" href="#open-banking-keys-and-certificates" title="Permanent link">#</a></h2>
+<p>For production, obtain the certificates required by the applicable Open Banking trust framework. For a private QA environment, this guide shows how to create a private test CA, server certificate, and client certificate.</p>
+<p>Never use the same subject or Common Name for the CA, server, and client certificates. A safe pattern is:</p>
+<table>
+<thead>
+<tr>
+<th>Certificate</th>
+<th>Example Common Name</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test root CA</td>
+<td><code>Flex OB Test Root CA</code></td>
+<td>Signs test certificates</td>
+</tr>
+<tr>
+<td>HTTPS server</td>
+<td><code>id.example.org</code></td>
+<td>Apache server identity</td>
+</tr>
+<tr>
+<td>Test client</td>
+<td><code>ob-test-client-01</code></td>
+<td>Browser or TPP mTLS identity</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prepare-ubuntu">Prepare Ubuntu<a class="headerlink" href="#prepare-ubuntu" title="Permanent link">#</a></h2>
+<p>Log in using an administrative account and define values for this deployment:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">FQDN</span><span class="o">=</span>id.example.org
+<span class="nv">PUBLIC_IP</span><span class="o">=</span><span class="m">203</span>.0.113.10
+<span class="nv">JANS_VERSION</span><span class="o">=</span><span class="m">2</span>.3.0
+<span class="nv">FLEX_VERSION</span><span class="o">=</span><span class="m">6</span>.3.0
+<span class="nv">OPENBANKING_PROFILE_VERSION</span><span class="o">=</span><span class="m">6</span>.3.0-1
+<span class="nv">COSIGN_VERSION</span><span class="o">=</span><span class="m">3</span>.1.2
+<span class="nv">COSIGN_DEB_SHA256</span><span class="o">=</span>f458f6bd2f3d11ac803ec0dba31c836a82364bcd3a5a09e2aa6adef57a0f7d1b
+<span class="nv">CERT_DIR</span><span class="o">=</span>/etc/certs/ob
+</code></pre></div>
+<p>Update the host and install basic tools:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>full-upgrade
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="w"> </span>wget<span class="w"> </span>jq<span class="w"> </span>unzip<span class="w"> </span>ca-certificates<span class="w"> </span>openssl<span class="w"> </span>chrony
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>chrony
+</code></pre></div>
+<p>If the upgrade installs a new kernel, reboot now and reconnect before continuing.</p>
+<p>Set the hostname:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>hostnamectl<span class="w"> </span>set-hostname<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FQDN</span><span class="s2">&quot;</span>
+hostnamectl
+</code></pre></div>
+<p>Make sure <code>/etc/hosts</code> contains the private interface address and FQDN. Do not map the FQDN only to <code>127.0.0.1</code>.</p>
+<p>If the VM has less than 2 GB swap, create a swap file:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>fallocate<span class="w"> </span>-l<span class="w"> </span>2G<span class="w"> </span>/swapfile
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/swapfile
+sudo<span class="w"> </span>mkswap<span class="w"> </span>/swapfile
+sudo<span class="w"> </span>swapon<span class="w"> </span>/swapfile
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;/swapfile none swap sw 0 0&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/fstab
+free<span class="w"> </span>-h
+</code></pre></div>
+<p>Configure the firewall:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">443</span>/tcp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span>from<span class="w"> </span>YOUR_ADMIN_IP<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">22</span><span class="w"> </span>proto<span class="w"> </span>tcp
+sudo<span class="w"> </span>ufw<span class="w"> </span><span class="nb">enable</span>
+sudo<span class="w"> </span>ufw<span class="w"> </span>status<span class="w"> </span>verbose
+</code></pre></div>
+<p>Replace <code>YOUR_ADMIN_IP</code> before enabling UFW. Keep the current SSH session open until a second SSH login succeeds.</p>
+<p>Open TCP port 80 only if the selected certificate issuer needs an HTTP challenge or Apache will redirect HTTP to HTTPS:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">80</span>/tcp
+</code></pre></div>
+<p>Otherwise, omit that rule and leave TCP port 80 closed.</p>
+<h2 id="install-sigstore">Install Sigstore<a class="headerlink" href="#install-sigstore" title="Permanent link">#</a></h2>
+<p>The Jans and Flex release packages are signed with Sigstore. Install the pinned <code>cosign</code> package before downloading either product package:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
+wget<span class="w"> </span><span class="s2">&quot;https://github.com/sigstore/cosign/releases/download/v</span><span class="si">${</span><span class="nv">COSIGN_VERSION</span><span class="si">}</span><span class="s2">/cosign_</span><span class="si">${</span><span class="nv">COSIGN_VERSION</span><span class="si">}</span><span class="s2">_amd64.deb&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">COSIGN_DEB_SHA256</span><span class="si">}</span><span class="s2">  cosign_</span><span class="si">${</span><span class="nv">COSIGN_VERSION</span><span class="si">}</span><span class="s2">_amd64.deb&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>sha256sum<span class="w"> </span>--check
+
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="s2">&quot;/tmp/cosign_</span><span class="si">${</span><span class="nv">COSIGN_VERSION</span><span class="si">}</span><span class="s2">_amd64.deb&quot;</span>
+cosign<span class="w"> </span>version
+</code></pre></div>
+<p>The checksum is the SHA-256 digest published for the <code>v3.1.2</code> GitHub release asset. Do not continue unless <code>sha256sum</code> reports <code>OK</code> and <code>cosign version</code> reports <code>v3.1.2</code>. When updating <code>COSIGN_VERSION</code>, obtain the new digest independently from the official Sigstore release page and update both values together.</p>
+<h2 id="install-janssen-open-banking">Install Janssen Open Banking<a class="headerlink" href="#install-janssen-open-banking" title="Permanent link">#</a></h2>
+<p>Flex 6.3.0 corresponds to Janssen 2.3.0. Always confirm the compatible versions on the release pages before using newer versions.</p>
+<p>The official Open Banking VM workflow runs Jans setup with <code>--profile openbanking</code>. Install the versioned, signed release package instead of downloading a Python installer from a mutable source branch:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
+wget<span class="w"> </span><span class="s2">&quot;https://github.com/JanssenProject/jans/releases/download/v</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">/jans_</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+wget<span class="w"> </span><span class="s2">&quot;https://github.com/JanssenProject/jans/releases/download/v</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">/jans-ubuntu24-</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">-stable.bundle&quot;</span>
+
+cosign<span class="w"> </span>verify-blob<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bundle<span class="w"> </span><span class="s2">&quot;jans-ubuntu24-</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">-stable.bundle&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--certificate-identity-regexp<span class="w"> </span><span class="s1">&#39;https://github.com/JanssenProject/jans&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--certificate-oidc-issuer<span class="w"> </span><span class="s1">&#39;https://token.actions.githubusercontent.com&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;jans_</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="s2">&quot;/tmp/jans_</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--profile<span class="w"> </span>openbanking<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--setup-branch<span class="w"> </span><span class="s2">&quot;v</span><span class="si">${</span><span class="nv">JANS_VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--openbanking-setup-branch<span class="w"> </span><span class="s2">&quot;v</span><span class="si">${</span><span class="nv">OPENBANKING_PROFILE_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>Do not install the package unless <code>cosign</code> reports <code>Verified OK</code>. This verification binds the installer to the Janssen release workflow rather than merely calculating a checksum for an untrusted download. The setup command also pins both source overlays to release tags that match Flex 6.3.0. The Open Banking profile is in a private Gluu repository, so the installer prompts for an authorized GitHub token; enter it only at the prompt, never as a command-line argument or shell-history entry.</p>
+<p>The profile asks for:</p>
+<ul>
+<li>VM IP and FQDN</li>
+<li>Certificate subject information</li>
+<li>Maximum application memory</li>
+<li>MySQL persistence</li>
+<li>An Open Banking static <code>kid</code></li>
+<li>Whether an external Open Banking signing key will be used</li>
+<li>Confirmation before it writes the configuration</li>
+</ul>
+<p>If you supply an external private key, copy it to a root-only directory and set mode <code>600</code> before setup. Never paste the private key or its password into a ticket, chat, or shared log.</p>
+<p>Enter values appropriate to your environment for the following inputs:</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>Recommended value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IP address</td>
+<td>The VM interface address requested by the installer</td>
+</tr>
+<tr>
+<td>Hostname</td>
+<td><code>id.example.org</code></td>
+</tr>
+<tr>
+<td>Organization details</td>
+<td>Your real organization details</td>
+</tr>
+<tr>
+<td>Application memory</td>
+<td><code>4096</code> MB on an 8 GB VM</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>Remote database</td>
+<td>No for this single-node guide</td>
+</tr>
+<tr>
+<td>Open Banking static <code>kid</code></td>
+<td>A unique identifier matching the signing-key plan</td>
+</tr>
+<tr>
+<td>External Open Banking key</td>
+<td>Yes only when a protected key has already been prepared</td>
+</tr>
+<tr>
+<td>Jans Auth</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Config API</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Jans CLI/TUI</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>FIDO2</td>
+<td>Yes if required</td>
+</tr>
+<tr>
+<td>SCIM, Casa, Link, Lock</td>
+<td>Only when required</td>
+</tr>
+<tr>
+<td>Admin password</td>
+<td>A unique password from a password manager</td>
+</tr>
+</tbody>
+</table>
+<p>Let setup finish completely and the Java service start. First startup may take several minutes.</p>
+<p>Logs can be monitored at:</p>
+<div class="highlight"><pre><span></span><code>/opt/jans/jans-setup/logs/setup.log
+</code></pre></div>
+<h2 id="verify-the-base-installation">Verify the base installation<a class="headerlink" href="#verify-the-base-installation" title="Permanent link">#</a></h2>
+<p>Before adding Flex Admin UI, confirm that the base services are healthy:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>apache2<span class="w"> </span>mysql<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api
+curl<span class="w"> </span>-fsS<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/.well-known/openid-configuration&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span>/path/to/current/issuing-ca.crt<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.issuer, .token_endpoint, .jwks_uri&#39;</span>
+</code></pre></div>
+<p>If the generated HTTPS certificate is only temporary, complete Section 8 before expecting browser validation to succeed. Do not continue to Admin UI while Jans Auth or Config API is inactive.</p>
+<h2 id="install-gluu-flex-and-admin-ui">Install Gluu Flex and Admin UI<a class="headerlink" href="#install-gluu-flex-and-admin-ui" title="Permanent link">#</a></h2>
+<p>Download and verify the stable Flex package:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
+wget<span class="w"> </span><span class="s2">&quot;https://github.com/GluuFederation/flex/releases/download/v</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">/flex_</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+wget<span class="w"> </span><span class="s2">&quot;https://github.com/GluuFederation/flex/releases/download/v</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">/flex-ubuntu24-</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">-stable.bundle&quot;</span>
+
+cosign<span class="w"> </span>verify-blob<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bundle<span class="w"> </span><span class="s2">&quot;flex-ubuntu24-</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">-stable.bundle&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--certificate-identity-regexp<span class="w"> </span><span class="s1">&#39;https://github.com/GluuFederation/flex&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--certificate-oidc-issuer<span class="w"> </span><span class="s1">&#39;https://token.actions.githubusercontent.com&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;flex_</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="s2">&quot;/tmp/flex_</span><span class="si">${</span><span class="nv">FLEX_VERSION</span><span class="si">}</span><span class="s2">-stable.ubuntu24.04_amd64.deb&quot;</span>
+</code></pre></div>
+<p>Run Flex setup:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+</code></pre></div>
+<p>Answer <code>y</code> to <code>Install Admin UI</code>. Install Casa only if it is part of the design.</p>
+<p>The Flex setup log is:</p>
+<div class="highlight"><pre><span></span><code>/opt/jans/jans-setup/logs/flex-setup.log
+</code></pre></div>
+<p>Flex setup installs the Admin UI static application, Admin UI Config API plugin, OIDC clients, scopes and role mappings, the default Cedarling policy store, and the Agama password flow used by the UI.</p>
+<h2 id="configure-certificates">Configure certificates<a class="headerlink" href="#configure-certificates" title="Permanent link">#</a></h2>
+<p>Skip test-certificate generation if you have real certificates.</p>
+<h3 id="create-a-private-test-ca">Create a private test CA<a class="headerlink" href="#create-a-private-test-ca" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>install<span class="w"> </span>-d<span class="w"> </span>-m<span class="w"> </span><span class="m">750</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">&quot;</span>
+<span class="nb">cd</span><span class="w"> </span>/tmp
+
+openssl<span class="w"> </span>req<span class="w"> </span>-x509<span class="w"> </span>-newkey<span class="w"> </span>rsa:3072<span class="w"> </span>-sha256<span class="w"> </span>-nodes<span class="w"> </span>-days<span class="w"> </span><span class="m">3650</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-keyout<span class="w"> </span>ob-test-ca.key<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-out<span class="w"> </span>ob-test-ca.crt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-subj<span class="w"> </span><span class="s1">&#39;/C=US/O=Example Test/CN=Flex OB Test Root CA&#39;</span>
+
+sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span>-m<span class="w"> </span><span class="m">600</span><span class="w"> </span>ob-test-ca.key<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.key&quot;</span>
+sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span>-m<span class="w"> </span><span class="m">644</span><span class="w"> </span>ob-test-ca.crt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span>
+</code></pre></div>
+<p>Keep the CA private key offline if possible. It is needed only to issue or revoke test certificates.</p>
+<h3 id="create-the-https-server-certificate-with-san">Create the HTTPS server certificate with SAN<a class="headerlink" href="#create-the-https-server-certificate-with-san" title="Permanent link">#</a></h3>
+<p>The Subject Alternative Name is mandatory for modern browsers. A correct Common Name alone is insufficient.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>server.key<span class="w"> </span><span class="m">3072</span>
+openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-key<span class="w"> </span>server.key<span class="w"> </span>-out<span class="w"> </span>server.csr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-subj<span class="w"> </span><span class="s2">&quot;/C=US/O=Example Test/OU=Server/CN=</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">&quot;</span>
+
+tee<span class="w"> </span>server.ext<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">basicConstraints=critical,CA:FALSE</span>
+<span class="s">keyUsage=critical,digitalSignature,keyEncipherment</span>
+<span class="s">extendedKeyUsage=serverAuth</span>
+<span class="s">subjectAltName=DNS:${FQDN},IP:${PUBLIC_IP}</span>
+<span class="s">EOF</span>
+
+sudo<span class="w"> </span>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-in<span class="w"> </span>server.csr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-CA<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-CAkey<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.key&quot;</span><span class="w"> </span>-CAcreateserial<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-out<span class="w"> </span>server.crt<span class="w"> </span>-days<span class="w"> </span><span class="m">825</span><span class="w"> </span>-sha256<span class="w"> </span>-extfile<span class="w"> </span>server.ext
+
+sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span>-m<span class="w"> </span><span class="m">600</span><span class="w"> </span>server.key<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.key&quot;</span>
+sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span>-m<span class="w"> </span><span class="m">644</span><span class="w"> </span>server.crt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span>
+</code></pre></div>
+<p>Validate it before touching Apache:</p>
+<div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>verify<span class="w"> </span>-CAfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span>
+openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span><span class="w"> </span>-noout<span class="w"> </span>-subject<span class="w"> </span>-issuer<span class="w"> </span>-dates<span class="w"> </span>-ext<span class="w"> </span>subjectAltName
+openssl<span class="w"> </span>verify<span class="w"> </span>-CAfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-verify_hostname<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FQDN</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span>
+</code></pre></div>
+<p>All three commands must succeed, and the SAN must contain the FQDN.</p>
+<h3 id="create-a-test-mtls-client-certificate">Create a test mTLS client certificate<a class="headerlink" href="#create-a-test-mtls-client-certificate" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>client.key<span class="w"> </span><span class="m">3072</span>
+openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-key<span class="w"> </span>client.key<span class="w"> </span>-out<span class="w"> </span>client.csr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-subj<span class="w"> </span><span class="s1">&#39;/C=US/O=Example Test/OU=Open Banking Client/CN=ob-test-client-01&#39;</span>
+
+tee<span class="w"> </span>client.ext<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+<span class="s">basicConstraints=critical,CA:FALSE</span>
+<span class="s">keyUsage=critical,digitalSignature,keyEncipherment</span>
+<span class="s">extendedKeyUsage=clientAuth</span>
+<span class="s">EOF</span>
+
+sudo<span class="w"> </span>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-in<span class="w"> </span>client.csr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-CA<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-CAkey<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.key&quot;</span><span class="w"> </span>-CAcreateserial<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-out<span class="w"> </span>client.crt<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-sha256<span class="w"> </span>-extfile<span class="w"> </span>client.ext
+
+openssl<span class="w"> </span>verify<span class="w"> </span>-CAfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>client.crt
+openssl<span class="w"> </span>pkcs12<span class="w"> </span>-export<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-inkey<span class="w"> </span>client.key<span class="w"> </span>-in<span class="w"> </span>client.crt<span class="w"> </span>-certfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-name<span class="w"> </span><span class="s1">&#39;Flex OB test client&#39;</span><span class="w"> </span>-out<span class="w"> </span>client.p12
+</code></pre></div>
+<p>Give <code>client.p12</code> a strong export password. Import it into the test browser or operating-system certificate store. Delete unprotected temporary private-key copies after securely transferring the bundle.</p>
+<h3 id="configure-apache-mtls">Configure Apache mTLS<a class="headerlink" href="#configure-apache-mtls" title="Permanent link">#</a></h3>
+<p>Back up the vhost:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>a2enmod<span class="w"> </span>ssl<span class="w"> </span>headers<span class="w"> </span>proxy<span class="w"> </span>proxy_http
+sudo<span class="w"> </span>cp<span class="w"> </span>-a<span class="w"> </span>/etc/apache2/sites-enabled/https_jans.conf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;/etc/apache2/sites-enabled/https_jans.conf.before-ob-mtls&quot;</span>
+</code></pre></div>
+<p>Ensure the HTTPS virtual host contains:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">SSLEngine</span><span class="w"> </span><span class="k">on</span>
+<span class="nb">SSLProtocol</span><span class="w"> </span>-all<span class="w"> </span>+TLSv1.2
+<span class="nb">SSLCertificateFile</span><span class="w"> </span><span class="sx">/etc/certs/ob/server.crt</span>
+<span class="nb">SSLCertificateKeyFile</span><span class="w"> </span><span class="sx">/etc/certs/ob/server.key</span>
+<span class="nb">SSLCACertificateFile</span><span class="w"> </span><span class="sx">/etc/certs/ob/ca.crt</span>
+
+<span class="c"># Ask for a client certificate at the TLS layer, but allow ordinary UI pages.</span>
+<span class="nb">SSLVerifyClient</span><span class="w"> </span>optional
+<span class="nb">SSLVerifyDepth</span><span class="w"> </span><span class="m">10</span>
+
+<span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/jans-auth/restv1/register</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nb">SSLVerifyClient</span><span class="w"> </span>require
+<span class="w">    </span><span class="nb">SSLOptions</span><span class="w"> </span>-StdEnvVars<span class="w"> </span>+ExportCertData
+<span class="w">    </span><span class="nb">RequestHeader</span><span class="w"> </span>set<span class="w"> </span>X-ClientCert<span class="w"> </span><span class="s2">&quot;%{SSL_CLIENT_CERT}s&quot;</span>
+<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8081/jans-auth/restv1/register
+<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w"> </span>http://127.0.0.1:8081/jans-auth/restv1/register
+<span class="nt">&lt;/Location&gt;</span>
+
+<span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/jans-auth/restv1/token</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nb">SSLVerifyClient</span><span class="w"> </span>require
+<span class="w">    </span><span class="nb">SSLOptions</span><span class="w"> </span>-StdEnvVars<span class="w"> </span>+ExportCertData
+<span class="w">    </span><span class="nb">RequestHeader</span><span class="w"> </span>set<span class="w"> </span>X-ClientCert<span class="w"> </span><span class="s2">&quot;%{SSL_CLIENT_CERT}s&quot;</span>
+<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8081/jans-auth/restv1/token
+<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w"> </span>http://127.0.0.1:8081/jans-auth/restv1/token
+<span class="nt">&lt;/Location&gt;</span>
+</code></pre></div>
+<p>Keep the proxy routes generated by the installer; do not replace the whole file with this fragment. Ensure Apache's <code>ssl</code>, <code>headers</code>, <code>proxy</code>, and <code>proxy_http</code> modules are enabled. <code>RequestHeader set</code> overwrites any client-supplied <code>X-ClientCert</code> value with the certificate that Apache validated during the TLS handshake.</p>
+<p>The repaired reference profile explicitly allowed TLS 1.2. Enable TLS 1.3 only when the selected Open Banking profile, Flex/Jans release, and interoperability test suite support it.</p>
+<p>Validate and reload:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apache2ctl<span class="w"> </span>configtest
+sudo<span class="w"> </span>systemctl<span class="w"> </span>reload<span class="w"> </span>apache2
+sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>apache2
+</code></pre></div>
+<p>If the Admin UI performs its token exchange directly from the browser against an mTLS-required token endpoint, that browser must present a valid client certificate. A production design may instead use a dedicated mTLS alias or backend-mediated exchange; align this with the relevant Open Banking profile.</p>
+<h2 id="trust-the-issuing-ca-in-java">Trust the issuing CA in Java<a class="headerlink" href="#trust-the-issuing-ca-in-java" title="Permanent link">#</a></h2>
+<p>Jans Auth and Config API use the Java trust store when calling HTTPS endpoints. Import the issuing CA, not the server leaf certificate. Importing a leaf certificate creates a fragile pin that breaks whenever the server certificate is renewed.</p>
+<p>Back up the trust store:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>-a<span class="w"> </span>/opt/jre/lib/security/cacerts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;/opt/jre/lib/security/cacerts.before-ob-ca&quot;</span>
+</code></pre></div>
+<p>Replace any stale alias and import the CA:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/opt/jre/bin/keytool<span class="w"> </span>-delete<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-alias<span class="w"> </span>flex_ob_test_ca<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-keystore<span class="w"> </span>/opt/jre/lib/security/cacerts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-storepass<span class="w"> </span>changeit<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+
+sudo<span class="w"> </span>/opt/jre/bin/keytool<span class="w"> </span>-importcert<span class="w"> </span>-noprompt<span class="w"> </span>-trustcacerts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-alias<span class="w"> </span>flex_ob_test_ca<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-file<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-keystore<span class="w"> </span>/opt/jre/lib/security/cacerts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-storepass<span class="w"> </span>changeit
+
+sudo<span class="w"> </span>/opt/jre/bin/keytool<span class="w"> </span>-list<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-alias<span class="w"> </span>flex_ob_test_ca<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-keystore<span class="w"> </span>/opt/jre/lib/security/cacerts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-storepass<span class="w"> </span>changeit
+</code></pre></div>
+<p>Compare the listed SHA-256 fingerprint with:</p>
+<div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-noout<span class="w"> </span>-fingerprint<span class="w"> </span>-sha256
+</code></pre></div>
+<p>Restart the Java services:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api
+</code></pre></div>
+<h2 id="admin-ui-configuration-checks">Admin UI configuration checks<a class="headerlink" href="#admin-ui-configuration-checks" title="Permanent link">#</a></h2>
+<h3 id="use-loopback-for-the-backends-own-introspection-call">Use loopback for the backend's own introspection call<a class="headerlink" href="#use-loopback-for-the-backends-own-introspection-call" title="Permanent link">#</a></h3>
+<p>On a single-node VM, the Admin UI backend can introspect its token through the local Jans Auth listener. This avoids sending an internal call back through public Apache mTLS and prevents a certificate trust loop.</p>
+<p>First inspect the current Admin UI configuration. Do not print the entire record because it contains client secrets.</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>mysql<span class="w"> </span>-N<span class="w"> </span>jansdb<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">SELECT JSON_UNQUOTE(JSON_EXTRACT(jansConfApp,</span>
+<span class="s2">&#39;</span>$<span class="s2">.oidcConfig.auiBackendApiClient.introspectionEndpoint&#39;))</span>
+<span class="s2">FROM jansAppConf WHERE doc_id=&#39;admin-ui&#39;;&quot;</span>
+</code></pre></div>
+<p>For the single-node topology, the expected value is:</p>
+<div class="highlight"><pre><span></span><code>http://127.0.0.1:8081/jans-auth/restv1/introspection
+</code></pre></div>
+<p>If it is still the public HTTPS URL and <code>adminui.log</code> reports a PKIX error, back up and update only this field:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>mysqldump<span class="w"> </span>jansdb<span class="w"> </span>jansAppConf<span class="w"> </span>--where<span class="o">=</span><span class="s2">&quot;doc_id=&#39;admin-ui&#39;&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/root/admin-ui-config-before-introspection.sql<span class="w"> </span>&gt;/dev/null
+
+sudo<span class="w"> </span>mysql<span class="w"> </span>jansdb<span class="w"> </span><span class="s">&lt;&lt;&#39;SQL&#39;</span>
+<span class="s">UPDATE jansAppConf</span>
+<span class="s">SET jansConfApp = JSON_SET(</span>
+<span class="s">  jansConfApp,</span>
+<span class="s">  &#39;$.oidcConfig.auiBackendApiClient.introspectionEndpoint&#39;,</span>
+<span class="s">  &#39;http://127.0.0.1:8081/jans-auth/restv1/introspection&#39;</span>
+<span class="s">)</span>
+<span class="s">WHERE doc_id = &#39;admin-ui&#39;;</span>
+<span class="s">SQL</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>jans-config-api
+</code></pre></div>
+<p>If <code>/opt/jans/jans-setup/flex/auiConfiguration.json</code> exists, make the same targeted change there so rerunning setup does not restore the old value. Back up that file first and keep it mode <code>600</code>, because it contains secrets.</p>
+<h3 id="ensure-discovery-advertises-userinfo_endpoint">Ensure discovery advertises <code>userinfo_endpoint</code><a class="headerlink" href="#ensure-discovery-advertises-userinfo_endpoint" title="Permanent link">#</a></h3>
+<p>Check discovery without displaying sensitive data:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsS<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/.well-known/openid-configuration&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;{issuer,authorization_endpoint,token_endpoint,userinfo_endpoint,introspection_endpoint,jwks_uri}&#39;</span>
+</code></pre></div>
+<p>Every displayed field must be a non-null URL. If <code>userinfo_endpoint</code> is absent, the Admin UI may finish the authorization callback and then request <code>/jans-config-api/</code>, which returns 404.</p>
+<p>For affected nightly builds only, back up and add the discovery key:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>mysqldump<span class="w"> </span>jansdb<span class="w"> </span>jansAppConf<span class="w"> </span>--where<span class="o">=</span><span class="s2">&quot;doc_id=&#39;jans-auth&#39;&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/root/jans-auth-config-before-userinfo.sql<span class="w"> </span>&gt;/dev/null
+
+sudo<span class="w"> </span>mysql<span class="w"> </span>jansdb<span class="w"> </span><span class="s">&lt;&lt;&#39;SQL&#39;</span>
+<span class="s">UPDATE jansAppConf</span>
+<span class="s">SET jansConfDyn = JSON_SET(</span>
+<span class="s">  jansConfDyn,</span>
+<span class="s">  &#39;$.discoveryAllowedKeys&#39;,</span>
+<span class="s">  JSON_ARRAY_APPEND(</span>
+<span class="s">    JSON_EXTRACT(jansConfDyn, &#39;$.discoveryAllowedKeys&#39;),</span>
+<span class="s">    &#39;$&#39;,</span>
+<span class="s">    &#39;userinfo_endpoint&#39;</span>
+<span class="s">  )</span>
+<span class="s">)</span>
+<span class="s">WHERE doc_id = &#39;jans-auth&#39;</span>
+<span class="s">  AND NOT JSON_CONTAINS(</span>
+<span class="s">    JSON_EXTRACT(jansConfDyn, &#39;$.discoveryAllowedKeys&#39;),</span>
+<span class="s">    JSON_QUOTE(&#39;userinfo_endpoint&#39;)</span>
+<span class="s">  );</span>
+<span class="s">SQL</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>jans-auth
+</code></pre></div>
+<p>Also update the installer-generated source configuration under <code>/opt/jans/jans-setup/output/jans-auth/</code> if it is present, after backing it up. This workaround should not be applied blindly to a newer stable release.</p>
+<h2 id="start-and-verify-the-system">Start and verify the system<a class="headerlink" href="#start-and-verify-the-system" title="Permanent link">#</a></h2>
+<p>Enable and restart the core services:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>apache2<span class="w"> </span>mysql<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>mysql<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api<span class="w"> </span>apache2
+sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>apache2<span class="w"> </span>mysql<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api
+</code></pre></div>
+<p>Every result must be <code>active</code>.</p>
+<p>Confirm private listeners:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>ss<span class="w"> </span>-lntp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;:(443|8074|8081|3306)\b&#39;</span>
+</code></pre></div>
+<p>Expected topology:</p>
+<ul>
+<li>Apache listens publicly on 443.</li>
+<li>Jans Config API listens on <code>127.0.0.1:8074</code>.</li>
+<li>Jans Auth listens on <code>127.0.0.1:8081</code>.</li>
+<li>MySQL listens on <code>127.0.0.1:3306</code>.</li>
+</ul>
+<p>Check the public endpoints:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSI<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/admin/&quot;</span><span class="w"> </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span>
+curl<span class="w"> </span>-fsS<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/.well-known/openid-configuration&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.issuer and .token_endpoint and .userinfo_endpoint&#39;</span>
+curl<span class="w"> </span>-fsS<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/jans-auth/restv1/jwks&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.keys | length &gt; 0&#39;</span>
+</code></pre></div>
+<p>Check that both protected endpoints require mTLS. Requests without a client certificate should fail at TLS or return an authorization error; they must not reach a successful registration or token response:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/jans-auth/restv1/register&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span>
+curl<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/jans-auth/restv1/token&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span>
+</code></pre></div>
+<p>Then test both routes with the client certificate:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/jans-auth/restv1/register&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cert<span class="w"> </span>/path/to/client.crt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--key<span class="w"> </span>/path/to/client.key
+curl<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">/jans-auth/restv1/token&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cacert<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cert<span class="w"> </span>/path/to/client.crt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--key<span class="w"> </span>/path/to/client.key
+</code></pre></div>
+<p>An OAuth or registration error caused by the deliberately incomplete request is acceptable for this connectivity test. The important result is that TLS accepts the client certificate and both requests reach Jans Auth. Confirm in the Jans Auth log that the forwarded certificate was parsed; do not log or publish the certificate itself.</p>
+<h2 id="activate-and-access-admin-ui">Activate and access Admin UI<a class="headerlink" href="#activate-and-access-admin-ui" title="Permanent link">#</a></h2>
+<ol>
+<li>Import the test CA into the browser's trust store if the HTTPS certificate is privately issued.</li>
+<li>Import <code>client.p12</code> into the browser or operating-system client certificate store.</li>
+<li>Open <code>https://id.example.org/admin/</code>.</li>
+<li>Select the mTLS certificate when the browser asks.</li>
+<li>Upload or paste the SSA only in the Flex activation screen.</li>
+<li>Sign in as <code>admin</code> with the administrator password set during Jans setup.</li>
+<li>Confirm that the page displays the dashboard and the administrator identity.</li>
+</ol>
+<p>The installer creates a default policy store with an <code>admin</code> role and assigns that role to the default administrator.</p>
+<h2 id="troubleshooting-admin-ui">Troubleshooting Admin UI<a class="headerlink" href="#troubleshooting-admin-ui" title="Permanent link">#</a></h2>
+<h3 id="fast-diagnostic-commands">Fast diagnostic commands<a class="headerlink" href="#fast-diagnostic-commands" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>--no-pager<span class="w"> </span>--full<span class="w"> </span>status<span class="w"> </span>apache2<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api<span class="w"> </span>mysql
+sudo<span class="w"> </span>journalctl<span class="w"> </span>-u<span class="w"> </span>jans-auth<span class="w"> </span>-u<span class="w"> </span>jans-config-api<span class="w"> </span>--since<span class="w"> </span><span class="s1">&#39;15 minutes ago&#39;</span><span class="w"> </span>--no-pager
+sudo<span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span><span class="w"> </span>/var/log/apache2/error.log
+sudo<span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span><span class="w"> </span>/var/log/apache2/access.log
+sudo<span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span><span class="w"> </span>/var/log/adminui/adminui.log
+</code></pre></div>
+<p>Do not post raw logs publicly until access tokens, client secrets, authorization codes, cookies, SSAs, email addresses, and certificate subjects have been redacted.</p>
+<h3 id="symptom-matrix">Symptom matrix<a class="headerlink" href="#symptom-matrix" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Check</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Browser stays on <strong>Redirecting…</strong></td>
+<td>TLS or client-certificate failure</td>
+<td>Apache error log and browser certificate selection</td>
+<td>Confirm server SAN, client certificate chain, clientAuth EKU, and trusted CA</td>
+</tr>
+<tr>
+<td>Apache logs <code>certificate unknown</code></td>
+<td>Browser rejected the server chain or Apache rejected the client chain</td>
+<td><code>openssl verify</code> for both leaf certificates</td>
+<td>Install the correct CA; never give CA, server, and client the same subject</td>
+</tr>
+<tr>
+<td>Admin UI API returns HTTP 500 and <code>adminui.log</code> shows <code>PKIX path validation failed</code></td>
+<td>Java trust store contains an old server leaf or lacks the issuing CA</td>
+<td><code>keytool -list</code> and CA SHA-256 fingerprint</td>
+<td>Delete stale leaf alias, import the issuing CA, restart Config API</td>
+</tr>
+<tr>
+<td>OAuth callback succeeds, then browser requests <code>/jans-config-api/</code> and receives 404</td>
+<td>Discovery omitted <code>userinfo_endpoint</code></td>
+<td>Inspect <code>.well-known/openid-configuration</code></td>
+<td>Add <code>userinfo_endpoint</code> to allowed discovery keys on affected builds, restart Jans Auth</td>
+</tr>
+<tr>
+<td>Token request fails before OAuth validation</td>
+<td>Browser did not send a client certificate</td>
+<td>Apache SSL debug log</td>
+<td>Import the PKCS#12 bundle and select it when prompted</td>
+</tr>
+<tr>
+<td>Admin UI asks for activation or rejects access</td>
+<td>SSA or license missing/invalid</td>
+<td>Admin UI license page and Admin UI log</td>
+<td>Obtain a valid SSA for this installation; verify clock and outbound HTTPS</td>
+</tr>
+<tr>
+<td><code>/admin/</code> is 200 but dashboard API calls fail</td>
+<td>Config API or Admin UI plugin problem</td>
+<td><code>jans-config-api</code> status and <code>adminui.log</code></td>
+<td>Verify plugin installation, database configuration, and Config API listener</td>
+</tr>
+<tr>
+<td>Works with <code>curl -k</code> only</td>
+<td>Server certificate is untrusted or invalid</td>
+<td><code>openssl s_client</code> and SAN output</td>
+<td>Install a valid chain; do not use <code>-k</code> as a permanent fix</td>
+</tr>
+</tbody>
+</table>
+<h3 id="certificate-diagnostics">Certificate diagnostics<a class="headerlink" href="#certificate-diagnostics" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">FQDN</span><span class="si">}</span><span class="s2">:443&quot;</span><span class="w"> </span>-servername<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FQDN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-CAfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-verify_return_error<span class="w"> </span>&lt;/dev/null
+
+openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span><span class="w"> </span>-noout<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-subject<span class="w"> </span>-issuer<span class="w"> </span>-dates<span class="w"> </span>-fingerprint<span class="w"> </span>-sha256<span class="w"> </span>-ext<span class="w"> </span>subjectAltName
+
+openssl<span class="w"> </span>verify<span class="w"> </span>-CAfile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/ca.crt&quot;</span><span class="w"> </span>-verify_hostname<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FQDN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;</span><span class="nv">$CERT_DIR</span><span class="s2">/server.crt&quot;</span>
+</code></pre></div>
+<h3 id="important-log-locations">Important log locations<a class="headerlink" href="#important-log-locations" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base installer</td>
+<td><code>/opt/jans/jans-setup/logs/setup.log</code></td>
+</tr>
+<tr>
+<td>Flex installer</td>
+<td><code>/opt/jans/jans-setup/logs/flex-setup.log</code></td>
+</tr>
+<tr>
+<td>Admin UI backend</td>
+<td><code>/var/log/adminui/adminui.log</code></td>
+</tr>
+<tr>
+<td>Apache access/error</td>
+<td><code>/var/log/apache2/</code></td>
+</tr>
+<tr>
+<td>Jans Auth</td>
+<td><code>/opt/jans/jetty/jans-auth/logs/</code></td>
+</tr>
+<tr>
+<td>Jans Config API</td>
+<td><code>/opt/jans/jetty/jans-config-api/logs/</code></td>
+</tr>
+<tr>
+<td>Systemd services</td>
+<td><code>journalctl -u SERVICE</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="backup-before-changes">Backup before changes<a class="headerlink" href="#backup-before-changes" title="Permanent link">#</a></h2>
+<p>At minimum, protect:</p>
+<ul>
+<li>MySQL database <code>jansdb</code></li>
+<li><code>/etc/jans/</code></li>
+<li><code>/etc/certs/</code> excluding any CA private key that is stored offline</li>
+<li><code>/etc/apache2/sites-available/</code> and <code>/etc/apache2/sites-enabled/</code></li>
+<li><code>/opt/jans/jans-setup/setup.properties.last</code></li>
+<li><code>/opt/jans/jans-setup/flex/auiConfiguration.json</code></li>
+<li><code>/opt/jre/lib/security/cacerts</code></li>
+<li>Admin UI policy store and licensing records</li>
+</ul>
+<p>Example database backup:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>age
+
+sudo<span class="w"> </span>bash<span class="w"> </span>-Eeuo<span class="w"> </span>pipefail<span class="w"> </span><span class="s">&lt;&lt;&#39;BACKUP&#39;</span>
+<span class="s">BACKUP</span>_DIR<span class="o">=</span>/var/backups/flex
+<span class="nv">BACKUP_RECIPIENT</span><span class="o">=</span><span class="s1">&#39;age1REPLACE_WITH_OFFLINE_RECOVERY_PUBLIC_KEY&#39;</span>
+<span class="nv">STAMP</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+%Y%m%dT%H%M%SZ<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nv">PLAIN_ARCHIVE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">BACKUP_DIR</span><span class="si">}</span><span class="s2">/.jansdb-</span><span class="si">${</span><span class="nv">STAMP</span><span class="si">}</span><span class="s2">.sql.gz&quot;</span>
+<span class="nv">ENCRYPTED_ARCHIVE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">BACKUP_DIR</span><span class="si">}</span><span class="s2">/jansdb-</span><span class="si">${</span><span class="nv">STAMP</span><span class="si">}</span><span class="s2">.sql.gz.age&quot;</span>
+
+install<span class="w"> </span>-d<span class="w"> </span>-m<span class="w"> </span><span class="m">700</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">&quot;</span>
+<span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;rm -f &quot;$PLAIN_ARCHIVE&quot;&#39;</span><span class="w"> </span>EXIT
+
+mysqldump<span class="w"> </span>--single-transaction<span class="w"> </span>--routines<span class="w"> </span>--triggers<span class="w"> </span>jansdb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>gzip<span class="w"> </span>-c<span class="w"> </span>&gt;<span class="s2">&quot;</span><span class="nv">$PLAIN_ARCHIVE</span><span class="s2">&quot;</span>
+gzip<span class="w"> </span>--test<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PLAIN_ARCHIVE</span><span class="s2">&quot;</span>
+age<span class="w"> </span>--recipient<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_RECIPIENT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ENCRYPTED_ARCHIVE</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PLAIN_ARCHIVE</span><span class="s2">&quot;</span>
+chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ENCRYPTED_ARCHIVE</span><span class="s2">&quot;</span>
+BACKUP
+</code></pre></div>
+<p>Generate the age recovery key on a separate, protected administrator system with <code>age-keygen</code>; store the secret key in an offline secrets manager or encrypted recovery vault. Put only its <code>age1...</code> public recipient in the VM script. Never copy the recovery secret key to the production VM.</p>
+<p>Before considering a backup complete or deleting an older known-good backup, transfer the encrypted archive to the isolated recovery environment and test both decryption and restoration into an empty test database:</p>
+<div class="highlight"><pre><span></span><code>age<span class="w"> </span>--decrypt<span class="w"> </span>--identity<span class="w"> </span>/secure/offline/flex-backup-key.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>jansdb-YYYYMMDDTHHMMSSZ.sql.gz.age<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>gzip<span class="w"> </span>--decompress<span class="w"> </span>--stdout<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>mysql<span class="w"> </span>jansdb_restore_test
+
+mysql<span class="w"> </span>--database<span class="o">=</span>jansdb_restore_test<span class="w"> </span>--execute<span class="o">=</span><span class="s1">&#39;SHOW TABLES;&#39;</span>
+</code></pre></div>
+<p>The <code>pipefail</code> option makes a failure in <code>mysqldump</code>, <code>gzip</code>, <code>age</code>, or the restore pipeline fail the operation. Keep encrypted backups outside the VM according to the applicable retention policy, and record each successful restore test without recording database contents or key material.</p>
+<h2 id="routine-operations">Routine operations<a class="headerlink" href="#routine-operations" title="Permanent link">#</a></h2>
+<p>Service health:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>apache2<span class="w"> </span>mysql<span class="w"> </span>jans-auth<span class="w"> </span>jans-config-api
+</code></pre></div>
+<p>Admin UI update:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--update-admin-ui
+</code></pre></div>
+<p>Before updating:</p>
+<ol>
+<li>Read both Janssen and Flex release notes.</li>
+<li>Confirm that the Flex and Janssen versions are compatible.</li>
+<li>Back up the database, configuration, certificates, and Java trust store.</li>
+<li>Test the update on a clone.</li>
+<li>Re-run discovery, mTLS, token, userinfo, and Admin UI checks.</li>
+</ol>
+<p>Certificate renewal checklist:</p>
+<ol>
+<li>Issue a new leaf certificate with the same FQDN in SAN.</li>
+<li>Keep the CA unchanged unless performing a planned CA rotation.</li>
+<li>Validate the chain and hostname before installation.</li>
+<li>Replace the Apache leaf and key atomically.</li>
+<li>Run <code>apache2ctl configtest</code> and reload Apache.</li>
+<li>If the issuing CA changed, import the new CA into Java and restart Jans services.</li>
+<li>Never pin a renewable leaf certificate in Java's CA trust store.</li>
+</ol>
+<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
+<p>Uninstallation is destructive and removes application data. Take and verify backups first.</p>
+<p>Remove Flex components:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
+</code></pre></div>
+<p>Remove Janssen:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall
+</code></pre></div>
+<h2 id="final-acceptance-checklist">Final acceptance checklist<a class="headerlink" href="#final-acceptance-checklist" title="Permanent link">#</a></h2>
+<p>After the complete installation, we recommend checking the following aspects to ensure smooth operation:</p>
+<ul>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Stable public IP and FQDN are correct.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Host time is synchronized.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Only 22, 80 when needed, and 443 are publicly reachable.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> MySQL, Jans Auth, and Config API listen only on protected interfaces.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Server certificate validates for the FQDN and contains SAN.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> CA, server, and client certificate subjects are distinct.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Client certificate contains the <code>clientAuth</code> EKU.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Apache configuration test passes.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Required services report <code>active</code>.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Discovery contains issuer, authorization, token, userinfo, introspection, and JWKS endpoints.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> JWKS contains at least one key.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Token and registration endpoints enforce mTLS as intended.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Java trusts the issuing CA, not a renewable leaf.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Admin UI loads, license/SSA is active, and the administrator can sign in.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> Backups are encrypted, stored off-host, and restoration has been tested.</li>
+<li><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /> No secrets have been left in shell history, world-readable files, logs, or documentation.</li>
+</ul>
+<h2 id="reference-documentation">Reference documentation<a class="headerlink" href="#reference-documentation" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://docs.gluu.org/head/install/vm-install/ubuntu/">Install Gluu Flex on Ubuntu Linux</a></li>
+<li><a href="https://docs.gluu.org/stable/admin/admin-ui/home/">Admin UI</a></li>
+<li><a href="https://github.com/GluuFederation/flex/releases">Flex releases</a></li>
+<li><a href="https://docs.jans.io/head/janssen-server/install/vm-install/ubuntu/">Ubuntu Janssen installation</a></li>
+<li><a href="https://docs.jans.io/head/janssen-server/auth-server/oauth-features/mtls/">mTLS configuration</a></li>
+<li><a href="https://github.com/JanssenProject/jans/releases">Janssen releases</a></li>
+<li><a href="https://docs.sigstore.dev/cosign/system_config/installation/">Install Cosign</a></li>
+</ul>
 
 
 
@@ -3185,7 +4275,7 @@ openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -set_serial 101 -days 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 11, 2026 13:48:38 UTC"><span class="timeago" datetime="2026-05-11T13:48:38+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 11, 2026 13:48:38 UTC">2026-05-11</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 16, 2026 09:39:02 UTC"><span class="timeago" datetime="2026-09-16T09:39:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 16, 2026 09:39:02 UTC">2026-09-16</span>
   </span>
 
     
