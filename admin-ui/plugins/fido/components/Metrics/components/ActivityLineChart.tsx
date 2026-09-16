@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { Card, CardBody } from 'Components'
 import {
   LineChart,
   Line,
@@ -7,28 +6,37 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
 import { useMetricsStyles } from '../MetricsPage.style'
 import {
+  ACTIVITY_DENSE_BUCKET_COUNT,
+  ACTIVITY_COMPACT_DENSE_BUCKET_COUNT,
+  ACTIVITY_MOBILE_DENSE_BUCKET_COUNT,
+  ACTIVITY_MIN_BUCKET_WIDTH,
   ACTIVITY_LINE_AXIS_PADDING,
   ACTIVITY_LINE_DOT_RADIUS,
   ACTIVITY_LINE_MAX_DOTS,
   ACTIVITY_LINE_STROKE_WIDTH,
-  ACTIVITY_LINE_TICK_GAP,
   ACTIVITY_TREND_SERIES_COLORS,
   RECHARTS_INITIAL_DIMENSION,
+  METRICS_CHART_HEIGHT,
+  METRICS_DESKTOP_CHART,
+  METRICS_MOBILE_CHART,
 } from '../constants'
+import { formatCompactNumber } from '../utils'
 import type { ActivityChartProps, ActivityDataPoint } from '../types'
+import MetricsChartCard from './MetricsChartCard'
+import ChartLegend from './ChartLegend'
 
 type TickProps = {
   x?: number | string
@@ -41,7 +49,8 @@ const MultiLineTick = ({
   y = 0,
   payload,
   fill,
-}: TickProps & { fill: string }): ReactNode => {
+  fontSize = 12,
+}: TickProps & { fill: string; fontSize?: number }): ReactNode => {
   const lines = (payload?.value ?? '').split('\n')
   return (
     <g transform={`translate(${x},${y})`}>
@@ -53,7 +62,7 @@ const MultiLineTick = ({
           dy={i === 0 ? 12 : 12 + i * 14}
           textAnchor="middle"
           fill={fill}
-          fontSize={12}
+          fontSize={fontSize}
         >
           {line}
         </text>
@@ -64,8 +73,18 @@ const MultiLineTick = ({
 
 // Same series as ActivityBarChart, drawn as trend lines: the bars answer "how much in this
 // bucket", the lines answer "which way is it heading across buckets".
-const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height = 360 }) => {
+const COMPACT_MAX_TICKS = 4
+
+const ActivityLineChart: React.FC<ActivityChartProps> = ({
+  title,
+  caption,
+  data,
+  height = METRICS_CHART_HEIGHT.DESKTOP,
+}) => {
   const { t } = useTranslation()
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
+  const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
+  const chartGeometry = isMobile ? METRICS_MOBILE_CHART : METRICS_DESKTOP_CHART
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
@@ -89,18 +108,68 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
     [t],
   )
 
-  return (
-    <Card className={classes.chartCard}>
-      <CardBody>
-        <GluuText variant="div" className={classes.chartTitle}>
-          {title}
-        </GluuText>
+  const denseBucketCount = isMobile
+    ? ACTIVITY_MOBILE_DENSE_BUCKET_COUNT
+    : isCompact
+      ? ACTIVITY_COMPACT_DENSE_BUCKET_COUNT
+      : ACTIVITY_DENSE_BUCKET_COUNT
+  const isDense = data.length > denseBucketCount
+  const cardTickInterval =
+    isCompact && !isDense ? Math.max(0, Math.ceil(data.length / COMPACT_MAX_TICKS) - 1) : 0
+  const tickFontSize = isCompact
+    ? METRICS_MOBILE_CHART.TICK_FONT_SIZE
+    : chartGeometry.TICK_FONT_SIZE
+
+  const minBucketWidth = isMobile
+    ? ACTIVITY_MIN_BUCKET_WIDTH.MOBILE
+    : isCompact
+      ? ACTIVITY_MIN_BUCKET_WIDTH.COMPACT
+      : ACTIVITY_MIN_BUCKET_WIDTH.DESKTOP
+  const scrollWidth = data.length > 0 ? data.length * minBucketWidth : undefined
+
+  const legendItems = useMemo(
+    () =>
+      series.map((line) => ({
+        key: line.key,
+        color: ACTIVITY_TREND_SERIES_COLORS[line.key],
+        label: line.name,
+      })),
+    [series],
+  )
+
+  const chartLegend = <ChartLegend items={legendItems} />
+
+  const renderChart = (isFullscreen: boolean, zoom: number) => (
+    <div
+      className={isFullscreen ? classes.chartFullscreenFrame : classes.chartScrollArea}
+      data-chart-frame={isFullscreen ? true : undefined}
+    >
+      <div
+        style={
+          isFullscreen
+            ? {
+                width: scrollWidth ? scrollWidth * zoom : `${zoom * 100}%`,
+                minWidth: `${zoom * 100}%`,
+                flexShrink: 0,
+              }
+            : scrollWidth
+              ? { width: scrollWidth, minWidth: '100%' }
+              : undefined
+        }
+      >
         <ResponsiveContainer
+          key={`${isMobile}-${isCompact}-${isDense}-${isFullscreen}`}
           width="100%"
-          height={height}
+          height={
+            isFullscreen
+              ? METRICS_CHART_HEIGHT.FULLSCREEN * zoom
+              : isCompact && !isMobile
+                ? METRICS_CHART_HEIGHT.COMPACT
+                : height
+          }
           initialDimension={RECHARTS_INITIAL_DIMENSION}
         >
-          <LineChart data={data as ActivityDataPoint[]} margin={{ top: 20, right: 32, left: 10 }}>
+          <LineChart data={data as ActivityDataPoint[]} margin={chartGeometry.LINE_MARGIN}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis
               dataKey="label"
@@ -109,17 +178,19 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
               // Tight like a time series, but with just enough gutter that the first and last
               // tick labels stay inside the card instead of being clipped by its edge.
               padding={ACTIVITY_LINE_AXIS_PADDING}
-              interval="preserveStartEnd"
-              minTickGap={ACTIVITY_LINE_TICK_GAP}
+              interval={cardTickInterval}
               height={hasMultiLineLabel ? 50 : 30}
-              tick={(props: TickProps) => <MultiLineTick {...props} fill={axisColor} />}
+              tick={(props: TickProps) => (
+                <MultiLineTick {...props} fill={axisColor} fontSize={tickFontSize} />
+              )}
             />
             <YAxis
-              tick={{ fill: axisColor, fontSize: 12 }}
+              tick={{ fill: axisColor, fontSize: tickFontSize }}
               axisLine={false}
               tickLine={false}
-              width={45}
+              width={chartGeometry.AXIS_WIDTH}
               allowDecimals={false}
+              tickFormatter={isCompact ? formatCompactNumber : undefined}
             />
             <Tooltip
               cursor={false}
@@ -132,12 +203,6 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
                   isDark={isDark}
                 />
               )}
-            />
-            <Legend
-              wrapperStyle={{ color: themeColors.fontColor, fontSize: 12 }}
-              formatter={(v) => <span style={{ color: themeColors.fontColor }}>{v}</span>}
-              iconType="circle"
-              iconSize={8}
             />
             {series.map((line) => (
               <Line
@@ -162,8 +227,19 @@ const ActivityLineChart: React.FC<ActivityChartProps> = ({ title, data, height =
             ))}
           </LineChart>
         </ResponsiveContainer>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
+  )
+
+  return (
+    <MetricsChartCard title={title} caption={caption} zoomable isEmpty={data.length === 0}>
+      {(isFullscreen, zoom) => (
+        <>
+          {renderChart(isFullscreen, zoom)}
+          {chartLegend}
+        </>
+      )}
+    </MetricsChartCard>
   )
 }
 

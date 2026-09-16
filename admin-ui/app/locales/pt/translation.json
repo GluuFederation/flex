@@ -1318,7 +1318,10 @@
     "logging_level_invalid": "Nível de log inválido",
     "logging_layout_required": "O formato de log é obrigatório",
     "logging_layout_invalid": "Formato de log inválido",
-    "user_info_fetch_failed": "Não foi possível obter as informações do utilizador a partir do servidor de autenticação. A autenticação foi interrompida."
+    "user_info_fetch_failed": "Não foi possível obter as informações do utilizador a partir do servidor de autenticação. A autenticação foi interrompida.",
+    "zoom_in": "Ampliar",
+    "zoom_out": "Reduzir",
+    "reset_zoom": "Redefinir zoom"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
