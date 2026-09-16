@@ -124,7 +124,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
   }, [])
 
   useEffect(() => {
-    setActiveEntries()
+    setActiveEntries(true)
   }, [location.pathname])
 
   const isSlim =
