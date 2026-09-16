@@ -39,10 +39,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 }
 
 describe('AuditListPage', () => {
-  it('renders the audit log page with search toolbar', () => {
+  it('renders the audit log page with search toolbar', async () => {
     render(<AuditListPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Search pattern/i)).toBeInTheDocument()
-    expect(screen.getByText(/Start Date/i)).toBeInTheDocument()
+    // the date fields arrive with the lazily loaded picker
+    expect(await screen.findByText(/Start Date/i)).toBeInTheDocument()
   })
 
   it('shows no data message when entries are empty', () => {

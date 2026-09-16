@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { GluuDatePicker } from '@/components/GluuDatePicker/GluuDatePicker'
 import { createDate } from '@/utils/dayjsUtils'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -7,6 +7,14 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <AppTestWrapper>{children}</AppTestWrapper>
 )
+
+// GluuDatePicker lazy-loads the MUI pickers, so a render has to clear the Suspense boundary
+// before any field exists in the DOM.
+const renderPicker = async (ui: React.ReactElement) => {
+  const result = render(ui, { wrapper: Wrapper })
+  await waitFor(() => expect(result.container.querySelector('input')).toBeInTheDocument())
+  return result
+}
 
 // MUI X date pickers render a hidden <input> per field that carries the
 // formatted value, plus a sectioned span group for editing. Reading the
@@ -29,39 +37,34 @@ const openCalendarAndPickDay = (dayLabel: string): void => {
 }
 
 describe('GluuDatePicker (single mode)', () => {
-  it('renders a single date field with the provided label', () => {
-    const { container } = render(
+  it('renders a single date field with the provided label', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker mode="single" label="Birth Date" onChange={jest.fn()} />,
-      { wrapper: Wrapper },
     )
     expect(getFieldLabels(container)).toContain('Birth Date')
   })
 
-  it('displays the passed value formatted with the default US format (MM/DD/YYYY)', () => {
-    const { container } = render(
+  it('displays the passed value formatted with the default US format (MM/DD/YYYY)', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="single"
         label="When"
         value={createDate('2024-01-15')}
         onChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     expect(getInputs(container)[0].value).toBe('01/15/2024')
   })
 
-  it('renders an empty field when no value is provided', () => {
-    const { container } = render(
+  it('renders an empty field when no value is provided', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker mode="single" label="When" onChange={jest.fn()} />,
-      {
-        wrapper: Wrapper,
-      },
     )
     expect(getInputs(container)[0].value).toBe('')
   })
 
-  it('respects a custom display format', () => {
-    const { container } = render(
+  it('respects a custom display format', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="single"
         label="When"
@@ -69,27 +72,25 @@ describe('GluuDatePicker (single mode)', () => {
         dateFormat="YYYY-MM-DD"
         onChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     expect(getInputs(container)[0].value).toBe('2024-01-15')
   })
 
-  it('exposes a "Choose date" trigger that opens a calendar', () => {
-    render(<GluuDatePicker mode="single" label="When" onChange={jest.fn()} />, { wrapper: Wrapper })
+  it('exposes a "Choose date" trigger that opens a calendar', async () => {
+    await renderPicker(<GluuDatePicker mode="single" label="When" onChange={jest.fn()} />)
     fireEvent.click(screen.getByRole('button', { name: /choose date/i }))
     expect(screen.getByRole('grid')).toBeInTheDocument()
   })
 
-  it('fires onChange when a day is selected from the calendar', () => {
+  it('fires onChange when a day is selected from the calendar', async () => {
     const onChange = jest.fn()
-    render(
+    await renderPicker(
       <GluuDatePicker
         mode="single"
         label="When"
         value={createDate('2024-01-15')}
         onChange={onChange}
       />,
-      { wrapper: Wrapper },
     )
     openCalendarAndPickDay('20')
     expect(onChange).toHaveBeenCalled()
@@ -97,8 +98,8 @@ describe('GluuDatePicker (single mode)', () => {
 })
 
 describe('GluuDatePicker (range mode)', () => {
-  it('renders two fields with default Start Date / End Date labels', () => {
-    const { container } = render(
+  it('renders two fields with default Start Date / End Date labels', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="range"
         startDate={null}
@@ -106,15 +107,14 @@ describe('GluuDatePicker (range mode)', () => {
         onStartDateChange={jest.fn()}
         onEndDateChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     const labels = getFieldLabels(container)
     expect(labels).toContain('Start Date')
     expect(labels).toContain('End Date')
   })
 
-  it('displays the start and end date values in their respective fields', () => {
-    const { container } = render(
+  it('displays the start and end date values in their respective fields', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="range"
         startDate={createDate('2024-03-01')}
@@ -122,15 +122,14 @@ describe('GluuDatePicker (range mode)', () => {
         onStartDateChange={jest.fn()}
         onEndDateChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     const inputs = getInputs(container)
     expect(inputs[0].value).toBe('03/01/2024')
     expect(inputs[1].value).toBe('03/31/2024')
   })
 
-  it('honors custom start/end date labels', () => {
-    const { container } = render(
+  it('honors custom start/end date labels', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="range"
         startDate={null}
@@ -140,16 +139,15 @@ describe('GluuDatePicker (range mode)', () => {
         onStartDateChange={jest.fn()}
         onEndDateChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     const labels = getFieldLabels(container)
     expect(labels).toContain('From')
     expect(labels).toContain('To')
   })
 
-  it('fires onStartDateChange when a day is picked in the start calendar', () => {
+  it('fires onStartDateChange when a day is picked in the start calendar', async () => {
     const onStartDateChange = jest.fn()
-    render(
+    await renderPicker(
       <GluuDatePicker
         mode="range"
         startDate={createDate('2024-04-01')}
@@ -157,14 +155,13 @@ describe('GluuDatePicker (range mode)', () => {
         onStartDateChange={onStartDateChange}
         onEndDateChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     openCalendarAndPickDay('15')
     expect(onStartDateChange).toHaveBeenCalled()
   })
 
-  it('renders title labels (not field labels) when labelAsTitle is set', () => {
-    const { container } = render(
+  it('renders title labels (not field labels) when labelAsTitle is set', async () => {
+    const { container } = await renderPicker(
       <GluuDatePicker
         mode="range"
         startDate={null}
@@ -174,7 +171,6 @@ describe('GluuDatePicker (range mode)', () => {
         onStartDateChange={jest.fn()}
         onEndDateChange={jest.fn()}
       />,
-      { wrapper: Wrapper },
     )
     // labelAsTitle renders the labels as standalone "Start Date:" / "End Date:" text
     expect(screen.getByText('Start Date:')).toBeInTheDocument()
