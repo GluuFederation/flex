@@ -131,7 +131,7 @@ environment, Janssen Server needs details about CA certificate. Update the
 HTTPS cofiguration file `https_jans.conf` as shown below:
 
 !!! Note
-    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#trust-the-issuing-ca-in-java).
 - Open `https_jans.conf` 
   ```bash
   sudo vi /etc/httpd/conf.d/https_jans.conf
