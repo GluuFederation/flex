@@ -179,3 +179,32 @@ describe('GluuDatePicker (range mode)', () => {
     expect(container.querySelectorAll('label')).toHaveLength(0)
   })
 })
+
+describe('GluuDatePicker (showTime format derivation)', () => {
+  it('uses the datetime format in single mode when showTime is set', async () => {
+    const { container } = await renderPicker(
+      <GluuDatePicker
+        mode="single"
+        label="When"
+        showTime
+        value={createDate('2024-01-15T13:45')}
+        onChange={jest.fn()}
+      />,
+    )
+    expect(getInputs(container)[0].value).toBe('15-01-2024 13:45')
+  })
+
+  it('uses the datetime format in range mode when showTime is set', async () => {
+    const { container } = await renderPicker(
+      <GluuDatePicker
+        mode="range"
+        showTime
+        startDate={createDate('2024-03-01T08:30')}
+        endDate={null}
+        onStartDateChange={jest.fn()}
+        onEndDateChange={jest.fn()}
+      />,
+    )
+    expect(getInputs(container)[0].value).toBe('01-03-2024 08:30')
+  })
+})

@@ -60,7 +60,7 @@ const DatePickerChild = memo(
 
     const isRange = isGluuDatePickerRangeProps(props)
     const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
-    const showTime = isRange ? (props.showTime ?? false) : false
+    const showTime = props.showTime ?? false
     const defaultFormat = showTime
       ? DATE_FORMATS.DATE_PICKER_DATETIME
       : DATE_FORMATS.DATE_PICKER_DISPLAY_US
