@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import PasskeyAuthChart from 'Plugins/fido/components/Metrics/components/PasskeyAuthChart'
 import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
@@ -30,9 +30,10 @@ describe('PasskeyAuthChart', () => {
 
   it('renders mock legend items when no API data', () => {
     render(<PasskeyAuthChart dateRange={null} />, { wrapper: Wrapper })
-    expect(screen.getByText(/Success Rate/i)).toBeInTheDocument()
-    expect(screen.getByText(/Error Rate/i)).toBeInTheDocument()
-    expect(screen.getByText(/Drop Off Rate/i)).toBeInTheDocument()
+    const legend = within(screen.getByTestId('chart-legend'))
+    expect(legend.getByText(/Success Rate/i)).toBeInTheDocument()
+    expect(legend.getByText(/Error Rate/i)).toBeInTheDocument()
+    expect(legend.getByText(/Drop Off Rate/i)).toBeInTheDocument()
   })
 
   it('renders with a date range prop without crashing', () => {
@@ -48,8 +49,9 @@ describe('PasskeyAuthChart', () => {
     })
     render(<PasskeyAuthChart dateRange={mockDateRange} />, { wrapper: Wrapper })
     expect(useErrorsAnalytics).toHaveBeenCalledWith(mockDateRange)
-    expect(screen.getByText(/Success Rate\s*80%/i)).toBeInTheDocument()
-    expect(screen.getByText(/Error Rate\s*10%/i)).toBeInTheDocument()
-    expect(screen.getByText(/Drop Off Rate\s*10%/i)).toBeInTheDocument()
+    const legend = within(screen.getByTestId('chart-legend'))
+    expect(legend.getByText(/Success Rate\s*80%/i)).toBeInTheDocument()
+    expect(legend.getByText(/Error Rate\s*10%/i)).toBeInTheDocument()
+    expect(legend.getByText(/Drop Off Rate\s*10%/i)).toBeInTheDocument()
   })
 })
