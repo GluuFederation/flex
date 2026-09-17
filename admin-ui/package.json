@@ -90,7 +90,7 @@
   "dependencies": {
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
-    "@janssenproject/cedarling_wasm": "0.0.467",
+    "@janssenproject/cedarling_wasm": "0.0.468",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
     "@mui/x-date-pickers": "^9.0.0",
