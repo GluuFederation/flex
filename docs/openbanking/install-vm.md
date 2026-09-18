@@ -52,7 +52,7 @@ Record these values before connecting to the VM. Keep passwords, SSA JWTs, priva
 | `FQDN` | Server hostname | `testobrhel9.gluu.info` |
 | `INTERFACE_IP` | Static address assigned to a VM interface | `172.31.45.215` |
 | `PUBLIC_OR_REACHABLE_IP` | NAT/public destination used by test clients | `54.213.215.176` |
-| `JANS_REF` | Pinned Jans branch, tag, or commit | Record the full immutable value |
+| `JANS_REF` | Pinned Jans full commit SHA (not a branch or mutable tag) | Record the full immutable value |
 | `OB_REF` | Pinned private Open Banking commit | Record from the supplied archive |
 | `APP_RAM_MB` | Jans application memory | `4096` |
 | `EVIDENCE_DIR` | Root-only audit directory | `/root/openbanking-evidence-<UTC>` |
@@ -196,13 +196,15 @@ The VM installer is public, but the Open Banking profile overlay is not a public
 | Open Banking profile, `openbanking.zip` | Private [`GluuFederation/openbanking`](https://github.com/GluuFederation/openbanking) repository; the deploying GitHub account must be granted access by the Gluu delivery/support owner, or must receive an approved release archive through the organization's secure delivery channel |
 | Optional Flex/Admin UI RPM and signature bundle | [Gluu Flex GitHub releases](https://github.com/GluuFederation/flex/releases); an SSA obtained through the Gluu trial or subscription process is also required for licensing |
 
-The [official Open Banking VM guide](https://docs.gluu.org/stable/openbanking/install-vm/) documents the convenience entry point:
+The [official Open Banking VM guide](https://docs.gluu.org/stable/openbanking/install-vm/) documents this convenience entry point:
 
 ```bash
 curl --fail --location --output install.py \
   https://raw.githubusercontent.com/JanssenProject/jans/main/jans-linux-setup/jans_setup/install.py
 sudo python3 install.py --profile openbanking
 ```
+
+Do not use this form for anything beyond a disposable, throwaway exploration VM. It fetches `install.py` from the mutable `main` branch and executes it as root with no commit pin and no digest or signature check, so the code that runs is whatever `main` currently contains at fetch time. Use the pinned, staged method below for any VM whose result you intend to keep or rely on.
 
 That wrapper downloads Jans setup and its selected component artifacts. For the Open Banking profile it also requests a GitHub access token so it can retrieve the private overlay. Do not put a token in the URL, shell history, a logged command-line argument, or this guide. The tested wrapper reads its interactive token prompt visibly, so use it only from a private console; the reproducible staged method below is preferred.
 
@@ -253,9 +255,9 @@ unzip -t /opt/dist/jans/jans.zip
 unzip -t /opt/dist/jans/openbanking.zip
 ```
 
-Copy the checksum output into the protected evidence directory. `unzip -t` checks integrity only; it does not prove extraction is safe. Explicitly scan ZIP members and reject absolute paths, `..` traversal, symlink entries, and embedded private keys. Legitimate setup archives may contain executable scripts. The Open Banking ZIP must contain the expected `jans-linux-setup/openbanking` subtree.
+Compare this output against the trusted digests already recorded for this `JANS_REF`/`OB_REF` pair (from the delivery/support owner for `openbanking.zip`, or from a second independent fetch of the pinned commit for `install.py`/`jans.zip`). Do not proceed if any digest does not match; a mismatch means the file is not the pinned, reviewed input. Only after digests match, copy the checksum output into the protected evidence directory as the retained proof of what was verified. `unzip -t` checks integrity only; it does not prove extraction is safe. Explicitly scan ZIP members and reject absolute paths, `..` traversal, symlink entries, and embedded private keys. Legitimate setup archives may contain executable scripts. The Open Banking ZIP must contain the expected `jans-linux-setup/openbanking` subtree.
 
-The three files shown above are only the wrapper and source/profile inputs. They are not a complete offline installation bundle. `-use-downloaded` is valid only after a pinned download-only stage or an approved artifact bundle has populated every component selected by the underlying setup and every file has been hash-verified.
+The three files shown above are only the wrapper and source/profile inputs. They are not a complete offline installation bundle. Before invoking `-use-downloaded`, first stage every RPM, WAR, JAR, and other component artifact selected by the underlying Jans setup into this same directory (via a pinned download-only run of `install.py`, or an approved pre-built artifact bundle), build an inventory of what was staged, and hash-verify every file against trusted digests. `-use-downloaded` is valid only once that complete, hash-verified bundle is present; otherwise use the online installation path in step 7.
 
 #### Mandatory compatibility review
 
@@ -394,7 +396,7 @@ Keep the order exact: install core with the final hashed Open Banking overlay, v
    install -d -m 0700 "$EVIDENCE_DIR/admin-ui/logs"
    cd /opt/jans/jans-setup/flex/flex-linux-setup
    python3 ./flex_setup.py --install-admin-ui --flex-non-interactive \
-     --adminui_authentication_mode simple_password_auth \
+     --adminui_authentication_mode agama_org.gluu.agama.pw.main \
      > "$EVIDENCE_DIR/admin-ui/logs/flex-admin-ui-install-console.log" 2>&1
    adminui_setup_status=$?
    printf '%s\n' "$adminui_setup_status" \
@@ -423,7 +425,7 @@ Use a narrowly scoped, reviewed adapter design:
 
 - Keep the original Open Banking `/jans-auth/restv1/token`, `/jans-auth/restv1/register`, and `/jans-auth/restv1/revoke` routes mTLS-only.
 - Add dedicated Admin UI adapter paths without Apache client-certificate enforcement: `/jans-auth/restv1/admin-ui-token` proxies only to `http://localhost:8081/jans-auth/restv1/token`, and `/jans-auth/restv1/admin-ui-revoke` proxies only to `http://localhost:8081/jans-auth/restv1/revoke`.
-- Configure only the Admin UI OIDC frontend to use those adapter paths for PKCE exchange and logout.
+- Configure only the Admin UI OIDC frontend to use those adapter paths for PKCE exchange and logout: the installer's generated Admin UI configuration and the pinned `templates/auiConfiguration.json` both set `auiBackendApiClient.tokenEndpoint`; override that value from `/jans-auth/restv1/token` to `/jans-auth/restv1/admin-ui-token` in both places (injecting the Config API URL into `/admin/env-config.js` alone does not change this endpoint). Apply the equivalent override for revoke.
 - Prefer a reviewed source build. If an installed minified asset must be patched, require a timestamped backup plus exact file hash and unique occurrence checks; the generated asset filename is build-specific, so never edit it blindly.
 - Do not remove or relax `SSLVerifyClient require` on the original Open Banking routes.
 
