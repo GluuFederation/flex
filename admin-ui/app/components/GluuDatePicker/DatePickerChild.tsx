@@ -1,0 +1,281 @@
+import { memo, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { createDate, isSameDate, DATE_FORMATS } from '@/utils/dayjsUtils'
+import { NON_MOBILE_MIN_MEDIA_QUERY } from '@/constants'
+import { useTheme } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
+import type {
+  GluuDatePickerProps,
+  GluuDatePickerSingleProps,
+  GluuDatePickerRangeProps,
+  GluuDatePickerRangeInternalProps,
+} from './types'
+import { isGluuDatePickerRangeProps } from './types'
+import { useDatePickerStyles } from './GluuDatePicker.style'
+
+const DESKTOP_MODE_MEDIA_QUERY = `@media ${NON_MOBILE_MIN_MEDIA_QUERY}`
+
+const rangePropsEqual = (a: GluuDatePickerRangeProps, b: GluuDatePickerRangeProps): boolean => {
+  const startDateSame =
+    a.startDate && b.startDate
+      ? isSameDate(a.startDate, b.startDate, 'second')
+      : a.startDate === b.startDate
+  const endDateSame =
+    a.endDate && b.endDate ? isSameDate(a.endDate, b.endDate, 'second') : a.endDate === b.endDate
+  return (
+    startDateSame &&
+    endDateSame &&
+    a.layout === b.layout &&
+    a.labelAsTitle === b.labelAsTitle &&
+    a.showTime === b.showTime &&
+    a.forceIcon === b.forceIcon &&
+    a.startDateLabel === b.startDateLabel &&
+    a.endDateLabel === b.endDateLabel &&
+    a.inputHeight === b.inputHeight &&
+    a.textColor === b.textColor &&
+    a.backgroundColor === b.backgroundColor &&
+    (a.dateFormat ?? a.format) === (b.dateFormat ?? b.format) &&
+    a.onStartDateChange === b.onStartDateChange &&
+    a.onEndDateChange === b.onEndDateChange &&
+    a.onStartDateAccept === b.onStartDateAccept &&
+    a.onEndDateAccept === b.onEndDateAccept
+  )
+}
+
+const DatePickerChild = memo(
+  (props: GluuDatePickerProps) => {
+    const { state: themeState } = useTheme()
+    const selectedTheme = themeState?.theme ?? DEFAULT_THEME
+    const globalThemeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+    const isDarkTheme = selectedTheme === THEME_DARK
+
+    const isRange = isGluuDatePickerRangeProps(props)
+    const labelShrink = isRange ? !props.labelAsTitle : (props.labelShrink ?? true)
+    const showTime = props.showTime ?? false
+    const defaultFormat = showTime
+      ? DATE_FORMATS.DATE_PICKER_DATETIME
+      : DATE_FORMATS.DATE_PICKER_DISPLAY_US
+    const displayFormat = props.dateFormat ?? props.format ?? defaultFormat
+
+    const { classes, slotProps, datePickerSx } = useDatePickerStyles({
+      themeColors: globalThemeColors,
+      isDark: isDarkTheme,
+      textColor: props.textColor,
+      backgroundColor: props.backgroundColor,
+      inputHeight: props.inputHeight,
+      labelShrink,
+      forceIcon: props.forceIcon,
+    })
+
+    if (isRange) {
+      return (
+        <GluuDatePickerRange
+          {...props}
+          displayFormat={displayFormat}
+          slotProps={slotProps}
+          datePickerSx={datePickerSx}
+          classes={classes}
+        />
+      )
+    }
+
+    const SinglePicker = props.showTime
+      ? props.forceIcon
+        ? DesktopDateTimePicker
+        : DateTimePicker
+      : props.forceIcon
+        ? DesktopDatePicker
+        : DatePicker
+    const effectiveSlotProps =
+      props.showTime && !props.forceIcon
+        ? { ...slotProps, actionBar: { actions: ['accept' as const] } }
+        : slotProps
+    return (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <SinglePicker
+          format={displayFormat}
+          label={props.label ?? ''}
+          value={props.value ?? null}
+          onChange={props.onChange}
+          onAccept={props.onAccept}
+          minDate={props.minDate}
+          maxDate={props.maxDate}
+          disabled={props.disabled ?? false}
+          slotProps={effectiveSlotProps}
+          sx={datePickerSx}
+          {...(props.forceIcon ? {} : { desktopModeMediaQuery: DESKTOP_MODE_MEDIA_QUERY })}
+          {...(props.showTime ? { closeOnSelect: false } : {})}
+        />
+      </LocalizationProvider>
+    )
+  },
+  (prevProps, nextProps) => {
+    if (isGluuDatePickerRangeProps(prevProps) && isGluuDatePickerRangeProps(nextProps)) {
+      return rangePropsEqual(prevProps, nextProps)
+    }
+    if (isGluuDatePickerRangeProps(prevProps) || isGluuDatePickerRangeProps(nextProps)) {
+      return false
+    }
+    const prev = prevProps as GluuDatePickerSingleProps
+    const next = nextProps as GluuDatePickerSingleProps
+    return (
+      prev.value === next.value &&
+      prev.onChange === next.onChange &&
+      prev.onAccept === next.onAccept &&
+      prev.label === next.label &&
+      (prev.labelShrink ?? true) === (next.labelShrink ?? true) &&
+      (prev.dateFormat ?? prev.format) === (next.dateFormat ?? next.format) &&
+      prev.showTime === next.showTime &&
+      prev.forceIcon === next.forceIcon &&
+      prev.inputHeight === next.inputHeight &&
+      prev.textColor === next.textColor &&
+      prev.backgroundColor === next.backgroundColor &&
+      prev.minDate === next.minDate &&
+      prev.maxDate === next.maxDate &&
+      prev.disabled === next.disabled
+    )
+  },
+)
+
+const GluuDatePickerRange = memo(
+  ({
+    startDate,
+    endDate,
+    onStartDateChange,
+    onEndDateChange,
+    onStartDateAccept,
+    onEndDateAccept,
+    layout = 'grid',
+    labelAsTitle = false,
+    showTime = false,
+    forceIcon = false,
+    startDateLabel: startDateLabelProp,
+    endDateLabel: endDateLabelProp,
+    displayFormat,
+    slotProps,
+    datePickerSx,
+    classes,
+  }: GluuDatePickerRangeInternalProps) => {
+    const { t } = useTranslation()
+    const endOfToday = useMemo(() => createDate().endOf('day').millisecond(0), [])
+
+    const pickerCommon = useMemo(
+      () => ({
+        format: displayFormat,
+        slotProps,
+        sx: datePickerSx,
+        ...(forceIcon ? {} : { desktopModeMediaQuery: DESKTOP_MODE_MEDIA_QUERY }),
+      }),
+      [displayFormat, slotProps, datePickerSx, forceIcon],
+    )
+
+    const renderPicker = (type: 'start' | 'end') => {
+      const isStart = type === 'start'
+      const defaultLabel = isStart ? t('dashboard.start_date') : t('dashboard.end_date')
+      const label = isStart
+        ? (startDateLabelProp ?? defaultLabel)
+        : (endDateLabelProp ?? defaultLabel)
+      if (showTime) {
+        const TimePickerComponent = forceIcon ? DesktopDateTimePicker : DateTimePicker
+        return (
+          <TimePickerComponent
+            {...pickerCommon}
+            label={labelAsTitle ? '' : label}
+            value={isStart ? startDate : endDate}
+            onChange={isStart ? onStartDateChange : onEndDateChange}
+            onAccept={isStart ? onStartDateAccept : onEndDateAccept}
+            minDateTime={isStart ? undefined : (startDate ?? undefined)}
+            maxDateTime={isStart ? (endDate ?? endOfToday) : endOfToday}
+          />
+        )
+      }
+      const PickerComponent = forceIcon ? DesktopDatePicker : DatePicker
+      return (
+        <PickerComponent
+          {...pickerCommon}
+          label={labelAsTitle ? '' : label}
+          value={isStart ? startDate : endDate}
+          onChange={isStart ? onStartDateChange : onEndDateChange}
+          onAccept={isStart ? onStartDateAccept : onEndDateAccept}
+          minDate={isStart ? undefined : (startDate ?? undefined)}
+          maxDate={isStart ? (endDate ?? endOfToday) : endOfToday}
+        />
+      )
+    }
+
+    const startLabel = startDateLabelProp ?? t('dashboard.start_date')
+    const endLabel = endDateLabelProp ?? t('dashboard.end_date')
+
+    const rowLayout = (
+      <Box className={classes.rangeRowContainer}>
+        <Box className={classes.pickerWrapper}>
+          {labelAsTitle && (
+            <Box component="span" className={classes.titleLabel}>
+              {startLabel}:
+            </Box>
+          )}
+          {renderPicker('start')}
+        </Box>
+        <Box className={classes.pickerWrapper}>
+          {labelAsTitle && (
+            <Box component="span" className={classes.titleLabel}>
+              {endLabel}:
+            </Box>
+          )}
+          {renderPicker('end')}
+        </Box>
+      </Box>
+    )
+
+    const gridLayout = (
+      <Grid container spacing={2} className={classes.rangeGridContainer}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
+        >
+          {labelAsTitle && (
+            <Box component="span" className={classes.titleLabelGrid}>
+              {startLabel}:
+            </Box>
+          )}
+          {renderPicker('start')}
+        </Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
+        >
+          {labelAsTitle && (
+            <Box component="span" className={classes.titleLabelGrid}>
+              {endLabel}:
+            </Box>
+          )}
+          {renderPicker('end')}
+        </Grid>
+      </Grid>
+    )
+
+    return (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {layout === 'row' ? rowLayout : gridLayout}
+      </LocalizationProvider>
+    )
+  },
+)
+
+GluuDatePickerRange.displayName = 'GluuDatePickerRange'
+DatePickerChild.displayName = 'DatePickerChild'
+
+export default DatePickerChild

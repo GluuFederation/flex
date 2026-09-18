@@ -19,7 +19,6 @@ const config: Config = {
     '^@/cedarling/hooks/useCedarling$': '<rootDir>/__mocks__/cedarlingHookBridge.ts',
     '^@/cedarling/hooks/usePermission$': '<rootDir>/__mocks__/cedarlingPermissionBridge.ts',
     '^@/utils/hmr$': '<rootDir>/__mocks__/hmr.ts',
-    '^@/utilities$': '<rootDir>/__mocks__/utilities.ts',
     '^@/(.*)$': '<rootDir>/app/$1',
     '^Components(.*)$': '<rootDir>/app/components$1',
     '^Context(.*)$': '<rootDir>/app/context$1',
