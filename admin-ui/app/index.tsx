@@ -12,7 +12,6 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { startAtRoot } from '@/utils/startAtRoot'
 import { APP_BASE_URL } from '@/helpers/navigation'
 import './styles/index.css'
-import 'bootstrap/dist/css/bootstrap.css'
 
 if (typeof document !== 'undefined' && typeof document.startViewTransition === 'function') {
   const originalStartViewTransition = document.startViewTransition.bind(document)

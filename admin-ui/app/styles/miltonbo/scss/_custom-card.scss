@@ -1,37 +1,6 @@
 @import "./variables";
 
 .custom-card {
-    &--border-dash,
-    &--border-dot,
-    &--border {
-        @each $name, $color in $dashboard-colors {
-            &.custom-card--color-#{$name} {
-                border-color: $color;
-            }
-        }
-    }
-
-    &--side-border {
-        border-left-width: 2px;
-        @each $name, $color in $dashboard-colors {
-            &.custom-card--color-#{$name} {
-                border-left-color: $color;
-            }
-        }
-    }
-
-    &--background {
-        $white-text-names: ("primary", "secondary", "dark", "success", "danger", "info", "warning");
-        @each $name, $color in $dashboard-colors {
-            &.custom-card--color-#{$name} {
-                background-color: $color;
-                @if index($white-text-names, $name) {
-                    color: map-get($dashboard-colors, "white");
-                }
-            }
-        }
-    }
-
     &--border-dash {
         border-style: dashed;
         border-width: 2px;

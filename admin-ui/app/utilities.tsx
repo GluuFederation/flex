@@ -1,9 +1,6 @@
-const avatarModules = import.meta.glob('./images/avatars/*', {
-  eager: true,
-  import: 'default',
-})
-const allAvatars = Object.values(avatarModules) as string[]
+import defaultAvatarUrl from './images/avatars/1.jpeg'
 
-const randomArray = <T,>(arr: T[]): T => arr[0]
-
-export const randomAvatar = (): string => randomArray(allAvatars)
+// This was a glob over the whole avatars folder, but the picker always returned the first entry,
+// so the other avatars were bundled and never shown. Importing the one that was actually used
+// keeps the same image and drops the rest from the build.
+export const defaultAvatar = (): string => defaultAvatarUrl

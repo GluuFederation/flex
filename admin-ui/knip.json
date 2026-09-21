@@ -10,7 +10,7 @@
     "plugins/admin/__tests__/components/Assets/Asset/assetCedarTestConstants.ts"
   ],
   "project": ["app/**/*.{ts,tsx,js,jsx}", "plugins/**/*.{ts,tsx,js,jsx}", "script/**/*.ts"],
-  "ignoreDependencies": ["babel-preset-jest", "markdownlint-cli2"],
+  "ignoreDependencies": ["babel-preset-jest", "bootstrap", "markdownlint-cli2"],
   "rules": {
     "enumMembers": "off",
     "duplicates": "off"
