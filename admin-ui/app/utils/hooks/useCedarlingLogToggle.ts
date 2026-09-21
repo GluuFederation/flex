@@ -1,6 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEditAdminuiConf, type AppConfigResponse } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  useGetAdminuiConf,
+  useEditAdminuiConf,
+  getGetAdminuiConfQueryKey,
+  type AppConfigResponse,
+} from 'JansConfigApi'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getOAuth2ConfigResponse } from '@/redux/features/authSlice'
@@ -18,8 +24,11 @@ type UseCedarlingLogToggle = {
 export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
 
-  const config = useAppSelector((state) => state.authReducer.config) as AppConfigResponse
+  const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+
+  const { data: config } = useGetAdminuiConf({ query: { enabled: hasSession === true } })
   const editConfigMutation = useEditAdminuiConf()
 
   const [optimisticEnabled, setOptimisticEnabled] = useState<boolean | null>(null)
@@ -52,6 +61,7 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
       {
         onSuccess: (updatedConfig) => {
           setOptimisticEnabled(null)
+          queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
           dispatch(getOAuth2ConfigResponse({ config: updatedConfig as Config }))
           dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
         },
@@ -68,7 +78,7 @@ export const useCedarlingLogToggle = (): UseCedarlingLogToggle => {
         },
       },
     )
-  }, [config, enabled, isConfigReady, editConfigMutation, dispatch, t])
+  }, [config, enabled, isConfigReady, editConfigMutation, queryClient, dispatch, t])
 
   return { enabled, toggle, isSaving: editConfigMutation.isPending, isConfigReady }
 }

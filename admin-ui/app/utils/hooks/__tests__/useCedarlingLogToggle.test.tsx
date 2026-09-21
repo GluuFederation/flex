@@ -12,39 +12,45 @@ type MutationHandlers = {
   onError: (error: Error) => void
 }
 type MutateArgs = [{ data: Config }, MutationHandlers]
+type ConfQueryOptions = { query?: { enabled?: boolean } }
 
 const mockMutate = jest.fn<void, MutateArgs>()
+const mockUseGetAdminuiConf = jest.fn()
 let mockIsPending = false
 
 jest.mock('JansConfigApi', () => ({
+  useGetAdminuiConf: (options?: ConfQueryOptions) => mockUseGetAdminuiConf(options),
   useEditAdminuiConf: () => ({
     mutate: (...args: MutateArgs) => mockMutate(...args),
     isPending: mockIsPending,
   }),
+  getGetAdminuiConfQueryKey: () => ['/admin-ui/config'],
 }))
 
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }))
 
-const buildStore = (config?: Config) => {
+const buildStore = (hasSession = true) => {
   const store = configureStore({ reducer: { authReducer } })
-  if (config) {
-    store.dispatch({ type: 'auth/getOAuth2ConfigResponse', payload: { config } })
+  if (hasSession) {
+    store.dispatch({ type: 'auth/createAdminUiSessionResponse', payload: { success: true } })
   }
   return store
 }
 
-const renderToggle = (config?: Config) => {
-  const store = buildStore(config)
+const renderToggle = (config?: Config, { hasSession = true } = {}) => {
+  mockUseGetAdminuiConf.mockReturnValue({ data: config })
+  const store = buildStore(hasSession)
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </Provider>
   )
-  return { store, ...renderHook(() => useCedarlingLogToggle(), { wrapper }) }
+  return { store, invalidateSpy, ...renderHook(() => useCedarlingLogToggle(), { wrapper }) }
 }
 
-describe('useCedarlingLogToggle reads the config redux already holds', () => {
+describe('useCedarlingLogToggle reads the config the Config API query holds', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockIsPending = false
@@ -93,6 +99,16 @@ describe('useCedarlingLogToggle reads the config redux already holds', () => {
     expect(result.current.enabled).toBe(true)
   })
 
+  it('invalidates the configuration query on success so the settings form refetches', () => {
+    const { result, invalidateSpy } = renderToggle({ cedarlingLogType: 'off' })
+
+    act(() => result.current.toggle())
+    const [, handlers] = mockMutate.mock.calls[0]
+    act(() => handlers.onSuccess({ cedarlingLogType: 'std_out' }))
+
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['/admin-ui/config'] })
+  })
+
   it('writes the saved config back into redux on success', async () => {
     const { result, store } = renderToggle({ cedarlingLogType: 'off' })
 
@@ -104,7 +120,6 @@ describe('useCedarlingLogToggle reads the config redux already holds', () => {
     await waitFor(() =>
       expect(store.getState().authReducer.config.cedarlingLogType).toBe('std_out'),
     )
-    expect(result.current.enabled).toBe(true)
   })
 
   it('rolls the optimistic state back when the request fails', () => {
@@ -127,29 +142,41 @@ describe('useCedarlingLogToggle reads the config redux already holds', () => {
   })
 })
 
-describe('useCedarlingLogToggle before redux holds a config', () => {
+describe('useCedarlingLogToggle before the configuration query resolves', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockIsPending = false
   })
 
-  it('reports the config as not ready before getOAuth2Config has populated it', () => {
-    const { result } = renderToggle()
+  it('reports the config as not ready while the query has no data', () => {
+    const { result } = renderToggle(undefined)
 
     expect(result.current.isConfigReady).toBe(false)
   })
 
   it('does not submit a configuration write while the stored config is still empty', () => {
-    const { result } = renderToggle()
+    const { result } = renderToggle(undefined)
 
     act(() => result.current.toggle())
 
     expect(mockMutate).not.toHaveBeenCalled()
   })
 
-  it('reports the config as ready once getOAuth2Config has populated it', () => {
+  it('reports the config as ready once the query has resolved', () => {
     const { result } = renderToggle({ cedarlingLogType: 'off' })
 
     expect(result.current.isConfigReady).toBe(true)
+  })
+
+  it('keeps the configuration query disabled until a session exists', () => {
+    renderToggle({ cedarlingLogType: 'off' }, { hasSession: false })
+
+    expect(mockUseGetAdminuiConf).toHaveBeenCalledWith({ query: { enabled: false } })
+  })
+
+  it('enables the configuration query once a session exists', () => {
+    renderToggle({ cedarlingLogType: 'off' })
+
+    expect(mockUseGetAdminuiConf).toHaveBeenCalledWith({ query: { enabled: true } })
   })
 })
