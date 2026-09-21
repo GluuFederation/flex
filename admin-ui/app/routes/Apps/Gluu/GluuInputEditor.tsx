@@ -1,15 +1,10 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Col, FormGroup } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
-import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-java'
-import 'ace-builds/src-noconflict/mode-python'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/theme-xcode'
-import 'ace-builds/src-noconflict/theme-monokai'
-import 'ace-builds/src-noconflict/ext-language_tools'
 import { useStyles } from './styles/GluuInputEditor.style'
 import type { GluuInputEditorProps } from './types/GluuInputEditor.types'
+
+const GluuAceEditor = lazy(() => import('./GluuAceEditor'))
 
 const GluuInputEditor = <T extends object>({
   name,
@@ -53,23 +48,23 @@ const GluuInputEditor = <T extends object>({
       />
       <Col sm={rsize} className={classes.colWrapper}>
         {shortcode}
-        <AceEditor
-          mode={language}
-          readOnly={readOnly}
-          wrapEnabled
-          setOptions={{ useWorker: false, hScrollBarAlwaysVisible: false }}
-          theme={aceTheme}
-          placeholder={placeholder}
-          fontSize={16}
-          onCursorChange={onCursorChange}
-          width={width}
-          height="300px"
-          onChange={handleChange}
-          name={name}
-          value={value ?? ''}
-          editorProps={{ $blockScrolling: true }}
-          highlightActiveLine={!readOnly}
-        />
+        <Suspense
+          fallback={
+            <div className={classes.editorPlaceholder} style={{ width }} aria-busy="true" />
+          }
+        >
+          <GluuAceEditor
+            name={name}
+            language={language}
+            value={value}
+            readOnly={readOnly}
+            theme={aceTheme}
+            placeholder={placeholder}
+            onCursorChange={onCursorChange}
+            width={width}
+            onChange={handleChange}
+          />
+        </Suspense>
         {showError && errorMessage ? <div className={classes.error}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>

@@ -105,13 +105,6 @@ jest.mock('Plugins/auth-server/redux/features/scopeSlice', () => ({
   })),
 }))
 
-jest.mock('Plugins/admin/helper/utils', () => ({
-  adminUiFeatures: {
-    oidc_clients_write: 'https://jans.io/oauth/config/openid/clients.write',
-    oidc_clients_read: 'https://jans.io/oauth/config/openid/clients.readonly',
-  },
-}))
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),

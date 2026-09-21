@@ -13,7 +13,7 @@ import type {
   ITokenEntry,
 } from '@/cedarling/types'
 import { updateToast } from '@/redux/features/toastSlice'
-import { logger } from '@/utils/logger'
+import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 
 const inFlightAuthorizations = new Map<string, Promise<AuthorizationResult>>()
 
@@ -97,7 +97,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       const requestedAction = scopeEntry.action
 
       if (!cedarlingInitialized || isInitializing) {
-        logger.debug(
+        cedarLogger.debug(
           `Cedarling authorization skipped for "${resolvedResourceId}" (${requestedAction}): Cedarling is not yet initialized.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -108,7 +108,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!access_token || !id_token || !userinfo_token) {
-        logger.debug(
+        cedarLogger.debug(
           `Cedarling authorization denied for "${resolvedResourceId}" (${requestedAction}): required tokens are missing.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -119,7 +119,7 @@ export const useCedarling = (): UseCedarlingReturn => {
       }
 
       if (!resolvedResourceId) {
-        logger.debug(
+        cedarLogger.debug(
           `Cedarling authorization denied (${requestedAction}): resource id is missing for the given permission.`,
           { payload: buildLogPayload(resolvedResourceId, requestedAction) },
         )
@@ -137,7 +137,7 @@ export const useCedarling = (): UseCedarlingReturn => {
           actionLabel,
         )
         if (cachedDecision !== undefined) {
-          logger.trace(
+          cedarLogger.trace(
             `Cedarling authorization served from cache: "${resolvedResourceId}" (${actionLabel}) → ${cachedDecision ? 'allowed' : 'denied'}`,
             { payload: buildLogPayload(resolvedResourceId, actionLabel) },
           )
@@ -158,12 +158,12 @@ export const useCedarling = (): UseCedarlingReturn => {
               response,
             }
             if (isAuthorized) {
-              logger.trace(
+              cedarLogger.trace(
                 `Cedarling authorization allowed (live): "${resolvedResourceId}" (${actionLabel})`,
                 logPayload,
               )
             } else {
-              logger.warn(
+              cedarLogger.debug(
                 `Cedarling authorization denied (live): "${resolvedResourceId}" (${actionLabel})`,
                 logPayload,
               )
@@ -182,7 +182,7 @@ export const useCedarling = (): UseCedarlingReturn => {
         const toMessage = (err: Error | string): string =>
           err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
         const rawMessage = toMessage(error as Error | string)
-        logger.error(
+        cedarLogger.error(
           `Cedarling authorization failed for "${resolvedResourceId}" (${actionLabel}): ${rawMessage}`,
           {
             payload: buildLogPayload(resolvedResourceId, actionLabel),

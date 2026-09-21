@@ -6,7 +6,7 @@ import SetTitle from 'Utils/SetTitle'
 import styles from './ProfilePage.style'
 import { Box, Divider } from '@mui/material'
 import { EditOutlined } from '@/components/icons'
-import { randomAvatar } from '../../../utilities'
+import { defaultAvatar } from '../../../utilities'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
@@ -58,7 +58,7 @@ const ProfileDetails: React.FC = () => {
 
   const { canRead: canReadProfile, canWrite: canEditProfile } = usePermission(USERS_RESOURCE_ID)
 
-  const avatarSrc = useMemo(() => randomAvatar(), [])
+  const avatarSrc = useMemo(() => defaultAvatar(), [])
 
   const navigateToUserManagement = useCallback((): void => {
     if (!profileDetails?.inum) return

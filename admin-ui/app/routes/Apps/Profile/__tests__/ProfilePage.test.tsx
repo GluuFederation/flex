@@ -22,10 +22,6 @@ const mockProfileDetails: UseProfileDetailsResult = {
 
 const mockUseProfileDetails = jest.fn<UseProfileDetailsResult, []>(() => mockProfileDetails)
 
-jest.mock('../../../../utilities', () => ({
-  randomAvatar: () => 'avatar.png',
-}))
-
 jest.mock('../hooks/useProfileDetails', () => ({
   useProfileDetails: () => mockUseProfileDetails(),
 }))

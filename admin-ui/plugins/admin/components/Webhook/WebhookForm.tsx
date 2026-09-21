@@ -612,6 +612,7 @@ const WebhookForm: React.FC<WebhookFormProps> = ({ viewOnly = false }) => {
                         }
                         placeholder={t('placeholders.enter_header_key')}
                         className={classes.headersInput}
+                        autoComplete="off"
                         disabled={viewOnly}
                       />
                       <Input
@@ -622,6 +623,7 @@ const WebhookForm: React.FC<WebhookFormProps> = ({ viewOnly = false }) => {
                         }
                         placeholder={t('placeholders.enter_key_value')}
                         className={classes.headersInput}
+                        autoComplete="off"
                         disabled={viewOnly}
                       />
                       {!viewOnly && (
