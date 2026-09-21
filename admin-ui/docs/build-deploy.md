@@ -30,7 +30,7 @@ Vite loads environment values from `.env`, `.env.<mode>`, and `.env.<mode>.local
 
 The mode is selected by Vite's `--mode <name>` flag, which the `build:*` npm scripts pass automatically.
 
-The values from these files become available in the build as `process.env.<NAME>`. Vite rewrites these references statically at build time. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
+Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH`, `API_BASE_URL`, `CONFIG_API_BASE_URL` and `POLICY_STORE_CONFIG` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
 
 ## Preview mode
 
@@ -103,7 +103,7 @@ If `env-config.js` is missing or empty, the axios instance in [`orval/axiosInsta
 
 ## CI / Jenkins
 
-The flex Jenkins pipeline is deliberately minimal. It does not run lint, type-check, or tests. Those are enforced at commit time by the husky pre-commit hook. CI is purely an artifact builder.
+The flex Jenkins pipeline is deliberately minimal. It does not run lint, type-check, or tests. Lint and type-check are enforced at commit time by the husky pre-commit hook; the test suite is not run by any hook, so run `npm run test:all` yourself. CI is purely an artifact builder.
 
 The pipeline:
 

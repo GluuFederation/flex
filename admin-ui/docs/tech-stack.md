@@ -7,7 +7,7 @@ One-page reference for every notable library. What it is, where it's wired, when
 | Concern             | Library                                                                                     |
 | ------------------- | ------------------------------------------------------------------------------------------- |
 | Language            | TypeScript 6 (strict)                                                                       |
-| Framework           | React 18                                                                                    |
+| Framework           | React 19                                                                                    |
 | Build               | Vite 8 (Rolldown bundler)                                                                   |
 | State (client/auth) | Redux Toolkit (+ listener middleware) + redux-persist                                       |
 | State (server)      | TanStack React Query 5                                                                      |

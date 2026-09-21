@@ -47,13 +47,14 @@ Replace `<jans-server-host>` with your Jans Server's hostname.
 
 ### Variables
 
-| Variable              | Purpose                                                   |
-| --------------------- | --------------------------------------------------------- |
-| `BASE_PATH`           | URL path the app is served from (`/admin/`)               |
-| `CONFIG_API_BASE_URL` | Jans Config API base URL                                  |
-| `API_BASE_URL`        | Jans Admin UI API base URL (a Config API sub-path)        |
-| `NPM_TOKEN`           | Unused (leave empty)                                      |
-| `ANALYZE`             | When `true`, the prod build emits the Sonda bundle report |
+| Variable               | Purpose                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| `BASE_PATH`            | URL path the app is served from (`/admin/`)                                     |
+| `CONFIG_API_BASE_URL`  | Jans Config API base URL                                                        |
+| `API_BASE_URL`         | Jans Admin UI API base URL (a Config API sub-path)                              |
+| `NPM_TOKEN`            | Unused (leave empty)                                                            |
+| `AUTH_SERVER_HOSTNAME` | Present in the checked-in `.env.*` files but read by nothing; no need to set it |
+| `ANALYZE`              | When `true`, the prod build emits the Sonda bundle report                       |
 
 Vite loads `.env`, `.env.<mode>`, `.env.<mode>.local` (later wins). `.env.*.local` are for per-machine overrides. Gitignored, never commit secrets. Full model in [build-deploy.md](./build-deploy.md#env-files-per-mode).
 
@@ -82,8 +83,8 @@ React Query DevTools button appears bottom-right in dev. Click to inspect cache.
 
 ## Quality gates
 
-- **Husky pre-commit hook** runs automatically on `git commit`: Prettier + ESLint + `tsc` + markdownlint on the staged subset. Fix, re-stage, commit again.
-- **`npm run check:all`** runs the same checks across the repo. Use it if you skipped the hook.
+- **Husky pre-commit hook** runs automatically on `git commit`: Prettier + ESLint + deprecated-API check + `tsc` + markdownlint + knip. Fix, re-stage, commit again. Commits must also be signed and signed off, so use `git commit -S -s -m "<message>"`; see [conventions.md](./conventions.md#pre-commit-hook).
+- **`npm run check:all`** runs ESLint + markdownlint + `tsc` across the whole repo. Use it if you skipped the hook, but note it covers less than the hook does: no Prettier, no deprecated-API check and no knip.
 
 No CI lint or test step. The hook is the only enforcement point. See [build-deploy.md](./build-deploy.md#ci--jenkins).
 

@@ -36,7 +36,7 @@ sequenceDiagram
     Init->>Init: merge cedarling-bootstrap-TBAC.json + log type → bootstrap config
     Init->>Client: initialize(bootstrap config, policy store bytes)
     Client->>Wasm: initWasm()
-    Client->>Wasm: init_from_archive_bytes(config, bytes)
+    Client->>Wasm: initFromArchiveBytes(config, bytes)
     Wasm-->>Client: Cedarling instance ready
     Init->>Redux: setCedarlingInitialized(true)
 ```
@@ -62,8 +62,8 @@ sequenceDiagram
             Cache-->>Hook: boolean
         else not cached
             Hook->>Client: token_authorize({ tokens, action, resource })
-            Client->>Wasm: authorize_multi_issuer(request)
-            Wasm-->>Client: { decision: true | false }
+            Client->>Wasm: authorizeMultiIssuer(request)
+            Wasm-->>Client: { decision, request_id }
             Hook->>Cache: setCedarlingPermission(key, decision)
         end
     end
@@ -86,8 +86,8 @@ When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/util
 Once all three are ready, it:
 
 1. **Decodes** the base64 string into a `Uint8Array`.
-2. **Merges the bootstrap config**: a static JSON file at [`app/cedarling/config/cedarling-bootstrap-TBAC.json`](../app/cedarling/config/cedarling-bootstrap-TBAC.json) gets combined with the runtime-configured log type to produce the full bootstrap configuration that Cedarling will initialize with. The log type comes from the Config API (`authReducer.config.cedarlingLogType`) and is one of the values in [`CEDARLING_LOG_TYPE`](../app/cedarling/constants/cedarlingConstants.ts): `OFF` (default) or `STD_OUT`. This step tells Cedarling _how_ to behave (logging, schema, token issuers). The policy store tells it _what to enforce_.
-3. **Initializes Cedarling** by calling `cedarlingClient.initialize(bootstrap config, policy store bytes)`. [`cedarlingClient`](../app/cedarling/client/) is a thin singleton wrapper around the WASM module. Its `initialize` function loads the WASM binary (`initWasm()`) and asks the WASM module to construct a `Cedarling` instance from the bootstrap config and the policy store bytes (`init_from_archive_bytes`). The client guards against double-init using a promise singleton. If Phase 1 re-runs while initialization is mid-flight, the second call returns the in-progress promise instead of starting over.
+2. **Merges the bootstrap config**: a static JSON file at [`app/cedarling/config/cedarling-bootstrap-TBAC.json`](../app/cedarling/config/cedarling-bootstrap-TBAC.json) gets combined with the runtime-configured log type to produce the full bootstrap configuration that Cedarling will initialize with. The log type comes from the Config API (`authReducer.config.cedarlingLogType`) and is one of the values in [`CEDARLING_LOG_TYPE`](../app/cedarling/constants/cedarlingConstants.ts): `OFF` (default) or `STD_OUT`. This step tells Cedarling _how_ to behave (logging, schema, token issuers). The policy store tells it _what to enforce_. The same value also gates the Admin UI's own Cedarling console output through `cedarLogger` - see [Logging](#logging).
+3. **Initializes Cedarling** by calling `cedarlingClient.initialize(bootstrap config, policy store bytes)`. [`cedarlingClient`](../app/cedarling/client/) is a thin singleton wrapper around the WASM module. Its `initialize` function loads the WASM binary (`initWasm()`) and asks the WASM module to construct a `Cedarling` instance from the bootstrap config and the policy store bytes (`initFromArchiveBytes`). The client guards against double-init using a promise singleton. If Phase 1 re-runs while initialization is mid-flight, the second call returns the in-progress promise instead of starting over.
 4. **Marks Cedarling ready** with `setCedarlingInitialized(true)`. From this point on, any component can ask Cedarling for a decision.
 
 If initialization fails, the initializer retries up to **10 times with a 1-second delay** between tries (both values are inline in [`PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx)). If it still fails after 10 attempts, it dispatches `setCedarFailedStatusAfterMaxTries`, which is the signal the rest of the app uses to render a "Cedarling unavailable" fallback instead of the normal UI.
@@ -119,13 +119,38 @@ So adding a resource or changing its allowed actions is a single edit to `RESOUR
 
    The entity-type prefixes live in [`CEDARLING_CONSTANTS`](../app/cedarling/constants/cedarlingConstants.ts) and must stay in sync with the policy-store schema.
 
-3. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorize_multi_issuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision: true | false }`. The decision is cached under the key `${resourceId}::${action}` ([`buildCedarPermissionKey`](../app/cedarling/utility/resources.ts)).
+3. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorizeMultiIssuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision, request_id }`; the client frees the WASM result and passes both fields on. The decision is cached under the key `${resourceId}::${action}` ([`buildCedarPermissionKey`](../app/cedarling/utility/resources.ts)).
 
 A failed authorization is not cached: the catch path returns `false` for that call but skips the cache write, so a transient WASM or init error retries on the next check instead of sticking as a permanent denial.
 
 After the first `usePermission` call on a page, every subsequent render costs nothing: no WASM, no network, just a cache hit.
 
 A 403 from the Config API is still possible if a Cedarling decision and the server-side policy check disagree. Cedarling is the **early gate** for what the user can see and click, not the final word. The Config API always revalidates. When the API disagrees, the user sees a toast and the affected query fails. Cached decisions stay.
+
+## Logging
+
+Cedarling produces two streams of console output, and one switch controls both.
+
+**The switch** is `cedarlingLogType` on the Admin UI configuration (`off` or `std_out`, from [`CEDARLING_LOG_TYPE`](../app/cedarling/constants/cedarlingConstants.ts)). Two UI surfaces write it: the "Cedarling Log enabled?" field on the Settings page, and the "Cedarling logs?" toggle in the profile dropdown ([`useCedarlingLogToggle`](../app/utils/hooks/useCedarlingLogToggle.ts)). Both read and write the same Config API resource through the generated `useGetAdminuiConf` / `useEditAdminuiConf` hooks, and both invalidate `getGetAdminuiConfQueryKey()` after a write, so the two stay in step.
+
+**The two streams:**
+
+1. **The WASM engine's own logs.** The switch value is passed into the bootstrap config as `CEDARLING_LOG_TYPE`. This is read once, when Cedarling initializes, so changing it mid-session has no effect until the next sign-in. That is what the "Please re-login to view the cedarling changes" toast refers to.
+2. **The Admin UI's own Cedarling lines** - initialization, authorization decisions, skipped checks. These go through [`cedarLogger`](../app/cedarling/utility/cedarLogger.ts), never `logger` directly. It applies two gates in series: if the switch is not `std_out` nothing is emitted at all; otherwise the call is handed to `logger`, where the usual `gluu.logLevel` threshold decides. Unlike the engine stream, this one reacts immediately - no re-login needed.
+
+`cedarLogger.error` is deliberately ungated, so genuine failures still reach the console and appear in support reports when the switch is off.
+
+Once the switch is on, the level decides what is visible. At the default `INFO` that is the initialization line plus anything that actually failed; individual authorization decisions need `DEBUG` or `TRACE`:
+
+| Event                                                      | Level   |
+| ---------------------------------------------------------- | ------- |
+| Cedarling initialized successfully                         | `info`  |
+| Authorization denied (live decision)                       | `debug` |
+| Authorization allowed (live decision)                      | `trace` |
+| Decision served from the cache                             | `trace` |
+| Check skipped - not initialized, no tokens, no resource id | `debug` |
+| Initialization retry failed                                | `warn`  |
+| WASM init failed, authorization threw                      | `error` |
 
 ## Where the code lives
 
@@ -135,12 +160,12 @@ app/cedarling/
 ├── config/          # cedarling-bootstrap-TBAC.json
 │                    # policy-store-dev.json
 │                    # policy-store-prod.json
-├── components/      # Protected - declarative action gate
 ├── constants/       # RESOURCE_ACTIONS, CEDAR_ACTIONS, CEDARLING_BYPASS (resourceCatalog)
 │                    # CEDARLING_CONSTANTS, CEDARLING_LOG_TYPE (cedarlingConstants)
 ├── hooks/           # useCedarling (low-level), usePermission (per-resource)
 ├── types/           # cedarTypes: CedarAction, AdminUiFeatureResource, ResourceScopeEntry, …
-└── utility/         # ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES, buildCedarPermissionKey
+└── utility/         # ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES, buildCedarPermissionKey (resources)
+                     # cedarLogger - toggle-aware logging wrapper
 
 app/redux/features/cedarPermissionsSlice.ts
                      # decision cache, policy-store bytes, init state, retry state
@@ -154,7 +179,7 @@ app/utils/AppAuthProvider.tsx
 
 `vite.config.ts` (`getPolicyStoreConfig`) picks `policy-store-dev.json` or `policy-store-prod.json` by build mode and embeds it into the bundle. The Config API ships the same store at runtime via `fetchPolicyStore()`: that is the runtime override path, used so the policy store can change without rebuilding the UI.
 
-The `app/cedarling` module follows a one-way layering: `constants` ← `types` ← `utility` / `hooks` / `components`. Import from leaf paths (`@/cedarling/hooks/usePermission`, `@/cedarling/constants`, `@/cedarling/utility`, `@/cedarling/types`, `@/cedarling/components`). The top-level `@/cedarling` barrel is reserved for tests; it is blocked by `no-restricted-imports` in app and plugin code to keep Fast Refresh boundaries intact.
+The `app/cedarling` module follows a one-way layering: `constants` ← `types` ← `utility` / `hooks`. Import from leaf paths (`@/cedarling/hooks/usePermission`, `@/cedarling/constants`, `@/cedarling/utility`, `@/cedarling/types`). The top-level `@/cedarling` barrel is reserved for tests; it is blocked by `no-restricted-imports` in app and plugin code to keep Fast Refresh boundaries intact.
 
 ## How to use it
 
@@ -187,17 +212,6 @@ const ClientListPage = () => {
 
 `usePermission` runs the authorization in its own `useEffect`, so the component never calls `authorizeHelper` directly.
 
-For a single child that should appear only under one action, [`Protected`](../app/cedarling/components/Protected.tsx) is the declarative form:
-
-```tsx
-import { Protected } from '@/cedarling/components'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
-import { CEDAR_ACTIONS } from '@/cedarling/constants'
-;<Protected resource={ADMIN_UI_RESOURCES.Clients} action={CEDAR_ACTIONS.WRITE}>
-  <AddClientButton />
-</Protected>
-```
-
 Rules:
 
 - Match the action to the operation: read for viewing, write for add and edit, delete for delete. Gate the destination page and its confirm dialog on the same action as the button that opens them.
@@ -220,7 +234,7 @@ Rules:
 
 2. Add the Cedar policy to **both** `policy-store-dev.json` and `policy-store-prod.json`. A policy in dev but not prod returns "deny" in production with no obvious error.
 
-3. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` or `<Protected>` as shown above.
+3. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` as shown above.
 
 4. Verify in the browser. Sign in as a user with the role that should have access and confirm the page renders. Sign in as a user without it and confirm the page is gated.
 
@@ -282,11 +296,11 @@ Two upstream quirks to be aware of:
 
 ### Screens
 
-| Screen                  | Route                         | What it does                                                                                                                                                                                             |
-| ----------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cedarling Configuration | `ADMIN_CEDARLING_CONFIG`      | Uploads a `.cjar`. The confirm step is `GluuCommitDialog`, so every upload carries comments and fires the `policy_store_write` webhook.                                                                  |
-| Policy Store History    | `ADMIN_POLICY_STORES`         | Lists every store — filename, status, uploaded, size, by, comments — with Open / Download / Set active / Delete. Sorted newest-first, because the list endpoint's own default is `inum` (a random uuid). |
-| Archive Explorer        | `ADMIN_POLICY_STORE_EXPLORER` | Split-pane `.cjar` browser: tree left, Ace editor right. View, edit, add and delete files, then download the repacked archive.                                                                           |
+| Screen                  | Route                             | What it does                                                                                                                                                                                             |
+| ----------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cedarling Configuration | `ROUTES.ADMIN_POLICIES_CREATE`    | Uploads a `.cjar`. The confirm step is `GluuCommitDialog`, so every upload carries comments and fires the `policy_store_write` webhook.                                                                  |
+| Policy Store History    | `ROUTES.ADMIN_POLICIES_LIST`      | Lists every store — filename, status, uploaded, size, by, comments — with Open / Download / Set active / Delete. Sorted newest-first, because the list endpoint's own default is `inum` (a random uuid). |
+| Archive Explorer        | `ROUTES.ADMIN_POLICIES_VIEW/EDIT` | Split-pane `.cjar` browser: tree left, Ace editor right. View, edit, add and delete files, then download the repacked archive.                                                                           |
 
 Two invariants the history screen enforces, both from the ticket: the active store can be neither
 deleted nor re-activated, so exactly one store is always live.
