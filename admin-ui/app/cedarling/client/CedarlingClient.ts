@@ -9,7 +9,7 @@ import type {
   AuthorizationResponse,
   TokenAuthorizationRequest,
 } from '@/cedarling/types'
-import { logger } from '@/utils/logger'
+import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
@@ -30,7 +30,7 @@ const initialize = async (config: BootStrapConfig, policyStoreBytes: Uint8Array)
       cedarling = await initFromArchiveBytes(config, policyStoreBytes)
       cedarlingInitialized = true
     } catch (err) {
-      logger.error(
+      cedarLogger.error(
         'Cedarling WASM initialization failed:',
         err instanceof Error ? err : String(err),
       )
@@ -46,7 +46,7 @@ const token_authorize = async (
   request: TokenAuthorizationRequest,
 ): Promise<AuthorizationResponse> => {
   if (!cedarlingInitialized || !cedarling) {
-    logger.debug('Cedarling token_authorize called before initialization completed.')
+    cedarLogger.debug('Cedarling token_authorize called before initialization completed.')
     throw new Error('Cedarling not initialized')
   }
 

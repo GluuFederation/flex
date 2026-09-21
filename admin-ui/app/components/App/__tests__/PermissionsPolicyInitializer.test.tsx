@@ -2,6 +2,7 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import PermissionsPolicyInitializer from '../PermissionsPolicyInitializer'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
+import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 
 type CedarInitState = {
   authReducer: { hasSession: boolean; config: { cedarlingLogType: string } }
@@ -26,8 +27,14 @@ jest.mock('@/cedarling/client', () => ({
     initialize: (config: object, bytes: Uint8Array) => mockInitialize(config, bytes),
   },
 }))
-jest.mock('@/utils/logger', () => ({
-  logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
+jest.mock('@/cedarling/utility/cedarLogger', () => ({
+  cedarLogger: {
+    trace: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
 }))
 
 // Action creators return identifiable plain objects so dispatch calls can be asserted.
@@ -70,6 +77,15 @@ describe('PermissionsPolicyInitializer', () => {
     await waitFor(() =>
       expect(mockDispatch).toHaveBeenCalledWith({ type: 'initialized', payload: true }),
     )
+  })
+
+  it('reports a successful initialization through the cedarling-scoped logger', async () => {
+    mockInitialize.mockResolvedValue(undefined)
+    render(<PermissionsPolicyInitializer />)
+    await waitFor(() =>
+      expect(cedarLogger.info).toHaveBeenCalledWith('Cedarling initialized successfully'),
+    )
+    expect(cedarLogger.warn).not.toHaveBeenCalled()
   })
 
   it('does not initialize when there is no session', () => {
