@@ -1,15 +1,18 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { keepPreviousData } from '@tanstack/react-query'
-import { useGetStat, type GetStatParams, type JsonNode } from 'JansConfigApi'
+import { useGetStat, type JsonNode } from 'JansConfigApi'
 import type { MauStatEntry, MauDateRange, RawStatEntry, MauSummary } from '../types'
 import { MAU_CACHE_CONFIG } from '../constants'
 import {
   augmentMauData,
   transformRawStatEntry,
-  formatDateForApi,
+  buildStatParams,
+  orderMonthRange,
   calculatePercentChange,
 } from '../utils'
+
+const EMPTY_DATA: MauStatEntry[] = []
 
 const transformApiResponse = (data: JsonNode[] | undefined): MauStatEntry[] => {
   if (!data || !Array.isArray(data)) {
@@ -100,10 +103,18 @@ export const useMauStats = (
 ) => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
-  const params: GetStatParams = {
-    start_month: formatDateForApi(dateRange.startDate),
-    end_month: formatDateForApi(dateRange.endDate),
-  }
+  const [rangeStart, rangeEnd] = useMemo(
+    () => orderMonthRange(dateRange.startDate, dateRange.endDate),
+    [dateRange.startDate, dateRange.endDate],
+  )
+
+  const params = useMemo(() => buildStatParams(rangeStart, rangeEnd), [rangeStart, rangeEnd])
+
+  const select = useCallback(
+    (data: JsonNode[]): MauStatEntry[] =>
+      augmentMauData(transformApiResponse(data), rangeStart, rangeEnd),
+    [rangeStart, rangeEnd],
+  )
 
   const isEnabled =
     (options?.enabled ?? true) &&
@@ -117,14 +128,11 @@ export const useMauStats = (
       staleTime: MAU_CACHE_CONFIG.STALE_TIME,
       gcTime: MAU_CACHE_CONFIG.GC_TIME,
       placeholderData: keepPreviousData,
-      select: (data: JsonNode[]): MauStatEntry[] => {
-        const transformed = transformApiResponse(data)
-        return augmentMauData(transformed, dateRange.startDate, dateRange.endDate)
-      },
+      select,
     },
   })
 
-  const data = query.data ?? []
+  const data = query.data ?? EMPTY_DATA
   const summary = useMemo(() => computeSummary(data), [data])
 
   return {
