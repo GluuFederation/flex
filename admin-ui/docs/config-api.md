@@ -47,7 +47,7 @@ sequenceDiagram
 
 ### Explanation of the flow
 
-1. A component calls a generated hook. For example `useGetClients({ limit: 10 })`.
+1. A component calls a generated hook. For example `useGetOauthOpenidClients({ limit: 10 })`.
 2. The hook asks **React Query** for the cached entry for this `queryKey`. If the entry exists and is still considered fresh (within the configured `staleTime`), React Query returns it immediately and no network request happens. This is what makes the same hook safe to call from three different components on the same page. They all see one shared response.
 3. On a cache miss, the hook calls **Orval's mutator function `customInstance`**, defined in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts). The mutator wraps every request with a cancel token so React Query can abort in-flight calls if the component unmounts before the response arrives.
 4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)).
@@ -103,23 +103,28 @@ Orval emits hooks following a consistent naming pattern, one set per OpenAPI ope
 Import them from the `JansConfigApi` alias. Never from the underlying generated paths, which can change between regenerations:
 
 ```ts
-import { useGetClients, usePutClient, getGetClientsQueryKey, type Client } from 'JansConfigApi'
+import {
+  useGetOauthOpenidClients,
+  usePutOauthOpenidClient,
+  getGetOauthOpenidClientsQueryKey,
+  type Client,
+} from 'JansConfigApi'
 ```
 
 Once imported, the hooks behave like any React Query hook. A read in a component looks like:
 
 ```ts
-const { data, isLoading, error } = useGetClients({ limit: 10 })
+const { data, isLoading, error } = useGetOauthOpenidClients({ limit: 10 })
 ```
 
 A mutation with cache invalidation looks like:
 
 ```ts
 const queryClient = useQueryClient()
-const mutation = usePutClient({
+const mutation = usePutOauthOpenidClient({
   mutation: {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
+      queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
     },
   },
 })
@@ -129,7 +134,7 @@ If a hook you need does not exist, the upstream OpenAPI spec is missing the oper
 
 ## Base URL resolution
 
-The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a Jenkins-deployed environment, and on a customer's installer VM. To make that work, the axios base URL is decided at boot through a three-step fallback chain in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts):
+The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a CI-deployed environment, and on a customer's installer VM. To make that work, the axios base URL is decided at boot through a three-step fallback chain in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts):
 
 1. **`window.configApiBaseUrl`**: set at runtime by `env-config.js` (see [Runtime env injection](#runtime-env-injection)). If this is set and does **not** look like an un-substituted `%(...)s` placeholder (matched by `REGEX_PYTHON_PLACEHOLDER`), it wins.
 2. **`process.env.CONFIG_API_BASE_URL`**: baked in from `.env.<mode>` at build time by Vite. Used in dev and as a build-time default.
@@ -145,7 +150,7 @@ The mechanism that puts the right `window.configApiBaseUrl` in the browser is a 
 <script src="/admin/env-config.js"></script>
 ```
 
-`env-config.js` sets `window.configApiBaseUrl` (and a few sibling globals) before the main app bundle runs. The same `dist/` bundle is used in every environment. Only this one script differs. See [build-deploy.md](./build-deploy.md#runtime-env-injection) for who provides the file in each environment (installer, Jenkins, Vite dev plugin) and why a dev 404 on it is harmless.
+`env-config.js` sets `window.configApiBaseUrl` (and a few sibling globals) before the main app bundle runs. The same `dist/` bundle is used in every environment. Only this one script differs. See [build-deploy.md](./build-deploy.md#runtime-env-injection) for who provides the file in each environment (installer, CI, Vite dev server) and why a dev 404 on it is harmless.
 
 ## Audit logging
 
@@ -165,7 +170,7 @@ The audit payload is posted via `postUserAction` from the backend API helper. Se
 **Use the generated query-key helpers.** Every Orval hook ships a corresponding `getGetXxxQueryKey()` function. Use it instead of hand-writing the key:
 
 ```ts
-queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
+queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
 ```
 
 Hand-written keys drift. The generated helpers stay in sync with the generated hooks.
@@ -175,11 +180,13 @@ Hand-written keys drift. The generated helpers stay in sync with the generated h
 **Invalidate after mutations.** A mutation that updates server state should invalidate the queries that read that state. The standard pattern is `onSuccess` callbacks calling `queryClient.invalidateQueries(...)`:
 
 ```ts
-const mutation = usePutClient({
+const mutation = usePutOauthOpenidClient({
   mutation: {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
-      queryClient.invalidateQueries({ queryKey: getGetClientByInumQueryKey(inum) })
+      queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
+      queryClient.invalidateQueries({
+        queryKey: getGetOauthOpenidClientsByInumQueryKey(inum),
+      })
     },
   },
 })

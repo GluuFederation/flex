@@ -75,12 +75,12 @@ Two libraries, intentional split. See [architecture.md](./architecture.md#state-
 - **knip**: unused files / exports / deps via `npm run preview:prod:analyze`. Watch for magic-string Redux dispatches. Knip can't see them and may delete the reducer.
 - **Jest + Testing Library**: `__tests__/` siblings throughout `app/` and `plugins/`. See [testing.md](./testing.md).
 - **ESLint + Prettier**: config in `eslint.config.cjs`. Enforced via `.husky/pre-commit`. Never disable rules.
-- **Husky**: `.husky/pre-commit` runs the lint/type/format gate and checks that a signing key is configured. `.husky/pre-push` verifies every pushed commit carries a signature. CI is artifact-build only.
+- **Husky**: `.husky/pre-commit` runs the lint/type/format gate and checks that a signing key is configured. `.husky/pre-push` verifies every pushed commit carries a signature. CI builds the artifact and runs the tests, but never lints.
 
 ## Build pipeline at a glance
 
 ```text
-source ──(Vite + Rolldown)──► dist/ ──► (Jenkins | Janssen installer) ──► browser
+source ──(Vite + Rolldown)──► dist/ ──► (GitHub Actions | Janssen installer) ──► browser
 ```
 
 Same `dist/` runs everywhere. Env-specific values are injected at runtime via `env-config.js`. See [build-deploy.md](./build-deploy.md).

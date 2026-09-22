@@ -86,7 +86,7 @@ React Query DevTools button appears bottom-right in dev. Click to inspect cache.
 - **Husky pre-commit hook** runs automatically on `git commit`: Prettier + ESLint + deprecated-API check + `tsc` + markdownlint + knip. Fix, re-stage, commit again. Commits must also be signed and signed off, so use `git commit -S -s -m "<message>"`; see [conventions.md](./conventions.md#pre-commit-hook).
 - **`npm run check:all`** runs ESLint + markdownlint + `tsc` across the whole repo. Use it if you skipped the hook, but note it covers less than the hook does: no Prettier, no deprecated-API check and no knip.
 
-No CI lint or test step. The hook is the only enforcement point. See [build-deploy.md](./build-deploy.md#ci--jenkins).
+CI runs the test suite but not lint or type-check, so the hook is the only thing standing between a lint error and `main`. See [build-deploy.md](./build-deploy.md#ci).
 
 ## Next steps
 
@@ -98,7 +98,7 @@ No CI lint or test step. The hook is the only enforcement point. See [build-depl
 - [cedarling.md](./cedarling.md): permissions and policy gating.
 - [config-api.md](./config-api.md): how Orval + React Query talk to the Jans Config API.
 - [recipes.md](./recipes.md): adding a page, plugin, slice, etc.
-- [build-deploy.md](./build-deploy.md): Vite build, env injection, Jenkins, Husky.
+- [build-deploy.md](./build-deploy.md): Vite build, env injection, CI, Husky.
 - [testing.md](./testing.md): Jest unit tests.
 
 ## If something doesn't work

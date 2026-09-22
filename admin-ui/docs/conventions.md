@@ -109,7 +109,7 @@ Three separate gates guard the commit itself:
 
 In practice that means committing with `git commit -S -s -m "<message>"`.
 
-Don't bypass with `--no-verify` unless approved. The hook is the only enforcement point. CI doesn't re-run lint or tests (see [build-deploy.md](./build-deploy.md#ci--jenkins)).
+Don't bypass with `--no-verify` unless approved. The hook is the only place lint and type-check run; CI runs the tests but never the linters (see [build-deploy.md](./build-deploy.md#ci)).
 
 ## Comments
 
