@@ -30,6 +30,7 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | [Architecture](./docs/architecture.md)   | Host + plugins, dependency rules                     |
 | [Tech stack](./docs/tech-stack.md)       | What each library is, when to use it                 |
 | [Conventions](./docs/conventions.md)     | **Before opening any PR**                            |
+| [Styling](./docs/styling.md)             | Component styles, theming, responsive and mobile UI  |
 | [Recipes](./docs/recipes.md)             | Adding a page / plugin / slice / form / audit record |
 | [Auth](./docs/auth.md)                   | OIDC + PKCE, tokens, sessions, idle timeout, logout  |
 | [Cedarling](./docs/cedarling.md)         | Adding or gating an authorization check              |

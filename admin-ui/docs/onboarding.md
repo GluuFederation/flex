@@ -92,7 +92,8 @@ No CI lint or test step. The hook is the only enforcement point. See [build-depl
 
 - [architecture.md](./architecture.md): host + plugin split. The most important read for new developers.
 - [tech-stack.md](./tech-stack.md): every library, one page.
-- [conventions.md](./conventions.md): naming, imports, types, styling, i18n, audit.
+- [conventions.md](./conventions.md): naming, imports, types, logging, i18n, commits.
+- [styling.md](./styling.md): `*.style.ts` and tss-react, theming, breakpoints, mobile-only components.
 - [auth.md](./auth.md): sign-in, session, license dance.
 - [cedarling.md](./cedarling.md): permissions and policy gating.
 - [config-api.md](./config-api.md): how Orval + React Query talk to the Jans Config API.

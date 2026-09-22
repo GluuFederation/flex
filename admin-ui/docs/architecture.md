@@ -117,7 +117,7 @@ If a piece of code is used in exactly one plugin, it stays in that plugin. If tw
 | `app/hooks/`            | Host-level hooks (`useFilteredMenus`, `useIdleTimer`, `useChartTheme`, …)     |
 | `app/images/`           | Logos, avatars, favicons, static art                                          |
 | `app/types/`            | Ambient module declarations (`*.d.ts` for css, scss, images, yaml, vite env)  |
-| `app/styles/`           | Global CSS                                                                    |
+| `app/styles/`           | Global SCSS + font tokens ([styling.md](./styling.md))                        |
 | `app/locales/`          | i18n JSON for `en`, `es`, `fr`, `pt`                                          |
 | `app/i18n.ts`           | i18next bootstrap                                                             |
 

@@ -71,6 +71,10 @@ logger.warn('Something to know about', context)
 
 Code under `app/cedarling/`, and the Cedarling lines in `PermissionsPolicyInitializer`, use `cedarLogger` from `@/cedarling/utility/cedarLogger` instead. It wraps `logger` with a second gate so Cedarling output also respects the "Cedarling logs?" switch. See [cedarling.md](./cedarling.md#logging).
 
+## Styling
+
+Component styles go in a sibling `*.style.ts` using `makeStyles` from `tss-react/mui`, colors come from the theme rather than literals, and every page has to work across the full supported range, 320px to 1440px - phones, tablets in both orientations, and laptops, not just the desktop width you built it at. Full rules in [styling.md](./styling.md).
+
 ## Loaders
 
 Use `GluuLoader` for any blocking / loading UI. Wrap content with `<GluuLoader blocking={isLoading}>{children}</GluuLoader>` to show the standard overlay, or render `<GluuLoader blocking />` standalone when there's nothing to wrap.
