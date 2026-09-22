@@ -38,7 +38,7 @@ return <div className={cx(classes.root, isActive && classes.rootActive)}>…</di
 
 Two parameters arrive in the callback. `theme` is the MUI theme, useful for
 `theme.breakpoints`, `theme.zIndex` and spacing. The second is whatever the component
-passes in, which is almost always the resolved theme colours, and sometimes an
+passes in, which is almost always the resolved theme colors, and sometimes an
 `isDark` boolean.
 
 Rules:
@@ -73,14 +73,15 @@ const themeColors = getThemeColor(state.theme)
 ```
 
 `getThemeColor` returns a [`ThemeConfig`](../app/context/theme/types/ThemeConfigTypes.ts):
-a flat record of named colours (`background`, `fontColor`, `borderColor`,
+a flat record of named colors (`background`, `fontColor`, `borderColor`,
 `inputBackground`, `errorColor`) plus nested groups for specific surfaces (`menu`,
 `navbar`, `card`, `infoAlert`, `checkbox`). An unrecognised value falls back to the
 default theme, so it is safe to pass whatever is in state.
 
-Pass the result into `useStyles` rather than reading the theme inside the style file.
-Style files stay pure functions of their parameters, which is what keeps them
-testable.
+Pass the resolved colors into `useStyles` rather than resolving them inside the style
+file. Style files stay pure functions of their parameters, which is what keeps them
+testable. This says nothing about the MUI `theme` argument: reading `theme.breakpoints`,
+`theme.zIndex` or spacing inside a style file is the intended pattern.
 
 The selected theme also lands on `document.documentElement` as a `theme-light` /
 `theme-dark` class, which is what the SCSS layer hooks into. It is persisted under

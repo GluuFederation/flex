@@ -41,7 +41,7 @@ Two libraries, intentional split. See [architecture.md](./architecture.md#state-
 
 - **Redux Toolkit**: store in `app/redux/`. Client / auth / session state. (Theme and language live in React context + `localStorage`, not Redux.)
 - **RTK listener middleware**: side-effect runtime for async flows (auth, license, webhooks). Core listeners in `app/redux/listeners/`, per-plugin listeners in `plugins/*/redux/listeners/`. A trigger action dispatched from a component runs the matching listener `effect`; `cancelActiveListeners()` gives takeLatest semantics.
-- **redux-persist**: persists chosen slices to storage. Keeps user signed in across reloads. Restores theme / language before first paint.
+- **redux-persist**: persists chosen Redux slices to storage. Keeps the user signed in across reloads.
 - **TanStack React Query 5**: server-state cache via Orval-generated hooks (`useGet*`, `usePut*`). Use on **every** Config API read/write.
 
 ### HTTP / API client

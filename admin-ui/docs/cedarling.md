@@ -62,7 +62,7 @@ sequenceDiagram
             Cache-->>Hook: boolean
         else not cached
             Hook->>Client: token_authorize({ tokens, action, resource })
-            Client->>Wasm: authorizeMultiIssuer(request)
+            Client->>Wasm: authorizeMultiIssuer(JSON.stringify(request))
             Wasm-->>Client: { decision, request_id }
             Hook->>Cache: setCedarlingPermission(key, decision)
         end
@@ -119,7 +119,7 @@ So adding a resource or changing its allowed actions is a single edit to `RESOUR
 
    The entity-type prefixes live in [`CEDARLING_CONSTANTS`](../app/cedarling/constants/cedarlingConstants.ts) and must stay in sync with the policy-store schema.
 
-3. **Calls `cedarlingClient.token_authorize(request)`**, which calls into WASM (`authorizeMultiIssuer`). The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision, request_id }`; the client frees the WASM result and passes both fields on. The decision is cached under the key `${resourceId}::${action}` ([`buildCedarPermissionKey`](../app/cedarling/utility/resources.ts)).
+3. **Calls `cedarlingClient.token_authorize(request)`**, which serializes the request to JSON and hands it to `authorizeMultiIssuer`. The WASM boundary takes a string, not an object. The WASM evaluates the Cedar policies against the tokens, action, and resource, and returns `{ decision, request_id }`; the client frees the WASM result and passes both fields on. The decision is cached under the key `${resourceId}::${action}` ([`buildCedarPermissionKey`](../app/cedarling/utility/resources.ts)).
 
 A failed authorization is not cached: the catch path returns `false` for that call but skips the cache write, so a transient WASM or init error retries on the next check instead of sticking as a permanent denial.
 
@@ -296,11 +296,11 @@ Two upstream quirks to be aware of:
 
 ### Screens
 
-| Screen                  | Route                             | What it does                                                                                                                                                                                             |
-| ----------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cedarling Configuration | `ROUTES.ADMIN_POLICIES_CREATE`    | Uploads a `.cjar`. The confirm step is `GluuCommitDialog`, so every upload carries comments and fires the `policy_store_write` webhook.                                                                  |
-| Policy Store History    | `ROUTES.ADMIN_POLICIES_LIST`      | Lists every store — filename, status, uploaded, size, by, comments — with Open / Download / Set active / Delete. Sorted newest-first, because the list endpoint's own default is `inum` (a random uuid). |
-| Archive Explorer        | `ROUTES.ADMIN_POLICIES_VIEW/EDIT` | Split-pane `.cjar` browser: tree left, Ace editor right. View, edit, add and delete files, then download the repacked archive.                                                                           |
+| Screen                  | Route                                                                                          | What it does                                                                                                                                                                                             |
+| ----------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cedarling Configuration | `ROUTES.ADMIN_POLICIES_CREATE`                                                                 | Uploads a `.cjar`. The confirm step is `GluuCommitDialog`, so every upload carries comments and fires the `policy_store_write` webhook.                                                                  |
+| Policy Store History    | `ROUTES.ADMIN_POLICIES_LIST`                                                                   | Lists every store — filename, status, uploaded, size, by, comments — with Open / Download / Set active / Delete. Sorted newest-first, because the list endpoint's own default is `inum` (a random uuid). |
+| Archive Explorer        | `ROUTES.ADMIN_POLICIES_VIEW_TEMPLATE` (read) and `ROUTES.ADMIN_POLICIES_EDIT_TEMPLATE` (write) | Split-pane `.cjar` browser: tree left, Ace editor right. View, edit, add and delete files, then download the repacked archive.                                                                           |
 
 Two invariants the history screen enforces, both from the ticket: the active store can be neither
 deleted nor re-activated, so exactly one store is always live.

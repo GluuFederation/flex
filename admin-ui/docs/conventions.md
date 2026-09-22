@@ -109,7 +109,7 @@ Three separate gates guard the commit itself:
 
 In practice that means committing with `git commit -S -s -m "<message>"`.
 
-Don't bypass with `--no-verify` unless approved. The hook is the only place lint and type-check run; CI runs the tests but never the linters (see [build-deploy.md](./build-deploy.md#ci)).
+Don't bypass with `--no-verify` unless approved. CI does not run lint or type-check, so if you skip the hook nothing catches those before merge except running `npm run check:all` yourself (see [build-deploy.md](./build-deploy.md#ci)).
 
 ## Comments
 
