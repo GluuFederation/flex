@@ -192,10 +192,14 @@ const mutation = usePutOauthOpenidClient({
 })
 ```
 
-**Keep query params and `select` stable.** A query re-runs when its params change by
-identity, so building the params object inline in the component body hands React Query a
-new object on every render. Memoize the params, memoize any `select` callback, and reuse a
-shared constant for the empty fallback:
+**Keep query params and `select` stable.** React Query hashes a query key structurally, not
+by identity: `hashKey` serialises it with plain-object keys sorted, so params rebuilt inline
+on every render still hash to the same key. Equal params do not open a second cache entry and
+do not refetch. What identity costs you is repeated work per render. `select` is memoized
+against its own function identity, so a callback declared inline re-runs the transform every
+time a result is computed, even when the data has not changed. Memoize the params, memoize any
+`select` callback, and reuse a shared constant for the empty fallback so downstream `useMemo`
+dependencies stay stable:
 
 ```ts
 const params = useMemo(() => buildStatParams(rangeStart, rangeEnd), [rangeStart, rangeEnd])
@@ -206,7 +210,7 @@ const data = query.data ?? EMPTY_DATA
 
 [`useMauStats`](../plugins/admin/components/MAU/hooks/useMauStats.ts) and
 [`useClients`](../plugins/auth-server/components/OidcClients/hooks/useClients.ts) both follow
-this. Skipping it produces a refetch loop that looks like a backend problem.
+this.
 
 **Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
 
