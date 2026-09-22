@@ -192,4 +192,31 @@ const mutation = usePutOauthOpenidClient({
 })
 ```
 
+**Keep query params and `select` stable.** A query re-runs when its params change by
+identity, so building the params object inline in the component body hands React Query a
+new object on every render. Memoize the params, memoize any `select` callback, and reuse a
+shared constant for the empty fallback:
+
+```ts
+const params = useMemo(() => buildStatParams(rangeStart, rangeEnd), [rangeStart, rangeEnd])
+const select = useCallback((raw: RawStat[]) => raw.map(transformRawStatEntry), [])
+const query = useGetStat(params, { query: { select } })
+const data = query.data ?? EMPTY_DATA
+```
+
+[`useMauStats`](../plugins/admin/components/MAU/hooks/useMauStats.ts) and
+[`useClients`](../plugins/auth-server/components/OidcClients/hooks/useClients.ts) both follow
+this. Skipping it produces a refetch loop that looks like a backend problem.
+
 **Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
+
+## Known API constraints
+
+Quirks of the Config API that the generated client does not protect you from. Each one here
+cost a bug.
+
+- **`/stat` rejects a same-month range.** Passing `start_month` and `end_month` with the same
+  value returns 400. Send a single `month` instead. `buildStatParams` in
+  [`plugins/admin/components/MAU/utils/statParams.ts`](../plugins/admin/components/MAU/utils/statParams.ts)
+  encapsulates the rule, and `orderMonthRange` next to it swaps an inverted range, since the
+  endpoint will not reorder it for you.
