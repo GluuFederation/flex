@@ -12,7 +12,6 @@ import { reducer as initReducer } from '../../features/initSlice'
 import {
   isLicenseActive,
   retrieveLicense,
-  activateAdminuiLicense,
   getTrialLicense,
   checkAdminuiLicenseConfig,
   adminuiPostSsa,
@@ -33,9 +32,6 @@ const mockedFetchToken = fetchApiTokenWithDefaultScopes as jest.MockedFunction<
 const mockedSetApiToken = setApiToken as jest.MockedFunction<typeof setApiToken>
 const mockedIsLicenseActive = isLicenseActive as jest.MockedFunction<typeof isLicenseActive>
 const mockedRetrieveLicense = retrieveLicense as jest.MockedFunction<typeof retrieveLicense>
-const mockedActivateLicense = activateAdminuiLicense as jest.MockedFunction<
-  typeof activateAdminuiLicense
->
 const mockedGetTrialLicense = getTrialLicense as jest.MockedFunction<typeof getTrialLicense>
 const mockedCheckConfig = checkAdminuiLicenseConfig as jest.MockedFunction<
   typeof checkAdminuiLicenseConfig
@@ -181,62 +177,58 @@ describe('licenseListener', () => {
     })
   })
 
-  describe('Step 4 + 6: retrieve then activate (POST /retrieve, POST /activate)', () => {
+  describe('Step 4: retrieve, which activates on the server (GET /retrieve)', () => {
     beforeEach(() => {
       mockedIsLicenseActive.mockResolvedValue({ success: false } as never)
     })
 
-    it('retrieves the camelCase licenseKey, activates, and validates MAU', async () => {
-      mockedRetrieveLicense.mockResolvedValue({
-        responseObject: { licenseKey: 'key-123' },
-      } as never)
-      mockedActivateLicense.mockResolvedValue({
-        success: true,
-        responseObject: [{ name: 'mau_threshold', value: '100' }],
-      } as never)
+    it('treats a successful retrieve as an activated license and validates MAU', async () => {
+      mockedRetrieveLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
       mockedGetStat.mockResolvedValue([] as never)
 
       store.dispatch(checkLicensePresent(undefined))
 
       await waitFor(() => expect(license().isLicenseValid).toBe(true))
-      expect(mockedActivateLicense).toHaveBeenCalledWith({ licenseKey: 'key-123' })
       expect(license().isUnderThresholdLimit).toBe(true)
+      expect(license().isNoValidLicenseKeyFound).toBe(false)
+      expect(mockedGetStat).toHaveBeenCalled()
     })
 
-    it('shows the no-valid-key state when activation throws', async () => {
-      mockedRetrieveLicense.mockResolvedValue({
-        responseObject: { licenseKey: 'key-123' },
-      } as never)
-      mockedActivateLicense.mockRejectedValue(new Error('activate boom'))
+    it('flags over-threshold using the mau_threshold returned by retrieve', async () => {
+      mockedRetrieveLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 200 }] as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isUnderThresholdLimit).toBe(false))
+      expect(license().isLicenseValid).toBe(false)
+    })
+
+    it('shows the no-valid-key state when retrieve reports failure', async () => {
+      mockedRetrieveLicense.mockResolvedValue({ success: false } as never)
 
       store.dispatch(checkLicensePresent(undefined))
 
       await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
       expect(license().isLicenseValid).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
     })
 
-    it('shows the no-valid-key state when retrieve returns no key', async () => {
-      mockedRetrieveLicense.mockResolvedValue({ responseObject: {} } as never)
+    it('shows the no-valid-key state and stores the error when retrieve throws', async () => {
+      mockedRetrieveLicense.mockRejectedValue({
+        response: { status: 404, data: { responseMessage: 'No license found' } },
+      })
 
       store.dispatch(checkLicensePresent(undefined))
 
       await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
       expect(license().isLicenseValid).toBe(false)
-      expect(mockedActivateLicense).not.toHaveBeenCalled()
-    })
-
-    it('shows the no-valid-key state when retrieve throws', async () => {
-      mockedRetrieveLicense.mockRejectedValue(new Error('retrieve boom'))
-
-      store.dispatch(checkLicensePresent(undefined))
-
-      await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
-      expect(license().isLicenseValid).toBe(false)
+      expect(license().error).toBe('No license found')
     })
 
     it('routes to retrieve when the isActive check itself throws', async () => {
       mockedIsLicenseActive.mockRejectedValue(new Error('isActive boom'))
-      mockedRetrieveLicense.mockResolvedValue({ responseObject: {} } as never)
+      mockedRetrieveLicense.mockResolvedValue({ success: false } as never)
 
       store.dispatch(checkLicensePresent(undefined))
 
@@ -245,29 +237,38 @@ describe('licenseListener', () => {
     })
   })
 
-  describe('Step 5 + 6: generateTrialLicense then activate (POST /trial, POST /activate)', () => {
-    it('reads the hyphenated license-key, activates, and marks the license valid', async () => {
-      mockedGetTrialLicense.mockResolvedValue({
-        responseObject: { 'license-key': 'trial-123' },
-      } as never)
-      mockedActivateLicense.mockResolvedValue({ success: true } as never)
+  describe('Step 5: generateTrialLicense, which activates on the server (GET /trial)', () => {
+    it('marks the license valid when the trial is activated', async () => {
+      mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
 
       store.dispatch(generateTrialLicense())
 
       await waitFor(() => expect(license().isLicenseValid).toBe(true))
-      expect(mockedActivateLicense).toHaveBeenCalledWith({ licenseKey: 'trial-123' })
+      expect(license().generatingTrialKey).toBe(false)
+      expect(license().error).toBe('')
     })
 
-    it('marks the license invalid and stores the error when activation throws', async () => {
+    it('stores the server message and stops loading when the trial is not activated', async () => {
       mockedGetTrialLicense.mockResolvedValue({
-        responseObject: { 'license-key': 'trial-123' },
+        success: false,
+        responseMessage: 'License is not activated.',
       } as never)
-      mockedActivateLicense.mockRejectedValue(new Error('activate boom'))
 
       store.dispatch(generateTrialLicense())
 
-      await waitFor(() => expect(license().error).toBe('activate boom'))
+      await waitFor(() => expect(license().error).toBe('License is not activated.'))
       expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
+    })
+
+    it('stops loading when the trial endpoint returns no body', async () => {
+      mockedGetTrialLicense.mockResolvedValue(null as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().islicenseCheckResultLoaded).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
     })
 
     it('marks the license invalid when the trial endpoint throws', async () => {
@@ -277,6 +278,7 @@ describe('licenseListener', () => {
 
       await waitFor(() => expect(license().error).toBe('trial boom'))
       expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
     })
   })
 })
