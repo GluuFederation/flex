@@ -51,12 +51,22 @@ const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
-const getMauThreshold = (response: GenericResponse): number => {
+const getMauThreshold = (response: GenericResponse): number | null => {
   const entries = Array.isArray(response.responseObject)
     ? (response.responseObject as Array<{ name?: string; value?: string }>)
     : []
   const mauThreshold = entries.find((item) => item?.name === 'mau_threshold')
-  return parseInt(mauThreshold?.value ?? '', 10)
+  const threshold = parseInt(mauThreshold?.value ?? '', 10)
+  return Number.isFinite(threshold) ? threshold : null
+}
+
+const resolveActivatedMauThreshold = async (response: GenericResponse): Promise<number | null> => {
+  const threshold = getMauThreshold(response)
+  if (threshold !== null) {
+    return threshold
+  }
+  const activeLicense = (await isLicenseActive()) as GenericResponse | null
+  return activeLicense?.success ? getMauThreshold(activeLicense) : null
 }
 
 const showNoValidLicense = (dispatch: AppDispatch): void => {
@@ -99,9 +109,15 @@ const retrieveAndActivateLicense = async (dispatch: AppDispatch): Promise<void> 
       showNoValidLicense(dispatch)
       return
     }
+    const mauThreshold = await resolveActivatedMauThreshold(response)
+    if (mauThreshold === null) {
+      logger.error('Could not confirm an active license with a valid mau_threshold.')
+      showNoValidLicense(dispatch)
+      return
+    }
     dispatch(generateTrialLicenseResponse(response))
     dispatch(setValidatingFlow({ isValidatingFlow: true }))
-    await checkMauThreshold(dispatch, getMauThreshold(response))
+    await checkMauThreshold(dispatch, mauThreshold)
   } catch (err) {
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
     logger.error('Error in retrieving license.', err instanceof Error ? err : String(err))
@@ -171,9 +187,15 @@ const checkLicensePresentWorker = async (dispatch: AppDispatch): Promise<void> =
     const response = (await isLicenseActive()) as GenericResponse | null
     if (!response?.success) {
       await retrieveAndActivateLicense(dispatch)
-    } else {
-      await checkMauThreshold(dispatch, getMauThreshold(response))
+      return
     }
+    const mauThreshold = getMauThreshold(response)
+    if (mauThreshold === null) {
+      logger.error('Active license response has no valid mau_threshold.')
+      showNoValidLicense(dispatch)
+      return
+    }
+    await checkMauThreshold(dispatch, mauThreshold)
   } catch (error) {
     logger.error(
       'Error in checking License present.',
