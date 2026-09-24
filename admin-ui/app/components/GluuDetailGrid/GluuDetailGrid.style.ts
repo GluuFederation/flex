@@ -25,7 +25,7 @@ export const useStyles = makeStyles()(() => ({
   },
   detailItem: {
     ...itemBase,
-    flex: `1 1 ${ITEM_BASIS}`,
+    flex: `0 1 ${ITEM_BASIS}`,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       flex: `1 1 ${MOBILE_DETAIL_COL_MIN}px`,
     },

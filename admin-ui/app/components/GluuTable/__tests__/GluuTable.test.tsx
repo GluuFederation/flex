@@ -98,7 +98,15 @@ describe('GluuTable', () => {
     fireEvent.click(buttons[0])
     expect(onClick).not.toHaveBeenCalled()
   })
-  it('widens a fixed-width column to fit its header label', () => {
+  it('widens a fixed-width column to fit its rendered header label', () => {
+    const labelWidths: Record<string, number> = { 'Name': 30, 'Supress authorization': 170 }
+    const rectSpy = jest
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function (this: HTMLElement) {
+        const width =
+          this.dataset.headerLabel != null ? (labelWidths[this.textContent ?? ''] ?? 0) : 0
+        return { width } as DOMRect
+      })
     const fixedColumns: ColumnDef<Row>[] = [
       { key: 'name', label: 'Name', width: 140 },
       { key: 'count', label: 'Supress authorization', width: 140, sortable: false },
@@ -106,7 +114,10 @@ describe('GluuTable', () => {
     const { container } = render(<GluuTable columns={fixedColumns} data={data} />, {
       wrapper: Wrapper,
     })
-    const colWidths = Array.from(container.querySelectorAll('col')).map((col) => col.style.width)
-    expect(colWidths).toEqual(['140px', '202px'])
+    const table = container.querySelector('table')!
+
+    expect(table.style.getPropertyValue('--gluu-col-min-0')).toBe('84px')
+    expect(table.style.getPropertyValue('--gluu-col-min-1')).toBe('204px')
+    rectSpy.mockRestore()
   })
 })

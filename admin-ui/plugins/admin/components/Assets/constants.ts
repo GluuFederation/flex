@@ -11,7 +11,7 @@ export const T_KEYS = {
   FIELD_ENABLED: 'fields.enabled',
   FIELD_UPLOAD: 'fields.upload',
   FIELD_ASSET_NAME: 'fields.asset_name',
-  FIELD_JANS_SERVICE: 'fieldss.jansService',
+  FIELD_JANS_SERVICE: 'fields.jansService',
   PLACEHOLDER_SEARCH_PATTERN: 'placeholders.search_pattern',
   PLACEHOLDER_ENTER_HERE: 'placeholders.enter_here',
   PLACEHOLDER_ASSET_UPLOAD: 'placeholders.asset_upload',

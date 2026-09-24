@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExpandMore as ExpandMoreIcon } from '@/components/icons'
 import { useTheme } from '@/context/theme/themeContext'
@@ -81,15 +81,12 @@ const parseColumnWidth = (col: { width?: string | number }): string | undefined 
 
 const colId = <T,>(col: { key: ColumnKey<T>; id?: string }): string => col.id ?? col.key
 
-const fixedColumnWidth = (col: {
-  width?: string | number
-  label: string
-  sortable?: boolean
-}): number | undefined => {
-  if (typeof col.width !== 'number' || col.width <= 0) return undefined
-  const padding = col.sortable === false ? HEADER_PADDING_PX : SORTABLE_HEADER_PADDING_PX
-  return Math.max(col.width, Math.round(col.label.length * AUTO_COL_CHAR_PX + padding))
-}
+const headerMinWidthVar = (colIdx: number): string => `--gluu-col-min-${colIdx}`
+
+const fixedColumnWidth = (col: { width?: string | number }, colIdx: number): string | undefined =>
+  typeof col.width === 'number' && col.width > 0
+    ? `max(${col.width}px, var(${headerMinWidthVar(colIdx)}, 0px))`
+    : undefined
 
 const estimateContentLength = (value: CellValue | CellValue[]): number => {
   if (value == null) return 1
@@ -234,10 +231,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   )
   const effectiveWidths = useMemo(() => {
     const out: Record<string, string> = {}
-    for (const col of columns) {
+    for (const [colIdx, col] of columns.entries()) {
       const id = colId(col)
-      const fixedPx = fixedColumnWidth(col)
-      const parentWidth = fixedPx != null ? `${fixedPx}px` : parseColumnWidth(col)
+      const parentWidth = fixedColumnWidth(col, colIdx) ?? parseColumnWidth(col)
       const resized = resizedColumnWidths[id]
       if (parentWidth != null) {
         out[id] = parentWidth
@@ -261,6 +257,34 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
   const { classes, cx } = useStyles({ isDark, themeColors, stickyHeader })
 
   const tableRef = useRef<HTMLTableElement>(null)
+
+  useLayoutEffect(() => {
+    const table = tableRef.current
+    if (!table) return
+    let active = true
+    const labels = Array.from(table.querySelectorAll<HTMLElement>('thead [data-header-label]'))
+    const measure = () => {
+      if (!active) return
+      labels.forEach((label) => {
+        const colIdx = Number(label.dataset.headerLabel)
+        const col = columns[colIdx]
+        if (typeof col?.width !== 'number') return
+        const padding = col.sortable === false ? HEADER_PADDING_PX : SORTABLE_HEADER_PADDING_PX
+        const width = `${Math.ceil(label.getBoundingClientRect().width + padding)}px`
+        if (table.style.getPropertyValue(headerMinWidthVar(colIdx)) !== width) {
+          table.style.setProperty(headerMinWidthVar(colIdx), width)
+        }
+      })
+    }
+    measure()
+    document.fonts?.ready.then(measure)
+    const observer = new ResizeObserver(measure)
+    labels.forEach((label) => observer.observe(label))
+    return () => {
+      active = false
+      observer.disconnect()
+    }
+  }, [columns])
   const headerCellRefs = useRef<Map<string, HTMLTableCellElement>>(new Map())
 
   const setHeaderCellRef = useCallback((colKey: string, el: HTMLTableCellElement | null) => {
@@ -377,9 +401,8 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     if (columns.length === 0) return undefined
     let sum = 0
     for (const col of columns) {
-      const fixedPx = fixedColumnWidth(col)
-      if (fixedPx != null) {
-        sum += fixedPx
+      if (typeof col.width === 'number') {
+        sum += col.width
       } else if (isMobileViewport) {
         sum += computedPixelWidths[colId(col)] ?? AUTO_COL_MIN_PX
       } else {
@@ -564,7 +587,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           }}
                           onClick={() => handleSort(id)}
                         >
-                          {col.label}
+                          <span data-header-label={colIdx}>{col.label}</span>
                           <span
                             className={classes.sortIconWrap}
                             data-sort-icon
@@ -579,7 +602,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           </span>
                         </button>
                       ) : (
-                        <GluuText variant="span" disableThemeColor>
+                        <GluuText variant="span" disableThemeColor data-header-label={colIdx}>
                           {col.label}
                         </GluuText>
                       )}
