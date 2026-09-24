@@ -21,6 +21,8 @@ import {
   MOBILE_AUTO_COL_MAX_PX,
   AUTO_COL_CHAR_PX,
   AUTO_COL_PADDING_PX,
+  HEADER_PADDING_PX,
+  SORTABLE_HEADER_PADDING_PX,
   DEFAULT_COLUMN_ALIGN,
   ALIGN_TO_JUSTIFY,
 } from './GluuTable.style'
@@ -78,6 +80,16 @@ const parseColumnWidth = (col: { width?: string | number }): string | undefined 
 }
 
 const colId = <T,>(col: { key: ColumnKey<T>; id?: string }): string => col.id ?? col.key
+
+const fixedColumnWidth = (col: {
+  width?: string | number
+  label: string
+  sortable?: boolean
+}): number | undefined => {
+  if (typeof col.width !== 'number' || col.width <= 0) return undefined
+  const padding = col.sortable === false ? HEADER_PADDING_PX : SORTABLE_HEADER_PADDING_PX
+  return Math.max(col.width, Math.round(col.label.length * AUTO_COL_CHAR_PX + padding))
+}
 
 const estimateContentLength = (value: CellValue | CellValue[]): number => {
   if (value == null) return 1
@@ -224,7 +236,8 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     const out: Record<string, string> = {}
     for (const col of columns) {
       const id = colId(col)
-      const parentWidth = parseColumnWidth(col)
+      const fixedPx = fixedColumnWidth(col)
+      const parentWidth = fixedPx != null ? `${fixedPx}px` : parseColumnWidth(col)
       const resized = resizedColumnWidths[id]
       if (parentWidth != null) {
         out[id] = parentWidth
@@ -364,8 +377,9 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     if (columns.length === 0) return undefined
     let sum = 0
     for (const col of columns) {
-      if (typeof col.width === 'number') {
-        sum += col.width
+      const fixedPx = fixedColumnWidth(col)
+      if (fixedPx != null) {
+        sum += fixedPx
       } else if (isMobileViewport) {
         sum += computedPixelWidths[colId(col)] ?? AUTO_COL_MIN_PX
       } else {
@@ -517,15 +531,19 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                   const isSortable = col.sortable !== false
                   const id = colId(col)
                   const isActive = sortState.column === id
+                  const hasResizeHandle = colIdx < columns.length - 1 || (actions?.length ?? 0) > 0
                   return (
                     <th
                       ref={(el) => setHeaderCellRef(id, el)}
                       key={`${id}-${colIdx}`}
-                      className={
-                        isSortable
-                          ? `${classes.headerCell} ${classes.headerCellSortable}`
-                          : `${classes.headerCell} ${classes.headerCellResizable}`
-                      }
+                      className={cx(
+                        classes.headerCell,
+                        isSortable && classes.headerCellSortable,
+                        hasResizeHandle &&
+                          (isSortable
+                            ? classes.headerCellSortableResizable
+                            : classes.headerCellResizable),
+                      )}
                       style={{
                         width: effectiveWidths[id],
                         ...(parseMinWidth(col) != null && { minWidth: parseMinWidth(col) }),
@@ -565,7 +583,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
                           {col.label}
                         </GluuText>
                       )}
-                      {(colIdx < columns.length - 1 || (actions?.length ?? 0) > 0) && (
+                      {hasResizeHandle && (
                         <div
                           role="separator"
                           aria-orientation="vertical"

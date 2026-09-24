@@ -37,8 +37,8 @@ it('renders with labelStyle', () => {
   expect(label).toHaveStyle({ color: 'rgb(255, 0, 0)' })
 })
 
-it('sizes the columns to the widest label', () => {
-  const labelWidths: Record<string, number> = { 'Inum:': 40, 'Name:': 60, 'Script Type:': 180 }
+it('sizes each field to its own label', () => {
+  const labelWidths: Record<string, number> = { 'inum:': 40, 'Name:': 60, 'Script Type:': 180 }
   const rectSpy = jest
     .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
     .mockImplementation(function (this: HTMLElement) {
@@ -46,8 +46,10 @@ it('sizes the columns to the widest label', () => {
     })
 
   const { container } = render(<GluuDetailGrid fields={mockFields} />, { wrapper: Wrapper })
-  const grid = container.querySelector<HTMLElement>('[style*="--detail-label-width"]')
+  const items = Array.from(
+    container.querySelectorAll<HTMLElement>('[style*="--detail-label-width"]'),
+  ).map((item) => item.style.getPropertyValue('--detail-label-width'))
 
-  expect(grid?.style.getPropertyValue('--detail-label-width')).toBe('180px')
+  expect(items).toEqual(['40px', '60px', '180px'])
   rectSpy.mockRestore()
 })

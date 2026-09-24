@@ -7,18 +7,13 @@ import type { GluuDetailGridProps, GluuDetailGridField } from './types'
 const getFieldKey = (field: GluuDetailGridField, idx: number): string =>
   field.doc_entry ?? `${field.label}-${idx}`
 
-const measureWidestLabel = (grid: HTMLElement, labelClassName: string): number => {
-  let widest = 0
-  grid.querySelectorAll<HTMLElement>(`.${labelClassName}`).forEach((label) => {
-    const container = label.parentElement
-    const containerStyle = container ? getComputedStyle(container) : null
-    const padding = containerStyle
-      ? (parseFloat(containerStyle.paddingLeft) || 0) +
-        (parseFloat(containerStyle.paddingRight) || 0)
-      : 0
-    widest = Math.max(widest, Math.ceil(label.getBoundingClientRect().width + padding))
-  })
-  return widest
+const measureLabelWidth = (label: HTMLElement): number => {
+  const container = label.parentElement
+  const containerStyle = container ? getComputedStyle(container) : null
+  const padding = containerStyle
+    ? (parseFloat(containerStyle.paddingLeft) || 0) + (parseFloat(containerStyle.paddingRight) || 0)
+    : 0
+  return Math.ceil(label.getBoundingClientRect().width + padding)
 }
 
 const GluuDetailGrid: React.FC<GluuDetailGridProps> = ({
@@ -38,10 +33,15 @@ const GluuDetailGrid: React.FC<GluuDetailGridProps> = ({
     let active = true
     const measure = () => {
       if (!active) return
-      const width = `${measureWidestLabel(grid, classes.detailLabel)}px`
-      if (grid.style.getPropertyValue(DETAIL_LABEL_WIDTH_VAR) !== width) {
-        grid.style.setProperty(DETAIL_LABEL_WIDTH_VAR, width)
-      }
+      Array.from(grid.children).forEach((item) => {
+        if (!(item instanceof HTMLElement)) return
+        const label = item.querySelector<HTMLElement>(`.${classes.detailLabel}`)
+        if (!label) return
+        const width = `${measureLabelWidth(label)}px`
+        if (item.style.getPropertyValue(DETAIL_LABEL_WIDTH_VAR) !== width) {
+          item.style.setProperty(DETAIL_LABEL_WIDTH_VAR, width)
+        }
+      })
     }
     measure()
     document.fonts?.ready.then(measure)
