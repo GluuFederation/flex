@@ -36,3 +36,18 @@ it('renders with labelStyle', () => {
   expect(label).toBeInTheDocument()
   expect(label).toHaveStyle({ color: 'rgb(255, 0, 0)' })
 })
+
+it('sizes the columns to the widest label', () => {
+  const labelWidths: Record<string, number> = { 'Inum:': 40, 'Name:': 60, 'Script Type:': 180 }
+  const rectSpy = jest
+    .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    .mockImplementation(function (this: HTMLElement) {
+      return { width: labelWidths[this.textContent ?? ''] ?? 0 } as DOMRect
+    })
+
+  const { container } = render(<GluuDetailGrid fields={mockFields} />, { wrapper: Wrapper })
+  const grid = container.querySelector<HTMLElement>('[style*="--detail-label-width"]')
+
+  expect(grid?.style.getPropertyValue('--detail-label-width')).toBe('180px')
+  rectSpy.mockRestore()
+})

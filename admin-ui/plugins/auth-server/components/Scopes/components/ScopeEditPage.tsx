@@ -12,7 +12,7 @@ import { useGetOauthScopesByInum } from 'JansConfigApi'
 import type { ExtendedScope, ScopeClient, ModifiedFields } from '../types'
 import { EMPTY_SCOPE } from '../types'
 import { useScopeAttributes, useScopeScripts, useUpdateScope } from '../hooks'
-import { DEFAULT_SCOPE_ATTRIBUTES } from '../constants'
+import { DEFAULT_SCOPE_ATTRIBUTES, SCOPE_CACHE_CONFIG } from '../constants'
 import { GluuPageContent } from '@/components'
 import { useTheme } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -57,11 +57,9 @@ const ScopeEditPage: React.FC = () => {
     () => ({
       query: {
         enabled: !!inum,
-        refetchOnMount: 'always' as const,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-        staleTime: 0,
-        gcTime: 0,
+        staleTime: SCOPE_CACHE_CONFIG.staleTime,
+        gcTime: SCOPE_CACHE_CONFIG.gcTime,
+        refetchOnWindowFocus: false,
       },
     }),
     [inum],

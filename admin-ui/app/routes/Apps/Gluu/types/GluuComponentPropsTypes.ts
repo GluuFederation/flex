@@ -45,6 +45,7 @@ export type GluuFormDetailRowProps = {
   doc_entry?: string
   isDirect?: boolean
   labelStyle?: CSSProperties
+  labelClassName?: string
   valueStyle?: CSSProperties
   rowClassName?: string
   layout?: 'row' | 'column'

@@ -6,8 +6,9 @@ import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
 import { STORAGE_KEYS } from '@/constants'
 
-import 'Styles/bootstrap.scss'
+import 'Styles/bootstrap-overrides.scss'
 import 'Styles/main.scss'
+import 'Styles/bootstrap.scss'
 
 import { RoutedNavbars, RoutedSidebars } from '../routes'
 
