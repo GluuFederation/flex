@@ -73,6 +73,60 @@ describe('useMauStats', () => {
     })
   })
 
+  it('sends a single month param when the range starts and ends in the same month', () => {
+    mockUseGetStat.mockImplementation((_params, options: StatOptions) => ({
+      data: options.query.select([]),
+    }))
+
+    const store = buildStore(true)
+    const sameMonthRange: MauDateRange = {
+      startDate: createDate('2024-03-05'),
+      endDate: createDate('2024-03-28'),
+    }
+    renderHook(() => useMauStats(sameMonthRange), { wrapper: createWrapper(store) })
+
+    expect(mockUseGetStat.mock.calls[0][0]).toEqual({ month: '202403' })
+  })
+
+  it('orders an inverted range before querying', () => {
+    mockUseGetStat.mockImplementation((_params, options: StatOptions) => ({
+      data: options.query.select([]),
+    }))
+
+    const store = buildStore(true)
+    const invertedRange: MauDateRange = {
+      startDate: createDate('2024-03-15'),
+      endDate: createDate('2024-01-15'),
+    }
+    const { result } = renderHook(() => useMauStats(invertedRange), {
+      wrapper: createWrapper(store),
+    })
+
+    expect(mockUseGetStat.mock.calls[0][0]).toEqual({
+      start_month: '202401',
+      end_month: '202403',
+    })
+    expect(result.current.data.map((entry) => entry.month)).toEqual([202401, 202402, 202403])
+  })
+
+  it('keeps the params and select identities stable across re-renders', () => {
+    mockUseGetStat.mockImplementation((_params, options: StatOptions) => ({
+      data: options.query.select(rawTwoMonths),
+    }))
+
+    const store = buildStore(true)
+    const { rerender } = renderHook(() => useMauStats(dateRange), {
+      wrapper: createWrapper(store),
+    })
+    rerender()
+
+    const [firstParams, firstOptions] = mockUseGetStat.mock.calls[0]
+    const [secondParams, secondOptions] = mockUseGetStat.mock.calls[1]
+
+    expect(secondParams).toBe(firstParams)
+    expect(secondOptions.query.select).toBe(firstOptions.query.select)
+  })
+
   it('transforms the API response and computes the summary', () => {
     mockUseGetStat.mockImplementation((_params, options: StatOptions) => ({
       data: options.query.select(rawTwoMonths),
