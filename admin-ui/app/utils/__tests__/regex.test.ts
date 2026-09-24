@@ -30,6 +30,7 @@ import {
   REGEX_HAS_SPECIAL_CHAR,
   REGEX_DATE_YYYY_MM_DD,
   REGEX_HEX_COLOR,
+  REGEX_PX_LENGTH,
   REGEX_CSV_FORMULA_INJECTION,
   REGEX_CSV_SPECIAL_CHARS,
   REGEX_DATE_SEPARATOR_CHARS,
@@ -196,6 +197,14 @@ describe('validation patterns', () => {
     expect(match?.slice(1)).toEqual(['ff', '00', '80'])
     expect('#ABCDEF'.match(REGEX_HEX_COLOR)).not.toBeNull()
     expect('xyz'.match(REGEX_HEX_COLOR)).toBeNull()
+  })
+
+  it('REGEX_PX_LENGTH captures the number of a pixel length', () => {
+    expect(REGEX_PX_LENGTH.exec('140px')?.[1]).toBe('140')
+    expect(REGEX_PX_LENGTH.exec('12.5px')?.[1]).toBe('12.5')
+    expect(REGEX_PX_LENGTH.test('9ch')).toBe(false)
+    expect(REGEX_PX_LENGTH.test('50%')).toBe(false)
+    expect(REGEX_PX_LENGTH.test('-10px')).toBe(false)
   })
 
   it('REGEX_EMAIL validates email surface form', () => {

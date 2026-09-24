@@ -30,6 +30,7 @@ import { T_KEYS, EMPTY_CELL_PLACEHOLDER } from './constants'
 import type { CellValue, ColumnKey, GluuTableProps, SortDirection } from './types'
 import { ChevronIcon } from '@/components/SVG'
 import { ICON_SIZE, MOBILE_MEDIA_QUERY } from '@/constants'
+import { REGEX_PX_LENGTH } from '@/utils/regex'
 import {
   getDefaultPagingSize,
   getRowsPerPageOptions,
@@ -71,22 +72,25 @@ const parseMaxWidth = (col: { maxWidth?: string | number }): string | undefined 
   return undefined
 }
 
-const parseColumnWidth = (col: { width?: string | number }): string | undefined => {
-  const w = col.width
-  if (w == null) return undefined
-  if (typeof w === 'number' && w > 0) return `${w}px`
-  if (typeof w === 'string' && w.trim()) return w.trim()
-  return undefined
-}
+const parseColumnWidth = (col: { width?: string | number }): string | undefined =>
+  typeof col.width === 'string' && col.width.trim() ? col.width.trim() : undefined
 
 const colId = <T,>(col: { key: ColumnKey<T>; id?: string }): string => col.id ?? col.key
 
 const headerMinWidthVar = (colIdx: number): string => `--gluu-col-min-${colIdx}`
 
-const fixedColumnWidth = (col: { width?: string | number }, colIdx: number): string | undefined =>
-  typeof col.width === 'number' && col.width > 0
-    ? `max(${col.width}px, var(${headerMinWidthVar(colIdx)}, 0px))`
-    : undefined
+const fixedWidthPx = (col: { width?: string | number }): number | undefined => {
+  const w = col.width
+  if (typeof w === 'number') return w > 0 ? w : undefined
+  const match = typeof w === 'string' ? REGEX_PX_LENGTH.exec(w.trim()) : null
+  const px = match ? parseFloat(match[1]) : 0
+  return px > 0 ? px : undefined
+}
+
+const fixedColumnWidth = (col: { width?: string | number }, colIdx: number): string | undefined => {
+  const px = fixedWidthPx(col)
+  return px != null ? `max(${px}px, var(${headerMinWidthVar(colIdx)}, 0px))` : undefined
+}
 
 const estimateContentLength = (value: CellValue | CellValue[]): number => {
   if (value == null) return 1
@@ -268,7 +272,7 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
       labels.forEach((label) => {
         const colIdx = Number(label.dataset.headerLabel)
         const col = columns[colIdx]
-        if (typeof col?.width !== 'number') return
+        if (!col || fixedWidthPx(col) == null) return
         const padding = col.sortable === false ? HEADER_PADDING_PX : SORTABLE_HEADER_PADDING_PX
         const width = `${Math.ceil(label.getBoundingClientRect().width + padding)}px`
         if (table.style.getPropertyValue(headerMinWidthVar(colIdx)) !== width) {
