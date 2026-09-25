@@ -43,6 +43,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
       flexWrap: 'wrap',
       gap: 4,
       alignItems: 'center',
+      justifyContent: 'center',
     },
     scopeLink: {
       'cursor': 'pointer',

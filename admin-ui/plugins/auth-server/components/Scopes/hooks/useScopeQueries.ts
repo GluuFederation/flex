@@ -9,7 +9,7 @@ export const useScopes = (params: GetOauthScopesParams) => {
   const queryOptions = useMemo(
     () => ({
       query: {
-        staleTime: 0,
+        staleTime: SCOPE_CACHE_CONFIG.staleTime,
         gcTime: SCOPE_CACHE_CONFIG.gcTime,
         refetchOnWindowFocus: false,
         retry: false,

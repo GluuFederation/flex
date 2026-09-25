@@ -2,30 +2,42 @@ import { makeStyles } from 'tss-react/mui'
 import { MOBILE_MEDIA_QUERY, SPACING } from '@/constants'
 
 const MOBILE_DETAIL_COL_MIN = 160
+const MAX_PER_ROW = 5
 
-export const useStyles = makeStyles()((theme) => ({
+export const DETAIL_LABEL_WIDTH_VAR = '--detail-label-width'
+
+const EVEN_SHARE = `calc((100% - ${(MAX_PER_ROW - 1) * SPACING.SECTION_GAP}px) / ${MAX_PER_ROW})`
+const ITEM_BASIS = `min(100%, max(var(${DETAIL_LABEL_WIDTH_VAR}, 0px), ${EVEN_SHARE}))`
+
+const itemBase = {
+  minWidth: 0,
+  overflowWrap: 'break-word',
+  wordBreak: 'break-word',
+} as const
+
+export const useStyles = makeStyles()(() => ({
   detailGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+    display: 'flex',
+    flexWrap: 'wrap',
     gap: `${SPACING.SECTION_GAP}px ${SPACING.SECTION_GAP}px`,
     width: '100%',
     minWidth: 0,
-    [theme.breakpoints.down('lg')]: {
-      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    },
-    [`@media ${MOBILE_MEDIA_QUERY}`]: {
-      gridTemplateColumns: `repeat(auto-fit, minmax(${MOBILE_DETAIL_COL_MIN}px, 1fr))`,
-    },
   },
   detailItem: {
-    minWidth: 0,
-    overflowWrap: 'break-word',
-    wordBreak: 'break-word',
+    ...itemBase,
+    flex: `0 1 ${ITEM_BASIS}`,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      flex: `1 1 ${MOBILE_DETAIL_COL_MIN}px`,
+    },
   },
   detailItemFullWidth: {
-    gridColumn: '1 / -1',
-    minWidth: 0,
-    overflowWrap: 'break-word',
-    wordBreak: 'break-word',
+    ...itemBase,
+    flex: '1 1 100%',
+  },
+  detailLabel: {
+    whiteSpace: 'nowrap',
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      whiteSpace: 'normal',
+    },
   },
 }))

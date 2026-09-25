@@ -29,6 +29,11 @@ jest.mock('@/utils/queryUtils', () => ({
   invalidateQueriesByKey: proxyInvalidateQueriesByKey,
 }))
 
+const mockInvalidateScopeQueries = jest.fn()
+jest.mock('Plugins/auth-server/components/Scopes/hooks/useScopeMutations', () => ({
+  invalidateScopeQueries: (queryClient: object) => mockInvalidateScopeQueries(queryClient),
+}))
+
 jest.mock('Plugins/admin/redux/features/WebhookSlice', () => ({
   triggerWebhook: jest.fn(() => ({ type: 'webhook/trigger' })),
 }))
@@ -65,6 +70,7 @@ describe('useDeleteClient', () => {
     })
     expect(mockDispatch).toHaveBeenCalled()
     expect(mockInvalidateQueriesByKey).toHaveBeenCalled()
+    expect(mockInvalidateScopeQueries).toHaveBeenCalled()
   })
 
   it('deleteClient dispatches error toast and rethrows on failure', async () => {

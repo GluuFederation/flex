@@ -16,6 +16,7 @@ import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { logger } from '@/utils/logger'
 import { UPDATE } from '@/audit/UserActionType'
 import { OIDC } from '../../../redux/audit/Resources'
+import { invalidateScopeQueries } from '../../Scopes/hooks/useScopeMutations'
 import { toClientJsonRecord } from '../helper/utils'
 import type { AuditContext, ClientWizardSubmitData } from '../types'
 
@@ -34,6 +35,7 @@ export const useUpdateClient = (auditContext: AuditContext) => {
         const updated = await mutation.mutateAsync({ data: clientPayload })
         dispatch(updateToast(true, 'success'))
         await invalidateQueriesByKey(queryClient, getGetOauthOpenidClientsQueryKey())
+        await invalidateScopeQueries(queryClient)
         const clientInum = updated?.inum ?? clientPayload.inum
         if (clientInum) {
           queryClient.setQueryData(getGetOauthOpenidClientsByInumQueryKey(clientInum), updated)

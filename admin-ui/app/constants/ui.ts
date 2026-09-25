@@ -160,8 +160,8 @@ export const ELLIPSE_SIZE = '200% 160%'
 export const INPUT = {
   HEIGHT: 52,
   PADDING_HORIZONTAL: 20,
-  PADDING_LEFT_WITH_ICON: 40,
-  CHEVRON_RIGHT: 14,
+  PADDING_WITH_ICON: 40,
+  ICON_INSET: 17,
 } as const
 
 export const ICON_SIZE = {
