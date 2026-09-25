@@ -191,6 +191,21 @@ describe('SecurityMonitorPage', () => {
     expect(mimeType).toContain('text/csv')
   })
 
+  it('exports the data as it stands now, not as it stood on first render', () => {
+    const { rerender } = render(<SecurityMonitorPage />, { wrapper: Wrapper })
+
+    useSecurityDashboardData.mockReturnValue(
+      buildData({ ipStats: [{ ipAddress: '198.51.100.7', failures: 9, failureRate: 90 }] }),
+    )
+    rerender(<SecurityMonitorPage />)
+
+    fireEvent.click(screen.getByText('export'))
+
+    const [csv] = downloadTextFile.mock.calls[0]
+    expect(csv).toContain('198.51.100.7')
+    expect(csv).not.toContain('192.0.2.10')
+  })
+
   it('does not download anything when there is no data to export', () => {
     useSecurityDashboardData.mockReturnValue(
       buildData({ spikeSeries: [], ipStats: [], userStats: [], errorSlices: [] }),

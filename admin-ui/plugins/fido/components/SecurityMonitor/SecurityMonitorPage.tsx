@@ -76,22 +76,7 @@ const SecurityMonitorPage: React.FC = () => {
       `passkey-security-monitor-${createDate(nowValue).format('YYYYMMDD-HHmm')}.csv`,
       CSV_MIME_TYPE,
     )
-  }, [
-    data.summary,
-    data.spikeSeries,
-    data.dropOffSeries,
-    data.userStats,
-    data.ipStats,
-    data.errorSlices,
-    data.velocityMatrix,
-    data.deviceTrend,
-    data.usersUnderSiege,
-    data.suspiciousIps,
-    t,
-    period,
-    dispatch,
-    nowValue,
-  ])
+  }, [data, t, period, dispatch, nowValue])
 
   const tabNames = useMemo(
     () => [

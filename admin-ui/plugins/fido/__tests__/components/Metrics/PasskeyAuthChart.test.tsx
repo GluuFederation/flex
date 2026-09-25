@@ -2,10 +2,10 @@ import React from 'react'
 import { render, screen, within } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import PasskeyAuthChart from 'Plugins/fido/components/Metrics/components/PasskeyAuthChart'
-import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
 import dayjs from 'dayjs'
+import type { MetricsDateRange } from 'Plugins/fido/shared/api'
 
-jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/shared/api/useMetricsApi', () => ({
   useErrorsAnalytics: jest.fn(() => ({ data: undefined, isLoading: false })),
 }))
 
@@ -42,7 +42,7 @@ describe('PasskeyAuthChart', () => {
   })
 
   it('renders API-driven legend items when data is available', () => {
-    const { useErrorsAnalytics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
+    const { useErrorsAnalytics } = jest.requireMock('Plugins/fido/shared/api/useMetricsApi')
     useErrorsAnalytics.mockReturnValue({
       data: { successRate: 0.8, failureRate: 0.1, dropOffRate: 0.1 },
       isLoading: false,

@@ -1,14 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createDate } from '@/utils/dayjsUtils'
-import { METRIC_OPERATION_TYPES } from '../../Metrics/constants'
-import {
-  useAggregationMetrics,
-  useDevicesAnalytics,
-  useErrorsAnalytics,
-  useMetricsEntriesByOperation,
-} from '../../Metrics/hooks'
-import type { AggregationEntry } from '../../Metrics/types'
 import {
   CHART_LABEL_FORMATS,
   KPI_PERIODS,
@@ -49,6 +41,14 @@ import type {
   SecurityKpiSummary,
   SecurityTranslate,
 } from '../types'
+import {
+  METRIC_OPERATION_TYPES,
+  useAggregationMetrics,
+  useDevicesAnalytics,
+  useErrorsAnalytics,
+  useMetricsEntriesByOperation,
+  type AggregationEntry,
+} from 'Plugins/fido/shared/api'
 
 const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): SecurityDashboardData => {
   const { t } = useTranslation()
@@ -316,25 +316,42 @@ const useSecurityDashboardData = (nowValue: number, period: KpiPeriod): Security
     hourlyQuery.isFetching ||
     dailyQuery.isFetching ||
     deviceQuery.isFetching ||
-    errorsQuery.isFetching ||
     devicesQuery.isFetching ||
+    errorsQuery.isFetching ||
     authEntriesQuery.isFetching
 
-  return {
-    anomalies,
-    summary,
-    spikeSeries,
-    dropOffSeries,
-    ipStats,
-    userStats,
-    usersUnderSiege,
-    suspiciousIps,
-    errorSlices,
-    velocityMatrix,
-    deviceTrend,
-    isLoading,
-    isFetching,
-  }
+  return useMemo(
+    () => ({
+      anomalies,
+      summary,
+      spikeSeries,
+      dropOffSeries,
+      ipStats,
+      userStats,
+      usersUnderSiege,
+      suspiciousIps,
+      errorSlices,
+      velocityMatrix,
+      deviceTrend,
+      isLoading,
+      isFetching,
+    }),
+    [
+      anomalies,
+      summary,
+      spikeSeries,
+      dropOffSeries,
+      ipStats,
+      userStats,
+      usersUnderSiege,
+      suspiciousIps,
+      errorSlices,
+      velocityMatrix,
+      deviceTrend,
+      isLoading,
+      isFetching,
+    ],
+  )
 }
 
 export { useSecurityDashboardData }

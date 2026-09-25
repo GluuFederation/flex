@@ -4,8 +4,8 @@ import {
   takeTopUsersByFailure,
 } from 'Plugins/fido/components/SecurityMonitor/utils'
 import { THREAT_LEVELS } from 'Plugins/fido/components/SecurityMonitor/constants'
-import type { MetricsEntry } from 'Plugins/fido/components/Metrics/types'
 import type { UserFailureStat } from 'Plugins/fido/components/SecurityMonitor/types'
+import type { MetricsEntry } from 'Plugins/fido/shared/api'
 
 // Mirrors the shape returned by /fido2/metrics/entries/operation/AUTHENTICATION: an ATTEMPT
 // row opens each operation, an outcome row closes it, and ABANDONED rows carry no ipAddress.

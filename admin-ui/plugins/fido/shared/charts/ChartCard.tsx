@@ -7,15 +7,17 @@ import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { useMetricsStyles } from '../MetricsPage.style'
-import { METRICS_ZOOM } from '../constants'
-import useChartZoom from '../hooks/useChartZoom'
-import useFullscreenModal from '../hooks/useFullscreenModal'
-import type { MetricsChartCardProps } from '../types'
+import { useChartShellStyles } from './chartShell.style'
+import { CHART_ZOOM } from './constants'
+import useChartZoom from './useChartZoom'
+import useFullscreenModal from './useFullscreenModal'
+import type { ChartCardProps } from './types'
 
-const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
+const ChartCard: React.FC<ChartCardProps> = ({
   title,
   caption,
+  accentColor,
+  headerExtra,
   cardClassName,
   bodyClassName,
   minHeight,
@@ -29,7 +31,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { classes } = useChartShellStyles({ isDark, themeColors })
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [collapsedHeight, setCollapsedHeight] = useState<number>(0)
   const cardContentRef = useRef<HTMLDivElement>(null)
@@ -43,6 +45,29 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   const { containerRef, closeButtonRef } = useFullscreenModal(isFullscreen, closeFullscreen)
 
   const cardClasses = cardClassName ? `${classes.chartCard} ${cardClassName}` : classes.chartCard
+
+  const cardStyle =
+    minHeight || accentColor
+      ? {
+          ...(minHeight ? { minHeight } : {}),
+          ...(accentColor ? { borderColor: accentColor } : {}),
+        }
+      : undefined
+
+  const heading = (
+    <>
+      {!hideTitle && (
+        <GluuText variant="div" className={classes.chartTitle}>
+          {title}
+        </GluuText>
+      )}
+      {caption && (
+        <GluuText variant="div" className={classes.chartCaption}>
+          {caption}
+        </GluuText>
+      )}
+    </>
+  )
 
   const fullscreenModal =
     isFullscreen &&
@@ -71,7 +96,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
                   <button
                     type="button"
                     onClick={zoomOut}
-                    disabled={zoom <= METRICS_ZOOM.MIN}
+                    disabled={zoom <= CHART_ZOOM.MIN}
                     className={classes.chartZoomButton}
                     aria-label={t('messages.zoom_out')}
                     title={t('messages.zoom_out')}
@@ -90,7 +115,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
                   <button
                     type="button"
                     onClick={zoomIn}
-                    disabled={zoom >= METRICS_ZOOM.MAX}
+                    disabled={zoom >= CHART_ZOOM.MAX}
                     className={classes.chartZoomButton}
                     aria-label={t('messages.zoom_in')}
                     title={t('messages.zoom_in')}
@@ -126,7 +151,7 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
 
   return (
     <>
-      <Card className={cardClasses} style={minHeight ? { minHeight } : undefined}>
+      <Card className={cardClasses} style={cardStyle}>
         {showExpand && (
           <button
             type="button"
@@ -139,21 +164,19 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
           </button>
         )}
         <CardBody className={bodyClassName}>
-          {!hideTitle && (
-            <GluuText variant="div" className={classes.chartTitle}>
-              {title}
-            </GluuText>
-          )}
-          {caption && (
-            <GluuText variant="div" className={classes.chartCaption}>
-              {caption}
-            </GluuText>
+          {headerExtra ? (
+            <div className={classes.chartCardHeader}>
+              <div className={classes.chartCardHeaderMain}>{heading}</div>
+              <div className={classes.chartCardHeaderExtra}>{headerExtra}</div>
+            </div>
+          ) : (
+            heading
           )}
           <div
             ref={cardContentRef}
             style={isFullscreen ? { minHeight: collapsedHeight } : undefined}
           >
-            {!isFullscreen && children(false, METRICS_ZOOM.DEFAULT)}
+            {!isFullscreen && children(false, CHART_ZOOM.DEFAULT)}
           </div>
         </CardBody>
       </Card>
@@ -162,4 +185,4 @@ const MetricsChartCard: React.FC<MetricsChartCardProps> = ({
   )
 }
 
-export default MetricsChartCard
+export default ChartCard

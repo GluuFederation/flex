@@ -7,7 +7,7 @@ import {
   totalFailuresOf,
 } from 'Plugins/fido/components/SecurityMonitor/utils'
 import { createDate } from '@/utils/dayjsUtils'
-import type { AggregationEntry } from 'Plugins/fido/components/Metrics/types'
+import type { AggregationEntry } from 'Plugins/fido/shared/api'
 
 const entry = (iso: string, failures: number): AggregationEntry => ({
   startTime: iso,
