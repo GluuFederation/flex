@@ -38,3 +38,4 @@ plugins_repo
 !.vscode/extensions.json
 .claude/
 configApiSpecs.yaml
+vite.config.local.ts

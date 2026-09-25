@@ -70,7 +70,7 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, isDark, wi
     select: {
       'width': '100%',
       'height': INPUT.HEIGHT,
-      'padding': `0 36px 0 ${INPUT.PADDING_HORIZONTAL}px`,
+      'padding': `0 ${INPUT.PADDING_WITH_ICON}px 0 ${INPUT.PADDING_HORIZONTAL}px`,
       'border': `1px solid ${inputBorder}`,
       'borderRadius': BORDER_RADIUS.SMALL,
       'backgroundColor': inputBg,
@@ -96,7 +96,7 @@ export const useStyles = makeStyles<StyleParams>()((_, { themeColors, isDark, wi
     },
     selectChevron: {
       position: 'absolute',
-      right: INPUT.CHEVRON_RIGHT,
+      right: INPUT.ICON_INSET,
       top: '50%',
       transform: 'translateY(-50%)',
       pointerEvents: 'none',
