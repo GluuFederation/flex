@@ -47,7 +47,7 @@ sequenceDiagram
 
 ### Explanation of the flow
 
-1. A component calls a generated hook. For example `useGetClients({ limit: 10 })`.
+1. A component calls a generated hook. For example `useGetOauthOpenidClients({ limit: 10 })`.
 2. The hook asks **React Query** for the cached entry for this `queryKey`. If the entry exists and is still considered fresh (within the configured `staleTime`), React Query returns it immediately and no network request happens. This is what makes the same hook safe to call from three different components on the same page. They all see one shared response.
 3. On a cache miss, the hook calls **Orval's mutator function `customInstance`**, defined in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts). The mutator wraps every request with a cancel token so React Query can abort in-flight calls if the component unmounts before the response arrives.
 4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)).
@@ -103,23 +103,28 @@ Orval emits hooks following a consistent naming pattern, one set per OpenAPI ope
 Import them from the `JansConfigApi` alias. Never from the underlying generated paths, which can change between regenerations:
 
 ```ts
-import { useGetClients, usePutClient, getGetClientsQueryKey, type Client } from 'JansConfigApi'
+import {
+  useGetOauthOpenidClients,
+  usePutOauthOpenidClient,
+  getGetOauthOpenidClientsQueryKey,
+  type Client,
+} from 'JansConfigApi'
 ```
 
 Once imported, the hooks behave like any React Query hook. A read in a component looks like:
 
 ```ts
-const { data, isLoading, error } = useGetClients({ limit: 10 })
+const { data, isLoading, error } = useGetOauthOpenidClients({ limit: 10 })
 ```
 
 A mutation with cache invalidation looks like:
 
 ```ts
 const queryClient = useQueryClient()
-const mutation = usePutClient({
+const mutation = usePutOauthOpenidClient({
   mutation: {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
+      queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
     },
   },
 })
@@ -129,7 +134,7 @@ If a hook you need does not exist, the upstream OpenAPI spec is missing the oper
 
 ## Base URL resolution
 
-The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a Jenkins-deployed environment, and on a customer's installer VM. To make that work, the axios base URL is decided at boot through a three-step fallback chain in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts):
+The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a CI-deployed environment, and on a customer's installer VM. To make that work, the axios base URL is decided at boot through a three-step fallback chain in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts):
 
 1. **`window.configApiBaseUrl`**: set at runtime by `env-config.js` (see [Runtime env injection](#runtime-env-injection)). If this is set and does **not** look like an un-substituted `%(...)s` placeholder (matched by `REGEX_PYTHON_PLACEHOLDER`), it wins.
 2. **`process.env.CONFIG_API_BASE_URL`**: baked in from `.env.<mode>` at build time by Vite. Used in dev and as a build-time default.
@@ -145,7 +150,7 @@ The mechanism that puts the right `window.configApiBaseUrl` in the browser is a 
 <script src="/admin/env-config.js"></script>
 ```
 
-`env-config.js` sets `window.configApiBaseUrl` (and a few sibling globals) before the main app bundle runs. The same `dist/` bundle is used in every environment. Only this one script differs. See [build-deploy.md](./build-deploy.md#runtime-env-injection) for who provides the file in each environment (installer, Jenkins, Vite dev plugin) and why a dev 404 on it is harmless.
+`env-config.js` sets `window.configApiBaseUrl` (and a few sibling globals) before the main app bundle runs. The same `dist/` bundle is used in every environment. Only this one script differs. See [build-deploy.md](./build-deploy.md#runtime-env-injection) for who provides the file in each environment (installer, CI, Vite dev server) and why a dev 404 on it is harmless.
 
 ## Audit logging
 
@@ -165,7 +170,7 @@ The audit payload is posted via `postUserAction` from the backend API helper. Se
 **Use the generated query-key helpers.** Every Orval hook ships a corresponding `getGetXxxQueryKey()` function. Use it instead of hand-writing the key:
 
 ```ts
-queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
+queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
 ```
 
 Hand-written keys drift. The generated helpers stay in sync with the generated hooks.
@@ -175,14 +180,35 @@ Hand-written keys drift. The generated helpers stay in sync with the generated h
 **Invalidate after mutations.** A mutation that updates server state should invalidate the queries that read that state. The standard pattern is `onSuccess` callbacks calling `queryClient.invalidateQueries(...)`:
 
 ```ts
-const mutation = usePutClient({
+const mutation = usePutOauthOpenidClient({
   mutation: {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getGetClientsQueryKey() })
-      queryClient.invalidateQueries({ queryKey: getGetClientByInumQueryKey(inum) })
+      queryClient.invalidateQueries({ queryKey: getGetOauthOpenidClientsQueryKey() })
+      queryClient.invalidateQueries({
+        queryKey: getGetOauthOpenidClientsByInumQueryKey(inum),
+      })
     },
   },
 })
 ```
 
+This includes another feature's queries when the mutation changes its data. The Scopes pages show the clients linked to each scope, so creating, updating or deleting an OIDC client also calls `invalidateScopeQueries(queryClient)` from the Scopes feature. Scope data stays fresh for five minutes (`SCOPE_CACHE_CONFIG`), so without that call the Scopes pages could show old client links for up to five minutes after a client change.
+
+**Keep query params and `select` stable.** React Query hashes a query key structurally, not by identity: `hashKey` serialises it with plain-object keys sorted, so params rebuilt inline on every render still hash to the same key. Equal params do not open a second cache entry and do not refetch. What identity costs you is repeated work per render. `select` is memoized against its own function identity, so a callback declared inline re-runs the transform every time a result is computed, even when the data has not changed. Memoize the params, memoize any `select` callback, and reuse a shared constant for the empty fallback so downstream `useMemo` dependencies stay stable:
+
+```ts
+const params = useMemo(() => buildStatParams(rangeStart, rangeEnd), [rangeStart, rangeEnd])
+const select = useCallback((raw: RawStat[]) => raw.map(transformRawStatEntry), [])
+const query = useGetStat(params, { query: { select } })
+const data = query.data ?? EMPTY_DATA
+```
+
+[`useMauStats`](../plugins/admin/components/MAU/hooks/useMauStats.ts) and [`useClients`](../plugins/auth-server/components/OidcClients/hooks/useClients.ts) both follow this.
+
 **Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
+
+## Known API constraints
+
+Quirks of the Config API that the generated client does not protect you from. Each one here cost a bug.
+
+- **`/stat` rejects a same-month range.** Passing `start_month` and `end_month` with the same value returns 400. Send a single `month` instead. `buildStatParams` in [`plugins/admin/components/MAU/utils/statParams.ts`](../plugins/admin/components/MAU/utils/statParams.ts) encapsulates the rule, and `orderMonthRange` next to it swaps an inverted range, since the endpoint will not reorder it for you.

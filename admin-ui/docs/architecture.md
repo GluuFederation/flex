@@ -80,12 +80,12 @@ sequenceDiagram
 1. **Entry point** ([`app/index.tsx`](../app/index.tsx)) runs as the browser parses the JS bundle. Before rendering anything, it wires up the Redux store and the React Query client.
 2. **`PluginReducersResolver.process()`** runs eagerly, _before_ the store is built. It iterates over [`admin-ui/plugins.config.json`](../plugins.config.json), calls `loadPluginMetadata(metadataFile)` for each plugin (synchronously, via `import.meta.glob` references), and registers every reducer the plugin exports into the reducer registry. Doing this _before_ `configStore()` means the store is constructed with the full set of slices already known, so no late-registration is needed.
 3. The Redux store is built at module load of [`app/redux/store/index.ts`](../app/redux/store/index.ts): the listener middleware is prepended onto the default middleware, the host's core listeners self-register via side-effect imports, and `PluginListenersResolver.process(startAppListening)` registers every plugin's listeners. `configStore()` (called from the entry point) then creates the persistor and wires HMR. All of this runs before `<App />` renders.
-4. **`PersistGate`** waits for `redux-persist` to rehydrate the persisted slices before rendering anything below it. The persist config uses a blacklist (`cedarPermissions`, `toastReducer`, `logoutAuditReducer`, `initReducer`), so everything else persists, including the `userinfo` in `authReducer` that keeps the user signed in across reloads. Theme and language are restored separately from `localStorage` by `themeContext` and `i18n`.
+4. **`PersistGate`** waits for `redux-persist` to rehydrate the persisted slices before rendering anything below it. The persist config uses a blacklist (`cedarPermissions`, `toastReducer`, `sessionReducer`, `initReducer`, `webhookReducer`, `scopeReducer`, `licenseReducer`, `logoutReducer`), so everything else persists, including the `userinfo` in `authReducer` that keeps the user signed in across reloads. Theme and language are restored separately from `localStorage` by `themeContext` and `i18n`.
 5. **`QueryClient`** is constructed with the project's default query options (defined in [`app/utils/queryUtils.ts`](../app/utils/queryUtils.ts)). It is provided via `QueryClientProvider` so every `useGet*` / `usePut*` hook in the app uses the same cache.
 6. **`<App />`** renders inside the providers. With the store and listeners already wired, it proceeds to load plugin routes.
 7. **`processRoutes()`** (asynchronously this time) collects the route definitions from each plugin's `plugin-metadata.ts` and stitches them into the React Router tree alongside the host's own routes. From here, the user sees the sidebar, the navigation works, and the rest of the app lifecycle (OIDC, license check, Cedarling bootstrap) takes over. See [auth.md](./auth.md) and [cedarling.md](./cedarling.md).
 
-If a plugin's metadata fails to load, `loadPluginMetadata` logs via `devLogger.warn`/`devLogger.error` and skips it. The async menu/route resolution wraps each plugin in its own `try`/`catch`, so one bad plugin doesn't break the rest.
+If a plugin's metadata fails to load, `loadPluginMetadata` logs via `logger.warn` and skips it. The async menu/route resolution wraps each plugin in its own `try`/`catch`, so one bad plugin doesn't break the rest.
 
 ## Import rules
 
@@ -111,9 +111,13 @@ If a piece of code is used in exactly one plugin, it stays in that plugin. If tw
 | `app/routes/Apps/Gluu/` | Broader Gluu building blocks (`GluuLoader`, `GluuDialog`, …)                  |
 | `app/constants/`        | Shared cross-cutting constants ([conventions.md](./conventions.md#constants)) |
 | `app/helpers/`          | Navigation helpers                                                            |
-| `app/utils/`            | Regex, devLogger, URL safety, query utils, dayjs utils, env detection         |
+| `app/utils/`            | Regex, logger, URL safety, query utils, dayjs utils, env detection            |
 | `app/layout/`           | Layout shells                                                                 |
-| `app/styles/`           | Global CSS                                                                    |
+| `app/context/`          | React contexts (theme)                                                        |
+| `app/hooks/`            | Host-level hooks (`useFilteredMenus`, `useIdleTimer`, `useChartTheme`, …)     |
+| `app/images/`           | Logos, avatars, favicons, static art                                          |
+| `app/types/`            | Ambient module declarations (`*.d.ts` for css, scss, images, yaml, vite env)  |
+| `app/styles/`           | Global SCSS + font tokens ([styling.md](./styling.md))                        |
 | `app/locales/`          | i18n JSON for `en`, `es`, `fr`, `pt`                                          |
 | `app/i18n.ts`           | i18next bootstrap                                                             |
 
@@ -177,7 +181,7 @@ Everything that exists only in the browser. Tokens, session flags, license statu
 | Key in `state.*`                                  | What it holds                                               |
 | ------------------------------------------------- | ----------------------------------------------------------- |
 | `authReducer`                                     | OIDC config, tokens, `userinfo`, backend reachability flag  |
-| `logoutAuditReducer` &nbsp;¹                      | Logout-audit state (`logoutAuditSucceeded`)                 |
+| `sessionReducer` &nbsp;¹                          | Landing path and the logout-requested flag                  |
 | `licenseReducer`                                  | License validity, trial state, SSA upload, threshold checks |
 | `cedarPermissions`                                | Cached Cedarling authorize decisions + policy-store bytes   |
 | `logoutReducer`                                   | Logout flow state                                           |
@@ -185,7 +189,7 @@ Everything that exists only in the browser. Tokens, session flags, license statu
 | `toastReducer`                                    | Toast notifications shown across the app                    |
 | _plugin-local_ (`webhookReducer`, `scopeReducer`) | UI / workflow state for that plugin                         |
 
-¹ Defined in [`app/redux/features/sessionSlice.ts`](../app/redux/features/sessionSlice.ts). The file is named `sessionSlice` but the slice is registered under `logoutAuditReducer`. Grep the registry key, not the filename.
+¹ Defined in [`app/redux/features/sessionSlice.ts`](../app/redux/features/sessionSlice.ts). The slice's `name` is `session` but it is registered under the key `sessionReducer`. Grep the registry key, not the slice name.
 
 **Why Redux for these:** most of them must be readable _outside_ React Query's lifecycle. Tokens need to be available to the axios mutator before any hook can fire. License status gates whether the app renders at all. None of these are server data, and trying to model them as queries adds friction without benefit.
 

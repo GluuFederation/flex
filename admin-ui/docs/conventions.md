@@ -60,14 +60,20 @@ Never declare a regex inline. Naming centralizes audits and makes call sites rea
 
 ## Logging
 
-Use `devLogger` from `@/utils/devLogger`. Never call `console.log` / `console.warn` / `console.error` directly in source.
+Use `logger` from `@/utils/logger`. Never call `console.log` / `console.warn` / `console.error` directly in source.
 
 ```ts
-import { devLogger } from '@/utils/devLogger'
-devLogger.warn('Something to know about', context)
+import { logger } from '@/utils/logger'
+logger.warn('Something to know about', context)
 ```
 
-Production builds drop debug logs through this wrapper. Raw `console.*` leaks. Build scripts under `script/` are allowed to use `console` directly. They don't ship to the browser.
+`logger` exposes `trace` / `debug` / `info` / `warn` / `error`. Each call is dropped unless its level is at or above the level stored in `localStorage` under `gluu.logLevel`, which the Settings page writes and which defaults to `INFO`. The gate is the same in dev and production builds. Raw `console.*` bypasses it. Build scripts under `script/` are allowed to use `console` directly. They don't ship to the browser.
+
+Code under `app/cedarling/`, and the Cedarling lines in `PermissionsPolicyInitializer`, use `cedarLogger` from `@/cedarling/utility/cedarLogger` instead. It wraps `logger` with a second gate so Cedarling output also respects the "Cedarling logs?" switch. See [cedarling.md](./cedarling.md#logging).
+
+## Styling
+
+Component styles go in a sibling `*.style.ts` using `makeStyles` from `tss-react/mui`, colors come from the theme rather than literals, and every page has to work across the full supported range, 320px to 1440px - phones, tablets in both orientations, and laptops, not just the desktop width you built it at. Full rules in [styling.md](./styling.md).
 
 ## Loaders
 
@@ -93,9 +99,17 @@ Add every key to all four files in the same commit. The i18n fallback returns En
 
 ## Pre-commit hook
 
-Husky runs Prettier, ESLint, `tsc`, markdownlint across staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md`. Failure aborts the commit. Fix, re-stage, commit again.
+Husky runs Prettier, ESLint, a deprecated-API check, `tsc`, markdownlint and knip. Prettier, ESLint and markdownlint work on the staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md` subset; `tsc` and knip run over the whole project. Failure aborts the commit. Fix, re-stage, commit again. The test suite is not part of any hook.
 
-Don't bypass with `--no-verify` unless approved. The hook is the only enforcement point. CI doesn't re-run lint or tests (see [build-deploy.md](./build-deploy.md#ci--jenkins)).
+Three separate gates guard the commit itself:
+
+- **`pre-commit`** refuses to run unless commit signing is possible: either `commit.gpgsign=true` or a `user.signingkey` is configured.
+- **`commit-msg`** requires a `Signed-off-by:` trailer, which `git commit -s` adds.
+- **`pre-push`** re-checks every commit being pushed and blocks any that carries no signature.
+
+In practice that means committing with `git commit -S -s -m "<message>"`.
+
+Don't bypass with `--no-verify` unless approved. CI does not run lint or type-check, so if you skip the hook nothing catches those before merge except running `npm run check:all` yourself (see [build-deploy.md](./build-deploy.md#ci)).
 
 ## Comments
 

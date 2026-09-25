@@ -7,7 +7,7 @@ One-page reference for every notable library. What it is, where it's wired, when
 | Concern             | Library                                                                                     |
 | ------------------- | ------------------------------------------------------------------------------------------- |
 | Language            | TypeScript 6 (strict)                                                                       |
-| Framework           | React 18                                                                                    |
+| Framework           | React 19                                                                                    |
 | Build               | Vite 8 (Rolldown bundler)                                                                   |
 | State (client/auth) | Redux Toolkit (+ listener middleware) + redux-persist                                       |
 | State (server)      | TanStack React Query 5                                                                      |
@@ -41,7 +41,7 @@ Two libraries, intentional split. See [architecture.md](./architecture.md#state-
 
 - **Redux Toolkit**: store in `app/redux/`. Client / auth / session state. (Theme and language live in React context + `localStorage`, not Redux.)
 - **RTK listener middleware**: side-effect runtime for async flows (auth, license, webhooks). Core listeners in `app/redux/listeners/`, per-plugin listeners in `plugins/*/redux/listeners/`. A trigger action dispatched from a component runs the matching listener `effect`; `cancelActiveListeners()` gives takeLatest semantics.
-- **redux-persist**: persists chosen slices to storage. Keeps user signed in across reloads. Restores theme / language before first paint.
+- **redux-persist**: persists chosen Redux slices to storage. Keeps the user signed in across reloads.
 - **TanStack React Query 5**: server-state cache via Orval-generated hooks (`useGet*`, `usePut*`). Use on **every** Config API read/write.
 
 ### HTTP / API client
@@ -75,12 +75,12 @@ Two libraries, intentional split. See [architecture.md](./architecture.md#state-
 - **knip**: unused files / exports / deps via `npm run preview:prod:analyze`. Watch for magic-string Redux dispatches. Knip can't see them and may delete the reducer.
 - **Jest + Testing Library**: `__tests__/` siblings throughout `app/` and `plugins/`. See [testing.md](./testing.md).
 - **ESLint + Prettier**: config in `eslint.config.cjs`. Enforced via `.husky/pre-commit`. Never disable rules.
-- **Husky**: `.husky/pre-commit` runs the lint/type/format gate and checks that a signing key is configured. `.husky/pre-push` verifies every pushed commit carries a signature. CI is artifact-build only.
+- **Husky**: `.husky/pre-commit` runs the lint/type/format gate and checks that a signing key is configured. `.husky/pre-push` verifies every pushed commit carries a signature. CI builds the artifact and runs the tests, but never lints.
 
 ## Build pipeline at a glance
 
 ```text
-source ──(Vite + Rolldown)──► dist/ ──► (Jenkins | Janssen installer) ──► browser
+source ──(Vite + Rolldown)──► dist/ ──► (GitHub Actions | Janssen installer) ──► browser
 ```
 
 Same `dist/` runs everywhere. Env-specific values are injected at runtime via `env-config.js`. See [build-deploy.md](./build-deploy.md).
