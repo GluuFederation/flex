@@ -103,24 +103,15 @@ If `env-config.js` is missing or empty, the axios instance in [`orval/axiosInsta
 
 ## CI
 
-CI is a GitHub Actions workflow, `.github/workflows/build-admin-ui.yml`. There is no
-Jenkinsfile in the repository.
+CI is a GitHub Actions workflow, `.github/workflows/build-admin-ui.yml`. There is no Jenkinsfile in the repository.
 
 The workflow:
 
-1. **Installs from scratch.** It clears the npm cache, deletes `node_modules`,
-   `jans_config_api_orval` and `package-lock.json`, runs `npm install`, then regenerates
-   the API client with `npm run api:orval`. Resolving dependencies fresh catches problems
-   a warm local tree hides.
-2. **Runs the test suite** when the `run_tests` input is set, preferring `npm run test:all`.
-   Lint and type-check are not run here; that is the pre-commit hook's job.
+1. **Installs from scratch.** It clears the npm cache, deletes `node_modules`, `jans_config_api_orval` and `package-lock.json`, runs `npm install`, then regenerates the API client with `npm run api:orval`. Resolving dependencies fresh catches problems a warm local tree hides.
+2. **Runs the test suite** when the `run_tests` input is set, preferring `npm run test:all`. Lint and type-check are not run here; that is the pre-commit hook's job.
 3. **Builds** with `npm run build:$BUILD_ENV`, after clearing `dist/` and the Vite cache.
-4. **Packages and publishes** `dist/` and `node_modules` as tarballs, uploaded as workflow
-   artifacts and attached to GitHub Releases.
+4. **Packages and publishes** `dist/` and `node_modules` as tarballs, uploaded as workflow artifacts and attached to GitHub Releases.
 
-When deploying to a VM, the workflow writes an `env-config.js` next to `index.html`
-pointing at that host's `jans-config-api`, with values JSON-encoded through `jq` so a
-hostname cannot break out of the string literal.
+When deploying to a VM, the workflow writes an `env-config.js` next to `index.html` pointing at that host's `jans-config-api`, with values JSON-encoded through `jq` so a hostname cannot break out of the string literal.
 
-Anything that must pass _before merge_ belongs in `.husky/pre-commit`. Anything that
-produces or ships the artifact belongs in CI.
+Anything that must pass _before merge_ belongs in `.husky/pre-commit`. Anything that produces or ships the artifact belongs in CI.

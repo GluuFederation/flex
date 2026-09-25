@@ -192,14 +192,9 @@ const mutation = usePutOauthOpenidClient({
 })
 ```
 
-**Keep query params and `select` stable.** React Query hashes a query key structurally, not
-by identity: `hashKey` serialises it with plain-object keys sorted, so params rebuilt inline
-on every render still hash to the same key. Equal params do not open a second cache entry and
-do not refetch. What identity costs you is repeated work per render. `select` is memoized
-against its own function identity, so a callback declared inline re-runs the transform every
-time a result is computed, even when the data has not changed. Memoize the params, memoize any
-`select` callback, and reuse a shared constant for the empty fallback so downstream `useMemo`
-dependencies stay stable:
+This includes another feature's queries when the mutation changes its data. The Scopes pages show the clients linked to each scope, so creating, updating or deleting an OIDC client also calls `invalidateScopeQueries(queryClient)` from the Scopes feature. Scope data stays fresh for five minutes (`SCOPE_CACHE_CONFIG`), so without that call the Scopes pages could show old client links for up to five minutes after a client change.
+
+**Keep query params and `select` stable.** React Query hashes a query key structurally, not by identity: `hashKey` serialises it with plain-object keys sorted, so params rebuilt inline on every render still hash to the same key. Equal params do not open a second cache entry and do not refetch. What identity costs you is repeated work per render. `select` is memoized against its own function identity, so a callback declared inline re-runs the transform every time a result is computed, even when the data has not changed. Memoize the params, memoize any `select` callback, and reuse a shared constant for the empty fallback so downstream `useMemo` dependencies stay stable:
 
 ```ts
 const params = useMemo(() => buildStatParams(rangeStart, rangeEnd), [rangeStart, rangeEnd])
@@ -208,19 +203,12 @@ const query = useGetStat(params, { query: { select } })
 const data = query.data ?? EMPTY_DATA
 ```
 
-[`useMauStats`](../plugins/admin/components/MAU/hooks/useMauStats.ts) and
-[`useClients`](../plugins/auth-server/components/OidcClients/hooks/useClients.ts) both follow
-this.
+[`useMauStats`](../plugins/admin/components/MAU/hooks/useMauStats.ts) and [`useClients`](../plugins/auth-server/components/OidcClients/hooks/useClients.ts) both follow this.
 
 **Do not call `fetch` or `axios` directly.** Any code that bypasses the generated hooks loses caching, dedup, retry, cancellation, and the session-cookie wiring. If the upstream OpenAPI is missing an endpoint, fix it upstream and regenerate.
 
 ## Known API constraints
 
-Quirks of the Config API that the generated client does not protect you from. Each one here
-cost a bug.
+Quirks of the Config API that the generated client does not protect you from. Each one here cost a bug.
 
-- **`/stat` rejects a same-month range.** Passing `start_month` and `end_month` with the same
-  value returns 400. Send a single `month` instead. `buildStatParams` in
-  [`plugins/admin/components/MAU/utils/statParams.ts`](../plugins/admin/components/MAU/utils/statParams.ts)
-  encapsulates the rule, and `orderMonthRange` next to it swaps an inverted range, since the
-  endpoint will not reorder it for you.
+- **`/stat` rejects a same-month range.** Passing `start_month` and `end_month` with the same value returns 400. Send a single `month` instead. `buildStatParams` in [`plugins/admin/components/MAU/utils/statParams.ts`](../plugins/admin/components/MAU/utils/statParams.ts) encapsulates the rule, and `orderMonthRange` next to it swaps an inverted range, since the endpoint will not reorder it for you.
