@@ -2,10 +2,10 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import PasskeyAdoptionChart from 'Plugins/fido/components/Metrics/components/PasskeyAdoptionChart'
-import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
 import dayjs from 'dayjs'
+import type { MetricsDateRange } from 'Plugins/fido/shared/api'
 
-jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/shared/api/useMetricsApi', () => ({
   useAdoptionMetrics: jest.fn(() => ({ data: undefined, isLoading: false })),
 }))
 
@@ -41,7 +41,7 @@ describe('PasskeyAdoptionChart', () => {
   })
 
   it('uses API values when adoption data is available', () => {
-    const { useAdoptionMetrics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
+    const { useAdoptionMetrics } = jest.requireMock('Plugins/fido/shared/api/useMetricsApi')
     useAdoptionMetrics.mockReturnValueOnce({
       data: { newUsers: 5, totalUniqueUsers: 20, adoptionRate: 25 },
       isLoading: false,
@@ -51,7 +51,7 @@ describe('PasskeyAdoptionChart', () => {
   })
 
   it('falls back to mock values when API returns zeros', () => {
-    const { useAdoptionMetrics } = jest.requireMock('Plugins/fido/components/Metrics/hooks')
+    const { useAdoptionMetrics } = jest.requireMock('Plugins/fido/shared/api/useMetricsApi')
     useAdoptionMetrics.mockReturnValueOnce({
       data: { newUsers: 0, totalUniqueUsers: 0, adoptionRate: 0 },
       isLoading: false,

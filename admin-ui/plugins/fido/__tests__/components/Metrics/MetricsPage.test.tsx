@@ -11,7 +11,7 @@ jest.mock('@/cedarling/utility', () => ({
   ADMIN_UI_RESOURCES: { FIDO: 'FIDO' },
 }))
 
-jest.mock('Plugins/fido/components/Metrics/hooks', () => ({
+jest.mock('Plugins/fido/shared/api/useMetricsApi', () => ({
   useAdoptionMetrics: jest.fn(() => ({ isLoading: false, isFetching: false, data: undefined })),
   useErrorsAnalytics: jest.fn(() => ({ isLoading: false, isFetching: false, data: undefined })),
   usePerformanceAnalytics: jest.fn(() => ({

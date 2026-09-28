@@ -246,6 +246,27 @@ describe('SecurityKpiStrip', () => {
     expect(screen.queryAllByTestId('TrendingDownIcon')).toHaveLength(0)
   })
 
+  it('lets a long account name break inside the chip instead of spilling out of the card', () => {
+    const longName = 'extraordinarily.long.person.name@some-very-long-customer-domain.example.com'
+    const { container } = render(
+      <SecurityKpiStrip
+        summary={summary}
+        usersUnderSiege={[{ ...criticalUser, username: longName }]}
+        period={KPI_PERIODS.TODAY}
+      />,
+      { wrapper: Wrapper },
+    )
+
+    const chip = Array.from(container.querySelectorAll('span')).find(
+      (node) => node.textContent === longName && node.style.display === 'inline-flex',
+    )
+
+    expect(chip).toBeDefined()
+    expect(chip?.style.whiteSpace).toBe('normal')
+    expect(chip?.style.overflowWrap).toBe('anywhere')
+    expect(chip?.style.maxWidth).toBe('100%')
+  })
+
   it('shows the worst-hit account as a chip and folds the rest into a count suffix', () => {
     render(
       <SecurityKpiStrip
@@ -332,10 +353,12 @@ describe('TopTargetedAccountsChart legend tooltips', () => {
       wrapper: Wrapper,
     })
 
-    fireEvent.mouseOver(screen.getByText('Critical'))
+    const legend = within(screen.getByTestId('chart-legend'))
+
+    fireEvent.mouseOver(legend.getByText('Critical'))
     expect(await screen.findByText('2 accounts · 200 failed · 96 drop-off')).toBeInTheDocument()
 
-    fireEvent.mouseOver(screen.getByText('Medium'))
+    fireEvent.mouseOver(legend.getByText('Medium'))
     expect(await screen.findByText('1 accounts · 100 failed · 48 drop-off')).toBeInTheDocument()
   })
 
@@ -348,7 +371,30 @@ describe('TopTargetedAccountsChart legend tooltips', () => {
 
     render(<TopTargetedAccountsChart userStats={manyUsers} />, { wrapper: Wrapper })
 
-    fireEvent.mouseOver(screen.getByText('Critical'))
+    fireEvent.mouseOver(within(screen.getByTestId('chart-legend')).getByText('Critical'))
     expect(await screen.findByText(/^8 accounts/)).toBeInTheDocument()
+  })
+})
+
+describe('SecurityChartCard layout', () => {
+  it('offers the same expand-to-fullscreen control the metrics cards use', () => {
+    render(<TopTargetedAccountsChart userStats={[criticalUser]} />, { wrapper: Wrapper })
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
+
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText('Top Targeted User Accounts')).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: 'Zoom in' })).toBeInTheDocument()
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('keeps the status badge beside the title instead of under it', () => {
+    render(<TopTargetedAccountsChart userStats={[criticalUser]} />, { wrapper: Wrapper })
+
+    expect(screen.getByText('1 critical accounts')).toBeInTheDocument()
   })
 })

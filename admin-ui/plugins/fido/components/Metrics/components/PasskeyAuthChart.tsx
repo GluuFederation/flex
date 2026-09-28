@@ -7,15 +7,8 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import TooltipDesign from '@/routes/Dashboards/Chart/TooltipDesign'
 import type { TooltipPayloadItem } from '@/routes/Dashboards/types'
-import { useMetricsStyles } from '../MetricsPage.style'
-import {
-  METRICS_CHART_COLORS,
-  METRICS_CHART_HEIGHT,
-  METRICS_DESKTOP_CHART,
-  METRICS_MOBILE_CHART,
-  RADIAN,
-  RECHARTS_INITIAL_DIMENSION,
-} from '../constants'
+import { getAuthCanvasStyle, useMetricsStyles } from '../MetricsPage.style'
+import { METRICS_CHART_COLORS, RADIAN } from '../constants'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {
   MEDIA_QUERY_OPTIONS,
@@ -23,13 +16,20 @@ import {
   STACKED_CHART_MAX_MEDIA_QUERY,
   TABLET_MAX_MEDIA_QUERY,
 } from '@/constants'
-import { useErrorsAnalytics } from '../hooks'
 import { toPercent } from '../utils'
-import MetricsChartCard from './MetricsChartCard'
-import ChartLegend from './ChartLegend'
 import type { PasskeyAuthChartProps } from '../types'
 
 import type { PieLabelRenderProps } from 'recharts'
+import { useErrorsAnalytics } from 'Plugins/fido/shared/api'
+import {
+  CHART_HEIGHT,
+  ChartCard,
+  ChartLegend,
+  DESKTOP_CHART_GEOMETRY,
+  MOBILE_CHART_GEOMETRY,
+  RECHARTS_INITIAL_DIMENSION,
+  useChartShellStyles,
+} from 'Plugins/fido/shared/charts'
 
 const PIE_LABEL_RESERVE_RATIO = 0.19
 const PIE_LABEL_RESERVE_MIN = 64
@@ -37,7 +37,7 @@ const PIE_LABEL_RESERVE_MAX = 150
 const PIE_STACKED_PADDING = 12
 const PIE_COMPACT_LABEL_RESERVE_MIN = 48
 const PIE_STACKED_MIN_HEIGHT = 200
-const PIE_STACKED_MAX_HEIGHT = METRICS_CHART_HEIGHT.DESKTOP
+const PIE_STACKED_MAX_HEIGHT = CHART_HEIGHT.DESKTOP
 const PIE_STACKED_RADIUS = '94%'
 
 const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
@@ -46,6 +46,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { classes: shell } = useChartShellStyles({ isDark, themeColors })
 
   const { data: errorsData } = useErrorsAnalytics(dateRange)
 
@@ -81,7 +82,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
     ro.observe(node)
     return () => ro.disconnect()
   }, [])
-  const chartGeometry = isMobile ? METRICS_MOBILE_CHART : METRICS_DESKTOP_CHART
+  const chartGeometry = isMobile ? MOBILE_CHART_GEOMETRY : DESKTOP_CHART_GEOMETRY
 
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card?.background
 
@@ -143,16 +144,20 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
     )
   }
 
-  const legendItems = data.map((entry) => ({
-    key: entry.name,
-    color: entry.fill,
-    label: `${entry.name} ${entry.value}%`,
-    labelColor: entry.fill,
-  }))
+  const legendItems = useMemo(
+    () =>
+      data.map((entry) => ({
+        key: entry.name,
+        color: entry.fill,
+        label: `${entry.name} ${entry.value}%`,
+        labelColor: entry.fill,
+      })),
+    [data],
+  )
 
   const renderChart = (isFullscreen: boolean, zoom: number) => {
     const sizeByWidth = isStacked && !isFullscreen && canvasWidth > 0
-    const compactInnerHeight = METRICS_CHART_HEIGHT.COMPACT - PIE_STACKED_PADDING * 2
+    const compactInnerHeight = CHART_HEIGHT.COMPACT - PIE_STACKED_PADDING * 2
     const labelReserve =
       isCompact && !isFullscreen
         ? Math.max(PIE_COMPACT_LABEL_RESERVE_MIN, (canvasWidth - compactInnerHeight) / 2)
@@ -165,9 +170,9 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
       Math.max(PIE_STACKED_MIN_HEIGHT, canvasWidth - labelReserve * 2 + PIE_STACKED_PADDING * 2),
     )
     const canvasHeight = isFullscreen
-      ? METRICS_CHART_HEIGHT.FULLSCREEN * zoom
+      ? CHART_HEIGHT.FULLSCREEN * zoom
       : isCompact
-        ? METRICS_CHART_HEIGHT.COMPACT
+        ? CHART_HEIGHT.COMPACT
         : sizeByWidth
           ? stackedHeight
           : undefined
@@ -176,15 +181,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
       <div
         ref={isFullscreen ? undefined : canvasRef}
         className={classes.authChartCanvas}
-        style={
-          canvasHeight
-            ? {
-                height: canvasHeight,
-                width: isFullscreen ? `${zoom * 100}%` : undefined,
-                flexShrink: isFullscreen ? 0 : undefined,
-              }
-            : undefined
-        }
+        style={getAuthCanvasStyle(canvasHeight, isFullscreen, zoom)}
       >
         <ResponsiveContainer
           width="100%"
@@ -235,7 +232,7 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
       <>
         {!isFullscreen && (
           <div className={classes.authChartHeader}>
-            <GluuText variant="div" className={classes.chartTitle}>
+            <GluuText variant="div" className={shell.chartTitle}>
               {t('titles.passkey_authentication')}
             </GluuText>
           </div>
@@ -255,16 +252,16 @@ const PasskeyAuthChart: React.FC<PasskeyAuthChartProps> = ({ dateRange }) => {
   }
 
   return (
-    <MetricsChartCard
+    <ChartCard
       title={t('titles.passkey_authentication')}
       cardClassName="h-100"
-      bodyClassName={classes.chartCardBody}
+      bodyClassName={shell.chartCardBody}
       hideTitle
       zoomable
       isEmpty={data.every((entry) => entry.value === 0)}
     >
       {renderChart}
-    </MetricsChartCard>
+    </ChartCard>
   )
 }
 

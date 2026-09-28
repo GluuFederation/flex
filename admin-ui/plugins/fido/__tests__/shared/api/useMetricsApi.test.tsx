@@ -3,22 +3,19 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import {
-  useAdoptionMetrics,
-  useErrorsAnalytics,
-  usePerformanceAnalytics,
-  useAggregationMetrics,
-  useDevicesAnalytics,
-  useMetricsEntries,
-  useMetricsEntriesByOperation,
-  useMetricsEntriesByUser,
-} from 'Plugins/fido/components/Metrics/hooks/useMetricsApi'
+import { useMetricsEntries, useMetricsEntriesByUser } from 'Plugins/fido/shared/api/useMetricsApi'
 import { createDate } from '@/utils/dayjsUtils'
 import {
   METRICS_ENTRIES_PAGE_SIZE,
   METRIC_OPERATION_TYPES,
-} from 'Plugins/fido/components/Metrics/constants'
-import type { MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
+  useAdoptionMetrics,
+  useAggregationMetrics,
+  useDevicesAnalytics,
+  useErrorsAnalytics,
+  useMetricsEntriesByOperation,
+  usePerformanceAnalytics,
+  type MetricsDateRange,
+} from 'Plugins/fido/shared/api'
 
 const mockGet = jest.fn()
 

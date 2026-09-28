@@ -25,8 +25,12 @@ import {
   OnboardingTimeChart,
   AggregationTab,
 } from './components'
-import { useAdoptionMetrics, useErrorsAnalytics, usePerformanceAnalytics } from './hooks'
-import type { MetricsDateRange } from './types'
+import {
+  useAdoptionMetrics,
+  useErrorsAnalytics,
+  usePerformanceAnalytics,
+  type MetricsDateRange,
+} from 'Plugins/fido/shared/api'
 
 const METRICS_RESOURCE_ID = ADMIN_UI_RESOURCES.FIDO
 

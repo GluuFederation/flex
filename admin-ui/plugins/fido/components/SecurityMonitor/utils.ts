@@ -1,13 +1,7 @@
 import { alpha, darken, lighten } from '@mui/material/styles'
 import { OPACITY } from '@/constants'
 import { createDate, DATE_FORMATS, type Dayjs } from '@/utils/dayjsUtils'
-import { METRIC_STATUS } from '../Metrics/constants'
-import type {
-  AggregationEntry,
-  DevicesAnalyticsResponse,
-  ErrorsAnalyticsResponse,
-  MetricsEntry,
-} from '../Metrics/types'
+import { fontFamily } from '@/styles/fonts'
 import {
   ANOMALY_KINDS,
   ATTACK_PATTERNS,
@@ -67,6 +61,13 @@ import type {
   VelocityCell,
   VelocityMatrix,
 } from './types'
+import {
+  METRIC_STATUS,
+  type AggregationEntry,
+  type DevicesAnalyticsResponse,
+  type ErrorsAnalyticsResponse,
+  type MetricsEntry,
+} from 'Plugins/fido/shared/api'
 
 const HOURS_IN_DAY = 24
 
@@ -1037,6 +1038,49 @@ const buildAnomalySummary = (
 
 const HOUR_LABEL_LENGTH = 2
 
+const ELLIPSIS = '…'
+
+const truncateLabel = (value: string, maxLength: number): string => {
+  if (maxLength <= 0) return ''
+  if (value.length <= maxLength) return value
+  return `${value.slice(0, maxLength - 1)}${ELLIPSIS}`
+}
+
+const LABEL_CHAR_WIDTH_RATIO = 0.58
+
+let labelMeasureContext: CanvasRenderingContext2D | null | undefined
+
+const getLabelMeasureContext = (): CanvasRenderingContext2D | null => {
+  if (labelMeasureContext !== undefined) return labelMeasureContext
+  try {
+    labelMeasureContext =
+      typeof document === 'undefined'
+        ? null
+        : (document.createElement('canvas').getContext('2d') ?? null)
+  } catch {
+    labelMeasureContext = null
+  }
+  return labelMeasureContext
+}
+
+const measureLabelWidth = (label: string, fontSize: number): number => {
+  const context = getLabelMeasureContext()
+  if (!context) return label.length * fontSize * LABEL_CHAR_WIDTH_RATIO
+  context.font = `${fontSize}px ${fontFamily}`
+  return context.measureText(label).width
+}
+
+const measureLabelColumn = (
+  labels: readonly string[],
+  fontSize: number,
+  gutter: number,
+  maxWidth: number,
+): number => {
+  const widest = labels.reduce((max, label) => Math.max(max, measureLabelWidth(label, fontSize)), 0)
+  if (!widest) return 0
+  return Math.min(maxWidth, Math.ceil(widest) + gutter)
+}
+
 const buildCountAxis = (maxValue: number, tickCount: number = CHART_TICK_COUNT): CountAxis => {
   const intervals = Math.max(1, tickCount - 1)
   const top = maxValue > 0 ? maxValue : CHART_SCAFFOLD.EMPTY_COUNT_MAX
@@ -1129,5 +1173,7 @@ export {
   takeTopIpsByFailure,
   aggregateUserFailures,
   takeTopUsersByFailure,
+  measureLabelColumn,
+  truncateLabel,
   filterUsersUnderSiege,
 }

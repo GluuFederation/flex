@@ -4,24 +4,33 @@ import {
   BORDER_RADIUS,
   createMobilePageTitleStyle,
   FILTER_SHEET,
+  getScrollbarStyles,
   ICON_SIZE,
   KPI_DELTA_BADGE,
-  MOBILE_MEDIA_QUERY,
+  MOBILE_QUERY,
   OPACITY,
   SEGMENTED_CONTROL,
   SPACING,
   SUMMARY_CARD,
-  TABLET_MAX_MEDIA_QUERY,
-  WIDE_MAX_MEDIA_QUERY,
+  TABLET_MAX_QUERY,
+  WIDE_MAX_QUERY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { CHART_EMPTY_INSET, SECURITY_CHART_HEIGHT } from './constants'
+import { CHART_EMPTY_INSET } from './constants'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import type { SecurityStylesParams } from './types'
+import {
+  CHART_HEIGHT,
+  CHART_SCROLLBAR_GUTTER,
+  getCompactFullscreenFrameHeight,
+} from 'Plugins/fido/shared/charts'
+
+const SCROLLBAR_THUMB_INSET = 3
+const MOBILE_VELOCITY_CELL_MIN_WIDTH = 44
+const MOBILE_VELOCITY_LABEL_WIDTH = 120
+const FULLSCREEN_FRAME_COMPACT_HEIGHT = getCompactFullscreenFrameHeight(CHART_HEIGHT.MOBILE)
 
 const KPI_VALUE_UNIT_GAP = 2
-
-const CHART_CARD_PADDING_X = 28
 
 const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, themeColors }) => {
   const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
@@ -35,7 +44,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       gap: SPACING.CARD_BUTTON_GAP,
       flexWrap: 'wrap' as const,
       marginBottom: SPACING.CARD_GAP,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [MOBILE_QUERY]: {
         alignItems: 'stretch',
         flexDirection: 'column' as const,
       },
@@ -47,7 +56,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       gap: SPACING.CARD_BUTTON_GAP,
       flexWrap: 'wrap' as const,
       marginLeft: 'auto',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [MOBILE_QUERY]: {
         marginLeft: 0,
       },
     },
@@ -59,7 +68,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
     },
     mobileHeaderRow: {
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: SPACING.CARD_CONTENT_GAP,
       width: '100%',
     },
@@ -119,11 +128,6 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       color: themeColors.badges.filledBadgeBg,
       border: `${FILTER_SHEET.PILL_BORDER_WIDTH}px solid ${themeColors.badges.filledBadgeBg}`,
     },
-    sheetActions: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: SPACING.CARD_BUTTON_GAP,
-    },
     sheetButtonRow: {
       'display': 'flex',
       'gap': SPACING.CARD_BUTTON_GAP,
@@ -145,12 +149,12 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontSize: fontSizes['2xl'],
       lineHeight: lineHeights.tight,
       color: themeColors.badges.statusInactive,
+      [MOBILE_QUERY]: {
+        fontSize: fontSizes.md,
+        lineHeight: lineHeights.base,
+      },
     },
     anomalyCountClear: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes['2xl'],
-      lineHeight: lineHeights.tight,
       color: themeColors.fontColor,
     },
     kpiGrid: {
@@ -158,11 +162,11 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
       gap: SPACING.CARD_BUTTON_GAP,
       width: '100%',
-      marginBottom: SPACING.CARD_GAP,
-      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
+      marginBottom: SPACING.CARD_BUTTON_GAP,
+      [WIDE_MAX_QUERY]: {
         gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [MOBILE_QUERY]: {
         gridTemplateColumns: 'minmax(0, 1fr)',
         gap: SPACING.CARD_BUTTON_GAP,
       },
@@ -179,10 +183,10 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       flexDirection: 'column' as const,
       justifyContent: 'center',
       gap: SUMMARY_CARD.CONTENT_GAP,
-      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
+      [WIDE_MAX_QUERY]: {
         padding: `${SUMMARY_CARD.PADDING_VERTICAL}px ${SPACING.CARD_PADDING}px`,
       },
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [TABLET_MAX_QUERY]: {
         minHeight: 0,
         padding: `${SPACING.CONTENT_PADDING}px ${SPACING.CARD_PADDING}px`,
         gap: SPACING.CARD_CONTENT_GAP,
@@ -195,7 +199,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       lineHeight: lineHeights.tight,
       color: themeColors.fontColor,
       margin: 0,
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [TABLET_MAX_QUERY]: {
         fontSize: fontSizes.md,
       },
     },
@@ -205,7 +209,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontWeight: fontWeights.semiBold,
       lineHeight: lineHeights.normal,
       margin: 0,
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [TABLET_MAX_QUERY]: {
         fontSize: fontSizes['2xl'],
       },
     },
@@ -213,7 +217,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontSize: fontSizes['2xl'],
       fontWeight: fontWeights.medium,
       marginLeft: KPI_VALUE_UNIT_GAP,
-      [`@media ${TABLET_MAX_MEDIA_QUERY}`]: {
+      [TABLET_MAX_QUERY]: {
         fontSize: fontSizes.md,
       },
     },
@@ -235,6 +239,8 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       display: 'inline-flex',
       alignItems: 'center',
       gap: 8,
+      minWidth: 0,
+      maxWidth: '100%',
     },
     kpiCaption: {
       fontFamily,
@@ -289,7 +295,7 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       '& > button': {
         minWidth: SEGMENTED_CONTROL.BUTTON_MIN_WIDTH,
       },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      [MOBILE_QUERY]: {
         'width': '100%',
         '& > button': {
           flex: 1,
@@ -297,91 +303,21 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
         },
       },
     },
-    chartCard: {
-      'width': '100%',
-      'backgroundColor': cardBg,
-      ...cardBorderStyle,
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'padding': `${SPACING.CARD_PADDING}px ${CHART_CARD_PADDING_X}px`,
-      'boxSizing': 'border-box' as const,
-      'height': '100%',
-      'position': 'relative' as const,
-      '& svg:focus, & svg *:focus': {
-        outline: 'none',
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        padding: `${SPACING.CARD_BUTTON_GAP}px ${SPACING.CARD_BUTTON_GAP}px`,
-      },
-    },
-    chartHeader: {
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      gap: SPACING.CARD_BUTTON_GAP,
-      flexWrap: 'wrap' as const,
-      marginBottom: SPACING.CARD_CONTENT_GAP,
-    },
-    chartHeaderRight: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: SPACING.CARD_CONTENT_GAP,
-      flexWrap: 'wrap' as const,
-    },
-    chartTitle: {
-      fontFamily,
-      fontWeight: fontWeights.medium,
-      fontSize: fontSizes.xl,
-      lineHeight: lineHeights.tight,
-      color: themeColors.fontColor,
-      margin: 0,
-      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
-        fontSize: fontSizes.content,
-      },
-    },
-    chartSubtitle: {
-      fontFamily,
-      fontSize: fontSizes.base,
-      color: themeColors.fontColor,
-      opacity: OPACITY.PLACEHOLDER,
-      marginTop: 4,
-    },
-    chartRow: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-      gap: SPACING.CARD_GAP,
-      marginBottom: SPACING.CARD_GAP,
-      [`@media ${WIDE_MAX_MEDIA_QUERY}`]: {
-        gridTemplateColumns: 'minmax(0, 1fr)',
-      },
-    },
     fullWidthRow: {
-      width: '100%',
-      marginBottom: SPACING.CARD_GAP,
-    },
-    legendRow: {
-      display: 'flex',
-      flexWrap: 'wrap' as const,
-      gap: SPACING.CARD_BUTTON_GAP,
-      marginBottom: SPACING.CARD_CONTENT_GAP,
-    },
-    legendItem: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: SPACING.CARD_CONTENT_GAP,
-      fontFamily,
-      fontSize: fontSizes.base,
-      color: themeColors.fontColor,
-    },
-    legendDot: {
-      width: 10,
-      height: 10,
-      borderRadius: BORDER_RADIUS.SMALL,
-      display: 'inline-block',
-      flexShrink: 0,
+      'width': '100%',
+      'marginBottom': SPACING.CARD_GAP,
+      '&:last-child': {
+        marginBottom: 0,
+      },
     },
     tableWrapper: {
       width: '100%',
+      flexShrink: 0,
       overflowX: 'auto' as const,
+      overflowY: 'hidden' as const,
+      scrollbarGutter: 'stable' as const,
+      paddingBottom: CHART_SCROLLBAR_GUTTER,
+      marginBottom: CHART_SCROLLBAR_GUTTER,
     },
     velocityTable: {
       width: '100%',
@@ -390,6 +326,9 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontFamily,
       fontSize: fontSizes.base,
       color: themeColors.fontColor,
+      [MOBILE_QUERY]: {
+        fontSize: fontSizes.sm,
+      },
     },
     velocityRowIdentity: {
       textAlign: 'left' as const,
@@ -400,6 +339,10 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       textOverflow: 'ellipsis' as const,
       whiteSpace: 'nowrap' as const,
       color: themeColors.fontColor,
+      [MOBILE_QUERY]: {
+        maxWidth: MOBILE_VELOCITY_LABEL_WIDTH,
+        padding: '4px 6px',
+      },
     },
     velocityHeadIdentity: {
       textAlign: 'left' as const,
@@ -414,6 +357,9 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       padding: '4px 8px',
       whiteSpace: 'nowrap' as const,
       opacity: OPACITY.PLACEHOLDER,
+      [MOBILE_QUERY]: {
+        padding: '4px 4px',
+      },
     },
     velocityCell: {
       textAlign: 'center' as const,
@@ -421,15 +367,56 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       borderRadius: BORDER_RADIUS.SMALL,
       color: themeColors.chart.cellText,
       minWidth: 64,
+      [MOBILE_QUERY]: {
+        minWidth: MOBILE_VELOCITY_CELL_MIN_WIDTH,
+        padding: '8px 4px',
+      },
     },
     chartCardBody: {
       display: 'flex',
       flexDirection: 'column' as const,
       height: '100%',
     },
+    chartFullscreenFrame: {
+      ...getScrollbarStyles(themeColors),
+      '&::-webkit-scrollbar': {
+        width: CHART_SCROLLBAR_GUTTER,
+        height: CHART_SCROLLBAR_GUTTER,
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: themeColors.borderColor,
+        borderRadius: CHART_SCROLLBAR_GUTTER,
+        border: `${SCROLLBAR_THUMB_INSET}px solid transparent`,
+        backgroundClip: 'content-box' as const,
+      },
+      'width': '100%',
+      'paddingBottom': CHART_SCROLLBAR_GUTTER,
+      'marginBottom': CHART_SCROLLBAR_GUTTER,
+      'height': CHART_HEIGHT.FULLSCREEN,
+      'minHeight': CHART_HEIGHT.FULLSCREEN,
+      'maxHeight': CHART_HEIGHT.FULLSCREEN,
+      'overflow': 'auto' as const,
+      'overscrollBehavior': 'contain' as const,
+      'scrollbarGutter': 'stable' as const,
+      'display': 'flex',
+      'flexDirection': 'column' as const,
+      'justifyContent': 'safe center',
+      'flexShrink': 0,
+      [TABLET_MAX_QUERY]: {
+        height: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+        minHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+        maxHeight: FULLSCREEN_FRAME_COMPACT_HEIGHT,
+      },
+    },
     chartCanvas: {
       width: '100%',
-      height: SECURITY_CHART_HEIGHT,
+      height: CHART_HEIGHT.DESKTOP,
+      [TABLET_MAX_QUERY]: {
+        height: CHART_HEIGHT.COMPACT,
+      },
+      [MOBILE_QUERY]: {
+        height: CHART_HEIGHT.MOBILE,
+      },
     },
     chartBody: {
       position: 'relative' as const,
@@ -452,9 +439,9 @@ const useSecurityStyles = makeStyles<SecurityStylesParams>()((_, { isDark, theme
       fontWeight: fontWeights.medium,
       color: themeColors.fontColor,
       borderRadius: BORDER_RADIUS.SMALL_MEDIUM,
-    },
-    emptyStateCompact: {
-      fontSize: fontSizes.md,
+      [MOBILE_QUERY]: {
+        fontSize: fontSizes.md,
+      },
     },
   }
 })

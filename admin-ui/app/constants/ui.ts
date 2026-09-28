@@ -89,6 +89,14 @@ export const DESKTOP_NARROW_MEDIA_QUERY = '(min-width:1025px) and (max-width:114
 
 export const STATUS_GRID_MEDIA_QUERY = '(min-width:1025px) and (max-width:1199.98px)'
 
+export const MOBILE_QUERY = `@media ${MOBILE_MEDIA_QUERY}`
+
+export const TABLET_MAX_QUERY = `@media ${TABLET_MAX_MEDIA_QUERY}`
+
+export const WIDE_MAX_QUERY = `@media ${WIDE_MAX_MEDIA_QUERY}`
+
+export const STACKED_CHART_QUERY = `@media ${STACKED_CHART_MAX_MEDIA_QUERY}`
+
 export const MOBILE_PAGE_PADDING_X = {
   MD: 20,
   SM: 15,

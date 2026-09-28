@@ -51,7 +51,10 @@ const Fido: React.FC = () => {
     [canWriteFido, updateFidoMutation],
   )
 
-  const tabNames = [t('menus.static_configuration'), t('menus.dynamic_configuration')]
+  const tabNames = useMemo(
+    () => [t('menus.static_configuration'), t('menus.dynamic_configuration')],
+    [t],
+  )
 
   const tabToShow = useCallback(
     (tabName: string) => {

@@ -12,8 +12,8 @@ import {
 } from 'Plugins/fido/components/Metrics/utils'
 import { createDate } from '@/utils/dayjsUtils'
 import type { TFunction } from 'i18next'
-import type { AggregationEntry, MetricsDateRange } from 'Plugins/fido/components/Metrics/types'
 import type { AggregationType } from 'Plugins/fido/components/Metrics/constants'
+import type { AggregationEntry, MetricsDateRange } from 'Plugins/fido/shared/api'
 
 const t = ((key: string, opts?: Record<string, string | number>) =>
   opts ? `${key}:${JSON.stringify(opts)}` : key) as TFunction
