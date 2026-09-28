@@ -63,6 +63,10 @@ export type ApiAppConfiguration = {
   serviceName?: string | null
   configOauthEnabled?: boolean | null
   disableLoggerTimer?: boolean | null
+  userRolePermissionValidationEnabled?: boolean | null
+  validateUserInumInIntrospectionFlag?: boolean | null
+  fetchUserRoleInIntrospectionFlag?: boolean | null
+  userRolePermissionExcludedClients?: string[] | null
   disableAuditLogger?: boolean | null
   customAttributeValidationEnabled?: boolean | null
   acrValidationEnabled?: boolean | null
