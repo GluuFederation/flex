@@ -43,6 +43,7 @@ const useLangPersistence = (inum?: string) => {
     if (hasInitializedRef.current) return
 
     const userLang = getInitialLang(inum)
+    if (inum) storage.set(STORAGE_KEYS.INIT_LANG, userLang)
     if (userLang !== i18n.language) {
       latestLangRef.current = userLang
       setLang(userLang)
