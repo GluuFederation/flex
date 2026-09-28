@@ -16,7 +16,7 @@ import {
   AGGREGATION_LIMIT_BOUNDS,
   METRICS_CACHE_CONFIG,
   METRICS_ENTRIES_PAGE_SIZE,
-} from '../constants'
+} from './constants'
 import type {
   AdoptionMetricsParams,
   AdoptionMetricsResponse,
@@ -32,7 +32,7 @@ import type {
   MetricsEntriesResponse,
   PerformanceAnalyticsParams,
   PerformanceAnalyticsResponse,
-} from '../types'
+} from './types'
 
 const formatDateForApi = toApiDatetime
 

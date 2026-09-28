@@ -31,7 +31,8 @@ jest
       msg.includes('suspended resource finished loading') ||
       (msg.includes('Failed prop type') && msg.includes('timeout') && msg.includes('Fade')) ||
       msg.includes('not wrapped in act') ||
-      msg.includes('Not implemented: navigation')
+      msg.includes('Not implemented: navigation') ||
+      msg.includes('Not implemented: HTMLCanvasElement.prototype.getContext')
 
     if (shouldSuppress) return
     originalError(...args)

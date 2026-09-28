@@ -11,12 +11,22 @@ import { REGEX_NON_DIGIT_COMMA } from '@/utils/regex'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MEDIA_QUERY_OPTIONS, MOBILE_MEDIA_QUERY, TABLET_MAX_MEDIA_QUERY } from '@/constants'
-import { useMetricsStyles } from '../MetricsPage.style'
-import { CHART_SCROLLBAR_GUTTER, HEATMAP_COLOR_STOPS, METRICS_ZOOM } from '../constants'
-import useChartZoom from '../hooks/useChartZoom'
-import useFullscreenModal from '../hooks/useFullscreenModal'
+import {
+  getHeatmapAxisRowStyle,
+  getHeatmapScrollStyle,
+  getHeatmapSvgStyle,
+  getHeatmapYAxisLabelStyle,
+  useMetricsStyles,
+} from '../MetricsPage.style'
+import { HEATMAP_COLOR_STOPS } from '../constants'
 import { formatChartValue, getNiceStep, interpolateHeatmapColor } from '../utils'
 import type { ChartSurfaceSize, DurationHeatmapProps } from '../types'
+import {
+  CHART_ZOOM,
+  useChartShellStyles,
+  useChartZoom,
+  useFullscreenModal,
+} from 'Plugins/fido/shared/charts'
 
 const ColorBar: React.FC<{
   minVal: number
@@ -106,6 +116,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
   const { classes } = useMetricsStyles({ isDark, themeColors })
+  const { classes: shell } = useChartShellStyles({ isDark, themeColors })
   const { t } = useTranslation()
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
   const isCompact = useMediaQuery(TABLET_MAX_MEDIA_QUERY, MEDIA_QUERY_OPTIONS)
@@ -158,7 +169,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
   const textColor = themeColors.fontColor
   const borderColor = themeColors.chart.cellBorderColor
 
-  const renderHeatmapSvg = (fullscreen: boolean, zoomLevel: number = METRICS_ZOOM.DEFAULT) => {
+  const renderHeatmapSvg = (fullscreen: boolean, zoomLevel: number = CHART_ZOOM.DEFAULT) => {
     const colLabelH = compact ? 20 : hasColsSub || colLabelsBottom ? 0 : 28
     const bottomColLabelH = hasColsSub ? 40 : colLabelsBottom ? 24 : 0
     const useNaturalWidth = isMobile
@@ -252,49 +263,20 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
     const useVerticalScroll = compact && !fullscreen && svgHeight > compactScrollMaxHeight
 
     const axisRow = (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: verticalRowLabels ? 12 : 4,
-          ...(fullscreen ? { flexShrink: 0, width: 'max-content', minWidth: '100%' } : {}),
-        }}
-      >
+      <div style={getHeatmapAxisRowStyle(verticalRowLabels, fullscreen)}>
         {yAxisLabel && (
           <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              writingMode: 'vertical-lr',
-              transform: 'rotate(180deg)',
-              fontSize: fullscreen ? 14 : verticalRowLabels ? 11 : rowLabelFontSize,
-              color: textColor,
-              minWidth: useNaturalWidth ? 12 : 16,
-              alignSelf: 'stretch',
-            }}
+            style={getHeatmapYAxisLabelStyle(
+              fullscreen ? 14 : verticalRowLabels ? 11 : rowLabelFontSize,
+              textColor,
+              useNaturalWidth,
+            )}
           >
             {yAxisLabel}
           </div>
         )}
 
-        <div
-          style={
-            fullscreen
-              ? { flex: 'none', overflow: 'visible' }
-              : {
-                  flex: 1,
-                  minWidth: 0,
-                  overflowX: 'auto',
-                  scrollbarGutter: 'stable',
-                  paddingBottom: CHART_SCROLLBAR_GUTTER,
-                  marginBottom: CHART_SCROLLBAR_GUTTER,
-                  ...(useVerticalScroll
-                    ? { maxHeight: compactScrollMaxHeight, overflowY: 'auto' }
-                    : {}),
-                }
-          }
-        >
+        <div style={getHeatmapScrollStyle(fullscreen, useVerticalScroll, compactScrollMaxHeight)}>
           <svg
             viewBox={`0 0 ${svgWidth} ${svgHeight}`}
             preserveAspectRatio={
@@ -304,22 +286,13 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                   ? 'xMidYMin meet'
                   : 'xMidYMid meet'
             }
-            style={{
-              display: 'block',
-              ...(fullscreen
-                ? {
-                    width: svgWidth * zoomLevel,
-                    minWidth: svgWidth * zoomLevel,
-                    height: svgHeight * zoomLevel,
-                  }
-                : useNaturalWidth
-                  ? { width: svgWidth, minWidth: svgWidth, height: svgHeight }
-                  : {
-                      width: '100%',
-                      ...(compact ? { maxWidth: svgWidth } : {}),
-                      ...(useVerticalScroll ? { height: svgHeight } : { height: 'auto' }),
-                    }),
-            }}
+            style={getHeatmapSvgStyle(svgWidth, svgHeight, {
+              fullscreen,
+              zoomLevel,
+              useNaturalWidth,
+              useVerticalScroll,
+              compact,
+            })}
           >
             {!colLabelsBottom &&
               cols.map((col, ci) => {
@@ -535,33 +508,29 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
       <>
         <button
           type="button"
-          className={classes.chartModalOverlay}
+          className={shell.chartModalOverlay}
           onClick={closeFullscreen}
           aria-label={t('actions.close')}
         />
         <div
           ref={containerRef}
-          className={classes.chartModalContainer}
+          className={shell.chartModalContainer}
           role="dialog"
           aria-modal="true"
           aria-labelledby="heatmap-fullscreen-title"
         >
-          <div className={classes.chartModalHeader}>
-            <GluuText
-              variant="h2"
-              className={classes.chartModalTitle}
-              id="heatmap-fullscreen-title"
-            >
+          <div className={shell.chartModalHeader}>
+            <GluuText variant="h2" className={shell.chartModalTitle} id="heatmap-fullscreen-title">
               {title}
             </GluuText>
-            <div className={classes.chartModalActions}>
+            <div className={shell.chartModalActions}>
               {!isEmpty && (
-                <div className={classes.chartZoomControls}>
+                <div className={shell.chartZoomControls}>
                   <button
                     type="button"
                     onClick={zoomOut}
-                    disabled={zoom <= METRICS_ZOOM.MIN}
-                    className={classes.chartZoomButton}
+                    disabled={zoom <= CHART_ZOOM.MIN}
+                    className={shell.chartZoomButton}
                     aria-label={t('messages.zoom_out')}
                     title={t('messages.zoom_out')}
                   >
@@ -570,7 +539,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                   <button
                     type="button"
                     onClick={resetZoom}
-                    className={classes.chartZoomLevel}
+                    className={shell.chartZoomLevel}
                     aria-label={t('messages.reset_zoom')}
                     title={t('messages.reset_zoom')}
                   >
@@ -579,8 +548,8 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                   <button
                     type="button"
                     onClick={zoomIn}
-                    disabled={zoom >= METRICS_ZOOM.MAX}
-                    className={classes.chartZoomButton}
+                    disabled={zoom >= CHART_ZOOM.MAX}
+                    className={shell.chartZoomButton}
                     aria-label={t('messages.zoom_in')}
                     title={t('messages.zoom_in')}
                   >
@@ -592,7 +561,7 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeFullscreen}
-                className={classes.chartModalCloseButton}
+                className={shell.chartModalCloseButton}
                 aria-label={t('actions.close')}
                 title={t('actions.close')}
               >
@@ -600,17 +569,9 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
               </button>
             </div>
           </div>
-          <div className={classes.chartModalBody} ref={surfaceRef}>
+          <div className={shell.chartModalBody} ref={surfaceRef}>
             {caption && (
-              <GluuText
-                variant="div"
-                style={{
-                  textAlign: 'center',
-                  fontSize: 13,
-                  marginBottom: 16,
-                  color: themeColors.fontColor,
-                }}
-              >
+              <GluuText variant="div" className={shell.chartModalCaption}>
                 {caption}
               </GluuText>
             )}
@@ -632,11 +593,11 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
 
   return (
     <>
-      <Card className={`${classes.chartCard} h-100`} style={minHeight ? { minHeight } : undefined}>
+      <Card className={`${shell.chartCard} h-100`} style={minHeight ? { minHeight } : undefined}>
         {showExpand && (
           <button
             type="button"
-            className={classes.chartExpandButton}
+            className={shell.chartExpandButton}
             onClick={openFullscreen}
             aria-label={t('messages.expand')}
             title={t('messages.expand')}
@@ -645,19 +606,11 @@ const DurationHeatmap: React.FC<DurationHeatmapProps> = ({
           </button>
         )}
         <CardBody>
-          <GluuText variant="div" className={classes.chartTitle}>
+          <GluuText variant="div" className={shell.chartTitle}>
             {title}
           </GluuText>
           {caption && (
-            <GluuText
-              variant="div"
-              style={{
-                textAlign: 'center',
-                fontSize: 11,
-                marginBottom: 12,
-                color: themeColors.fontColor,
-              }}
-            >
+            <GluuText variant="div" className={shell.chartCaption}>
               {caption}
             </GluuText>
           )}

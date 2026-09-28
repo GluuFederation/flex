@@ -3,7 +3,8 @@ import { REGEX_HOURLY_AGGREGATION_PERIOD, REGEX_ISO_WEEK_PERIOD } from '@/utils/
 import { createDate, type Dayjs } from '@/utils/dayjsUtils'
 import { HEATMAP_COLOR_STOPS, HOURS_OF_DAY } from './constants'
 import type { AggregationType } from './constants'
-import type { ActivityDataPoint, AggregationEntry, HeatmapData, MetricsDateRange } from './types'
+import type { ActivityDataPoint, HeatmapData } from './types'
+import type { AggregationEntry, MetricsDateRange } from 'Plugins/fido/shared/api'
 
 const hexToRgb = (hex: string): [number, number, number] => {
   const r = parseInt(hex.slice(1, 3), 16)

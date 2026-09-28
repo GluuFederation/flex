@@ -1,8 +1,1 @@
-export {
-  useAdoptionMetrics,
-  useErrorsAnalytics,
-  usePerformanceAnalytics,
-  useAggregationMetrics,
-  useDevicesAnalytics,
-  useMetricsEntriesByOperation,
-} from './useMetricsApi'
+export { default as useActivityChartGeometry } from './useActivityChartGeometry'

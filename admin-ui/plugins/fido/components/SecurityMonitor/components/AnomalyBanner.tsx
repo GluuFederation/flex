@@ -11,7 +11,7 @@ import type { AnomalyBannerProps } from '../types'
 const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
   const { t } = useTranslation()
   const { themeColors, isDark } = useSecurityTheme()
-  const { classes } = useSecurityStyles({ isDark, themeColors })
+  const { classes, cx } = useSecurityStyles({ isDark, themeColors })
 
   const hasAnomalies = anomalies.count > 0
   const chipBackground = getBadgeBackground(
@@ -25,7 +25,7 @@ const AnomalyBanner: React.FC<AnomalyBannerProps> = ({ anomalies }) => {
       <SecurityInfoTooltip
         title={t('fields.active_anomalies_hint', { hours: RECENT_ANOMALY_WINDOW_HOURS })}
       >
-        <span className={hasAnomalies ? classes.anomalyCount : classes.anomalyCountClear}>
+        <span className={cx(classes.anomalyCount, !hasAnomalies && classes.anomalyCountClear)}>
           {t('fields.active_anomalies', {
             total: anomalies.count,
             hours: RECENT_ANOMALY_WINDOW_HOURS,

@@ -258,6 +258,7 @@ export const useStyles = makeStyles<GluuAutocompleteStyleParams>()((
       },
       '& .MuiInputBase-input::placeholder': {
         color: themeColors.textMuted,
+        WebkitTextFillColor: themeColors.textMuted,
         opacity: OPACITY.FULL,
       },
     },

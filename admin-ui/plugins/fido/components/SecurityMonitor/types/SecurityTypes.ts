@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import type { ThemeConfig } from '@/context/theme/config'
 import type { ThemeValue } from '@/context/theme/constants'
-import type { AggregationTypeParam, MetricsDateRange } from '../../Metrics/types'
 import type { ANOMALY_KINDS, ATTACK_PATTERNS, KPI_PERIODS, THREAT_LEVELS } from '../constants'
+import type { AggregationTypeParam, MetricsDateRange } from 'Plugins/fido/shared/api'
 
 type SecurityTranslate = (key: string, options?: Record<string, string | number>) => string
 
@@ -199,10 +199,9 @@ type SecurityChartCardProps = {
   isEmpty?: boolean
   emptyLabel?: string
   emptyInset?: ChartEmptyInset
-  emptyCompact?: boolean
   accentColor?: string
   headerExtra?: ReactNode
-  children?: ReactNode
+  children: (isFullscreen: boolean, zoom: number) => ReactNode
 }
 
 type PeriodToggleOption = {

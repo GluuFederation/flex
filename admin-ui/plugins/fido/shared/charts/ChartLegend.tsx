@@ -2,14 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
-import { useMetricsStyles } from '../MetricsPage.style'
-import type { ChartLegendProps } from '../types'
+import { useChartShellStyles } from './chartShell.style'
+import type { ChartLegendProps } from './types'
 
-const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot', topGutter = false }) => {
+const ChartLegend: React.FC<ChartLegendProps> = ({
+  items,
+  marker = 'dot',
+  topGutter = false,
+  renderHint,
+}) => {
   const { state } = useTheme()
   const themeColors = useMemo(() => getThemeColor(state.theme), [state.theme])
   const isDark = state.theme === THEME_DARK
-  const { classes, cx } = useMetricsStyles({ isDark, themeColors })
+  const { classes, cx } = useChartShellStyles({ isDark, themeColors })
   const [isWrapped, setIsWrapped] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const probeRef = useRef<HTMLDivElement | null>(null)
@@ -28,18 +33,26 @@ const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot', topGut
 
   const markerClass = marker === 'dash' ? classes.chartLegendDash : classes.chartLegendDot
 
-  const renderItems = () =>
-    items.map((item) => (
-      <div key={item.key} className={classes.chartLegendItem}>
-        <span className={markerClass} style={{ backgroundColor: item.color }} />
-        <span
-          className={classes.chartLegendLabel}
-          style={item.labelColor ? { color: item.labelColor } : undefined}
-        >
-          {item.label}
-        </span>
-      </div>
-    ))
+  const renderItems = (withHints: boolean) =>
+    items.map((item) => {
+      const content = (
+        <div className={classes.chartLegendItem}>
+          <span className={markerClass} style={{ backgroundColor: item.color }} />
+          <span
+            className={classes.chartLegendLabel}
+            style={item.labelColor ? { color: item.labelColor } : undefined}
+          >
+            {item.label}
+          </span>
+        </div>
+      )
+
+      return (
+        <React.Fragment key={item.key}>
+          {withHints && renderHint && item.hint ? renderHint(item.hint, content) : content}
+        </React.Fragment>
+      )
+    })
 
   return (
     <div className={cx(classes.chartLegendWrapper, topGutter && classes.chartLegendWrapperGutter)}>
@@ -48,7 +61,7 @@ const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot', topGut
         data-testid="chart-legend"
         className={`${classes.chartLegend} ${isWrapped ? classes.chartLegendGrid : ''}`}
       >
-        {renderItems()}
+        {renderItems(true)}
       </div>
       <div
         ref={probeRef}
@@ -56,7 +69,7 @@ const ChartLegend: React.FC<ChartLegendProps> = ({ items, marker = 'dot', topGut
         aria-hidden
         data-testid="chart-legend-probe"
       >
-        {renderItems()}
+        {renderItems(false)}
       </div>
     </div>
   )
