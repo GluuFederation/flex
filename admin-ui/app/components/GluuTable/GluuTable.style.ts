@@ -27,6 +27,10 @@ export const AUTO_COL_MAX_PX = 520
 export const MOBILE_AUTO_COL_MAX_PX = 200
 export const AUTO_COL_CHAR_PX = 8
 export const AUTO_COL_PADDING_PX = 32
+const HEADER_CELL_PADDING_X = 16
+const RESIZE_LINE_WIDTH = 2
+export const HEADER_PADDING_PX = 2 * HEADER_CELL_PADDING_X + RESIZE_LINE_WIDTH
+export const SORTABLE_HEADER_PADDING_PX = 54
 
 export const DEFAULT_COLUMN_ALIGN = 'center' as const
 
@@ -123,9 +127,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       'color': headerColor,
       'fontWeight': fontWeights.bold,
       'fontSize': fontSizes.base,
-      'padding': '14px 16px',
+      'padding': `14px ${HEADER_CELL_PADDING_X}px`,
       'textAlign': 'left',
       'whiteSpace': 'nowrap',
+      'overflow': 'hidden',
       'userSelect': 'none',
       'position': stickyHeader ? 'sticky' : 'relative',
       'top': stickyHeader ? 0 : undefined,
@@ -137,7 +142,7 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       },
     },
     headerCellResizable: {
-      paddingRight: 20,
+      paddingRight: HEADER_CELL_PADDING_X + RESIZE_LINE_WIDTH,
     },
     resizeHandle: {
       'position': 'absolute',
@@ -151,9 +156,9 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
         content: '""',
         position: 'absolute',
         top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 2,
+        right: 0,
+        transform: 'translateY(-50%)',
+        width: RESIZE_LINE_WIDTH,
         height: '60%',
         minHeight: 20,
         backgroundColor: rowBorder,
@@ -178,6 +183,9 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
     },
     headerCellSortable: {
       padding: 0,
+    },
+    headerCellSortableResizable: {
+      paddingRight: RESIZE_LINE_WIDTH,
     },
     sortableHeader: {
       'cursor': 'pointer',

@@ -13,6 +13,7 @@ import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { CREATE } from '@/audit/UserActionType'
 import { OIDC } from '../../../redux/audit/Resources'
+import { invalidateScopeQueries } from '../../Scopes/hooks/useScopeMutations'
 import { toClientJsonRecord } from '../helper/utils'
 import type { AuditContext, ClientWizardSubmitData } from '../types'
 
@@ -31,6 +32,7 @@ export const useCreateClient = (auditContext: AuditContext) => {
         const created = await mutation.mutateAsync({ data: clientPayload })
         dispatch(updateToast(true, 'success'))
         await invalidateQueriesByKey(queryClient, getGetOauthOpenidClientsQueryKey())
+        await invalidateScopeQueries(queryClient)
         dispatch(
           triggerWebhook({
             createdFeatureValue: toClientJsonRecord(created),

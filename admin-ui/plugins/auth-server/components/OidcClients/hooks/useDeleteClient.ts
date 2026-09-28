@@ -11,6 +11,7 @@ import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { logger } from '@/utils/logger'
 import { DELETION } from '@/audit/UserActionType'
 import { OIDC } from '../../../redux/audit/Resources'
+import { invalidateScopeQueries } from '../../Scopes/hooks/useScopeMutations'
 import { toClientJsonRecord } from '../helper/utils'
 import type { DeleteClientParams, AuditContext } from '../types'
 
@@ -27,6 +28,7 @@ export const useDeleteClient = (auditContext: AuditContext) => {
         await mutation.mutateAsync({ inum: params.inum })
         dispatch(updateToast(true, 'success'))
         await invalidateQueriesByKey(queryClient, getGetOauthOpenidClientsQueryKey())
+        await invalidateScopeQueries(queryClient)
         dispatch(
           triggerWebhook({
             createdFeatureValue: toClientJsonRecord(params.client),

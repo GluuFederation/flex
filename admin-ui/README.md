@@ -30,12 +30,13 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | [Architecture](./docs/architecture.md)   | Host + plugins, dependency rules                     |
 | [Tech stack](./docs/tech-stack.md)       | What each library is, when to use it                 |
 | [Conventions](./docs/conventions.md)     | **Before opening any PR**                            |
+| [Styling](./docs/styling.md)             | Component styles, theming, responsive and mobile UI  |
 | [Recipes](./docs/recipes.md)             | Adding a page / plugin / slice / form / audit record |
 | [Auth](./docs/auth.md)                   | OIDC + PKCE, tokens, sessions, idle timeout, logout  |
 | [Cedarling](./docs/cedarling.md)         | Adding or gating an authorization check              |
 | [Config API](./docs/config-api.md)       | Calling the Janssen backend, regenerating the client |
 | [Testing](./docs/testing.md)             | Jest setup, mocks, writing a new test                |
-| [Build & deploy](./docs/build-deploy.md) | Bundle analysis, chunking, env injection, Jenkins    |
+| [Build & deploy](./docs/build-deploy.md) | Bundle analysis, chunking, env injection, CI         |
 
 ## npm scripts
 
@@ -63,7 +64,7 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 
 Husky runs Prettier, ESLint, `tsc`, markdownlint on commit against staged `.js/.jsx/.ts/.tsx/.json/.css/.scss/.md`. Only `npm run format` auto-fixes (Prettier). Other tools report. Fix the cause yourself.
 
-Don't bypass with `--no-verify`. Lint/type-check enforcement lives **only** in the hook. CI is artifact-build only (see [build-deploy.md](./docs/build-deploy.md#ci--jenkins)).
+Don't bypass with `--no-verify`. Lint and type-check enforcement lives **only** in the hook; CI builds the artifact and runs tests, but never lints (see [build-deploy.md](./docs/build-deploy.md#ci)).
 
 ## Issues & contributing
 

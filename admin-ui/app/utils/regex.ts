@@ -67,6 +67,8 @@ export const REGEX_HAS_SPECIAL_CHAR = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
 export const REGEX_DATE_YYYY_MM_DD = /^\d{4}-\d{2}-\d{2}$/
 /** Validates a hex color string (with or without leading #); capture groups [1][2][3] are R, G, B as hex pairs. */
 export const REGEX_HEX_COLOR = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+/** A positive pixel length like 140px or 12.5px, capturing the number; used to read fixed table column widths. */
+export const REGEX_PX_LENGTH = /^(\d+(?:\.\d+)?)px$/
 /** UUID template placeholder characters (x and y); used in the uuidv4 fallback to substitute random hex digits. */
 export const REGEX_UUID_PLACEHOLDER_CHARS = /[xy]/g
 /** CSV formula injection: cell starts with =, +, -, or @ — prefix with a single quote to neutralize. */

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Admin UI is built by Vite into a single static `dist/` folder containing `index.html`, hashed JavaScript chunks, CSS, and image assets. The same `dist/` runs in every environment. A developer's laptop, a Jenkins-deployed test server, a customer's installer VM. Without re-building. Environment-specific values (mostly the Config API URL) are injected at runtime through a small `env-config.js` script the installer or dev server provides.
+The Admin UI is built by Vite into a single static `dist/` folder containing `index.html`, hashed JavaScript chunks, CSS, and image assets. The same `dist/` runs in every environment. A developer's laptop, a CI-deployed test VM, a customer's installer VM. Without re-building. Environment-specific values (mostly the Config API URL) are injected at runtime through a small `env-config.js` script the installer or dev server provides.
 
 The production bundle is `npm run build:prod`. The output is `dist/`.
 
@@ -30,7 +30,7 @@ Vite loads environment values from `.env`, `.env.<mode>`, and `.env.<mode>.local
 
 The mode is selected by Vite's `--mode <name>` flag, which the `build:*` npm scripts pass automatically.
 
-The values from these files become available in the build as `process.env.<NAME>`. Vite rewrites these references statically at build time. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
+Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH`, `API_BASE_URL`, `CONFIG_API_BASE_URL` and `POLICY_STORE_CONFIG` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
 
 ## Preview mode
 
@@ -92,7 +92,7 @@ This script's only job is to set `window.configApiBaseUrl` (and a few sibling gl
 | Environment           | Who provides `env-config.js`                                                                           |
 | --------------------- | ------------------------------------------------------------------------------------------------------ |
 | Janssen installer VMs | The installer (`flex_setup.py`) renders the real file next to `index.html`                             |
-| Jenkins-deployed envs | Jenkins `sed`-substitutes `%(...)s` placeholders in `index.html` during deploy                         |
+| CI-deployed VMs       | The GitHub Actions workflow writes `env-config.js` next to `index.html` for the target host            |
 | Dev (Vite)            | No middleware serves `/admin/env-config.js`. The request 404s and the axios fallback chain takes over. |
 
 Because the env values are not baked into the bundle, two installs of the same Admin UI version can point at different Config APIs without rebuilding. CDN caching also works correctly. The `dist/` content is identical across deployments, only `env-config.js` differs.
@@ -101,15 +101,17 @@ Because the env values are not baked into the bundle, two installs of the same A
 
 If `env-config.js` is missing or empty, the axios instance in [`orval/axiosInstance.ts`](../orval/axiosInstance.ts) falls through a chain. See [config-api.md](./config-api.md#base-url-resolution) for the resolution order. A dev 404 on `/admin/env-config.js` is harmless thanks to that fallback. The base URL comes from `process.env.CONFIG_API_BASE_URL` (set in `.env.development`) instead.
 
-## CI / Jenkins
+## CI
 
-The flex Jenkins pipeline is deliberately minimal. It does not run lint, type-check, or tests. Those are enforced at commit time by the husky pre-commit hook. CI is purely an artifact builder.
+CI is a GitHub Actions workflow, `.github/workflows/build-admin-ui.yml`. There is no Jenkinsfile in the repository.
 
-The pipeline:
+The workflow:
 
-1. **Regenerates `package-lock.json` from scratch.** This catches dependency-resolution issues that wouldn't appear locally.
-2. **Builds the chosen mode** by running `npm run build:$ENV_NAME` (e.g. `build:prod`).
-3. **Substitutes `%(...)s` placeholders** in `dist/index.html` via `sed` so the runtime env values are baked into the deployed `index.html`.
-4. **Publishes `dist/`** to the target deployment.
+1. **Installs from scratch.** It clears the npm cache, deletes `node_modules`, `jans_config_api_orval` and `package-lock.json`, runs `npm install`, then regenerates the API client with `npm run api:orval`. Resolving dependencies fresh catches problems a warm local tree hides.
+2. **Runs the test suite** when the `run_tests` input is set, preferring `npm run test:all`. Lint and type-check are not run here; that is the pre-commit hook's job.
+3. **Builds** with `npm run build:$BUILD_ENV`, after clearing `dist/` and the Vite cache.
+4. **Packages and publishes** `dist/` and `node_modules` as tarballs, uploaded as workflow artifacts and attached to GitHub Releases.
 
-The rule is simple: anything that must pass _before merge_ belongs in `.husky/pre-commit`. Anything that just produces the deployed artifact belongs in Jenkins. There is no "CI lint" step. That would be redundant with the pre-commit hook and slow down the artifact build.
+When deploying to a VM, the workflow writes an `env-config.js` next to `index.html` pointing at that host's `jans-config-api`, with values JSON-encoded through `jq` so a hostname cannot break out of the string literal.
+
+Anything that must pass _before merge_ belongs in `.husky/pre-commit`. Anything that produces or ships the artifact belongs in CI.

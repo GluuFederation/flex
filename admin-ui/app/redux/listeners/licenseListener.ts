@@ -1,7 +1,6 @@
 import {
   isLicenseActive,
   retrieveLicense,
-  activateAdminuiLicense,
   getTrialLicense,
   checkAdminuiLicenseConfig as checkAdminuiLicenseConfigApi,
   adminuiPostSsa,
@@ -52,6 +51,30 @@ const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
+const getMauThreshold = (response: GenericResponse): number | null => {
+  const entries = Array.isArray(response.responseObject)
+    ? (response.responseObject as Array<{ name?: string; value?: string }>)
+    : []
+  const mauThreshold = entries.find((item) => item?.name === 'mau_threshold')
+  const threshold = parseInt(mauThreshold?.value ?? '', 10)
+  return Number.isFinite(threshold) ? threshold : null
+}
+
+const resolveActivatedMauThreshold = async (response: GenericResponse): Promise<number | null> => {
+  const threshold = getMauThreshold(response)
+  if (threshold !== null) {
+    return threshold
+  }
+  const activeLicense = (await isLicenseActive()) as GenericResponse | null
+  return activeLicense?.success ? getMauThreshold(activeLicense) : null
+}
+
+const showNoValidLicense = (dispatch: AppDispatch): void => {
+  dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
+  dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+  dispatch(generateTrialLicenseResponse(null))
+}
+
 const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): Promise<void> => {
   await ensureApiToken(dispatch)
   try {
@@ -78,83 +101,42 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
   }
 }
 
-const retrieveLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
+const retrieveAndActivateLicense = async (dispatch: AppDispatch): Promise<void> => {
   try {
     await ensureApiToken(dispatch)
     const response = (await retrieveLicense()) as GenericResponse | null
-    const responseObj = response?.responseObject
-    const licenseKey =
-      typeof responseObj === 'object' && responseObj !== null && !Array.isArray(responseObj)
-        ? responseObj['licenseKey']
-        : undefined
-
-    if (licenseKey) {
-      try {
-        const activateLicense = (await activateAdminuiLicense({
-          licenseKey: String(licenseKey),
-        })) as GenericResponse | null
-
-        dispatch(generateTrialLicenseResponse(activateLicense))
-        dispatch(setValidatingFlow({ isValidatingFlow: true }))
-
-        const arr =
-          activateLicense?.responseObject && Array.isArray(activateLicense.responseObject)
-            ? (activateLicense.responseObject as Array<{ name?: string; value?: string }>)
-            : []
-        const mauThreshold = arr.find((item) => item?.name === 'mau_threshold')
-        await checkMauThreshold(dispatch, parseInt(mauThreshold?.value ?? '', 10))
-      } catch (err) {
-        dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-        dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
-        dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
-        dispatch(generateTrialLicenseResponse(null))
-      }
-    } else {
-      dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
-      dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
-      dispatch(generateTrialLicenseResponse(null))
+    if (!response?.success) {
+      showNoValidLicense(dispatch)
+      return
     }
+    const mauThreshold = await resolveActivatedMauThreshold(response)
+    if (mauThreshold === null) {
+      logger.error('Could not confirm an active license with a valid mau_threshold.')
+      showNoValidLicense(dispatch)
+      return
+    }
+    dispatch(generateTrialLicenseResponse(response))
+    dispatch(setValidatingFlow({ isValidatingFlow: true }))
+    await checkMauThreshold(dispatch, mauThreshold)
   } catch (err) {
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-    logger.error('Error in generating key.', err instanceof Error ? err : String(err))
-    dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
-    dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
-    dispatch(generateTrialLicenseResponse(null))
+    logger.error('Error in retrieving license.', err instanceof Error ? err : String(err))
+    showNoValidLicense(dispatch)
   }
 }
 
-const generateTrialLicenseKey = async (dispatch: AppDispatch): Promise<void> => {
+const startTrialLicense = async (dispatch: AppDispatch): Promise<void> => {
   try {
     await ensureApiToken(dispatch)
     const response = (await getTrialLicense()) as GenericResponse | null
-
-    const responseObj = response?.responseObject
-    const licenseKeyVal =
-      typeof responseObj === 'object' && responseObj !== null && !Array.isArray(responseObj)
-        ? responseObj['license-key']
-        : undefined
-
-    if (licenseKeyVal) {
-      try {
-        const activateLicense = (await activateAdminuiLicense({
-          licenseKey: String(licenseKeyVal),
-        })) as GenericResponse | null
-        dispatch(generateTrialLicenseResponse(activateLicense))
-        dispatch(
-          checkLicensePresentResponse({
-            isLicenseValid: activateLicense?.success ?? false,
-          }),
-        )
-        dispatch(checkUserLicenseKeyResponse(activateLicense))
-      } catch (err) {
-        dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
-        dispatch(generateTrialLicenseResponse(null))
-        dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-      }
+    dispatch(generateTrialLicenseResponse(response))
+    dispatch(checkLicensePresentResponse({ isLicenseValid: response?.success ?? false }))
+    if (response) {
+      dispatch(checkUserLicenseKeyResponse(response))
     }
   } catch (err) {
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-    logger.error('Error in generating key.', err instanceof Error ? err : String(err))
+    logger.error('Error in starting trial license.', err instanceof Error ? err : String(err))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
     dispatch(generateTrialLicenseResponse(null))
   }
@@ -204,20 +186,22 @@ const checkLicensePresentWorker = async (dispatch: AppDispatch): Promise<void> =
     await ensureApiToken(dispatch)
     const response = (await isLicenseActive()) as GenericResponse | null
     if (!response?.success) {
-      await retrieveLicenseKey(dispatch)
-    } else {
-      const arr = Array.isArray(response.responseObject)
-        ? (response.responseObject as Array<{ name?: string; value?: string }>)
-        : []
-      const mauThreshold = arr.find((item) => item?.name === 'mau_threshold')
-      await checkMauThreshold(dispatch, parseInt(mauThreshold?.value ?? '', 10))
+      await retrieveAndActivateLicense(dispatch)
+      return
     }
+    const mauThreshold = getMauThreshold(response)
+    if (mauThreshold === null) {
+      logger.error('Active license response has no valid mau_threshold.')
+      showNoValidLicense(dispatch)
+      return
+    }
+    await checkMauThreshold(dispatch, mauThreshold)
   } catch (error) {
     logger.error(
       'Error in checking License present.',
       error instanceof Error ? error : String(error),
     )
-    await retrieveLicenseKey(dispatch)
+    await retrieveAndActivateLicense(dispatch)
   }
 }
 
@@ -245,6 +229,6 @@ startAppListening({
 startAppListening({
   actionCreator: generateTrialLicense,
   effect: async (_action, { dispatch }) => {
-    await generateTrialLicenseKey(dispatch)
+    await startTrialLicense(dispatch)
   },
 })

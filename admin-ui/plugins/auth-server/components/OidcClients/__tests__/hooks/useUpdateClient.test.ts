@@ -59,6 +59,11 @@ jest.mock('@/utils/queryUtils', () => ({
     mockInvalidateQueriesByKey(queryClient, key),
 }))
 
+const mockInvalidateScopeQueries = jest.fn()
+jest.mock('Plugins/auth-server/components/Scopes/hooks/useScopeMutations', () => ({
+  invalidateScopeQueries: (queryClient: object) => mockInvalidateScopeQueries(queryClient),
+}))
+
 jest.mock('@/utils/logger', () => ({
   logger: {
     error: (message: string, detail: Error | string) => mockLoggerError(message, detail),
@@ -117,6 +122,7 @@ describe('useUpdateClient', () => {
 
     expect(mockUpdateToast).toHaveBeenCalledWith(true, 'success', undefined)
     expect(mockInvalidateQueriesByKey).toHaveBeenCalled()
+    expect(mockInvalidateScopeQueries).toHaveBeenCalled()
     expect(mockTriggerWebhook).toHaveBeenCalled()
     expect(mockDispatch).toHaveBeenCalled()
   })
