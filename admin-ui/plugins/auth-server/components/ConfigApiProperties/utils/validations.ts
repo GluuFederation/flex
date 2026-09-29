@@ -14,7 +14,6 @@ const getConfigApiPropertiesSchemaShape = (
   userRolePermissionValidationEnabled: Yup.boolean().nullable(),
   validateUserInumInIntrospectionFlag: Yup.boolean().nullable(),
   fetchUserRoleInIntrospectionFlag: Yup.boolean().nullable(),
-  userRolePermissionExcludedClients: Yup.array().of(Yup.string()).nullable(),
   disableAuditLogger: Yup.boolean().nullable(),
   customAttributeValidationEnabled: Yup.boolean().nullable(),
   acrValidationEnabled: Yup.boolean().nullable(),

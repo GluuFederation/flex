@@ -26,7 +26,6 @@ export const DEFAULT_CONFIG_API_CONFIG: ApiAppConfiguration = {
   userRolePermissionValidationEnabled: true,
   validateUserInumInIntrospectionFlag: true,
   fetchUserRoleInIntrospectionFlag: true,
-  userRolePermissionExcludedClients: [],
   disableAuditLogger: false,
   customAttributeValidationEnabled: false,
   acrValidationEnabled: false,
