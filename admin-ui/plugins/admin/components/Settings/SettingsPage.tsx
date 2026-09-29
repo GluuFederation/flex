@@ -127,7 +127,7 @@ const SettingsPage: React.FC = () => {
   const configApiUrl = useMemo(() => {
     if (typeof window === 'undefined') return 'N/A'
     const windowWithConfig = window as Window & { configApiBaseUrl?: string }
-    return windowWithConfig.configApiBaseUrl || 'N/A'
+    return windowWithConfig.configApiBaseUrl || process.env.CONFIG_API_BASE_URL || 'N/A'
   }, [])
 
   const transformToFormValues = useCallback(

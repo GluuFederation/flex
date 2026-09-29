@@ -138,9 +138,9 @@ The Admin UI ships a single production bundle that has to run unchanged on a dev
 
 1. **`window.configApiBaseUrl`**: set at runtime by `env-config.js` (see [Runtime env injection](#runtime-env-injection)). If this is set and does **not** look like an un-substituted `%(...)s` placeholder (matched by `REGEX_PYTHON_PLACEHOLDER`), it wins.
 2. **`process.env.CONFIG_API_BASE_URL`**: baked in from `.env.<mode>` at build time by Vite. Used in dev and as a build-time default.
-3. **Empty string**: last-resort fallback so axios still constructs without throwing if neither of the above is set. Requests will fail loudly with relative-URL errors, which is the desired loud failure.
+3. **Empty string**: last-resort fallback so axios still constructs if neither of the above is set. Requests then go to the page's own origin, where there is no Config API, so they fail.
 
-Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance.
+Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance. The second client, in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts), uses the same chain, except that its last resort is `http://localhost:8080`.
 
 ## Runtime env injection
 
