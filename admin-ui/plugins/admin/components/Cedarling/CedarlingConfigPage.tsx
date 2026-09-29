@@ -277,7 +277,7 @@ const CedarlingConfigPage: React.FC = () => {
           modal
           handler={handleConfirmCancel}
           onAccept={handleConfirmUpload}
-          feature={adminUiFeatures.policy_store_write}
+          feature={adminUiFeatures.policy_store_edit}
           alertSeverity="info"
           alertMessage={t('documentation.cedarlingConfig.uploadConfirmMessage')}
           operations={uploadOperations}

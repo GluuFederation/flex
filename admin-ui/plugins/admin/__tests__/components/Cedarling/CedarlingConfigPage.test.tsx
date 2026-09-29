@@ -235,7 +235,7 @@ describe('CedarlingConfigPage', () => {
       expect(triggers).toHaveLength(1)
     })
     expect(triggers[0].payload).toEqual({
-      feature: 'policy_store_write',
+      feature: 'policy_store_edit',
       createdFeatureValue: expect.objectContaining({
         displayname: 'test-policy.cjar',
         description: 'Rolling out updated admin policies',

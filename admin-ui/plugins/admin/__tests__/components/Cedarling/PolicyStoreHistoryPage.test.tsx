@@ -323,7 +323,7 @@ describe('PolicyStoreHistoryPage', () => {
 
     const [trigger] = webhookTriggers(dispatchSpy)
     expect(trigger.payload).toEqual({
-      feature: 'policy_store_write',
+      feature: 'policy_store_edit',
       createdFeatureValue: expect.objectContaining({
         inum: 'backup-1',
         displayname: 'previous-policies.cjar',
