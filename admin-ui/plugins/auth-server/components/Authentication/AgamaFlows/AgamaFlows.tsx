@@ -181,8 +181,7 @@ const AgamaFlows: React.FC = () => {
 
   useEffect(() => {
     if (repositoriesError) {
-      const errorMessage =
-        (repositoriesError as Error)?.message || t('messages.error_in_getting_data')
+      const errorMessage = (repositoriesError as Error)?.message || t('messages.error_loading_data')
       dispatch(updateToast(true, 'error', errorMessage))
     }
   }, [repositoriesError, dispatch, t])
@@ -190,7 +189,7 @@ const AgamaFlows: React.FC = () => {
   useEffect(() => {
     const firstError = projectsError ?? configError
     if (firstError) {
-      const errorMessage = (firstError as Error)?.message || t('messages.error_in_getting_data')
+      const errorMessage = (firstError as Error)?.message || t('messages.error_loading_data')
       dispatch(updateToast(true, 'error', errorMessage))
     }
   }, [projectsError, configError, dispatch, t])
