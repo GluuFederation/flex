@@ -1,4 +1,5 @@
 import type { AssetFormValues, Document } from '../components/Assets/types'
+import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types'
 
 const getServiceFromAsset = (
   asset:
@@ -49,4 +50,39 @@ export const buildAssetInitialValues = (
     dn: toStringValue(doc?.dn ?? rec?.dn, ''),
     baseDn: toStringValue(doc?.baseDn ?? rec?.baseDn, ''),
   }
+}
+
+const toOperationValue = (val: AssetFormValues['document']): string =>
+  val instanceof File ? val.name : typeof val === 'string' ? val : ''
+
+export const buildAssetCommitOperations = (
+  initial: AssetFormValues,
+  current: AssetFormValues,
+  labels: {
+    document: string
+    fileName: string
+    service: string
+    description: string
+    enabled: string
+  },
+): GluuCommitDialogOperation[] => {
+  const operations: GluuCommitDialogOperation[] = []
+  const currentDocument = toOperationValue(current.document)
+  if (current.document instanceof File || currentDocument !== toOperationValue(initial.document)) {
+    operations.push({ path: 'document', label: labels.document, value: currentDocument })
+  }
+  if (current.fileName !== initial.fileName) {
+    operations.push({ path: 'fileName', label: labels.fileName, value: current.fileName })
+  }
+  const currentService = current.service[0] ?? ''
+  if (currentService !== (initial.service[0] ?? '')) {
+    operations.push({ path: 'service', label: labels.service, value: currentService })
+  }
+  if (current.description !== initial.description) {
+    operations.push({ path: 'description', label: labels.description, value: current.description })
+  }
+  if (current.enabled !== initial.enabled) {
+    operations.push({ path: 'enabled', label: labels.enabled, value: current.enabled })
+  }
+  return operations
 }
