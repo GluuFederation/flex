@@ -68,9 +68,9 @@ class Upgrade:
 
         should_update = False
 
-        # jansAccessTknAsJwt is set to true since v5.9.0
-        if not as_boolean(entry.attrs["jansAccessTknAsJwt"]):
-            entry.attrs["jansAccessTknAsJwt"] = True
+        # jansAccessTknAsJwt should be set to false (see https://github.com/GluuFederation/flex/issues/3057)
+        if as_boolean(entry.attrs["jansAccessTknAsJwt"]):
+            entry.attrs["jansAccessTknAsJwt"] = False
             should_update = True
 
         if not self.backend.client.use_simple_json:
