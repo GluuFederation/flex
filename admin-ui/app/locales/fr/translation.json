@@ -1796,7 +1796,11 @@
       "hints": "Types d'authentificateurs préférés qui guident le navigateur lors de l'enregistrement et de l'authentification FIDO2."
     },
     "asset": {
-      "jansService": "Jans Module Properties"
+      "upload": "Fichier de ressource à téléverser. Types pris en charge : .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nom du fichier de ressource tel qu'il est enregistré sur le serveur, extension comprise.",
+      "jansService": "Service Jans qui charge et utilise cette ressource.",
+      "description": "Brève description de l'utilisation de cette ressource.",
+      "enabled": "Lorsqu'elle est activée, la ressource est active et disponible pour le service sélectionné."
     },
     "webhook": {
       "url": "URL du webhook.",

@@ -1791,7 +1791,11 @@
       "hints": "Tipos de autenticador preferidos que guían al navegador durante el registro y la autenticación FIDO2."
     },
     "asset": {
-      "jansService": "Servicios Relacionados"
+      "upload": "Archivo de recurso a cargar. Tipos admitidos: .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nombre del archivo del recurso tal como se guarda en el servidor, incluida su extensión.",
+      "jansService": "Servicio de Jans que carga y usa este recurso.",
+      "description": "Breve descripción del uso de este recurso.",
+      "enabled": "Cuando está habilitado, el recurso está activo y disponible para el servicio seleccionado."
     },
     "webhook": {
       "url": "URL del Webhook.",
