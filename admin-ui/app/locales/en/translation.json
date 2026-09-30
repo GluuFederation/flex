@@ -998,6 +998,10 @@
     "no_assets_found": "No assets found",
     "asset_deleted_successfully": "Asset deleted successfully",
     "failed_to_delete_asset": "Failed to delete asset",
+    "asset_created_successfully": "Asset created successfully",
+    "asset_updated_successfully": "Asset updated successfully",
+    "failed_to_create_asset": "Failed to create asset",
+    "failed_to_update_asset": "Failed to update asset",
     "asset_entity": "asset",
     "asset_add_description": "Upload an asset file and configure its name, description, related service, and enabled status.",
     "asset_edit_description": "Update asset file, name, description, service, and enabled status.",
@@ -1787,7 +1791,11 @@
       "hints": "Preferred authenticator types that guide the browser during FIDO2 registration and authentication."
     },
     "asset": {
-      "jansService": "Related Services"
+      "upload": "Asset file to upload. Supported types: .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Name of the asset file as stored on the server, including its extension.",
+      "jansService": "Jans service that loads and uses this asset.",
+      "description": "Short description of what this asset is used for.",
+      "enabled": "When enabled, the asset is active and available to the selected service."
     },
     "webhook": {
       "url": "Webhook URL.",

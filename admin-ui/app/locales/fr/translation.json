@@ -1008,6 +1008,10 @@
     "no_assets_found": "Aucune ressource trouvée",
     "asset_deleted_successfully": "Ressource supprimée avec succès",
     "failed_to_delete_asset": "Échec de la suppression de la ressource",
+    "asset_created_successfully": "Ressource créée avec succès",
+    "asset_updated_successfully": "Ressource mise à jour avec succès",
+    "failed_to_create_asset": "Échec de la création de la ressource",
+    "failed_to_update_asset": "Échec de la mise à jour de la ressource",
     "asset_entity": "ressource",
     "delete_webhook_confirm": "Supprimer le webhook ?",
     "failed_to_delete_webhook": "Échec de la suppression du webhook",
@@ -1795,7 +1799,11 @@
       "hints": "Types d'authentificateurs préférés qui guident le navigateur lors de l'enregistrement et de l'authentification FIDO2."
     },
     "asset": {
-      "jansService": "Jans Module Properties"
+      "upload": "Fichier de ressource à téléverser. Types pris en charge : .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nom du fichier de ressource tel qu'il est enregistré sur le serveur, extension comprise.",
+      "jansService": "Service Jans qui charge et utilise cette ressource.",
+      "description": "Brève description de l'utilisation de cette ressource.",
+      "enabled": "Lorsqu'elle est activée, la ressource est active et disponible pour le service sélectionné."
     },
     "webhook": {
       "url": "URL du webhook.",

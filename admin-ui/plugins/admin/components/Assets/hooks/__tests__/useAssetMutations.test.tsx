@@ -83,9 +83,10 @@ describe('useAssetMutations', () => {
   })
 
   describe('useCreateAssetWithAudit', () => {
-    it('uploads via POST, logs the audit and invalidates the list', async () => {
+    it('uploads via POST, logs the audit, shows a success toast and invalidates the list', async () => {
       const onSuccess = jest.fn()
       const store = buildStore()
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
       const { result } = renderHook(() => useCreateAssetWithAudit({ onSuccess }), {
         wrapper: createWrapper(store),
       })
@@ -101,6 +102,15 @@ describe('useAssetMutations', () => {
         'CREATE',
         'asset',
         expect.objectContaining({ action_message: 'created', action_data: formData }),
+      )
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            showToast: true,
+            type: 'success',
+            message: 'messages.asset_created_successfully',
+          }),
+        }),
       )
       expect(mockInvalidate).toHaveBeenCalled()
       expect(onSuccess).toHaveBeenCalledTimes(1)
@@ -122,16 +132,48 @@ describe('useAssetMutations', () => {
       })
 
       await waitFor(() => {
-        expect(dispatchSpy).toHaveBeenCalled()
+        expect(dispatchSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            payload: expect.objectContaining({
+              showToast: true,
+              type: 'error',
+              message: 'upload boom',
+            }),
+          }),
+        )
       })
       expect(onError).toHaveBeenCalledTimes(1)
       expect(mockLogAction).not.toHaveBeenCalled()
     })
+
+    it('falls back to a translated error toast when the server sends no message', async () => {
+      mockCustomInstance.mockRejectedValueOnce({})
+      const store = buildStore()
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
+      const { result } = renderHook(() => useCreateAssetWithAudit(), {
+        wrapper: createWrapper(store),
+      })
+
+      await act(async () => {
+        await expect(result.current.createAsset(formData)).rejects.toBeDefined()
+      })
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            showToast: true,
+            type: 'error',
+            message: 'messages.failed_to_create_asset',
+          }),
+        }),
+      )
+    })
   })
 
   describe('useUpdateAssetWithAudit', () => {
-    it('uploads via PUT and logs an UPDATE audit', async () => {
+    it('uploads via PUT, logs an UPDATE audit and shows a success toast', async () => {
       const store = buildStore()
+      const dispatchSpy = jest.spyOn(store, 'dispatch')
       const { result } = renderHook(() => useUpdateAssetWithAudit(), {
         wrapper: createWrapper(store),
       })
@@ -144,6 +186,15 @@ describe('useAssetMutations', () => {
         expect.objectContaining({ url: '/api/v1/jans-assets/upload', method: 'PUT' }),
       )
       expect(mockLogAction).toHaveBeenCalledWith('UPDATE', 'asset', expect.any(Object))
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            showToast: true,
+            type: 'success',
+            message: 'messages.asset_updated_successfully',
+          }),
+        }),
+      )
     })
   })
 
