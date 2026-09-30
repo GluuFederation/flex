@@ -27,7 +27,7 @@ import { useGetAcrs } from 'JansConfigApi'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import type { AcrsFormValues, AcrsFormProps } from '../types'
+import type { AcrsFormValues, AcrsFormProps, AuthnLocationState } from '../types'
 import { getAuthNValidationSchema } from './helper/validations'
 import { useStyles } from './AcrsForm.style'
 import { HASH_ALGORITHM_OPTIONS, DEFAULT_AUTHN_OPTIONS } from './constants'
@@ -39,7 +39,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const { navigateToRoute } = useAppNavigation()
   const location = useLocation()
-  const authnTab: number = (location.state as { authnTab?: number } | null)?.authnTab ?? 0
+  const authnTab = (location.state as AuthnLocationState | null)?.authnTab
   const [modal, setModal] = useState(false)
 
   const { state: themeState } = useTheme()

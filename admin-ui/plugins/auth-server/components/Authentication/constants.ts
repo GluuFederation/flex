@@ -27,17 +27,32 @@ export const TAB_IDS = {
   BUILT_IN: 'builtIn',
   ACRS: 'acrs',
   ALIASES: 'aliases',
-  AGAMA_FLOWS: 'agama_flows',
+  AGAMA_PROJECTS: 'agama_projects',
 } as const
 
-const TAB_ORDER = [
+export type TabId = (typeof TAB_IDS)[keyof typeof TAB_IDS]
+
+export const TAB_ORDER: readonly TabId[] = [
   TAB_IDS.DEFAULT_ACR,
   TAB_IDS.BUILT_IN,
   TAB_IDS.ACRS,
   TAB_IDS.ALIASES,
-  TAB_IDS.AGAMA_FLOWS,
-] as const
-export const ALIASES_TAB_INDEX = TAB_ORDER.indexOf(TAB_IDS.ALIASES)
+  TAB_IDS.AGAMA_PROJECTS,
+]
+
+export const getTabIndex = (tabId?: string): number =>
+  Math.max(TAB_ORDER.indexOf(tabId as TabId), 0)
+
+export const ALIASES_TAB_INDEX = getTabIndex(TAB_IDS.ALIASES)
+
+export const ACR_TYPES = {
+  BUILTIN: 'builtin',
+  LDAP: 'ldap',
+  SCRIPT: 'script',
+  AGAMA: 'agama',
+} as const
+
+export type AcrType = (typeof ACR_TYPES)[keyof typeof ACR_TYPES]
 
 export const BUILT_IN_ACRS: BuiltInAcr[] = [
   {
@@ -50,5 +65,6 @@ export const BUILT_IN_ACRS: BuiltInAcr[] = [
     hashAlgorithm: 'bcrypt',
     defaultAuthNMethod: false,
     acrName: AUTH_METHOD_NAMES.SIMPLE_PASSWORD,
+    acrType: ACR_TYPES.BUILTIN,
   },
 ]

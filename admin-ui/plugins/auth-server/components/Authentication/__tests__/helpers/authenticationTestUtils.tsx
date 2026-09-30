@@ -6,6 +6,8 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import type { AuthState } from 'Redux/features/types/authTypes'
 import { mockAcrs, mockLdapConfigurations, mockScripts } from '../fixtures/mockAuthenticationData'
+import { useGetAgamaPrj, type Deployment } from 'JansConfigApi'
+import { useAppNavigation } from '@/helpers/navigation'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -146,4 +148,18 @@ export const createAuthenticationTestWrapper = (
   )
   Wrapper.displayName = 'AuthenticationTestWrapper'
   return Wrapper
+}
+
+export const mockAgamaProjects = (entries: Deployment[]): void => {
+  jest.mocked(useGetAgamaPrj).mockReturnValue({
+    data: { entries },
+    isLoading: false,
+    error: null,
+  } as Partial<ReturnType<typeof useGetAgamaPrj>> as ReturnType<typeof useGetAgamaPrj>)
+}
+
+export const mockAppNavigation = (navigateToRoute: jest.Mock): void => {
+  jest.mocked(useAppNavigation).mockReturnValue({
+    navigateToRoute,
+  } as Partial<ReturnType<typeof useAppNavigation>> as ReturnType<typeof useAppNavigation>)
 }

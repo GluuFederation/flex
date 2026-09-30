@@ -14,7 +14,7 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppDispatch } from '@/redux/hooks'
-import type { AcrsFormValues, AuthNItem } from '../types'
+import type { AcrsFormValues, AuthnLocationState } from '../types'
 import { isDefaultAuthNMethod, transformConfigurationProperties } from './helper/acrUtils'
 import { logger } from '@/utils/logger'
 import { AUTH_METHOD_NAMES, SCRIPT_TYPES } from '../constants'
@@ -30,8 +30,8 @@ const AcrsEditPage = (): ReactElement => {
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
   const location = useLocation()
-  const locationState = location.state as { authnTab?: number; selectedItem?: AuthNItem } | null
-  const authnTab: number = locationState?.authnTab ?? 0
+  const locationState = location.state as AuthnLocationState | null
+  const authnTab = locationState?.authnTab
   const atomItem = locationState?.selectedItem ?? null
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()

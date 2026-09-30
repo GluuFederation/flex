@@ -1,3 +1,4 @@
+import type { Deployment, DeploymentDetailsFlowsError } from 'JansConfigApi'
 import type { AuthNItem } from '../../types'
 
 export const mockAcrs = {
@@ -50,3 +51,34 @@ export const mockBuiltInAuthenticationItem: AuthNItem = {
   passwordAttribute: 'userPassword',
   hashAlgorithm: 'bcrypt',
 }
+
+export const flowsOutcome = (outcome: Record<string, string | null>): DeploymentDetailsFlowsError =>
+  outcome as DeploymentDetailsFlowsError
+
+export const mockAgamaDeployments: Deployment[] = [
+  {
+    id: 'casa-id',
+    details: {
+      flowsError: flowsOutcome({
+        'io.jans.casa.authn.main': null,
+        'io.jans.casa.authn.otp': null,
+        'io.jans.casa.authn.broken': 'Syntax error on line 3',
+      }),
+      projectMetadata: {
+        projectName: 'casa',
+        configs: { 'io.jans.casa.authn.main': {} },
+        noDirectLaunch: ['io.jans.casa.authn.otp'],
+      },
+    },
+  },
+  {
+    id: 'pw-id',
+    details: {
+      flowsError: flowsOutcome({
+        'org.gluu.agama.pw.reset': null,
+        'org.gluu.agama.pw.main': null,
+      }),
+      projectMetadata: { projectName: 'agama-pw' },
+    },
+  },
+]
