@@ -1856,9 +1856,9 @@
     "config_api_properties": {
       "configOauthEnabled": "OAuth authentication enable/disable flag. Default value true.",
       "disableLoggerTimer": "Flag to enable/disable timer to dynamically reflect log configuration changes. Default value true.",
-      "userRolePermissionValidationEnabled": "Flag to enable/disable the User Role-Permission mapping check during authentication. Default value true.",
-      "validateUserInumInIntrospectionFlag": "Flag to enable/disable validating User-inum in the introspection response. Default value true.",
-      "fetchUserRoleInIntrospectionFlag": "Flag to enable/disable fetching the user role in the introspection response. Default value true.",
+      "userRolePermissionValidationEnabled": "Flag to enable or disable the User Role–Permission mapping check when accessing the User Management endpoints. Default value true.",
+      "validateUserInumInIntrospectionFlag": "Flag to enable or disable validation of User-inum in the introspection response when accessing the User Management endpoints. Default value true.",
+      "fetchUserRoleInIntrospectionFlag": "Flag to enable or disable fetching the user role in the introspection response when accessing the User Management endpoints. Default value true.",
       "disableAuditLogger": "Flag to enable/disable request audit. Default value false.",
       "customAttributeValidationEnabled": "Flag to enable/disable check if custom attribute is declared in schema. Default volume true.",
       "apiProtectionType": "Name of supported API protection mechanism. Supported type is OAuth2.",

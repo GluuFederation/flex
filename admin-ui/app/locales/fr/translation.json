@@ -2286,9 +2286,9 @@
     "config_api_properties": {
       "configOauthEnabled": "Drapeau d'activation/désactivation de l'authentification OAuth. Valeur par défaut vraie.",
       "disableLoggerTimer": "Drapeau pour activer/désactiver le timer pour refléter dynamiquement les changements de configuration des logs. Valeur par défaut vraie.",
-      "userRolePermissionValidationEnabled": "Drapeau pour activer/désactiver la vérification du mappage rôle-permission de l'utilisateur lors de l'authentification. Valeur par défaut vraie.",
-      "validateUserInumInIntrospectionFlag": "Drapeau pour activer/désactiver la validation du User-inum dans la réponse d'introspection. Valeur par défaut vraie.",
-      "fetchUserRoleInIntrospectionFlag": "Drapeau pour activer/désactiver la récupération du rôle de l'utilisateur dans la réponse d'introspection. Valeur par défaut vraie.",
+      "userRolePermissionValidationEnabled": "Drapeau pour activer ou désactiver la vérification du mappage rôle-permission de l'utilisateur lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
+      "validateUserInumInIntrospectionFlag": "Drapeau pour activer ou désactiver la validation du User-inum dans la réponse d'introspection lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
+      "fetchUserRoleInIntrospectionFlag": "Drapeau pour activer ou désactiver la récupération du rôle de l'utilisateur dans la réponse d'introspection lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
       "disableAuditLogger": "Drapeau pour activer/désactiver l'audit de requête. Valeur par défaut faux.",
       "customAttributeValidationEnabled": "Drapeau pour activer/désactiver la vérification si l'attribut personnalisé est déclaré dans le schéma. Valeur par défaut vraie.",
       "apiProtectionType": "Nom du mécanisme de protection API supporté. Type supporté est OAuth2.",
