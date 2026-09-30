@@ -1033,6 +1033,10 @@
     "no_assets_found": "Nenhum recurso encontrado",
     "asset_deleted_successfully": "Recurso excluído com sucesso",
     "failed_to_delete_asset": "Falha ao excluir recurso",
+    "asset_created_successfully": "Recurso criado com sucesso",
+    "asset_updated_successfully": "Recurso atualizado com sucesso",
+    "failed_to_create_asset": "Falha ao criar recurso",
+    "failed_to_update_asset": "Falha ao atualizar recurso",
     "asset_entity": "recurso",
     "delete_webhook_confirm": "Excluir webhook?",
     "failed_to_delete_webhook": "Falha ao excluir o webhook",
@@ -1788,7 +1792,11 @@
       "hints": "Tipos de autenticador preferidos que orientam o navegador durante o registro e a autenticação FIDO2."
     },
     "asset": {
-      "jansService": "Related Services"
+      "upload": "Arquivo de recurso a ser enviado. Tipos suportados: .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nome do arquivo do recurso conforme armazenado no servidor, incluindo a extensão.",
+      "jansService": "Serviço Jans que carrega e usa este recurso.",
+      "description": "Breve descrição do uso deste recurso.",
+      "enabled": "Quando habilitado, o recurso fica ativo e disponível para o serviço selecionado."
     },
     "webhook": {
       "url": "URL do webhook.",

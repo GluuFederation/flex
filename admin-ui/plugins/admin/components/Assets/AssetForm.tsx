@@ -27,7 +27,7 @@ import {
 } from './types/FormTypes'
 import { AssetFormData, Document } from './types/AssetApiTypes'
 import { getAssetValidationSchema } from 'Plugins/admin/helper/validations/assetValidation'
-import { buildAssetInitialValues } from 'Plugins/admin/helper/assets'
+import { buildAssetCommitOperations, buildAssetInitialValues } from 'Plugins/admin/helper/assets'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -163,6 +163,18 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
   }, [formik, initialValues])
 
   const isFormChanged = formik.dirty
+
+  const commitOperations = useMemo(
+    () =>
+      buildAssetCommitOperations(initialValues, formik.values, {
+        document: t(T_KEYS.FIELD_UPLOAD),
+        fileName: t(T_KEYS.FIELD_ASSET_NAME),
+        service: t(T_KEYS.FIELD_JANS_SERVICE),
+        description: t(T_KEYS.FIELD_DESCRIPTION),
+        enabled: t(T_KEYS.OPTION_ENABLED),
+      }),
+    [initialValues, formik.values, t],
+  )
   const handleBack = useCallback(() => {
     navigateBack(ROUTES.ASSETS_LIST)
   }, [navigateBack])
@@ -307,6 +319,7 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
         handler={closeCommitDialog}
         modal={showCommitDialog}
         onAccept={submitForm}
+        operations={commitOperations}
       />
     </GluuLoader>
   )
