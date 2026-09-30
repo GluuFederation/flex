@@ -28,13 +28,16 @@ spec:
       labels:
         APP_NAME: auth-server
         app: {{ .Release.Name }}-{{ include "auth-server.name" . }}
-      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-server" "customAnnotations" "pod") }}
+      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-server" "customAnnotations" "pod") (.Values.global.cnObCaCerts) }}
       annotations:
       {{- if .Values.global.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       {{- end }}
+      {{- if .Values.global.cnObCaCerts }}
+        checksum/ob-ca-certs: {{ .Values.global.cnObCaCerts | sha256sum | quote }}
+      {{- end }}
       {{- if index .Values.global "auth-server" "customAnnotations" "pod" }}
-      {{ toYaml (index .Values.global "auth-server" "customAnnotations" "pod") | indent 4 }}
+        {{- toYaml (index .Values.global "auth-server" "customAnnotations" "pod") | nindent 8 }}
       {{- end }}
       {{- end }}
     spec:
