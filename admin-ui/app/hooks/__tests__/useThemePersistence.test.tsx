@@ -11,8 +11,11 @@ const wrapper = ({ children }: { children: ReactNode }) => <ThemeProvider>{child
 
 const renderThemePersistence = (userInfo: UserInfo | null) =>
   renderHook(
-    () => ({ onChangeTheme: useThemePersistence(userInfo), theme: useTheme().state.theme }),
-    { wrapper },
+    ({ user }: { user: UserInfo | null }) => ({
+      onChangeTheme: useThemePersistence(user),
+      theme: useTheme().state.theme,
+    }),
+    { wrapper, initialProps: { user: userInfo } },
   )
 
 describe('useThemePersistence', () => {
@@ -28,6 +31,23 @@ describe('useThemePersistence', () => {
     )
 
     const { result } = renderThemePersistence({ inum: 'user-1' })
+
+    expect(result.current.theme).toBe(THEME_LIGHT)
+    expect(window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)).toBe(THEME_LIGHT)
+  })
+
+  it('applies the saved theme once the signed-in user becomes available', () => {
+    window.localStorage.setItem(STORAGE_KEYS.INIT_THEME, THEME_DARK)
+    window.localStorage.setItem(
+      STORAGE_KEYS.USER_CONFIG,
+      JSON.stringify({ theme: { 'user-1': THEME_LIGHT } }),
+    )
+
+    const { result, rerender } = renderThemePersistence(null)
+
+    expect(result.current.theme).toBe(THEME_DARK)
+
+    rerender({ user: { inum: 'user-1' } })
 
     expect(result.current.theme).toBe(THEME_LIGHT)
     expect(window.localStorage.getItem(STORAGE_KEYS.INIT_THEME)).toBe(THEME_LIGHT)
