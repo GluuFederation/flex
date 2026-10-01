@@ -28,13 +28,16 @@ spec:
       labels:
         APP_NAME: auth-server
         app: {{ .Release.Name }}-{{ include "auth-server.name" . }}
-      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-server" "customAnnotations" "pod") }}
+      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-server" "customAnnotations" "pod") (.Values.global.cnObCaCerts) }}
       annotations:
       {{- if .Values.global.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       {{- end }}
+      {{- if .Values.global.cnObCaCerts }}
+        checksum/ob-ca-certs: {{ .Values.global.cnObCaCerts | sha256sum | quote }}
+      {{- end }}
       {{- if index .Values.global "auth-server" "customAnnotations" "pod" }}
-      {{ toYaml (index .Values.global "auth-server" "customAnnotations" "pod") | indent 4 }}
+        {{- toYaml (index .Values.global "auth-server" "customAnnotations" "pod") | nindent 8 }}
       {{- end }}
       {{- end }}
     spec:
@@ -144,6 +147,11 @@ spec:
             mountPath: /etc/certs/ob-transport-truststore.p12
             subPath: ob-transport-truststore.p12
         {{- end }}
+        {{ if .Values.global.cnObCaCerts }}
+          - name: cn-ob-ca-certs
+            mountPath: /etc/certs/ob-ca-certs.pem
+            subPath: ob-ca-certs.pem
+        {{- end }}
         {{- if and (not .Values.global.isFqdnRegistered ) (or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local")) }}
           - name: {{ include "auth-server.fullname" .}}-updatelbip
             mountPath: "/scripts"
@@ -223,6 +231,11 @@ spec:
         - name: cn-ob-transport-truststore
           secret:
             secretName: {{ .Release.Name }}-ob-transport-truststore
+      {{- end }}
+      {{ if .Values.global.cnObCaCerts }}
+        - name: cn-ob-ca-certs
+          secret:
+            secretName: {{ .Release.Name }}-ob-ca-certs
       {{- end }}
       {{- if and (not .Values.global.isFqdnRegistered ) (or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local")) }}
         - name: {{ include "auth-server.fullname" . }}-updatelbip

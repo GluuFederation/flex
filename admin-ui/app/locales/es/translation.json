@@ -360,6 +360,9 @@
     "disabled": "Deshabilitado",
     "disable_jdk_logger": "Deshabilitar Logger JDK",
     "disable_logger_timer": "Desactivar Temporizador de Registros",
+    "user_role_permission_validation_enabled": "Validación de Permisos de Rol de Usuario Habilitada",
+    "validate_user_inum_in_introspection_flag": "Validar Inum de Usuario en Introspección",
+    "fetch_user_role_in_introspection_flag": "Obtener Rol de Usuario en Introspección",
     "displayname": "Nombre para Mostrar",
     "dynamic_scope_scripts": "Script de Ámbito Dinámico",
     "default_authn_method": "Método de Autenticación Predeterminado",
@@ -442,6 +445,7 @@
     "multivalued": "¿Multivalorado?",
     "name": "Nombre",
     "type": "Tipo",
+    "agama_project": "Proyecto Agama",
     "author": "Autor",
     "project_name": "Nombre del proyecto",
     "deployed_on": "Desplegado en",
@@ -881,7 +885,7 @@
     "security": "Seguridad",
     "authentication": "Autenticación",
     "webhooks": "Webhooks",
-    "agama_flows": "Flujos Agama",
+    "agama_projects": "Proyectos Agama",
     "default_acr": "ACR Predeterminado",
     "acrs": "Métodos ACR",
     "aliases": "Alias",
@@ -995,6 +999,10 @@
     "no_assets_found": "No se encontraron recursos",
     "asset_deleted_successfully": "Recurso eliminado correctamente",
     "failed_to_delete_asset": "Error al eliminar el recurso",
+    "asset_created_successfully": "Recurso creado correctamente",
+    "asset_updated_successfully": "Recurso actualizado correctamente",
+    "failed_to_create_asset": "Error al crear el recurso",
+    "failed_to_update_asset": "Error al actualizar el recurso",
     "asset_entity": "recurso",
     "asset_add_description": "Cargue un archivo de recurso y configure su nombre, descripción, servicio relacionado y estado habilitado.",
     "asset_edit_description": "Actualice el archivo de recurso, nombre, descripción, servicio y estado habilitado.",
@@ -1784,7 +1792,11 @@
       "hints": "Tipos de autenticador preferidos que guían al navegador durante el registro y la autenticación FIDO2."
     },
     "asset": {
-      "jansService": "Servicios Relacionados"
+      "upload": "Archivo de recurso a cargar. Tipos admitidos: .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nombre del archivo del recurso tal como se guarda en el servidor, incluida su extensión.",
+      "jansService": "Servicio de Jans que carga y usa este recurso.",
+      "description": "Breve descripción del uso de este recurso.",
+      "enabled": "Cuando está habilitado, el recurso está activo y disponible para el servicio seleccionado."
     },
     "webhook": {
       "url": "URL del Webhook.",
@@ -1845,6 +1857,9 @@
     "config_api_properties": {
       "configOauthEnabled": "Indicador para habilitar/deshabilitar la autenticación OAuth. Valor por defecto: true.",
       "disableLoggerTimer": "Indicador para habilitar/deshabilitar el temporizador que refleja dinámicamente los cambios en la configuración de logs. Valor por defecto: true.",
+      "userRolePermissionValidationEnabled": "Indicador para habilitar o deshabilitar la verificación del mapeo rol-permiso del usuario al acceder a los endpoints de gestión de usuarios. Valor por defecto: true.",
+      "validateUserInumInIntrospectionFlag": "Indicador para habilitar o deshabilitar la validación del User-inum en la respuesta de introspección al acceder a los endpoints de gestión de usuarios. Valor por defecto: true.",
+      "fetchUserRoleInIntrospectionFlag": "Indicador para habilitar o deshabilitar la obtención del rol del usuario en la respuesta de introspección al acceder a los endpoints de gestión de usuarios. Valor por defecto: true.",
       "disableAuditLogger": "Indicador para habilitar/deshabilitar la auditoría de solicitudes. Valor por defecto: false.",
       "customAttributeValidationEnabled": "Indicador para habilitar/deshabilitar la verificación de si un atributo personalizado está declarado en el esquema. Valor por defecto: true.",
       "apiProtectionType": "Nombre del mecanismo de protección de API soportado. Tipo soportado: OAuth2.",

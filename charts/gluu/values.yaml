@@ -1122,6 +1122,8 @@ global:
   cnObTransportAlias: ""
   # -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.
   cnObTransportTrustStore: ""
+  # -- Open banking Issuing and Root CA certificates bundle in PEM format. Imported into the auth-server JVM cacerts so it can trust the OB Directory keystore serving `.global.cnObExtSigningJwksUri`. This must be encoded using base64.
+  cnObCaCerts: ""
   config:
     # — Add custom annotations for kubernetes resources for the service
     customAnnotations:

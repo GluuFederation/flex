@@ -361,6 +361,9 @@
     "disabled": "Disabled",
     "disable_jdk_logger": "Disable JDK Logger",
     "disable_logger_timer": "Disable Logger Timer",
+    "user_role_permission_validation_enabled": "User Role Permission Validation Enabled",
+    "validate_user_inum_in_introspection_flag": "Validate User Inum In Introspection",
+    "fetch_user_role_in_introspection_flag": "Fetch User Role In Introspection",
     "displayname": "Display Name",
     "dynamic_scope_scripts": "Dynamics Scope Script",
     "default_authn_method": "Default Authn Method",
@@ -479,6 +482,7 @@
     "multivalued": "Multivalued?",
     "name": "Name",
     "type": "Type",
+    "agama_project": "Agama Project",
     "author": "Author",
     "project_name": "Project Name",
     "deployed_on": "Deployed On",
@@ -881,7 +885,7 @@
     "security": "Security",
     "authentication": "Authentication",
     "webhooks": "Webhooks",
-    "agama_flows": "Agama Flows",
+    "agama_projects": "Agama Projects",
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
@@ -995,6 +999,10 @@
     "no_assets_found": "No assets found",
     "asset_deleted_successfully": "Asset deleted successfully",
     "failed_to_delete_asset": "Failed to delete asset",
+    "asset_created_successfully": "Asset created successfully",
+    "asset_updated_successfully": "Asset updated successfully",
+    "failed_to_create_asset": "Failed to create asset",
+    "failed_to_update_asset": "Failed to update asset",
     "asset_entity": "asset",
     "asset_add_description": "Upload an asset file and configure its name, description, related service, and enabled status.",
     "asset_edit_description": "Update asset file, name, description, service, and enabled status.",
@@ -1784,7 +1792,11 @@
       "hints": "Preferred authenticator types that guide the browser during FIDO2 registration and authentication."
     },
     "asset": {
-      "jansService": "Related Services"
+      "upload": "Asset file to upload. Supported types: .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Name of the asset file as stored on the server, including its extension.",
+      "jansService": "Jans service that loads and uses this asset.",
+      "description": "Short description of what this asset is used for.",
+      "enabled": "When enabled, the asset is active and available to the selected service."
     },
     "webhook": {
       "url": "Webhook URL.",
@@ -1845,6 +1857,9 @@
     "config_api_properties": {
       "configOauthEnabled": "OAuth authentication enable/disable flag. Default value true.",
       "disableLoggerTimer": "Flag to enable/disable timer to dynamically reflect log configuration changes. Default value true.",
+      "userRolePermissionValidationEnabled": "Flag to enable or disable the User Role–Permission mapping check when accessing the User Management endpoints. Default value true.",
+      "validateUserInumInIntrospectionFlag": "Flag to enable or disable validation of User-inum in the introspection response when accessing the User Management endpoints. Default value true.",
+      "fetchUserRoleInIntrospectionFlag": "Flag to enable or disable fetching the user role in the introspection response when accessing the User Management endpoints. Default value true.",
       "disableAuditLogger": "Flag to enable/disable request audit. Default value false.",
       "customAttributeValidationEnabled": "Flag to enable/disable check if custom attribute is declared in schema. Default volume true.",
       "apiProtectionType": "Name of supported API protection mechanism. Supported type is OAuth2.",

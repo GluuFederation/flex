@@ -32,9 +32,14 @@ jest.mock('../Aliases/Aliases', () => ({
   default: () => <div data-testid="aliases-list">Aliases</div>,
 }))
 
+const mockUseLocation = jest.fn(() => ({
+  state: null as { authnTab?: string } | null,
+  pathname: '/auth-server/authn',
+}))
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ state: null, pathname: '/auth-server/authn' })),
+  useLocation: () => mockUseLocation(),
 }))
 
 describe('Authentication', () => {
@@ -42,6 +47,7 @@ describe('Authentication', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockUseLocation.mockReturnValue({ state: null, pathname: '/auth-server/authn' })
     const store = createAuthenticationTestStore()
     Wrapper = createAuthenticationTestWrapper(store)
   })
@@ -52,10 +58,31 @@ describe('Authentication', () => {
     expect(screen.getByText(/Built-In/i)).toBeInTheDocument()
     expect(screen.getByText(/^ACRs$/i)).toBeInTheDocument()
     expect(screen.getByText(/Aliases/i)).toBeInTheDocument()
-    expect(screen.getByText(/Agama Flows/i)).toBeInTheDocument()
+    expect(screen.getByText(/Agama Projects/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Agama Flows/i)).not.toBeInTheDocument()
   })
 
   it('renders the Default ACR tab content by default', () => {
+    render(<AuthNPage />, { wrapper: Wrapper })
+    expect(screen.getByTestId('default-acr')).toBeInTheDocument()
+  })
+
+  it.each([
+    ['builtIn', 'built-in-list'],
+    ['acrs', 'acr-list'],
+    ['aliases', 'aliases-list'],
+    ['agama_projects', 'agama-list'],
+  ])('opens the %s tab when navigation state names it', (authnTab, testId) => {
+    mockUseLocation.mockReturnValue({ state: { authnTab }, pathname: '/auth-server/authn' })
+    render(<AuthNPage />, { wrapper: Wrapper })
+    expect(screen.getByTestId(testId)).toBeInTheDocument()
+  })
+
+  it('falls back to the Default ACR tab for an unknown tab id', () => {
+    mockUseLocation.mockReturnValue({
+      state: { authnTab: 'agama_flows' },
+      pathname: '/auth-server/authn',
+    })
     render(<AuthNPage />, { wrapper: Wrapper })
     expect(screen.getByTestId('default-acr')).toBeInTheDocument()
   })

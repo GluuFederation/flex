@@ -116,9 +116,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     [isConfigLoaded, serverConfiguration],
   )
   const scripts = useAuthServerScripts()
-  const { data: acrs, isLoading: acrLoading } = useGetAcrs({
-    query: { staleTime: 30000 },
-  })
+  const { data: acrs, isLoading: acrLoading } = useGetAcrs()
   const lSize = DEFAULT_FORM_LABEL_SIZE
   const [modal, setModal] = useState<boolean>(false)
   const [patches, setPatches] = useState<JsonPatch[]>([])
