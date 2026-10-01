@@ -7,9 +7,16 @@ jest.mock('@mui/material/useMediaQuery', () => ({
   default: () => mockIsMobile,
 }))
 
+let mockLocationState: { authnTab?: string } | null = null
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({ state: mockLocationState, pathname: '/auth-server/authn/edit/test' }),
+}))
+
 import {
   createAuthenticationTestStore,
   createAuthenticationTestWrapper,
+  mockAppNavigation,
 } from '../../__tests__/helpers/authenticationTestUtils'
 import AcrsForm from '../AcrsForm'
 import type { AuthNItem } from '../../types'
@@ -60,6 +67,7 @@ describe('AcrsForm', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockIsMobile = false
+    mockLocationState = null
     const store = createAuthenticationTestStore()
     Wrapper = createAuthenticationTestWrapper(store)
   })
@@ -192,6 +200,23 @@ describe('AcrsForm', () => {
       expect(screen.getByText(/Back/i)).toBeInTheDocument()
       expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('back navigation', () => {
+    const mockNavigateToRoute = jest.fn()
+
+    beforeEach(() => {
+      mockAppNavigation(mockNavigateToRoute)
+    })
+
+    it.each(['builtIn', 'acrs'])('returns to the %s tab it was opened from', (authnTab) => {
+      mockLocationState = { authnTab }
+      render(<AcrsForm item={scriptItem} handleSubmit={jest.fn()} />, { wrapper: Wrapper })
+      fireEvent.click(screen.getByRole('button', { name: /back/i }))
+      expect(mockNavigateToRoute).toHaveBeenCalledWith('/auth-server/authn', {
+        state: { authnTab },
+      })
     })
   })
 })

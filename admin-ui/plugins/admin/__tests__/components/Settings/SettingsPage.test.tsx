@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import SettingsPage from 'Plugins/admin/components/Settings/SettingsPage'
 import { useGetAgamaPrj } from 'JansConfigApi'
-import type { Deployment } from 'JansConfigApi'
+import type { Deployment, DeploymentDetailsFlowsError } from 'JansConfigApi'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -109,15 +109,21 @@ it('Should render the settings page properly', async () => {
 const agamaEntries: Deployment[] = [
   {
     details: {
+      flowsError: {
+        'org.gluu.agama.pw.main': null,
+        'org.gluu.agama.pw.reset': null,
+        'org.gluu.agama.hidden': null,
+        'org.gluu.agama.broken': 'Syntax error',
+      } as Record<string, string | null> as DeploymentDetailsFlowsError,
       projectMetadata: {
-        configs: { 'org.gluu.agama.pw.main': {}, 'org.gluu.agama.hidden': {} },
+        configs: { 'org.gluu.agama.pw.main': {} },
         noDirectLaunch: ['org.gluu.agama.hidden'],
       },
     },
   },
 ]
 
-it('Should list installed agama project flows in the ACR dropdown', async () => {
+it('Should list every deployed, directly launchable agama flow in the ACR dropdown', async () => {
   const agamaQuery = { data: { entries: agamaEntries }, isLoading: false }
   jest
     .mocked(useGetAgamaPrj)
@@ -130,7 +136,11 @@ it('Should list installed agama project flows in the ACR dropdown', async () => 
   expect(
     await screen.findByRole('option', { name: /agama_org\.gluu\.agama\.pw\.main \(agama\)/ }),
   ).toBeInTheDocument()
+  expect(
+    screen.getByRole('option', { name: /agama_org\.gluu\.agama\.pw\.reset \(agama\)/ }),
+  ).toBeInTheDocument()
   expect(screen.queryByRole('option', { name: /agama_org\.gluu\.agama\.hidden/ })).toBeNull()
+  expect(screen.queryByRole('option', { name: /agama_org\.gluu\.agama\.broken/ })).toBeNull()
 })
 
 describe('read-only access', () => {

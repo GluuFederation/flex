@@ -6,6 +6,8 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import type { AuthState } from 'Redux/features/types/authTypes'
 import { mockAcrs, mockLdapConfigurations, mockScripts } from '../fixtures/mockAuthenticationData'
+import { useGetAgamaPrj, type Deployment } from 'JansConfigApi'
+import { useAppNavigation } from '@/helpers/navigation'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -44,6 +46,10 @@ jest.mock('JansConfigApi', () => ({
     isPending: false,
   })),
   getGetAcrsQueryKey: jest.fn(() => ['/api/v1/acrs']),
+  getGetConfigDatabaseLdapQueryKey: jest.fn(() => ['/api/v1/config/database/ldap']),
+  getGetConfigScriptsByTypeQueryKey: jest.fn((type: string) => [
+    `/api/v1/config/scripts/type/${type}`,
+  ]),
   useGetConfigDatabaseLdap: jest.fn(() => ({
     data: mockLdapConfigurations,
     isLoading: false,
@@ -65,6 +71,7 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 jest.mock('../../Acrs/hooks', () => ({
+  ...jest.requireActual('../../Acrs/hooks'),
   useAcrAudit: jest.fn(() => ({
     logAcrUpdate: jest.fn(),
   })),
@@ -146,4 +153,22 @@ export const createAuthenticationTestWrapper = (
   )
   Wrapper.displayName = 'AuthenticationTestWrapper'
   return Wrapper
+}
+
+export const mockAgamaProjects = (
+  entries: Deployment[],
+  { isFetching = false }: { isFetching?: boolean } = {},
+): void => {
+  jest.mocked(useGetAgamaPrj).mockReturnValue({
+    data: { entries },
+    isLoading: false,
+    isFetching,
+    error: null,
+  } as Partial<ReturnType<typeof useGetAgamaPrj>> as ReturnType<typeof useGetAgamaPrj>)
+}
+
+export const mockAppNavigation = (navigateToRoute: jest.Mock): void => {
+  jest.mocked(useAppNavigation).mockReturnValue({
+    navigateToRoute,
+  } as Partial<ReturnType<typeof useAppNavigation>> as ReturnType<typeof useAppNavigation>)
 }

@@ -11,20 +11,19 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useLocation } from 'react-router-dom'
-
 import DefaultAcr from './DefaultAcr/DefaultAcr'
 import BuiltIn from './BuiltIn/BuiltIn'
 import Acrs from './Acrs/Acrs'
 import Aliases from './Aliases/Aliases'
 import AgamaFlows from './AgamaFlows/AgamaFlows'
 import { useStyles } from './styles/Authentication.style'
-import { ALIASES_TAB_INDEX, TAB_IDS } from './constants'
-import type { TabName } from './types'
+import { ALIASES_TAB_INDEX, TAB_IDS, getTabIndex } from './constants'
+import type { AuthnLocationState, TabName } from './types'
 
 const Authentication = (): ReactElement => {
   const { t } = useTranslation()
   const location = useLocation()
-  const defaultTab: number = (location.state as { authnTab?: number } | null)?.authnTab ?? 0
+  const defaultTab = getTabIndex((location.state as AuthnLocationState | null)?.authnTab)
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark } = useMemo(
@@ -59,7 +58,7 @@ const Authentication = (): ReactElement => {
       { id: TAB_IDS.BUILT_IN, name: t('menus.builtIn'), path: '' },
       { id: TAB_IDS.ACRS, name: t('menus.acrs'), path: '' },
       { id: TAB_IDS.ALIASES, name: t('menus.aliases'), path: '' },
-      { id: TAB_IDS.AGAMA_FLOWS, name: t('menus.agama_flows'), path: '' },
+      { id: TAB_IDS.AGAMA_PROJECTS, name: t('menus.agama_projects'), path: '' },
     ],
     [t],
   )
@@ -101,7 +100,7 @@ const Authentication = (): ReactElement => {
               onWritePermissionChange={setCanEditAliases}
             />
           )
-        case TAB_IDS.AGAMA_FLOWS:
+        case TAB_IDS.AGAMA_PROJECTS:
           return <AgamaFlows />
         default:
           return undefined
