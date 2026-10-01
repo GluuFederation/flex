@@ -25,7 +25,6 @@ export const useAuthServerJsonPropertiesQuery = (
   return useQuery({
     queryKey: authServerJsonPropertiesQueryKey,
     queryFn: () => fetchAuthServerJsonProperties(),
-    staleTime: 30_000,
     ...options,
   })
 }

@@ -13,7 +13,12 @@ import {
   mockAgamaProjects,
 } from '../../__tests__/helpers/authenticationTestUtils'
 import DefaultAcr from '../DefaultAcr'
-import { mockAgamaDeployments } from '../../__tests__/fixtures/mockAuthenticationData'
+import {
+  mockAgamaDeployments,
+  mockPendingAgamaDeployment,
+} from '../../__tests__/fixtures/mockAuthenticationData'
+import { PENDING_REFETCH_INTERVAL } from '@/utils/queryUtils'
+import { agamaRefetchIntervalFor } from '../../__tests__/helpers/agamaPolling'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
 
@@ -81,6 +86,24 @@ describe('DefaultAcr', () => {
       'agama_org.gluu.agama.pw.main',
       'agama_org.gluu.agama.pw.reset',
     ])
+  })
+
+  it('re-checks Agama projects while a deployment is pending', () => {
+    render(<DefaultAcr />, { wrapper: Wrapper })
+    expect(agamaRefetchIntervalFor([mockPendingAgamaDeployment])).toBe(PENDING_REFETCH_INTERVAL)
+    expect(agamaRefetchIntervalFor(mockAgamaDeployments)).toBe(false)
+  })
+
+  it('shows the loader while Agama projects refetch', () => {
+    mockAgamaProjects(mockAgamaDeployments, { isFetching: true })
+    render(<DefaultAcr />, { wrapper: Wrapper })
+    expect(screen.getByLabelText('Loading')).toBeInTheDocument()
+  })
+
+  it('keeps the form usable while it re-checks a pending deployment', () => {
+    mockAgamaProjects([...mockAgamaDeployments, mockPendingAgamaDeployment], { isFetching: true })
+    render(<DefaultAcr />, { wrapper: Wrapper })
+    expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument()
   })
 
   describe('mobile is read-only', () => {

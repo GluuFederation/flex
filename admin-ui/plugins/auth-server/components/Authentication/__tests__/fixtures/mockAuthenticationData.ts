@@ -58,6 +58,7 @@ export const flowsOutcome = (outcome: Record<string, string | null>): Deployment
 export const mockAgamaDeployments: Deployment[] = [
   {
     id: 'casa-id',
+    finishedAt: '2026-09-30T10:00:00Z',
     details: {
       flowsError: flowsOutcome({
         'io.jans.casa.authn.main': null,
@@ -73,6 +74,7 @@ export const mockAgamaDeployments: Deployment[] = [
   },
   {
     id: 'pw-id',
+    finishedAt: '2026-09-30T10:00:00Z',
     details: {
       flowsError: flowsOutcome({
         'org.gluu.agama.pw.reset': null,
@@ -82,3 +84,5 @@ export const mockAgamaDeployments: Deployment[] = [
     },
   },
 ]
+
+export const mockPendingAgamaDeployment: Deployment = { id: 'pending-id' }

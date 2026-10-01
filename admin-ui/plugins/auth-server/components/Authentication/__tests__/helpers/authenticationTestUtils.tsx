@@ -46,6 +46,10 @@ jest.mock('JansConfigApi', () => ({
     isPending: false,
   })),
   getGetAcrsQueryKey: jest.fn(() => ['/api/v1/acrs']),
+  getGetConfigDatabaseLdapQueryKey: jest.fn(() => ['/api/v1/config/database/ldap']),
+  getGetConfigScriptsByTypeQueryKey: jest.fn((type: string) => [
+    `/api/v1/config/scripts/type/${type}`,
+  ]),
   useGetConfigDatabaseLdap: jest.fn(() => ({
     data: mockLdapConfigurations,
     isLoading: false,
@@ -67,6 +71,7 @@ jest.mock('JansConfigApi', () => ({
 }))
 
 jest.mock('../../Acrs/hooks', () => ({
+  ...jest.requireActual('../../Acrs/hooks'),
   useAcrAudit: jest.fn(() => ({
     logAcrUpdate: jest.fn(),
   })),
@@ -150,10 +155,14 @@ export const createAuthenticationTestWrapper = (
   return Wrapper
 }
 
-export const mockAgamaProjects = (entries: Deployment[]): void => {
+export const mockAgamaProjects = (
+  entries: Deployment[],
+  { isFetching = false }: { isFetching?: boolean } = {},
+): void => {
   jest.mocked(useGetAgamaPrj).mockReturnValue({
     data: { entries },
     isLoading: false,
+    isFetching,
     error: null,
   } as Partial<ReturnType<typeof useGetAgamaPrj>> as ReturnType<typeof useGetAgamaPrj>)
 }

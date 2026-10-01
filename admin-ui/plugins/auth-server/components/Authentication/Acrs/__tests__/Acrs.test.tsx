@@ -8,7 +8,12 @@ import {
 } from '../../__tests__/helpers/authenticationTestUtils'
 import Acrs from '../Acrs'
 import { useGetAcrs, useGetAgamaPrj } from 'JansConfigApi'
-import { mockAgamaDeployments } from '../../__tests__/fixtures/mockAuthenticationData'
+import {
+  mockAgamaDeployments,
+  mockPendingAgamaDeployment,
+} from '../../__tests__/fixtures/mockAuthenticationData'
+import { PENDING_REFETCH_INTERVAL } from '@/utils/queryUtils'
+import { agamaRefetchIntervalFor } from '../../__tests__/helpers/agamaPolling'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
 
@@ -188,6 +193,31 @@ describe('Acrs — ACR list with Agama flows', () => {
         state: expect.objectContaining({ authnTab: 'builtIn' }),
       }),
     )
+  })
+
+  it('does not show the loader when nothing is fetching', () => {
+    render(<Acrs />, { wrapper: Wrapper })
+    expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument()
+  })
+
+  it('shows the loader over cached rows while Agama projects refetch', () => {
+    mockAgamaProjects(mockAgamaDeployments, { isFetching: true })
+    render(<Acrs />, { wrapper: Wrapper })
+    expect(screen.getByLabelText('Loading')).toBeInTheDocument()
+    expect(screen.getByText('agama_org.gluu.agama.pw.main')).toBeInTheDocument()
+  })
+
+  it('re-checks Agama projects while a deployment is pending', () => {
+    render(<Acrs />, { wrapper: Wrapper })
+    expect(agamaRefetchIntervalFor([mockPendingAgamaDeployment])).toBe(PENDING_REFETCH_INTERVAL)
+    expect(agamaRefetchIntervalFor(mockAgamaDeployments)).toBe(false)
+  })
+
+  it('keeps the table usable while it re-checks a pending deployment', () => {
+    mockAgamaProjects([...mockAgamaDeployments, mockPendingAgamaDeployment], { isFetching: true })
+    render(<Acrs />, { wrapper: Wrapper })
+    expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument()
+    expect(screen.getByText('agama_org.gluu.agama.pw.main')).toBeInTheDocument()
   })
 
   it('does not load LDAP, script or Agama data on the Built-In tab', () => {

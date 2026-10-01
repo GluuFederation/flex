@@ -20,7 +20,8 @@ import type { AuthNItem, AcrsProps, AuthnLocationState } from '../types'
 import { ACR_TYPES, AUTH_RESOURCE_ID, BUILT_IN_ACRS, PAGE_SIZE, TAB_IDS } from '../constants'
 import { MAX_AGAMA_PROJECTS_FOR_ACR } from '../DefaultAcr/constants'
 import { useStyles } from './Acrs.style'
-import { buildAcrTableRows, displayOrDash } from './helper/acrUtils'
+import { buildAcrTableRows, displayOrDash, hasPendingDeployment } from './helper/acrUtils'
+import { usePendingDeploymentPolling } from './hooks'
 
 const getAgamaDetailFields = (row: AuthNItem): GluuDetailGridField[] => [
   {
@@ -58,20 +59,33 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   const canLoadAcrList = canReadAuthN && !isBuiltIn
 
-  const { data: ldapConfigurations, isLoading: ldapLoading } = useGetConfigDatabaseLdap({
-    query: { staleTime: 30000, enabled: canLoadAcrList },
+  const {
+    data: ldapConfigurations,
+    isLoading: ldapLoading,
+    isFetching: ldapFetching,
+  } = useGetConfigDatabaseLdap({
+    query: { enabled: canLoadAcrList },
   })
-  const { data: acrs, isLoading: acrsLoading } = useGetAcrs({
-    query: { staleTime: 30000, enabled: canReadAuthN },
+  const {
+    data: acrs,
+    isLoading: acrsLoading,
+    isFetching: acrsFetching,
+  } = useGetAcrs({
+    query: { enabled: canReadAuthN },
   })
-  const { data: scriptsResponse, isLoading: scriptsLoading } = useCustomScriptsByType(
-    DEFAULT_SCRIPT_TYPE,
-    undefined,
-    { enabled: canLoadAcrList },
-  )
-  const { data: agamaProjects, isLoading: agamaLoading } = useGetAgamaPrj(
+  const {
+    data: scriptsResponse,
+    isLoading: scriptsLoading,
+    isFetching: scriptsFetching,
+  } = useCustomScriptsByType(DEFAULT_SCRIPT_TYPE, undefined, { enabled: canLoadAcrList })
+  const pollPendingDeployments = usePendingDeploymentPolling()
+  const {
+    data: agamaProjects,
+    isLoading: agamaLoading,
+    isFetching: agamaFetching,
+  } = useGetAgamaPrj(
     { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
-    { query: { staleTime: 30000, enabled: canLoadAcrList } },
+    { query: { enabled: canLoadAcrList, refetchInterval: pollPendingDeployments } },
   )
 
   SetTitle(t('titles.authentication'))
@@ -90,6 +104,8 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   )
 
   const isLoading = ldapLoading || scriptsLoading || acrsLoading || agamaLoading
+  const isAgamaRefreshing = agamaFetching && !hasPendingDeployment(agamaProjects?.entries)
+  const isFetching = ldapFetching || scriptsFetching || acrsFetching || isAgamaRefreshing
 
   const tableData = useMemo<AuthNItem[]>(() => {
     if (isLoading) {
@@ -246,7 +262,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
 
   return (
     <GluuViewWrapper canShow={canReadAuthN}>
-      <GluuLoader blocking={isLoading}>
+      <GluuLoader blocking={isLoading || isFetching}>
         <div className={classes.page}>
           <GluuTable<AuthNItem>
             columns={columns}

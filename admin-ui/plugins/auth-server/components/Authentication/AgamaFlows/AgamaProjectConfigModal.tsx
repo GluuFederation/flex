@@ -7,7 +7,13 @@ import { GluuTable, type ColumnDef } from '@/components/GluuTable'
 import { updateToast } from 'Redux/features/toastSlice'
 import isEmpty from 'lodash/isEmpty'
 import AceEditor from 'react-ace'
-import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  getGetAgamaPrjConfigsQueryKey,
+  useGetAgamaPrjByName,
+  useGetAgamaPrjConfigs,
+  usePutAgamaPrj,
+} from 'JansConfigApi'
 import { DEFAULT_THEME, THEME_LIGHT, THEME_DARK } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
 import { GluuButton } from '@/components/GluuButton'
@@ -40,6 +46,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 }) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
 
   const { state: themeState } = useTheme()
   const { themeColors, isDark, selectedTheme } = useMemo(
@@ -111,6 +118,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
         dispatch(
           updateToast(true, 'success', `Configuration for project ${name} imported successfully.`),
         )
+        queryClient.invalidateQueries({ queryKey: getGetAgamaPrjConfigsQueryKey(name) })
       },
       onError: (error: ApiError) => {
         const errorMessage = getErrorMessage(error, 'Invalid JSON file')

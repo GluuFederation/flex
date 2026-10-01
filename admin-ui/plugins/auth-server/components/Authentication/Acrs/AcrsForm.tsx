@@ -52,7 +52,7 @@ const AcrsForm = ({ item, handleSubmit, isSubmitting = false }: AcrsFormProps): 
   )
   const { classes } = useStyles({ isDark, themeColors })
 
-  const { data: acrs } = useGetAcrs({ query: { staleTime: 30000 } })
+  const { data: acrs } = useGetAcrs()
 
   const initialValues: AcrsFormValues = useMemo(
     () => ({

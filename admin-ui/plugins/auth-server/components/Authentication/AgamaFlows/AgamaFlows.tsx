@@ -34,6 +34,8 @@ import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAuthServerJsonPropertiesQuery } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { logger } from '@/utils/logger'
+import { hasPendingDeployment } from '../Acrs/helper/acrUtils'
+import { usePendingDeploymentPolling } from '../Acrs/hooks'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 import { useQueryClient } from '@tanstack/react-query'
 import { AXIOS_INSTANCE } from 'Orval'
@@ -131,9 +133,11 @@ const AgamaFlows: React.FC = () => {
   }
   const isAgamaEnabled = agamaConfig.agamaConfiguration?.enabled
 
+  const pollPendingDeployments = usePendingDeploymentPolling()
   const {
     data: projectsResponse,
     isLoading: loading,
+    isFetching: fetching,
     refetch: refetchProjects,
     error: projectsError,
   } = useGetAgamaPrj(
@@ -144,8 +148,7 @@ const AgamaFlows: React.FC = () => {
     {
       query: {
         enabled: canReadAuth,
-        staleTime: 0,
-        gcTime: 0,
+        refetchInterval: pollPendingDeployments,
       },
     },
   )
@@ -944,7 +947,13 @@ const AgamaFlows: React.FC = () => {
   ) : null
 
   return (
-    <GluuLoader blocking={(loading && !showAddModal) || deleteProjectMutation.isPending}>
+    <GluuLoader
+      blocking={
+        ((loading || (fetching && !hasPendingDeployment(projectsResponse?.entries))) &&
+          !showAddModal) ||
+        deleteProjectMutation.isPending
+      }
+    >
       {showConfigModal && selectedRow && (
         <AgamaProjectConfigModal
           isOpen={showConfigModal}

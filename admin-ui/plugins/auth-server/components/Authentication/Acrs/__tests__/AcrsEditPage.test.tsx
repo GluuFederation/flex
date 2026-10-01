@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent, act } from '@testing-library/react'
+import { QueryClient } from '@tanstack/react-query'
 import {
   createAuthenticationTestStore,
   createAuthenticationTestWrapper,
@@ -90,12 +91,15 @@ describe('AcrsEditPage', () => {
       jest.useRealTimers()
     })
 
-    it.each(['acrs', 'builtIn'])('returns to the %s tab it was opened from', async (authnTab) => {
+    const saveScriptEdit = async (
+      authnTab: string,
+      wrapper: React.ComponentType<{ children: React.ReactNode }>,
+    ): Promise<void> => {
       mockUseLocation.mockReturnValue({
         state: { authnTab, selectedItem: { ...mockAuthenticationItem, isCustomScript: true } },
         pathname: '/auth-server/authn/edit/test',
       })
-      const { container } = render(<AcrsEditPage />, { wrapper: Wrapper })
+      const { container } = render(<AcrsEditPage />, { wrapper })
 
       fireEvent.change(container.querySelector('[name="description"]') as HTMLInputElement, {
         target: { value: 'Updated OTP description' },
@@ -111,9 +115,31 @@ describe('AcrsEditPage', () => {
       act(() => {
         jest.advanceTimersByTime(2000)
       })
+    }
+
+    it.each(['acrs', 'builtIn'])('returns to the %s tab it was opened from', async (authnTab) => {
+      await saveScriptEdit(authnTab, Wrapper)
 
       expect(mockNavigateToRoute).toHaveBeenCalledWith('/auth-server/authn', {
         state: { authnTab },
+      })
+    })
+
+    it('marks the ACR, LDAP and script lists stale so the tabs show the saved values', async () => {
+      const client = new QueryClient()
+      const invalidateQueries = jest.spyOn(client, 'invalidateQueries')
+
+      await saveScriptEdit(
+        'acrs',
+        createAuthenticationTestWrapper(createAuthenticationTestStore(), client),
+      )
+
+      expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['/api/v1/acrs'] })
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['/api/v1/config/database/ldap'],
+      })
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['/api/v1/config/scripts/type/person_authentication'],
       })
     })
   })

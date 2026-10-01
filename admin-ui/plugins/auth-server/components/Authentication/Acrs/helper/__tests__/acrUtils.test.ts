@@ -7,6 +7,7 @@ import {
   buildDropdownOptions,
   buildAgamaAcrItems,
   buildAcrTableRows,
+  hasPendingDeployment,
 } from 'Plugins/auth-server/components/Authentication/Acrs/helper/acrUtils'
 import { SIMPLE_PASSWORD_AUTH } from '@/constants'
 import { EMPTY_PLACEHOLDER } from 'Plugins/auth-server/components/Authentication/Acrs/constants'
@@ -256,5 +257,17 @@ describe('buildAcrTableRows', () => {
         isCustomScript: true,
       }),
     )
+  })
+})
+
+describe('hasPendingDeployment', () => {
+  it('is true while any deployment has not finished processing', () => {
+    expect(hasPendingDeployment([...mockAgamaDeployments, { id: 'new-id' }])).toBe(true)
+  })
+
+  it('is false when every deployment has finished or there are none', () => {
+    expect(hasPendingDeployment(mockAgamaDeployments)).toBe(false)
+    expect(hasPendingDeployment([])).toBe(false)
+    expect(hasPendingDeployment(undefined)).toBe(false)
   })
 })

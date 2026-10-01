@@ -50,6 +50,9 @@ type ScriptOption = {
 
 const AGAMA_ACR_PREFIX = 'agama_'
 
+export const hasPendingDeployment = (deployments: Deployment[] | undefined): boolean =>
+  deployments?.some((deployment) => !deployment.finishedAt) ?? false
+
 const getLaunchableFlows = (deployment: Deployment): string[] => {
   const details = deployment?.details
   const flows = details?.flowsError
