@@ -1,3 +1,5 @@
+import type { AcrType, TabId } from '../constants'
+
 export type ConfigurationProperty = {
   key?: string
   value?: string
@@ -37,6 +39,8 @@ export type AuthNItem = {
   baseDn?: string
   dn?: string
   configurationProperties?: ConfigurationProperty[]
+  acrType?: AcrType
+  agamaProject?: string
 }
 
 export type BuiltInAcr = {
@@ -49,6 +53,12 @@ export type BuiltInAcr = {
   hashAlgorithm: string
   defaultAuthNMethod: boolean
   acrName: string
+  acrType: AcrType
+}
+
+export type AuthnLocationState = {
+  authnTab?: TabId
+  selectedItem?: AuthNItem
 }
 
 export type TabName = {

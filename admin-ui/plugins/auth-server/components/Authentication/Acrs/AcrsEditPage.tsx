@@ -4,7 +4,11 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import {
+  getGetAcrsQueryKey,
+  getGetConfigDatabaseLdapQueryKey,
+  getGetConfigScriptsByTypeQueryKey,
   usePutAcrs,
   usePutConfigDatabaseLdap,
   usePutConfigScripts,
@@ -14,10 +18,11 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useAppDispatch } from '@/redux/hooks'
-import type { AcrsFormValues, AuthNItem } from '../types'
+import type { AcrsFormValues, AuthnLocationState } from '../types'
 import { isDefaultAuthNMethod, transformConfigurationProperties } from './helper/acrUtils'
 import { logger } from '@/utils/logger'
 import { AUTH_METHOD_NAMES, SCRIPT_TYPES } from '../constants'
+import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -27,11 +32,12 @@ import { useLocation } from 'react-router-dom'
 
 const AcrsEditPage = (): ReactElement => {
   const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
   const { navigateToRoute } = useAppNavigation()
   const { t } = useTranslation()
   const location = useLocation()
-  const locationState = location.state as { authnTab?: number; selectedItem?: AuthNItem } | null
-  const authnTab: number = locationState?.authnTab ?? 0
+  const locationState = location.state as AuthnLocationState | null
+  const authnTab = locationState?.authnTab
   const atomItem = locationState?.selectedItem ?? null
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -65,10 +71,15 @@ const AcrsEditPage = (): ReactElement => {
     setIsSubmitting(false)
     setErrorMessage(undefined)
     dispatch(updateToast(true, 'success'))
+    queryClient.invalidateQueries({ queryKey: getGetAcrsQueryKey() })
+    queryClient.invalidateQueries({ queryKey: getGetConfigDatabaseLdapQueryKey() })
+    queryClient.invalidateQueries({
+      queryKey: getGetConfigScriptsByTypeQueryKey(DEFAULT_SCRIPT_TYPE),
+    })
     navigationTimeoutRef.current = setTimeout(() => {
       navigateToRoute(ROUTES.AUTH_SERVER_AUTHN, { state: { authnTab } })
     }, 2000)
-  }, [dispatch, navigateToRoute, authnTab])
+  }, [dispatch, queryClient, navigateToRoute, authnTab])
 
   const handleError = useCallback(
     (error: Error) => {

@@ -27,10 +27,11 @@ import { DEFAULT_SCRIPT_TYPE } from '@/constants'
 import {
   buildAgamaFlowsArray,
   buildDropdownOptions,
+  hasPendingDeployment,
   type DropdownOption,
 } from '../Acrs/helper/acrUtils'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useAcrAudit } from '../Acrs/hooks'
+import { useAcrAudit, usePendingDeploymentPolling } from '../Acrs/hooks'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
 import { useStyles } from './DefaultAcr.style'
@@ -53,28 +54,28 @@ const DefaultAcr = (): React.ReactElement => {
 
   const [modal, setModal] = useState<boolean>(false)
 
-  const { data: scriptsResponse, isLoading: loadingScripts } = useCustomScriptsByType(
+  const { data: scriptsResponse, isFetching: scriptsFetching } = useCustomScriptsByType(
     DEFAULT_SCRIPT_TYPE,
     undefined,
     { enabled: canReadAuth },
   )
   const {
     data: acrs,
-    isLoading: acrLoading,
+    isFetching: acrFetching,
     error: acrError,
   } = useGetAcrs({
     query: {
-      staleTime: 30000,
       enabled: canReadAuth,
     },
   })
+  const pollPendingDeployments = usePendingDeploymentPolling()
   const {
     data: projectsResponse,
-    isLoading: agamaLoading,
+    isFetching: agamaFetching,
     error,
   } = useGetAgamaPrj(
     { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
-    { query: { enabled: canReadAuth } },
+    { query: { enabled: canReadAuth, refetchInterval: pollPendingDeployments } },
   )
 
   const handleUpdateSuccess = useCallback(() => {
@@ -183,7 +184,12 @@ const DefaultAcr = (): React.ReactElement => {
 
   return (
     <GluuLoader
-      blocking={loadingScripts || agamaLoading || acrLoading || putAcrsMutation.isPending}
+      blocking={
+        scriptsFetching ||
+        (agamaFetching && !hasPendingDeployment(projectsResponse?.entries)) ||
+        acrFetching ||
+        putAcrsMutation.isPending
+      }
     >
       <Form onSubmit={formik.handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
