@@ -119,7 +119,7 @@ https://FQDN/admin
 After successful installation of the Admin-UI component, we need to upload the required SSA input as a file path.
 This should be the SSA or file that was acquired as part of [prerequisite step](#prerequisites).
 
-When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md/#flex-services-dependencies) for potential solutions.
+When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md#flex-services-dependencies) for potential solutions.
 
 - Access Casa using URI below
 ```text
