@@ -68,7 +68,7 @@ Verify and configure your deployment:
 
 ## System Requirements
 
-{% include "includes/cn-system-requirements.md" %}
+--8<-- "includes/cn-system-requirements.md"
 
 ## Helm Chart Reference
 
