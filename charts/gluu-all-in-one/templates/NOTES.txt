@@ -1,3 +1,18 @@
+********************************************************************************
+***                       WHERE THIS CHART COMES FROM                        ***
+********************************************************************************
+Gluu Flex charts are published to an OCI registry:
+
+  helm install gluu oci://ghcr.io/gluufederation/charts/gluu-all-in-one \
+    --version {{ .Chart.Version }} -n gluu --create-namespace -f override.yaml
+
+The classic repository at https://docs.gluu.org/charts still resolves, and every
+version it ever served remains available, but it is no longer where new charts
+are published. If you installed with `helm repo add`, switch when convenient.
+
+Installation guide: https://gluu.org/docs/flex/install/helm-install
+********************************************************************************
+
 {{ if or (and (index .Values "gateway-api" "enabled") (index .Values "gateway-api" "routes" "adminUiEnabled")) (index .Values "admin-ui" "ingress" "adminUiEnabled") -}}
 ********************************************************************************
 ***              SECURITY WARNING: ADMIN-UI EXPOSED                          ***
