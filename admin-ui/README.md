@@ -47,7 +47,7 @@ Prerequisites: Node `24.x`, npm `10+`, a reachable Jans Server. Full walkthrough
 | `npm run build:dev`               | Build with `development` mode (sourcemaps, dev env)                         |
 | `npm run build:prod`              | Build with `production` mode (minified)                                     |
 | `ANALYZE=true npm run build:prod` | Prod build + `dist/sonda-report.html` + `.json`                             |
-| `npm run preview:prod`            | Build prod, patch runtime config, preview                                   |
+| `npm run preview:prod`            | Build prod and preview                                                      |
 | `npm run preview:prod:analyze`    | Full prod build + Sonda + knip + preview, prints report links               |
 | `npm test`                        | Jest, watch-friendly                                                        |
 | `npm run test:all`                | Jest single-pass, in-band, no watchman                                      |

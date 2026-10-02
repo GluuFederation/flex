@@ -33,7 +33,7 @@ One-page reference for every notable library. What it is, where it's wired, when
 
 - **React + React DOM**: UI runtime. Bootstrapped in [`app/index.tsx`](../app/index.tsx).
 - **React Router**: client-side routing. Routes in `app/routes/` plus per-plugin contributions via `plugin-metadata.ts`.
-- **Vite (Rolldown)**: dev server + production bundler. Config in [`vite.config.ts`](../vite.config.ts) (chunking + `admin-ui:env-config` plugin). See [build-deploy.md](./build-deploy.md#chunking). Never use a `manualChunks` callback.
+- **Vite (Rolldown)**: dev server + production bundler. Config in [`vite.config.ts`](../vite.config.ts) (chunking, plus the small `admin-ui:timing`, `admin-ui:base-path-redirect` and `admin-ui:wasm-preload` plugins). See [build-deploy.md](./build-deploy.md#chunking). Never use a `manualChunks` callback.
 
 ### State
 
