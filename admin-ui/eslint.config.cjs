@@ -18,7 +18,7 @@ module.exports = [
   {
     ...reactPlugin.configs.flat.recommended,
     settings: {
-      react: { version: '18' },
+      react: { version: '19' },
     },
   },
 
@@ -43,7 +43,7 @@ module.exports = [
     },
 
     settings: {
-      react: { version: '18' },
+      react: { version: '19' },
     },
 
     rules: {
@@ -118,7 +118,7 @@ module.exports = [
 
   // CommonJS / config files — also add Node/CommonJS globals here.
   {
-    files: ['**/*.cjs', 'config/**/*.{js,cjs,mjs,ts}', '**/*.config.{js,cjs,mjs,ts}'],
+    files: ['**/*.cjs', '**/*.config.{js,cjs,mjs,ts}'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -214,7 +214,6 @@ module.exports = [
               group: [
                 '**/routes/Dashboards/DashboardPage',
                 '**/routes/Apps/Profile/ProfilePage',
-                '**/routes/Apps/Gluu/Gluu404Error',
                 '**/routes/Pages/ByeBye',
                 '**/routes/Apps/Gluu/GluuNavBar',
                 '**/layout/components/DefaultSidebar',
@@ -249,9 +248,7 @@ module.exports = [
       'node_modules/**',
       'coverage/**',
       '**/*.generated.ts',
-      'app/redux/api/backend/**',
       'jans_config_api_orval/**',
-      'jans_config_api/**',
       '.check-all-out/**',
       '.fix-orval-enums-out/**',
       'package-lock.json',

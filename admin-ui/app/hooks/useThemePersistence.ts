@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useTheme } from '@/context/theme/themeContext'
 import { isValidTheme, type ThemeValue } from '@/context/theme/constants'
 import { logger } from '@/utils/logger'
@@ -10,6 +10,14 @@ import type { UserInfo } from 'Redux/features/types/authTypes'
 export const useThemePersistence = (userInfo: UserInfo | null | undefined) => {
   const { dispatch } = useTheme()
   const inum = userInfo?.inum
+
+  useEffect(() => {
+    if (!inum) return
+    const savedTheme = safeParseUserConfig().theme?.[inum]
+    if (!savedTheme || !isValidTheme(savedTheme)) return
+    storage.set(STORAGE_KEYS.INIT_THEME, savedTheme)
+    dispatch({ type: savedTheme })
+  }, [inum, dispatch])
 
   return useCallback(
     (value: string) => {

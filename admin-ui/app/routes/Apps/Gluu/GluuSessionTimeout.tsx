@@ -11,7 +11,7 @@ type SessionTimeoutProps = {
 }
 
 const COUNTDOWN_SECONDS = 10
-const DEFAULT_TIMEOUT_MINS = 5
+const DEFAULT_TIMEOUT_MINS = 30
 const IDLE_TO_MODAL_DELAY = 1000
 
 const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
