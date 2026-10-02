@@ -25,7 +25,6 @@ plugins:
        repository: GluuFederation/flex
 # Configuration
 theme:
-    name: material
     custom_dir: docs/overrides
     highlightjs: true
     hljs_languages:
@@ -86,7 +85,9 @@ markdown_extensions:
 - attr_list
 - toc:
     permalink: '#'
+    title: Table of contents
 - codehilite
+- pymdownx.snippets
 - pymdownx.superfences:
     custom_fences:
     - class: mermaid
