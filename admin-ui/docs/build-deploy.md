@@ -41,7 +41,7 @@ After `npm run build:prod`, you can serve the resulting `dist/` over a local sta
 | `npm run preview:prod`         | `build:prod` → `vite preview --host 0.0.0.0`                                                    |
 | `npm run preview:prod:analyze` | Same as `preview:prod` + Sonda + `knip --reporter json`. Prints `file://` links to both reports |
 
-The preview has no `env-config.js`, so the request for `/admin/env-config.js` 404s and the app uses the `CONFIG_API_BASE_URL` the build took from `.env.production` (see [Runtime env injection](#runtime-env-injection)). Set it there before building, or the preview has no Config API to call.
+The preview has no `env-config.js`, so the request for `/admin/env-config.js` 404s and the app falls back to the `CONFIG_API_BASE_URL` baked into the bundle at build time (see [Runtime env injection](#runtime-env-injection)). That value has to be available when you run the build - `loadEnv` takes it from `.env`, `.env.production`, `.env.production.local` or the shell environment - or the preview has no Config API to call.
 
 ## Bundle analysis
 

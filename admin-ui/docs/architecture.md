@@ -139,7 +139,7 @@ Each plugin is a self-contained feature with its own `components/`, `redux/` (if
 | `user-management` | Users, 2FA devices, user form/edit/list                                                    |
 | `internal`        | Type contracts shared with the plugin loader                                               |
 
-The sidebar lists plugin menus in the order the plugins appear in [`admin-ui/plugins.config.json`](../plugins.config.json).
+Sidebar order comes from each menu entry's optional `PluginMenu.order`: `processMenus()` sorts the parent groups by it ascending, treating a missing value as `0`. No plugin sets `order` today, so every entry ties and the stable sort leaves the menus in the order their plugins appear in [`admin-ui/plugins.config.json`](../plugins.config.json). The `order` field in that JSON file is read by nothing.
 
 ## The plugin loader
 

@@ -140,7 +140,7 @@ The Admin UI ships a single production bundle that has to run unchanged on a dev
 2. **`process.env.CONFIG_API_BASE_URL`**: baked in from `.env.<mode>` at build time by Vite. Used in dev and as a build-time default.
 3. **The caller's fallback**: used when neither of the above is set. [`orval/axiosInstance.ts`](../orval/axiosInstance.ts) passes an empty string, so axios still constructs but requests go to the page's own origin, where there is no Config API, and fail.
 
-Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance. The second client, in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts), passes `http://localhost:8080` as its fallback, and the Settings page passes `N/A` so it displays the same URL the clients actually call.
+Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance. The other two callers pass their own step-3 fallbacks: the second client in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts) uses `http://localhost:8080`, and the Settings page uses `N/A`. When step 1 or step 2 supplies a URL, all three resolve to it and Settings shows exactly what the clients call; when neither does, each caller falls back to its own value and the `N/A` on screen no longer describes where requests go.
 
 ## Runtime env injection
 
