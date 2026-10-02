@@ -1,12 +1,13 @@
 import { useState, useCallback } from 'react'
 import { logger } from '@/utils/logger'
 import { storage } from '@/utils/storage'
+import { STORAGE_KEYS } from '@/constants'
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50] as const
 
 const DEFAULT_PAGING_SIZE = 10
 
-const STORAGE_KEY = 'gluu.pagingSize'
+const STORAGE_KEY = STORAGE_KEYS.PAGING_SIZE
 
 export const PAGING_SIZE_CHANGED_EVENT = 'gluu:pagingSizeChanged'
 
