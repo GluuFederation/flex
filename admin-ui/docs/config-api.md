@@ -134,13 +134,13 @@ If a hook you need does not exist, the upstream OpenAPI spec is missing the oper
 
 ## Base URL resolution
 
-The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a CI-deployed environment, and on a customer's installer VM. To make that work, the axios base URL is decided at boot through a three-step fallback chain in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts):
+The Admin UI ships a single production bundle that has to run unchanged on a developer's laptop, on a CI-deployed environment, and on a customer's installer VM. To make that work, the base URL is decided at boot through a three-step fallback chain in [`resolveConfigApiBaseUrl`](../app/utils/configApiBaseUrl.ts), which every caller shares:
 
 1. **`window.configApiBaseUrl`**: set at runtime by `env-config.js` (see [Runtime env injection](#runtime-env-injection)). If this is set and does **not** look like an un-substituted `%(...)s` placeholder (matched by `REGEX_PYTHON_PLACEHOLDER`), it wins.
 2. **`process.env.CONFIG_API_BASE_URL`**: baked in from `.env.<mode>` at build time by Vite. Used in dev and as a build-time default.
-3. **Empty string**: last-resort fallback so axios still constructs if neither of the above is set. Requests then go to the page's own origin, where there is no Config API, so they fail.
+3. **The caller's fallback**: used when neither of the above is set. [`orval/axiosInstance.ts`](../orval/axiosInstance.ts) passes an empty string, so axios still constructs but requests go to the page's own origin, where there is no Config API, and fail.
 
-Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance. The second client, in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts), uses the same chain, except that its last resort is `http://localhost:8080`.
+Whichever value wins becomes the `baseURL` of the shared `AXIOS_INSTANCE`. Every generated hook calls through this same instance. The second client, in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts), passes `http://localhost:8080` as its fallback, and the Settings page passes `N/A` so it displays the same URL the clients actually call.
 
 ## Runtime env injection
 

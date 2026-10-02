@@ -16,6 +16,7 @@ import { ADMIN_UI_RESOURCES, buildCedarPermissionKey } from '@/cedarling/utility
 import { CEDAR_ACTIONS } from '@/cedarling/constants'
 import { SETTINGS } from 'Utils/ApiResources'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
+import { resolveConfigApiBaseUrl } from '@/utils/configApiBaseUrl'
 import SetTitle from 'Utils/SetTitle'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -124,11 +125,7 @@ const SettingsPage: React.FC = () => {
   const selectedTheme = useMemo(() => themeState?.theme || DEFAULT_THEME, [themeState?.theme])
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
-  const configApiUrl = useMemo(() => {
-    if (typeof window === 'undefined') return 'N/A'
-    const windowWithConfig = window as Window & { configApiBaseUrl?: string }
-    return windowWithConfig.configApiBaseUrl || process.env.CONFIG_API_BASE_URL || 'N/A'
-  }, [])
+  const configApiUrl = useMemo(() => resolveConfigApiBaseUrl('N/A'), [])
 
   const transformToFormValues = useCallback(
     (configData?: AppConfigResponse | null) => buildSettingsInitialValues(configData),
