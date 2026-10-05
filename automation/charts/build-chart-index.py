@@ -36,11 +36,6 @@ import yaml
 
 ASSET_URL = "https://github.com/{repo}/releases/download/{tag}/{filename}"
 
-# A single transient failure is not evidence that an asset is missing. The delay matters as much
-# as the count: three attempts inside a second can all land on the same unhealthy edge node.
-# The retry window has to outlast a single attempt, or a request that hits --max-time has already
-# exhausted the window and is never retried. Charts are a few hundred kilobytes, so 30 seconds is
-# a generous cap per attempt.
 CURL_RETRY = [
     "--retry", "5",
     "--retry-all-errors",
@@ -109,8 +104,6 @@ def mismatched_digests(entries: list[tuple[str, str]]) -> list[str]:
             if not digest:
                 problems.append(f"no digest recorded {url}")
                 continue
-            # To a file, not stdout: curl rewrites the file on each retry, where stdout would
-            # keep whatever a failed attempt had already emitted and hash the two together.
             result = subprocess.run(
                 ["curl", "-sSL", *CURL_RETRY, "-o", str(download), url],
                 check=False,
@@ -190,9 +183,6 @@ def main() -> int:
     index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
     entries = rewrite_urls(index, args.repo, args.archive_tag, args.cutover_version)
 
-    # By default only what this run published is checked. The archive is immutable and was
-    # verified when it was built, so re-checking its 94 entries on every release adds no
-    # information and 94 chances to trip over a transient 5xx from the asset host.
     if args.verify_all or not args.add:
         checked = entries
     else:
