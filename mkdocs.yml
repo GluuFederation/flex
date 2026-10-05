@@ -1,29 +1,15 @@
-# Navigation manifest.
-#
-# Nothing builds this any more: docs.gluu.org redirects to gluu.org/docs/flex, and that site
-# imports `docs/` from each release tag. The `nav:` tree below is still read -- it is the only
-# place the sidebar's group labels exist, and scripts/import-flex-docs.ts in GluuFederation/websites
-# refuses a tag that has no mkdocs.yml. Keep `nav:` in step with the files under `docs/`.
-#
-# The rest is kept as a record of the syntax these pages are written in, which the importer
-# reproduces: admonitions, tabbed blocks and the version placeholder.
-
-# Project information
 site_name: Gluu Flex Documentation
 site_description: Gluu Flex Project Deployment and Operation References
 site_author: Gluu, Inc.
 site_url: https://docs.gluu.org
 
-# Copyright
 copyright: Copyright &copy; 2026, Gluu Flex
 
-# Repository
 docs_dir: ./docs
 repo_name: GitHub
 repo_url: https://github.com/GluuFederation/flex
 edit_uri: edit/main/docs/
 
-# Plugins
 plugins:
    - include-markdown
    - tags
@@ -33,7 +19,6 @@ plugins:
        enable_creation_date: true
    - git-committers:
        repository: GluuFederation/flex
-# Configuration
 theme:
     name: material
     highlightjs: true
@@ -52,14 +37,12 @@ theme:
         text: Roboto
         code: Roboto Mono
     palette:
-        # Palette toggle for automatic mode
         - media: "(prefers-color-scheme)"
           primary: green
           accent: green
           toggle:
             icon: material/brightness-auto
             name: Switch to light mode
-        # Palette toggle for light mode
         - media: "(prefers-color-scheme: light)"
           primary: green
           accent: green
@@ -67,7 +50,6 @@ theme:
           toggle:
             icon: material/brightness-7
             name: Switch to dark mode
-        # Palette toggle for dark mode
         - media: "(prefers-color-scheme: dark)"
           primary: green
           accent: green
@@ -89,7 +71,6 @@ extra_css:
   - css/tabs.css
   - stylesheets/mermaid-extra.css
 
-# Extensions
 markdown_extensions:
 - admonition
 - attr_list
@@ -138,7 +119,6 @@ extra:
   version:
     provider: mike
     default: stable
-# Navigation
 nav:
 - 'Flex':
   - 'README.md'
@@ -208,7 +188,6 @@ nav:
   - 'Reference':
       - 'reference/README.md'
       - 'reference/kubernetes/README.md'
-      - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
 
 - 'Open Banking':
   - Overview: openbanking/index.md

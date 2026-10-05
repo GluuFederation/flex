@@ -1,19 +1,5 @@
 name: "Release: Helm Charts"
 
-# Packaging, signing and publishing the Helm charts, in one place.
-#
-# This replaces two independent `helm package` runs that disagreed with each other: the one in
-# `build-docs.yml`, whose output went to gh-pages and is what `charts/index.yaml` records digests
-# for, and the one in `release-upload.yml`, whose output went to the release. The second shipped
-# `get_helm.sh` inside every tarball, because it downloaded the Helm installer into the chart
-# directory before packaging it, so the two were never byte-identical. It also only ever packaged
-# `charts/gluu`, which is why no `gluu-all-in-one` build was ever a release asset, and picked the
-# file to upload with `sort -rn | head -1`, which put `gluu-6.0.0.tgz` on the v5.16.0 release.
-#
-# Charts now go to the GitHub release and to GHCR. gh-pages keeps serving `charts/index.yaml` only,
-# rewritten to point at those assets, so `helm repo add gluu https://docs.gluu.org/charts` keeps
-# working while the binaries stop depending on that host.
-
 on:
   release:
     types:
@@ -143,9 +129,6 @@ jobs:
             ${{ steps.package.outputs.chart }}.sigstore.json
           retention-days: 1
 
-  # Nothing is published until every chart has packaged, so a failed leg cannot leave a release
-  # holding one chart and not the other. Re-running is safe either way: the release upload
-  # clobbers and pushing identical bytes to GHCR is a no-op.
   publish:
     name: Publish ${{ matrix.chart }}
     needs: [package]

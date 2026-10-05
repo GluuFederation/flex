@@ -34,8 +34,9 @@ This directory is the source for the Flex documentation at
 [gluu.org/docs/flex](https://gluu.org/docs/flex). Nothing here builds a site: the websites
 repository imports `docs/` from each release tag, so an edit lands on the next release.
 
-- Add every new page to `nav:` in `mkdocs.yml`. That tree is the only place the sidebar's group
-  labels exist, so a page left out of it is published with no sidebar entry.
+- Add every new page to `nav:` in `mkdocs.yml`. Nothing builds that file here any more, but keep
+  it: the `nav:` tree is the only place the sidebar's group labels exist, and the importer rejects
+  a release tag that has no `mkdocs.yml`. A page left out of it is published with no sidebar entry.
 - Meet the Janssen
   [documentation style guidelines](https://docs.jans.io/stable/CONTRIBUTING/#documentation-style-guide)
   and proofread for typographical and grammatical errors before opening a pull request.

@@ -1,14 +1,4 @@
-name: "Ops: Generate cloud-native docs"
-
-# Regenerates docs/reference/kubernetes/helm-chart.md from the charts and opens a pull request.
-#
-# Split out of the retired build-docs.yml: this is the one part of it whose output is a published
-# page rather than a build of the documentation host that has been switched off.
-#
-# It runs on a chart change rather than on a release. Previously it ran *after* a release
-# was published, so the generated page landed on main only once the tag had already been cut --
-# meaning every tag carried the previous release's version of it, including the tags gluu.org
-# imports from.
+name: "Ops: Regenerate chart READMEs"
 
 on:
   push:
@@ -16,21 +6,25 @@ on:
       - main
     paths:
       - "charts/**"
-      - "automation/docs/generated-cn-docs.sh"
+      - "!charts/**/README.md"
   workflow_dispatch:
 
 concurrency:
-  group: generate-cn-docs
+  group: chart-readmes
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  HELM_DOCS_VERSION: "1.14.2"
+
 jobs:
   generate:
     name: Regenerate and open a pull request
     if: github.repository == 'GluuFederation/flex'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
@@ -41,6 +35,16 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ secrets.MOWORKFLOWTOKEN }}
+
+      - name: Install helm-docs
+        run: |
+          set -euo pipefail
+          cd "$(mktemp -d)"
+          curl -fsSL -o helm-docs.tar.gz \
+            "https://github.com/norwoodj/helm-docs/releases/download/v${HELM_DOCS_VERSION}/helm-docs_${HELM_DOCS_VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf helm-docs.tar.gz helm-docs
+          install -m 0755 helm-docs /usr/local/bin/helm-docs
+          helm-docs --version
 
       - name: Import GPG key
         id: import_gpg
@@ -58,28 +62,29 @@ jobs:
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
       - name: Regenerate
-        run: bash ./automation/docs/generated-cn-docs.sh .
+        run: helm-docs ./charts/ --skip-version-footer
 
       - name: Open a pull request
         id: pr
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           token: ${{ secrets.MOWORKFLOWTOKEN }}
-          branch: bot/cn-generated-docs
+          branch: bot/chart-readmes
           base: main
-          commit-message: "docs(reference): regenerate the cloud-native reference"
-          title: "docs(reference): regenerate the cloud-native reference"
+          commit-message: "docs(charts): regenerate the chart READMEs"
+          title: "docs(charts): regenerate the chart READMEs"
           body: |
-            `automation/docs/generated-cn-docs.sh` regenerated the cloud-native reference from the
-            charts. Merge before cutting a release, so the tag carries the current version of it.
+            `helm-docs` regenerated the chart READMEs from `values.yaml`. The install guides link
+            to these files at the release tag, and Artifact Hub renders them, so merge before
+            cutting a release.
           sign-commits: true
           delete-branch: true
-          add-paths: docs/reference/**
+          add-paths: charts/**/README.md
 
       - name: Say what happened
         run: |
           if [[ -n "${{ steps.pr.outputs.pull-request-number }}" ]]; then
             echo "Opened #${{ steps.pr.outputs.pull-request-number }}"
           else
-            echo "The generated reference is already current; nothing to open."
+            echo "The chart READMEs are already current; nothing to open."
           fi
