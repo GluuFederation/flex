@@ -83,9 +83,6 @@ jobs:
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      # `helm package <dir>` writes the archive to the working directory and leaves the chart
-      # directory untouched, which is the whole point: nothing the build downloads can end up
-      # inside the tarball.
       - name: Package chart
         id: package
         run: |
@@ -97,7 +94,6 @@ jobs:
         env:
           CHART: ${{ steps.package.outputs.chart }}
         run: |
-          # The defect this workflow replaces, as an assertion rather than a comment.
           if tar -tzf "$CHART" | grep -E '(^|/)get_helm\.sh$|\.tgz$'; then
             echo "::error::$CHART contains build leftovers"
             exit 1
@@ -107,8 +103,6 @@ jobs:
       - name: Install Cosign
         uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
 
-      # `.sigstore.json`, not jans's `.bundle`: fifteen bundles are already published under that
-      # name and the verification instructions in the docs name it.
       - name: Sign chart with Cosign
         env:
           CHART: ${{ steps.package.outputs.chart }}
@@ -251,8 +245,6 @@ jobs:
       github.repository == 'GluuFederation/flex' &&
       !inputs.dry_run
     runs-on: ubuntu-latest
-    # The same group `build-docs.yml` uses: both write to gh-pages, and on a release they would
-    # otherwise commit at the same time.
     concurrency:
       group: run-once
       cancel-in-progress: false
@@ -301,14 +293,10 @@ jobs:
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           git config --global pull.ff only
 
-      # Every version published before CHART_CUTOVER_VERSION is an asset of the frozen
-      # CHART_ARCHIVE_TAG release, byte-for-byte as gh-pages served it. Only 26 of the 96 versions
-      # this index held existed as an asset of their own tag, and where both existed the bytes
-      # differed, so the archive is what keeps the recorded digests true.
       - name: Rebuild index against release assets
         env:
           ARCHIVE_TAG: ${{ vars.CHART_ARCHIVE_TAG || 'helm-charts-archive' }}
-          CUTOVER: ${{ vars.CHART_CUTOVER_VERSION }}
+          CUTOVER: ${{ vars.CHART_CUTOVER_VERSION || '6.5.0' }}
         run: |
           git fetch origin +refs/heads/gh-pages:refs/remotes/origin/gh-pages
           git show origin/gh-pages:charts/index.yaml > /tmp/index.yaml

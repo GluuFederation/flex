@@ -35,10 +35,8 @@ import yaml
 
 ASSET_URL = "https://github.com/{repo}/releases/download/{tag}/{filename}"
 
-
 def release_tag(version: str) -> str:
     return "nightly" if version.endswith("-nightly") else f"v{version}"
-
 
 def version_key(version: str) -> tuple[int, ...]:
     """Numeric ordering, so 5.16.0 sorts above 5.9.0 and a suffix sorts below."""
@@ -46,13 +44,11 @@ def version_key(version: str) -> tuple[int, ...]:
     parts = tuple(int(part) for part in head.split(".") if part.isdigit())
     return (*parts, 0 if "-" in version else 1)
 
-
 def is_archived(version: str, cutover: str | None) -> bool:
     """Whether this version predates the cutover and lives in the archive release."""
     if not cutover:
         return False
     return version_key(version) < version_key(cutover)
-
 
 def merge_new_charts(index: Path, chart_dir: Path) -> Path:
     subprocess.run(
@@ -60,7 +56,6 @@ def merge_new_charts(index: Path, chart_dir: Path) -> Path:
         check=True,
     )
     return chart_dir / "index.yaml"
-
 
 def rewrite_urls(
     index: dict, repo: str, archive_tag: str | None, cutover: str | None
@@ -81,7 +76,6 @@ def rewrite_urls(
             rewritten.append((url, entry.get("digest", "")))
     return rewritten
 
-
 def mismatched_digests(entries: list[tuple[str, str]]) -> list[str]:
     """Download each asset and compare its SHA-256 against the recorded digest.
 
@@ -99,12 +93,10 @@ def mismatched_digests(entries: list[tuple[str, str]]) -> list[str]:
         if result.returncode != 0:
             problems.append(f"curl exit {result.returncode} {url}")
             continue
-        # Helm records the digest as bare hex; tolerate a prefixed one either way.
         actual = hashlib.sha256(result.stdout).hexdigest()
         if actual != digest.removeprefix("sha256:"):
             problems.append(f"digest {digest} but asset is {actual} {url}")
     return problems
-
 
 def missing_assets(urls: list[str]) -> list[str]:
     missing = []
@@ -119,7 +111,6 @@ def missing_assets(urls: list[str]) -> list[str]:
         elif result.stdout.strip() != "200":
             missing.append(f"{result.stdout.strip()} {url}")
     return missing
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -178,7 +169,6 @@ def main() -> int:
     )
     print(f"Rewrote {len(urls)} chart URLs into {output}")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

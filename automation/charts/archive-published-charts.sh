@@ -51,15 +51,10 @@ while IFS=$'\t' read -r filename digest; do
       [[ "$candidate" == "$filename" ]] && downloaded=$((downloaded + 1))
     else
       rm -f "$workdir/$candidate"
-      # A chart the index lists but the host never served is already broken for anyone who
-      # pins it. Recorded rather than fatal: the archive cannot invent bytes that never
-      # existed, and refusing to run would leave every other version unprotected.
       [[ "$candidate" == "$filename" ]] && echo "$filename" >> "$workdir/absent.txt"
     fi
   done
 
-  # The archive is only worth anything if the bytes match what the index promises. The digest
-  # field is bare hex, with no `sha256:` prefix.
   if [[ -n "$digest" && -f "$workdir/$filename" ]]; then
     actual="$(shasum -a 256 "$workdir/$filename" | cut -d' ' -f1)"
     if [[ "$actual" != "${digest#sha256:}" ]]; then
