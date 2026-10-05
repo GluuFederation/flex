@@ -1,0 +1,373 @@
+name: "Release: Helm Charts"
+
+# Packaging, signing and publishing the Helm charts, in one place.
+#
+# This replaces two independent `helm package` runs that disagreed with each other: the one in
+# `build-docs.yml`, whose output went to gh-pages and is what `charts/index.yaml` records digests
+# for, and the one in `release-upload.yml`, whose output went to the release. The second shipped
+# `get_helm.sh` inside every tarball, because it downloaded the Helm installer into the chart
+# directory before packaging it, so the two were never byte-identical. It also only ever packaged
+# `charts/gluu`, which is why no `gluu-all-in-one` build was ever a release asset, and picked the
+# file to upload with `sort -rn | head -1`, which put `gluu-6.0.0.tgz` on the v5.16.0 release.
+#
+# Charts now go to the GitHub release and to GHCR. gh-pages keeps serving `charts/index.yaml` only,
+# rewritten to point at those assets, so `helm repo add gluu https://docs.gluu.org/charts` keeps
+# working while the binaries stop depending on that host.
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Release tag to publish charts for (e.g. "v6.4.2" or "nightly")'
+        required: true
+      dry_run:
+        description: "Package, sign and index without uploading or pushing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-helm-charts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package ${{ matrix.chart }}
+    if: |
+      github.repository == 'GluuFederation/flex' &&
+      (github.event_name == 'workflow_dispatch' ||
+       ((!github.event.release.draft) && (startsWith(github.event.release.name, 'v') || github.event.release.name == 'nightly')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # keyless Cosign signing via Sigstore OIDC
+    strategy:
+      fail-fast: false
+      matrix:
+        chart:
+          - gluu
+          - gluu-all-in-one
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        with:
+          egress-policy: audit
+
+      - name: Resolve release tag
+        id: tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET_TAG: ${{ inputs.target_tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            TAG="$TARGET_TAG"
+          else
+            TAG="$RELEASE_TAG"
+          fi
+          if [[ -z "$TAG" || "$TAG" != "${TAG//[^a-zA-Z0-9._-]/}" ]]; then
+            echo "::error::Invalid release tag: empty or has characters outside [A-Za-z0-9._-]"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      # The tag, not the triggering ref: a workflow_dispatch otherwise packages the default
+      # branch's charts, whose version is 0.0.0-nightly, and attaches them to another release.
+      - name: Checkout ${{ steps.tag.outputs.tag }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+
+      - name: Package chart
+        id: package
+        env:
+          CHART_DIR: charts/${{ matrix.chart }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          # The packaged version has to be the one being released, or the index records a digest
+          # for a file nobody asked for.
+          version=$(helm show chart "$CHART_DIR" | awk '/^version:/{print $2}')
+          expected="${TAG#v}"
+          if [[ "$TAG" == "nightly" ]]; then
+            if [[ "$version" != *-nightly ]]; then
+              echo "::error::$CHART_DIR is version $version at nightly, expected a -nightly version"
+              exit 1
+            fi
+          elif [[ "$version" != "$expected" ]]; then
+            echo "::error::$CHART_DIR is version $version at $TAG, expected $expected"
+            exit 1
+          fi
+          helm package "$CHART_DIR"
+          chart=$(ls "${{ matrix.chart }}"-*.tgz)
+          echo "chart=${chart}" >> "$GITHUB_OUTPUT"
+
+      - name: Refuse a chart carrying build leftovers
+        env:
+          CHART: ${{ steps.package.outputs.chart }}
+        run: |
+          if tar -tzf "$CHART" | grep -E '(^|/)get_helm\.sh$|\.tgz$'; then
+            echo "::error::$CHART contains build leftovers"
+            exit 1
+          fi
+          tar -tzf "$CHART" | head -5
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
+
+      - name: Sign chart with Cosign
+        env:
+          CHART: ${{ steps.package.outputs.chart }}
+        run: cosign sign-blob --yes --bundle "${CHART}.sigstore.json" "$CHART"
+
+      - name: Compute SHA256 digest for SLSA provenance
+        env:
+          CHART: ${{ steps.package.outputs.chart }}
+        run: sha256sum "$CHART" > "/tmp/${{ matrix.chart }}.sha256"
+
+      - name: Upload chart digest artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: chart-digest-${{ matrix.chart }}
+          path: /tmp/${{ matrix.chart }}.sha256
+          retention-days: 1
+
+      - name: Upload packaged chart artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: chart-package-${{ matrix.chart }}
+          path: |
+            ${{ steps.package.outputs.chart }}
+            ${{ steps.package.outputs.chart }}.sigstore.json
+          retention-days: 1
+
+  # Nothing is published until every chart has packaged, so a failed leg cannot leave a release
+  # holding one chart and not the other. Re-running is safe either way: the release upload
+  # clobbers and pushing identical bytes to GHCR is a no-op.
+  publish:
+    name: Publish ${{ matrix.chart }}
+    needs: [package]
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        chart:
+          - gluu
+          - gluu-all-in-one
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        with:
+          egress-policy: audit
+
+      - name: Download the packaged chart
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          name: chart-package-${{ matrix.chart }}
+
+      - name: Name the archive
+        id: chart
+        run: echo "chart=$(ls ${{ matrix.chart }}-*.tgz)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload chart to release
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          CHART: ${{ steps.chart.outputs.chart }}
+          TAG: ${{ needs.package.outputs.tag }}
+        run: |
+          gh release upload "$TAG" "$CHART" "${CHART}.sigstore.json" \
+            --clobber --repo "$GITHUB_REPOSITORY"
+
+      - name: Login to ghcr
+        if: ${{ !inputs.dry_run }}
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push chart to GHCR
+        id: oci
+        if: ${{ !inputs.dry_run }}
+        env:
+          CHART: ${{ steps.chart.outputs.chart }}
+        run: |
+          helm push "$CHART" oci://ghcr.io/gluufederation/charts \
+            --registry-config ~/.docker/config.json 2>&1 | tee /tmp/push.log
+          digest=$(awk '/^Digest: /{print $2}' /tmp/push.log)
+          if [[ -z "$digest" ]]; then
+            echo "::error::helm push did not report a digest"
+            exit 1
+          fi
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
+      - name: Attest chart provenance in GHCR
+        if: ${{ !inputs.dry_run }}
+        uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
+        with:
+          subject-name: ghcr.io/gluufederation/charts/${{ matrix.chart }}
+          subject-digest: ${{ steps.oci.outputs.digest }}
+          push-to-registry: true
+
+  collect-chart-digests:
+    name: Collect Helm chart digests
+    needs: [package]
+    if: github.repository == 'GluuFederation/flex'
+    runs-on: ubuntu-latest
+    outputs:
+      hashes: ${{ steps.merge.outputs.hashes }}
+      tag: ${{ needs.package.outputs.tag }}
+    steps:
+      - name: Download chart digest artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          pattern: chart-digest-*
+          merge-multiple: true
+          path: /tmp/chart-digests
+      - name: Merge and encode digests
+        id: merge
+        run: |
+          MERGED=$(cat /tmp/chart-digests/*.sha256 | grep -v '^$' || true)
+          echo "hashes=$(echo -n "${MERGED}" | base64 -w0)" >> "$GITHUB_OUTPUT"
+
+  provenance-charts:
+    name: SLSA provenance — Helm charts
+    needs: [collect-chart-digests]
+    if: |
+      github.repository == 'GluuFederation/flex' &&
+      !inputs.dry_run &&
+      needs.collect-chart-digests.outputs.hashes != ''
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a # v2.1.0
+    with:
+      base64-subjects: "${{ needs.collect-chart-digests.outputs.hashes }}"
+      upload-assets: false
+      upload-tag-name: "${{ needs.collect-chart-digests.outputs.tag }}"
+      compile-generator: true
+      provenance-name: helm-charts.intoto.jsonl
+
+  upload-chart-provenance:
+    name: Upload SLSA provenance to release
+    needs: [collect-chart-digests, provenance-charts]
+    if: |
+      always() &&
+      github.repository == 'GluuFederation/flex' &&
+      needs.provenance-charts.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download provenance artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          pattern: "*.intoto.jsonl"
+          path: provenance
+          merge-multiple: true
+      - name: Upload provenance to release
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          TAG: ${{ needs.collect-chart-digests.outputs.tag }}
+        run: |
+          shopt -s nullglob
+          files=(provenance/*.intoto.jsonl)
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No provenance artifacts found; nothing to upload."
+            exit 0
+          fi
+          gh release upload "$TAG" "${files[@]}" --clobber --repo "$GITHUB_REPOSITORY"
+
+  index:
+    name: Refresh chart index on gh-pages
+    needs: [publish]
+    if: |
+      github.repository == 'GluuFederation/flex' &&
+      !inputs.dry_run
+    runs-on: ubuntu-latest
+    concurrency:
+      group: run-once
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MOWORKFLOWTOKEN }}
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Download packaged charts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          pattern: chart-package-*
+          merge-multiple: true
+          path: packaged
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+          git config --global pull.ff only
+
+      - name: Rebuild index against release assets
+        env:
+          ARCHIVE_TAG: ${{ vars.CHART_ARCHIVE_TAG || 'helm-charts-archive' }}
+          CUTOVER: ${{ vars.CHART_CUTOVER_VERSION || '6.5.0' }}
+        run: |
+          git fetch origin +refs/heads/gh-pages:refs/remotes/origin/gh-pages
+          git show origin/gh-pages:charts/index.yaml > /tmp/index.yaml
+          python automation/charts/build-chart-index.py \
+            --index /tmp/index.yaml --add packaged --output /tmp/index.yaml \
+            --archive-tag "$ARCHIVE_TAG" --cutover-version "$CUTOVER" \
+            --verify --verify-digest
+
+      - name: Publish index to gh-pages
+        run: |
+          git fetch --depth=1 origin gh-pages
+          worktree="$(mktemp -d)"
+          git worktree add --detach "$worktree" FETCH_HEAD
+          install -m 0644 /tmp/index.yaml "$worktree/charts/index.yaml"
+          git -C "$worktree" add charts/index.yaml
+          if git -C "$worktree" diff-index --quiet HEAD --; then
+            echo "Index unchanged; nothing to publish."
+          else
+            git -C "$worktree" commit -S -m "chore(charts): refresh the Helm repository index"
+            git -C "$worktree" push origin HEAD:gh-pages
+          fi
+          git worktree remove --force "$worktree"

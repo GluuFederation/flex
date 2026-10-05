@@ -33,12 +33,6 @@ jobs:
             asset_name: flex-linux-setup-centos-amd64.pyz
             asset_directory: flex-linux-setup
             python_version: 3.8
-            # helm chart
-          - os: ubuntu-latest
-            artifact_name: helm # Will be changed automatically
-            asset_name: helm # Will be changed automatically
-            asset_directory: charts/gluu
-            python_version: 3.8
 
     steps:
     - name: Checkout code
@@ -48,30 +42,11 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Build Helm Package
-      if: matrix.asset_name == 'helm'
-      run: |
-
-        cd ${{ matrix.asset_directory }}
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-        chmod 700 get_helm.sh
-        ./get_helm.sh
-        helm package .
-        ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
-        sha256sum ${ASSET_NAME} > ${ASSET_NAME}.sha256sum
-
     - name: Map outputs
       id: output
       run: |
-        if [[ "${{ matrix.asset_name }}" == "helm" ]]; then
-          ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
-          echo "Modifying helm asset name to ${ASSET_NAME}"
-          echo "artifact_name=${ASSET_NAME}" >> $GITHUB_OUTPUT
-          echo "asset_name=${ASSET_NAME}" >> $GITHUB_OUTPUT    
-        else
-          echo "artifact_name=${{ matrix.artifact_name }}" >> $GITHUB_OUTPUT
-          echo "asset_name=${{ matrix.asset_name }}" >> $GITHUB_OUTPUT
-        fi
+        echo "artifact_name=${{ matrix.artifact_name }}" >> $GITHUB_OUTPUT
+        echo "asset_name=${{ matrix.asset_name }}" >> $GITHUB_OUTPUT
         echo "tag=$(curl https://api.github.com/repos/${{ github.repository }}/releases -s | grep "tag_name" | cut -d '"' -f 4 | grep -o '^\v.*' | head -n 1)" >> $GITHUB_OUTPUT
     - name: Install dependencies
       run: |
@@ -87,7 +62,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Build Zipapp
-      if: matrix.asset_name != 'flex-linux-setup-centos8-amd64.pyz' && matrix.asset_name != 'helm'
+      if: matrix.asset_name != 'flex-linux-setup-centos8-amd64.pyz'
       run: |
         sudo apt-get update || brew install jq
         sudo apt-get install build-essential || echo "Maybe im on macos OS"

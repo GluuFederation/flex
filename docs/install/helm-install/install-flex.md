@@ -45,18 +45,25 @@ config:
 
 Adjust values based on your choices from the previous steps.
 
-## Add the Flex Helm Repository
-
-```bash
-helm repo add gluu-flex https://docs.gluu.org/charts
-helm repo update
-```
-
 ## Install Flex
 
+Charts are published to an OCI registry, so no repository has to be added first.
+
 ```bash
-helm install gluu gluu-flex/gluu -n gluu --create-namespace -f override.yaml
+helm install gluu oci://ghcr.io/gluufederation/charts/gluu \
+  --version replace-flex-version -n gluu --create-namespace -f override.yaml
 ```
+
+!!! Note
+    The classic repository at `https://docs.gluu.org/charts` still resolves, and every version it
+    has served remains available, so an existing `helm repo add gluu-flex` keeps working. New
+    charts are published to the registry above.
+
+    ```bash
+    helm repo add gluu-flex https://docs.gluu.org/charts
+    helm repo update
+    helm install gluu gluu-flex/gluu -n gluu --create-namespace -f override.yaml
+    ```
 
 ## Verify Installation
 

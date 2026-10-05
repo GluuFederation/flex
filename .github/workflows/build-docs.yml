@@ -36,7 +36,6 @@ jobs:
   build:
     permissions:
       contents: read
-      id-token: write  # keyless Cosign signing via Sigstore OIDC
     if: github.repository == 'GluuFederation/flex'
     name: Deploy docs
     runs-on: ubuntu-latest
@@ -97,18 +96,6 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
-
-      - name: Package and sign Helm charts with Cosign
-        run: |
-          helm package charts/gluu/
-          helm package charts/gluu-all-in-one/
-          for chart in gluu-*.tgz; do
-            cosign sign-blob --yes --bundle "${chart}.sigstore.json" "$chart"
-          done
-          cp gluu-*.tgz gluu-*.tgz.sigstore.json ../
-
       - name: Configure Git
         run: |
           git config --global user.name "mo-auto"
@@ -144,14 +131,6 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
           git show origin/main:docs/overrides/main.html > docs/overrides/main.html
-
-      - name: Enable Reo and Scarf tracking for versioned docs
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && github.event.action == 'published')
-        run: |
-          sed -i 's/enable_scarf_pixel: false/enable_scarf_pixel: true/' mkdocs.yml
-          sed -i 's/enable_reo_flag: false/enable_reo_flag: true/' mkdocs.yml
-          echo "Tracking flags status:"
-          grep -E 'enable_scarf_pixel|enable_reo_flag' mkdocs.yml
 
       - name: mike deploy ${{ github.event.inputs.version }}
         if: >-
@@ -198,12 +177,6 @@ jobs:
           STABLE=${{ steps.set_versions.outputs.STABLE }}
           git checkout -f gh-pages
           git pull origin gh-pages
-          mv ../gluu-*.tgz ../gluu-*.tgz.sigstore.json ./charts/
-          cd ./charts
-          git add gluu-*.tgz gluu-*.tgz.sigstore.json && git update-index --refresh
-          helm repo index .
-          git add index.yaml && git update-index --refresh
-          cd ..
           for folder in v*/; do
             cp -r nightly/search "$folder"
             git add $folder/search && git update-index --refresh
