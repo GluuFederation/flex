@@ -31,10 +31,9 @@ The Gluu Flex contract includes guaranteed response times and consultative suppo
 ### Testing Documentation Changes Locally
 
 While contributing documentation to official Gluu [documentation](https://docs.gluu.org/) it is important to make sure that documents meet [style guidelines](../CONTRIBUTING.md#documentation-style-guide) and have been proofread to remove any typographical or grammatical errors.
-Gluu uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) to create the documentation site. Before new content is pushed to the repository on GitHub, it should be tested locally by the author. Author can do this by deploying Material for MkDocs locally.
-
+Gluu uses [Zensical](https://zensical.org/) to create the documentation site. Before new content is pushed to the repository on GitHub, it should be tested locally by the author. The author can do this by running Zensical locally.
+    
 High-level steps involve:
 
-1. [Install Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/#installation)
-2. Install required plugins
-3. [Preview as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
+1. [Install zensical](https://zensical.org/docs/get-started/#installation)
+2. [Preview as you write](https://zensical.org/docs/create-your-site/#preview-as-you-write)
