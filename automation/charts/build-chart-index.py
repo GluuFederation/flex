@@ -35,8 +35,15 @@ import yaml
 
 ASSET_URL = "https://github.com/{repo}/releases/download/{tag}/{filename}"
 
-# A single transient failure is not evidence that an asset is missing.
-CURL_RETRY = ["--retry", "3", "--retry-all-errors", "--max-time", "120"]
+# A single transient failure is not evidence that an asset is missing. The delay matters as much
+# as the count: three attempts inside a second can all land on the same unhealthy edge node.
+CURL_RETRY = [
+    "--retry", "5",
+    "--retry-all-errors",
+    "--retry-delay", "2",
+    "--retry-max-time", "60",
+    "--max-time", "120",
+]
 
 def release_tag(version: str) -> str:
     return "nightly" if version.endswith("-nightly") else f"v{version}"
@@ -137,8 +144,16 @@ def main() -> int:
         help="first version published as an asset of its own release tag",
     )
     parser.add_argument("--output", help="defaults to --index, rewritten in place")
-    parser.add_argument("--verify", action="store_true",
-                        help="check every rewritten URL resolves before writing")
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="check that the URLs this run changed resolve before writing",
+    )
+    parser.add_argument(
+        "--verify-all",
+        action="store_true",
+        help="check every URL in the index, not only the ones this run changed",
+    )
     parser.add_argument(
         "--verify-digest",
         action="store_true",
@@ -160,9 +175,20 @@ def main() -> int:
 
     index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
     entries = rewrite_urls(index, args.repo, args.archive_tag, args.cutover_version)
-    urls = [url for url, _ in entries]
 
-    if args.verify:
+    # By default only what this run published is checked. The archive is immutable and was
+    # verified when it was built, so re-checking its 94 entries on every release adds no
+    # information and 94 chances to trip over a transient 5xx from the asset host.
+    if args.verify_all or not args.add:
+        checked = entries
+    else:
+        fresh = {path.name for path in args.add.glob("*.tgz")}
+        checked = [pair for pair in entries if pair[0].rsplit("/", 1)[-1] in fresh]
+        print(f"Checking {len(checked)} of {len(entries)} URLs: the ones this run changed.")
+
+    urls = [url for url, _ in checked]
+
+    if args.verify or args.verify_all:
         missing = missing_assets(urls)
         if missing:
             print("Assets not reachable:", file=sys.stderr)
@@ -171,7 +197,7 @@ def main() -> int:
             return 1
 
     if args.verify_digest:
-        problems = mismatched_digests(entries)
+        problems = mismatched_digests(checked)
         if problems:
             print("Assets do not match the digests the index records:", file=sys.stderr)
             for line in problems:
@@ -184,7 +210,7 @@ def main() -> int:
                        width=10000),
         encoding="utf-8",
     )
-    print(f"Rewrote {len(urls)} chart URLs into {output}")
+    print(f"Rewrote {len(entries)} chart URLs into {output}")
     return 0
 
 if __name__ == "__main__":
