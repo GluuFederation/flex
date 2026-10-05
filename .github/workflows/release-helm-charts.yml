@@ -78,8 +78,6 @@ jobs:
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      # The tag, not the triggering ref: a workflow_dispatch otherwise packages the default
-      # branch's charts, whose version is 0.0.0-nightly, and attaches them to another release.
       - name: Checkout ${{ steps.tag.outputs.tag }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -91,8 +89,6 @@ jobs:
           CHART_DIR: charts/${{ matrix.chart }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          # The packaged version has to be the one being released, or the index records a digest
-          # for a file nobody asked for.
           version=$(helm show chart "$CHART_DIR" | awk '/^version:/{print $2}')
           expected="${TAG#v}"
           if [[ "$TAG" == "nightly" ]]; then
@@ -372,9 +368,6 @@ jobs:
           fi
           git worktree remove --force "$worktree"
 
-      # gluu.org serves /charts/index.yaml and the Flex documentation, both mirrored from here.
-      # Last, so the index it comes to fetch is already published. Without this the mirror only
-      # refreshes on that repository's daily schedule, which is how a stale index went unnoticed.
       - name: Tell gluu.org to resync
         env:
           GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}

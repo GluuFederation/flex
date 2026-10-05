@@ -204,7 +204,6 @@ nav:
 
   - 'Reference':
       - 'reference/kubernetes/README.md'
-      - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
       - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
 
 - 'Open Banking':

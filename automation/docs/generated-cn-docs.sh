@@ -16,10 +16,6 @@ cd ..
 # Generate Helm docs
 helm-docs "$MAIN_DIRECTORY_LOCATION"/charts/ --skip-version-footer
 rm -rf helmtemp
-echo "Copying Helm chart Readme to helm-chart.md"
-cp "$MAIN_DIRECTORY_LOCATION"/charts/gluu/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
-echo "Adding keywords to helm-chart"
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
 echo "Copying docker images Readme to respective image md"
 # cp docker files main README.md
 docker_images="docker-casa docker-admin-ui"
