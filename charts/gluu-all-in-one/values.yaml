@@ -20,7 +20,7 @@ cnPersistenceType: sql
 salt: ""
 # -- service account used by Kubernetes resources
 serviceAccountName: default
-# — Add custom annotations for kubernetes resources for the service
+# -- Add custom annotations for kubernetes resources for the service
 customAnnotations:
   certificate: {}
   clusterRoleBinding: {}
