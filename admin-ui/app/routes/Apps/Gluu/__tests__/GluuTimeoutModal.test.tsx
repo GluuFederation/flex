@@ -5,6 +5,20 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import { reducer as initReducer } from 'Redux/features/initSlice'
+import { APP_BASE_URL } from '@/helpers/navigation'
+
+const mockBuildAppRootUrl = jest.fn()
+jest.mock('@/helpers/navigation', () => {
+  const actual = jest.requireActual('@/helpers/navigation')
+  return {
+    ...actual,
+    buildAppRootUrl: (...args: [string?]) => {
+      const url = actual.buildAppRootUrl(...args)
+      mockBuildAppRootUrl(url)
+      return url
+    },
+  }
+})
 
 const mockDeleteAdminUiSession = jest.fn()
 jest.mock('Redux/api/backend-api', () => ({
@@ -129,13 +143,19 @@ describe('GluuTimeoutModal session-expiry redirect', () => {
   it.each([
     ['Refresh', () => screen.getByRole('button', { name: 'Refresh' })],
     ['dismissal', () => screen.getAllByRole('button', { name: /close/i })[0]],
-  ])('clears the expired state through %s so the redirect can run', (_label, getTrigger) => {
-    const store = renderExpired('https://auth.example.org')
+  ])(
+    'clears the expired state and navigates to the current origin through %s',
+    async (_label, getTrigger) => {
+      mockBuildAppRootUrl.mockClear()
+      const store = renderExpired('https://auth.example.org')
 
-    fireEvent.click(getTrigger()!)
+      fireEvent.click(getTrigger()!)
 
-    expect(store.getState().initReducer.isSessionExpired).toBe(false)
-  })
+      expect(store.getState().initReducer.isSessionExpired).toBe(false)
+      await waitFor(() => expect(mockBuildAppRootUrl).toHaveBeenCalledTimes(1))
+      expect(mockBuildAppRootUrl).toHaveBeenCalledWith(`${window.location.origin}${APP_BASE_URL}`)
+    },
+  )
 })
 
 describe('GluuTimeoutModal session teardown on refresh', () => {

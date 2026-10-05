@@ -6,7 +6,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }))
 
-import { useAppNavigation, ROUTES, buildAppRootUrl } from '../navigation'
+import { useAppNavigation, ROUTES, APP_BASE_URL, buildAppRootUrl } from '../navigation'
 
 describe('navigation', () => {
   beforeEach(() => {
@@ -73,11 +73,11 @@ describe('navigation', () => {
 
 describe('buildAppRootUrl', () => {
   it('targets the current origin, not the auth server', () => {
-    expect(buildAppRootUrl('http://localhost:4100')).toBe('http://localhost:4100/admin/')
+    expect(buildAppRootUrl('http://localhost:4100')).toBe(`http://localhost:4100${APP_BASE_URL}`)
   })
 
   it('defaults to the page origin', () => {
-    expect(buildAppRootUrl()).toBe(`${window.location.origin}/admin/`)
+    expect(buildAppRootUrl()).toBe(`${window.location.origin}${APP_BASE_URL}`)
   })
 
   it.each([['/custom-base/'], ['/custom-base']])(
