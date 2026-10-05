@@ -36,8 +36,12 @@ jobs:
   build:
     permissions:
       contents: read
-    if: github.repository == 'GluuFederation/flex'
-    name: Deploy docs
+    # docs.gluu.org redirects to gluu.org/docs/flex, so nothing reads what this publishes. Kept
+    # rather than deleted: set DOCS_PUBLISH_LEGACY to 'true' to turn it back on.
+    if: |
+      github.repository == 'GluuFederation/flex' &&
+      vars.DOCS_PUBLISH_LEGACY == 'true'
+    name: Deploy docs (legacy host)
     runs-on: ubuntu-latest
 
     steps:
@@ -103,30 +107,6 @@ jobs:
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token 
 
-      - name: Generate docs
-        continue-on-error: true
-        if: >-
-          github.event_name == 'release' &&
-          github.event.action == 'published' &&
-          (!github.event.release.draft) &&
-          (startsWith(github.event.release.name, 'v') || github.event.release.name == 'nightly')
-        env:
-          VERSION: ${{ github.event.release.tag_name }}
-        run: |
-         mkdir temp && cd temp
-         git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/GluuFederation/flex.git
-         cd flex
-         git checkout -b cn-flex-update-auto-generated-docs
-         git pull origin cn-flex-update-auto-generated-docs || echo "Nothing to pull"
-         echo "Custom work on generating docs can go here."
-         sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
-         git push --set-upstream origin cn-flex-update-auto-generated-docs
-         MESSAGE="fix(docs): autogenerate docs"
-         PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
-         cd ../../
-
-         sudo rm -rf temp
-
       - name: Use latest template overrides from main
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
@@ -170,32 +150,3 @@ jobs:
           poetry run mike set-default --push stable
           echo "LATEST=${LATEST}" >> $GITHUB_OUTPUT
           echo "STABLE=${STABLE}" >> $GITHUB_OUTPUT
-
-      - name: Create version files
-        run: |
-          LATEST=${{ steps.set_versions.outputs.LATEST }}
-          STABLE=${{ steps.set_versions.outputs.STABLE }}
-          git checkout -f gh-pages
-          git pull origin gh-pages
-          for folder in v*/; do
-            cp -r nightly/search "$folder"
-            git add $folder/search && git update-index --refresh
-          done
-          cd ${LATEST}
-          if [[ "${LATEST}" == "nightly" ]]; then
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version-stable/0.0.0-nightly/g"
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/0.0.0-nightly/g"
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/v0.0.0-nightly/nightly/g"
-          else
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${LATEST:1}/g"
-          fi
-          git add . && git update-index --refresh
-          cd ..
-
-          echo "${STABLE}" > stable.txt
-          git add stable.txt && git update-index --refresh
-          git diff-index --quiet HEAD -- || git commit -S -m "Set stable to ${STABLE}"
-          echo "${LATEST}" > latest.txt
-          git add latest.txt && git update-index --refresh
-          git diff-index --quiet HEAD -- || git commit -S -m "Set latest to ${LATEST}"
-          git push origin gh-pages
