@@ -271,7 +271,7 @@ jobs:
 
   index:
     name: Refresh chart index on gh-pages
-    needs: [publish]
+    needs: [package, publish]
     if: |
       github.repository == 'GluuFederation/flex' &&
       !inputs.dry_run
