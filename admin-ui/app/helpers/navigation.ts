@@ -130,7 +130,6 @@ const ROUTES = {
   AUTH_SERVER_SESSIONS: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/sessions`,
 
   // Agama
-  AUTH_SERVER_AGAMA: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/agama`,
 
   // ========== Services Plugin ==========
   SERVICES_CACHE: `${PLUGIN_BASE_PATHS.SERVICES}/cache`,

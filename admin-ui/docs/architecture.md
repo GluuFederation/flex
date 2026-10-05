@@ -139,7 +139,7 @@ Each plugin is a self-contained feature with its own `components/`, `redux/` (if
 | `user-management` | Users, 2FA devices, user form/edit/list                                                    |
 | `internal`        | Type contracts shared with the plugin loader                                               |
 
-Load order comes from [`admin-ui/plugins.config.json`](../plugins.config.json) (`order` sorts menu groups; doesn't affect reducer / listener registration).
+Sidebar order comes from each menu entry's optional `PluginMenu.order`: `processMenus()` sorts the parent groups by it ascending, treating a missing value as `0`. No plugin sets `order` today, so every entry ties and the stable sort leaves the menus in the order their plugins appear in [`admin-ui/plugins.config.json`](../plugins.config.json). The `order` field in that JSON file is read by nothing.
 
 ## The plugin loader
 
@@ -197,7 +197,7 @@ Everything that exists only in the browser. Tokens, session flags, license statu
 
 ## Adding a new plugin
 
-The full walkthrough is in [recipes.md](./recipes.md#add-a-new-plugin). Short version: copy `plugins/scim/` as a template and add a `{ order, key, metadataFile }` entry to `plugins.config.json`.
+The full walkthrough is in [recipes.md](./recipes.md#add-a-new-plugin). Short version: copy `plugins/scim/` as a template and add a `{ key, metadataFile }` entry to `plugins.config.json`.
 
 ## Adding a constant
 

@@ -96,7 +96,7 @@ The helper in [`app/redux/api/backend-api.ts`](../app/redux/api/backend-api.ts) 
 
 The Config API creates a server-side session record, sets a cookie, and returns success. The listener dispatches `createAdminUiSessionResponse({ success: true })`, and the reducer flips `state.authReducer.hasSession` to `true`: unblocking the rest of the app.
 
-If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The listener calls `redirectToLogout()` from [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts), which surfaces a toast and forces sign-out.
+If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The listener in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) then calls `auditSessionExpired()`, which dispatches `auditLogoutLogs` and forces sign-out (see [Trigger paths](#trigger-paths)).
 
 After this, every Config API call goes through the shared axios instance in [`orval/axiosInstance.ts`](../orval/axiosInstance.ts). The browser sends the `admin-ui-session` cookie alongside each request, and the Config API authenticates the caller off that cookie.
 
@@ -220,7 +220,7 @@ The Config API rejects with two distinct status codes, and the shared axios resp
 
 Users who leave the Admin UI open without interaction are signed out automatically. This protects browser tabs left unattended on shared machines.
 
-[`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx) wraps the app using `react-idle-timer`. The defaults are five minutes idle, then a ten-second countdown modal warning the user, then a forced logout. The idle window is configurable per environment via `sessionTimeoutInMins` on the auth slice. When the modal countdown expires, the component dispatches `auditLogoutLogs` (so the involuntary logout is captured in the audit trail) and navigates the browser to `/logout`. From there, the logout flow below takes over.
+[`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx) wraps the app and tracks activity with the app's own [`useIdleTimer`](../app/hooks/useIdleTimer/useIdleTimer.ts) hook. The defaults are 30 minutes idle, then a ten-second countdown modal warning the user, then a forced logout. The idle window is configurable per environment via `sessionTimeoutInMins` on the auth slice. When the modal countdown expires, the component dispatches `auditLogoutLogs`, which records the involuntary logout in the audit trail and sets `logoutRequested`. [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx) then navigates to `/logout`, and the logout flow below takes over.
 
 ## Logout
 
@@ -229,8 +229,8 @@ Logout is one cleanup path with three different triggers. All of them end up rou
 ### Trigger paths
 
 - **User-initiated**: the sidebar logout link routes to `/logout` → `ByeBye.tsx`.
-- **Forced**: `redirectToLogout(message)` in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) is called when a listener hits a fatal auth error (e.g. 403 from `createAdminUiSession`). It does best-effort cleanup and then sets `window.location.href = '/admin/logout'`.
-- **Idle timeout**: `GluuSessionTimeout` dispatches `auditLogoutLogs` first (so the involuntary exit is audited) and then navigates to `/logout`.
+- **Forced**: when a listener in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) hits a fatal auth error (e.g. 403 from `createAdminUiSession`), it calls `auditSessionExpired()`, which dispatches `auditLogoutLogs`. That sets `logoutRequested` in the session slice, and [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx) navigates to `/logout`.
+- **Idle timeout**: `GluuSessionTimeout` dispatches `auditLogoutLogs`, which audits the involuntary exit and leads to the same navigation to `/logout`.
 
 ### What `ByeBye.tsx` does, in order
 
