@@ -35,6 +35,9 @@ import yaml
 
 ASSET_URL = "https://github.com/{repo}/releases/download/{tag}/{filename}"
 
+# A single transient failure is not evidence that an asset is missing.
+CURL_RETRY = ["--retry", "3", "--retry-all-errors", "--max-time", "120"]
+
 def release_tag(version: str) -> str:
     return "nightly" if version.endswith("-nightly") else f"v{version}"
 
@@ -88,7 +91,7 @@ def mismatched_digests(entries: list[tuple[str, str]]) -> list[str]:
             problems.append(f"no digest recorded {url}")
             continue
         result = subprocess.run(
-            ["curl", "-sSL", url], check=False, capture_output=True,
+            ["curl", "-sSL", *CURL_RETRY, url], check=False, capture_output=True,
         )
         if result.returncode != 0:
             problems.append(f"curl exit {result.returncode} {url}")
@@ -103,7 +106,7 @@ def missing_assets(urls: list[str]) -> list[str]:
     for url in urls:
         result = subprocess.run(
             ["curl", "-sS", "-o", "/dev/null", "-w", "%{http_code}",
-             "-L", "--head", url],
+             "-L", "--head", *CURL_RETRY, url],
             check=False, text=True, capture_output=True,
         )
         if result.returncode != 0:
@@ -136,6 +139,14 @@ def main() -> int:
         help="download every asset and check its SHA-256 against the index",
     )
     args = parser.parse_args()
+
+    if args.archive_tag and not (args.cutover_version or "").strip():
+        print(
+            "--archive-tag needs --cutover-version: without it nothing is treated as "
+            "archived, and entries point at per-tag assets that may not exist.",
+            file=sys.stderr,
+        )
+        return 2
 
     index_path = Path(args.index)
     if args.add:

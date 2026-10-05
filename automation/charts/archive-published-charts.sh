@@ -102,7 +102,19 @@ Current charts are published to their own release tag and to
 fi
 
 # No --clobber: an asset already published is left exactly as it is.
-find "$workdir" -name 'gluu*' -print0 | xargs -0 gh release upload "$TAG" --repo "$REPO" || {
-  echo "Some assets were already present; that is expected on a re-run."
-}
+# Only what is not already there, so a re-run is quiet and an upload that genuinely fails --
+# authentication, a network error -- is reported rather than mistaken for an existing asset.
+gh release view "$TAG" --repo "$REPO" --json assets \
+  --jq '.assets[].name' > "$workdir/published.txt"
+
+pending=0
+while IFS= read -r path; do
+  name="$(basename "$path")"
+  if grep -qxF "$name" "$workdir/published.txt"; then continue; fi
+  echo "  uploading $name"
+  gh release upload "$TAG" "$path" --repo "$REPO"
+  pending=$((pending + 1))
+done < <(find "$workdir" -name 'gluu*' | sort)
+
+echo "Uploaded $pending asset(s); the rest were already published."
 echo "Done. Verify with: gh release view $TAG --repo $REPO"

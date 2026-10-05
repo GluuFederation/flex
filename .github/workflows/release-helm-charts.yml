@@ -36,18 +36,16 @@ permissions:
   contents: read
 
 jobs:
-  publish:
-    name: Publish ${{ matrix.chart }}
+  package:
+    name: Package ${{ matrix.chart }}
     if: |
       github.repository == 'GluuFederation/flex' &&
       (github.event_name == 'workflow_dispatch' ||
        ((!github.event.release.draft) && (startsWith(github.event.release.name, 'v') || github.event.release.name == 'nightly')))
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write # keyless Cosign signing via Sigstore OIDC
-      packages: write
-      attestations: write
     strategy:
       fail-fast: false
       matrix:
@@ -62,9 +60,6 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Resolve release tag
         id: tag
         env:
@@ -77,16 +72,39 @@ jobs:
           else
             TAG="$RELEASE_TAG"
           fi
-          if [[ -z "$TAG" || "$TAG" == *$'\n'* || "$TAG" == *$'\r'* ]]; then
-            echo "::error::Invalid release tag: empty or contains a line break"
+          if [[ -z "$TAG" || "$TAG" != "${TAG//[^a-zA-Z0-9._-]/}" ]]; then
+            echo "::error::Invalid release tag: empty or has characters outside [A-Za-z0-9._-]"
             exit 1
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
+      # The tag, not the triggering ref: a workflow_dispatch otherwise packages the default
+      # branch's charts, whose version is 0.0.0-nightly, and attaches them to another release.
+      - name: Checkout ${{ steps.tag.outputs.tag }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+
       - name: Package chart
         id: package
+        env:
+          CHART_DIR: charts/${{ matrix.chart }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          helm package "charts/${{ matrix.chart }}"
+          # The packaged version has to be the one being released, or the index records a digest
+          # for a file nobody asked for.
+          version=$(helm show chart "$CHART_DIR" | awk '/^version:/{print $2}')
+          expected="${TAG#v}"
+          if [[ "$TAG" == "nightly" ]]; then
+            if [[ "$version" != *-nightly ]]; then
+              echo "::error::$CHART_DIR is version $version at nightly, expected a -nightly version"
+              exit 1
+            fi
+          elif [[ "$version" != "$expected" ]]; then
+            echo "::error::$CHART_DIR is version $version at $TAG, expected $expected"
+            exit 1
+          fi
+          helm package "$CHART_DIR"
           chart=$(ls "${{ matrix.chart }}"-*.tgz)
           echo "chart=${chart}" >> "$GITHUB_OUTPUT"
 
@@ -129,12 +147,46 @@ jobs:
             ${{ steps.package.outputs.chart }}.sigstore.json
           retention-days: 1
 
+  # Nothing is published until every chart has packaged, so a failed leg cannot leave a release
+  # holding one chart and not the other. Re-running is safe either way: the release upload
+  # clobbers and pushing identical bytes to GHCR is a no-op.
+  publish:
+    name: Publish ${{ matrix.chart }}
+    needs: [package]
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        chart:
+          - gluu
+          - gluu-all-in-one
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        with:
+          egress-policy: audit
+
+      - name: Download the packaged chart
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          name: chart-package-${{ matrix.chart }}
+
+      - name: Name the archive
+        id: chart
+        run: echo "chart=$(ls ${{ matrix.chart }}-*.tgz)" >> "$GITHUB_OUTPUT"
+
       - name: Upload chart to release
         if: ${{ !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
-          CHART: ${{ steps.package.outputs.chart }}
-          TAG: ${{ steps.tag.outputs.tag }}
+          CHART: ${{ steps.chart.outputs.chart }}
+          TAG: ${{ needs.package.outputs.tag }}
         run: |
           gh release upload "$TAG" "$CHART" "${CHART}.sigstore.json" \
             --clobber --repo "$GITHUB_REPOSITORY"
@@ -151,7 +203,7 @@ jobs:
         id: oci
         if: ${{ !inputs.dry_run }}
         env:
-          CHART: ${{ steps.package.outputs.chart }}
+          CHART: ${{ steps.chart.outputs.chart }}
         run: |
           helm push "$CHART" oci://ghcr.io/gluufederation/charts \
             --registry-config ~/.docker/config.json 2>&1 | tee /tmp/push.log
@@ -172,12 +224,12 @@ jobs:
 
   collect-chart-digests:
     name: Collect Helm chart digests
-    needs: [publish]
+    needs: [package]
     if: github.repository == 'GluuFederation/flex'
     runs-on: ubuntu-latest
     outputs:
       hashes: ${{ steps.merge.outputs.hashes }}
-      tag: ${{ needs.publish.outputs.tag }}
+      tag: ${{ needs.package.outputs.tag }}
     steps:
       - name: Download chart digest artifacts
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
@@ -307,4 +359,15 @@ jobs:
 
       - name: Publish index to gh-pages
         run: |
-          python automation/docs/publish-docs.py --push put charts /tmp/index.yaml
+          git fetch --depth=1 origin gh-pages
+          worktree="$(mktemp -d)"
+          git worktree add --detach "$worktree" FETCH_HEAD
+          install -m 0644 /tmp/index.yaml "$worktree/charts/index.yaml"
+          git -C "$worktree" add charts/index.yaml
+          if git -C "$worktree" diff-index --quiet HEAD --; then
+            echo "Index unchanged; nothing to publish."
+          else
+            git -C "$worktree" commit -S -m "chore(charts): refresh the Helm repository index"
+            git -C "$worktree" push origin HEAD:gh-pages
+          fi
+          git worktree remove --force "$worktree"

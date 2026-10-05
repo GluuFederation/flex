@@ -203,7 +203,14 @@ Use the listing below for a detailed estimation of the minimum required resource
    - Install after finishing all the tweaks to the `openbanking-values.yaml` file:
 
     ```bash
-    helm repo add gluu-flex https://docs.gluu.org/charts  # or: oci://ghcr.io/gluufederation/charts/gluu
+    helm install gluu oci://ghcr.io/gluufederation/charts/gluu \
+      --version replace-flex-version -n gluu -f openbanking-values.yaml
+    ```
+
+    The classic chart repository still resolves, if you already use it:
+
+    ```bash
+    helm repo add gluu-flex https://docs.gluu.org/charts
     helm repo update
     helm install gluu gluu-flex/gluu -n gluu -f openbanking-values.yaml
     ```
