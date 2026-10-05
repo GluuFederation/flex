@@ -28,13 +28,14 @@ Gluu Flex uses Agama to offer an alternative way to build web-based authenticati
 The Gluu Flex contract includes guaranteed response times and consultative support via our [support portal](https://support.gluu.org).
 
 
-### Testing Documentation Changes Locally
+### Contributing documentation
 
-While contributing documentation to official Gluu [documentation](https://docs.gluu.org/) it is important to make sure that documents meet [style guidelines](../CONTRIBUTING.md#documentation-style-guide) and have been proofread to remove any typographical or grammatical errors.
-Gluu uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) to create the documentation site. Before new content is pushed to the repository on GitHub, it should be tested locally by the author. Author can do this by deploying Material for MkDocs locally.
+This directory is the source for the Flex documentation at
+[gluu.org/docs/flex](https://gluu.org/docs/flex). Nothing here builds a site: the websites
+repository imports `docs/` from each release tag, so an edit lands on the next release.
 
-High-level steps involve:
-
-1. [Install Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/#installation)
-2. Install required plugins
-3. [Preview as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
+- Add every new page to `nav:` in `mkdocs.yml`. That tree is the only place the sidebar's group
+  labels exist, so a page left out of it is published with no sidebar entry.
+- Meet the Janssen
+  [documentation style guidelines](https://docs.jans.io/stable/CONTRIBUTING/#documentation-style-guide)
+  and proofread for typographical and grammatical errors before opening a pull request.
