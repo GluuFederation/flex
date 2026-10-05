@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import subprocess
+import tempfile
 import sys
 from pathlib import Path
 
@@ -37,12 +38,15 @@ ASSET_URL = "https://github.com/{repo}/releases/download/{tag}/{filename}"
 
 # A single transient failure is not evidence that an asset is missing. The delay matters as much
 # as the count: three attempts inside a second can all land on the same unhealthy edge node.
+# The retry window has to outlast a single attempt, or a request that hits --max-time has already
+# exhausted the window and is never retried. Charts are a few hundred kilobytes, so 30 seconds is
+# a generous cap per attempt.
 CURL_RETRY = [
     "--retry", "5",
     "--retry-all-errors",
     "--retry-delay", "2",
-    "--retry-max-time", "60",
-    "--max-time", "120",
+    "--max-time", "30",
+    "--retry-max-time", "120",
 ]
 
 def release_tag(version: str) -> str:
@@ -99,19 +103,25 @@ def mismatched_digests(entries: list[tuple[str, str]]) -> list[str]:
     one pointing nowhere: Helm reports a corrupt chart rather than a missing one.
     """
     problems = []
-    for url, digest in entries:
-        if not digest:
-            problems.append(f"no digest recorded {url}")
-            continue
-        result = subprocess.run(
-            ["curl", "-sSL", *CURL_RETRY, url], check=False, capture_output=True,
-        )
-        if result.returncode != 0:
-            problems.append(f"curl exit {result.returncode} {url}")
-            continue
-        actual = hashlib.sha256(result.stdout).hexdigest()
-        if actual != digest.removeprefix("sha256:"):
-            problems.append(f"digest {digest} but asset is {actual} {url}")
+    with tempfile.TemporaryDirectory() as scratch:
+        download = Path(scratch) / "asset"
+        for url, digest in entries:
+            if not digest:
+                problems.append(f"no digest recorded {url}")
+                continue
+            # To a file, not stdout: curl rewrites the file on each retry, where stdout would
+            # keep whatever a failed attempt had already emitted and hash the two together.
+            result = subprocess.run(
+                ["curl", "-sSL", *CURL_RETRY, "-o", str(download), url],
+                check=False,
+                capture_output=True,
+            )
+            if result.returncode != 0:
+                problems.append(f"curl exit {result.returncode} {url}")
+                continue
+            actual = hashlib.sha256(download.read_bytes()).hexdigest()
+            if actual != digest.removeprefix("sha256:"):
+                problems.append(f"digest {digest} but asset is {actual} {url}")
     return problems
 
 def missing_assets(urls: list[str]) -> list[str]:
@@ -152,7 +162,11 @@ def main() -> int:
     parser.add_argument(
         "--verify-all",
         action="store_true",
-        help="check every URL in the index, not only the ones this run changed",
+        help=(
+            "check every URL in the index, not only the ones this run changed. "
+            "Pair it with --add: without one, the index's nightly entries still hold the "
+            "digests from before the current nightly was published, and are reported stale."
+        ),
     )
     parser.add_argument(
         "--verify-digest",
