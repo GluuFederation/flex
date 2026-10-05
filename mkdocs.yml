@@ -1,19 +1,15 @@
-# Project information
 site_name: Gluu Flex Documentation
 site_description: Gluu Flex Project Deployment and Operation References
 site_author: Gluu, Inc.
 site_url: https://docs.gluu.org
 
-# Copyright
 copyright: Copyright &copy; 2026, Gluu Flex
 
-# Repository
 docs_dir: ./docs
 repo_name: GitHub
 repo_url: https://github.com/GluuFederation/flex
 edit_uri: edit/main/docs/
 
-# Plugins
 plugins:
    - include-markdown
    - tags
@@ -23,10 +19,8 @@ plugins:
        enable_creation_date: true
    - git-committers:
        repository: GluuFederation/flex
-# Configuration
 theme:
     name: material
-    custom_dir: docs/overrides
     highlightjs: true
     hljs_languages:
         - yaml
@@ -43,14 +37,12 @@ theme:
         text: Roboto
         code: Roboto Mono
     palette:
-        # Palette toggle for automatic mode
         - media: "(prefers-color-scheme)"
           primary: green
           accent: green
           toggle:
             icon: material/brightness-auto
             name: Switch to light mode
-        # Palette toggle for light mode
         - media: "(prefers-color-scheme: light)"
           primary: green
           accent: green
@@ -58,7 +50,6 @@ theme:
           toggle:
             icon: material/brightness-7
             name: Switch to dark mode
-        # Palette toggle for dark mode
         - media: "(prefers-color-scheme: dark)"
           primary: green
           accent: green
@@ -80,7 +71,6 @@ extra_css:
   - css/tabs.css
   - stylesheets/mermaid-extra.css
 
-# Extensions
 markdown_extensions:
 - admonition
 - attr_list
@@ -129,7 +119,6 @@ extra:
   version:
     provider: mike
     default: stable
-# Navigation
 nav:
 - 'Flex':
   - 'README.md'
@@ -155,6 +144,7 @@ nav:
       - 'VM Installation':
           - 'install/vm-install/vm-requirements.md'
           - 'Ubuntu': 'install/vm-install/ubuntu.md'
+          - 'Debian': 'install/vm-install/Debian.md'
           - 'RHEL': 'install/vm-install/rhel.md'
           - 'SUSE': 'install/vm-install/suse.md'
       - 'Version Support Policy': 'install/eol.md'
@@ -185,7 +175,9 @@ nav:
             - 'SMTP': 'admin/admin-ui/smtp-menu.md'
             - 'SCIM': 'admin/admin-ui/scim-menu.md'
             - 'FIDO': 'admin/admin-ui/fido-menu.md'
+            - 'SAML': 'admin/admin-ui/saml-menu.md'
             - 'Jans Lock': 'admin/admin-ui/jans-lock-menu.md'
+            - 'Webhooks': 'admin/admin-ui/webhooks.md'
           - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
       - 'Flex Recipes':
           - 'admin/recipes/README.md'
@@ -194,9 +186,8 @@ nav:
       - 'Migrating from Gluu4': 'admin/gluu-migration.md'
 
   - 'Reference':
+      - 'reference/README.md'
       - 'reference/kubernetes/README.md'
-      - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
-      - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
 
 - 'Open Banking':
   - Overview: openbanking/index.md

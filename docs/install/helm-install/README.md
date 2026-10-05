@@ -72,7 +72,7 @@ Verify and configure your deployment:
 
 ## Helm Chart Reference
 
-For all configuration options, see the [Helm Chart Reference](../../reference/kubernetes/README.md#helm-chart-references).
+For all configuration options, see the [chart's own reference](https://github.com/GluuFederation/flex/blob/vreplace-flex-version/charts/gluu/README.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu/gluu).
 
 ## Looking for Older Charts?
 

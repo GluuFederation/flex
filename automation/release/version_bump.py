@@ -63,7 +63,6 @@ NIGHTLY_BADGE = "0.0.0--nightly"
 
 # Contain "0.0.0-nightly" as control-flow or history, NOT as an owned version.
 EXCLUDE_NIGHTLY = {
-    ".github/workflows/build-docs.yml",
     ".github/workflows/build-packages.yml",
     ".github/workflows/build-docker-images.yml",
     ".github/workflows/ops-sync-helm-chart.yml",

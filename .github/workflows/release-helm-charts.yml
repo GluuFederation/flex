@@ -1,19 +1,5 @@
 name: "Release: Helm Charts"
 
-# Packaging, signing and publishing the Helm charts, in one place.
-#
-# This replaces two independent `helm package` runs that disagreed with each other: the one in
-# `build-docs.yml`, whose output went to gh-pages and is what `charts/index.yaml` records digests
-# for, and the one in `release-upload.yml`, whose output went to the release. The second shipped
-# `get_helm.sh` inside every tarball, because it downloaded the Helm installer into the chart
-# directory before packaging it, so the two were never byte-identical. It also only ever packaged
-# `charts/gluu`, which is why no `gluu-all-in-one` build was ever a release asset, and picked the
-# file to upload with `sort -rn | head -1`, which put `gluu-6.0.0.tgz` on the v5.16.0 release.
-#
-# Charts now go to the GitHub release and to GHCR. gh-pages keeps serving `charts/index.yaml` only,
-# rewritten to point at those assets, so `helm repo add gluu https://docs.gluu.org/charts` keeps
-# working while the binaries stop depending on that host.
-
 on:
   release:
     types:
@@ -78,8 +64,6 @@ jobs:
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      # The tag, not the triggering ref: a workflow_dispatch otherwise packages the default
-      # branch's charts, whose version is 0.0.0-nightly, and attaches them to another release.
       - name: Checkout ${{ steps.tag.outputs.tag }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -91,8 +75,6 @@ jobs:
           CHART_DIR: charts/${{ matrix.chart }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          # The packaged version has to be the one being released, or the index records a digest
-          # for a file nobody asked for.
           version=$(helm show chart "$CHART_DIR" | awk '/^version:/{print $2}')
           expected="${TAG#v}"
           if [[ "$TAG" == "nightly" ]]; then
@@ -147,9 +129,6 @@ jobs:
             ${{ steps.package.outputs.chart }}.sigstore.json
           retention-days: 1
 
-  # Nothing is published until every chart has packaged, so a failed leg cannot leave a release
-  # holding one chart and not the other. Re-running is safe either way: the release upload
-  # clobbers and pushing identical bytes to GHCR is a no-op.
   publish:
     name: Publish ${{ matrix.chart }}
     needs: [package]
@@ -292,7 +271,7 @@ jobs:
 
   index:
     name: Refresh chart index on gh-pages
-    needs: [publish]
+    needs: [package, publish]
     if: |
       github.repository == 'GluuFederation/flex' &&
       !inputs.dry_run
@@ -371,3 +350,14 @@ jobs:
             git -C "$worktree" push origin HEAD:gh-pages
           fi
           git worktree remove --force "$worktree"
+
+      - name: Tell gluu.org to resync
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          TAG: ${{ needs.package.outputs.tag }}
+        run: |
+          gh api repos/GluuFederation/websites/dispatches \
+            --method POST \
+            --field event_type=flex-docs-published \
+            --field "client_payload[ref]=${TAG}" \
+            --field "client_payload[run_url]=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"

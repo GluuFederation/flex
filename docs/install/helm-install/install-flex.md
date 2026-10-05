@@ -93,7 +93,7 @@ helm uninstall gluu -n gluu
 
 ## Chart Reference
 
-For all available Helm values, see the [Helm Chart Reference](../../reference/kubernetes/README.md#helm-chart-references).
+For all available Helm values, see the [chart's own reference](https://github.com/GluuFederation/flex/blob/vreplace-flex-version/charts/gluu/README.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu/gluu).
 
 ## Next Steps
 
