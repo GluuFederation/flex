@@ -145,6 +145,7 @@
     "start_date_time": "Start Date & Time",
     "end_date_time": "End Date & Time",
     "system_status": "System Status",
+    "status_unavailable": "Service status unavailable",
     "config_api": "Config API",
     "config_api_status": "Config API Status",
     "key_cloak": "Keycloak",
