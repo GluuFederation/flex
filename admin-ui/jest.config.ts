@@ -7,7 +7,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest/setup.ts'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   transform: {
-    '\\.[jt]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],
+    '\\.[jt]sx?$': 'babel-jest',
   },
   testEnvironmentOptions: {
     url: 'https://admin-ui-test.gluu.org/',

@@ -503,19 +503,19 @@ const ClientCibaParUmaPanel = ({
           <>
             <Card style={applicationStyle.mainCard}>
               <FormGroup row>
-                <GluuLabel label={t('fields.resourceId')} size={3} />
+                <GluuLabel label="fields.resourceId" size={3} />
                 <Col sm={9} className="top-5">
                   {selectedUMA?.id as string}
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.displayname')} size={3} />
+                <GluuLabel label="fields.displayname" size={3} />
                 <Col sm={9} className="top-5">
                   {selectedUMA?.name as string}
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.iconUrl')} size={3} />
+                <GluuLabel label="fields.iconUrl" size={3} />
                 <Col sm={9} className="top-5">
                   <a
                     href={selectedUMA?.iconUri as string}
@@ -528,7 +528,7 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.scopeSelection')} size={3} />
+                <GluuLabel label="fields.scopeSelection" size={3} />
                 <Col sm={9} className="top-5">
                   <RadioGroup
                     row
@@ -554,7 +554,7 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.scopeOrExpression')} size={3} />
+                <GluuLabel label="fields.scopeOrExpression" size={3} />
                 <Col sm={9} className="top-5">
                   {showScopeSection === 'scope' ? (
                     <>
@@ -596,7 +596,7 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.associatedClient')} size={3} />
+                <GluuLabel label="fields.associatedClient" size={3} />
                 <Col sm={9} className="top-5">
                   {!isEmpty(selectedUMA) &&
                     (selectedUMA?.clients as string[] | undefined)?.map((clientDn, key) => {
@@ -621,7 +621,7 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={t('fields.creationTime')} size={3} />
+                <GluuLabel label="fields.creationTime" size={3} />
                 <Col sm={9} className="top-5">
                   {selectedUMA?.creationDate
                     ? formatDate(selectedUMA.creationDate as string, DATE_FORMATS.DATETIME_LONG)

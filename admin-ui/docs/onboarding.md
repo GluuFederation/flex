@@ -47,14 +47,14 @@ Replace `<jans-server-host>` with your Jans Server's hostname.
 
 ### Variables
 
-| Variable               | Purpose                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| `BASE_PATH`            | URL path the app is served from (`/admin/`)                                     |
-| `CONFIG_API_BASE_URL`  | Jans Config API base URL                                                        |
-| `API_BASE_URL`         | Jans Admin UI API base URL (a Config API sub-path)                              |
-| `NPM_TOKEN`            | Unused (leave empty)                                                            |
-| `AUTH_SERVER_HOSTNAME` | Present in the checked-in `.env.*` files but read by nothing; no need to set it |
-| `ANALYZE`              | When `true`, the prod build emits the Sonda bundle report                       |
+| Variable               | Purpose                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| `BASE_PATH`            | URL path the app is served from (`/admin/`)               |
+| `CONFIG_API_BASE_URL`  | Jans Config API base URL                                  |
+| `API_BASE_URL`         | Read by nothing; no need to set it                        |
+| `NPM_TOKEN`            | Unused (leave empty)                                      |
+| `AUTH_SERVER_HOSTNAME` | Read by nothing; no need to set it                        |
+| `ANALYZE`              | When `true`, the prod build emits the Sonda bundle report |
 
 Vite loads `.env`, `.env.<mode>`, `.env.<mode>.local` (later wins). `.env.*.local` are for per-machine overrides. Gitignored, never commit secrets. Full model in [build-deploy.md](./build-deploy.md#env-files-per-mode).
 
@@ -78,8 +78,6 @@ Default URL is `http://localhost:4100/admin/`. Open it and you'll be redirected 
 After sign-in, the sidebar shows whichever plugins your Cedarling role can read.
 
 In dev, nothing serves `/admin/env-config.js`, so a 404 for it is expected and harmless: the axios base-URL fallback chain takes over. See [build-deploy.md](./build-deploy.md).
-
-React Query DevTools button appears bottom-right in dev. Click to inspect cache.
 
 ## Quality gates
 
