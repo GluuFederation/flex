@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
-import { useAppSelector } from '@/redux/hooks'
 import logo192 from 'Images/logos/logo192.png'
 import backendDown from 'Images/backend-down.png'
+import { buildAppRootUrl } from '@/helpers/navigation'
 import { useStyles } from './styles/GluuServiceDownModal.style'
 
 interface GluuServiceDownModalProps {
@@ -10,17 +10,10 @@ interface GluuServiceDownModalProps {
 }
 
 const GluuServiceDownModal = ({ message = '', statusCode }: GluuServiceDownModalProps) => {
-  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
   const { classes } = useStyles()
 
   const handleRefresh = () => {
-    const host = authServerHost ? `${authServerHost}/admin` : null
-
-    if (host) {
-      window.location.href = host
-    } else {
-      window.location.reload()
-    }
+    window.location.href = buildAppRootUrl()
   }
 
   return (

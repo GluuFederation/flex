@@ -11,18 +11,14 @@ import { ModalLayer } from '@/components/ModalLayer'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
-import { APP_BASE_URL } from '@/helpers/navigation'
+import { buildAppRootUrl } from '@/helpers/navigation'
 import { deleteAdminUiSession } from 'Redux/api/backend-api'
 import { logger } from '@/utils/logger'
-
-export const buildAdminUrl = (authServerHost?: string | number | boolean): string | null =>
-  authServerHost ? `${authServerHost}${APP_BASE_URL}` : null
 
 const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
-  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
   const hasSession = useAppSelector((state) => state.authReducer.hasSession)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const { state: themeState } = useTheme()
@@ -32,13 +28,8 @@ const GluuTimeoutModal = () => {
   const { classes } = useStyles({ isDark, themeColors })
 
   const navigateToAdminRoot = useCallback(() => {
-    const host = buildAdminUrl(authServerHost)
-    if (host) {
-      window.location.href = host
-    } else {
-      window.location.reload()
-    }
-  }, [authServerHost])
+    window.location.href = buildAppRootUrl()
+  }, [])
 
   const handleRefresh = useCallback(async () => {
     if (isSigningOut) return

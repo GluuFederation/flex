@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import GluuTimeoutModal, { buildAdminUrl } from 'Routes/Apps/Gluu/GluuTimeoutModal'
+import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import { reducer as initReducer } from 'Redux/features/initSlice'
 
 const mockDeleteAdminUiSession = jest.fn()
@@ -107,59 +107,7 @@ describe('GluuTimeoutModal session expiry', () => {
   })
 })
 
-// jsdom forbids stubbing window.location, so the redirect target is asserted through the URL
-// builder while the two exit paths are asserted by the state they clear.
 describe('GluuTimeoutModal session-expiry redirect', () => {
-  it('targets the admin root with a trailing slash', () => {
-    expect(buildAdminUrl('https://auth.example.org')).toBe('https://auth.example.org/admin/')
-  })
-
-  it('falls back to a reload when no auth server host is configured', () => {
-    expect(buildAdminUrl('')).toBeNull()
-    expect(buildAdminUrl(undefined)).toBeNull()
-  })
-
-  // Proves the path comes from the app's configured base rather than a hardcoded '/admin/'.
-  it('takes the base path from the app configuration', async () => {
-    const original = process.env.BASE_PATH
-    process.env.BASE_PATH = '/custom-base/'
-    jest.resetModules()
-
-    try {
-      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-        'https://auth.example.org/custom-base/',
-      )
-    } finally {
-      if (original === undefined) {
-        delete process.env.BASE_PATH
-      } else {
-        process.env.BASE_PATH = original
-      }
-      jest.resetModules()
-    }
-  })
-
-  it('normalises a configured base path that omits the trailing slash', async () => {
-    const original = process.env.BASE_PATH
-    process.env.BASE_PATH = '/custom-base'
-    jest.resetModules()
-
-    try {
-      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-        'https://auth.example.org/custom-base/',
-      )
-    } finally {
-      if (original === undefined) {
-        delete process.env.BASE_PATH
-      } else {
-        process.env.BASE_PATH = original
-      }
-      jest.resetModules()
-    }
-  })
-
   const renderExpired = (authServerHost: string) => {
     const store = configureStore({
       reducer: combineReducers({

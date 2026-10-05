@@ -6,7 +6,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }))
 
-import { useAppNavigation, ROUTES } from '../navigation'
+import { useAppNavigation, ROUTES, buildAppRootUrl } from '../navigation'
 
 describe('navigation', () => {
   beforeEach(() => {
@@ -69,4 +69,37 @@ describe('navigation', () => {
       expect(result.current.navigate).toBe(mockNavigate)
     })
   })
+})
+
+describe('buildAppRootUrl', () => {
+  it('targets the current origin, not the auth server', () => {
+    expect(buildAppRootUrl('http://localhost:4100')).toBe('http://localhost:4100/admin/')
+  })
+
+  it('defaults to the page origin', () => {
+    expect(buildAppRootUrl()).toBe(`${window.location.origin}/admin/`)
+  })
+
+  it.each([['/custom-base/'], ['/custom-base']])(
+    'takes the base path %s from the app configuration',
+    async (basePath) => {
+      const original = process.env.BASE_PATH
+      process.env.BASE_PATH = basePath
+      jest.resetModules()
+
+      try {
+        const reimported = await import('../navigation')
+        expect(reimported.buildAppRootUrl('https://host.example.org')).toBe(
+          'https://host.example.org/custom-base/',
+        )
+      } finally {
+        if (original === undefined) {
+          delete process.env.BASE_PATH
+        } else {
+          process.env.BASE_PATH = original
+        }
+        jest.resetModules()
+      }
+    },
+  )
 })

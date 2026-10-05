@@ -1,6 +1,5 @@
-import { useAppSelector } from '@/redux/hooks'
 import logo192 from 'Images/logos/logo192.png'
-import { buildSafeNavigationUrl } from '@/utils/urlSecurity'
+import { buildAppRootUrl } from '@/helpers/navigation'
 import type { GluuErrorModalProps } from './types'
 import { useStyles } from './styles/GluuErrorModal.style'
 
@@ -10,7 +9,6 @@ const GluuErrorModal = ({
   onRetry,
   retryLabel = 'Try Again',
 }: GluuErrorModalProps) => {
-  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
   const { classes } = useStyles()
 
   const handleRefresh = () => {
@@ -19,15 +17,7 @@ const GluuErrorModal = ({
       return
     }
 
-    const host = buildSafeNavigationUrl('/admin', {
-      baseUrl: typeof authServerHost === 'string' ? authServerHost : undefined,
-    })
-
-    if (host) {
-      window.location.href = host
-    } else {
-      window.location.reload()
-    }
+    window.location.href = buildAppRootUrl()
   }
 
   return (
