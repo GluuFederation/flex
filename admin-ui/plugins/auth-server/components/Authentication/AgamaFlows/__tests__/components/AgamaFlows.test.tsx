@@ -6,6 +6,8 @@ import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
 import { useGetAgamaPrj } from 'JansConfigApi'
 import { mockDeployments } from '../fixtures/mockAgamaProjects'
+import { PENDING_REFETCH_INTERVAL } from '@/utils/queryUtils'
+import { agamaRefetchIntervalFor } from '../../../__tests__/helpers/agamaPolling'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(),
@@ -21,6 +23,18 @@ jest.mock('@/cedarling', () => ({
 const stableAgamaPrjResult = {
   data: { entries: mockDeployments, totalEntriesCount: mockDeployments.length },
   isLoading: false,
+} as ReturnType<typeof useGetAgamaPrj>
+
+const pollingAgamaPrjResult = {
+  ...stableAgamaPrjResult,
+  isFetching: true,
+} as ReturnType<typeof useGetAgamaPrj>
+
+const finishedDeployments = mockDeployments.filter((deployment) => deployment.finishedAt)
+const refetchingFinishedAgamaPrjResult = {
+  data: { entries: finishedDeployments, totalEntriesCount: finishedDeployments.length },
+  isLoading: false,
+  isFetching: true,
 } as ReturnType<typeof useGetAgamaPrj>
 
 const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlingReturn =>
@@ -67,6 +81,25 @@ describe('AgamaFlows', () => {
     render(<AgamaFlows />, { wrapper: Wrapper })
     expect(screen.getByText('pending-agama-project')).toBeInTheDocument()
     expect(screen.getByText('Pending')).toBeInTheDocument()
+  })
+
+  it('re-checks the project list while a deployment is pending', () => {
+    render(<AgamaFlows />, { wrapper: Wrapper })
+    expect(agamaRefetchIntervalFor(mockDeployments)).toBe(PENDING_REFETCH_INTERVAL)
+    expect(agamaRefetchIntervalFor(finishedDeployments)).toBe(false)
+  })
+
+  it('keeps the list usable while it re-checks a pending project', () => {
+    jest.mocked(useGetAgamaPrj).mockReturnValue(pollingAgamaPrjResult)
+    render(<AgamaFlows />, { wrapper: Wrapper })
+    expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument()
+    expect(screen.getByText('pending-agama-project')).toBeInTheDocument()
+  })
+
+  it('shows the loader while the list refetches with nothing pending', () => {
+    jest.mocked(useGetAgamaPrj).mockReturnValue(refetchingFinishedAgamaPrjResult)
+    render(<AgamaFlows />, { wrapper: Wrapper })
+    expect(screen.getByLabelText('Loading')).toBeInTheDocument()
   })
 
   it('shows New Project button when user has write permission', () => {

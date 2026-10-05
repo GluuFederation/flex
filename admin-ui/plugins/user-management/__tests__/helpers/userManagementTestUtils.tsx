@@ -44,7 +44,7 @@ jest.mock('JansConfigApi', () => ({
   getGetUserQueryKey: jest.fn(() => ['users']),
   useGetAttributes: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
   usePostUser: jest.fn(() => ({ mutate: jest.fn(), mutateAsync: jest.fn(), isPending: false })),
-  usePutUser: jest.fn(() => ({ mutateAsync: jest.fn(), isPending: false })),
+  usePutUser: jest.fn(() => ({ mutate: jest.fn(), mutateAsync: jest.fn(), isPending: false })),
   useGetPropertiesPersistence: jest.fn(() => ({
     data: { persistenceType: 'ldap' },
     isLoading: false,

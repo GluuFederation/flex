@@ -84,7 +84,7 @@
     "view_source": "Afficher la source",
     "jans_lock": "Verrou Jans",
     "saml": "SAML",
-    "agama_flows": "Flux Agama",
+    "agama_projects": "Projets Agama",
     "default_acr": "ACR par défaut",
     "acrs": "Méthodes ACR",
     "aliases": "Alias",
@@ -643,6 +643,7 @@
     "multivalued": "Multivalué ?",
     "name": "Nom",
     "type": "Taper",
+    "agama_project": "Projet Agama",
     "author": "Auteur",
     "project_name": "Nom du projet",
     "deployed_on": "Déployé sur",
@@ -848,6 +849,9 @@
     "noMatchingOptions": "Aucune option correspondante",
     "nothingToShowInTheList": "Rien à montrer dans la liste",
     "disable_logger_timer": "Désactiver le minuteur du journal",
+    "user_role_permission_validation_enabled": "Validation des permissions de rôle utilisateur activée",
+    "validate_user_inum_in_introspection_flag": "Valider l'inum utilisateur lors de l'introspection",
+    "fetch_user_role_in_introspection_flag": "Récupérer le rôle utilisateur lors de l'introspection",
     "skip_defined_password_validation": "Ignorer la validation du mot de passe défini",
     "auiPolicyStoreUrl": "Magasin de politiques à distance de l'interface d'administration",
     "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API",
@@ -1003,6 +1007,10 @@
     "no_assets_found": "Aucune ressource trouvée",
     "asset_deleted_successfully": "Ressource supprimée avec succès",
     "failed_to_delete_asset": "Échec de la suppression de la ressource",
+    "asset_created_successfully": "Ressource créée avec succès",
+    "asset_updated_successfully": "Ressource mise à jour avec succès",
+    "failed_to_create_asset": "Échec de la création de la ressource",
+    "failed_to_update_asset": "Échec de la mise à jour de la ressource",
     "asset_entity": "ressource",
     "delete_webhook_confirm": "Supprimer le webhook ?",
     "failed_to_delete_webhook": "Échec de la suppression du webhook",
@@ -1786,7 +1794,11 @@
       "hints": "Types d'authentificateurs préférés qui guident le navigateur lors de l'enregistrement et de l'authentification FIDO2."
     },
     "asset": {
-      "jansService": "Jans Module Properties"
+      "upload": "Fichier de ressource à téléverser. Types pris en charge : .properties, .css, .js, .jar, .xhtml, .jpg, .jpeg, .png, .gif.",
+      "asset_name": "Nom du fichier de ressource tel qu'il est enregistré sur le serveur, extension comprise.",
+      "jansService": "Service Jans qui charge et utilise cette ressource.",
+      "description": "Brève description de l'utilisation de cette ressource.",
+      "enabled": "Lorsqu'elle est activée, la ressource est active et disponible pour le service sélectionné."
     },
     "webhook": {
       "url": "URL du webhook.",
@@ -2257,6 +2269,9 @@
     "config_api_properties": {
       "configOauthEnabled": "Drapeau d'activation/désactivation de l'authentification OAuth. Valeur par défaut vraie.",
       "disableLoggerTimer": "Drapeau pour activer/désactiver le timer pour refléter dynamiquement les changements de configuration des logs. Valeur par défaut vraie.",
+      "userRolePermissionValidationEnabled": "Drapeau pour activer ou désactiver la vérification du mappage rôle-permission de l'utilisateur lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
+      "validateUserInumInIntrospectionFlag": "Drapeau pour activer ou désactiver la validation du User-inum dans la réponse d'introspection lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
+      "fetchUserRoleInIntrospectionFlag": "Drapeau pour activer ou désactiver la récupération du rôle de l'utilisateur dans la réponse d'introspection lors de l'accès aux endpoints de gestion des utilisateurs. Valeur par défaut vraie.",
       "disableAuditLogger": "Drapeau pour activer/désactiver l'audit de requête. Valeur par défaut faux.",
       "customAttributeValidationEnabled": "Drapeau pour activer/désactiver la vérification si l'attribut personnalisé est déclaré dans le schéma. Valeur par défaut vraie.",
       "apiProtectionType": "Nom du mécanisme de protection API supporté. Type supporté est OAuth2.",

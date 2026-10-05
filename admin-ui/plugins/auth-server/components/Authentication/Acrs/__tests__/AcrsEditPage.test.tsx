@@ -1,8 +1,10 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
+import { QueryClient } from '@tanstack/react-query'
 import {
   createAuthenticationTestStore,
   createAuthenticationTestWrapper,
+  mockAppNavigation,
 } from '../../__tests__/helpers/authenticationTestUtils'
 import AcrsEditPage from '../AcrsEditPage'
 import type { AuthNItem } from '../../types'
@@ -11,9 +13,9 @@ import {
   mockBuiltInAuthenticationItem,
 } from '../../__tests__/fixtures/mockAuthenticationData'
 
-type LocationState = { authnTab: number; selectedItem: AuthNItem | null }
+type LocationState = { authnTab: string; selectedItem: AuthNItem | null }
 const mockUseLocation = jest.fn<{ state: LocationState; pathname: string }, []>(() => ({
-  state: { authnTab: 2, selectedItem: null },
+  state: { authnTab: 'acrs', selectedItem: null },
   pathname: '/auth-server/authn/edit/test',
 }))
 
@@ -52,7 +54,7 @@ describe('AcrsEditPage', () => {
 
   it('shows "No item selected" when no item is in location state', () => {
     mockUseLocation.mockReturnValue({
-      state: { authnTab: 2, selectedItem: null },
+      state: { authnTab: 'acrs', selectedItem: null },
       pathname: '/auth-server/authn/edit/test',
     })
     render(<AcrsEditPage />, { wrapper: Wrapper })
@@ -61,7 +63,7 @@ describe('AcrsEditPage', () => {
 
   it('renders AcrsForm when a script item is in location state', () => {
     mockUseLocation.mockReturnValue({
-      state: { authnTab: 2, selectedItem: mockAuthenticationItem },
+      state: { authnTab: 'acrs', selectedItem: mockAuthenticationItem },
       pathname: '/auth-server/authn/edit/test',
     })
     render(<AcrsEditPage />, { wrapper: Wrapper })
@@ -70,10 +72,75 @@ describe('AcrsEditPage', () => {
 
   it('renders AcrsForm when a built-in item is in location state', () => {
     mockUseLocation.mockReturnValue({
-      state: { authnTab: 2, selectedItem: mockBuiltInAuthenticationItem },
+      state: { authnTab: 'acrs', selectedItem: mockBuiltInAuthenticationItem },
       pathname: '/auth-server/authn/edit/test',
     })
     render(<AcrsEditPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Level/i)).toBeInTheDocument()
+  })
+
+  describe('after a successful save', () => {
+    const mockNavigateToRoute = jest.fn()
+
+    beforeEach(() => {
+      jest.useFakeTimers()
+      mockAppNavigation(mockNavigateToRoute)
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    const saveScriptEdit = async (
+      authnTab: string,
+      wrapper: React.ComponentType<{ children: React.ReactNode }>,
+    ): Promise<void> => {
+      mockUseLocation.mockReturnValue({
+        state: { authnTab, selectedItem: { ...mockAuthenticationItem, isCustomScript: true } },
+        pathname: '/auth-server/authn/edit/test',
+      })
+      const { container } = render(<AcrsEditPage />, { wrapper })
+
+      fireEvent.change(container.querySelector('[name="description"]') as HTMLInputElement, {
+        target: { value: 'Updated OTP description' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /apply/i }))
+      const dialog = await screen.findByRole('dialog')
+      fireEvent.change(dialog.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'reason for this change' },
+      })
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /yes/i }))
+      })
+      act(() => {
+        jest.advanceTimersByTime(2000)
+      })
+    }
+
+    it.each(['acrs', 'builtIn'])('returns to the %s tab it was opened from', async (authnTab) => {
+      await saveScriptEdit(authnTab, Wrapper)
+
+      expect(mockNavigateToRoute).toHaveBeenCalledWith('/auth-server/authn', {
+        state: { authnTab },
+      })
+    })
+
+    it('marks the ACR, LDAP and script lists stale so the tabs show the saved values', async () => {
+      const client = new QueryClient()
+      const invalidateQueries = jest.spyOn(client, 'invalidateQueries')
+
+      await saveScriptEdit(
+        'acrs',
+        createAuthenticationTestWrapper(createAuthenticationTestStore(), client),
+      )
+
+      expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['/api/v1/acrs'] })
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['/api/v1/config/database/ldap'],
+      })
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['/api/v1/config/scripts/type/person_authentication'],
+      })
+    })
   })
 })

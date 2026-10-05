@@ -52,14 +52,17 @@ const useAssetSaveMutation = (
   method: 'POST' | 'PUT',
   isUpdate: boolean,
   auditAction: AssetAuditActionType,
+  successKey: string,
+  errorKey: string,
   callbacks?: AssetMutationCallbacks,
 ) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useAssetAudit()
   const callbacksRef = useRef(callbacks)
   callbacksRef.current = callbacks
-  const mutation = useMutation({
+  const { mutateAsync, isPending, isError, error } = useMutation({
     mutationFn: (body: AssetFormData) =>
       customInstance<Document>({
         url: ASSET_UPLOAD_URL,
@@ -71,36 +74,51 @@ const useAssetSaveMutation = (
   const save = useCallback(
     async (body: AssetFormData, userMessage?: string) => {
       try {
-        const result = await mutation.mutateAsync(body)
+        const result = await mutateAsync(body)
         logAction(auditAction, ASSET, { action_message: userMessage, action_data: body }).catch(
           (err) => {
             const auditError = err instanceof Error ? err : new Error(String(err))
             logger.error('[Asset audit] logAction failed', auditError)
           },
         )
+        dispatch(updateToast(true, 'success', t(successKey)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {
         const err = error as AssetMutationError
-        dispatch(updateToast(true, 'error', extractAssetErrorMessage(err, 'Unknown error')))
+        dispatch(updateToast(true, 'error', extractAssetErrorMessage(err, t(errorKey))))
         callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)))
         throw error
       }
     },
-    [mutation, logAction, auditAction, dispatch, queryClient],
+    [mutateAsync, logAction, auditAction, dispatch, queryClient, t, successKey, errorKey],
   )
 
-  return { save, isLoading: mutation.isPending, isError: mutation.isError, error: mutation.error }
+  return { save, isLoading: isPending, isError, error }
 }
 
 export const useCreateAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
-  const { save, ...rest } = useAssetSaveMutation('POST', false, CREATE, callbacks)
+  const { save, ...rest } = useAssetSaveMutation(
+    'POST',
+    false,
+    CREATE,
+    T_KEYS.MSG_ASSET_CREATED_SUCCESSFULLY,
+    T_KEYS.MSG_FAILED_TO_CREATE_ASSET,
+    callbacks,
+  )
   return { createAsset: save, ...rest }
 }
 
 export const useUpdateAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
-  const { save, ...rest } = useAssetSaveMutation('PUT', true, UPDATE, callbacks)
+  const { save, ...rest } = useAssetSaveMutation(
+    'PUT',
+    true,
+    UPDATE,
+    T_KEYS.MSG_ASSET_UPDATED_SUCCESSFULLY,
+    T_KEYS.MSG_FAILED_TO_UPDATE_ASSET,
+    callbacks,
+  )
   return { updateAsset: save, ...rest }
 }
 
@@ -109,14 +127,14 @@ export const useDeleteAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logAction } = useAssetAudit()
-  const mutation = useDeleteAsset()
+  const { mutateAsync, isPending, isError, error } = useDeleteAsset()
   const callbacksRef = useRef(callbacks)
   callbacksRef.current = callbacks
 
   const deleteAsset = useCallback(
     async (inum: string, userMessage?: string) => {
       try {
-        const result = await mutation.mutateAsync({ inum })
+        const result = await mutateAsync({ inum })
         logAction(DELETION, ASSET, {
           action_message: userMessage,
           action_data: { inum },
@@ -142,13 +160,13 @@ export const useDeleteAssetWithAudit = (callbacks?: AssetMutationCallbacks) => {
         throw error
       }
     },
-    [mutation, logAction, dispatch, queryClient, t],
+    [mutateAsync, logAction, dispatch, queryClient, t],
   )
 
   return {
     deleteAsset,
-    isLoading: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error,
+    isLoading: isPending,
+    isError,
+    error,
   }
 }
