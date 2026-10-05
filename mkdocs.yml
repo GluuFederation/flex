@@ -187,6 +187,7 @@ nav:
 
   - 'Reference':
       - 'reference/README.md'
+      - 'Helm Values': 'reference/helm-values.md'
       - 'reference/kubernetes/README.md'
 
 - 'Open Banking':
