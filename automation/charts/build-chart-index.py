@@ -48,8 +48,14 @@ def version_key(version: str) -> tuple[int, ...]:
     return (*parts, 0 if "-" in version else 1)
 
 def is_archived(version: str, cutover: str | None) -> bool:
-    """Whether this version predates the cutover and lives in the archive release."""
-    if not cutover:
+    """Whether this version predates the cutover and lives in the archive release.
+
+    Nightly never is. It is a rolling tag whose asset is replaced on every build, so it always
+    holds the current chart, while the archive holds whichever nightly happened to be published
+    when it was frozen. Routing it there would pair a fresh digest with stale bytes, which
+    ``--verify-digest`` rejects -- correctly, but only after a release has already gone out.
+    """
+    if not cutover or release_tag(version) == "nightly":
         return False
     return version_key(version) < version_key(cutover)
 
