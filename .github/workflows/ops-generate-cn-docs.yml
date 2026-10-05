@@ -2,10 +2,10 @@ name: "Ops: Generate cloud-native docs"
 
 # Regenerates docs/reference/kubernetes/helm-chart.md from the charts and opens a pull request.
 #
-# Split out of build-docs.yml, which is now gated off: this is the one part of that workflow whose
-# output is a published page rather than a build of the retired documentation host.
+# Split out of the retired build-docs.yml: this is the one part of it whose output is a published
+# page rather than a build of the documentation host that has been switched off.
 #
-# It runs on a chart change rather than on a release. In build-docs.yml it ran *after* a release
+# It runs on a chart change rather than on a release. Previously it ran *after* a release
 # was published, so the generated page landed on main only once the tag had already been cut --
 # meaning every tag carried the previous release's version of it, including the tags gluu.org
 # imports from.

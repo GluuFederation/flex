@@ -371,3 +371,17 @@ jobs:
             git -C "$worktree" push origin HEAD:gh-pages
           fi
           git worktree remove --force "$worktree"
+
+      # gluu.org serves /charts/index.yaml and the Flex documentation, both mirrored from here.
+      # Last, so the index it comes to fetch is already published. Without this the mirror only
+      # refreshes on that repository's daily schedule, which is how a stale index went unnoticed.
+      - name: Tell gluu.org to resync
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          TAG: ${{ needs.package.outputs.tag }}
+        run: |
+          gh api repos/GluuFederation/websites/dispatches \
+            --method POST \
+            --field event_type=flex-docs-published \
+            --field "client_payload[ref]=${TAG}" \
+            --field "client_payload[run_url]=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"

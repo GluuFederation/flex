@@ -2,8 +2,8 @@ name: "Ops: Version files"
 
 # Keeps stable.txt and latest.txt current on gh-pages.
 #
-# These used to be written by build-docs.yml's "Create version files" step, which is now gated off
-# with the rest of the retired host's publishing. Nothing inside this organisation reads them, so
+# These used to be written by build-docs.yml, which has been removed along with the rest of the
+# retired host's publishing. Nothing inside this organisation reads them, so
 # the consumers are external or in support scripts -- which is exactly why they keep being
 # written rather than being allowed to go stale along with the documentation that used to sit
 # beside them.

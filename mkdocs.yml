@@ -1,3 +1,13 @@
+# Navigation manifest.
+#
+# Nothing builds this any more: docs.gluu.org redirects to gluu.org/docs/flex, and that site
+# imports `docs/` from each release tag. The `nav:` tree below is still read -- it is the only
+# place the sidebar's group labels exist, and scripts/import-flex-docs.ts in GluuFederation/websites
+# refuses a tag that has no mkdocs.yml. Keep `nav:` in step with the files under `docs/`.
+#
+# The rest is kept as a record of the syntax these pages are written in, which the importer
+# reproduces: admonitions, tabbed blocks and the version placeholder.
+
 # Project information
 site_name: Gluu Flex Documentation
 site_description: Gluu Flex Project Deployment and Operation References
@@ -26,7 +36,6 @@ plugins:
 # Configuration
 theme:
     name: material
-    custom_dir: docs/overrides
     highlightjs: true
     hljs_languages:
         - yaml
