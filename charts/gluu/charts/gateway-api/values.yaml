@@ -58,6 +58,8 @@ routes:
   webfingerEnabled: true
   # -- Enable endpoint /.well-known/authzen-configuration
   authzenConfigEnabled: true
+  # -- Enable endpoint /.well-known/oauth-authorization-server
+  oauthServerConfigEnabled: true
   # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
   authServerProtectedToken: false
   # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
