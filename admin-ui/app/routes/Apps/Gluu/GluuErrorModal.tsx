@@ -1,3 +1,4 @@
+import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import logo192 from 'Images/logos/logo192.png'
 import { buildAppRootUrl } from '@/helpers/navigation'
@@ -11,6 +12,22 @@ const GluuErrorModal = ({
   retryLabel = 'Try Again',
 }: GluuErrorModalProps) => {
   const { classes } = useStyles()
+  const titleId = useId()
+  const descriptionId = useId()
+  const retryRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    retryRef.current?.focus()
+
+    const keepFocus = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      e.preventDefault()
+      retryRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', keepFocus)
+    return () => document.removeEventListener('keydown', keepFocus)
+  }, [])
 
   const handleRefresh = () => {
     if (onRetry) {
@@ -22,11 +39,26 @@ const GluuErrorModal = ({
   }
 
   return createPortal(
-    <div className={classes.overlay}>
+    <div
+      className={classes.overlay}
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby={message ? titleId : undefined}
+      aria-label={message ? undefined : retryLabel}
+      aria-describedby={description ? descriptionId : undefined}
+    >
       <img src={logo192} alt="Gluu" className={classes.logo} />
-      {message && <h2 className={classes.message}>{message}</h2>}
-      {description && <p className={classes.description}>{description}</p>}
-      <button type="button" className={classes.retryButton} onClick={handleRefresh}>
+      {message && (
+        <h2 id={titleId} className={classes.message}>
+          {message}
+        </h2>
+      )}
+      {description && (
+        <p id={descriptionId} className={classes.description}>
+          {description}
+        </p>
+      )}
+      <button ref={retryRef} type="button" className={classes.retryButton} onClick={handleRefresh}>
         {retryLabel}
       </button>
     </div>,

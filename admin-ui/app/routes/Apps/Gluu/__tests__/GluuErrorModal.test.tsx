@@ -48,4 +48,22 @@ describe('GluuErrorModal', () => {
     expect(screen.getByText('Backend is down')).toBeInTheDocument()
     expect(screen.queryByRole('heading')).not.toBeInTheDocument()
   })
+
+  it('is a named dialog with focus on the retry button', () => {
+    renderModal({ message: 'Signed Out', description: 'No role' })
+    const dialog = screen.getByRole('alertdialog', { name: 'Signed Out' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveAccessibleDescription('No role')
+    expect(screen.getByRole('button', { name: 'Try Again' })).toHaveFocus()
+  })
+
+  it('keeps focus on the retry button when Tab is pressed', () => {
+    renderModal({ message: 'Signed Out' })
+    const retry = screen.getByRole('button', { name: 'Try Again' })
+    retry.blur()
+    fireEvent.keyDown(document, { key: 'Tab' })
+    expect(retry).toHaveFocus()
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+    expect(retry).toHaveFocus()
+  })
 })
