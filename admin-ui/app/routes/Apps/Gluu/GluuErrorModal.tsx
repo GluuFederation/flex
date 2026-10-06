@@ -20,6 +20,8 @@ const GluuErrorModal = ({
   const retryRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
+    const previousFocus =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
     retryRef.current?.focus()
 
     const keepFocus = (e: KeyboardEvent) => {
@@ -29,7 +31,10 @@ const GluuErrorModal = ({
     }
 
     document.addEventListener('keydown', keepFocus)
-    return () => document.removeEventListener('keydown', keepFocus)
+    return () => {
+      document.removeEventListener('keydown', keepFocus)
+      if (previousFocus?.isConnected) previousFocus.focus()
+    }
   }, [])
 
   const handleRefresh = () => {

@@ -84,6 +84,7 @@ describe('ApiKeyRedirect', () => {
     )
 
     expect(screen.getByText('Service Unavailable (503)')).toBeInTheDocument()
+    expect(screen.getByText('Service unavailable')).toBeInTheDocument()
   })
 })
 

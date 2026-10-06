@@ -79,4 +79,15 @@ describe('GluuErrorModal', () => {
     fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
     expect(retry).toHaveFocus()
   })
+
+  it('returns focus to the previously focused element on close', () => {
+    const trigger = document.createElement('button')
+    document.body.appendChild(trigger)
+    trigger.focus()
+    const { unmount } = renderModal({ message: 'Signed Out' })
+    expect(screen.getByRole('button', { name: 'Try Again' })).toHaveFocus()
+    unmount()
+    expect(trigger).toHaveFocus()
+    trigger.remove()
+  })
 })

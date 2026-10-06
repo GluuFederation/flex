@@ -84,7 +84,7 @@ const ApiKeyRedirect = ({
                 ? `${t('serviceDownTitle')} (${backendStatus.statusCode})`
                 : t('serviceDownTitle')
             }
-            description={t('serviceDownFallback')}
+            description={backendStatus.errorMessage || t('serviceDownFallback')}
           />
         )}
       </Container>
