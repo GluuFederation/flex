@@ -10,8 +10,7 @@ annotations:
   catalog.cattle.io/display-name: Gluu Flex Cloud Identity and Access Management All-in-One
 apiVersion: v2
 appVersion: "0.0.0-nightly"
-icon: >-
-  https://gluu.org/docs/gluu-server/favicon.ico
+icon: https://gluu.org/brand/favicon.png
 home: https://docs.gluu.org
 sources:
   - https://docs.gluu.org

@@ -15,6 +15,6 @@ maintainers:
   - name: Mohammad Abudayyeh
     email: team@gluu.org
     url: https://github.com/moabu
-icon: https://gluu.org/docs/gluu-server/favicon.ico
+icon: https://gluu.org/brand/favicon.png
 appVersion: "0.0.0-nightly"
 
