@@ -197,6 +197,7 @@ type GluuThemeFormFooterBaseProps = {
   showApply?: boolean
   disableApply?: boolean
   applyButtonLabel?: string
+  applyButtonIcon?: ReactNode
   isLoading?: boolean
   className?: string
   hideDivider?: boolean

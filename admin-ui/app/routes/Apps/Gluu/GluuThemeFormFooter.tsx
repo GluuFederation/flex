@@ -44,6 +44,7 @@ const GluuThemeFormFooter = ({
   disableApply,
   applyButtonType = 'submit',
   applyButtonLabel,
+  applyButtonIcon,
   isLoading = false,
   className = '',
   stepNavigation,
@@ -108,6 +109,7 @@ const GluuThemeFormFooter = ({
       className={classes.footerButton}
       {...SHARED_BUTTON_PROPS}
     >
+      {!isLoading && applyButtonIcon}
       {applyLabel}
     </GluuButton>
   )

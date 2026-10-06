@@ -5,6 +5,8 @@ import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 
 const LOGO_WIDTH = 260
 const LOGO_WIDTH_MOBILE = 180
+const ILLUSTRATION_WIDTH = 220
+const ILLUSTRATION_WIDTH_MOBILE = 160
 
 const DESCRIPTION_MAX_WIDTH = 640
 
@@ -15,13 +17,15 @@ const HEADING_GAP_MOBILE = SPACING.CARD_BUTTON_GAP
 const ACTION_GAP = SPACING.PAGE * 2
 const ACTION_GAP_MOBILE = SPACING.SECTION_GAP + SPACING.CARD_CONTENT_GAP
 
-const useStyles = makeStyles()(() => ({
+const useStyles = makeStyles()((theme) => ({
   overlay: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     bottom: 0,
     right: 0,
     left: 0,
+    zIndex: theme.zIndex.modal,
+    overflowY: 'auto',
     backgroundColor: customColors.black,
     color: customColors.white,
     justifyContent: 'center',
@@ -38,6 +42,16 @@ const useStyles = makeStyles()(() => ({
     marginBottom: LOGO_GAP,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       width: LOGO_WIDTH_MOBILE,
+      marginBottom: LOGO_GAP_MOBILE,
+    },
+  },
+  illustration: {
+    width: ILLUSTRATION_WIDTH,
+    maxWidth: '100%',
+    height: 'auto',
+    marginBottom: LOGO_GAP,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      width: ILLUSTRATION_WIDTH_MOBILE,
       marginBottom: LOGO_GAP_MOBILE,
     },
   },

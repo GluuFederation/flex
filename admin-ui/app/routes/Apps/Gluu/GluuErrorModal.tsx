@@ -6,6 +6,7 @@ import { useStyles } from './styles/GluuErrorModal.style'
 const GluuErrorModal = ({
   message = '',
   description = '',
+  image,
   onRetry,
   retryLabel = 'Try Again',
 }: GluuErrorModalProps) => {
@@ -22,10 +23,11 @@ const GluuErrorModal = ({
 
   return (
     <div className={classes.overlay}>
-      <img src={logo192} className={classes.logo} />
-      <h2 className={classes.message}>{message}</h2>
-      <p className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></p>
-      <button className={classes.retryButton} onClick={handleRefresh}>
+      <img src={logo192} alt="Gluu" className={classes.logo} />
+      {image && <img src={image} alt="" className={classes.illustration} />}
+      {message && <h2 className={classes.message}>{message}</h2>}
+      {description && <p className={classes.description}>{description}</p>}
+      <button type="button" className={classes.retryButton} onClick={handleRefresh}>
         {retryLabel}
       </button>
     </div>

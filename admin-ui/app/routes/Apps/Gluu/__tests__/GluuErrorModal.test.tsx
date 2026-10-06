@@ -13,7 +13,7 @@ const createTestStore = (authServerHost: string): Store =>
   })
 
 const renderModal = (
-  props: { message?: string; description?: string } = {},
+  props: { message?: string; description?: string; image?: string } = {},
   authServerHost = '',
 ) => {
   const store = createTestStore(authServerHost)
@@ -33,13 +33,24 @@ describe('GluuErrorModal', () => {
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument()
   })
 
-  it('renders the description as HTML', () => {
+  it('renders the description as plain text', () => {
     renderModal({ message: 'Oops', description: '<strong>details here</strong>' })
-    expect(screen.getByText('details here')).toBeInTheDocument()
+    expect(screen.getByText('<strong>details here</strong>')).toBeInTheDocument()
   })
 
   it('invokes the refresh handler without throwing when Try Again is clicked', () => {
     renderModal({ message: 'Down' }, '')
     expect(() => fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))).not.toThrow()
+  })
+
+  it('renders the image when provided', () => {
+    const { container } = renderModal({ message: 'Error code: 503', image: 'down.png' })
+    expect(container.querySelector('img[src="down.png"]')).toBeInTheDocument()
+  })
+
+  it('omits the heading when no message is given', () => {
+    renderModal({ description: 'Backend is down' })
+    expect(screen.getByText('Backend is down')).toBeInTheDocument()
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
   })
 })

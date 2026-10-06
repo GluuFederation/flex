@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import GluuLoader from '../routes/Apps/Gluu/GluuLoader'
 import { useAppSelector } from '@/redux/hooks'
-import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
+import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
+import backendDown from 'Images/backend-down.png'
 import loaderGif from 'Images/gif/loader.gif'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -78,9 +79,10 @@ const ApiKeyRedirect = ({
         ) : null}
 
         {!isSessionExpired && !backendStatus.active && (
-          <GluuServiceDownModal
-            statusCode={backendStatus.statusCode ?? undefined}
-            message={backendStatus.errorMessage || t('serviceDownFallback')}
+          <GluuErrorModal
+            image={backendDown}
+            message={backendStatus.statusCode ? `Error code: ${backendStatus.statusCode}` : ''}
+            description={backendStatus.errorMessage || t('serviceDownFallback')}
           />
         )}
       </Container>

@@ -360,7 +360,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         <GluuErrorModal
           message={'Alert'}
           description={
-            'The monthly active users exceed the allowed threshold of your license subscription plan. <br /> Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.'
+            'The monthly active users exceed the allowed threshold of your license subscription plan. Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.'
           }
         />
       )}

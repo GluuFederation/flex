@@ -6,7 +6,7 @@ import { handleApiTimeout, handleSessionExpired } from 'Redux/features/initSlice
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { Close } from '@/components/icons'
+import { Close, RefreshIcon } from '@/components/icons'
 import { ModalLayer } from '@/components/ModalLayer'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
@@ -110,6 +110,7 @@ const GluuTimeoutModal = () => {
           showApply
           applyButtonType="button"
           applyButtonLabel={t('actions.refresh')}
+          applyButtonIcon={<RefreshIcon fontSize="small" aria-hidden />}
           onApply={handleRefresh}
           isLoading={isSigningOut}
         />
