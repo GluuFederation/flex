@@ -13,7 +13,7 @@ const createTestStore = (authServerHost: string): Store =>
   })
 
 const renderModal = (
-  props: { message?: string; description?: string; image?: string } = {},
+  props: { message?: string; description?: string } = {},
   authServerHost = '',
 ) => {
   const store = createTestStore(authServerHost)
@@ -41,11 +41,6 @@ describe('GluuErrorModal', () => {
   it('invokes the refresh handler without throwing when Try Again is clicked', () => {
     renderModal({ message: 'Down' }, '')
     expect(() => fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))).not.toThrow()
-  })
-
-  it('renders the image when provided', () => {
-    const { container } = renderModal({ message: 'Error code: 503', image: 'down.png' })
-    expect(container.querySelector('img[src="down.png"]')).toBeInTheDocument()
   })
 
   it('omits the heading when no message is given', () => {

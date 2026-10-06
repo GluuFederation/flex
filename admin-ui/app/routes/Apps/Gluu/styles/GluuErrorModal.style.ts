@@ -5,8 +5,6 @@ import { fontFamily, fontSizes, fontWeights, lineHeights } from '@/styles/fonts'
 
 const LOGO_WIDTH = 260
 const LOGO_WIDTH_MOBILE = 180
-const ILLUSTRATION_WIDTH = 220
-const ILLUSTRATION_WIDTH_MOBILE = 160
 
 const DESCRIPTION_MAX_WIDTH = 640
 
@@ -42,16 +40,6 @@ const useStyles = makeStyles()((theme) => ({
     marginBottom: LOGO_GAP,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       width: LOGO_WIDTH_MOBILE,
-      marginBottom: LOGO_GAP_MOBILE,
-    },
-  },
-  illustration: {
-    width: ILLUSTRATION_WIDTH,
-    maxWidth: '100%',
-    height: 'auto',
-    marginBottom: LOGO_GAP,
-    [`@media ${MOBILE_MEDIA_QUERY}`]: {
-      width: ILLUSTRATION_WIDTH_MOBILE,
       marginBottom: LOGO_GAP_MOBILE,
     },
   },

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import logo192 from 'Images/logos/logo192.png'
 import { buildAppRootUrl } from '@/helpers/navigation'
 import type { GluuErrorModalProps } from './types'
@@ -6,7 +7,6 @@ import { useStyles } from './styles/GluuErrorModal.style'
 const GluuErrorModal = ({
   message = '',
   description = '',
-  image,
   onRetry,
   retryLabel = 'Try Again',
 }: GluuErrorModalProps) => {
@@ -21,16 +21,16 @@ const GluuErrorModal = ({
     window.location.href = buildAppRootUrl()
   }
 
-  return (
+  return createPortal(
     <div className={classes.overlay}>
       <img src={logo192} alt="Gluu" className={classes.logo} />
-      {image && <img src={image} alt="" className={classes.illustration} />}
       {message && <h2 className={classes.message}>{message}</h2>}
       {description && <p className={classes.description}>{description}</p>}
       <button type="button" className={classes.retryButton} onClick={handleRefresh}>
         {retryLabel}
       </button>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

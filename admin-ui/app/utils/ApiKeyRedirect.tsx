@@ -5,7 +5,6 @@ import GluuText from '../routes/Apps/Gluu/GluuText'
 import GluuLoader from '../routes/Apps/Gluu/GluuLoader'
 import { useAppSelector } from '@/redux/hooks'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
-import backendDown from 'Images/backend-down.png'
 import loaderGif from 'Images/gif/loader.gif'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -80,9 +79,12 @@ const ApiKeyRedirect = ({
 
         {!isSessionExpired && !backendStatus.active && (
           <GluuErrorModal
-            image={backendDown}
-            message={backendStatus.statusCode ? `Error code: ${backendStatus.statusCode}` : ''}
-            description={backendStatus.errorMessage || t('serviceDownFallback')}
+            message={
+              backendStatus.statusCode
+                ? `${t('serviceDownTitle')} (${backendStatus.statusCode})`
+                : t('serviceDownTitle')
+            }
+            description={t('serviceDownFallback')}
           />
         )}
       </Container>

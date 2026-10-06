@@ -248,6 +248,9 @@
   "roleNotFoundDescription": "Votre compte ne dispose d'aucun rôle Admin UI, la session a donc été fermée. Cliquez sur Réessayer pour vous connecter avec un autre compte, ou contactez votre administrateur pour qu'un rôle vous soit attribué.",
   "tryAgain": "Réessayer",
   "serviceDownFallback": "Gluu Flex Admin UI ne reçoit aucune réponse du backend (Jans Config Api).",
+  "serviceDownTitle": "Service indisponible",
+  "mauLimitTitle": "Limite de MAU dépassée",
+  "mauLimitDescription": "Les utilisateurs actifs mensuels dépassent le seuil autorisé par votre plan d'abonnement de licence. Veuillez mettre à niveau le plan sur Agama Lab pour profiter d'un service ininterrompu de votre destination numérique.",
   "licenseCard": {
     "freeTrial": "Essai gratuit",
     "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",
