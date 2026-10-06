@@ -30,7 +30,7 @@ Vite loads environment values from `.env`, `.env.<mode>`, and `.env.<mode>.local
 
 The mode is selected by Vite's `--mode <name>` flag, which the `build:*` npm scripts pass automatically.
 
-Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH`, `API_BASE_URL`, `CONFIG_API_BASE_URL` and `POLICY_STORE_CONFIG` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
+Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH` and `CONFIG_API_BASE_URL` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
 
 ## Preview mode
 

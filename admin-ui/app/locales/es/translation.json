@@ -145,6 +145,7 @@
     "start_date_time": "Fecha y Hora de Inicio",
     "end_date_time": "Fecha y Hora de Fin",
     "system_status": "Estado del Sistema",
+    "status_unavailable": "Estado de los servicios no disponible",
     "config_api": "API de Configuración",
     "config_api_status": "Estado de la API de Configuración",
     "key_cloak": "Keycloak",
