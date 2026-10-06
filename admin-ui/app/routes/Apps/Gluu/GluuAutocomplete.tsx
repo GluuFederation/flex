@@ -25,7 +25,7 @@ const sameWidthModifier = ({ state }: ModifierArguments<Obj>): void => {
 
 const GluuAutocomplete = ({
   label,
-  name: _name,
+  name,
   value,
   options,
   onChange,
@@ -39,6 +39,7 @@ const GluuAutocomplete = ({
   onRemoveField,
   doc_category,
   doc_entry,
+  isDirect = false,
   surfaceColor,
   contrastOptionHover,
   withWrapper = true,
@@ -50,7 +51,13 @@ const GluuAutocomplete = ({
   hideHelperWhenSelected = false,
   compactSelectionSpacing = false,
 }: GluuAutocompleteProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const docEntry = doc_entry || name
+  const showHelp = Boolean(
+    doc_category &&
+    docEntry &&
+    (isDirect || i18n.exists(`documentation.${doc_category}.${docEntry}`)),
+  )
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
   const themeColors = React.useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
@@ -180,18 +187,19 @@ const GluuAutocomplete = ({
       {!hideLabel && (
         <div className={classes.header}>
           {label}:{required && <span className={classes.requiredMark}>*</span>}
-          {doc_category && doc_entry && (
+          {showHelp && (
             <>
               <GluuTooltip
                 tooltipOnly
-                doc_entry={doc_entry}
+                doc_entry={docEntry}
                 doc_category={doc_category}
+                isDirect={isDirect}
                 place="right"
               />
               <HelpOutline
                 className={classes.helpIcon}
-                data-tooltip-id={doc_entry}
-                data-for={doc_entry}
+                data-tooltip-id={docEntry}
+                data-for={docEntry}
               />
             </>
           )}

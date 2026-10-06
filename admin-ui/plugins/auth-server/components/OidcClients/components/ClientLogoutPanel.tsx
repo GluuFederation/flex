@@ -263,6 +263,7 @@ const ClientLogoutPanel = ({
         <div className={classes.fieldItem}>
           <GluuToggleRow
             name="attributes.backchannelLogoutSessionRequired"
+            doc_entry="backchannelLogoutSessionRequired"
             label="fields.backchannelLogoutSessionRequired"
             formik={formik}
             value={Boolean(backchannelLogoutSessionRequired)}
