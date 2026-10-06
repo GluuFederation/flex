@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import logo192 from 'Images/logos/logo192.png'
 import { buildAppRootUrl } from '@/helpers/navigation'
 import type { GluuErrorModalProps } from './types'
@@ -9,8 +10,10 @@ const GluuErrorModal = ({
   message = '',
   description = '',
   onRetry,
-  retryLabel = 'Try Again',
+  retryLabel,
 }: GluuErrorModalProps) => {
+  const { t } = useTranslation()
+  const label = retryLabel ?? t('tryAgain')
   const { classes } = useStyles()
   const titleId = useId()
   const descriptionId = useId()
@@ -44,7 +47,7 @@ const GluuErrorModal = ({
       role="alertdialog"
       aria-modal="true"
       aria-labelledby={message ? titleId : undefined}
-      aria-label={message ? undefined : retryLabel}
+      aria-label={message ? undefined : label}
       aria-describedby={description ? descriptionId : undefined}
     >
       <img src={logo192} alt="Gluu" className={classes.logo} />
@@ -59,7 +62,7 @@ const GluuErrorModal = ({
         </p>
       )}
       <button ref={retryRef} type="button" className={classes.retryButton} onClick={handleRefresh}>
-        {retryLabel}
+        {label}
       </button>
     </div>,
     document.body,

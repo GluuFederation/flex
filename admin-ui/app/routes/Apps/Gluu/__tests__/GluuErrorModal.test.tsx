@@ -4,6 +4,8 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
+import i18n from '../../../../i18n'
+import translationFr from '../../../../locales/fr/translation.json'
 
 const createTestStore = (authServerHost: string): Store =>
   configureStore({
@@ -31,6 +33,17 @@ describe('GluuErrorModal', () => {
     renderModal({ message: 'Something went wrong' })
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument()
+  })
+
+  it('translates the default retry label', async () => {
+    i18n.addResourceBundle('fr', 'translation', translationFr, true, true)
+    await i18n.changeLanguage('fr')
+    try {
+      renderModal({ message: 'Limite de MAU dépassée' })
+      expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument()
+    } finally {
+      await i18n.changeLanguage('en')
+    }
   })
 
   it('renders the description as plain text', () => {
