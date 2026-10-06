@@ -324,15 +324,21 @@ const DashboardPage = () => {
                       {t('dashboard.system_status')}:
                     </GluuText>
                     <div className={classes.statusItems}>
-                      {visibleStatusDetails.map(({ label, key }) => (
-                        <StatusIndicator
-                          key={label}
-                          label={label}
-                          status={getServiceStatus(key)}
-                          classes={classes}
-                          t={t}
-                        />
-                      ))}
+                      {visibleStatusDetails.length === 0 ? (
+                        <GluuText variant="span" className={classes.statusTitle}>
+                          {t('dashboard.status_unavailable')}
+                        </GluuText>
+                      ) : (
+                        visibleStatusDetails.map(({ label, key }) => (
+                          <StatusIndicator
+                            key={label}
+                            label={label}
+                            status={getServiceStatus(key)}
+                            classes={classes}
+                            t={t}
+                          />
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>

@@ -94,14 +94,25 @@ describe('useFilteredMenus', () => {
     expect(mockProcessMenus).not.toHaveBeenCalled()
   })
 
-  it('does not resolve while no services are ready', async () => {
-    mockUseHealthStatus.mockReturnValue({ allServices: [] })
-    mockUseFido2HealthStatus.mockReturnValue({ data: undefined })
+  it('does not resolve while the health checks are still loading', async () => {
+    mockUseHealthStatus.mockReturnValue({ allServices: [], isLoading: true })
+    mockUseFido2HealthStatus.mockReturnValue({ data: undefined, isLoading: true })
     const store = buildStore(true)
     renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
 
     await Promise.resolve()
     expect(mockProcessMenus).not.toHaveBeenCalled()
+  })
+
+  it('still builds the menus when both health checks fail', async () => {
+    mockUseHealthStatus.mockReturnValue({ allServices: [], isLoading: false, isError: true })
+    mockUseFido2HealthStatus.mockReturnValue({ data: undefined, isLoading: false, isError: true })
+    const store = buildStore(true)
+    const { result } = renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
+
+    await waitFor(() => expect(result.current.isReady).toBe(true))
+    expect(mockFilterMenusByHealth).toHaveBeenCalledWith(menus, [])
+    expect(result.current.firstPath).toBe('/home')
   })
 
   it('includes fido2 health data in the combined services passed to the health filter', async () => {

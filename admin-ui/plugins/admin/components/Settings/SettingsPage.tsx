@@ -330,7 +330,7 @@ const SettingsPage: React.FC = () => {
     const errorMessages: string[] = []
     if (isConfigError && configError) {
       const err = configError instanceof Error ? configError : new Error(String(configError))
-      errorMessages.push(getErrorMessage(err, 'messages.error_loading_config', t))
+      errorMessages.push(getErrorMessage(err, 'messages.error_loading_data', t))
     }
     if (isScriptsError && scriptsError) {
       const err = new Error(String(scriptsError))

@@ -1,0 +1,89 @@
+name: "Ops: Version files"
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+concurrency:
+  group: run-once
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  write:
+    name: Write stable.txt and latest.txt
+    if: |
+      github.repository == 'GluuFederation/flex' &&
+      (github.event_name == 'workflow_dispatch' ||
+       ((!github.event.release.draft) &&
+        (startsWith(github.event.release.name, 'v') || github.event.release.name == 'nightly')))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MOWORKFLOWTOKEN }}
+
+      - name: Resolve latest and stable
+        id: versions
+        env:
+          GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          TAGS=$(gh release list -L 1000 -R "$GITHUB_REPOSITORY" --json tagName,isDraft \
+            --jq '.[] | select(.isDraft | not) | .tagName' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | sed 's/^/v/')
+          LATEST=$(echo "$TAGS" | tail -1)
+          STABLE="$LATEST"
+          if [[ "$RELEASE_TAG" == "nightly" ]]; then
+            LATEST="nightly"
+          fi
+          if [[ -z "$STABLE" ]]; then
+            echo "::error::No release tags found; refusing to write empty version files"
+            exit 1
+          fi
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "stable=$STABLE" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST stable=$STABLE"
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Publish to gh-pages
+        env:
+          LATEST: ${{ steps.versions.outputs.latest }}
+          STABLE: ${{ steps.versions.outputs.stable }}
+        run: |
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+
+          git fetch --depth=1 origin gh-pages
+          worktree="$(mktemp -d)"
+          git worktree add --detach "$worktree" FETCH_HEAD
+          echo "$STABLE" > "$worktree/stable.txt"
+          echo "$LATEST" > "$worktree/latest.txt"
+          git -C "$worktree" add stable.txt latest.txt
+          if git -C "$worktree" diff-index --quiet HEAD --; then
+            echo "Version files unchanged; nothing to publish."
+          else
+            git -C "$worktree" commit -S -m "chore: set stable to ${STABLE} and latest to ${LATEST}"
+            git -C "$worktree" push origin HEAD:gh-pages
+          fi
+          git worktree remove --force "$worktree"

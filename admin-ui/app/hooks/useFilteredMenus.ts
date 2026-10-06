@@ -21,8 +21,8 @@ const collectPaths = (menus: readonly MenuItem[], paths: Set<string>): void => {
 }
 
 const useFilteredMenus = (): FilteredMenus => {
-  const { allServices } = useHealthStatus()
-  const { data: fido2HealthData } = useFido2HealthStatus()
+  const { allServices, isLoading: isHealthLoading } = useHealthStatus()
+  const { data: fido2HealthData, isLoading: isFido2Loading } = useFido2HealthStatus()
   const { authorizeHelper } = useCedarling()
   const initialized = useAppSelector((state) => state.cedarPermissions?.initialized)
 
@@ -33,10 +33,10 @@ const useFilteredMenus = (): FilteredMenus => {
     [allServices, fido2HealthData],
   )
 
-  const hasServices = combinedServices.length > 0
+  const isHealthSettled = !isHealthLoading && !isFido2Loading
 
   useEffect(() => {
-    if (!hasServices || !initialized) return
+    if (!isHealthSettled || !initialized) return
 
     let cancelled = false
 
@@ -59,7 +59,7 @@ const useFilteredMenus = (): FilteredMenus => {
     return () => {
       cancelled = true
     }
-  }, [hasServices, initialized, combinedServices, authorizeHelper])
+  }, [isHealthSettled, initialized, combinedServices, authorizeHelper])
 
   const allowedPaths = useMemo(() => {
     if (!menus) return null
