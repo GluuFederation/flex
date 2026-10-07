@@ -25,7 +25,7 @@ const buildStore = (
         isNoValidLicenseKeyFound: false,
         isUnderThresholdLimit: true,
       },
-      initReducer: { isTimeout: false, isSessionExpired: false },
+      initReducer: { isSessionExpired: false },
       ...overrides,
     } as never,
   })
@@ -53,7 +53,7 @@ describe('ApiKeyRedirect', () => {
   })
 
   it('does not show the redirecting loader after an API timeout with a valid license', () => {
-    const store = buildStore({ initReducer: { isTimeout: false, isSessionExpired: true } })
+    const store = buildStore({ initReducer: { isSessionExpired: true } })
     const { container } = renderWith(
       {
         isLicenseValid: true,
@@ -88,8 +88,7 @@ describe('ApiKeyRedirect', () => {
   })
 })
 
-// Every screen this component can arbitrate between. The timeout branch was added last and must
-// not shadow any of the pre-existing states, so each one is pinned with isTimeout left false.
+// Every screen this component can arbitrate between, each pinned explicitly.
 describe('ApiKeyRedirect screen arbitration', () => {
   const loaderOf = (container: HTMLElement) => container.querySelector('[aria-busy="true"]')
 
@@ -131,7 +130,7 @@ describe('ApiKeyRedirect screen arbitration', () => {
   })
 
   it('keeps the SSA screen hidden when the session timed out', () => {
-    const store = buildStore({ initReducer: { isTimeout: false, isSessionExpired: true } })
+    const store = buildStore({ initReducer: { isSessionExpired: true } })
     const { container } = renderWith(
       {
         isLicenseValid: false,
@@ -151,7 +150,7 @@ describe('ApiKeyRedirect screen arbitration', () => {
         config: {},
         backendStatus: { active: false, errorMessage: 'Service unavailable', statusCode: 503 },
       },
-      initReducer: { isTimeout: false, isSessionExpired: true },
+      initReducer: { isSessionExpired: true },
     })
 
     renderWith(

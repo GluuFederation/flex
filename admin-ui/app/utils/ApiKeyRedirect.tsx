@@ -29,7 +29,7 @@ const ApiKeyRedirect = ({
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
-  const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
+  const { isSessionExpired } = useAppSelector((state) => state.initReducer)
   const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useAppSelector(
     (state) => state.licenseReducer,
   )
@@ -49,7 +49,7 @@ const ApiKeyRedirect = ({
     isConfigValid !== false &&
     (!islicenseCheckResultLoaded ||
       isConfigValid === null ||
-      (!isTimeout && isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
+      (isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
 
   if (showRedirectingLoader) {
     return (
@@ -71,7 +71,7 @@ const ApiKeyRedirect = ({
           <Suspense fallback={<GluuLoader blocking />}>
             <UploadSSA />
           </Suspense>
-        ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
+        ) : isConfigValid === false ? null : isUnderThresholdLimit ? (
           shouldShowApiKey ? (
             <ApiKey />
           ) : null

@@ -2,7 +2,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { handleApiTimeout, handleSessionExpired } from 'Redux/features/initSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { SESSION_EXPIRED } from '@/audit/messages'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
@@ -11,15 +12,11 @@ import { ModalLayer } from '@/components/ModalLayer'
 import { useStyles } from './styles/GluuTimeoutModal.style'
 import GluuText from './GluuText'
 import GluuThemeFormFooter from './GluuThemeFormFooter'
-import { buildAppRootUrl } from '@/helpers/navigation'
-import { deleteAdminUiSession } from 'Redux/api/backend-api'
-import { logger } from '@/utils/logger'
 
 const GluuTimeoutModal = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
-  const hasSession = useAppSelector((state) => state.authReducer.hasSession)
+  const isSessionExpired = useAppSelector((state) => state.initReducer.isSessionExpired)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const { state: themeState } = useTheme()
   const selectedTheme = themeState?.theme ?? DEFAULT_THEME
@@ -27,55 +24,27 @@ const GluuTimeoutModal = () => {
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
 
-  const navigateToAdminRoot = useCallback(() => {
-    window.location.href = buildAppRootUrl()
-  }, [])
-
-  const handleRefresh = useCallback(async () => {
+  const handleSignOut = useCallback(() => {
     if (isSigningOut) return
     setIsSigningOut(true)
-
-    if (isSessionExpired && hasSession) {
-      try {
-        await deleteAdminUiSession()
-      } catch (error) {
-        logger.error(
-          'Failed to delete the Admin UI session before refreshing:',
-          error instanceof Error ? error : String(error),
-        )
-      }
-    }
-
-    dispatch(handleApiTimeout({ isTimeout: false }))
-    dispatch(handleSessionExpired({ isSessionExpired: false }))
-    navigateToAdminRoot()
-  }, [dispatch, hasSession, isSessionExpired, isSigningOut, navigateToAdminRoot])
-
-  // A slow request can simply be dismissed and retried. An expired session cannot — there is
-  // nothing behind the modal to go back to — so every dismissal there routes to sign-in.
-  const handleDismiss = useCallback(() => {
-    if (isSessionExpired) {
-      void handleRefresh()
-      return
-    }
-    dispatch(handleApiTimeout({ isTimeout: false }))
-  }, [dispatch, handleRefresh, isSessionExpired])
+    dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
+  }, [dispatch, isSigningOut])
 
   const handleModalKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
-        handleDismiss()
+        handleSignOut()
       }
       e.stopPropagation()
     },
-    [handleDismiss],
+    [handleSignOut],
   )
 
-  if (!isTimeout && !isSessionExpired) return null
+  if (!isSessionExpired) return null
 
   const modalContent = (
-    <ModalLayer onClose={handleDismiss}>
+    <ModalLayer onClose={handleSignOut}>
       <div
         className={classes.modalContainer}
         onClick={(e) => e.stopPropagation()}
@@ -86,7 +55,7 @@ const GluuTimeoutModal = () => {
       >
         <button
           type="button"
-          onClick={handleDismiss}
+          onClick={handleSignOut}
           className={classes.closeButton}
           aria-label={t('actions.close')}
           title={t('actions.close')}
@@ -94,16 +63,10 @@ const GluuTimeoutModal = () => {
           <Close fontSize="small" aria-hidden />
         </button>
         <GluuText variant="h2" className={classes.title} id="timeout-modal-title">
-          {t(
-            isSessionExpired ? 'messages.session_expired_title' : 'messages.request_timeout_title',
-          )}
+          {t('messages.session_expired_title')}
         </GluuText>
         <GluuText variant="p" className={classes.description}>
-          {t(
-            isSessionExpired
-              ? 'messages.session_expired_description'
-              : 'messages.request_timeout_description',
-          )}
+          {t('messages.session_expired_description')}
         </GluuText>
         <GluuThemeFormFooter
           className={classes.actions}
@@ -111,7 +74,7 @@ const GluuTimeoutModal = () => {
           applyButtonType="button"
           applyButtonLabel={t('actions.refresh')}
           applyButtonIcon={<RefreshIcon fontSize="small" aria-hidden />}
-          onApply={handleRefresh}
+          onApply={handleSignOut}
           isLoading={isSigningOut}
         />
       </div>
