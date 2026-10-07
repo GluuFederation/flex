@@ -1,8 +1,6 @@
 installer-settings: None
 admin-ui: None
 casa: None
-oxpassport: None
-oxshibboleth: None
 global:
   admin-ui: None
   casa: None
@@ -17,12 +15,8 @@ global:
   cnObTransportKeyPassPhrase: None
   cnObTransportAlias: None
   cnObTransportTrustStore: None
-  config-api:
-    adminUiappLoggers: None
   istio:
     ingress: None
-  oxpassport: None
-  oxshibboleth: None
   distribution: None
 config:
   migration: None
