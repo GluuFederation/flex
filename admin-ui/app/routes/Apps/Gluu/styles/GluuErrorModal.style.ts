@@ -26,7 +26,7 @@ const useStyles = makeStyles()((theme) => ({
     overflowY: 'auto',
     backgroundColor: customColors.black,
     color: customColors.white,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -37,6 +37,7 @@ const useStyles = makeStyles()((theme) => ({
   logo: {
     width: LOGO_WIDTH,
     height: 'auto',
+    marginTop: 'auto',
     marginBottom: LOGO_GAP,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       width: LOGO_WIDTH_MOBILE,
@@ -74,6 +75,7 @@ const useStyles = makeStyles()((theme) => ({
     fontFamily,
     fontSize: fontSizes.md,
     padding: 0,
+    marginBottom: 'auto',
     textDecoration: 'underline',
   },
 }))
