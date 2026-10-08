@@ -61,7 +61,7 @@ WORKDIR /
 # Admin UI
 # ========
 
-ENV ADMIN_UI_VERSION=main
+ENV ADMIN_UI_VERSION=v6.5.0
 ENV GLUU_BUILD_DATE='2026-08-24T23:07:11Z'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
@@ -184,7 +184,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="6.5.0-1" \
+    org.opencontainers.image.version="6.5.0-2" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
