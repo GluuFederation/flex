@@ -154,6 +154,10 @@ jobs:
         # bad/negative branch is ever used.
         derive_jans_branch() {
           if [[ "${TAG_NAME}" == "nightly" ]]; then echo "nightly"; return 0; fi
+          local pinned
+          pinned=$(grep -oE '"JANS_APP_VERSION":[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?"' \
+            temp-flex/flex-linux-setup/flex_linux_setup/flex_setup.py | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?' || true)
+          if [[ -n "${pinned}" && "${pinned}" != "0.0.0" ]]; then echo "v${pinned}"; return 0; fi
           local ver="${TAG_NAME#v}"
           if [[ ! "${ver}" =~ ^([0-9]+)\.([0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?)$ ]]; then
             echo "::error::tag '${TAG_NAME}' is not vX.Y.Z; cannot derive a jans branch" >&2

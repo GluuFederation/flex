@@ -36,6 +36,10 @@ on:
         description: 'Image-tag suffix (image tags become X.Y.Z-<suffix>)'
         required: false
         default: '1'
+      jans_version:
+        description: 'Jans version to release against, e.g. 2.5.0. Empty = derived (flex major - 4).'
+        required: false
+        default: ''
 
 permissions:
   contents: read   # the tag push + release use MOWORKFLOWTOKEN, not GITHUB_TOKEN
@@ -62,6 +66,7 @@ jobs:
       env:
         VERSION_INPUT: ${{ github.event.inputs.version }}
         SUFFIX_INPUT: ${{ github.event.inputs.docker_suffix }}
+        JANS_INPUT: ${{ github.event.inputs.jans_version }}
       run: |
         V="$VERSION_INPUT"
         if [[ ! "$V" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
@@ -70,6 +75,10 @@ jobs:
         fi
         if [[ ! "$SUFFIX_INPUT" =~ ^[0-9A-Za-z.]+$ ]]; then
           echo "::error::docker_suffix must be alphanumeric (got '$SUFFIX_INPUT')"
+          exit 1
+        fi
+        if [[ -n "$JANS_INPUT" && ! "$JANS_INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+          echo "::error::jans_version must be X.Y.Z (optionally -suffix)"
           exit 1
         fi
 
@@ -100,13 +109,15 @@ jobs:
       env:
         VERSION: ${{ github.event.inputs.version }}
         DOCKER_SUFFIX: ${{ github.event.inputs.docker_suffix }}
+        JANS_VERSION: ${{ github.event.inputs.jans_version }}
       run: |
         # --flex-source-sha pins FLEX_SOURCE_VERSION to the released commit (HEAD here is the
         # source ref, before the bump commit); version_bump also pins JANS_SOURCE_VERSION to the
         # jans release's value.
         python3 automation/release/version_bump.py "${VERSION}" \
           --docker-suffix "${DOCKER_SUFFIX}" \
-          --flex-source-sha "$(git rev-parse HEAD)"
+          --flex-source-sha "$(git rev-parse HEAD)" \
+          ${JANS_VERSION:+--jans-version "${JANS_VERSION}"}
 
     # Safety net: abort BEFORE committing/pushing if any owned version was missed.
     - name: Verify the tree is fully bumped
