@@ -30,6 +30,8 @@ given ``0.0.0-nightly`` becomes is decided by context:
   (jans image -> jans version, otherwise flex version);
 * installer / package versions (``version.py``, ``admin-ui/package.json``,
   the all-in-one ``CN_VERSION``) take the bare flex version;
+* the admin-ui asset pointers (admin-ui ``ADMIN_UI_VERSION``, installer
+  ``FLEX_RELEASE_TAG``) take ``v<flex>`` so releases fetch the tag's own asset;
 * every other ``0.0.0-nightly`` references a Flex release and takes the bare flex
   version.
 
@@ -355,12 +357,18 @@ def bump(version, docker_suffix="1"):
         if sub(pkg, r'(?m)^(  "version":\s*")0\.0\.0(",?)$', rf"\g<1>{version}\g<2>"):
             changed.append(pkg)
 
+    admin_df = "docker-admin-ui/Dockerfile"
+    if (ROOT / admin_df).exists():
+        if sub(admin_df, r"(?m)^(ENV\s+ADMIN_UI_VERSION=)main$", rf"\g<1>v{version}"):
+            changed.append(admin_df)
+
     # flex-linux-setup app_versions: JANS_APP_VERSION -> the mapped jans version and JANS_BUILD
     # emptied, so the installer pulls the jans *release* (not 0.0.0-nightly) at flex release time.
     flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
     if (ROOT / flex_setup).exists():
         n = sub(flex_setup, r'("JANS_APP_VERSION":\s*")0\.0\.0(")', rf"\g<1>{jv}\g<2>")
         n += sub(flex_setup, r'("JANS_BUILD":\s*")-nightly(")', r"\g<1>\g<2>")
+        n += sub(flex_setup, r'("FLEX_RELEASE_TAG":\s*")(")', rf"\g<1>v{version}\g<2>")
         if n:
             changed.append(flex_setup)
 
@@ -449,6 +457,10 @@ def verify():
     if (ROOT / pkg).exists() and re.search(r'(?m)^  "version":\s*"0\.0\.0"', read(pkg)):
         problems.append(f"{pkg}: top-level version still '0.0.0'")
 
+    admin_df = "docker-admin-ui/Dockerfile"
+    if (ROOT / admin_df).exists() and re.search(r"(?m)^ENV\s+ADMIN_UI_VERSION=main$", read(admin_df)):
+        problems.append(f"{admin_df}: ADMIN_UI_VERSION still 'main'")
+
     flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
     if (ROOT / flex_setup).exists():
         txt = read(flex_setup)
@@ -456,6 +468,8 @@ def verify():
             problems.append(f"{flex_setup}: JANS_APP_VERSION still '0.0.0'")
         if re.search(r'"JANS_BUILD":\s*"-nightly"', txt):
             problems.append(f"{flex_setup}: JANS_BUILD still '-nightly'")
+        if re.search(r'"FLEX_RELEASE_TAG":\s*""', txt):
+            problems.append(f"{flex_setup}: FLEX_RELEASE_TAG still empty")
 
     if problems:
         print("VERSION VERIFY FAILED -- owned versions left at the dev sentinel:\n")
