@@ -90,6 +90,18 @@ describe('CedarlingConfigPage', () => {
     expect(policyStoreElements.length).toBeGreaterThan(0)
   })
 
+  it('clears leftover webhook results when the page mounts', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'webhook/setShowWebhookExecutionDialog', payload: false }),
+    )
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'webhook/setWebhookTriggerResults', payload: [] }),
+    )
+  })
+
   it('offers only the cjar extension on the file input', () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
 
@@ -235,7 +247,7 @@ describe('CedarlingConfigPage', () => {
       expect(triggers).toHaveLength(1)
     })
     expect(triggers[0].payload).toEqual({
-      feature: 'policy_store_write',
+      feature: 'policy_store_edit',
       createdFeatureValue: expect.objectContaining({
         displayname: 'test-policy.cjar',
         description: 'Rolling out updated admin policies',

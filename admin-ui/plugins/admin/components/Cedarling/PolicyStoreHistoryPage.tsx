@@ -442,7 +442,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const dialogFeature =
     pendingAction?.type === 'delete'
       ? adminUiFeatures.policy_store_delete
-      : adminUiFeatures.policy_store_write
+      : adminUiFeatures.policy_store_edit
 
   const loading = isFetching || isMutating
 
