@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import DashboardPage from 'Routes/Dashboards/DashboardPage'
+import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { JANS_SERVICES } from '@/constants/jansServices'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -99,5 +101,19 @@ describe('DashboardPage', () => {
     render(<DashboardPage />, { wrapper: Wrapper })
     expect(screen.getByText(/System Status/i)).toBeInTheDocument()
     expect(screen.getByText(/OIDC Clients Count/i)).toBeInTheDocument()
+  })
+
+  it('shows a status-unavailable message when no services are reported', () => {
+    render(<DashboardPage />, { wrapper: Wrapper })
+    expect(screen.getByText('Service status unavailable')).toBeInTheDocument()
+  })
+
+  it('lists services instead of the message when health data is present', () => {
+    jest.mocked(useHealthStatus).mockReturnValue({
+      ...jest.mocked(useHealthStatus)(),
+      allServices: [{ name: JANS_SERVICES.CONFIG_API, status: 'up' }],
+    } as ReturnType<typeof useHealthStatus>)
+    render(<DashboardPage />, { wrapper: Wrapper })
+    expect(screen.queryByText('Service status unavailable')).not.toBeInTheDocument()
   })
 })

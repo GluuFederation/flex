@@ -1,27 +1,24 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import type { Store } from '@reduxjs/toolkit'
+import type { Middleware, UnknownAction } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
-import GluuTimeoutModal, { buildAdminUrl } from 'Routes/Apps/Gluu/GluuTimeoutModal'
+import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import { reducer as initReducer } from 'Redux/features/initSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
+import { SESSION_EXPIRED } from '@/audit/messages'
 
-const mockDeleteAdminUiSession = jest.fn()
-jest.mock('Redux/api/backend-api', () => ({
-  deleteAdminUiSession: () => mockDeleteAdminUiSession(),
-}))
-
-const createTestStore = (isTimeout: boolean, authServerHost = ''): Store =>
-  configureStore({
-    reducer: combineReducers({
-      initReducer,
-      authReducer: (state = { config: { authServerHost } }) => state,
-    }),
-    preloadedState: { initReducer: { isTimeout, isSessionExpired: false } },
+const renderModal = (isSessionExpired: boolean) => {
+  const actions: UnknownAction[] = []
+  const recorder: Middleware = () => (next) => (action) => {
+    actions.push(action as UnknownAction)
+    return next(action)
+  }
+  const store = configureStore({
+    reducer: combineReducers({ initReducer }),
+    preloadedState: { initReducer: { isSessionExpired } },
+    middleware: (getDefault) => getDefault().concat(recorder),
   })
-
-const renderModal = (isTimeout: boolean, authServerHost = '') => {
-  const store = createTestStore(isTimeout, authServerHost)
   const result = render(
     <Provider store={store}>
       <AppTestWrapper>
@@ -29,247 +26,47 @@ const renderModal = (isTimeout: boolean, authServerHost = '') => {
       </AppTestWrapper>
     </Provider>,
   )
-  return { store, ...result }
+  const signOuts = () =>
+    actions.filter((a) => a.type === auditLogoutLogs.type) as ReturnType<typeof auditLogoutLogs>[]
+  return { store, signOuts, ...result }
 }
 
 describe('GluuTimeoutModal', () => {
-  it('renders the timeout dialog when isTimeout is true', () => {
+  it('shows the session-expired dialog when the session has expired', () => {
     renderModal(true)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText('Request Timeout')).toBeInTheDocument()
+    expect(screen.getByText('Session Expired')).toBeInTheDocument()
+    expect(screen.getByText(/session has expired/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
   })
 
-  it('renders nothing when isTimeout is false', () => {
-    renderModal(false)
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.queryByText('Request Timeout')).not.toBeInTheDocument()
-  })
-
-  it('clears the timeout state when the close button is clicked', () => {
-    const { store } = renderModal(true)
-    const closeButtons = screen.getAllByRole('button', { name: /close/i })
-    fireEvent.click(closeButtons[0])
-    expect(store.getState().initReducer.isTimeout).toBe(false)
-  })
-
-  it('clears the timeout state when Refresh is clicked', () => {
-    const { store } = renderModal(true, '')
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-    expect(store.getState().initReducer.isTimeout).toBe(false)
-  })
-})
-
-// A dead session and a slow request are different problems with different remedies, so the modal
-// must not tell an expired user to go check their network connection.
-describe('GluuTimeoutModal session expiry', () => {
-  const renderExpired = (authServerHost = '') => {
-    const store = configureStore({
-      reducer: combineReducers({
-        initReducer,
-        authReducer: (state = { config: { authServerHost } }) => state,
-      }),
-      preloadedState: { initReducer: { isTimeout: false, isSessionExpired: true } },
-    })
-    return render(
-      <Provider store={store}>
-        <AppTestWrapper>
-          <GluuTimeoutModal />
-        </AppTestWrapper>
-      </Provider>,
-    )
-  }
-
-  it('shows the session-expired copy, not the request-timeout copy', () => {
-    renderExpired()
-
-    expect(screen.getByText(/session has expired/i)).toBeInTheDocument()
-    expect(screen.queryByText(/no response from the server/i)).not.toBeInTheDocument()
-  })
-
-  it('stays hidden when neither state is set', () => {
-    const store = configureStore({
-      reducer: combineReducers({
-        initReducer,
-        authReducer: (state = { config: { authServerHost: '' } }) => state,
-      }),
-      preloadedState: { initReducer: { isTimeout: false, isSessionExpired: false } },
-    })
-    const { container } = render(
-      <Provider store={store}>
-        <AppTestWrapper>
-          <GluuTimeoutModal />
-        </AppTestWrapper>
-      </Provider>,
-    )
-
+  it('renders nothing while the session is valid', () => {
+    const { container } = renderModal(false)
     expect(container).toBeEmptyDOMElement()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
-})
-
-// jsdom forbids stubbing window.location, so the redirect target is asserted through the URL
-// builder while the two exit paths are asserted by the state they clear.
-describe('GluuTimeoutModal session-expiry redirect', () => {
-  it('targets the admin root with a trailing slash', () => {
-    expect(buildAdminUrl('https://auth.example.org')).toBe('https://auth.example.org/admin/')
-  })
-
-  it('falls back to a reload when no auth server host is configured', () => {
-    expect(buildAdminUrl('')).toBeNull()
-    expect(buildAdminUrl(undefined)).toBeNull()
-  })
-
-  // Proves the path comes from the app's configured base rather than a hardcoded '/admin/'.
-  it('takes the base path from the app configuration', async () => {
-    const original = process.env.BASE_PATH
-    process.env.BASE_PATH = '/custom-base/'
-    jest.resetModules()
-
-    try {
-      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-        'https://auth.example.org/custom-base/',
-      )
-    } finally {
-      if (original === undefined) {
-        delete process.env.BASE_PATH
-      } else {
-        process.env.BASE_PATH = original
-      }
-      jest.resetModules()
-    }
-  })
-
-  it('normalises a configured base path that omits the trailing slash', async () => {
-    const original = process.env.BASE_PATH
-    process.env.BASE_PATH = '/custom-base'
-    jest.resetModules()
-
-    try {
-      const reimported = await import('Routes/Apps/Gluu/GluuTimeoutModal')
-      expect(reimported.buildAdminUrl('https://auth.example.org')).toBe(
-        'https://auth.example.org/custom-base/',
-      )
-    } finally {
-      if (original === undefined) {
-        delete process.env.BASE_PATH
-      } else {
-        process.env.BASE_PATH = original
-      }
-      jest.resetModules()
-    }
-  })
-
-  const renderExpired = (authServerHost: string) => {
-    const store = configureStore({
-      reducer: combineReducers({
-        initReducer,
-        authReducer: (state = { config: { authServerHost } }) => state,
-      }),
-      preloadedState: { initReducer: { isTimeout: false, isSessionExpired: true } },
-    })
-    render(
-      <Provider store={store}>
-        <AppTestWrapper>
-          <GluuTimeoutModal />
-        </AppTestWrapper>
-      </Provider>,
-    )
-    return store
-  }
 
   it.each([
-    ['Refresh', () => screen.getByRole('button', { name: 'Refresh' })],
-    ['dismissal', () => screen.getAllByRole('button', { name: /close/i })[0]],
-  ])('clears the expired state through %s so the redirect can run', (_label, getTrigger) => {
-    const store = renderExpired('https://auth.example.org')
+    ['Refresh', () => fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))],
+    [
+      'the close button',
+      () => fireEvent.click(screen.getAllByRole('button', { name: /close/i })[0]),
+    ],
+    ['Escape', () => fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })],
+  ])('signs out through the logout flow on %s', (_label, trigger) => {
+    const { signOuts } = renderModal(true)
 
-    fireEvent.click(getTrigger()!)
+    trigger()
 
-    expect(store.getState().initReducer.isSessionExpired).toBe(false)
-  })
-})
-
-describe('GluuTimeoutModal session teardown on refresh', () => {
-  const renderWith = (
-    state: { isTimeout: boolean; isSessionExpired: boolean },
-    hasSession = true,
-  ) => {
-    const store = configureStore({
-      reducer: combineReducers({
-        initReducer,
-        authReducer: (state = { config: { authServerHost: '' }, hasSession }) => state,
-      }),
-      preloadedState: { initReducer: state },
-    })
-    render(
-      <Provider store={store}>
-        <AppTestWrapper>
-          <GluuTimeoutModal />
-        </AppTestWrapper>
-      </Provider>,
-    )
-    return store
-  }
-
-  beforeEach(() => {
-    mockDeleteAdminUiSession.mockReset()
-    mockDeleteAdminUiSession.mockResolvedValue(undefined)
+    expect(signOuts()).toEqual([auditLogoutLogs({ message: SESSION_EXPIRED })])
   })
 
-  it('deletes the Admin UI session before leaving an expired dialog', async () => {
-    const store = renderWith({ isTimeout: false, isSessionExpired: true })
+  it('signs out only once when triggered repeatedly', () => {
+    const { signOuts } = renderModal(true)
 
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
+    fireEvent.click(screen.getAllByRole('button', { name: /close/i })[0])
 
-    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
-  })
-
-  it('leaves the session alone when the request merely timed out', async () => {
-    const store = renderWith({ isTimeout: true, isSessionExpired: false })
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-
-    await waitFor(() => expect(store.getState().initReducer.isTimeout).toBe(false))
-    expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
-  })
-
-  it('skips the delete when no session cookie was ever established', async () => {
-    const store = renderWith({ isTimeout: false, isSessionExpired: true }, false)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-
-    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
-    expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
-  })
-
-  it('waits for the delete to finish before tearing the dialog down', async () => {
-    let releaseDelete: (() => void) | undefined
-    mockDeleteAdminUiSession.mockReturnValue(
-      new Promise<void>((resolve) => {
-        releaseDelete = () => resolve()
-      }),
-    )
-    const store = renderWith({ isTimeout: false, isSessionExpired: true })
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-
-    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
-    expect(store.getState().initReducer.isSessionExpired).toBe(true)
-
-    releaseDelete?.()
-
-    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
-  })
-
-  it('still clears the dialog when the delete request fails', async () => {
-    mockDeleteAdminUiSession.mockRejectedValue(new Error('401'))
-    const store = renderWith({ isTimeout: false, isSessionExpired: true })
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-
-    await waitFor(() => expect(mockDeleteAdminUiSession).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(store.getState().initReducer.isSessionExpired).toBe(false))
+    expect(signOuts()).toHaveLength(1)
   })
 })

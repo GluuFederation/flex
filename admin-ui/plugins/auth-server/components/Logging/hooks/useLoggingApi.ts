@@ -10,6 +10,7 @@ import {
   type Logging,
 } from 'JansConfigApi'
 import { logAuditUserAction } from 'Utils/AuditLogger'
+import { authServerJsonPropertiesQueryKey } from 'Plugins/auth-server/hooks/useAuthServerJsonProperties'
 import { logger } from '@/utils/logger'
 import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from '@/audit/Resources'
@@ -70,6 +71,7 @@ export const useUpdateLoggingConfig = () => {
       const result = await baseMutation.mutateAsync({ data })
 
       queryClient.setQueryData(getGetConfigLoggingQueryKey(), result)
+      queryClient.invalidateQueries({ queryKey: authServerJsonPropertiesQueryKey })
 
       dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
 

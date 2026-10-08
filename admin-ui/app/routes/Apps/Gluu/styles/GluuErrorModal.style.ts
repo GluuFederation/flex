@@ -15,16 +15,18 @@ const HEADING_GAP_MOBILE = SPACING.CARD_BUTTON_GAP
 const ACTION_GAP = SPACING.PAGE * 2
 const ACTION_GAP_MOBILE = SPACING.SECTION_GAP + SPACING.CARD_CONTENT_GAP
 
-const useStyles = makeStyles()(() => ({
+const useStyles = makeStyles()((theme) => ({
   overlay: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     bottom: 0,
     right: 0,
     left: 0,
+    zIndex: theme.zIndex.modal,
+    overflowY: 'auto',
     backgroundColor: customColors.black,
     color: customColors.white,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -35,6 +37,7 @@ const useStyles = makeStyles()(() => ({
   logo: {
     width: LOGO_WIDTH,
     height: 'auto',
+    marginTop: 'auto',
     marginBottom: LOGO_GAP,
     [`@media ${MOBILE_MEDIA_QUERY}`]: {
       width: LOGO_WIDTH_MOBILE,
@@ -72,6 +75,7 @@ const useStyles = makeStyles()(() => ({
     fontFamily,
     fontSize: fontSizes.md,
     padding: 0,
+    marginBottom: 'auto',
     textDecoration: 'underline',
   },
 }))

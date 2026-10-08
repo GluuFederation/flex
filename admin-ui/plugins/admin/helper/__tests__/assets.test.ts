@@ -1,4 +1,4 @@
-import { buildAssetInitialValues } from '../assets'
+import { buildAssetCommitOperations, buildAssetInitialValues } from '../assets'
 import type { Document } from '../../components/Assets/types'
 
 describe('assets helper', () => {
@@ -72,5 +72,61 @@ describe('assets helper', () => {
       const result = buildAssetInitialValues({ fileName: 'x.png' })
       expect(result.service).toEqual([])
     })
+  })
+})
+const labels = {
+  document: 'Upload',
+  fileName: 'Asset Name',
+  service: 'Service',
+  description: 'Description',
+  enabled: 'Enabled',
+}
+
+const existing = buildAssetInitialValues({
+  inum: 'a1',
+  fileName: 'logo.png',
+  description: 'old',
+  service: 'jans-auth',
+  enabled: true,
+  document: 'logo.png',
+})
+
+describe('buildAssetCommitOperations', () => {
+  it('returns nothing when values are unchanged', () => {
+    expect(buildAssetCommitOperations(existing, existing, labels)).toEqual([])
+  })
+
+  it('lists only the fields changed on update', () => {
+    const current = {
+      ...existing,
+      description: 'new',
+      enabled: false,
+      service: ['jans-config-api'],
+    }
+    expect(buildAssetCommitOperations(existing, current, labels)).toEqual([
+      { path: 'service', label: 'Service', value: 'jans-config-api' },
+      { path: 'description', label: 'Description', value: 'new' },
+      { path: 'enabled', label: 'Enabled', value: false },
+    ])
+  })
+
+  it('shows the new file name when a file is uploaded', () => {
+    const file = new File(['x'], 'banner.png')
+    const current = { ...existing, document: file, fileName: 'banner.png' }
+    expect(buildAssetCommitOperations(existing, current, labels)).toEqual([
+      { path: 'document', label: 'Upload', value: 'banner.png' },
+      { path: 'fileName', label: 'Asset Name', value: 'banner.png' },
+    ])
+  })
+
+  it('lists every filled field when adding', () => {
+    const initial = buildAssetInitialValues()
+    const file = new File(['x'], 'a.css')
+    const current = { ...initial, document: file, fileName: 'a.css', service: ['jans-auth'] }
+    expect(buildAssetCommitOperations(initial, current, labels).map((op) => op.path)).toEqual([
+      'document',
+      'fileName',
+      'service',
+    ])
   })
 })

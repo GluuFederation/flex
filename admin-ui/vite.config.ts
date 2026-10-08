@@ -107,27 +107,6 @@ const normalizeBasePath = (value?: string): string => {
   return basePath.endsWith('/') ? basePath : `${basePath}/`
 }
 
-const getPolicyStoreConfig = (mode: string): string => {
-  const configFile = mode === 'production' ? 'policy-store-prod.json' : 'policy-store-dev.json'
-  const configPath = path.resolve(process.cwd(), 'app/cedarling/config', configFile)
-
-  if (!existsSync(configPath)) {
-    throw new Error(
-      `Missing Cedarling policy store config for mode "${mode}": ${configPath}. Expected file "${configFile}" under app/cedarling/config.`,
-    )
-  }
-
-  try {
-    return readFileSync(configPath, 'utf-8')
-  } catch (error) {
-    throw new Error(
-      `Failed to read Cedarling policy store config for mode "${mode}" at ${configPath}: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
-  }
-}
-
 const REACT_RUNTIME_PACKAGES = new Set<string>([
   'react',
   'react-dom',
@@ -284,12 +263,10 @@ export default defineConfig(({ mode }) => {
   const processEnv = {
     NODE_ENV: nodeEnv,
     BASE_PATH: base,
-    API_BASE_URL: env.API_BASE_URL,
     CONFIG_API_BASE_URL:
       env.CONFIG_API_BASE_URL && !env.CONFIG_API_BASE_URL.includes('%(')
         ? env.CONFIG_API_BASE_URL
         : undefined,
-    POLICY_STORE_CONFIG: getPolicyStoreConfig(mode),
   }
 
   return {

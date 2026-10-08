@@ -1,8 +1,7 @@
 import { AxiosHeaders } from 'axios'
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import type { RootState } from '@/redux/types'
-import { auditLogoutLogs } from '@/redux/features/sessionSlice'
-import { SESSION_EXPIRED } from '@/audit/messages'
+import { handleSessionExpired } from '@/redux/features/initSlice'
 
 const mockFetchApiTokenWithDefaultScopes = jest.fn()
 const mockDeleteAdminUiSession = jest.fn()
@@ -196,7 +195,7 @@ describe('orval interceptors', () => {
     expect(config.headers.get('Authorization')).toBeUndefined()
   })
 
-  it('audits the forced logout on a 403 response and leaves the logout to the listener', async () => {
+  it('opens the session-expired modal on a 403 response instead of signing out', async () => {
     const dispatch = jest.fn()
     const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
 
@@ -208,7 +207,8 @@ describe('orval interceptors', () => {
     const error = { config: {}, response: { status: 403 } }
     await expect(rejected?.(error)).rejects.toBe(error)
 
-    expect(dispatch).toHaveBeenCalledWith(auditLogoutLogs({ message: SESSION_EXPIRED }))
+    expect(dispatch).toHaveBeenCalledWith(handleSessionExpired({ isSessionExpired: true }))
+    expect(dispatch).toHaveBeenCalledTimes(1)
     expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
   })
 })

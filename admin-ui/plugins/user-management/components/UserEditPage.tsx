@@ -151,7 +151,7 @@ const UserEditPage = () => {
   const isSubmitting = updateUserMutation.isPending
 
   const submitData = useCallback(
-    async (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
+    (values: UserEditFormValues, modifiedFields: ModifiedFields, userMessage: string) => {
       const baseCustomAttributes = buildCustomAttributesFromValues(values, personAttributes)
       const customAttributes = updateCustomAttributesWithModifiedFields(
         baseCustomAttributes,
@@ -160,7 +160,7 @@ const UserEditPage = () => {
       )
       const standardFieldValues = getStandardFieldValues(values, STANDARD_FORM_FIELDS)
 
-      await updateUserMutation.mutateAsync({
+      updateUserMutation.mutate({
         data: {
           inum: userDetails?.inum,
           ...standardFieldValues,

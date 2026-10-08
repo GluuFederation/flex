@@ -1,52 +1,42 @@
 [
   {
-    "order": 1,
     "key": "home",
     "metadataFile": "./admin/plugin-metadata"
   },
 
   {
-    "order": 2,
     "key": "auth-server",
     "metadataFile": "./auth-server/plugin-metadata"
   },
   {
-    "order": 3,
     "key": "users",
     "metadataFile": "./user-management/plugin-metadata"
   },
   {
-    "order": 4,
     "key": "scripts",
     "metadataFile": "./scripts/plugin-metadata"
   },
   {
-    "order": 5,
     "key": "user-claims",
     "metadataFile": "./user-claims/plugin-metadata"
   },
   {
-    "order": 6,
     "key": "services",
     "metadataFile": "./services/plugin-metadata"
   },
   {
-    "order": 7,
     "key": "smtp",
     "metadataFile": "./smtp/plugin-metadata"
   },
   {
-    "order": 8,
     "key": "scim",
     "metadataFile": "./scim/plugin-metadata"
   },
   {
-    "order": 9,
     "key": "fido",
     "metadataFile": "./fido/plugin-metadata"
   },
   {
-    "order": 11,
     "key": "jans-lock",
     "metadataFile": "./jans-lock/plugin-metadata"
   }

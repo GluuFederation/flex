@@ -1,15 +1,8 @@
 import Axios, { AxiosRequestConfig } from 'axios'
-import { REGEX_PYTHON_PLACEHOLDER } from '@/utils/regex'
+import { resolveConfigApiBaseUrl } from '@/utils/configApiBaseUrl'
 import type { CancellablePromise } from './types'
 
-const windowUrl =
-  typeof window !== 'undefined' &&
-  window.configApiBaseUrl &&
-  !REGEX_PYTHON_PLACEHOLDER.test(window.configApiBaseUrl)
-    ? window.configApiBaseUrl
-    : undefined
-
-const baseUrl = windowUrl || process.env.CONFIG_API_BASE_URL || ''
+const baseUrl = resolveConfigApiBaseUrl('')
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: baseUrl, timeout: 60000 })
 

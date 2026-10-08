@@ -13,7 +13,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
+    "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./app/*"],
@@ -33,7 +33,7 @@
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true,
-    "typeRoots": ["./node_modules/@types"]
+    "types": ["node", "jest"]
   },
   "include": [
     "app/**/*",

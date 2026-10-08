@@ -1,8 +1,9 @@
 import { LOG_LEVELS } from 'Plugins/auth-server/components/Logging/utils'
+import { STORAGE_KEYS } from '@/constants'
 
 export type LogLevel = (typeof LOG_LEVELS)[number]
 
-const STORAGE_KEY = 'gluu.logLevel'
+const STORAGE_KEY = STORAGE_KEYS.LOG_LEVEL
 
 const isLogLevel = (value: string | null | undefined): value is LogLevel =>
   value != null && (LOG_LEVELS as readonly string[]).includes(value)

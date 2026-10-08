@@ -40,17 +40,17 @@ describe('getClaimLabel', () => {
 
 describe('getClaimLabelKey', () => {
   it('should return i18n key when translation exists', () => {
-    const result = getClaimLabelKey(t, 'testClaim', 'Fallback Display')
+    const result = getClaimLabelKey('testClaim', 'Fallback Display')
     expect(result).toBe('claims.testClaim')
   })
 
   it('should fall back to displayName when no translation exists', () => {
-    const result = getClaimLabelKey(t, 'nonExistentClaimXyz123', 'Fallback Display')
+    const result = getClaimLabelKey('nonExistentClaimXyz123', 'Fallback Display')
     expect(result).toBe('Fallback Display')
   })
 
   it('should fall back to name when no translation and no displayName', () => {
-    const result = getClaimLabelKey(t, 'nonExistentClaimXyz123')
+    const result = getClaimLabelKey('nonExistentClaimXyz123')
     expect(result).toBe('nonExistentClaimXyz123')
   })
 })

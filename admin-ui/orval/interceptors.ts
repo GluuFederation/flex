@@ -2,8 +2,7 @@ import { AxiosHeaders } from 'axios'
 import { AXIOS_INSTANCE, getApiToken } from './axiosInstance'
 import { createAdminUiSession } from '@/redux/api/backend-api'
 import { clearApiToken, ensureApiToken } from '@/redux/api/apiToken'
-import { auditLogoutLogs } from '@/redux/features/sessionSlice'
-import { SESSION_EXPIRED } from '@/audit/messages'
+import { handleSessionExpired } from '@/redux/features/initSlice'
 import { logger } from '@/utils/logger'
 import { getIssuer } from '@/utils/TokenController'
 import type { RootState } from '@/redux/types'
@@ -106,7 +105,7 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
       }
 
       if (error.response?.status === 403) {
-        dispatch(auditLogoutLogs({ message: SESSION_EXPIRED }))
+        dispatch(handleSessionExpired({ isSessionExpired: true }))
       }
 
       return Promise.reject(error)

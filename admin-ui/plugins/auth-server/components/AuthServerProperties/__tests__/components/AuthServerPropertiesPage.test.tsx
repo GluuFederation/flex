@@ -69,7 +69,7 @@ const ACER_STATE = {
 }
 
 const INIT_REDUCER_STATE = {
-  isTimeout: false,
+  isSessionExpired: false,
 }
 
 const INIT_STATE = {

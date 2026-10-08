@@ -34,10 +34,6 @@ const SsaListPage = createLazyRoute(() => import('./components/Ssa/components/Ss
 const SsaAddPage = createLazyRoute(() => import('./components/Ssa/components/SsaAddPage'))
 const ConfigApiPage = createLazyRoute(() => import('./components/ConfigApiProperties'))
 
-const AgamaListPageWrapper = createLazyRoute(
-  () => import('./components/Authentication/AgamaFlows/AgamaFlows'),
-)
-
 const pluginMetadata = {
   menus: [
     {
@@ -179,12 +175,6 @@ const pluginMetadata = {
       path: ROUTES.AUTH_SERVER_CONFIG_LOGGING,
       action: CEDAR_ACTIONS.READ,
       resourceKey: ADMIN_UI_RESOURCES.Logging,
-    },
-    {
-      component: AgamaListPageWrapper,
-      path: ROUTES.AUTH_SERVER_AGAMA,
-      action: CEDAR_ACTIONS.READ,
-      resourceKey: ADMIN_UI_RESOURCES.Authentication,
     },
     {
       component: SsaListPage,

@@ -24,6 +24,7 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
   isDirect,
 }) => {
   const { t, i18n } = useTranslation()
+  const labelText = label && i18n.exists(label) ? t(label) : label
   const { state: themeState } = useTheme()
   const isDarkTheme =
     isDarkProp === true || (isDarkProp !== false && themeState?.theme === THEME_DARK)
@@ -44,10 +45,10 @@ const GluuLabel: React.FC<GluuLabelProps> = ({
   const { classes } = useStyles({ labelColor })
 
   return (
-    <Label for={t(label)} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
-      <h5 className={classes.titleRow} aria-label={t(label)}>
+    <Label for={labelText} sm={getSize(size)} data-for={doc_entry} style={labelStyle}>
+      <h5 className={classes.titleRow} aria-label={labelText}>
         <span className={classes.titleContent}>
-          {t(label)}
+          {labelText}
           {allowColon && <span>:</span>}
           {required && <span style={applicationStyle.fieldRequired}> *</span>}
           {doc_category &&

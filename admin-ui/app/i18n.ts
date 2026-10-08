@@ -89,6 +89,7 @@ const i18nConfig: InitOptions = {
   keySeparator: '.',
   react: {
     useSuspense: false,
+    bindI18nStore: 'added',
   },
   interpolation: {
     escapeValue: false,

@@ -7,7 +7,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest/setup.ts'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   transform: {
-    '\\.[jt]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],
+    '\\.[jt]sx?$': 'babel-jest',
   },
   testEnvironmentOptions: {
     url: 'https://admin-ui-test.gluu.org/',
@@ -34,8 +34,7 @@ const config: Config = {
     'loadPluginMetadata$': '<rootDir>/__mocks__/loadPluginMetadata.ts',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-  testPathIgnorePatterns: ['/node_modules/', '/jans_config_api/', '/jans_config_api_orval/'],
-  transformIgnorePatterns: ['node_modules/(?!(uuid)/)'],
+  testPathIgnorePatterns: ['/node_modules/', '/jans_config_api_orval/'],
 }
 
 export default config

@@ -3,9 +3,7 @@ interface ImportMetaEnv {
   readonly DEV: boolean
   readonly PROD: boolean
   readonly BASE_PATH?: string
-  readonly API_BASE_URL?: string
   readonly CONFIG_API_BASE_URL?: string
-  readonly POLICY_STORE_CONFIG?: string
 }
 
 interface ViteHotContext {

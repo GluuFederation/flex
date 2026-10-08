@@ -20,8 +20,8 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
   const { classes } = useStyles({ themeColors })
 
   const claimLabelKey = useMemo(
-    () => getClaimLabelKey(t, data.name, data.displayName),
-    [t, data.name, data.displayName],
+    () => getClaimLabelKey(data.name, data.displayName),
+    [data.name, data.displayName],
   )
 
   const claimLabel = useMemo(

@@ -20,7 +20,7 @@ cnPersistenceType: sql
 salt: ""
 # -- service account used by Kubernetes resources
 serviceAccountName: default
-# — Add custom annotations for kubernetes resources for the service
+# -- Add custom annotations for kubernetes resources for the service
 customAnnotations:
   certificate: {}
   clusterRoleBinding: {}
@@ -256,10 +256,16 @@ auth-server:
     webfingerAdditionalAnnotations: { }
     # -- Enable endpoint /.well-known/authzen-configuration
     authzenConfigEnabled: true
+    # -- Enable endpoint /.well-known/oauth-authorization-server
+    oauthServerConfigEnabled: true
     # -- authzen config ingress resource labels. key app is taken
     authzenConfigLabels: { }
     # -- authzen config ingress resource additional annotations.
     authzenAdditionalAnnotations: { }
+    # -- oauth-authorization-server ingress resource labels. key app is taken
+    oauthServerConfigLabels: { }
+    # -- oauth-authorization-server ingress resource additional annotations.
+    oauthServerAdditionalAnnotations: { }
     # -- Auth server ingress resource labels. key app is taken
     authServerLabels: { }
     # -- Auth server ingress resource additional annotations.
@@ -686,6 +692,8 @@ gateway-api:
     webfingerEnabled: true
     # -- Enable endpoint /.well-known/authzen-configuration
     authzenConfigEnabled: true
+    # -- Enable endpoint /.well-known/oauth-authorization-server
+    oauthServerConfigEnabled: true
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
     authServerProtectedToken: false
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.

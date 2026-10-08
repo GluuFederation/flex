@@ -40,10 +40,10 @@ plugins/<plugin>/components/hooks/useYourPageApi.ts   # if needed
 Copy a small plugin (`plugins/scim/`) as a template, then register it in `plugins.config.json`:
 
 ```json
-{ "order": 99, "key": "my-feature", "metadataFile": "./my-feature/plugin-metadata" }
+{ "key": "my-feature", "metadataFile": "./my-feature/plugin-metadata" }
 ```
 
-`order` controls sidebar position. Run `npm start` and confirm the sidebar entry resolves.
+The entry's position in the array sets where its menu appears in the sidebar. Run `npm start` and confirm the sidebar entry resolves.
 
 > [!IMPORTANT]
 > Don't refactor `plugins/PluginMenuResolver.ts`, `PluginReducersResolver.ts`, `PluginListenersResolver.ts`, or `plugins/internal/loadPluginMetadata.ts`. The metadata loader uses Vite's `import.meta.glob` to enumerate every plugin's `plugin-metadata.ts` eagerly; the three resolvers feed off it. Restructuring any of them breaks HMR and / or the plugin registration order.
@@ -145,7 +145,7 @@ const { canRead, canWrite, canDelete } = usePermission(resourceId)
 
 Match the action to the operation: read for viewing, write for add and edit, delete for delete.
 
-New resource → add it (with its allowed actions) to `RESOURCE_ACTIONS` in `app/cedarling/constants/resourceCatalog.ts` **and** the policy to both `policy-store-dev.json` and `policy-store-prod.json`. A missing prod policy returns "deny" with no error.
+New resource → add it (with its allowed actions) to `RESOURCE_ACTIONS` in `app/cedarling/constants/resourceCatalog.ts` **and** the policy to the policy store served by the Config API. A missing policy returns "deny" with no error.
 
 ## Add an audit record
 

@@ -27,6 +27,7 @@ Use the listing below for a detailed estimation of the minimum required resource
 | OB Root CA                                            | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
 | OB Issuing CA                                         | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
 | OB Signing CA                                         | Used to build the OB transport truststore.                                                         | `cnObTransportTrustStore`         |
+| OB CA bundle `ob-ca-certs.pem`                        | OB Issuing CA and Root CA in one PEM. Imported into the JVM cacerts to trust the OB Directory keystore serving the signing JWKS. | `cnObCaCerts`                     |
 | OB AS Transport key `obtransport.key`                 | Used for mTLS. This is also added to the JVM.                                                      | `cnObTransportKey`                |
 | OB AS Transport crt `obtransport.pem`                 | Used for mTLS. This is also added to the JVM.                                                      | `cnObTransportCrt`                |
 | OB transport truststore `ob-transport-truststore.p12` | Generated from the OB Root CA, Issuing CA, and Signing CA. Used in SSA validation.                 | `cnObTransportTrustStore`         |
@@ -150,6 +151,13 @@ Use the listing below for a detailed estimation of the minimum required resource
         cat ob-transport-truststore.p12 | base64 | tr -d '\n' > obtransporttruststorebase64.pem
         ```
 
+    1.  Create the OB CA bundle from the OB Issuing CA and OB Root CA, then base64 encode it. The auth-server imports it into the JVM cacerts so it can fetch `cnObExtSigningJwksUri` from the OB Directory keystore without a PKIX error.
+
+        ```bash
+        cat obissuingca.pem obrootca.pem > ob-ca-certs.pem
+        cat ob-ca-certs.pem | base64 | tr -d '\n' > obcacertsbase64.pem
+        ```
+
 
     1.  Configure your Signing Key IDs: You must define both the external identifier for your signing key and its internal Java Keystore label. To ensure the system correctly maps the outgoing signature to the internal private key, these two values must be identical:
 
@@ -182,6 +190,8 @@ Use the listing below for a detailed estimation of the minimum required resource
         cnObTransportAlias: ""
         # -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.
         cnObTransportTrustStore: <base64 string in obtransporttruststorebase64.pem>
+        # -- Open banking Issuing and Root CA certificates bundle in PEM format. Imported into the auth-server JVM cacerts. This must be encoded using base64.
+        cnObCaCerts: <base64 string in obcacertsbase64.pem>
     ```   
 
    -  Please note that the password for the keystores created can be fetched by executing the following command:
@@ -191,6 +201,13 @@ Use the listing below for a detailed estimation of the minimum required resource
       The above password is needed in custom scripts such as the `Client Registration script`
 
    - Install after finishing all the tweaks to the `openbanking-values.yaml` file:
+
+    ```bash
+    helm install gluu oci://ghcr.io/gluufederation/charts/gluu \
+      --version replace-flex-version -n gluu -f openbanking-values.yaml
+    ```
+
+    The classic chart repository still resolves, if you already use it:
 
     ```bash
     helm repo add gluu-flex https://docs.gluu.org/charts

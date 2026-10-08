@@ -30,18 +30,18 @@ Vite loads environment values from `.env`, `.env.<mode>`, and `.env.<mode>.local
 
 The mode is selected by Vite's `--mode <name>` flag, which the `build:*` npm scripts pass automatically.
 
-Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH`, `API_BASE_URL`, `CONFIG_API_BASE_URL` and `POLICY_STORE_CONFIG` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
+Values from these files are **not** exposed wholesale. [`vite.config.ts`](../vite.config.ts) loads them with `loadEnv` and then hand-picks a whitelist into the `processEnv` object - `NODE_ENV`, `BASE_PATH` and `CONFIG_API_BASE_URL` - which is what `define` substitutes for `process.env` at build time. Adding a variable to `.env.<mode>` does nothing until it is also added to `processEnv`. See [Runtime env injection](#runtime-env-injection) below for how the Config API base URL reaches the running app. Full variable list in [onboarding.md](./onboarding.md#variables).
 
 ## Preview mode
 
-After `npm run build:prod`, you can serve the resulting `dist/` over a local static server to sanity-check it before shipping. This is what `vite preview` does, and the npm scripts wrap it with a runtime-config patch so the preview behaves exactly like a deployed production artifact.
+After `npm run build:prod`, you can serve the resulting `dist/` over a local static server to sanity-check it before shipping. This is what `vite preview` does.
 
 | Script                         | What it does                                                                                    |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `npm run preview:prod`         | `build:prod` → patch runtime config into `dist/` → `vite preview --host 0.0.0.0`                |
+| `npm run preview:prod`         | `build:prod` → `vite preview --host 0.0.0.0`                                                    |
 | `npm run preview:prod:analyze` | Same as `preview:prod` + Sonda + `knip --reporter json`. Prints `file://` links to both reports |
 
-The "patch runtime config" step runs [`script/patch-dist-runtime-config.ts`](../script/patch-dist-runtime-config.ts) with the `production` argument. It writes a real `dist/env-config.js` populated from `.env.production` so the preview behaves exactly like a deployed prod artifact. No leftover `%(...)s` placeholders, no localhost fallbacks.
+The preview has no `env-config.js`, so the request for `/admin/env-config.js` 404s and the app falls back to the `CONFIG_API_BASE_URL` baked into the bundle at build time (see [Runtime env injection](#runtime-env-injection)). That value has to be available when you run the build - `loadEnv` takes it from `.env`, `.env.production`, `.env.production.local` or the shell environment - or the preview has no Config API to call.
 
 ## Bundle analysis
 
@@ -50,7 +50,7 @@ Two tools inspect the output bundle. Both are opt-in. Running an ordinary `build
 - **Sonda**: produces a treemap of which packages contribute which bytes, plus a list of used and unused exports per module. Enabled by `ANALYZE=true npm run build:prod`. Emits `dist/sonda-report.html` (interactive treemap) and `dist/sonda-report.json` (machine-readable; the `.issues[]` array lists anything Sonda flagged as a potential problem, like duplicate package versions).
 - **knip**: finds dead code: unused files, exports, and dependencies. Runs as part of `preview:prod:analyze` and writes its findings to `dist/knip-report.json`.
 
-For a full analyze pass: `npm run preview:prod:analyze`. That builds prod with `ANALYZE=true`, patches the runtime config into `dist/`, runs `knip --reporter json`, prints `file://` links to both reports, and starts `vite preview` on `0.0.0.0` so you can browse the analyzed bundle interactively.
+For a full analyze pass: `npm run preview:prod:analyze`. That builds prod with `ANALYZE=true`, runs `knip --reporter json`, prints `file://` links to both reports, and starts `vite preview` on `0.0.0.0` so you can browse the analyzed bundle interactively.
 
 ## Chunking
 

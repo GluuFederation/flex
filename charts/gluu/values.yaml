@@ -870,7 +870,7 @@ global:
     # variable1: value1
     secret: {}
   admin-ui:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -897,7 +897,7 @@ global:
       adminUiAdditionalAnnotations: { }
 
   auth-server:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -1009,10 +1009,16 @@ global:
       webfingerAdditionalAnnotations: { }
       # -- Enable endpoint /.well-known/authzen-configuration
       authzenConfigEnabled: true
+      # -- Enable endpoint /.well-known/oauth-authorization-server
+      oauthServerConfigEnabled: true
       # -- authzen config ingress resource labels. key app is taken
       authzenConfigLabels: { }
       # -- authzen config ingress resource additional annotations.
       authzenAdditionalAnnotations: { }
+      # -- oauth-authorization-server ingress resource labels. key app is taken
+      oauthServerConfigLabels: { }
+      # -- oauth-authorization-server ingress resource additional annotations.
+      oauthServerAdditionalAnnotations: { }
       # -- Auth server ingress resource labels. key app is taken
       authServerLabels: { }
       # -- Auth server ingress resource additional annotations.
@@ -1031,7 +1037,7 @@ global:
   auth-server-key-rotation:
     # -- Boolean flag to enable/disable the auth-server-key rotation cronjob chart.
     enabled: true
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       cronjob: {}
       service: {}
@@ -1045,7 +1051,7 @@ global:
   # -- Azure storage kind if using Azure disks
   azureStorageKind: Managed
   casa:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -1122,8 +1128,10 @@ global:
   cnObTransportAlias: ""
   # -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.
   cnObTransportTrustStore: ""
+  # -- Open banking Issuing and Root CA certificates bundle in PEM format. Imported into the auth-server JVM cacerts so it can trust the OB Directory keystore serving `.global.cnObExtSigningJwksUri`. This must be encoded using base64.
+  cnObCaCerts: ""
   config:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       clusterRoleBinding: {}
       configMap: {}
@@ -1150,7 +1158,7 @@ global:
   # The location of file contains replica regions definition (if any). This file is mostly used in primary region. Example of contents of the file: `[{"Region": "us-west-1"}]`.  Used only when global.configAdapterName and global.configSecretAdapter is set to aws. Leave as this is a sensible default.
   cnAwsSecretsReplicaRegionsFile: /etc/jans/conf/aws_secrets_replica_regions
   config-api:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -1217,7 +1225,7 @@ global:
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
   fido2:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -1310,7 +1318,7 @@ global:
   # --  Gluu distributions supported are: default|openbanking.
   distribution: default
   persistence:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       job: {}
       service: {}
@@ -1320,7 +1328,7 @@ global:
   # -- service account used by Kubernetes resources
   serviceAccountName: default
   scim:
-    # — Add custom annotations for kubernetes resources for the service
+    # -- Add custom annotations for kubernetes resources for the service
     customAnnotations:
       destinationRule: {}
       podDisruptionBudget: {}
@@ -1471,6 +1479,8 @@ gateway-api:
     webfingerEnabled: true
     # -- Enable endpoint /.well-known/authzen-configuration
     authzenConfigEnabled: true
+    # -- Enable endpoint /.well-known/oauth-authorization-server
+    oauthServerConfigEnabled: true
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
     authServerProtectedToken: false
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.

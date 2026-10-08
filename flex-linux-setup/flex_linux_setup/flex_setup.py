@@ -31,6 +31,7 @@ ADMIN_UI_POLICY_STORE_INUM = '86007dee-fc3f-4668-8323-c4d2836748da'
 app_versions = {
     "JANS_APP_VERSION": "0.0.0",
     "JANS_BUILD": "-nightly",
+    "FLEX_RELEASE_TAG": "",
     "NODE_VERSION": "v18.16.0",
     "GLUU_FLEX_POLICY_STORE": 'v2.0.0',
 }
@@ -147,7 +148,7 @@ def set_app_versions_from_arguments(brgsp):
     app_versions['SETUP_BRANCH'] = brgsp.jans_setup_branch
     app_versions['FLEX_BRANCH'] = brgsp.flex_branch
     app_versions['JANS_BRANCH'] = brgsp.jans_branch
-    app_versions['NODE_MODULES_BRANCH'] = brgsp.node_modules_branch or brgsp.flex_branch
+    app_versions['NODE_MODULES_BRANCH'] = brgsp.node_modules_branch or app_versions['FLEX_RELEASE_TAG'] or brgsp.flex_branch
     app_versions['jans_version'] = app_versions['JANS_APP_VERSION'] + app_versions['JANS_BUILD']
 
 
