@@ -234,6 +234,23 @@ jobs:
     if: ${{ always() && needs.bump.outputs.sha != '' }}
     runs-on: ubuntu-22.04
     steps:
+    - name: Delete the failed draft release
+      if: ${{ needs.tag.result == 'failure' }}
+      env:
+        GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+        VERSION: ${{ github.event.inputs.version }}
+      run: |
+        IS_DRAFT=$(gh release view "v${VERSION}" --repo "${GITHUB_REPOSITORY}" --json isDraft -q .isDraft 2>/dev/null || echo "")
+        if [[ "${IS_DRAFT}" != "true" ]]; then
+          echo "No draft release v${VERSION} to delete."
+          exit 0
+        fi
+        if git ls-remote --tags "https://github.com/${GITHUB_REPOSITORY}.git" "refs/tags/v${VERSION}" | grep -q .; then
+          echo "::warning::tag v${VERSION} was pushed; keeping draft release for manual publish."
+          exit 0
+        fi
+        gh release delete "v${VERSION}" --repo "${GITHUB_REPOSITORY}" --yes
+
     - name: Delete the staging ref
       env:
         GH_PAT: ${{ secrets.MOWORKFLOWTOKEN }}
