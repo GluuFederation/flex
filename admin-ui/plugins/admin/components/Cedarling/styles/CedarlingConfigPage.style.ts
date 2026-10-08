@@ -13,7 +13,7 @@ import {
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import customColors from '@/customColors'
-import type { CedarlingConfigPageStyleParams } from './types'
+import type { CedarlingConfigPageStyleParams } from '../types'
 
 const useStyles = makeStyles<CedarlingConfigPageStyleParams>()((theme: Theme, params) => {
   const { themeColors, isDark } = params

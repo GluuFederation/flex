@@ -6,7 +6,7 @@ import { BORDER_RADIUS, MOBILE_MEDIA_QUERY, MODAL } from '@/constants'
 
 // This dialog carries one short message, so it is sized for reading rather than reusing the
 // commit dialog's form geometry, which is roughly twice as wide as this content needs.
-const TIMEOUT_MODAL_WIDTH = 480
+const TIMEOUT_MODAL_WIDTH = 560
 const CONTENT_PADDING = 32
 const MOBILE_CONTENT_PADDING = 24
 const CONTENT_GAP = 12

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuText from './GluuText'
-import { useStyles } from './GluuViewWrapper.style'
+import { useStyles } from './styles/GluuViewWrapper.style'
 import GluuLoader from './GluuLoader'
 
 interface GluuViewWrapperProps {

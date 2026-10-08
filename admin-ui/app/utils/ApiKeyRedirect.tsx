@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import GluuText from '../routes/Apps/Gluu/GluuText'
 import GluuLoader from '../routes/Apps/Gluu/GluuLoader'
 import { useAppSelector } from '@/redux/hooks'
-import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
+import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import loaderGif from 'Images/gif/loader.gif'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
@@ -29,7 +29,7 @@ const ApiKeyRedirect = ({
   const currentTheme = theme?.state?.theme ?? DEFAULT_THEME
   const themeColors = useMemo(() => getThemeColor(currentTheme), [currentTheme])
   const { classes } = useStyles({ themeColors })
-  const { isTimeout, isSessionExpired } = useAppSelector((state) => state.initReducer)
+  const { isSessionExpired } = useAppSelector((state) => state.initReducer)
   const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useAppSelector(
     (state) => state.licenseReducer,
   )
@@ -49,7 +49,7 @@ const ApiKeyRedirect = ({
     isConfigValid !== false &&
     (!islicenseCheckResultLoaded ||
       isConfigValid === null ||
-      (!isTimeout && isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
+      (isUnderThresholdLimit && backendStatus.active && !shouldShowApiKey))
 
   if (showRedirectingLoader) {
     return (
@@ -71,16 +71,20 @@ const ApiKeyRedirect = ({
           <Suspense fallback={<GluuLoader blocking />}>
             <UploadSSA />
           </Suspense>
-        ) : isConfigValid === false ? null : !isTimeout && isUnderThresholdLimit ? (
+        ) : isConfigValid === false ? null : isUnderThresholdLimit ? (
           shouldShowApiKey ? (
             <ApiKey />
           ) : null
         ) : null}
 
         {!isSessionExpired && !backendStatus.active && (
-          <GluuServiceDownModal
-            statusCode={backendStatus.statusCode ?? undefined}
-            message={backendStatus.errorMessage || t('serviceDownFallback')}
+          <GluuErrorModal
+            message={
+              backendStatus.statusCode
+                ? `${t('serviceDownTitle')} (${backendStatus.statusCode})`
+                : t('serviceDownTitle')
+            }
+            description={backendStatus.errorMessage || t('serviceDownFallback')}
           />
         )}
       </Container>
