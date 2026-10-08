@@ -179,6 +179,7 @@ jobs:
     uses: ./.github/workflows/build-admin-ui.yml
     permissions:
       contents: read
+      packages: write
     with:
       build_ref: ${{ needs.bump.outputs.sha }}
       version_name: v${{ github.event.inputs.version }}
