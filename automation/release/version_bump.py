@@ -15,7 +15,8 @@ Flex ships two kinds of artifacts in one tree:
   (e.g. ``6.2.0``); and
 * upstream Janssen images that Flex re-references, versioned with the JANS
   version. Flex is always +4 majors ahead of Janssen, so the jans version is
-  derived as ``(flex_major - 4).minor.patch`` (flex ``6.2.0`` -> jans ``2.2.0``).
+  derived as ``(flex_major - 4).minor.patch`` (flex ``6.2.0`` -> jans ``2.2.0``),
+  unless ``--jans-version`` overrides it (a flex patch on an existing jans release).
 
 The script takes the FLEX version and derives the jans version. Which version a
 given ``0.0.0-nightly`` becomes is decided by context:
@@ -244,8 +245,8 @@ def _chart_app_version(chart_rel, flex_version, jv):
     return flex_version
 
 
-def bump(version, docker_suffix="1"):
-    jv = jans_version(version)
+def bump(version, docker_suffix="1", jv=None):
+    jv = jv or jans_version(version)
     flex_tag = f"{version}-{docker_suffix}"
     jans_tag = f"{jv}-{docker_suffix}"
     changed = []
@@ -494,12 +495,16 @@ def main():
     ap.add_argument("--flex-source-sha", metavar="SHA",
                     help="release mode: pin FLEX_SOURCE_VERSION to this flex commit and "
                          "JANS_SOURCE_VERSION to the jans release's pinned commit")
+    ap.add_argument("--jans-version", metavar="X.Y.Z",
+                    help="jans version to release against (default: derived, flex major - 4)")
     args = ap.parse_args()
 
     if not VERSION_RE.match(args.version):
         ap.error(f"invalid version '{args.version}' (expected X.Y.Z or X.Y.Z-suffix)")
     if not re.fullmatch(r"[0-9A-Za-z.]+", args.docker_suffix):
         ap.error(f"invalid --docker-suffix '{args.docker_suffix}' (expected alphanumerics and dots)")
+    if args.jans_version and not VERSION_RE.match(args.jans_version):
+        ap.error(f"invalid --jans-version '{args.jans_version}' (expected X.Y.Z or X.Y.Z-suffix)")
 
     ROOT = args.root.resolve()
     DRY = args.dry_run
@@ -507,12 +512,12 @@ def main():
     if args.verify:
         sys.exit(0 if verify() else 1)
 
-    changed = bump(args.version, args.docker_suffix)
+    jv = args.jans_version or jans_version(args.version)
+    changed = bump(args.version, args.docker_suffix, jv)
     if args.flex_source_sha:
-        changed = sorted(set(changed + pin_source_versions(args.flex_source_sha, jans_version(args.version))))
+        changed = sorted(set(changed + pin_source_versions(args.flex_source_sha, jv)))
 
     mode = "DRY RUN -- would change" if DRY else "changed"
-    jv = jans_version(args.version)
     print(f"{mode} {len(changed)} file(s) -> flex {args.version} / jans {jv}")
     for rel in changed:
         print(f"  {rel}")
