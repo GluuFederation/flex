@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { useAppDispatch } from '@/redux/hooks'
@@ -26,6 +26,10 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { useStyles } from './styles/CedarlingConfigPage.style'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures } from '@/constants'
+import {
+  setShowWebhookExecutionDialog,
+  setWebhookTriggerResults,
+} from 'Plugins/admin/redux/features/WebhookSlice'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { fileToBase64 } from '@/utils/policyStore'
 import { CJAR_EXTENSION } from '@/constants/policyStore'
@@ -79,6 +83,11 @@ const CedarlingConfigPage: React.FC = () => {
   const { createPolicyStore } = usePolicyStoreMutations()
 
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(setShowWebhookExecutionDialog(false))
+    dispatch(setWebhookTriggerResults([]))
+  }, [dispatch])
 
   const handleFileDrop = useCallback(
     (files: File[]) => {
