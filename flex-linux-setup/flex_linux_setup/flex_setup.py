@@ -29,9 +29,9 @@ jans_config_properties = '/etc/jans/conf/jans.properties'
 ADMIN_UI_POLICY_STORE_INUM = '86007dee-fc3f-4668-8323-c4d2836748da'
 
 app_versions = {
-    "JANS_APP_VERSION": "0.0.0",
-    "JANS_BUILD": "-nightly",
-    "FLEX_RELEASE_TAG": "",
+    "JANS_APP_VERSION": "2.5.0",
+    "JANS_BUILD": "",
+    "FLEX_RELEASE_TAG": "v6.5.1",
     "NODE_VERSION": "v18.16.0",
     "GLUU_FLEX_POLICY_STORE": 'v2.0.0',
 }
