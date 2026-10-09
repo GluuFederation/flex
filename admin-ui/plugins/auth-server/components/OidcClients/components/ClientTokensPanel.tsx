@@ -271,6 +271,7 @@ const ClientTokensPanel = ({ formik, viewOnly, setModifiedFields }: ClientPanelP
       <div className={classes.fieldItem}>
         <GluuToggleRow
           name="attributes.runIntrospectionScriptBeforeJwtCreation"
+          doc_entry="runIntrospectionScriptBeforeJwtCreation"
           label="fields.run_introspection_script_before_accesstoken"
           value={Boolean(formik.values.attributes?.runIntrospectionScriptBeforeJwtCreation)}
           formik={formik}

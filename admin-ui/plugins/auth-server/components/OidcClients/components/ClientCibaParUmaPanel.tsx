@@ -325,6 +325,7 @@ const ClientCibaParUmaPanel = ({
                 <GluuInputRow
                   label="fields.parLifetime"
                   name="attributes.parLifetime"
+                  doc_entry="parLifetime"
                   type="number"
                   formik={formik}
                   value={formik.values.attributes?.parLifetime as number | undefined}
@@ -353,6 +354,7 @@ const ClientCibaParUmaPanel = ({
               <div className={classes.fieldItem}>
                 <GluuToggleRow
                   name="attributes.requirePar"
+                  doc_entry="requirePar"
                   label="fields.requirePar"
                   formik={formik}
                   value={Boolean(formik.values.attributes?.requirePar)}

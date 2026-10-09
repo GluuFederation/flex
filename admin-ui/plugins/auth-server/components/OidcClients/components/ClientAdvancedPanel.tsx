@@ -239,6 +239,7 @@ const ClientAdvancedPanel = ({
       <div className={classes.fieldItem}>
         <GluuToggleRow
           name="attributes.jansDefaultPromptLogin"
+          doc_entry="jansDefaultPromptLogin"
           formik={formik}
           lsize={12}
           rsize={12}
@@ -259,6 +260,7 @@ const ClientAdvancedPanel = ({
       <div className={classes.fieldItem}>
         <GluuToggleRow
           name="attributes.allowSpontaneousScopes"
+          doc_entry="allowSpontaneousScopes"
           label="fields.allow_spontaneous_scopes"
           value={Boolean(formik.values?.attributes?.allowSpontaneousScopes)}
           formik={formik}
@@ -279,6 +281,7 @@ const ClientAdvancedPanel = ({
       <div className={classes.fieldItem}>
         <GluuInputRow
           name="attributes.spontaneousScopes"
+          doc_entry="spontaneousScopes"
           label="fields.spontaneousScopesREGEX"
           formik={formik}
           value={(formik.values?.attributes?.spontaneousScopes as string[] | undefined)?.[0] ?? ''}
@@ -404,6 +407,7 @@ const ClientAdvancedPanel = ({
         <GluuInputRow
           label="fields.tls_client_auth_subject_dn"
           name="attributes.tlsClientAuthSubjectDn"
+          doc_entry="tlsClientAuthSubjectDn"
           formik={formik}
           value={formik.values?.attributes?.tlsClientAuthSubjectDn as string | undefined}
           placeholder={getFieldPlaceholder(t, 'fields.tls_client_auth_subject_dn')}

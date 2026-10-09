@@ -78,7 +78,8 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
                   : t('placeholders.search_here')
               }
               allowCustom={data.name !== JANS_ADMIN_UI_ROLE_ATTR}
-              doc_category={data.description}
+              doc_category={typeof data.description === 'string' ? data.description : undefined}
+              isDirect
               withWrapper={false}
             />
           </div>
