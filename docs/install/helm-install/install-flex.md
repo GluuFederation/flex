@@ -93,7 +93,7 @@ helm uninstall gluu -n gluu
 
 ## Chart Reference
 
-For all available Helm values, see the [Helm values reference](../../reference/helm-values.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu/gluu).
+For all available Helm values, see the [Helm values reference](../../reference/helm-values.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu-flex/gluu).
 
 ## Next Steps
 

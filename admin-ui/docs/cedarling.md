@@ -158,8 +158,6 @@ Once the switch is on, the level decides what is visible. At the default `INFO` 
 app/cedarling/
 ├── client/          # cedarlingClient - WASM wrapper, init promise singleton
 ├── config/          # cedarling-bootstrap-TBAC.json
-│                    # policy-store-dev.json
-│                    # policy-store-prod.json
 ├── constants/       # RESOURCE_ACTIONS, CEDAR_ACTIONS, CEDARLING_BYPASS (resourceCatalog)
 │                    # CEDARLING_CONSTANTS, CEDARLING_LOG_TYPE (cedarlingConstants)
 ├── hooks/           # useCedarling (low-level), usePermission (per-resource)
@@ -177,7 +175,7 @@ app/utils/AppAuthProvider.tsx
                      # fetches the policy store after sign-in
 ```
 
-`vite.config.ts` (`getPolicyStoreConfig`) picks `policy-store-dev.json` or `policy-store-prod.json` by build mode and embeds it into the bundle. The Config API ships the same store at runtime via `fetchPolicyStore()`: that is the runtime override path, used so the policy store can change without rebuilding the UI.
+The policy store is not bundled with the UI. After sign-in, `AppAuthProvider` fetches it from the Config API and initializes Cedarling with it, so policies can change without rebuilding the UI.
 
 The `app/cedarling` module follows a one-way layering: `constants` ← `types` ← `utility` / `hooks`. Import from leaf paths (`@/cedarling/hooks/usePermission`, `@/cedarling/constants`, `@/cedarling/utility`, `@/cedarling/types`). The top-level `@/cedarling` barrel is reserved for tests; it is blocked by `no-restricted-imports` in app and plugin code to keep Fast Refresh boundaries intact.
 
@@ -186,7 +184,7 @@ The `app/cedarling` module follows a one-way layering: `constants` ← `types` �
 To gate a button, a table, or a whole page on a Cedar permission, two things must be in place:
 
 1. The resource must exist in [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts) with the actions it supports. `ADMIN_UI_RESOURCES` and `CEDAR_RESOURCE_SCOPES` derive from it.
-2. The matching Cedar policy must exist in **both** `policy-store-dev.json` and `policy-store-prod.json` (otherwise the answer is always "deny").
+2. The matching Cedar policy must exist in the policy store served by the Config API (otherwise the answer is always "deny").
 
 Then in the component:
 
@@ -232,7 +230,7 @@ Rules:
 
    `ADMIN_UI_RESOURCES.MyNewFeature` and `CEDAR_RESOURCE_SCOPES[MyNewFeature]` are derived automatically. Every action a component reads through `usePermission` (and every action used on a sidebar entry) must be listed here, otherwise that decision is always `false`.
 
-2. Add the Cedar policy to **both** `policy-store-dev.json` and `policy-store-prod.json`. A policy in dev but not prod returns "deny" in production with no obvious error.
+2. Add the Cedar policy to the policy store served by the Config API (upload it from the Policy Store page). A missing policy returns "deny" with no obvious error.
 
 3. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` as shown above.
 

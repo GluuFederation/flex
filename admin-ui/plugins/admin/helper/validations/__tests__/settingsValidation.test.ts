@@ -34,6 +34,20 @@ describe('getSettingsValidationSchema', () => {
     ).rejects.toBeTruthy()
   })
 
+  it('accepts sessionTimeoutInMins of exactly 60', async () => {
+    const schema = getSettingsValidationSchema(t)
+    await expect(
+      schema.validateAt('sessionTimeoutInMins', { sessionTimeoutInMins: 60 }),
+    ).resolves.toBe(60)
+  })
+
+  it('rejects sessionTimeoutInMins above 60 with the max message', async () => {
+    const schema = getSettingsValidationSchema(t)
+    await expect(
+      schema.validateAt('sessionTimeoutInMins', { sessionTimeoutInMins: 61 }),
+    ).rejects.toThrow('messages.session_timeout_max_error')
+  })
+
   it('rejects an additional parameter with a key but no value', async () => {
     const schema = getSettingsValidationSchema(t)
     await expect(

@@ -7,6 +7,9 @@ const APP_BASE_URL: string = configuredBasePath.endsWith('/')
   ? configuredBasePath
   : `${configuredBasePath}/`
 
+const buildAppRootUrl = (origin: string = window.location.origin): string =>
+  `${origin}${APP_BASE_URL}`
+
 const LOGOUT_PATH = '/logout'
 
 const PLUGIN_BASE_PATHS = {
@@ -200,4 +203,4 @@ export const useAppNavigation = () => {
   )
 }
 
-export { ROUTES, APP_BASE_URL }
+export { ROUTES, APP_BASE_URL, buildAppRootUrl }

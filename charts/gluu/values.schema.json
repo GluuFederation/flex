@@ -421,6 +421,14 @@
                                     "description": "authzen config ingress resource additional annotations.",
                                     "type": "object"
                                 },
+                                "oauthServerConfigLabels": {
+                                    "description": "oauth-authorization-server ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "oauthServerAdditionalAnnotations": {
+                                    "description": "oauth-authorization-server ingress resource additional annotations.",
+                                    "type": "object"
+                                },
                                 "authServerLabels": {
                                     "description": "Auth server config ingress resource labels. key app is taken",
                                     "type": "object"
@@ -487,6 +495,10 @@
                                 },
                                 "authzenConfigEnabled": {
                                     "description": "Enable endpoint /.well-known/authzen-configuration",
+                                    "type": "boolean"
+                                },
+                                "oauthServerConfigEnabled": {
+                                    "description": "Enable endpoint /.well-known/oauth-authorization-server",
                                     "type": "boolean"
                                 }
                             }

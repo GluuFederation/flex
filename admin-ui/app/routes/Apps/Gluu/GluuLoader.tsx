@@ -2,7 +2,7 @@ import React, { memo, use } from 'react'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import { ThemeContext, getStoredTheme } from '@/context/theme/themeContext'
 import { THEME_DARK } from '@/context/theme/constants'
-import { useStyles } from './GluuLoader.style'
+import { useStyles } from './styles/GluuLoader.style'
 
 interface GluuLoaderProps {
   blocking: boolean

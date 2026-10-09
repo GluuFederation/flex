@@ -72,7 +72,7 @@ Verify and configure your deployment:
 
 ## Helm Chart Reference
 
-For all configuration options, see the [Helm values reference](../../reference/helm-values.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu/gluu).
+For all configuration options, see the [Helm values reference](../../reference/helm-values.md), or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu-flex/gluu).
 
 ## Looking for Older Charts?
 

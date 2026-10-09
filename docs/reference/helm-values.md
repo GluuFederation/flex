@@ -20,4 +20,4 @@ The same values are published with each chart: the
 [`gluu` chart reference](https://github.com/GluuFederation/flex/blob/vreplace-flex-version/charts/gluu/README.md)
 and the
 [`gluu-all-in-one` chart reference](https://github.com/GluuFederation/flex/blob/vreplace-flex-version/charts/gluu-all-in-one/README.md),
-or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu/gluu).
+or browse them on [Artifact Hub](https://artifacthub.io/packages/helm/gluu-flex/gluu).

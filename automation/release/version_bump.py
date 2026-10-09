@@ -15,7 +15,8 @@ Flex ships two kinds of artifacts in one tree:
   (e.g. ``6.2.0``); and
 * upstream Janssen images that Flex re-references, versioned with the JANS
   version. Flex is always +4 majors ahead of Janssen, so the jans version is
-  derived as ``(flex_major - 4).minor.patch`` (flex ``6.2.0`` -> jans ``2.2.0``).
+  derived as ``(flex_major - 4).minor.patch`` (flex ``6.2.0`` -> jans ``2.2.0``),
+  unless ``--jans-version`` overrides it (a flex patch on an existing jans release).
 
 The script takes the FLEX version and derives the jans version. Which version a
 given ``0.0.0-nightly`` becomes is decided by context:
@@ -30,6 +31,8 @@ given ``0.0.0-nightly`` becomes is decided by context:
   (jans image -> jans version, otherwise flex version);
 * installer / package versions (``version.py``, ``admin-ui/package.json``,
   the all-in-one ``CN_VERSION``) take the bare flex version;
+* the admin-ui asset pointers (admin-ui ``ADMIN_UI_VERSION``, installer
+  ``FLEX_RELEASE_TAG``) take ``v<flex>`` so releases fetch the tag's own asset;
 * every other ``0.0.0-nightly`` references a Flex release and takes the bare flex
   version.
 
@@ -242,8 +245,8 @@ def _chart_app_version(chart_rel, flex_version, jv):
     return flex_version
 
 
-def bump(version, docker_suffix="1"):
-    jv = jans_version(version)
+def bump(version, docker_suffix="1", jv=None):
+    jv = jv or jans_version(version)
     flex_tag = f"{version}-{docker_suffix}"
     jans_tag = f"{jv}-{docker_suffix}"
     changed = []
@@ -355,12 +358,18 @@ def bump(version, docker_suffix="1"):
         if sub(pkg, r'(?m)^(  "version":\s*")0\.0\.0(",?)$', rf"\g<1>{version}\g<2>"):
             changed.append(pkg)
 
+    admin_df = "docker-admin-ui/Dockerfile"
+    if (ROOT / admin_df).exists():
+        if sub(admin_df, r"(?m)^(ENV\s+ADMIN_UI_VERSION=)main$", rf"\g<1>v{version}"):
+            changed.append(admin_df)
+
     # flex-linux-setup app_versions: JANS_APP_VERSION -> the mapped jans version and JANS_BUILD
     # emptied, so the installer pulls the jans *release* (not 0.0.0-nightly) at flex release time.
     flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
     if (ROOT / flex_setup).exists():
         n = sub(flex_setup, r'("JANS_APP_VERSION":\s*")0\.0\.0(")', rf"\g<1>{jv}\g<2>")
         n += sub(flex_setup, r'("JANS_BUILD":\s*")-nightly(")', r"\g<1>\g<2>")
+        n += sub(flex_setup, r'("FLEX_RELEASE_TAG":\s*")(")', rf"\g<1>v{version}\g<2>")
         if n:
             changed.append(flex_setup)
 
@@ -449,6 +458,10 @@ def verify():
     if (ROOT / pkg).exists() and re.search(r'(?m)^  "version":\s*"0\.0\.0"', read(pkg)):
         problems.append(f"{pkg}: top-level version still '0.0.0'")
 
+    admin_df = "docker-admin-ui/Dockerfile"
+    if (ROOT / admin_df).exists() and re.search(r"(?m)^ENV\s+ADMIN_UI_VERSION=main$", read(admin_df)):
+        problems.append(f"{admin_df}: ADMIN_UI_VERSION still 'main'")
+
     flex_setup = "flex-linux-setup/flex_linux_setup/flex_setup.py"
     if (ROOT / flex_setup).exists():
         txt = read(flex_setup)
@@ -456,6 +469,8 @@ def verify():
             problems.append(f"{flex_setup}: JANS_APP_VERSION still '0.0.0'")
         if re.search(r'"JANS_BUILD":\s*"-nightly"', txt):
             problems.append(f"{flex_setup}: JANS_BUILD still '-nightly'")
+        if re.search(r'"FLEX_RELEASE_TAG":\s*""', txt):
+            problems.append(f"{flex_setup}: FLEX_RELEASE_TAG still empty")
 
     if problems:
         print("VERSION VERIFY FAILED -- owned versions left at the dev sentinel:\n")
@@ -480,12 +495,16 @@ def main():
     ap.add_argument("--flex-source-sha", metavar="SHA",
                     help="release mode: pin FLEX_SOURCE_VERSION to this flex commit and "
                          "JANS_SOURCE_VERSION to the jans release's pinned commit")
+    ap.add_argument("--jans-version", metavar="X.Y.Z",
+                    help="jans version to release against (default: derived, flex major - 4)")
     args = ap.parse_args()
 
     if not VERSION_RE.match(args.version):
         ap.error(f"invalid version '{args.version}' (expected X.Y.Z or X.Y.Z-suffix)")
     if not re.fullmatch(r"[0-9A-Za-z.]+", args.docker_suffix):
         ap.error(f"invalid --docker-suffix '{args.docker_suffix}' (expected alphanumerics and dots)")
+    if args.jans_version and not VERSION_RE.match(args.jans_version):
+        ap.error(f"invalid --jans-version '{args.jans_version}' (expected X.Y.Z or X.Y.Z-suffix)")
 
     ROOT = args.root.resolve()
     DRY = args.dry_run
@@ -493,12 +512,12 @@ def main():
     if args.verify:
         sys.exit(0 if verify() else 1)
 
-    changed = bump(args.version, args.docker_suffix)
+    jv = args.jans_version or jans_version(args.version)
+    changed = bump(args.version, args.docker_suffix, jv)
     if args.flex_source_sha:
-        changed = sorted(set(changed + pin_source_versions(args.flex_source_sha, jans_version(args.version))))
+        changed = sorted(set(changed + pin_source_versions(args.flex_source_sha, jv)))
 
     mode = "DRY RUN -- would change" if DRY else "changed"
-    jv = jans_version(args.version)
     print(f"{mode} {len(changed)} file(s) -> flex {args.version} / jans {jv}")
     for rel in changed:
         print(f"  {rel}")

@@ -1,6 +1,8 @@
-import { useAppSelector } from '@/redux/hooks'
+import { useEffect, useId, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import logo192 from 'Images/logos/logo192.png'
-import { buildSafeNavigationUrl } from '@/utils/urlSecurity'
+import { buildAppRootUrl } from '@/helpers/navigation'
 import type { GluuErrorModalProps } from './types'
 import { useStyles } from './styles/GluuErrorModal.style'
 
@@ -8,10 +10,32 @@ const GluuErrorModal = ({
   message = '',
   description = '',
   onRetry,
-  retryLabel = 'Try Again',
+  retryLabel,
 }: GluuErrorModalProps) => {
-  const { authServerHost } = useAppSelector((state) => state.authReducer.config)
+  const { t } = useTranslation()
+  const label = retryLabel ?? t('tryAgain')
   const { classes } = useStyles()
+  const titleId = useId()
+  const descriptionId = useId()
+  const retryRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const previousFocus =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
+    retryRef.current?.focus()
+
+    const keepFocus = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      e.preventDefault()
+      retryRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', keepFocus)
+    return () => {
+      document.removeEventListener('keydown', keepFocus)
+      if (previousFocus?.isConnected) previousFocus.focus()
+    }
+  }, [])
 
   const handleRefresh = () => {
     if (onRetry) {
@@ -19,26 +43,34 @@ const GluuErrorModal = ({
       return
     }
 
-    const host = buildSafeNavigationUrl('/admin', {
-      baseUrl: typeof authServerHost === 'string' ? authServerHost : undefined,
-    })
-
-    if (host) {
-      window.location.href = host
-    } else {
-      window.location.reload()
-    }
+    window.location.href = buildAppRootUrl()
   }
 
-  return (
-    <div className={classes.overlay}>
-      <img src={logo192} className={classes.logo} />
-      <h2 className={classes.message}>{message}</h2>
-      <p className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></p>
-      <button className={classes.retryButton} onClick={handleRefresh}>
-        {retryLabel}
+  return createPortal(
+    <div
+      className={classes.overlay}
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby={message ? titleId : undefined}
+      aria-label={message ? undefined : label}
+      aria-describedby={description ? descriptionId : undefined}
+    >
+      <img src={logo192} alt="Gluu" className={classes.logo} />
+      {message && (
+        <h2 id={titleId} className={classes.message}>
+          {message}
+        </h2>
+      )}
+      {description && (
+        <p id={descriptionId} className={classes.description}>
+          {description}
+        </p>
+      )}
+      <button ref={retryRef} type="button" className={classes.retryButton} onClick={handleRefresh}>
+        {label}
       </button>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

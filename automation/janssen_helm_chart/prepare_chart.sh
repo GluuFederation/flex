@@ -11,7 +11,7 @@ rm ${temp_chart_folder}/charts/nginx-ingress/templates/admin-ui-ingress.yaml || 
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/auth-server-protected-ingress.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/casa-ingress.yaml || echo "file doesn't exist"
 
-services="casa oxpassport oxshibboleth admin-ui cn-istio-ingress"
+services="casa admin-ui cn-istio-ingress"
 for service in $services; do
   folder="${temp_chart_folder:?}/""charts/$service"
   echo "${folder}"

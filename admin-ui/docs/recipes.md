@@ -145,7 +145,7 @@ const { canRead, canWrite, canDelete } = usePermission(resourceId)
 
 Match the action to the operation: read for viewing, write for add and edit, delete for delete.
 
-New resource → add it (with its allowed actions) to `RESOURCE_ACTIONS` in `app/cedarling/constants/resourceCatalog.ts` **and** the policy to both `policy-store-dev.json` and `policy-store-prod.json`. A missing prod policy returns "deny" with no error.
+New resource → add it (with its allowed actions) to `RESOURCE_ACTIONS` in `app/cedarling/constants/resourceCatalog.ts` **and** the policy to the policy store served by the Config API. A missing policy returns "deny" with no error.
 
 ## Add an audit record
 

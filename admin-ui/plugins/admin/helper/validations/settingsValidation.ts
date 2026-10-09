@@ -6,6 +6,7 @@ export const getSettingsValidationSchema = (t: TFunction) =>
     sessionTimeoutInMins: Yup.number()
       .transform((value, original) => (original === '' ? undefined : value))
       .min(1, t('messages.session_timeout_error'))
+      .max(60, t('messages.session_timeout_max_error'))
       .required(t('messages.session_timeout_required_error')),
     additionalParameters: Yup.array()
       .of(
