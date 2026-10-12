@@ -1795,10 +1795,10 @@
   "documentation": {
     "fido": {
       "hints": "Types d'authentificateurs préférés qui guident le navigateur lors de l'enregistrement et de l'authentification FIDO2.",
-      "userAutoEnrollment": "Crée l'utilisateur si le nom d'utilisateur n'existe pas encore.",
+      "userAutoEnrollment": "Crée l'utilisateur s'il n'existe pas, à l'enregistrement et à la connexion. Désactivé, les utilisateurs inconnus ne peuvent pas s'enregistrer.",
       "disableMetadataService": "Ne télécharge pas les métadonnées du FIDO Metadata Service (MDS).",
-      "enterpriseAttestation": "Demande l'attestation entreprise aux authentificateurs gérés.",
-      "useLocalCache": "Utilise un cache local en mémoire dans le serveur FIDO2 au lieu du cache partagé.",
+      "enterpriseAttestation": "Demande l'attestation entreprise et lit les métadonnées de l'authentificateur depuis le dossier local au lieu du FIDO MDS.",
+      "useLocalCache": "Met en cache les recherches d'attributs et d'organisation dans la mémoire du serveur FIDO2 au lieu du cache partagé.",
       "disableJdkLogger": "Désactive les loggers JDK.",
       "metricReporterEnabled": "Active le rapporteur de métriques.",
       "fido2MetricsEnabled": "Collecte les métriques d'enregistrement et d'authentification FIDO2.",
@@ -1811,7 +1811,7 @@
       "serverMetadataFolder": "Dossier contenant les fichiers de métadonnées des authentificateurs au format JSON.",
       "unfinishedRequestExpiration": "Secondes avant l'expiration d'une demande FIDO2 en attente. Par défaut : 120.",
       "authenticationHistoryExpiration": "Secondes de conservation des authentifications terminées. Par défaut : 15 jours.",
-      "attestationMode": "Niveau de vérification de l'attestation : disabled, monitor (par défaut) ou enforced.",
+      "attestationMode": "Traitement des échecs d'attestation : disabled (non vérifiée), monitor (par défaut, journalisé seulement) ou enforced (rejeté).",
       "issuer": "URL HTTPS identifiant ce serveur FIDO2 comme émetteur.",
       "baseEndpoint": "URL de base des endpoints FIDO2.",
       "cleanServiceInterval": "Intervalle en secondes entre les exécutions du service qui supprime les données FIDO2 expirées.",

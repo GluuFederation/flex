@@ -1793,10 +1793,10 @@
   "documentation": {
     "fido": {
       "hints": "Tipos de autenticador preferidos que guían al navegador durante el registro y la autenticación FIDO2.",
-      "userAutoEnrollment": "Crea el usuario si el nombre de usuario aún no existe.",
+      "userAutoEnrollment": "Crea el usuario si no existe, al registrarse e iniciar sesión. Si está desactivado, los usuarios desconocidos no pueden registrarse.",
       "disableMetadataService": "No descarga metadatos del FIDO Metadata Service (MDS).",
-      "enterpriseAttestation": "Solicita atestación empresarial a los autenticadores gestionados.",
-      "useLocalCache": "Usa una caché local en memoria en el servidor FIDO2 en lugar de la caché compartida.",
+      "enterpriseAttestation": "Solicita atestación empresarial y lee los metadatos del autenticador desde la carpeta local en lugar del FIDO MDS.",
+      "useLocalCache": "Guarda en la memoria del servidor FIDO2 las consultas de atributos y organización en lugar de la caché compartida.",
       "disableJdkLogger": "Desactiva los loggers de JDK.",
       "metricReporterEnabled": "Activa el generador de informes de métricas.",
       "fido2MetricsEnabled": "Recopila métricas de registro y autenticación FIDO2.",
@@ -1809,7 +1809,7 @@
       "serverMetadataFolder": "Carpeta que contiene los archivos de metadatos de autenticadores en formato JSON.",
       "unfinishedRequestExpiration": "Segundos antes de que caduque una solicitud FIDO2 pendiente. Por defecto: 120.",
       "authenticationHistoryExpiration": "Segundos que se conservan las autenticaciones completadas. Por defecto: 15 días.",
-      "attestationMode": "Rigor de la verificación de atestación: disabled, monitor (por defecto) o enforced.",
+      "attestationMode": "Cómo se tratan los fallos de atestación: disabled (sin verificar), monitor (predeterminado, solo se registra) o enforced (se rechaza).",
       "issuer": "URL HTTPS que identifica a este servidor FIDO2 como emisor.",
       "baseEndpoint": "URL base de los endpoints FIDO2.",
       "cleanServiceInterval": "Intervalo en segundos entre ejecuciones del servicio que elimina los datos FIDO2 caducados.",

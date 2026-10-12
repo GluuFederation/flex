@@ -1791,10 +1791,10 @@
   "documentation": {
     "fido": {
       "hints": "Tipos de autenticador preferidos que orientam o navegador durante o registro e a autenticação FIDO2.",
-      "userAutoEnrollment": "Cria o usuário se o nome de usuário ainda não existir.",
+      "userAutoEnrollment": "Cria o usuário se ele não existir, no registro e no login. Desativado, usuários desconhecidos não podem se registrar.",
       "disableMetadataService": "Não baixa metadados do FIDO Metadata Service (MDS).",
-      "enterpriseAttestation": "Solicita atestação empresarial aos autenticadores gerenciados.",
-      "useLocalCache": "Usa um cache local em memória no servidor FIDO2 em vez do cache compartilhado.",
+      "enterpriseAttestation": "Solicita atestação empresarial e lê os metadados do autenticador da pasta local em vez do FIDO MDS.",
+      "useLocalCache": "Armazena as consultas de atributos e organização na memória do servidor FIDO2 em vez do cache compartilhado.",
       "disableJdkLogger": "Desativa os loggers do JDK.",
       "metricReporterEnabled": "Ativa o relatório de métricas.",
       "fido2MetricsEnabled": "Coleta métricas de registro e autenticação FIDO2.",
@@ -1807,7 +1807,7 @@
       "serverMetadataFolder": "Pasta que contém os arquivos de metadados de autenticadores em formato JSON.",
       "unfinishedRequestExpiration": "Segundos até uma solicitação FIDO2 pendente expirar. Padrão: 120.",
       "authenticationHistoryExpiration": "Segundos para manter as autenticações concluídas. Padrão: 15 dias.",
-      "attestationMode": "Rigor da verificação de atestação: disabled, monitor (padrão) ou enforced.",
+      "attestationMode": "Como as falhas de atestação são tratadas: disabled (não verificada), monitor (padrão, apenas registrada) ou enforced (rejeitada).",
       "issuer": "URL HTTPS que identifica este servidor FIDO2 como emissor.",
       "baseEndpoint": "URL base dos endpoints FIDO2.",
       "cleanServiceInterval": "Intervalo em segundos entre as execuções do serviço que remove os dados FIDO2 expirados.",

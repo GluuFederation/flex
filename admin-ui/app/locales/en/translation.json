@@ -1793,10 +1793,10 @@
   "documentation": {
     "fido": {
       "hints": "Preferred authenticator types that guide the browser during FIDO2 registration and authentication.",
-      "userAutoEnrollment": "Create the user if the username does not exist yet.",
+      "userAutoEnrollment": "Create the user if the username does not exist, on registration and sign-in. When off, unknown users can't register.",
       "disableMetadataService": "Skip downloading metadata from the FIDO Metadata Service (MDS).",
-      "enterpriseAttestation": "Request enterprise attestation from managed authenticators.",
-      "useLocalCache": "Use a local in-memory cache in the FIDO2 server instead of the shared cache.",
+      "enterpriseAttestation": "Request enterprise attestation and read authenticator metadata from the local folder instead of the FIDO MDS.",
+      "useLocalCache": "Cache attribute and organization lookups in the FIDO2 server's memory instead of the shared cache.",
       "disableJdkLogger": "Turn off JDK loggers.",
       "metricReporterEnabled": "Enable the metric reporter.",
       "fido2MetricsEnabled": "Collect FIDO2 registration and authentication metrics.",
@@ -1809,7 +1809,7 @@
       "serverMetadataFolder": "Folder that holds authenticator metadata files in JSON format.",
       "unfinishedRequestExpiration": "Seconds before a pending FIDO2 request expires. Default: 120.",
       "authenticationHistoryExpiration": "Seconds to keep completed authentications. Default: 15 days.",
-      "attestationMode": "How strictly attestation is checked: disabled, monitor (default) or enforced.",
+      "attestationMode": "How attestation failures are handled: disabled (not checked), monitor (default, logged only) or enforced (rejected).",
       "issuer": "HTTPS URL that identifies this FIDO2 server as issuer.",
       "baseEndpoint": "Base URL of the FIDO2 endpoints.",
       "cleanServiceInterval": "Interval in seconds between runs of the service that removes expired FIDO2 data.",
