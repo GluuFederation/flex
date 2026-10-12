@@ -1926,7 +1926,7 @@
       "jansDefaultPromptLogin": "Se ativado, define prompt=login na solicitação de autorização, o que faz com que o servidor de autorização force o usuário a fazer login novamente antes de mostrar a solicitação de autorização.",
       "updateTokenScriptDns": "Lista de scripts de atualização de token.",
       "ropcScripts": "Lista de scripts de Recursos do Proprietário de Credenciais de Senha (ROPC).",
-      "runIntrospectionScriptBeforeJwtCreation": "Executa o script de introspecção antes de criar o access token JWT.",
+      "runIntrospectionScriptBeforeJwtCreation": "Executa o script de introspecção e adiciona suas claims ao access token JWT.",
       "introspectionSignedResponseAlg": "Algoritmo JWS usado para assinar as respostas de introspecção retornadas a este cliente como JWT.",
       "introspectionEncryptedResponseAlg": "Algoritmo JWE alg para criptografar as respostas de introspecção deste cliente.",
       "introspectionEncryptedResponseEnc": "Algoritmo JWE enc das respostas de introspecção deste cliente."
@@ -2106,16 +2106,15 @@
       "claims": "Atributos de reivindicação associados ao escopo.",
       "defaultScope": "Valor booleano para especificar se o escopo é padrão.",
       "spontaneousClientId": "O ID do cliente espontâneo",
-      "spontaneousClientScopes": "Os Escopos do Cliente Espontâneo",
+      "spontaneousClientScopes": "Padrão de escopo do cliente que permitiu criar este escopo espontâneo.",
       "umaAuthorizationPolicies": "Políticas associadas com o escopo",
       "attributes": {
-        "showInConfigurationEndpoint": "Mostrar este escopo no endpoint de configuração",
-        "spontaneousClientScopes": "Escopos que os clientes podem solicitar espontaneamente sob este escopo, como padrões."
+        "showInConfigurationEndpoint": "Mostrar este escopo no endpoint de configuração"
       },
       "dynamicScopeScripts": "Scripts de Escopo Dinâmico associados com o escopo.",
       "umaType": "Especifica se o escopo é do tipo UMA.",
       "id": "O ID único para o escopo",
-      "iconUrl": "URL de um ícone que representa este scope, por exemplo nas telas de consentimento.",
+      "iconUrl": "URL do ícone deste escopo UMA, retornada como icon_uri na descrição do escopo.",
       "creationDate": "Data e hora em que o scope foi criado. Definidas pelo servidor.",
       "creatorType": "O que criou este scope: um usuário, um cliente, o servidor automaticamente (auto) ou nenhum.",
       "scopeAttributes": "Configurações extras do scope, como exibi-lo na descoberta."
@@ -2185,10 +2184,10 @@
         "self": "Detalhes da configuração de log de auditoria.",
         "logData": "Inclui os dados da requisição no log de auditoria.",
         "ignoreHttpMethod": "Métodos HTTP cujas requisições não são auditadas.",
-        "ignoreAnnotation": "Anotações que desativam a auditoria nos endpoints que as possuem.",
-        "auditLogFilePath": "Diretório do arquivo de log de auditoria.",
-        "auditLogFileName": "Nome do arquivo de log de auditoria.",
-        "auditLogDateFormat": "Formato de data usado no arquivo de log de auditoria."
+        "ignoreAnnotation": "Anotações destinadas a ignorar a auditoria. O servidor não as aplica.",
+        "auditLogFilePath": "Pasta lida pelo visualizador do log de auditoria. Não muda onde os logs são gravados.",
+        "auditLogFileName": "Nome do arquivo de auditoria lido pelo visualizador. Deve corresponder ao arquivo real.",
+        "auditLogDateFormat": "Formato de data usado para ler os registros de data ao filtrar por data."
       },
       "agamaConfiguration": {
         "mandatoryAttributes": "Lista de atributos necessários para criar o Fluxo Agama.",
@@ -2231,7 +2230,7 @@
       "userExclusionAttributes": "Atributo do usuário que não deve ser retornado na resposta.",
       "serviceName": "Nome do serviço da Config API.",
       "protectionMode": "Como a Config API é protegida: tokens de acesso OAuth ou Cedarling.",
-      "userRolePermissionExcludedClients": "IDs de cliente isentos da verificação de permissões por papel do usuário.",
+      "userRolePermissionExcludedClients": "IDs de cliente isentos da verificação de permissões por papel em tokens sem usuário.",
       "acrValidationEnabled": "Verifica se o script personalizado de um ACR está ativado. Padrão: true.",
       "returnClientSecretInResponse": "Inclui o segredo do cliente nas respostas. Padrão: true.",
       "returnEncryptedClientSecretInResponse": "Inclui o segredo do cliente criptografado nas respostas. Padrão: true.",
@@ -2242,7 +2241,7 @@
         "logType": "Destino dos logs do Cedarling: off, memory ou std_out.",
         "logLevel": "Nível de log do sistema Cedarling.",
         "externalPolicyStoreUri": "URI de um policy store Cedar externo.",
-        "maxEntries": "Número máximo de entradas no arquivo do policy store."
+        "maxEntries": "Máximo de arquivos permitidos em um zip de policy store baixado. 0 significa sem limite."
       }
     },
     "json_properties": {
@@ -2611,7 +2610,7 @@
       "spiffeBundleReadTimeoutMs": "Tempo limite de leitura em milissegundos na busca do SPIFFE Bundle Endpoint",
       "allResponseTypesSupported": "Somente leitura. Todos os tipos de resposta suportados pelo servidor.",
       "fapi": "Somente leitura. True quando a compatibilidade FAPI (fapiCompatibility) está ativada.",
-      "apiKey": "Chave de API do Firebase usada para enviar notificações push CIBA ao usuário final.",
+      "apiKey": "Chave de API web do Firebase que a página CIBA usa para registrar o dispositivo do usuário.",
       "authDomain": "Domínio de autenticação do Firebase usado para notificações push CIBA.",
       "databaseURL": "URL do Firebase Realtime Database usada para notificações push CIBA.",
       "projectId": "ID do projeto Firebase usado para notificações push CIBA.",
@@ -2634,7 +2633,7 @@
       "startEndUrlMapping": "Mapeia a URL de início de um fluxo para a URL para onde o usuário é enviado após o término do fluxo.",
       "serializeRules": "Regras de serialização do estado do fluxo. Mantenha as entradas padrão.",
       "defaultResponseHeaders": "Cabeçalhos HTTP adicionados a todas as respostas das páginas de fluxo Agama.",
-      "rateLoggingEnabled": "Registra no log as solicitações que atingem o limite de taxa.",
+      "rateLoggingEnabled": "Registra a chave de limite de taxa de cada requisição correspondente (nível TRACE).",
       "ssaEndpoint": "URL do endpoint de Software Statement Assertion (SSA).",
       "ssaCustomAttributes": "Atributos personalizados que podem ser adicionados a uma SSA.",
       "ssaSigningAlg": "Algoritmo usado para assinar SSAs. Padrão: RS256.",
@@ -2684,7 +2683,7 @@
       "one_time_use": "Définit si le SSA ne sera utilisé qu'une seule fois ou s'il peut être utilisé plusieurs fois. (Valeur par défaut : true)",
       "rotate_ssa": "Ativar/desativar a rotação da expiração do SSA. (Valor por padrão : true)",
       "status": "Status do SSA (ATIVO, USADO, EXPIRADO ou REVOGADO)",
-      "is_expirable": "Ative para definir uma data de expiração para o SSA. Quando desativado, o SSA não expira."
+      "is_expirable": "Ative para definir uma data de expiração. Desativado, vale a duração padrão do servidor."
     },
     "authn": {
       "acr": "Referência de classe de contexto de autenticação",
@@ -2839,7 +2838,7 @@
       "key_store_alias": "Alias da chave no keystore usada para assinar os e-mails.",
       "signing_algorithm": "Algoritmo usado para assinar os e-mails enviados.",
       "trust_host": "Confia no certificado do servidor SMTP sem validá-lo. Use apenas para testes.",
-      "allowKeystoreEdit": "Permite editar as configurações do keystore abaixo.",
+      "allowKeystoreEdit": "Permite editar o keystore, sua senha, alias e algoritmo de assinatura.",
       "requires_authentication": "Ative se o servidor SMTP exigir usuário e senha.",
       "smtp_authentication_account_username": "Usuário usado para fazer login no servidor SMTP.",
       "smtp_authentication_account_password": "Senha usada para fazer login no servidor SMTP."

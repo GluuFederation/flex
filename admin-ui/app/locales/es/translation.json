@@ -1863,7 +1863,7 @@
       "one_time_use": "Define si el SSA se usará solo una vez o puede usarse múltiples veces. (Valor por defecto: true)",
       "rotate_ssa": "Alternar para habilitar o deshabilitar la rotación de la expiración del SSA. (Valor por defecto: true)",
       "status": "Estado del SSA (ACTIVO, USADO, EXPIRADO o REVOCADO)",
-      "is_expirable": "Actívalo para dar una fecha de caducidad al SSA. Si está desactivado, el SSA no caduca."
+      "is_expirable": "Actívelo para fijar una fecha de vencimiento. Si está desactivado, se aplica la duración predeterminada del servidor."
     },
     "authn": {
       "acr": "Referencia de Clase de Contexto de Autenticación",
@@ -1917,10 +1917,10 @@
         "self": "Detalles de la configuración del log de auditoría.",
         "logData": "Incluir los datos de la solicitud en el log de auditoría.",
         "ignoreHttpMethod": "Métodos HTTP cuyas solicitudes no se auditan.",
-        "ignoreAnnotation": "Anotaciones que desactivan la auditoría para los endpoints que las llevan.",
-        "auditLogFilePath": "Directorio del archivo de log de auditoría.",
-        "auditLogFileName": "Nombre del archivo de log de auditoría.",
-        "auditLogDateFormat": "Formato de fecha usado en el archivo de log de auditoría."
+        "ignoreAnnotation": "Anotaciones pensadas para omitir la auditoría. El servidor no las aplica.",
+        "auditLogFilePath": "Carpeta que lee el visor del registro de auditoría. No cambia dónde se escriben los registros.",
+        "auditLogFileName": "Nombre del archivo de auditoría que lee el visor. Debe coincidir con el archivo real.",
+        "auditLogDateFormat": "Formato de fecha usado para leer las marcas de tiempo al filtrar por fecha."
       },
       "agamaConfiguration": {
         "mandatoryAttributes": "Lista de atributos requeridos para crear el Flujo Agama.",
@@ -1963,7 +1963,7 @@
       "userExclusionAttributes": "Atributos de usuario que no deben ser devueltos en la respuesta.",
       "serviceName": "Nombre del servicio de Config API.",
       "protectionMode": "Cómo se protege Config API: tokens de acceso OAuth o Cedarling.",
-      "userRolePermissionExcludedClients": "IDs de cliente exentos de la verificación de permisos por rol del usuario.",
+      "userRolePermissionExcludedClients": "IDs de cliente exentos de la verificación de permisos por rol en tokens sin usuario.",
       "acrValidationEnabled": "Verificar que el script personalizado de un ACR esté habilitado. Valor por defecto: true.",
       "returnClientSecretInResponse": "Incluir el secreto del cliente en las respuestas. Valor por defecto: true.",
       "returnEncryptedClientSecretInResponse": "Incluir el secreto del cliente cifrado en las respuestas. Valor por defecto: true.",
@@ -1974,7 +1974,7 @@
         "logType": "Destino de los logs de Cedarling: off, memory o std_out.",
         "logLevel": "Nivel de log del sistema de Cedarling.",
         "externalPolicyStoreUri": "URI de un policy store de Cedar externo.",
-        "maxEntries": "Número máximo de entradas en el archivo del policy store."
+        "maxEntries": "Máximo de archivos permitidos en un zip de policy store descargado. 0 significa sin límite."
       }
     },
     "json_properties": {
@@ -2343,7 +2343,7 @@
       "spiffeBundleReadTimeoutMs": "Tiempo de espera de lectura en milisegundos para la obtención del SPIFFE Bundle Endpoint",
       "allResponseTypesSupported": "Solo lectura. Todos los tipos de respuesta que admite el servidor.",
       "fapi": "Solo lectura. Es true cuando la compatibilidad FAPI (fapiCompatibility) está activada.",
-      "apiKey": "Clave de API de Firebase usada para enviar notificaciones push de CIBA al usuario final.",
+      "apiKey": "Clave de API web de Firebase que usa la página CIBA para registrar el dispositivo del usuario.",
       "authDomain": "Dominio de autenticación de Firebase usado para las notificaciones push de CIBA.",
       "databaseURL": "URL de Firebase Realtime Database usada para las notificaciones push de CIBA.",
       "projectId": "ID del proyecto de Firebase usado para las notificaciones push de CIBA.",
@@ -2366,7 +2366,7 @@
       "startEndUrlMapping": "Asocia la URL de inicio de un flujo con la URL a la que se envía al usuario cuando el flujo termina.",
       "serializeRules": "Reglas de serialización del estado del flujo. Conserve las entradas por defecto.",
       "defaultResponseHeaders": "Encabezados HTTP que se agregan a cada respuesta de las páginas de flujos de Agama.",
-      "rateLoggingEnabled": "Registrar las solicitudes que alcanzan el límite de tasa.",
+      "rateLoggingEnabled": "Registra la clave de límite de tasa de cada solicitud coincidente (nivel TRACE).",
       "ssaEndpoint": "URL del endpoint de Software Statement Assertion (SSA).",
       "ssaCustomAttributes": "Atributos personalizados que se pueden agregar a una SSA.",
       "ssaSigningAlg": "Algoritmo usado para firmar las SSA. Valor por defecto: RS256.",
@@ -2496,7 +2496,7 @@
       "jansDefaultPromptLogin": "Si se habilita, se fuerza prompt=login para obligar a reautenticar al usuario",
       "updateTokenScriptDns": "Lista de scripts de actualización de token",
       "ropcScripts": "Lista de scripts Resource Owner Password Credentials (ROPC)",
-      "runIntrospectionScriptBeforeJwtCreation": "Ejecuta el script de introspección antes de crear el access token JWT.",
+      "runIntrospectionScriptBeforeJwtCreation": "Ejecuta el script de introspección y añade sus claims al access token JWT.",
       "introspectionSignedResponseAlg": "Algoritmo JWS usado para firmar las respuestas de introspección devueltas a este cliente como JWT.",
       "introspectionEncryptedResponseAlg": "Algoritmo JWE alg para cifrar las respuestas de introspección de este cliente.",
       "introspectionEncryptedResponseEnc": "Algoritmo JWE enc de las respuestas de introspección de este cliente."
@@ -2509,16 +2509,15 @@
       "claims": "Atributos claim asociados con el scope",
       "defaultScope": "Valor booleano que indica si el scope es por defecto",
       "spontaneousClientId": "ID del cliente espontáneo",
-      "spontaneousClientScopes": "Scopes del cliente espontáneo",
+      "spontaneousClientScopes": "Patrón de scope del cliente que permitió crear este scope espontáneo.",
       "umaAuthorizationPolicies": "Políticas asociadas al scope",
       "attributes": {
-        "showInConfigurationEndpoint": "Mostrar este scope en el endpoint de configuración",
-        "spontaneousClientScopes": "Scopes que los clientes pueden solicitar espontáneamente bajo este scope, como patrones."
+        "showInConfigurationEndpoint": "Mostrar este scope en el endpoint de configuración"
       },
       "dynamicScopeScripts": "Scripts dinámicos asociados con el scope",
       "umaType": "Indica si el scope es de tipo UMA",
       "id": "ID único del scope",
-      "iconUrl": "URL de un icono que representa este scope, por ejemplo en las pantallas de consentimiento.",
+      "iconUrl": "URL del icono de este scope UMA, devuelta como icon_uri en la descripción del scope.",
       "creationDate": "Fecha y hora en que se creó el scope. La define el servidor.",
       "creatorType": "Qué creó este scope: un usuario, un cliente, el servidor automáticamente (auto) o ninguno.",
       "scopeAttributes": "Ajustes extra del scope, como mostrarlo en el descubrimiento."
@@ -2841,7 +2840,7 @@
       "key_store_alias": "Alias de la clave del almacén de claves usada para firmar el correo.",
       "signing_algorithm": "Algoritmo usado para firmar el correo saliente.",
       "trust_host": "Confía en el certificado del servidor SMTP sin validarlo. Úsalo solo para pruebas.",
-      "allowKeystoreEdit": "Permite editar la configuración del almacén de claves que aparece a continuación.",
+      "allowKeystoreEdit": "Permite editar el keystore, su contraseña, alias y algoritmo de firma.",
       "requires_authentication": "Actívalo si el servidor SMTP requiere usuario y contraseña.",
       "smtp_authentication_account_username": "Usuario usado para iniciar sesión en el servidor SMTP.",
       "smtp_authentication_account_password": "Contraseña usada para iniciar sesión en el servidor SMTP."

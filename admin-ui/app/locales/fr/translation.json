@@ -2009,16 +2009,15 @@
       "claims": "Attributs de revendication associés à la portée.",
       "defaultScope": "Valeur booléenne pour spécifier si la portée est par défaut.",
       "spontaneousClientId": "L'ID client spontané",
-      "spontaneousClientScopes": "Les portées client spontanées",
+      "spontaneousClientScopes": "Motif de portée du client qui a permis de créer cette portée spontanée.",
       "umaAuthorizationPolicies": "Politiques associées à la portée",
       "attributes": {
-        "showInConfigurationEndpoint": "Afficher cette portée dans l'endpoint de configuration",
-        "spontaneousClientScopes": "Portées que les clients peuvent demander spontanément sous cette portée, sous forme de motifs."
+        "showInConfigurationEndpoint": "Afficher cette portée dans l'endpoint de configuration"
       },
       "dynamicScopeScripts": "Scripts de portée dynamique associés à la portée.",
       "umaType": "Indique si la portée est de type UMA.",
       "id": "L'identifiant unique pour la portée",
-      "iconUrl": "URL d'une icône représentant ce scope, par exemple sur les écrans de consentement.",
+      "iconUrl": "URL de l'icône de cette portée UMA, renvoyée comme icon_uri dans sa description.",
       "creationDate": "Date et heure de création du scope. Définies par le serveur.",
       "creatorType": "Ce qui a créé ce scope : un utilisateur, un client, le serveur automatiquement (auto) ou aucun.",
       "scopeAttributes": "Réglages supplémentaires du scope, comme son affichage dans la découverte."
@@ -2389,7 +2388,7 @@
       "spiffeBundleReadTimeoutMs": "Délai de lecture, en millisecondes, pour la récupération depuis le SPIFFE Bundle Endpoint",
       "allResponseTypesSupported": "Lecture seule. Tous les types de réponse pris en charge par le serveur.",
       "fapi": "Lecture seule. True lorsque la compatibilité FAPI (fapiCompatibility) est activée.",
-      "apiKey": "Clé API Firebase utilisée pour envoyer les notifications push CIBA à l'utilisateur final.",
+      "apiKey": "Clé d'API web Firebase utilisée par la page CIBA pour enregistrer l'appareil de l'utilisateur.",
       "authDomain": "Domaine d'authentification Firebase utilisé pour les notifications push CIBA.",
       "databaseURL": "URL de la base de données Firebase Realtime Database utilisée pour les notifications push CIBA.",
       "projectId": "ID du projet Firebase utilisé pour les notifications push CIBA.",
@@ -2412,7 +2411,7 @@
       "startEndUrlMapping": "Associe l'URL de démarrage d'un flux à l'URL vers laquelle l'utilisateur est envoyé à la fin du flux.",
       "serializeRules": "Règles de sérialisation de l'état du flux. Conservez les entrées par défaut.",
       "defaultResponseHeaders": "En-têtes HTTP ajoutés à chaque réponse des pages de flux Agama.",
-      "rateLoggingEnabled": "Journaliser les requêtes qui atteignent la limite de débit.",
+      "rateLoggingEnabled": "Journalise la clé de limitation de débit de chaque requête concernée (niveau TRACE).",
       "ssaEndpoint": "URL du point de terminaison Software Statement Assertion (SSA).",
       "ssaCustomAttributes": "Attributs personnalisés qui peuvent être ajoutés à un SSA.",
       "ssaSigningAlg": "Algorithme utilisé pour signer les SSA. Valeur par défaut : RS256.",
@@ -2504,10 +2503,10 @@
         "self": "Détails de la configuration du journal d'audit.",
         "logData": "Inclure les données de la requête dans le journal d'audit.",
         "ignoreHttpMethod": "Méthodes HTTP dont les requêtes ne sont pas auditées.",
-        "ignoreAnnotation": "Annotations qui désactivent l'audit pour les points de terminaison qui les portent.",
-        "auditLogFilePath": "Répertoire du fichier journal d'audit.",
-        "auditLogFileName": "Nom du fichier journal d'audit.",
-        "auditLogDateFormat": "Format de date utilisé dans le fichier journal d'audit."
+        "ignoreAnnotation": "Annotations prévues pour ignorer l'audit. Non appliquées par le serveur.",
+        "auditLogFilePath": "Dossier lu par la visionneuse du journal d'audit. Ne change pas l'emplacement d'écriture.",
+        "auditLogFileName": "Nom du fichier d'audit lu par la visionneuse. Doit correspondre au fichier réel.",
+        "auditLogDateFormat": "Format de date utilisé pour lire les horodatages lors du filtrage par date."
       },
       "agamaConfiguration": {
         "mandatoryAttributes": "Liste des attributs nécessaires pour créer le flux Agama.",
@@ -2550,7 +2549,7 @@
       "userExclusionAttributes": "Attribut utilisateur qui ne doit pas être retourné dans la réponse.",
       "serviceName": "Nom du service Config API.",
       "protectionMode": "Mode de protection de la Config API : jetons d'accès OAuth ou Cedarling.",
-      "userRolePermissionExcludedClients": "ID clients exemptés de la vérification des permissions par rôle utilisateur.",
+      "userRolePermissionExcludedClients": "ID clients exemptés du contrôle des permissions par rôle pour les jetons sans utilisateur.",
       "acrValidationEnabled": "Vérifier que le script personnalisé d'un ACR est activé. Valeur par défaut : true.",
       "returnClientSecretInResponse": "Inclure le secret client dans les réponses. Valeur par défaut : true.",
       "returnEncryptedClientSecretInResponse": "Inclure le secret client chiffré dans les réponses. Valeur par défaut : true.",
@@ -2561,7 +2560,7 @@
         "logType": "Destination des journaux Cedarling : off, memory ou std_out.",
         "logLevel": "Niveau de journalisation système de Cedarling.",
         "externalPolicyStoreUri": "URI d'un policy store Cedar externe.",
-        "maxEntries": "Nombre maximal d'entrées dans le fichier du policy store."
+        "maxEntries": "Nombre maximal de fichiers dans un zip de policy store téléchargé. 0 signifie sans limite."
       }
     },
     "ssa": {
@@ -2574,7 +2573,7 @@
       "one_time_use": "Définit si le SSA ne sera utilisé qu'une seule fois ou s'il peut être utilisé plusieurs fois. (Valeur par défaut : true)",
       "rotate_ssa": "Activer/désactiver la rotation de l'expiration du SSA. (Valeur par défaut : true)",
       "status": "Statut du SSA (ACTIF, UTILISÉ, EXPIRÉ ou RÉVOQUÉ)",
-      "is_expirable": "Activez cette option pour donner une date d'expiration au SSA. Si elle est désactivée, le SSA n'expire pas."
+      "is_expirable": "Activez pour définir une date d'expiration. Sinon, la durée par défaut du serveur s'applique."
     },
     "authn": {
       "acr": "Référence de classe de contexte d'authentification",
@@ -2675,7 +2674,7 @@
       "jansDefaultPromptLogin": "Si activé, définir prompt=login dans la demande d'autorisation, ce qui oblige le serveur d'autorisation à forcer l'utilisateur à se connecter à nouveau avant d'afficher la demande d'autorisation.",
       "updateTokenScriptDns": "Liste de scripts de mise à jour des jetons.",
       "ropcScripts": "Liste de scripts de Resource Owner Password Credentials (ROPC).",
-      "runIntrospectionScriptBeforeJwtCreation": "Exécute le script d'introspection avant la création du jeton d'accès JWT.",
+      "runIntrospectionScriptBeforeJwtCreation": "Exécute le script d'introspection et ajoute ses claims au jeton d'accès JWT.",
       "introspectionSignedResponseAlg": "Algorithme JWS utilisé pour signer les réponses d'introspection renvoyées à ce client au format JWT.",
       "introspectionEncryptedResponseAlg": "Algorithme JWE alg pour chiffrer les réponses d'introspection de ce client.",
       "introspectionEncryptedResponseEnc": "Algorithme JWE enc des réponses d'introspection de ce client."
@@ -2843,7 +2842,7 @@
       "key_store_alias": "Alias de la clé du keystore utilisée pour signer les e-mails.",
       "signing_algorithm": "Algorithme utilisé pour signer les e-mails sortants.",
       "trust_host": "Fait confiance au certificat du serveur SMTP sans le valider. À utiliser uniquement pour les tests.",
-      "allowKeystoreEdit": "Autorise la modification des paramètres du keystore ci-dessous.",
+      "allowKeystoreEdit": "Autorise la modification du keystore, de son mot de passe, de l'alias et de l'algorithme de signature.",
       "requires_authentication": "Activez cette option si le serveur SMTP exige un nom d'utilisateur et un mot de passe.",
       "smtp_authentication_account_username": "Nom d'utilisateur utilisé pour se connecter au serveur SMTP.",
       "smtp_authentication_account_password": "Mot de passe utilisé pour se connecter au serveur SMTP."

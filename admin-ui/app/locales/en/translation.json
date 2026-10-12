@@ -1863,7 +1863,7 @@
       "one_time_use": "Defined whether the SSA will be used only once or can be used multiple times. (Default value: true)",
       "rotate_ssa": "Toggle to enable or disable the rotation of the SSA expiration. (Default value: true)",
       "status": "SSA status (ACTIVE, USED, EXPIRED or REVOKED)",
-      "is_expirable": "Turn on to give the SSA an expiration date. When off, the SSA does not expire."
+      "is_expirable": "Turn on to set an expiration date. When off, the server's default SSA lifetime applies."
     },
     "authn": {
       "acr": "Authentication Context Class Reference",
@@ -1917,10 +1917,10 @@
         "self": "Audit Log configuration details.",
         "logData": "Include request data in the audit log.",
         "ignoreHttpMethod": "HTTP methods whose requests are not audited.",
-        "ignoreAnnotation": "Annotations that turn off auditing for the endpoints that carry them.",
-        "auditLogFilePath": "Directory of the audit log file.",
-        "auditLogFileName": "Name of the audit log file.",
-        "auditLogDateFormat": "Date format used in the audit log file."
+        "ignoreAnnotation": "Annotations meant to skip auditing. Not applied by the server.",
+        "auditLogFilePath": "Folder the audit log viewer reads. Does not change where logs are written.",
+        "auditLogFileName": "Audit log file name the viewer reads. Must match the actual log file.",
+        "auditLogDateFormat": "Date format used to read audit log timestamps when filtering by date."
       },
       "agamaConfiguration": {
         "mandatoryAttributes": "List of attributes required to create the Agama Flow.",
@@ -1963,7 +1963,7 @@
       "userExclusionAttributes": "User attribute that should not be returned in response.",
       "serviceName": "Config API service name.",
       "protectionMode": "How the Config API is protected: OAuth access tokens or Cedarling.",
-      "userRolePermissionExcludedClients": "Client IDs exempt from the user role-permission check.",
+      "userRolePermissionExcludedClients": "Client IDs exempt from the role-permission check for tokens with no user.",
       "acrValidationEnabled": "Check that the custom script for an ACR is enabled. Default: true.",
       "returnClientSecretInResponse": "Include the client secret in responses. Default: true.",
       "returnEncryptedClientSecretInResponse": "Include the encrypted client secret in responses. Default: true.",
@@ -1974,7 +1974,7 @@
         "logType": "Where Cedarling logs go: off, memory or std_out.",
         "logLevel": "Cedarling system log level.",
         "externalPolicyStoreUri": "URI of an external Cedar policy store.",
-        "maxEntries": "Maximum number of entries in the policy store file."
+        "maxEntries": "Max files allowed in a downloaded policy store zip. 0 means no limit."
       }
     },
     "json_properties": {
@@ -2343,7 +2343,7 @@
       "spiffeBundleReadTimeoutMs": "Read timeout in milliseconds for SPIFFE Bundle Endpoint fetch",
       "allResponseTypesSupported": "Read-only. All response types the server supports.",
       "fapi": "Read-only. True when FAPI compatibility (fapiCompatibility) is turned on.",
-      "apiKey": "Firebase API key used to send CIBA push notifications to the end user.",
+      "apiKey": "Firebase web API key the CIBA page uses to register the user's device.",
       "authDomain": "Firebase authentication domain used for CIBA push notifications.",
       "databaseURL": "Firebase Realtime Database URL used for CIBA push notifications.",
       "projectId": "Firebase project ID used for CIBA push notifications.",
@@ -2366,7 +2366,7 @@
       "startEndUrlMapping": "Maps a flow start URL to the URL the user is sent to after the flow finishes.",
       "serializeRules": "Serialization rules for flow state. Keep the default entries.",
       "defaultResponseHeaders": "HTTP headers added to every response of Agama flow pages.",
-      "rateLoggingEnabled": "Log requests that hit the rate limit.",
+      "rateLoggingEnabled": "Log the rate-limit key for each matched request (TRACE level).",
       "ssaEndpoint": "URL of the Software Statement Assertion (SSA) endpoint.",
       "ssaCustomAttributes": "Custom attributes that can be added to an SSA.",
       "ssaSigningAlg": "Algorithm used to sign SSAs. Default: RS256.",
@@ -2496,7 +2496,7 @@
       "jansDefaultPromptLogin": "If enabled then sets prompt=login to the authorization request, which causes the authorization server to force the user to sign in again before it will show the authorization prompt.",
       "updateTokenScriptDns": "List of update token scripts.",
       "ropcScripts": "List of Resource Owner Password Credentials (ROPC) scripts.",
-      "runIntrospectionScriptBeforeJwtCreation": "Run the introspection script before the JWT access token is created.",
+      "runIntrospectionScriptBeforeJwtCreation": "Run the introspection script and add its claims to the JWT access token.",
       "introspectionSignedResponseAlg": "JWS algorithm used to sign introspection responses returned to this client as JWT.",
       "introspectionEncryptedResponseAlg": "JWE alg for encrypting this client's introspection responses.",
       "introspectionEncryptedResponseEnc": "JWE enc algorithm for this client's introspection responses."
@@ -2509,16 +2509,15 @@
       "claims": "Claim attributes associated with the scope.",
       "defaultScope": "Boolean value to specify is the scope is default.",
       "spontaneousClientId": "The spontaneous client Id",
-      "spontaneousClientScopes": "The spontaneous Client Scopes",
+      "spontaneousClientScopes": "Client scope pattern that allowed this spontaneous scope to be created.",
       "umaAuthorizationPolicies": "Policies associated with scope",
       "attributes": {
-        "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint",
-        "spontaneousClientScopes": "Scopes that clients may request spontaneously under this scope, as patterns."
+        "showInConfigurationEndpoint": "Show this scope In Configuration Endpoint"
       },
       "dynamicScopeScripts": "Dynamic Scope Scripts associated with the scope.",
       "umaType": "Specifies if the scope is of type UMA.",
       "id": "The unique id for the scope",
-      "iconUrl": "URL of an icon that represents this scope, for example on consent screens.",
+      "iconUrl": "Icon URL for this UMA scope, returned as icon_uri in the UMA scope description.",
       "creationDate": "Date and time the scope was created. Set by the server.",
       "creatorType": "What created this scope: a user, a client, the server automatically (auto), or none.",
       "scopeAttributes": "Extra scope settings, such as showing it in discovery."
@@ -2841,7 +2840,7 @@
       "key_store_alias": "Alias of the key in the keystore used to sign email.",
       "signing_algorithm": "Algorithm used to sign outgoing email.",
       "trust_host": "Trust the SMTP server's certificate without validating it. Use only for testing.",
-      "allowKeystoreEdit": "Allow the keystore settings below to be edited.",
+      "allowKeystoreEdit": "Allow editing the keystore, its password, alias and signing algorithm.",
       "requires_authentication": "Turn on if the SMTP server requires a username and password.",
       "smtp_authentication_account_username": "Username used to sign in to the SMTP server.",
       "smtp_authentication_account_password": "Password used to sign in to the SMTP server."
