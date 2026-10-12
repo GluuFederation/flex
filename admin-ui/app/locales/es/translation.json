@@ -2288,7 +2288,7 @@
       "introspectionRestrictBasicAuthnToOwnTokens": "Con autenticación básica, un cliente solo puede hacer introspección de sus propios tokens.",
       "disablePromptCreate": "Desactiva el registro de usuarios mediante prompt=create.",
       "cookieDomain": "Dominio que se asigna a todas las cookies que crea el servidor.",
-      "cookieSameSite": "Valor SameSite de las cookies del servidor. Lax o Strict rompen el SSO entre sitios.",
+      "cookieSameSite": "Valor SameSite de las cookies del servidor. Lax bloquea POST e iframes entre sitios; Strict bloquea todo uso entre sitios.",
       "jmsBrokerURISet": "Direcciones de los brokers JMS a los que se conecta el servidor.",
       "jmsUserName": "Usuario del broker JMS.",
       "jmsPassword": "Contraseña del broker JMS.",
