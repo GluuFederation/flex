@@ -54,6 +54,7 @@ const JansLock: React.FC = () => {
     isError: isLockError,
     error: lockError,
   } = useGetLockProperties()
+  const isLockUnavailable = isLockError && !lockConfiguration
   useEffect(() => {
     if (!isLockError) return
     const errorMsg = getQueryErrorMessage(lockError, t('messages.error_in_loading'))
@@ -104,7 +105,7 @@ const JansLock: React.FC = () => {
                 lockConfig={lockConfiguration ?? EMPTY_CONFIG}
                 onUpdate={handleUpdate}
                 isSubmitting={patchMutation.isPending}
-                canWriteLock={canWriteLock}
+                canWriteLock={canWriteLock && !isLockUnavailable}
                 classes={classes}
               />
             </CardBody>

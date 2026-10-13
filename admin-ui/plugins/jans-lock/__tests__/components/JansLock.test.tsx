@@ -149,4 +149,25 @@ describe('JansLock', () => {
 
     expect(document.querySelector('form')).toBeInTheDocument()
   })
+
+  it.each([
+    ['blocks editing when the configuration fails to load', undefined, false],
+    ['keeps editing when a refetch fails after a load', mockLockConfig, true],
+  ])('%s', (_, data, editable) => {
+    jest.requireMock('JansConfigApi').useGetLockProperties.mockImplementation(() => ({
+      data,
+      isLoading: false,
+      isError: true,
+      error: new Error('lock config unavailable'),
+    }))
+
+    render(
+      <Wrapper>
+        <JansLock />
+      </Wrapper>,
+    )
+
+    expect(!!document.querySelector('button[type="submit"]')).toBe(editable)
+    expect(document.querySelector('input[name="clientId"]')).toHaveProperty('disabled', !editable)
+  })
 })
