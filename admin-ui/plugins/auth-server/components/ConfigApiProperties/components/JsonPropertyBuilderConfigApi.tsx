@@ -321,6 +321,7 @@ const JsonPropertyBuilderConfigApi = ({
         <GluuAutocomplete
           label={t(getLocalizedLabelKey(propKey))}
           name={tooltipPropKey || propKey}
+          doc_category={doc_category}
           value={arrayValues}
           onChange={(newValues) => {
             if (!path) return

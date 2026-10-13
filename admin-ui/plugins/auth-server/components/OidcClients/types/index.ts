@@ -190,6 +190,7 @@ export type ClientBasicPanelProps = {
 
 export type ClientScriptField = {
   name: string
+  docEntry: string
   labelKey: string
   scriptType: string
   modifiedField: string

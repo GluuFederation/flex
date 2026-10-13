@@ -542,7 +542,7 @@ const ScopeListPage: React.FC = () => {
                 .join(', ') || null
             : null,
         ),
-        doc_entry: 'attributes',
+        doc_entry: 'scopeAttributes',
         doc_category: SCOPE,
       },
     ],

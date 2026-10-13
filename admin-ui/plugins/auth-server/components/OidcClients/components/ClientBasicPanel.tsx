@@ -507,6 +507,7 @@ const ClientBasicPanel = ({
         <GluuInputRow
           label="fields.redirectUrisRegex"
           name="attributes.redirectUrisRegex"
+          doc_entry="redirectUrisRegex"
           formik={formik}
           value={redirectUrisRegexStr}
           doc_category={DOC_CATEGORY}

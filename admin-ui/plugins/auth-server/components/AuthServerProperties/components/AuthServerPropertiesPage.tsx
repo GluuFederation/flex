@@ -503,6 +503,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             options={arrayMultiSelectOptions[propKey] || []}
             allowCustom
             disabled={isMobile}
+            doc_category="json_properties"
           />
         )
       }

@@ -155,6 +155,7 @@ const StringArrayField = React.memo(
         key={`${path}-${formResetKey}`}
         label={label}
         name={propKey}
+        doc_category="json_properties"
         value={values}
         onChange={(newValues) => handler({ op: 'replace', path, value: newValues })}
         options={options}
