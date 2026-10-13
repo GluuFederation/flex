@@ -1,16 +1,15 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { getIn } from 'formik'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import { jansLockConstants } from '../helper'
+import { hasSameFieldState, jansLockConstants } from '../helper'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { JansLockFieldRendererProps } from '../types'
 
 const LABEL_SIZE = 12
 const INPUT_SIZE = 12
-const EMPTY_OPTIONS: string[] = []
 const DOC_CATEGORY = jansLockConstants.DOC_CATEGORY
 
 const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
@@ -39,11 +38,6 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
   const itemClass = colSize === 12 ? fieldItemFullWidthClass : fieldItemClass
   const isDisabled = readOnly || viewOnly
   const resolvedPlaceholder = placeholder ? t(placeholder) : undefined
-
-  const stableOptions = useMemo(
-    () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
-    [selectOptions],
-  )
 
   switch (type) {
     case 'text':
@@ -77,7 +71,7 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
             label={label}
             name={name}
             value={value == null ? '' : String(value)}
-            values={stableOptions}
+            values={selectOptions}
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
@@ -108,4 +102,14 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
   }
 }
 
-export default React.memo(JansLockFieldRenderer)
+const arePropsEqual = (
+  prev: JansLockFieldRendererProps,
+  next: JansLockFieldRendererProps,
+): boolean =>
+  prev.config === next.config &&
+  prev.viewOnly === next.viewOnly &&
+  prev.fieldItemClass === next.fieldItemClass &&
+  prev.fieldItemFullWidthClass === next.fieldItemFullWidthClass &&
+  hasSameFieldState(prev.formik, next.formik, next.config.name)
+
+export default React.memo(JansLockFieldRenderer, arePropsEqual)

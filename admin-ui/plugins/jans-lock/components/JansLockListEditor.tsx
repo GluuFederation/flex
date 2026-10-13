@@ -8,6 +8,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import JansLockFieldRenderer from './JansLockFieldRenderer'
+import { hasSameFieldState } from '../helper'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { JansLockListEditorProps } from '../types'
 
@@ -28,6 +29,14 @@ const JansLockListEditor: React.FC<JansLockListEditorProps> = ({
     return Array.isArray(value) ? value : []
   }, [formik.values, name])
 
+  const rows = useMemo(
+    () =>
+      Array.from({ length: items.length }, (_, index) =>
+        fields.map((field) => ({ ...field, name: `${name}.${index}.${field.name}` })),
+      ),
+    [fields, name, items.length],
+  )
+
   const handleAdd = useCallback(() => {
     setFieldValue(name, [...items, { ...newItem }])
   }, [setFieldValue, name, items, newItem])
@@ -43,6 +52,7 @@ const JansLockListEditor: React.FC<JansLockListEditorProps> = ({
   )
 
   const isEmpty = items.length === 0
+  const rowFieldsClassName = `${classes.listRowFields} ${classes.formLabels} ${classes.formWithInputs}`
 
   return (
     <div className={`${classes.listBox} ${isEmpty ? classes.listBoxEmpty : ''}`.trim()}>
@@ -70,15 +80,13 @@ const JansLockListEditor: React.FC<JansLockListEditorProps> = ({
             {t(emptyText)}
           </GluuText>
         )}
-        {items.map((_, index) => (
+        {rows.map((rowFields, index) => (
           <div key={`${name}.${index}`} className={classes.listRow}>
-            <div
-              className={`${classes.listRowFields} ${classes.formLabels} ${classes.formWithInputs}`}
-            >
-              {fields.map((field) => (
+            <div className={rowFieldsClassName}>
+              {rowFields.map((field) => (
                 <JansLockFieldRenderer
                   key={field.name}
-                  config={{ ...field, name: `${name}.${index}.${field.name}` }}
+                  config={field}
                   formik={formik}
                   fieldItemClass={classes.fieldItem}
                   fieldItemFullWidthClass={classes.fieldItemFullWidth}
@@ -106,4 +114,10 @@ const JansLockListEditor: React.FC<JansLockListEditorProps> = ({
   )
 }
 
-export default React.memo(JansLockListEditor)
+const arePropsEqual = (prev: JansLockListEditorProps, next: JansLockListEditorProps): boolean =>
+  prev.config === next.config &&
+  prev.classes === next.classes &&
+  prev.viewOnly === next.viewOnly &&
+  hasSameFieldState(prev.formik, next.formik, next.config.name)
+
+export default React.memo(JansLockListEditor, arePropsEqual)

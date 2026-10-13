@@ -26,6 +26,19 @@ jest.mock('JansConfigApi', () => ({
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isFetching: false, isFetched: true })),
 }))
 
+const mockRenderedFields: string[] = []
+
+jest.mock('Routes/Apps/Gluu/GluuInputRow', () => {
+  const { default: GluuInputRow } = jest.requireActual('Routes/Apps/Gluu/GluuInputRow')
+  return {
+    __esModule: true,
+    default: (props: { name: string }) => {
+      mockRenderedFields.push(props.name)
+      return <GluuInputRow {...props} />
+    },
+  }
+})
+
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = { permissions: [] }) => state,
@@ -167,6 +180,17 @@ describe('JansLockConfiguration', () => {
     fireEvent.change(field('grpcConfiguration.grpcPort'), { target: { value: '50052' } })
     await waitFor(() => expect(applyButton()).toBeEnabled())
   })
+
+  it.each(['clientId', 'cedarlingConfiguration.policySources.0.policyStoreUri'])(
+    're-renders only %s while it is edited',
+    async (name) => {
+      renderForm()
+      mockRenderedFields.length = 0
+      fireEvent.change(field(name), { target: { value: 'https://b.example.org/store' } })
+      await waitFor(() => expect(applyButton()).toBeEnabled())
+      expect(new Set(mockRenderedFields)).toEqual(new Set([name]))
+    },
+  )
 
   it('keeps apply disabled while a value is invalid', async () => {
     renderForm()

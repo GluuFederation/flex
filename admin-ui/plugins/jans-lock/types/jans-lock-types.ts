@@ -100,10 +100,9 @@ export type FieldConfig = {
   type: FieldType
   readOnly?: boolean
   required?: boolean
-  selectOptions?: readonly string[]
+  selectOptions?: string[]
   colSize?: number
   placeholder?: string
-  docEntry?: string
 }
 
 export type LockFieldSpec = {

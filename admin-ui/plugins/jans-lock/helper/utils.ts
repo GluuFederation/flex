@@ -1,3 +1,5 @@
+import { getIn } from 'formik'
+import type { FormikProps } from 'formik'
 import type { TFunction } from 'i18next'
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type {
@@ -142,6 +144,9 @@ const LIST_NORMALIZERS: Record<LockListKey, (items: LockValue[]) => JsonValue> =
     }),
 }
 
+const isSameValue = (previous: JsonValue, next: JsonValue): boolean =>
+  previous === next || JSON.stringify(previous) === JSON.stringify(next)
+
 const buildOperation = (config: LockConfig, path: string, value: JsonValue): PatchOperation => {
   const keys = path.split('.')
   const key = keys.pop() as string
@@ -162,7 +167,7 @@ export const createPatchOperations = (
     const next = toServerValue(spec, getPath(formValues, spec.path))
     if (next === undefined) return
     const previous = toComparable(spec, getPath(originalConfig, spec.path))
-    if (JSON.stringify(previous) === JSON.stringify(next)) return
+    if (isSameValue(previous, next)) return
     operations.push(buildOperation(originalConfig, spec.path, next))
   })
 
@@ -171,7 +176,7 @@ export const createPatchOperations = (
     const normalize = LIST_NORMALIZERS[path]
     const next = normalize(toArray(getPath(formValues, path)))
     const previous = normalize(toArray(getPath(originalConfig, path)))
-    if (JSON.stringify(previous) === JSON.stringify(next)) return
+    if (isSameValue(previous, next)) return
     operations.push(buildOperation(originalConfig, path, next))
   })
 
@@ -190,3 +195,11 @@ export const buildLockChangedFieldOperations = (
     const label = LABELS_BY_POINTER.get(path)
     return { path: label ? t(label) : path, value }
   })
+
+export const hasSameFieldState = (
+  prev: FormikProps<JansLockConfigFormValues>,
+  next: FormikProps<JansLockConfigFormValues>,
+  name: string,
+): boolean =>
+  getIn(prev.values, name) === getIn(next.values, name) &&
+  getIn(prev.errors, name) === getIn(next.errors, name)

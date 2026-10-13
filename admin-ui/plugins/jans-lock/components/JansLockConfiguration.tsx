@@ -58,30 +58,15 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
     validationSchema,
     validateOnMount: true,
   })
+  const { values, isValid, resetForm, handleSubmit } = formik
 
   const handleCancel = useCallback(() => {
-    formik.resetForm()
-  }, [formik])
+    resetForm()
+  }, [resetForm])
 
-  const handleFormSubmit = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>): void => {
-      e.preventDefault()
-      formik.handleSubmit()
-    },
-    [formik],
-  )
-
-  const patches = useMemo(
-    () => createPatchOperations(formik.values, lockConfig),
-    [formik.values, lockConfig],
-  )
+  const patches = useMemo(() => createPatchOperations(values, lockConfig), [values, lockConfig])
 
   const isFormDirty = patches.length > 0
-
-  const isFormValid = useMemo(
-    () => validationSchema.isValidSync(formik.values),
-    [formik.values, validationSchema],
-  )
 
   const commitOperations = useMemo(() => buildLockChangedFieldOperations(patches, t), [patches, t])
 
@@ -97,7 +82,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
 
   return (
     <GluuLoader blocking={isSubmitting ?? false}>
-      <Form onSubmit={handleFormSubmit}>
+      <Form onSubmit={handleSubmit}>
         {visibleSections.map((section) => (
           <section key={section.id} className={classes.section} aria-label={t(section.title)}>
             <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
@@ -135,7 +120,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
           onApply={toggle}
           onCancel={handleCancel}
           disableCancel={!isFormDirty}
-          disableApply={!isFormValid || !isFormDirty}
+          disableApply={!isValid || !isFormDirty}
           applyButtonType="submit"
           isLoading={isSubmitting ?? false}
         />

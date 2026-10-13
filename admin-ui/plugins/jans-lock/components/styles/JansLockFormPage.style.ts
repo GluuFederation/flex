@@ -32,6 +32,22 @@ const ERROR_SPACE = 20
 
 const formGroupBase = createFormGroupOverrides()
 
+const fieldItemBase = {
+  'width': '100%',
+  'boxSizing': 'border-box' as const,
+  ...formGroupBase,
+  '& .form-group [class*="col"]': {
+    ...formGroupBase['& .form-group [class*="col"]'],
+    position: 'relative' as const,
+    paddingBottom: ERROR_SPACE,
+  },
+  [`@media ${MOBILE_MEDIA_QUERY}`]: {
+    '& .form-group [class*="col"]': {
+      paddingBottom: 0,
+    },
+  },
+}
+
 export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
@@ -113,36 +129,12 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       },
     },
     fieldItem: {
-      'width': '100%',
-      'minWidth': 0,
-      'boxSizing': 'border-box',
-      ...formGroupBase,
-      '& .form-group [class*="col"]': {
-        ...formGroupBase['& .form-group [class*="col"]'],
-        position: 'relative',
-        paddingBottom: ERROR_SPACE,
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        '& .form-group [class*="col"]': {
-          paddingBottom: 0,
-        },
-      },
+      ...fieldItemBase,
+      minWidth: 0,
     },
     fieldItemFullWidth: {
-      'width': '100%',
-      'gridColumn': '1 / -1',
-      'boxSizing': 'border-box',
-      ...formGroupBase,
-      '& .form-group [class*="col"]': {
-        ...formGroupBase['& .form-group [class*="col"]'],
-        position: 'relative',
-        paddingBottom: ERROR_SPACE,
-      },
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        '& .form-group [class*="col"]': {
-          paddingBottom: 0,
-        },
-      },
+      ...fieldItemBase,
+      gridColumn: '1 / -1',
     },
     formLabels: createFormLabelStyles(themeColors.fontColor),
     formWithInputs: {

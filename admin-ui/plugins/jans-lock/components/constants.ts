@@ -48,9 +48,9 @@ export const JANS_LOCK_SECTIONS: LockFormSection[] = [
     id: 'protection',
     title: 'titles.lock_protection_and_audit',
     fields: [
-      field('protectionMode', 'select', { selectOptions: jansLockConstants.PROTECTION_MODES }),
+      field('protectionMode', 'select', { selectOptions: [...jansLockConstants.PROTECTION_MODES] }),
       field('auditPersistenceMode', 'select', {
-        selectOptions: jansLockConstants.AUDIT_PERSISTENCE_MODES,
+        selectOptions: [...jansLockConstants.AUDIT_PERSISTENCE_MODES],
       }),
     ],
   },
@@ -60,10 +60,10 @@ export const JANS_LOCK_SECTIONS: LockFormSection[] = [
     requires: 'cedarlingConfiguration',
     fields: [
       field('cedarlingConfiguration.logType', 'select', {
-        selectOptions: jansLockConstants.CEDARLING_LOG_TYPES,
+        selectOptions: [...jansLockConstants.CEDARLING_LOG_TYPES],
       }),
       field('cedarlingConfiguration.logLevel', 'select', {
-        selectOptions: jansLockConstants.CEDARLING_LOG_LEVELS,
+        selectOptions: [...jansLockConstants.CEDARLING_LOG_LEVELS],
       }),
       field('cedarlingConfiguration.externalPolicyStoreUri', 'text', {
         placeholder: 'placeholders.enter_lock_external_policy_store_uri',
@@ -102,7 +102,7 @@ export const JANS_LOCK_SECTIONS: LockFormSection[] = [
     requires: 'grpcConfiguration',
     fields: [
       field('grpcConfiguration.serverMode', 'select', {
-        selectOptions: jansLockConstants.GRPC_SERVER_MODES,
+        selectOptions: [...jansLockConstants.GRPC_SERVER_MODES],
       }),
       field('grpcConfiguration.grpcPort', 'number'),
       field('grpcConfiguration.tlsCertChainFilePath', 'text', {
@@ -172,7 +172,7 @@ export const JANS_LOCK_SECTIONS: LockFormSection[] = [
     id: 'logging',
     title: 'titles.lock_logging',
     fields: [
-      field('loggingLevel', 'select', { selectOptions: jansLockConstants.LOGGING_LEVELS }),
+      field('loggingLevel', 'select', { selectOptions: [...jansLockConstants.LOGGING_LEVELS] }),
       field('loggingLayout', 'text', { placeholder: 'placeholders.enter_logging_layout' }),
       field('externalLoggerConfiguration', 'text', {
         placeholder: 'placeholders.enter_external_logger_configuration',

@@ -61,7 +61,7 @@ const JansLock: React.FC = () => {
     dispatch(updateToast(true, 'error', errorMsg))
   }, [isLockError, lockError, dispatch, t])
 
-  const patchMutation = usePatchLockProperties({
+  const { mutate: patchLockConfig, isPending: isSaving } = usePatchLockProperties({
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
@@ -77,7 +77,7 @@ const JansLock: React.FC = () => {
 
   const handleUpdate = useCallback(
     (patchOperations: PatchOperation[]) => {
-      patchMutation.mutate(
+      patchLockConfig(
         { data: patchOperations },
         {
           onSuccess: () => {
@@ -89,13 +89,13 @@ const JansLock: React.FC = () => {
         },
       )
     },
-    [patchMutation, lockConfiguration],
+    [patchLockConfig, lockConfiguration],
   )
 
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadLock}>
-        <GluuLoader blocking={isLoading || patchMutation.isPending}>
+        <GluuLoader blocking={isLoading || isSaving}>
           <GluuText variant="h1" className={classes.mobilePageTitle}>
             {t('titles.jans_lock')}
           </GluuText>
@@ -104,7 +104,7 @@ const JansLock: React.FC = () => {
               <JansLockConfiguration
                 lockConfig={lockConfiguration ?? EMPTY_CONFIG}
                 onUpdate={handleUpdate}
-                isSubmitting={patchMutation.isPending}
+                isSubmitting={isSaving}
                 canWriteLock={canWriteLock && !isLockUnavailable}
                 classes={classes}
               />
