@@ -4,9 +4,13 @@ import {
   SPACING,
   BORDER_RADIUS,
   OPACITY,
+  ICON_SIZE,
   MOBILE_MEDIA_QUERY,
   createMobilePageTitleStyle,
 } from '@/constants'
+import { fontSizes } from '@/styles/fonts'
+import { getDynamicListStyles } from '@/styles/dynamicListStyles'
+import { getAccordionStyles } from '@/styles/accordionStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
@@ -41,6 +45,14 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
     fontColor: themeColors.fontColor,
     textMuted: themeColors.textMuted,
   }
+  const dl = getDynamicListStyles({
+    boxBg: cardBg,
+    inputBg: formInputBg,
+    borderColor: inputBorderColor,
+    fontColor: themeColors.fontColor,
+    textMuted: themeColors.textMuted,
+    errorColor: themeColors.errorColor,
+  })
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
@@ -66,17 +78,24 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
       display: 'flex',
       flexDirection: 'column',
       gap: 0,
+      ...getAccordionStyles(
+        isDark,
+        themeColors,
+        themeColors.fontColor,
+        formInputBg,
+        inputBorderColor,
+      ),
     },
-    formSection: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
+    section: {
       width: '100%',
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
           pointerEvents: 'none' as const,
         },
       },
+    },
+    accordionSpacing: {
+      marginBottom: SPACING.CARD_CONTENT_GAP,
     },
     fieldsGrid: {
       display: 'grid',
@@ -153,6 +172,49 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
         ...createFormInputAutofillStyles(inputColors),
         backgroundColor: `${formInputBg} !important`,
       },
+    },
+    listBox: {
+      ...dl.listBox,
+      marginTop: SPACING.CARD_CONTENT_GAP,
+    },
+    listBoxEmpty: dl.listBoxEmpty,
+    listHeader: dl.listHeader,
+    listTitle: dl.listTitle,
+    listBody: dl.listBody,
+    listRow: {
+      'display': 'flex',
+      'alignItems': 'flex-start',
+      'gap': SPACING.SECTION_GAP,
+      'paddingBottom': SPACING.CARD_CONTENT_GAP,
+      'borderBottom': `1px solid ${inputBorderColor}`,
+      '&:last-child': {
+        paddingBottom: 0,
+        borderBottom: 'none',
+      },
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+      },
+    },
+    listRowFields: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      columnGap: SPACING.SECTION_GAP,
+      flex: 1,
+      minWidth: 0,
+      width: '100%',
+      [theme.breakpoints.down('md')]: {
+        gridTemplateColumns: '1fr',
+      },
+    },
+    listEmpty: {
+      color: themeColors.textMuted,
+      fontSize: fontSizes.base,
+    },
+    listActionBtn: dl.listActionBtn,
+    listActionIcon: {
+      fontSize: ICON_SIZE.SM,
+      marginRight: theme.spacing(0.5),
+      flexShrink: 0,
     },
   }
 })

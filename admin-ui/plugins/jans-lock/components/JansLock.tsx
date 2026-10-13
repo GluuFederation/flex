@@ -14,7 +14,7 @@ import {
   usePatchLockProperties,
   getGetLockPropertiesQueryKey,
 } from 'JansConfigApi'
-import { PatchOperation } from '../types'
+import type { LockConfig, PatchOperation } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
@@ -28,6 +28,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/JansLockFormPage.style'
 
 const lockResourceId = ADMIN_UI_RESOURCES.Lock
+const EMPTY_CONFIG: LockConfig = {}
 
 const JansLock: React.FC = () => {
   const { t } = useTranslation()
@@ -80,7 +81,7 @@ const JansLock: React.FC = () => {
         {
           onSuccess: () => {
             triggerWebhookForFeature(
-              (lockConfiguration as Record<string, JsonValue>) ?? {},
+              (lockConfiguration ?? {}) as Record<string, JsonValue>,
               adminUiFeatures.jans_link_write,
             )
           },
@@ -100,7 +101,7 @@ const JansLock: React.FC = () => {
           <Card className={classes.formCard}>
             <CardBody className={classes.content}>
               <JansLockConfiguration
-                lockConfig={(lockConfiguration as Record<string, JsonValue>) ?? {}}
+                lockConfig={lockConfiguration ?? EMPTY_CONFIG}
                 onUpdate={handleUpdate}
                 isSubmitting={patchMutation.isPending}
                 canWriteLock={canWriteLock}

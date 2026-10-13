@@ -1,77 +1,50 @@
-import { JANS_LOCK_FIELD_CONFIGS } from 'Plugins/jans-lock/components/constants'
-import type { FieldType, JansLockConfigFormValues } from 'Plugins/jans-lock/types'
+import { JANS_LOCK_SECTIONS } from 'Plugins/jans-lock/components/constants'
+import { LOCK_FIELD_SPECS } from 'Plugins/jans-lock/helper/constants'
+import type { FieldType } from 'Plugins/jans-lock/types'
 
-const VALID_TYPES: FieldType[] = ['text', 'number', 'select', 'toggle']
+const VALID_TYPES: FieldType[] = ['text', 'number', 'select', 'toggle', 'password']
+const allFields = JANS_LOCK_SECTIONS.flatMap(({ fields }) => fields)
 
-describe('JANS_LOCK_FIELD_CONFIGS', () => {
-  it('is a non-empty array', () => {
-    expect(Array.isArray(JANS_LOCK_FIELD_CONFIGS)).toBe(true)
-    expect(JANS_LOCK_FIELD_CONFIGS.length).toBeGreaterThan(0)
+describe('JANS_LOCK_SECTIONS', () => {
+  it('renders every field spec exactly once', () => {
+    const rendered = allFields.map(({ name }) => name).sort()
+    const specs = LOCK_FIELD_SPECS.map(({ path }) => path).sort()
+    expect(rendered).toEqual(specs)
   })
 
-  it('has no duplicate field names', () => {
-    const names = JANS_LOCK_FIELD_CONFIGS.map((c) => c.name)
-    const uniqueNames = new Set(names)
-    expect(uniqueNames.size).toBe(names.length)
-  })
-
-  it.each(JANS_LOCK_FIELD_CONFIGS)('$name has valid type', (config) => {
+  it.each(allFields)('$name has a valid type and label', (config) => {
     expect(VALID_TYPES).toContain(config.type)
+    expect(config.label).toMatch(/^fields\./)
   })
 
-  it.each(JANS_LOCK_FIELD_CONFIGS)('$name has a label string', (config) => {
-    expect(typeof config.label).toBe('string')
-    expect(config.label.length).toBeGreaterThan(0)
+  it.each(allFields.filter(({ type }) => type === 'select'))(
+    '$name has options',
+    ({ selectOptions }) => {
+      expect(selectOptions?.length).toBeGreaterThan(0)
+    },
+  )
+
+  it('renders the client password as a read-only password field', () => {
+    const password = allFields.find(({ name }) => name === 'clientPassword')
+    expect(password).toMatchObject({ type: 'password', readOnly: true })
   })
 
-  it.each(JANS_LOCK_FIELD_CONFIGS)('$name has valid colSize', (config) => {
-    const colSize = config.colSize ?? 12
-    expect(colSize).toBeGreaterThanOrEqual(1)
-    expect(colSize).toBeLessThanOrEqual(12)
-  })
-
-  it('all field names are valid JansLockConfigFormValues keys', () => {
-    const validKeys: (keyof JansLockConfigFormValues)[] = [
-      'baseDN',
-      'tokenChannels',
-      'disableJdkLogger',
-      'loggingLevel',
-      'loggingLayout',
-      'externalLoggerConfiguration',
-      'disableExternalLoggerConfiguration',
-      'metricReporterEnabled',
-      'metricReporterInterval',
-      'metricReporterKeepDataDays',
-      'cleanServiceInterval',
-      'metricChannel',
-      'pdpType',
-      'policiesJsonUrisAuthorizationToken',
-      'policiesJsonUris',
-      'policiesZipUrisAuthorizationToken',
-      'policiesZipUris',
-    ]
-
-    JANS_LOCK_FIELD_CONFIGS.forEach((config) => {
-      expect(validKeys).toContain(config.name)
+  it('gates nested sections on the server returning them', () => {
+    const requires = Object.fromEntries(
+      JANS_LOCK_SECTIONS.map(({ id, requires }) => [id, requires]),
+    )
+    expect(requires).toMatchObject({
+      cedarling: 'cedarlingConfiguration',
+      grpc: 'grpcConfiguration',
+      trace: 'traceConfiguration',
     })
   })
 
-  it('select fields have selectOptions defined', () => {
-    const selectConfigs = JANS_LOCK_FIELD_CONFIGS.filter((c) => c.type === 'select')
-    selectConfigs.forEach((config) => {
-      expect(config.selectOptions).toBeDefined()
-      expect(Array.isArray(config.selectOptions)).toBe(true)
-      expect(config.selectOptions!.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('toggle fields are grouped at the end', () => {
-    const types = JANS_LOCK_FIELD_CONFIGS.map((c) => c.type)
-    const lastNonToggleIndex = types.reduce((acc, type, i) => (type !== 'toggle' ? i : acc), -1)
-    const firstToggleIndex = types.indexOf('toggle')
-
-    // There must be toggle fields and they must come after all non-toggle fields
-    expect(firstToggleIndex).not.toBe(-1)
-    expect(firstToggleIndex).toBeGreaterThan(lastNonToggleIndex)
+  it('edits policy sources and TRACE bindings as lists', () => {
+    const lists = JANS_LOCK_SECTIONS.flatMap(({ list }) => (list ? [list.name] : []))
+    expect(lists).toEqual([
+      'cedarlingConfiguration.policySources',
+      'traceConfiguration.clientDomainBindings',
+    ])
   })
 })
