@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { act, render, screen, fireEvent } from '@testing-library/react'
 import { AccordionContext } from '../context'
 import { AccordionIndicator } from '../AccordionIndicator'
 import { AccordionHeader } from '../AccordionHeader'
@@ -55,6 +55,25 @@ describe('AccordionBody', () => {
     const content = screen.getByText('body content')
     expect(content).toBeInTheDocument()
     expect(content).toHaveClass('card-body', 'mine', 'pt-0')
+  })
+
+  it.each([
+    ['a height-based duration by default', undefined],
+    ['the timeout it is given', 0],
+  ])('collapses with %s', (_, timeout) => {
+    jest.useFakeTimers()
+    const body = (isOpen: boolean) => (
+      <AccordionContext.Provider value={{ isOpen, onToggle: () => {} }}>
+        <AccordionBody timeout={timeout}>body content</AccordionBody>
+      </AccordionContext.Provider>
+    )
+    const { rerender, container } = render(body(true))
+    rerender(body(false))
+    act(() => {
+      jest.advanceTimersByTime(10)
+    })
+    expect(container.querySelector('.MuiCollapse-hidden')).toBeInTheDocument()
+    jest.useRealTimers()
   })
 })
 
