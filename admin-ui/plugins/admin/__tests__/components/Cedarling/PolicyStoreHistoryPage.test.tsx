@@ -50,6 +50,7 @@ const mockBackupStore = {
 
 const mockEditMutate = jest.fn().mockResolvedValue(undefined)
 const mockDeleteMutate = jest.fn().mockResolvedValue(undefined)
+const mockRefetch = jest.fn()
 const mockSyncMutate = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('JansConfigApi', () => ({
@@ -57,7 +58,7 @@ jest.mock('JansConfigApi', () => ({
     data: { entries: [mockActiveStore, mockBackupStore], totalEntriesCount: 2 },
     isLoading: false,
     isFetching: false,
-    refetch: jest.fn(),
+    refetch: mockRefetch,
   })),
   useCreateAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn(), isPending: false })),
   useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockEditMutate, isPending: false })),
@@ -310,6 +311,20 @@ describe('PolicyStoreHistoryPage', () => {
       expect.arrayContaining(shortCodes.policy_store_delete.fields.map(({ key }) => key)),
     )
     dispatchSpy.mockRestore()
+  })
+
+  it('refreshes the store list once after a delete', async () => {
+    const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    await openConfirmFor('Delete')
+
+    await waitFor(() => {
+      expect(invalidateSpy).toHaveBeenCalledTimes(1)
+    })
+    expect(mockRefetch).not.toHaveBeenCalled()
+    invalidateSpy.mockRestore()
   })
 
   it('triggers the policy store add/edit webhook on activation', async () => {
