@@ -190,7 +190,7 @@ describe('WebhookForm', () => {
       expect(screen.getByText('Feature Two')).toBeInTheDocument()
     })
 
-    it('orders the feature options as the sidebar menu, unknown features last', async () => {
+    it('orders the feature options as the sidebar menu and names their module, unknown features last', async () => {
       const { useGetAllFeatures } = jest.requireMock('JansConfigApi')
       const defaultImpl = useGetAllFeatures.getMockImplementation()
       useGetAllFeatures.mockImplementation(() => ({
@@ -211,15 +211,16 @@ describe('WebhookForm', () => {
         await renderForm()
 
         const select = document.querySelector('select[name="auiFeatureIds"]') as HTMLSelectElement
-        expect(Array.from(select.options, (option) => option.value).filter(Boolean)).toEqual([
-          'policy_store_edit',
-          'policy_store_delete',
-          'oidc_clients_write',
-          'users_edit',
-          'custom_script_write',
-          'attributes_delete',
-          'jans_link_write',
-          'jans_keycloak_link_write',
+        const options = Array.from(select.options).filter((option) => option.value)
+        expect(options.map((option) => [option.value, option.textContent])).toEqual([
+          ['policy_store_edit', 'Security › Policy Store - Add/Edit'],
+          ['policy_store_delete', 'Security › Policy Store - Delete'],
+          ['oidc_clients_write', 'Auth Server › OIDC Clients - Add/Edit'],
+          ['users_edit', 'Users › Users - Add/Edit'],
+          ['custom_script_write', 'Scripts › Custom Script - Add/Edit'],
+          ['attributes_delete', 'User Claims › Schema:Person - Delete'],
+          ['jans_link_write', 'Jans Lock › Jans Link - Edit'],
+          ['jans_keycloak_link_write', 'Jans Keycloak Link - Edit'],
         ])
       } finally {
         useGetAllFeatures.mockImplementation(defaultImpl)

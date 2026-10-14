@@ -25,7 +25,7 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { logger } from '@/utils/logger'
 import { WEBHOOK } from 'Utils/ApiResources'
 import { getWebhookValidationSchema } from 'Plugins/admin/helper/validations/webhookValidation'
-import { FEATURE_MENU_ORDER, WEBHOOK_FIELDS, type ShortcodeFieldName } from './constants'
+import { FEATURE_MENUS, WEBHOOK_FIELDS, type ShortcodeFieldName } from './constants'
 import {
   buildWebhookInitialValues,
   hasHttpBody,
@@ -53,8 +53,8 @@ const haveFeaturesChanged = (a: AuiFeature[], b: AuiFeature[]): boolean =>
   !isEqual(toFeatureIds(a), toFeatureIds(b))
 
 const menuRank = (featureId: string): number => {
-  const index = FEATURE_MENU_ORDER.indexOf(featureId)
-  return index === -1 ? FEATURE_MENU_ORDER.length : index
+  const index = FEATURE_MENUS.findIndex(({ feature }) => feature === featureId)
+  return index === -1 ? FEATURE_MENUS.length : index
 }
 
 const WebhookForm: React.FC<WebhookFormProps> = ({ viewOnly = false }) => {
@@ -100,12 +100,14 @@ const WebhookForm: React.FC<WebhookFormProps> = ({ viewOnly = false }) => {
   const adminUiFeatureOptions = useMemo(
     () =>
       (Array.isArray(features) ? features : [])
-        .map((f: AuiFeature) => ({
-          value: f.auiFeatureId ?? '',
-          label: f.displayName ?? f.auiFeatureId ?? '',
-        }))
+        .map((f: AuiFeature) => {
+          const value = f.auiFeatureId ?? ''
+          const name = f.displayName ?? value
+          const menu = FEATURE_MENUS.find(({ feature }) => feature === value)?.menu
+          return { value, label: menu ? `${t(menu)} › ${name}` : name }
+        })
         .sort((a, b) => menuRank(a.value) - menuRank(b.value) || a.label.localeCompare(b.label)),
-    [features],
+    [features, t],
   )
 
   const initialFormValues = useMemo(
