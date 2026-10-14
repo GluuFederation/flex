@@ -296,6 +296,7 @@ const ClientEncryptionSigningPanel = ({
                 lsize={12}
                 rsize={12}
                 name="attributes.jansAuthSignedRespAlg"
+                doc_entry="jansAuthSignedRespAlg"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
@@ -316,6 +317,7 @@ const ClientEncryptionSigningPanel = ({
                 value={formik.values.attributes?.jansAuthEncRespAlg as string | undefined}
                 values={idTokenEncryptedResponseAlg}
                 name="attributes.jansAuthEncRespAlg"
+                doc_entry="jansAuthEncRespAlg"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
@@ -336,6 +338,7 @@ const ClientEncryptionSigningPanel = ({
                 lsize={12}
                 rsize={12}
                 name="attributes.jansAuthEncRespEnc"
+                doc_entry="jansAuthEncRespEnc"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
@@ -436,6 +439,7 @@ const ClientEncryptionSigningPanel = ({
                 lsize={12}
                 rsize={12}
                 name="attributes.introspectionSignedResponseAlg"
+                doc_entry="introspectionSignedResponseAlg"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
               />
@@ -451,6 +455,7 @@ const ClientEncryptionSigningPanel = ({
                 lsize={12}
                 rsize={12}
                 name="attributes.introspectionEncryptedResponseAlg"
+                doc_entry="introspectionEncryptedResponseAlg"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {
@@ -473,6 +478,7 @@ const ClientEncryptionSigningPanel = ({
                 lsize={12}
                 rsize={12}
                 name="attributes.introspectionEncryptedResponseEnc"
+                doc_entry="introspectionEncryptedResponseEnc"
                 doc_category={DOC_CATEGORY}
                 disabled={viewOnly}
                 handleChange={(e) => {

@@ -75,6 +75,7 @@ const ClientScriptPanel = ({
           <div key={field.name} className={classes.fieldWrap}>
             <GluuAutocomplete
               name={field.name}
+              doc_entry={field.docEntry}
               label={t(field.labelKey)}
               value={getSelectedScriptDns(field.name)}
               options={options}

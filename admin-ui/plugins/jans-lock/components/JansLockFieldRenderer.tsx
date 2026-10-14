@@ -1,14 +1,15 @@
-import React, { useMemo } from 'react'
+import React from 'react'
+import { getIn } from 'formik'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import { jansLockConstants } from '../helper'
+import { hasSameFieldState, jansLockConstants } from '../helper'
+import type { JsonValue } from 'Routes/Apps/Gluu/types/common'
 import type { JansLockFieldRendererProps } from '../types'
 
 const LABEL_SIZE = 12
 const INPUT_SIZE = 12
-const EMPTY_OPTIONS: string[] = []
 const DOC_CATEGORY = jansLockConstants.DOC_CATEGORY
 
 const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
@@ -19,61 +20,44 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
   viewOnly,
 }) => {
   const { t } = useTranslation()
-  const { name, label, type, disabled = false, selectOptions, colSize = 12, placeholder } = config
+  const {
+    name,
+    label,
+    type,
+    readOnly = false,
+    required = false,
+    selectOptions,
+    colSize = 12,
+    placeholder,
+  } = config
 
-  const value = formik.values[name]
-  const error = formik.errors[name]
+  const value: JsonValue | undefined = getIn(formik.values, name)
+  const error: JsonValue | undefined = getIn(formik.errors, name)
+  const errorMessage = typeof error === 'string' ? error : ''
 
-  const itemClass = useMemo(
-    () => (colSize === 12 ? fieldItemFullWidthClass : fieldItemClass),
-    [colSize, fieldItemFullWidthClass, fieldItemClass],
-  )
-  const isDisabled = useMemo(() => disabled || viewOnly, [disabled, viewOnly])
-  const showError = useMemo(() => !!error, [error])
-  const resolvedPlaceholder = useMemo(
-    () => (placeholder ? t(placeholder) : undefined),
-    [placeholder, t],
-  )
-
-  const stableOptions = useMemo(
-    () => (selectOptions ? [...selectOptions] : EMPTY_OPTIONS),
-    [selectOptions],
-  )
+  const itemClass = colSize === 12 ? fieldItemFullWidthClass : fieldItemClass
+  const isDisabled = readOnly || viewOnly
+  const resolvedPlaceholder = placeholder ? t(placeholder) : undefined
 
   switch (type) {
     case 'text':
-      return (
-        <div className={itemClass}>
-          <GluuInputRow
-            label={label}
-            name={name}
-            value={(value as string) || ''}
-            formik={formik}
-            lsize={LABEL_SIZE}
-            rsize={INPUT_SIZE}
-            disabled={isDisabled}
-            showError={showError}
-            errorMessage={error as string}
-            placeholder={resolvedPlaceholder}
-            doc_category={DOC_CATEGORY}
-          />
-        </div>
-      )
-
+    case 'password':
     case 'number':
       return (
         <div className={itemClass}>
           <GluuInputRow
             label={label}
             name={name}
-            type="number"
-            value={value !== '' && value != null ? value.toString() : ''}
+            type={type}
+            value={value == null ? '' : String(value)}
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
+            required={required}
             disabled={isDisabled}
-            showError={showError}
-            errorMessage={error as string}
+            allowPasswordToggleWhenDisabled={type === 'password'}
+            showError={!!errorMessage}
+            errorMessage={errorMessage}
             placeholder={resolvedPlaceholder}
             doc_category={DOC_CATEGORY}
           />
@@ -86,8 +70,8 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
           <GluuSelectRow
             label={label}
             name={name}
-            value={value as string}
-            values={stableOptions}
+            value={value == null ? '' : String(value)}
+            values={selectOptions}
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
@@ -103,6 +87,7 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
           <GluuToggleRow
             label={label}
             name={name}
+            value={Boolean(value)}
             formik={formik}
             lsize={LABEL_SIZE}
             rsize={INPUT_SIZE}
@@ -117,4 +102,14 @@ const JansLockFieldRenderer: React.FC<JansLockFieldRendererProps> = ({
   }
 }
 
-export default React.memo(JansLockFieldRenderer)
+const arePropsEqual = (
+  prev: JansLockFieldRendererProps,
+  next: JansLockFieldRendererProps,
+): boolean =>
+  prev.config === next.config &&
+  prev.viewOnly === next.viewOnly &&
+  prev.fieldItemClass === next.fieldItemClass &&
+  prev.fieldItemFullWidthClass === next.fieldItemFullWidthClass &&
+  hasSameFieldState(prev.formik, next.formik, next.config.name)
+
+export default React.memo(JansLockFieldRenderer, arePropsEqual)

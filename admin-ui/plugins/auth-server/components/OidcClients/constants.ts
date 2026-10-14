@@ -351,36 +351,42 @@ export const CLIENT_ADVANCED_SECTION_GROUPS = [
 export const CLIENT_SCRIPT_FIELDS: ClientScriptField[] = [
   {
     name: 'attributes.spontaneousScopeScriptDns',
+    docEntry: 'spontaneousScopeScriptDns',
     labelKey: 'fields.spontaneous_scopes',
     scriptType: CLIENT_SCRIPT_TYPES.SPONTANEOUS_SCOPE,
     modifiedField: 'Spontaneous Scope Script Dns',
   },
   {
     name: 'attributes.updateTokenScriptDns',
+    docEntry: 'updateTokenScriptDns',
     labelKey: 'fields.updateTokenScriptDns',
     scriptType: CLIENT_SCRIPT_TYPES.UPDATE_TOKEN,
     modifiedField: 'Update Token Script Dns',
   },
   {
     name: 'attributes.postAuthnScripts',
+    docEntry: 'postAuthnScripts',
     labelKey: 'fields.post_authn_scripts',
     scriptType: CLIENT_SCRIPT_TYPES.POST_AUTHN,
     modifiedField: 'Post Authn Script',
   },
   {
     name: 'attributes.introspectionScripts',
+    docEntry: 'introspectionScripts',
     labelKey: 'fields.introspection_scripts',
     scriptType: CLIENT_SCRIPT_TYPES.INTROSPECTION,
     modifiedField: 'Introspection Scripts',
   },
   {
     name: 'attributes.ropcScripts',
+    docEntry: 'ropcScripts',
     labelKey: 'fields.ropcScripts',
     scriptType: CLIENT_SCRIPT_TYPES.ROPC,
     modifiedField: 'ROPC Scripts',
   },
   {
     name: 'attributes.consentGatheringScripts',
+    docEntry: 'consentGatheringScripts',
     labelKey: 'fields.consent_gathering_scripts',
     scriptType: CLIENT_SCRIPT_TYPES.CONSENT_GATHERING,
     modifiedField: 'Consent Gathering Scripts',

@@ -125,3 +125,32 @@ it('on mobile hides the tag-remove and field-remove buttons while keeping the va
   expect(within(tag).queryByRole('button')).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument()
 })
+
+describe('help icon', () => {
+  const helpIcon = (container: HTMLElement, entry: string) =>
+    container.querySelector(`svg[data-tooltip-id="${entry}"]`)
+
+  it('falls back to the field name when no doc_entry is given', () => {
+    const { container } = renderComponent({ name: 'grantTypes', doc_category: 'openid_client' })
+    expect(helpIcon(container, 'grantTypes')).toBeInTheDocument()
+  })
+
+  it('prefers an explicit doc_entry over the field name', () => {
+    const { container } = renderComponent({
+      name: 'attributes.ropcScripts',
+      doc_category: 'openid_client',
+      doc_entry: 'ropcScripts',
+    })
+    expect(helpIcon(container, 'ropcScripts')).toBeInTheDocument()
+  })
+
+  it('stays hidden when the documentation key does not exist', () => {
+    const { container } = renderComponent({ doc_category: 'openid_client' })
+    expect(helpIcon(container, NAME)).not.toBeInTheDocument()
+  })
+
+  it('shows the category text directly when isDirect is set', () => {
+    const { container } = renderComponent({ doc_category: 'Free-form description', isDirect: true })
+    expect(helpIcon(container, NAME)).toBeInTheDocument()
+  })
+})

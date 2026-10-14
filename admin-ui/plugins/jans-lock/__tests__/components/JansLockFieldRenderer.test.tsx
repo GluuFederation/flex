@@ -1,25 +1,13 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { useFormik } from 'formik'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import JansLockFieldRenderer from 'Plugins/jans-lock/components/JansLockFieldRenderer'
+import { transformToFormValues } from 'Plugins/jans-lock/helper/utils'
 import type { FieldConfig, JansLockConfigFormValues } from 'Plugins/jans-lock/types'
-import type { FormikProps } from 'formik'
-
-jest.mock('@/cedarling', () => ({
-  useCedarling: jest.fn(() => ({
-    hasCedarReadPermission: jest.fn(() => true),
-    hasCedarWritePermission: jest.fn(() => true),
-    authorizeHelper: jest.fn(),
-  })),
-}))
-
-jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Lock: 'Lock' },
-  CEDAR_RESOURCE_SCOPES: { Lock: [] },
-}))
+import type { FormikErrors } from 'formik'
 
 const store = configureStore({
   reducer: combineReducers({
@@ -28,263 +16,161 @@ const store = configureStore({
   }),
 })
 
-const createQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
-
-const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={createQueryClient()}>
-    <AppTestWrapper>
-      <Provider store={store}>{children}</Provider>
-    </AppTestWrapper>
-  </QueryClientProvider>
-)
-
-const defaultFormValues: JansLockConfigFormValues = {
-  baseDN: '',
-  tokenChannels: '',
-  disableJdkLogger: false,
+const values = transformToFormValues({
   loggingLevel: 'INFO',
-  loggingLayout: 'text',
-  externalLoggerConfiguration: '',
-  disableExternalLoggerConfiguration: false,
-  metricReporterEnabled: true,
-  metricReporterInterval: 300,
-  metricReporterKeepDataDays: 15,
+  clientPassword: 'encrypted==',
   cleanServiceInterval: 60,
-  metricChannel: '',
-  pdpType: '',
-  policiesJsonUrisAuthorizationToken: '',
-  policiesJsonUris: '',
-  policiesZipUrisAuthorizationToken: '',
-  policiesZipUris: '',
-}
-
-const createMockFormik = (
-  overrides: Partial<FormikProps<JansLockConfigFormValues>> = {},
-): FormikProps<JansLockConfigFormValues> => ({
-  values: defaultFormValues,
-  initialValues: defaultFormValues,
-  initialErrors: {},
-  initialTouched: {},
-  initialStatus: undefined,
-  errors: {},
-  touched: {},
-  isSubmitting: false,
-  isValidating: false,
-  submitCount: 0,
-  dirty: false,
-  isValid: true,
-  status: undefined,
-  handleChange: jest.fn(),
-  handleBlur: jest.fn(),
-  handleSubmit: jest.fn(),
-  handleReset: jest.fn(),
-  setFieldValue: jest.fn(),
-  setFieldTouched: jest.fn(),
-  setFieldError: jest.fn(),
-  setValues: jest.fn(),
-  setErrors: jest.fn(),
-  setTouched: jest.fn(),
-  setStatus: jest.fn(),
-  setSubmitting: jest.fn(),
-  setFormikState: jest.fn(),
-  validateField: jest.fn(),
-  validateForm: jest.fn().mockResolvedValue({}),
-  resetForm: jest.fn(),
-  submitForm: jest.fn().mockResolvedValue(undefined),
-  getFieldProps: jest
-    .fn()
-    .mockReturnValue({ value: '', onChange: jest.fn(), onBlur: jest.fn(), name: '' }),
-  getFieldMeta: jest.fn().mockReturnValue({
-    value: '',
-    touched: false,
-    error: undefined,
-    initialValue: '',
-    initialTouched: false,
-    initialError: undefined,
-  }),
-  getFieldHelpers: jest
-    .fn()
-    .mockReturnValue({ setValue: jest.fn(), setTouched: jest.fn(), setError: jest.fn() }),
-  registerField: jest.fn(),
-  unregisterField: jest.fn(),
-  ...overrides,
+  grpcConfiguration: { grpcPort: 50051, serverMode: 'bridge', useTls: true },
+  cedarlingConfiguration: {
+    policySources: [{ enabled: true, policyStoreUri: 'https://store.example.org' }],
+  },
 })
 
-const defaultProps = {
-  fieldItemClass: 'field-item',
-  fieldItemFullWidthClass: 'field-item-full',
-  viewOnly: false,
+type HarnessProps = {
+  config: FieldConfig
+  viewOnly?: boolean
+  errors?: FormikErrors<JansLockConfigFormValues>
 }
 
+const Harness = ({ config, viewOnly = false, errors }: HarnessProps) => {
+  const formik = useFormik<JansLockConfigFormValues>({
+    initialValues: values,
+    initialErrors: errors,
+    onSubmit: jest.fn(),
+  })
+  return (
+    <JansLockFieldRenderer
+      config={config}
+      formik={formik}
+      fieldItemClass="field-item"
+      fieldItemFullWidthClass="field-item-full"
+      viewOnly={viewOnly}
+    />
+  )
+}
+
+const renderField = (props: HarnessProps) =>
+  render(
+    <AppTestWrapper>
+      <Provider store={store}>
+        <Harness {...props} />
+      </Provider>
+    </AppTestWrapper>,
+  )
+
+const input = (name: string) => document.querySelector(`[name="${name}"]`) as HTMLInputElement
+
 describe('JansLockFieldRenderer', () => {
-  it('renders text field', () => {
-    const config: FieldConfig = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'text',
-      colSize: 6,
-      placeholder: 'placeholders.enter_base_dn',
-    }
-
-    render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
-    )
-
-    expect(document.querySelector('input[name="baseDN"]')).toBeInTheDocument()
+  it('reads a nested value by its path', () => {
+    renderField({
+      config: {
+        name: 'grpcConfiguration.grpcPort',
+        label: 'fields.lock_grpc_port',
+        type: 'number',
+      },
+    })
+    expect(input('grpcConfiguration.grpcPort')).toHaveValue(50051)
   })
 
-  it('renders number field', () => {
-    const config: FieldConfig = {
-      name: 'cleanServiceInterval',
-      label: 'fields.clean_service_interval',
-      type: 'number',
-      colSize: 6,
-    }
-
-    render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
+  it('reads a value inside a list row', () => {
+    renderField({
+      config: {
+        name: 'cedarlingConfiguration.policySources.0.policyStoreUri',
+        label: 'fields.lock_policy_store_uri',
+        type: 'text',
+      },
+    })
+    expect(input('cedarlingConfiguration.policySources.0.policyStoreUri')).toHaveValue(
+      'https://store.example.org',
     )
-
-    const input = document.querySelector('input[name="cleanServiceInterval"]')
-    expect(input).toBeInTheDocument()
-    expect(input).toHaveAttribute('type', 'number')
   })
 
-  it('renders select field with options', () => {
-    const config: FieldConfig = {
-      name: 'loggingLevel',
-      label: 'fields.logging_level',
-      type: 'select',
-      selectOptions: ['INFO', 'DEBUG', 'ERROR'],
-      colSize: 6,
-    }
-
-    render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
+  it('renders select options', () => {
+    renderField({
+      config: {
+        name: 'grpcConfiguration.serverMode',
+        label: 'fields.lock_grpc_server_mode',
+        type: 'select',
+        selectOptions: ['disabled', 'bridge'],
+      },
+    })
+    const select = document.querySelector(
+      'select[name="grpcConfiguration.serverMode"]',
+    ) as HTMLSelectElement
+    expect(select).toHaveValue('bridge')
+    expect(Array.from(select.options).map(({ value }) => value)).toEqual(
+      expect.arrayContaining(['disabled', 'bridge']),
     )
-
-    const select = document.querySelector('select[name="loggingLevel"]')
-    expect(select).toBeInTheDocument()
   })
 
-  it('renders toggle field', () => {
-    const config: FieldConfig = {
-      name: 'disableJdkLogger',
-      label: 'fields.disable_jdk_logger',
-      type: 'toggle',
-      colSize: 6,
-    }
-
-    const { container } = render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
-    )
-
-    const toggle = container.querySelector('input[type="checkbox"]')
-    expect(toggle).toBeInTheDocument()
+  it('renders a toggle with the nested value', () => {
+    renderField({
+      config: {
+        name: 'grpcConfiguration.useTls',
+        label: 'fields.lock_grpc_use_tls',
+        type: 'toggle',
+      },
+    })
+    expect(input('grpcConfiguration.useTls')).toBeChecked()
   })
 
-  it('disables field when viewOnly is true', () => {
-    const config: FieldConfig = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'text',
-      colSize: 6,
-    }
-
-    render(
-      <Wrapper>
-        <JansLockFieldRenderer
-          config={config}
-          formik={createMockFormik()}
-          {...defaultProps}
-          viewOnly={true}
-        />
-      </Wrapper>,
-    )
-
-    const input = document.querySelector('input[name="baseDN"]')
-    expect(input).toBeDisabled()
+  it('renders a read-only password that can still be revealed', () => {
+    renderField({
+      config: {
+        name: 'clientPassword',
+        label: 'fields.client_password',
+        type: 'password',
+        readOnly: true,
+      },
+    })
+    const password = input('clientPassword')
+    expect(password).toHaveAttribute('type', 'password')
+    expect(password).toBeDisabled()
+    expect(password).toHaveValue('encrypted==')
+    expect(screen.getByRole('button', { name: /password\.show|show/i })).toBeEnabled()
   })
 
-  it('disables field when config.disabled is true', () => {
-    const config: FieldConfig = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'text',
-      disabled: true,
-      colSize: 6,
-    }
-
-    render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
-    )
-
-    const input = document.querySelector('input[name="baseDN"]')
-    expect(input).toBeDisabled()
+  it('disables inputs in view-only mode', () => {
+    renderField({
+      config: { name: 'loggingLevel', label: 'fields.logging_level', type: 'text' },
+      viewOnly: true,
+    })
+    expect(input('loggingLevel')).toBeDisabled()
   })
 
-  it('uses full-width class when colSize is 12', () => {
-    const config: FieldConfig = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'text',
-      colSize: 12,
-    }
+  it('shows a nested validation error', () => {
+    renderField({
+      config: {
+        name: 'grpcConfiguration.grpcPort',
+        label: 'fields.lock_grpc_port',
+        type: 'number',
+      },
+      errors: { grpcConfiguration: { grpcPort: 'Must be at most 65535' } },
+    })
+    expect(screen.getByText('Must be at most 65535')).toBeInTheDocument()
+  })
 
-    const { container } = render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
-    )
-
+  it('uses the full-width class only for 12-column fields', () => {
+    const { container, unmount } = renderField({
+      config: { name: 'loggingLevel', label: 'fields.logging_level', type: 'text', colSize: 12 },
+    })
     expect(container.querySelector('.field-item-full')).toBeInTheDocument()
+    unmount()
+
+    const half = renderField({
+      config: { name: 'loggingLevel', label: 'fields.logging_level', type: 'text', colSize: 6 },
+    })
+    expect(half.container.querySelector('.field-item')).toBeInTheDocument()
   })
 
-  it('uses regular class when colSize is not 12', () => {
-    const config: FieldConfig = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'text',
-      colSize: 6,
-    }
-
-    const { container } = render(
-      <Wrapper>
-        <JansLockFieldRenderer config={config} formik={createMockFormik()} {...defaultProps} />
-      </Wrapper>,
-    )
-
-    expect(container.querySelector('.field-item')).toBeInTheDocument()
-  })
-
-  it('returns null for unrecognized field type', () => {
-    const config: Omit<FieldConfig, 'type'> & { type: string } = {
-      name: 'baseDN',
-      label: 'fields.base_dn',
-      type: 'unrecognized',
-      colSize: 6,
-    }
-
-    const { container } = render(
-      <Wrapper>
-        <JansLockFieldRenderer
-          config={config as FieldConfig}
-          formik={createMockFormik()}
-          {...defaultProps}
-        />
-      </Wrapper>,
-    )
-
-    expect(container.firstChild).toBeNull()
+  it('renders nothing for an unknown type', () => {
+    const { container } = renderField({
+      config: {
+        name: 'loggingLevel',
+        label: 'fields.logging_level',
+        type: 'unknown' as FieldConfig['type'],
+      },
+    })
+    expect(container.querySelector('[name="loggingLevel"]')).toBeNull()
   })
 })
