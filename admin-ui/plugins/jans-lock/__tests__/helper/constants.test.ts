@@ -3,6 +3,7 @@ import {
   LOCK_LIST_SPECS,
   jansLockConstants,
 } from 'Plugins/jans-lock/helper/constants'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
 describe('jansLockConstants', () => {
   it('has correct DOC_CATEGORY', () => {
@@ -44,5 +45,26 @@ describe('LOCK_FIELD_SPECS', () => {
     ;['metricChannel', 'pdpType', 'policiesJsonUris', 'policiesZipUris', 'tokenUrl'].forEach(
       (removed) => expect(paths).not.toContain(removed),
     )
+  })
+})
+
+describe('Lock webhook shortcodes', () => {
+  const lockShortcodes = shortCodes.jans_link_write.fields
+
+  it('offers every editable top-level scalar field of the Lock form', () => {
+    const editable = LOCK_FIELD_SPECS.filter(
+      ({ path, kind, readOnly }) => /^\w+$/.test(path) && kind !== 'csv' && !readOnly,
+    )
+    expect(lockShortcodes).toEqual(
+      editable.map(({ path, label }) => ({
+        key: path,
+        label,
+        description: `documentation.${jansLockConstants.DOC_CATEGORY}.${path}`,
+      })),
+    )
+  })
+
+  it('does not expose the client password', () => {
+    expect(lockShortcodes.map(({ key }) => key)).not.toContain('clientPassword')
   })
 })

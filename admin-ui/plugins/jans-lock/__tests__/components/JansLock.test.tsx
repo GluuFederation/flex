@@ -7,6 +7,26 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import JansLock from 'Plugins/jans-lock/components/JansLock'
 
 const mockMutate = jest.fn()
+const mockTriggerWebhook = jest.fn()
+let mockOnUpdate: ((operations: object[]) => void) | undefined
+
+jest.mock('@/utils/triggerWebhookForFeature', () => ({
+  triggerWebhookForFeature: (data: object, feature: string) => mockTriggerWebhook(data, feature),
+}))
+
+jest.mock('Plugins/jans-lock/components/JansLockConfiguration', () => {
+  const { createElement } = jest.requireActual('react')
+  const { default: JansLockConfiguration } = jest.requireActual(
+    'Plugins/jans-lock/components/JansLockConfiguration',
+  )
+  return {
+    __esModule: true,
+    default: (props: { onUpdate: (operations: object[]) => void }) => {
+      mockOnUpdate = props.onUpdate
+      return createElement(JansLockConfiguration, props)
+    },
+  }
+})
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -70,6 +90,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('JansLock', () => {
   beforeEach(() => {
     mockMutate.mockClear()
+    mockTriggerWebhook.mockClear()
     queryClient.clear()
     jest.requireMock('@/cedarling').useCedarling.mockImplementation(() => ({
       hasCedarReadPermission: jest.fn(() => true),
@@ -148,6 +169,22 @@ describe('JansLock', () => {
     )
 
     expect(document.querySelector('form')).toBeInTheDocument()
+  })
+
+  it('fires the Lock webhook with the saved config, not the one loaded before the save', () => {
+    render(
+      <Wrapper>
+        <JansLock />
+      </Wrapper>,
+    )
+
+    mockOnUpdate?.([{ op: 'replace', path: '/messageConsumerType', value: 'DISABLED' }])
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    const [, callbacks] = mockMutate.mock.calls[0]
+    const savedConfig = { ...mockLockConfig, messageConsumerType: 'DISABLED' }
+    callbacks.onSuccess(savedConfig)
+
+    expect(mockTriggerWebhook).toHaveBeenCalledWith(savedConfig, 'jans_link_write')
   })
 
   it.each([

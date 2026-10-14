@@ -2873,7 +2873,11 @@
       "folderPathLabel": "Chemin du dossier",
       "folderPathRequired": "Saisissez un chemin de dossier.",
       "folderDeleted": "Dossier supprimé",
-      "folderRenamed": "Dossier renommé"
+      "folderRenamed": "Dossier renommé",
+      "inum": "Identifiant unique du magasin de politiques.",
+      "displayname": "Nom du magasin de politiques ; pour les magasins importés, le nom du fichier .cjar.",
+      "description": "Commentaire saisi lors de l’import du magasin de politiques.",
+      "jansStatus": "Statut du magasin de politiques : active ou inactive. Les nouveaux imports sont inactive."
     },
     "scim": {
       "baseDN": "Nom distinctif de base (DN) sous lequel les entrées SCIM sont stockées.",

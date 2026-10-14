@@ -104,7 +104,10 @@ export const usePolicyStoreMutations = () => {
         })
         dispatch(
           triggerWebhook({
-            createdFeatureValue: data as Record<string, JsonValue>,
+            createdFeatureValue: {
+              ...data,
+              jansStatus: POLICY_STORE_STATUS.INACTIVE,
+            } as Record<string, JsonValue>,
             feature: adminUiFeatures.policy_store_edit,
           }),
         )

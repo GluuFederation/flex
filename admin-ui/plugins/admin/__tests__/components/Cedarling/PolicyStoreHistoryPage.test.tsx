@@ -5,6 +5,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import PolicyStoreHistoryPage from 'Plugins/admin/components/Cedarling/PolicyStoreHistoryPage'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -304,6 +305,10 @@ describe('PolicyStoreHistoryPage', () => {
         }),
       ])
     })
+    const [trigger] = webhookTriggers(dispatchSpy)
+    expect(Object.keys(trigger.payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_delete.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
   })
 
@@ -330,6 +335,9 @@ describe('PolicyStoreHistoryPage', () => {
         jansStatus: 'active',
       }),
     })
+    expect(Object.keys(trigger.payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_edit.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
   })
 })

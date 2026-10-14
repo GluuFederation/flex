@@ -5,6 +5,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import CedarlingConfigPage from 'Plugins/admin/components/Cedarling/CedarlingConfigPage'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -253,7 +254,10 @@ describe('CedarlingConfigPage', () => {
         description: 'Rolling out updated admin policies',
       }),
     })
-    expect(triggers[0].payload?.createdFeatureValue).not.toHaveProperty('jansStatus')
+    expect(triggers[0].payload?.createdFeatureValue).toHaveProperty('jansStatus', 'inactive')
+    expect(Object.keys(triggers[0].payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_edit.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
   })
 })
