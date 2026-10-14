@@ -2,26 +2,22 @@ import { useFormik, FormikProps } from 'formik'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTranslation } from 'react-i18next'
-import { Form } from 'Components'
+import { Accordion, AccordionBody, AccordionHeader, Form } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { adminUiFeatures, MOBILE_MEDIA_QUERY } from '@/constants'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getLockValidationSchema,
+  getLockSections,
   transformToFormValues,
   createPatchOperations,
   buildLockChangedFieldOperations,
 } from '../helper'
-import { JansLockConfigFormValues, JansLockConfigurationProps, PatchOperation } from '../types'
-import { trimObjectStrings } from 'Utils/Util'
+import type { JansLockConfigFormValues, JansLockConfigurationProps } from '../types'
 import JansLockFieldRenderer from './JansLockFieldRenderer'
-import { JANS_LOCK_FIELD_CONFIGS } from './constants'
-
-const SORTED_CONFIGS = [
-  ...JANS_LOCK_FIELD_CONFIGS.filter((c) => c.type !== 'toggle'),
-  ...JANS_LOCK_FIELD_CONFIGS.filter((c) => c.type === 'toggle'),
-]
+import JansLockListEditor from './JansLockListEditor'
+import { JANS_LOCK_SECTIONS } from './constants'
 
 const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   lockConfig,
@@ -34,7 +30,13 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
   const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY)
   const isReadOnly = !canWriteLock || isMobile
   const [modal, setModal] = useState(false)
-  const validationSchema = useMemo(() => getLockValidationSchema(t), [t])
+
+  const sections = useMemo(() => getLockSections(lockConfig), [lockConfig])
+  const visibleSections = useMemo(
+    () => JANS_LOCK_SECTIONS.filter(({ requires }) => !requires || sections[requires]),
+    [sections],
+  )
+  const validationSchema = useMemo(() => getLockValidationSchema(t, sections), [t, sections])
 
   useEffect(() => {
     if (isReadOnly) {
@@ -56,82 +58,60 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
     validationSchema,
     validateOnMount: true,
   })
+  const { values, isValid, resetForm, handleSubmit } = formik
 
   const handleCancel = useCallback(() => {
-    formik.resetForm()
-  }, [formik])
+    resetForm()
+  }, [resetForm])
 
-  const handleFormSubmit = useCallback(
-    (e: React.SyntheticEvent<HTMLFormElement>): void => {
-      e.preventDefault()
-      formik.handleSubmit()
-    },
-    [formik],
-  )
+  const patches = useMemo(() => createPatchOperations(values, lockConfig), [values, lockConfig])
 
-  const trimmedValuesAndPatches = useMemo(() => {
-    if (!lockConfig || !formik.values) {
-      return {
-        trimmedValues: null as JansLockConfigFormValues | null,
-        patches: [] as PatchOperation[],
-      }
-    }
-    const trimmedValues = trimObjectStrings(formik.values)
-    const patches = createPatchOperations(trimmedValues, lockConfig)
-    return { trimmedValues, patches }
-  }, [lockConfig, formik.values])
+  const isFormDirty = patches.length > 0
 
-  const isFormDirty = useMemo(() => {
-    return trimmedValuesAndPatches.patches.length > 0
-  }, [trimmedValuesAndPatches])
+  const commitOperations = useMemo(() => buildLockChangedFieldOperations(patches, t), [patches, t])
 
-  const isFormValid = useMemo(() => {
-    if (!formik.values) {
-      return false
-    }
-    return validationSchema.isValidSync(formik.values)
-  }, [formik.values, validationSchema])
-
-  const commitOperations = useMemo(() => {
-    const { trimmedValues } = trimmedValuesAndPatches
-    if (!trimmedValues) return []
-    return buildLockChangedFieldOperations(initialFormValues, trimmedValues, t)
-  }, [initialFormValues, trimmedValuesAndPatches, t])
-
-  const fieldsGridClassName = useMemo(
-    () => `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`,
-    [classes.fieldsGrid, classes.formLabels, classes.formWithInputs],
-  )
+  const fieldsGridClassName = `${classes.fieldsGrid} ${classes.formLabels} ${classes.formWithInputs}`
 
   const submitForm = useCallback(
     (_userMessage: string) => {
-      if (isReadOnly) return
-      const { patches: patchOperations } = trimmedValuesAndPatches
-
-      if (patchOperations.length > 0) {
-        onUpdate(patchOperations)
-      }
+      if (isReadOnly || patches.length === 0) return
+      onUpdate(patches)
     },
-    [trimmedValuesAndPatches, onUpdate, isReadOnly],
+    [patches, onUpdate, isReadOnly],
   )
 
   return (
     <GluuLoader blocking={isSubmitting ?? false}>
-      <Form onSubmit={handleFormSubmit}>
-        <div className={classes.formSection}>
-          <div className={fieldsGridClassName}>
-            {SORTED_CONFIGS.map((fieldConfig) => (
-              <JansLockFieldRenderer
-                key={fieldConfig.name}
-                config={fieldConfig}
-                formik={formik}
-                fieldItemClass={classes.fieldItem}
-                fieldItemFullWidthClass={classes.fieldItemFullWidth}
-                viewOnly={isReadOnly}
-              />
-            ))}
-          </div>
-        </div>
+      <Form onSubmit={handleSubmit}>
+        {visibleSections.map((section) => (
+          <section key={section.id} className={classes.section} aria-label={t(section.title)}>
+            <Accordion className={`${classes.accordionSpacing} b-primary`} initialOpen>
+              <AccordionHeader>{t(section.title)}</AccordionHeader>
+              <AccordionBody>
+                <div className={fieldsGridClassName}>
+                  {section.fields.map((fieldConfig) => (
+                    <JansLockFieldRenderer
+                      key={fieldConfig.name}
+                      config={fieldConfig}
+                      formik={formik}
+                      fieldItemClass={classes.fieldItem}
+                      fieldItemFullWidthClass={classes.fieldItemFullWidth}
+                      viewOnly={isReadOnly}
+                    />
+                  ))}
+                </div>
+                {section.list && (
+                  <JansLockListEditor
+                    config={section.list}
+                    formik={formik}
+                    classes={classes}
+                    viewOnly={isReadOnly}
+                  />
+                )}
+              </AccordionBody>
+            </Accordion>
+          </section>
+        ))}
 
         <GluuThemeFormFooter
           showBack
@@ -140,7 +120,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
           onApply={toggle}
           onCancel={handleCancel}
           disableCancel={!isFormDirty}
-          disableApply={!isFormValid || !isFormDirty}
+          disableApply={!isValid || !isFormDirty}
           applyButtonType="submit"
           isLoading={isSubmitting ?? false}
         />

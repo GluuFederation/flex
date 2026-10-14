@@ -14,7 +14,7 @@ import {
   usePatchLockProperties,
   getGetLockPropertiesQueryKey,
 } from 'JansConfigApi'
-import { PatchOperation } from '../types'
+import type { LockConfig, PatchOperation } from '../types'
 import SetTitle from 'Utils/SetTitle'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
@@ -28,6 +28,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { useStyles } from './styles/JansLockFormPage.style'
 
 const lockResourceId = ADMIN_UI_RESOURCES.Lock
+const EMPTY_CONFIG: LockConfig = {}
 
 const JansLock: React.FC = () => {
   const { t } = useTranslation()
@@ -53,13 +54,14 @@ const JansLock: React.FC = () => {
     isError: isLockError,
     error: lockError,
   } = useGetLockProperties()
+  const isLockUnavailable = isLockError && !lockConfiguration
   useEffect(() => {
     if (!isLockError) return
     const errorMsg = getQueryErrorMessage(lockError, t('messages.error_in_loading'))
     dispatch(updateToast(true, 'error', errorMsg))
   }, [isLockError, lockError, dispatch, t])
 
-  const patchMutation = usePatchLockProperties({
+  const { mutate: patchLockConfig, isPending: isSaving } = usePatchLockProperties({
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.success_in_saving')))
@@ -75,35 +77,35 @@ const JansLock: React.FC = () => {
 
   const handleUpdate = useCallback(
     (patchOperations: PatchOperation[]) => {
-      patchMutation.mutate(
+      patchLockConfig(
         { data: patchOperations },
         {
           onSuccess: () => {
             triggerWebhookForFeature(
-              (lockConfiguration as Record<string, JsonValue>) ?? {},
+              (lockConfiguration ?? {}) as Record<string, JsonValue>,
               adminUiFeatures.jans_link_write,
             )
           },
         },
       )
     },
-    [patchMutation, lockConfiguration],
+    [patchLockConfig, lockConfiguration],
   )
 
   return (
     <GluuPageContent>
       <GluuViewWrapper canShow={canReadLock}>
-        <GluuLoader blocking={isLoading || patchMutation.isPending}>
+        <GluuLoader blocking={isLoading || isSaving}>
           <GluuText variant="h1" className={classes.mobilePageTitle}>
             {t('titles.jans_lock')}
           </GluuText>
           <Card className={classes.formCard}>
             <CardBody className={classes.content}>
               <JansLockConfiguration
-                lockConfig={(lockConfiguration as Record<string, JsonValue>) ?? {}}
+                lockConfig={lockConfiguration ?? EMPTY_CONFIG}
                 onUpdate={handleUpdate}
-                isSubmitting={patchMutation.isPending}
-                canWriteLock={canWriteLock}
+                isSubmitting={isSaving}
+                canWriteLock={canWriteLock && !isLockUnavailable}
                 classes={classes}
               />
             </CardBody>

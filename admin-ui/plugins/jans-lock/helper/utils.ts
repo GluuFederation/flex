@@ -1,249 +1,205 @@
+import { getIn } from 'formik'
+import type { FormikProps } from 'formik'
 import type { TFunction } from 'i18next'
-import type { JsonValue, GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
-import { jansLockConstants } from './constants'
-import type { CedarlingConfig } from '../types'
-import { JansLockConfigFormValues, PatchOperation } from '../types'
+import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
+import type {
+  JansLockConfigFormValues,
+  LockConfig,
+  LockFieldSpec,
+  LockListKey,
+  LockSections,
+  PatchOperation,
+  PolicySourceFormValues,
+  TraceBindingFormValues,
+} from '../types'
+import { LOCK_FIELD_SPECS, LOCK_LIST_SPECS } from './constants'
 
-export const toBooleanValue = (value: JsonValue): boolean => {
+type JsonRecord = Record<string, JsonValue | undefined>
+type LockValue = JsonValue | object | undefined
+type FormValue = JansLockConfigFormValues[keyof JansLockConfigFormValues]
+
+const isRecord = (value: LockValue): value is JsonRecord =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const getPath = (source: LockValue, path: string): LockValue =>
+  path
+    .split('.')
+    .reduce<LockValue>((current, key) => (isRecord(current) ? current[key] : undefined), source)
+
+const setPath = (target: JsonRecord, path: string, value: JsonValue): void => {
+  const keys = path.split('.')
+  const last = keys.pop() as string
+  const parent = keys.reduce<JsonRecord>((current, key) => {
+    if (!isRecord(current[key])) current[key] = {}
+    return current[key] as JsonRecord
+  }, target)
+  parent[last] = value
+}
+
+const toPointer = (path: string): string => `/${path.split('.').join('/')}`
+
+const splitCsv = (value: LockValue): string[] => {
+  const items = Array.isArray(value) ? value : typeof value === 'string' ? value.split(',') : []
+  return items.map((item) => String(item).trim()).filter(Boolean)
+}
+
+const asString = (value: LockValue): string =>
+  typeof value === 'string' ? value : value == null ? '' : String(value)
+
+const asBoolean = (value: LockValue, fallback = false): boolean => {
   if (typeof value === 'boolean') return value
-  if (typeof value === 'string') {
-    return value.toLowerCase() === jansLockConstants.BINARY_VALUES.TRUE
-  }
-  return Boolean(value)
+  if (typeof value === 'string') return value.toLowerCase() === 'true'
+  return fallback
 }
 
-const getPolicySource = (config: Record<string, JsonValue>, index: number) => {
-  const cedarling = config.cedarlingConfiguration as CedarlingConfig | undefined
-  return cedarling?.policySources?.[index]
+const asNumberInput = (value: LockValue): number | '' =>
+  typeof value === 'number' && Number.isFinite(value) ? value : ''
+
+export const getLockSections = (config: LockConfig = {}): LockSections => ({
+  cedarlingConfiguration: isRecord(config.cedarlingConfiguration),
+  grpcConfiguration: isRecord(config.grpcConfiguration),
+  traceConfiguration: isRecord(config.traceConfiguration),
+})
+
+const toFormValue = (spec: LockFieldSpec, value: LockValue): FormValue => {
+  switch (spec.kind) {
+    case 'boolean':
+      return asBoolean(value, spec.defaultValue === true)
+    case 'number':
+      return asNumberInput(value)
+    case 'csv':
+      return splitCsv(value).join(', ')
+    default:
+      return value == null && typeof spec.defaultValue === 'string'
+        ? spec.defaultValue
+        : asString(value)
+  }
 }
 
-export const transformToFormValues = (
-  config: Record<string, JsonValue> = {},
-): JansLockConfigFormValues => {
-  const jsonPolicySource = getPolicySource(config, 0)
-  const zipPolicySource = getPolicySource(config, 1)
+const toPolicySourceForm = (source: LockValue): PolicySourceFormValues => ({
+  enabled: asBoolean(getPath(source, 'enabled'), true),
+  policyStoreUri: asString(getPath(source, 'policyStoreUri')).trim(),
+  authorizationToken: asString(getPath(source, 'authorizationToken')).trim(),
+})
 
-  return {
-    baseDN: (config.baseDN as string) || '',
-    tokenChannels: Array.isArray(config.tokenChannels)
-      ? (config.tokenChannels as string[]).join(', ')
-      : (config.tokenChannels as string) || '',
-    disableJdkLogger: toBooleanValue(config.disableJdkLogger),
-    loggingLevel: (config.loggingLevel as string) || '',
-    loggingLayout: (config.loggingLayout as string) || '',
-    externalLoggerConfiguration: (config.externalLoggerConfiguration as string) || '',
-    disableExternalLoggerConfiguration: toBooleanValue(config.disableExternalLoggerConfiguration),
-    metricReporterEnabled: toBooleanValue(config.metricReporterEnabled),
-    metricReporterInterval:
-      config.metricReporterInterval !== undefined && config.metricReporterInterval !== null
-        ? (config.metricReporterInterval as number)
-        : '',
-    metricReporterKeepDataDays:
-      config.metricReporterKeepDataDays !== undefined && config.metricReporterKeepDataDays !== null
-        ? (config.metricReporterKeepDataDays as number)
-        : '',
-    cleanServiceInterval:
-      config.cleanServiceInterval !== undefined && config.cleanServiceInterval !== null
-        ? (config.cleanServiceInterval as number)
-        : '',
-    metricChannel: (config.metricChannel as string) || '',
-    pdpType: (config.pdpType as string) || '',
-    policiesJsonUrisAuthorizationToken: jsonPolicySource?.authorizationToken || '',
-    policiesJsonUris: jsonPolicySource?.policyStoreUri || '',
-    policiesZipUrisAuthorizationToken: zipPolicySource?.authorizationToken || '',
-    policiesZipUris: zipPolicySource?.policyStoreUri || '',
+const toTraceBindingForm = (binding: LockValue): TraceBindingFormValues => ({
+  clientId: asString(getPath(binding, 'clientId')).trim(),
+  evidenceDomainId: asString(getPath(binding, 'evidenceDomainId')).trim(),
+  allowedProducerIds: splitCsv(getPath(binding, 'allowedProducerIds')).join(', '),
+})
+
+const toArray = (value: LockValue): LockValue[] => (Array.isArray(value) ? value : [])
+
+export const transformToFormValues = (config: LockConfig = {}): JansLockConfigFormValues => {
+  const values: JsonRecord = {}
+  LOCK_FIELD_SPECS.forEach((spec) => {
+    setPath(values, spec.path, toFormValue(spec, getPath(config, spec.path)) as JsonValue)
+  })
+  setPath(
+    values,
+    'cedarlingConfiguration.policySources',
+    toArray(config.cedarlingConfiguration?.policySources).map(toPolicySourceForm),
+  )
+  setPath(
+    values,
+    'traceConfiguration.clientDomainBindings',
+    toArray(config.traceConfiguration?.clientDomainBindings).map(toTraceBindingForm),
+  )
+  return values as object as JansLockConfigFormValues
+}
+
+const toServerValue = (spec: LockFieldSpec, value: LockValue): JsonValue | undefined => {
+  switch (spec.kind) {
+    case 'boolean':
+      return Boolean(value)
+    case 'number':
+      return value === '' || value == null ? undefined : Number(value)
+    case 'csv':
+      return splitCsv(value)
+    default:
+      return asString(value).trim()
   }
+}
+
+const toComparable = (spec: LockFieldSpec, value: LockValue): JsonValue => {
+  const resolved = value ?? spec.defaultValue
+  switch (spec.kind) {
+    case 'boolean':
+      return asBoolean(resolved)
+    case 'number':
+      return typeof resolved === 'number' ? resolved : null
+    case 'csv':
+      return splitCsv(resolved)
+    default:
+      return asString(resolved).trim()
+  }
+}
+
+const LIST_NORMALIZERS: Record<LockListKey, (items: LockValue[]) => JsonValue> = {
+  'cedarlingConfiguration.policySources': (items) => items.map(toPolicySourceForm),
+  'traceConfiguration.clientDomainBindings': (items) =>
+    items.map((item) => {
+      const binding = toTraceBindingForm(item)
+      return { ...binding, allowedProducerIds: splitCsv(binding.allowedProducerIds) }
+    }),
+}
+
+const isSameValue = (previous: JsonValue, next: JsonValue): boolean =>
+  previous === next || JSON.stringify(previous) === JSON.stringify(next)
+
+const buildOperation = (config: LockConfig, path: string, value: JsonValue): PatchOperation => {
+  const keys = path.split('.')
+  const key = keys.pop() as string
+  const parent = keys.length ? getPath(config, keys.join('.')) : config
+  const exists = isRecord(parent) && Object.prototype.hasOwnProperty.call(parent, key)
+  return { op: exists ? 'replace' : 'add', path: toPointer(path), value }
 }
 
 export const createPatchOperations = (
   formValues: JansLockConfigFormValues,
-  originalConfig: Record<string, JsonValue>,
+  originalConfig: LockConfig = {},
 ): PatchOperation[] => {
-  const differences: PatchOperation[] = []
+  const sections = getLockSections(originalConfig)
+  const operations: PatchOperation[] = []
 
-  const normalizeTokenChannels = (value: JsonValue | undefined): JsonValue => {
-    if (Array.isArray(value)) {
-      const channels = value.map((channel) => String(channel).trim()).filter(Boolean)
-      return channels.length > 0 ? channels : null
-    }
-
-    if (typeof value === 'string') {
-      const channels = value
-        .split(',')
-        .map((channel) => channel.trim())
-        .filter(Boolean)
-      return channels.length > 0 ? channels : null
-    }
-
-    return value ?? null
-  }
-
-  const {
-    policiesJsonUrisAuthorizationToken,
-    policiesJsonUris,
-    policiesZipUrisAuthorizationToken,
-    policiesZipUris,
-    ...flatValues
-  } = formValues
-
-  const normalizedValues: Record<string, JsonValue> = { ...flatValues }
-
-  normalizedValues.tokenChannels = normalizeTokenChannels(normalizedValues.tokenChannels)
-
-  const booleanFields = [
-    'metricReporterEnabled',
-    'disableJdkLogger',
-    'disableExternalLoggerConfiguration',
-  ]
-  booleanFields.forEach((field) => {
-    if (field in normalizedValues) {
-      normalizedValues[field] = String(normalizedValues[field]) === 'true'
-    }
+  LOCK_FIELD_SPECS.forEach((spec) => {
+    if (spec.readOnly || (spec.section && !sections[spec.section])) return
+    const next = toServerValue(spec, getPath(formValues, spec.path))
+    if (next === undefined) return
+    const previous = toComparable(spec, getPath(originalConfig, spec.path))
+    if (isSameValue(previous, next)) return
+    operations.push(buildOperation(originalConfig, spec.path, next))
   })
 
-  const numericFields = [
-    'metricReporterInterval',
-    'metricReporterKeepDataDays',
-    'cleanServiceInterval',
-  ]
-  numericFields.forEach((field) => {
-    if (normalizedValues[field] !== undefined && normalizedValues[field] !== '') {
-      normalizedValues[field] = Number(normalizedValues[field])
-    } else {
-      normalizedValues[field] = null
-    }
+  LOCK_LIST_SPECS.forEach(({ path, section }) => {
+    if (!sections[section]) return
+    const normalize = LIST_NORMALIZERS[path]
+    const next = normalize(toArray(getPath(formValues, path)))
+    const previous = normalize(toArray(getPath(originalConfig, path)))
+    if (isSameValue(previous, next)) return
+    operations.push(buildOperation(originalConfig, path, next))
   })
-
-  for (const key in normalizedValues) {
-    const originalValue =
-      key === 'tokenChannels' ? normalizeTokenChannels(originalConfig[key]) : originalConfig[key]
-
-    if (Object.prototype.hasOwnProperty.call(originalConfig, key)) {
-      if (JSON.stringify(originalValue) !== JSON.stringify(normalizedValues[key])) {
-        if (normalizedValues[key] != null) {
-          differences.push({
-            op: 'replace',
-            path: `/${key}`,
-            value: normalizedValues[key],
-          })
-        } else if (originalValue != null) {
-          differences.push({
-            op: 'replace',
-            path: `/${key}`,
-            value: null,
-          })
-        }
-      }
-    } else if (
-      normalizedValues[key] != null &&
-      normalizedValues[key] !== '' &&
-      normalizedValues[key] !== false
-    ) {
-      const value = normalizedValues[key]
-      const isEmptyArray = Array.isArray(value) && value.length === 0
-      const isEmptyObject =
-        typeof value === 'object' &&
-        value !== null &&
-        !Array.isArray(value) &&
-        Object.keys(value as Record<string, JsonValue>).length === 0
-
-      if (!isEmptyArray && !isEmptyObject) {
-        differences.push({
-          op: 'add',
-          path: `/${key}`,
-          value: normalizedValues[key],
-        })
-      }
-    }
-  }
-
-  // Handle nested cedarling policy sources
-  const cedarling = originalConfig.cedarlingConfiguration as CedarlingConfig | undefined
-  const originalJsonSource = cedarling?.policySources?.[0]
-  const originalZipSource = cedarling?.policySources?.[1]
-
-  const jsonSourceChanged =
-    (policiesJsonUrisAuthorizationToken || '') !== (originalJsonSource?.authorizationToken || '') ||
-    (policiesJsonUris || '') !== (originalJsonSource?.policyStoreUri || '')
-
-  const zipSourceChanged =
-    (policiesZipUrisAuthorizationToken || '') !== (originalZipSource?.authorizationToken || '') ||
-    (policiesZipUris || '') !== (originalZipSource?.policyStoreUri || '')
-
-  if (jsonSourceChanged || zipSourceChanged) {
-    const policySources = [
-      policiesJsonUris || policiesJsonUrisAuthorizationToken
-        ? {
-            authorizationToken: policiesJsonUrisAuthorizationToken || '',
-            policyStoreUri: policiesJsonUris || '',
-          }
-        : null,
-      policiesZipUris || policiesZipUrisAuthorizationToken
-        ? {
-            authorizationToken: policiesZipUrisAuthorizationToken || '',
-            policyStoreUri: policiesZipUris || '',
-          }
-        : null,
-    ].filter((e): e is { authorizationToken: string; policyStoreUri: string } => e !== null)
-
-    const updatedCedarling = {
-      ...(cedarling || {}),
-      policySources,
-    }
-
-    differences.push({
-      op: cedarling ? 'replace' : 'add',
-      path: '/cedarlingConfiguration',
-      value: updatedCedarling,
-    })
-  }
-
-  return differences
-}
-
-const LOCK_FIELD_LABELS: Array<{ key: keyof JansLockConfigFormValues; label: string }> = [
-  { key: 'baseDN', label: 'fields.base_dn' },
-  { key: 'tokenChannels', label: 'fields.token_channels' },
-  { key: 'loggingLevel', label: 'fields.logging_level' },
-  { key: 'loggingLayout', label: 'fields.logging_layout' },
-  { key: 'externalLoggerConfiguration', label: 'fields.external_logger_configuration' },
-  {
-    key: 'disableExternalLoggerConfiguration',
-    label: 'fields.disable_external_logger_configuration',
-  },
-  { key: 'metricReporterEnabled', label: 'fields.metric_reporter_enabled' },
-  { key: 'metricReporterInterval', label: 'fields.metric_reporter_interval' },
-  { key: 'metricReporterKeepDataDays', label: 'fields.metric_reporter_keep_data_days' },
-  { key: 'cleanServiceInterval', label: 'fields.clean_service_interval' },
-  { key: 'metricChannel', label: 'fields.metric_channel' },
-  { key: 'pdpType', label: 'fields.pdp_type' },
-  { key: 'disableJdkLogger', label: 'fields.disable_jdk_logger' },
-  {
-    key: 'policiesJsonUrisAuthorizationToken',
-    label: 'fields.policies_json_uris_authorization_token',
-  },
-  { key: 'policiesJsonUris', label: 'fields.policies_json_uris' },
-  {
-    key: 'policiesZipUrisAuthorizationToken',
-    label: 'fields.policies_zip_uris_authorization_token',
-  },
-  { key: 'policiesZipUris', label: 'fields.policies_zip_uris' },
-]
-
-export const buildLockChangedFieldOperations = (
-  initial: JansLockConfigFormValues,
-  current: JansLockConfigFormValues,
-  t: TFunction,
-): GluuCommitDialogOperation[] => {
-  const operations: GluuCommitDialogOperation[] = []
-
-  for (const { key, label } of LOCK_FIELD_LABELS) {
-    const oldVal = initial[key]
-    const newVal = current[key]
-    if (String(oldVal ?? '') !== String(newVal ?? '')) {
-      operations.push({ path: t(label), value: (newVal as JsonValue) ?? null })
-    }
-  }
 
   return operations
 }
+
+const LABELS_BY_POINTER = new Map<string, string>(
+  [...LOCK_FIELD_SPECS, ...LOCK_LIST_SPECS].map(({ path, label }) => [toPointer(path), label]),
+)
+
+export const buildLockChangedFieldOperations = (
+  patches: PatchOperation[],
+  t: TFunction,
+): GluuCommitDialogOperation[] =>
+  patches.map(({ path, value }) => {
+    const label = LABELS_BY_POINTER.get(path)
+    return { path: label ? t(label) : path, value }
+  })
+
+export const hasSameFieldState = (
+  prev: FormikProps<JansLockConfigFormValues>,
+  next: FormikProps<JansLockConfigFormValues>,
+  name: string,
+): boolean =>
+  getIn(prev.values, name) === getIn(next.values, name) &&
+  getIn(prev.errors, name) === getIn(next.errors, name)

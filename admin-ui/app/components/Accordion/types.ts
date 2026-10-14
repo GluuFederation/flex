@@ -1,4 +1,5 @@
 import type React from 'react'
+import type { CollapseProps } from '@mui/material/Collapse'
 
 export type AccordionProps = {
   initialOpen?: boolean
@@ -17,6 +18,7 @@ export type AccordionHeaderProps = {
 export type AccordionBodyProps = {
   children?: React.ReactNode
   className?: string
+  timeout?: CollapseProps['timeout']
 }
 
 export type AccordionContextType = {
