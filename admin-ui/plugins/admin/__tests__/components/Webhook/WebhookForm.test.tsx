@@ -190,6 +190,42 @@ describe('WebhookForm', () => {
       expect(screen.getByText('Feature Two')).toBeInTheDocument()
     })
 
+    it('orders the feature options as the sidebar menu, unknown features last', async () => {
+      const { useGetAllFeatures } = jest.requireMock('JansConfigApi')
+      const defaultImpl = useGetAllFeatures.getMockImplementation()
+      useGetAllFeatures.mockImplementation(() => ({
+        data: [
+          { auiFeatureId: 'attributes_delete', displayName: 'Schema:Person - Delete' },
+          { auiFeatureId: 'custom_script_write', displayName: 'Custom Script - Add/Edit' },
+          { auiFeatureId: 'jans_keycloak_link_write', displayName: 'Jans Keycloak Link - Edit' },
+          { auiFeatureId: 'jans_link_write', displayName: 'Jans Link - Edit' },
+          { auiFeatureId: 'oidc_clients_write', displayName: 'OIDC Clients - Add/Edit' },
+          { auiFeatureId: 'policy_store_delete', displayName: 'Policy Store - Delete' },
+          { auiFeatureId: 'policy_store_edit', displayName: 'Policy Store - Add/Edit' },
+          { auiFeatureId: 'users_edit', displayName: 'Users - Add/Edit' },
+        ],
+        status: 'success',
+        isFetching: false,
+      }))
+      try {
+        await renderForm()
+
+        const select = document.querySelector('select[name="auiFeatureIds"]') as HTMLSelectElement
+        expect(Array.from(select.options, (option) => option.value).filter(Boolean)).toEqual([
+          'policy_store_edit',
+          'policy_store_delete',
+          'oidc_clients_write',
+          'users_edit',
+          'custom_script_write',
+          'attributes_delete',
+          'jans_link_write',
+          'jans_keycloak_link_write',
+        ])
+      } finally {
+        useGetAllFeatures.mockImplementation(defaultImpl)
+      }
+    })
+
     it('renders the footer Back, Cancel and Apply actions', async () => {
       await renderForm()
       expect(screen.getByText(/Back/i)).toBeInTheDocument()
