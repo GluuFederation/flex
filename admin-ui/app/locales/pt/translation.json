@@ -2869,7 +2869,11 @@
       "folderPathLabel": "Caminho da pasta",
       "folderPathRequired": "Introduza um caminho de pasta.",
       "folderDeleted": "Pasta eliminada",
-      "folderRenamed": "Pasta renomeada"
+      "folderRenamed": "Pasta renomeada",
+      "inum": "ID único do repositório de políticas.",
+      "displayname": "Nome do repositório de políticas; nos repositórios enviados, o nome do arquivo .cjar.",
+      "description": "Comentário informado ao enviar o repositório de políticas.",
+      "jansStatus": "Status do repositório de políticas: active ou inactive. Novos envios ficam inactive."
     },
     "scim": {
       "baseDN": "Nome distinto base (DN) sob o qual as entradas SCIM são armazenadas.",

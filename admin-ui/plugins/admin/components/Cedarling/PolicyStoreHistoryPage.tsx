@@ -236,12 +236,11 @@ const PolicyStoreHistoryPage: React.FC = () => {
         }
         setPendingAction(null)
         setActivationConfirmed(false)
-        refetch()
       } catch (error) {
         logger.error(`Policy store ${type} failed:`, error instanceof Error ? error : String(error))
       }
     },
-    [pendingAction, setPolicyStoreActive, deletePolicyStore, refetch],
+    [pendingAction, setPolicyStoreActive, deletePolicyStore],
   )
 
   const columns: ColumnDef<AdminUIPolicyStore>[] = useMemo(
@@ -442,7 +441,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const dialogFeature =
     pendingAction?.type === 'delete'
       ? adminUiFeatures.policy_store_delete
-      : adminUiFeatures.policy_store_write
+      : adminUiFeatures.policy_store_edit
 
   const loading = isFetching || isMutating
 

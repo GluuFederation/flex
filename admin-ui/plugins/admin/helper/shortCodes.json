@@ -172,159 +172,99 @@
   "jans_link_write": {
     "fields": [
       {
-        "key": "sourceConfigs",
-        "label": "menus.source_backend_ldap_servers",
-        "description": "documentation.jans_link.sourceConfigs"
+        "key": "baseEndpoint",
+        "label": "fields.lock_base_endpoint",
+        "description": "documentation.jans_lock.baseEndpoint"
       },
       {
-        "key": "targetConfig",
-        "label": "menus.inum_db_server",
-        "description": "documentation.jans_link.targetConfig"
+        "key": "openIdIssuer",
+        "label": "fields.lock_openid_issuer",
+        "description": "documentation.jans_lock.openIdIssuer"
       },
       {
-        "key": "ldapSearchSizeLimit",
-        "label": "fields.search_size_limit",
-        "description": "documentation.jans_link.ldapSearchSizeLimit"
+        "key": "clientId",
+        "label": "fields.client_id",
+        "description": "documentation.jans_lock.clientId"
       },
       {
-        "key": "keyAttributes",
-        "label": "fields.key_attribute",
-        "description": "documentation.jans_link.keyAttributes"
+        "key": "messageConsumerType",
+        "label": "fields.lock_message_consumer_type",
+        "description": "documentation.jans_lock.messageConsumerType"
       },
       {
-        "key": "keyObjectClasses",
-        "label": "fields.object_class",
-        "description": "documentation.jans_link.keyObjectClasses"
+        "key": "errorReasonEnabled",
+        "label": "fields.error_reason_enabled",
+        "description": "documentation.jans_lock.errorReasonEnabled"
       },
       {
-        "key": "sourceAttributes",
-        "label": "fields.source_attribute",
-        "description": "documentation.jans_link.sourceAttributes"
+        "key": "protectionMode",
+        "label": "fields.lock_protection_mode",
+        "description": "documentation.jans_lock.protectionMode"
       },
       {
-        "key": "customLdapFilter",
-        "label": "fields.custom_ldap_filter",
-        "description": "documentation.jans_link.customLdapFilter"
-      },
-      {
-        "key": "updateMethod",
-        "label": "fields.refresh_method",
-        "description": "documentation.jans_link.refresh_method"
-      },
-      {
-        "key": "defaultInumServer",
-        "label": "fields.default_inum_server",
-        "description": "documentation.jans_link.defaultInumServer"
-      },
-      {
-        "key": "keepExternalPerson",
-        "label": "fields.keep_external_persons",
-        "description": "documentation.jans_link.keepExternalPerson"
-      },
-      {
-        "key": "useSearchLimit",
-        "label": "fields.use_search_limit",
-        "description": "documentation.jans_link.useSearchLimit"
-      },
-      {
-        "key": "attributeMapping",
-        "label": "fields.change_attribute_name_from_source_to_estination",
-        "description": "documentation.jans_link.attributeMapping"
-      },
-      {
-        "key": "snapshotFolder",
-        "label": "fields.snapshot_folder",
-        "description": "documentation.jans_link.snapshotFolder"
-      },
-      {
-        "key": "snapshotMaxCount",
-        "label": "fields.snapshots_count",
-        "description": "documentation.jans_link.snapshotMaxCount"
-      },
-      {
-        "key": "baseDN",
-        "label": "fields.base_dn",
-        "description": "documentation.jans_link.baseDN"
-      },
-      {
-        "key": "personCustomObjectClass",
-        "label": "fields.person_custom_object_class",
-        "description": "documentation.jans_link.personCustomObjectClass"
+        "key": "auditPersistenceMode",
+        "label": "fields.lock_audit_persistence_mode",
+        "description": "documentation.jans_lock.auditPersistenceMode"
       },
       {
         "key": "loggingLevel",
         "label": "fields.logging_level",
-        "description": "documentation.jans_link.loggingLevel"
+        "description": "documentation.jans_lock.loggingLevel"
       },
       {
         "key": "loggingLayout",
         "label": "fields.logging_layout",
-        "description": "documentation.jans_link.loggingLayout"
+        "description": "documentation.jans_lock.loggingLayout"
       },
       {
         "key": "externalLoggerConfiguration",
         "label": "fields.external_logger_configuration",
-        "description": "documentation.jans_link.externalLoggerConfiguration"
-      },
-      {
-        "key": "metricReporterInterval",
-        "label": "fields.metric_reporter_interval",
-        "description": "documentation.jans_link.metricReporterInterval"
-      },
-      {
-        "key": "metricReporterKeepDataDays",
-        "label": "fields.metric_reporter_keep_data_days",
-        "description": "documentation.jans_link.metricReporterKeepDataDays"
-      },
-      {
-        "key": "metricReporterEnabled",
-        "label": "fields.metric_reporter_enabled",
-        "description": "documentation.jans_link.metricReporterEnabled"
+        "description": "documentation.jans_lock.externalLoggerConfiguration"
       },
       {
         "key": "disableJdkLogger",
         "label": "fields.disable_jdk_logger",
-        "description": "documentation.jans_link.disableJdkLogger"
+        "description": "documentation.jans_lock.disableJdkLogger"
+      },
+      {
+        "key": "disableExternalLoggerConfiguration",
+        "label": "fields.disable_external_logger_configuration",
+        "description": "documentation.jans_lock.disableExternalLoggerConfiguration"
+      },
+      {
+        "key": "metricReporterEnabled",
+        "label": "fields.metric_reporter_enabled",
+        "description": "documentation.jans_lock.metricReporterEnabled"
+      },
+      {
+        "key": "metricReporterInterval",
+        "label": "fields.metric_reporter_interval",
+        "description": "documentation.jans_lock.metricReporterInterval"
+      },
+      {
+        "key": "metricReporterKeepDataDays",
+        "label": "fields.metric_reporter_keep_data_days",
+        "description": "documentation.jans_lock.metricReporterKeepDataDays"
+      },
+      {
+        "key": "statEnabled",
+        "label": "fields.lock_stat_enabled",
+        "description": "documentation.jans_lock.statEnabled"
+      },
+      {
+        "key": "statTimerIntervalInSeconds",
+        "label": "fields.lock_stat_timer_interval_in_seconds",
+        "description": "documentation.jans_lock.statTimerIntervalInSeconds"
       },
       {
         "key": "cleanServiceInterval",
         "label": "fields.clean_service_interval",
-        "description": "documentation.jans_link.cleanServiceInterval"
+        "description": "documentation.jans_lock.cleanServiceInterval"
       },
       {
-        "key": "linkEnabled",
-        "label": "fields.enabled",
-        "description": "documentation.jans_link.linkEnabled"
-      },
-      {
-        "key": "serverIpAddress",
-        "label": "fields.server_ip_address",
-        "description": "documentation.jans_link.serverIpAddress"
-      },
-      {
-        "key": "pollingInterval",
-        "label": "fields.polling_interval_mins",
-        "description": "documentation.jans_link.pollingInterval"
-      },
-      {
-        "key": "lastUpdate",
-        "label": "fields.last_run",
-        "description": "documentation.jans_link.lastUpdate"
-      },
-      {
-        "key": "lastUpdateCount",
-        "label": "fields.updates_at_last_run",
-        "description": "documentation.jans_link.lastUpdateCount"
-      },
-      {
-        "key": "problemCount",
-        "label": "fields.problems_at_last_run",
-        "description": "documentation.jans_link.problemCount"
-      },
-      {
-        "key": "useLocalCache",
-        "label": "fields.use_local_cache",
-        "description": "documentation.jans_link.useLocalCache"
+        "key": "cleanServiceBatchChunkSize",
+        "label": "fields.clean_service_batch_chunk_size",
+        "description": "documentation.jans_lock.cleanServiceBatchChunkSize"
       }
     ]
   },
@@ -840,45 +780,6 @@
       }
     ]
   },
-  "users_add": {
-    "fields": [
-      {
-        "key": "givenName",
-        "label": "documentation.user.givenName",
-        "description": "documentation.user.givenName"
-      },
-      {
-        "key": "middleName",
-        "label": "documentation.user.middleName",
-        "description": "documentation.user.middleName"
-      },
-      {
-        "key": "sn",
-        "label": "documentation.user.sn",
-        "description": "documentation.user.sn"
-      },
-      {
-        "key": "userId",
-        "label": "documentation.user.userId",
-        "description": "documentation.user.userId"
-      },
-      {
-        "key": "displayName",
-        "label": "documentation.user.displayName",
-        "description": "documentation.user.displayName"
-      },
-      {
-        "key": "mail",
-        "label": "documentation.user.mail",
-        "description": "documentation.user.mail"
-      },
-      {
-        "key": "status",
-        "label": "documentation.user.status",
-        "description": "documentation.user.status"
-      }
-    ]
-  },
   "users_edit": {
     "fields": [
       {
@@ -1131,6 +1032,49 @@
         "key": "idpEntityId",
         "label": "fields.idp_entity_id",
         "description": "documentation.saml.idp_entity_id"
+      }
+    ]
+  },
+  "policy_store_edit": {
+    "fields": [
+      {
+        "key": "displayname",
+        "label": "fields.filename",
+        "description": "documentation.policyStore.displayname"
+      },
+      {
+        "key": "description",
+        "label": "fields.comments",
+        "description": "documentation.policyStore.description"
+      },
+      {
+        "key": "jansStatus",
+        "label": "fields.status",
+        "description": "documentation.policyStore.jansStatus"
+      }
+    ]
+  },
+  "policy_store_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.policyStore.inum"
+      },
+      {
+        "key": "displayname",
+        "label": "fields.filename",
+        "description": "documentation.policyStore.displayname"
+      },
+      {
+        "key": "description",
+        "label": "fields.comments",
+        "description": "documentation.policyStore.description"
+      },
+      {
+        "key": "jansStatus",
+        "label": "fields.status",
+        "description": "documentation.policyStore.jansStatus"
       }
     ]
   }

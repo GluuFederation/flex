@@ -5,6 +5,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import PolicyStoreHistoryPage from 'Plugins/admin/components/Cedarling/PolicyStoreHistoryPage'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -49,6 +50,7 @@ const mockBackupStore = {
 
 const mockEditMutate = jest.fn().mockResolvedValue(undefined)
 const mockDeleteMutate = jest.fn().mockResolvedValue(undefined)
+const mockRefetch = jest.fn()
 const mockSyncMutate = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('JansConfigApi', () => ({
@@ -56,7 +58,7 @@ jest.mock('JansConfigApi', () => ({
     data: { entries: [mockActiveStore, mockBackupStore], totalEntriesCount: 2 },
     isLoading: false,
     isFetching: false,
-    refetch: jest.fn(),
+    refetch: mockRefetch,
   })),
   useCreateAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: jest.fn(), isPending: false })),
   useEditAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockEditMutate, isPending: false })),
@@ -304,7 +306,25 @@ describe('PolicyStoreHistoryPage', () => {
         }),
       ])
     })
+    const [trigger] = webhookTriggers(dispatchSpy)
+    expect(Object.keys(trigger.payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_delete.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
+  })
+
+  it('refreshes the store list once after a delete', async () => {
+    const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    await openConfirmFor('Delete')
+
+    await waitFor(() => {
+      expect(invalidateSpy).toHaveBeenCalledTimes(1)
+    })
+    expect(mockRefetch).not.toHaveBeenCalled()
+    invalidateSpy.mockRestore()
   })
 
   it('triggers the policy store add/edit webhook on activation', async () => {
@@ -323,13 +343,16 @@ describe('PolicyStoreHistoryPage', () => {
 
     const [trigger] = webhookTriggers(dispatchSpy)
     expect(trigger.payload).toEqual({
-      feature: 'policy_store_write',
+      feature: 'policy_store_edit',
       createdFeatureValue: expect.objectContaining({
         inum: 'backup-1',
         displayname: 'previous-policies.cjar',
         jansStatus: 'active',
       }),
     })
+    expect(Object.keys(trigger.payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_edit.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
   })
 })

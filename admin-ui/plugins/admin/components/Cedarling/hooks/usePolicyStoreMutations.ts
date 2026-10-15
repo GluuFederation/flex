@@ -104,8 +104,11 @@ export const usePolicyStoreMutations = () => {
         })
         dispatch(
           triggerWebhook({
-            createdFeatureValue: data as Record<string, JsonValue>,
-            feature: adminUiFeatures.policy_store_write,
+            createdFeatureValue: {
+              ...data,
+              jansStatus: POLICY_STORE_STATUS.INACTIVE,
+            } as Record<string, JsonValue>,
+            feature: adminUiFeatures.policy_store_edit,
           }),
         )
         invalidatePolicyStores()
@@ -142,7 +145,7 @@ export const usePolicyStoreMutations = () => {
               ...store,
               jansStatus: POLICY_STORE_STATUS.ACTIVE,
             } as Record<string, JsonValue>,
-            feature: adminUiFeatures.policy_store_write,
+            feature: adminUiFeatures.policy_store_edit,
           }),
         )
         dispatch(updateToast(true, 'success', t('documentation.policyStore.activateSuccess')))

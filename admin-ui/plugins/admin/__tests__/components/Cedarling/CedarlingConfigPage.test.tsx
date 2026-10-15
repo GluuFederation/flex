@@ -5,6 +5,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import CedarlingConfigPage from 'Plugins/admin/components/Cedarling/CedarlingConfigPage'
+import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
 jest.mock('Plugins/PluginReducersResolver', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('Plugins/PluginListenersResolver', () => ({ __esModule: true, default: jest.fn() }))
@@ -88,6 +89,18 @@ describe('CedarlingConfigPage', () => {
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
     const policyStoreElements = await screen.findAllByText(/Policy Store/i)
     expect(policyStoreElements.length).toBeGreaterThan(0)
+  })
+
+  it('clears leftover webhook results when the page mounts', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'webhook/setShowWebhookExecutionDialog', payload: false }),
+    )
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'webhook/setWebhookTriggerResults', payload: [] }),
+    )
   })
 
   it('offers only the cjar extension on the file input', () => {
@@ -235,13 +248,16 @@ describe('CedarlingConfigPage', () => {
       expect(triggers).toHaveLength(1)
     })
     expect(triggers[0].payload).toEqual({
-      feature: 'policy_store_write',
+      feature: 'policy_store_edit',
       createdFeatureValue: expect.objectContaining({
         displayname: 'test-policy.cjar',
         description: 'Rolling out updated admin policies',
       }),
     })
-    expect(triggers[0].payload?.createdFeatureValue).not.toHaveProperty('jansStatus')
+    expect(triggers[0].payload?.createdFeatureValue).toHaveProperty('jansStatus', 'inactive')
+    expect(Object.keys(triggers[0].payload?.createdFeatureValue ?? {})).toEqual(
+      expect.arrayContaining(shortCodes.policy_store_edit.fields.map(({ key }) => key)),
+    )
     dispatchSpy.mockRestore()
   })
 })
