@@ -63,7 +63,7 @@ if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 def get_flex_setup_parser():
     parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
-    parser.add_argument('--flex-branch', help="Gluu flex setup github branch", default='main')
+    parser.add_argument('--flex-branch', help="Gluu flex setup github branch or tag", default=app_versions['FLEX_RELEASE_TAG'] or 'main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
@@ -388,7 +388,7 @@ class flex_installer(JettyInstaller):
         print("Downloading Gluu Flex components")
 
         download_url, target = (
-        'https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']),
+        'https://github.com/GluuFederation/flex/archive/{}.zip'.format(app_versions['FLEX_BRANCH']),
         self.flex_path)
 
         if not flex_installer_downloaded:
