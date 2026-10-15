@@ -96,6 +96,7 @@ jobs:
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         path: temp-flex
+        ref: ${{ github.event_name == 'workflow_dispatch' && inputs.target_tag || github.ref }}
 
     - name: Getting build dependencies
       id: get_dependencies
@@ -200,6 +201,8 @@ jobs:
       run: |
         cd flex/
         sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="${{ env.JANS_BRANCH }}" --jans-setup-branch="${{ env.JANS_SETUP_BRANCH }}" -download-exit -yes --keep-downloads --keep-setup -force-download
+        # ship the built tree's setup, not whatever flex branch the installer fetched
+        sudo cp -r ../temp-flex/flex-linux-setup/flex_linux_setup/. /opt/jans/jans-setup/flex/flex-linux-setup/
         cp -r /opt/dist flex-src/opt/
         cp -r /opt/jans flex-src/opt/
         touch flex-src/opt/jans/jans-setup/package
