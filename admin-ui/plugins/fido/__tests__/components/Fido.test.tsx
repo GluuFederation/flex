@@ -69,7 +69,7 @@ const mockFidoConfig = {
     disableMetadataService: false,
     hints: ['security-key'],
     enterpriseAttestation: false,
-    attestationMode: 'direct',
+    attestationMode: 'monitor',
   },
 }
 
@@ -161,7 +161,7 @@ describe('Fido', () => {
       })
       expect(screen.getByText(/Attestation Mode/i)).toBeInTheDocument()
       const selectEl = screen.getByTestId('attestationMode') as HTMLSelectElement
-      expect(selectEl.value).toBe('direct')
+      expect(selectEl.value).toBe('monitor')
     })
 
     it('renders requested parties section', async () => {
