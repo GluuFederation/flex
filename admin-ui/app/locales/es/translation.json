@@ -2871,7 +2871,11 @@
       "folderPathLabel": "Ruta de la carpeta",
       "folderPathRequired": "Introduzca una ruta de carpeta.",
       "folderDeleted": "Carpeta eliminada",
-      "folderRenamed": "Carpeta renombrada"
+      "folderRenamed": "Carpeta renombrada",
+      "inum": "ID único del almacén de políticas.",
+      "displayname": "Nombre del almacén de políticas; en los almacenes subidos, el nombre del archivo .cjar.",
+      "description": "Comentario introducido al subir el almacén de políticas.",
+      "jansStatus": "Estado del almacén de políticas: active o inactive. Las nuevas subidas quedan inactive."
     },
     "scim": {
       "baseDN": "Nombre distintivo base (DN) bajo el que se guardan las entradas SCIM.",

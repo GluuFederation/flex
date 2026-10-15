@@ -2871,7 +2871,11 @@
       "folderPathLabel": "Folder path",
       "folderPathRequired": "Enter a folder path.",
       "folderDeleted": "Folder deleted",
-      "folderRenamed": "Folder renamed"
+      "folderRenamed": "Folder renamed",
+      "inum": "Unique ID of the policy store.",
+      "displayname": "Name of the policy store; for uploaded stores, the .cjar file name.",
+      "description": "Comment entered when the policy store was uploaded.",
+      "jansStatus": "Status of the policy store: active or inactive. New uploads are inactive."
     },
     "scim": {
       "baseDN": "Base distinguished name (DN) under which SCIM entries are stored.",

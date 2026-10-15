@@ -80,16 +80,16 @@ const JansLock: React.FC = () => {
       patchLockConfig(
         { data: patchOperations },
         {
-          onSuccess: () => {
+          onSuccess: (savedConfig) => {
             triggerWebhookForFeature(
-              (lockConfiguration ?? {}) as Record<string, JsonValue>,
+              (savedConfig ?? {}) as Record<string, JsonValue>,
               adminUiFeatures.jans_link_write,
             )
           },
         },
       )
     },
-    [patchLockConfig, lockConfiguration],
+    [patchLockConfig],
   )
 
   return (

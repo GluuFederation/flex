@@ -39,14 +39,14 @@ On click of `Set active` action button, it promotes a backup to the active store
 
 Activation runs in two steps:
 
-1. A confirmation dialog states that activating restarts the system, triggers the webhooks registered against the `policy_store_write` feature, and signs you out of the Admin UI.
+1. A confirmation dialog states that activating restarts the system, triggers the webhooks registered against the `policy_store_edit` feature, and signs you out of the Admin UI.
 2. A commit dialog collects a comment describing the change. The comment is between 10 and 512 characters and is written to the audit log.
 
 On success the Admin UI:
 
 - Marks the selected store active and the previously active store a backup
 - Regenerates the role-to-scope mappings from the newly active store. A failed regeneration is logged and does not block the activation
-- Triggers any enabled webhooks mapped to `policy_store_write`
+- Triggers any enabled webhooks mapped to `policy_store_edit`
 - Signs you out after three seconds
 
 Sign in again to pick up the permissions defined by the new store.
