@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
+import { formatBytes } from '@/utils/cjarArchive'
 import PolicyStoreHistoryPage from 'Plugins/admin/components/Cedarling/PolicyStoreHistoryPage'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 
@@ -34,6 +35,7 @@ const mockActiveStore = {
   description: 'Live policies',
   jansStatus: 'active',
   creationDate: '2026-07-14T10:15:30.000Z',
+  jansLastUpd: '2026-07-15T08:00:00.000Z',
   jansUsrDN: 'inum=admin-user,ou=people,o=jans',
   policyStore: btoa('active-archive-bytes'),
 }
@@ -44,7 +46,6 @@ const mockBackupStore = {
   description: 'Kept as a rollback point',
   jansStatus: 'inactive',
   creationDate: '2026-07-01T09:00:00.000Z',
-  jansUsrDN: 'inum=other-user,ou=people,o=jans',
   policyStore: btoa('backup-archive-bytes'),
 }
 
@@ -136,6 +137,42 @@ describe('PolicyStoreHistoryPage', () => {
     expect(screen.getByText('previous-policies.cjar')).toBeInTheDocument()
     expect(screen.getByText('ACTIVE')).toBeInTheDocument()
     expect(screen.getByText('BACKUP')).toBeInTheDocument()
+  })
+
+  it('shows the policy store ID in the table row', async () => {
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    expect(await screen.findByText('active-1')).toBeInTheDocument()
+    expect(screen.getByText('backup-1')).toBeInTheDocument()
+    const headers = screen.getAllByRole('columnheader').map((header) => header.textContent?.trim())
+    expect(headers.filter(Boolean)[0]).toBe('Inum')
+  })
+
+  it('shows the last update, uploader and size when a row is expanded', async () => {
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('current-policies.cjar')
+    expect(screen.queryByText('admin-user')).not.toBeInTheDocument()
+
+    const [activeRowExpand] = document.querySelectorAll<HTMLButtonElement>('[data-expand-button]')
+    fireEvent.click(activeRowExpand)
+
+    expect(await screen.findByText('admin-user')).toBeInTheDocument()
+    expect(screen.getByText(formatBytes('active-archive-bytes'.length))).toBeInTheDocument()
+    expect(
+      screen.getByText(new Date(mockActiveStore.jansLastUpd).toLocaleString()),
+    ).toBeInTheDocument()
+    expect(
+      screen.getAllByText(/^(Last Updated|Uploaded By|Size):$/).map((label) => label.textContent),
+    ).toEqual(['Last Updated:', 'Uploaded By:', 'Size:'])
+  })
+
+  it('shows a dash for details a policy store does not have', async () => {
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+
+    const expandButtons = document.querySelectorAll<HTMLButtonElement>('[data-expand-button]')
+    fireEvent.click(expandButtons[1])
+
+    expect(await screen.findAllByText('-')).toHaveLength(2)
   })
 
   it('shows the comments recorded at upload time', async () => {

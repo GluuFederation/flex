@@ -6,27 +6,10 @@ import { GluuDetailGrid } from '@/components/GluuDetailGrid'
 import type { GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { useStyles } from './styles/SessionListPage.style'
 import { formatDate } from '@/utils/dayjsUtils'
+import { extractDnInum } from '@/utils/Util'
 import { AUTHENTICATED_SESSION_STATE, DOC_CATEGORY, type SessionDetailPageProps } from '../types'
 
 const JANS_ID_ATTRS = ['inum', 'jansid', 'jansuniqueid']
-
-const extractJansId = (userDn: string | undefined): string => {
-  if (!userDn) return '—'
-  try {
-    const parts = userDn.split(',')
-    for (const part of parts) {
-      const equalIndex = part.indexOf('=')
-      if (equalIndex === -1) continue
-      const attr = part.substring(0, equalIndex).trim().toLowerCase()
-      if (JANS_ID_ATTRS.includes(attr)) {
-        return part.substring(equalIndex + 1).trim()
-      }
-    }
-    return '—'
-  } catch {
-    return '—'
-  }
-}
 
 const safeStringify = (
   obj: Record<string, string | boolean | undefined> | null | undefined,
@@ -58,7 +41,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
     [row.state, badgeStyles.authenticatedBadge, badgeStyles.unauthenticatedBadge],
   )
   const expirationText = useMemo(() => formatDate(row.expirationDate) || '—', [row.expirationDate])
-  const jansId = useMemo(() => extractJansId(row.userDn), [row.userDn])
+  const jansId = useMemo(() => extractDnInum(row.userDn, JANS_ID_ATTRS) ?? '—', [row.userDn])
   const permissionGrantedMapText = useMemo(
     () => safeStringify(row.permissionGrantedMap),
     [row.permissionGrantedMap],

@@ -38,7 +38,7 @@ it('renders with labelStyle', () => {
 })
 
 it('sizes each field to its own label', () => {
-  const labelWidths: Record<string, number> = { 'inum:': 40, 'Name:': 60, 'Script Type:': 180 }
+  const labelWidths: Record<string, number> = { 'Inum:': 40, 'Name:': 60, 'Script Type:': 180 }
   const rectSpy = jest
     .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
     .mockImplementation(function (this: HTMLElement) {

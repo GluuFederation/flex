@@ -57,7 +57,9 @@ jest.mock('@/redux/api/backend-api', () => ({
 
 const store = configureStore({
   reducer: combineReducers({
-    authReducer: (state = { userinfo: { name: 'Test' }, config: { clientId: '123' } }) => state,
+    authReducer: (
+      state = { userinfo: { name: 'Test', inum: 'admin-inum' }, config: { clientId: '123' } },
+    ) => state,
     noReducer: (state = {}) => state,
   }),
 })
@@ -215,6 +217,30 @@ describe('CedarlingConfigPage', () => {
     expect(createdData.data).not.toHaveProperty('jansStatus')
 
     expect(mockMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('records the signed-in user as the uploader', async () => {
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    fireEvent.click(await screen.findByText('Upload'))
+    fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'Upload store' } })
+    fireEvent.click(screen.getByText('Yes'))
+
+    await waitFor(() => {
+      expect(mockCreatePolicyStore).toHaveBeenCalledWith({
+        data: expect.objectContaining({ jansUsrDN: 'inum=admin-inum,ou=people,o=jans' }),
+      })
+    })
   })
 
   it('triggers the policy store add/edit webhook after the upload succeeds', async () => {

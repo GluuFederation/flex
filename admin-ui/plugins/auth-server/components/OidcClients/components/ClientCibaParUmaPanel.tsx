@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { formatDate, DATE_FORMATS } from '@/utils/dayjsUtils'
 import { logger } from '@/utils/logger'
+import { extractDnInum } from '@/utils/Util'
 import AceEditor from 'react-ace'
 import {
   Accordion,
@@ -46,7 +47,6 @@ import { useStyles } from './styles/ClientCibaParUmaPanel.style'
 import {
   appendDynamicListItem,
   createPassiveSelectFormik,
-  extractDnInum,
   fromBooleanSelectValue,
   getDynamicListValidationMessage,
   mapDynamicListValues,

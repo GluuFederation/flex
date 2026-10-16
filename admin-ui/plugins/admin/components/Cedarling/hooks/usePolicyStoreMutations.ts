@@ -35,6 +35,7 @@ export const usePolicyStoreMutations = () => {
   const queryClient = useQueryClient()
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
+  const userDn = userinfo?.inum ? `inum=${userinfo.inum},ou=people,o=jans` : undefined
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
 
   const createMutation = useCreateAdminuiPolicyStore()
@@ -96,6 +97,7 @@ export const usePolicyStoreMutations = () => {
           displayname,
           description,
           policyStore,
+          ...(userDn && { jansUsrDN: userDn }),
         }
         const result = await createMutation.mutateAsync({ data })
         audit(CREATE, t('documentation.cedarlingConfig.auditPolicyStoreUploaded'), {
@@ -118,7 +120,7 @@ export const usePolicyStoreMutations = () => {
         throw error
       }
     },
-    [createMutation, audit, dispatch, invalidatePolicyStores, toastError, t],
+    [createMutation, userDn, audit, dispatch, invalidatePolicyStores, toastError, t],
   )
 
   const setPolicyStoreActive = useCallback(

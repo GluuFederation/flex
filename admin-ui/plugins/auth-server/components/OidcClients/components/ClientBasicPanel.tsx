@@ -8,7 +8,7 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
 import { useTranslation } from 'react-i18next'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
-import { getClientScopeByInum } from '../../../../../app/utils/Util'
+import { extractDnInum } from '@/utils/Util'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useGetOauthScopes } from 'JansConfigApi'
 import {
@@ -56,7 +56,7 @@ const ClientBasicPanel = ({
 
   const clientScopeInums = useMemo(() => {
     if (!client.inum || !client.scopes?.length) return ''
-    return client.scopes.map((scope) => getClientScopeByInum(scope)).join(',')
+    return client.scopes.map((scope) => extractDnInum(scope)).join(',')
   }, [client.inum, client.scopes])
 
   const { data: clientScopesData, isLoading: isClientScopesLoading } = useGetOauthScopes(
