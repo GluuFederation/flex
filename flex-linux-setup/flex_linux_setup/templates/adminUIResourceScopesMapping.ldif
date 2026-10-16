@@ -7,6 +7,8 @@ jansScope: jans_stat
 jansScope: https://jans.io/oauth/config/data.readonly
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
 jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly
+jansScope: https://jans.io/oauth/config/openid/clients.readonly
+jansScope:  https://jans.io/oauth/lock/read-all
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
