@@ -40,7 +40,7 @@ const mockFidoConfig = {
     disableMetadataService: false,
     hints: ['security-key'],
     enterpriseAttestation: false,
-    attestationMode: 'direct',
+    attestationMode: 'monitor',
   },
 }
 
@@ -141,7 +141,17 @@ describe('StaticConfiguration', () => {
     it('populates attestation mode select', async () => {
       await renderAndWait()
       const selectEl = screen.getByTestId('attestationMode') as HTMLSelectElement
-      expect(selectEl.value).toBe('direct')
+      expect(selectEl.value).toBe('monitor')
+    })
+
+    it('offers only the server attestation modes', async () => {
+      await renderAndWait()
+      const selectEl = screen.getByTestId('attestationMode') as HTMLSelectElement
+      expect(Array.from(selectEl.options, (option) => option.value).filter(Boolean)).toEqual([
+        'disabled',
+        'monitor',
+        'enforced',
+      ])
     })
 
     it('renders user auto enrollment toggle as checked', async () => {

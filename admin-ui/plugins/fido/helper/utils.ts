@@ -125,7 +125,9 @@ const applyStaticConfigChanges = (
   )
   payload.fido2Configuration.serverMetadataFolder = staticData.serverMetadataFolder
   payload.fido2Configuration.userAutoEnrollment = staticData.userAutoEnrollment
+  const existingParties = payload.fido2Configuration.rp ?? []
   payload.fido2Configuration.rp = staticData.requestedParties.map((item) => ({
+    ...existingParties.find((party) => party.id === item.key),
     id: item.key,
     origins: item.value
       .split(',')
