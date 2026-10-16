@@ -45,4 +45,13 @@ describe('UserList', () => {
     render(<UserList />, { wrapper: Wrapper })
     expect(screen.queryByText(/Add user/i)).not.toBeInTheDocument()
   })
+
+  it('shows the inum as the first column', () => {
+    render(<UserList />, { wrapper: Wrapper })
+    const headers = screen
+      .getAllByRole('columnheader')
+      .map((header) => header.textContent?.trim())
+      .filter(Boolean)
+    expect(headers[0]).toBe('Inum')
+  })
 })

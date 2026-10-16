@@ -9,6 +9,7 @@ import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import {
   Add,
@@ -37,6 +38,7 @@ import {
 import { formatBytes } from '@/utils/cjarArchive'
 import { ensureCjarExtension } from '@/utils/policyStore'
 import { logger } from '@/utils/logger'
+import { extractDnInum } from '@/utils/Util'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
@@ -44,7 +46,7 @@ import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
 
-const COLUMN_MIN_WIDTHS = { FILENAME: 280, SIZE: 110, COMMENTS: 200 } as const
+const COLUMN_MIN_WIDTHS = { FILENAME: 280, INUM: 220, COMMENTS: 200 } as const
 
 const RESTART_DELAY_MS = 3000
 
@@ -246,6 +248,16 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const columns: ColumnDef<AdminUIPolicyStore>[] = useMemo(
     () => [
       {
+        key: 'inum',
+        label: t('fields.inum'),
+        minWidth: COLUMN_MIN_WIDTHS.INUM,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
+            {row.inum || '-'}
+          </GluuText>
+        ),
+      },
+      {
         key: 'displayname',
         label: t('fields.filename'),
         minWidth: COLUMN_MIN_WIDTHS.FILENAME,
@@ -287,16 +299,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
         ),
       },
       {
-        key: 'policyStore',
-        label: t('fields.size'),
-        width: COLUMN_MIN_WIDTHS.SIZE,
-        render: (_value, row) => (
-          <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
-            {formatBytes(decodedByteLength(row.policyStore))}
-          </GluuText>
-        ),
-      },
-      {
         key: 'description',
         label: t('fields.comments'),
         minWidth: COLUMN_MIN_WIDTHS.COMMENTS,
@@ -312,6 +314,23 @@ const PolicyStoreHistoryPage: React.FC = () => {
       },
     ],
     [t, classes, badgeStyles],
+  )
+
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
+
+  const renderExpandedRow = useCallback(
+    (row: AdminUIPolicyStore) => {
+      const fields: GluuDetailGridField[] = [
+        { label: 'fields.last_updated', value: formatDate(row.jansLastUpd) },
+        { label: 'fields.uploaded_by', value: extractDnInum(row.jansUsrDN) || '-' },
+        { label: 'fields.size', value: formatBytes(decodedByteLength(row.policyStore)) },
+      ]
+      return <GluuDetailGrid fields={fields} labelStyle={detailLabelStyle} layout="column" />
+    },
+    [detailLabelStyle],
   )
 
   const actions: ActionDef<AdminUIPolicyStore>[] = useMemo(() => {
@@ -479,6 +498,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
               loading={false}
               expandable
               expandColumnWidth={40}
+              renderExpandedRow={renderExpandedRow}
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
