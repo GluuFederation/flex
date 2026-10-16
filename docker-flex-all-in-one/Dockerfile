@@ -26,12 +26,12 @@ FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.18@sha256:307b95033a52c3ebcebcb883048f6ffd6c6019cf7cda06fad8febb9d1caf39a3
+FROM bellsoft/liberica-openjdk-alpine:17.0.20@sha256:1aa69057bcd3eafa77738ec58ba8b969fd621212e3f280d3774e64409bf6333d
 
 # hadolint ignore=DL3018
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nginx \
+    && apk add --no-cache tini bash curl openssl python3 py3-psycopg2 nginx \
     && apk add --no-cache --virtual .build-deps git wget
 
 # -------
@@ -70,7 +70,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=1f9dcae94e09bc6a672f02685fe01397035292e8
+ENV JANS_SOURCE_VERSION=c4b4b52d4c3753d76f16d55df544a433f7c8732c
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -90,7 +90,8 @@ WORKDIR /
 
 ARG PIP_TIMEOUT=15
 COPY app/requirements.flex.txt /app/
-RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
+RUN EXT_MANAGED_FILE=$(python3 -c "import sysconfig; print(sysconfig.get_path('stdlib') + '/EXTERNALLY-MANAGED')") \
+    && mv "${EXT_MANAGED_FILE}" "${EXT_MANAGED_FILE}.disabled" \
     && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools --timeout ${PIP_TIMEOUT} \
     && pip3 install --no-cache-dir -r /app/requirements.flex.txt --timeout ${PIP_TIMEOUT} \
