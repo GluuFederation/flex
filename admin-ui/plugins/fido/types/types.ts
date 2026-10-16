@@ -5,8 +5,7 @@ export enum PublicKeyCredentialHints {
 }
 
 export enum AttestationMode {
-  NONE = 'none',
-  INDIRECT = 'indirect',
-  DIRECT = 'direct',
-  ENTERPRISE = 'enterprise',
+  DISABLED = 'disabled',
+  MONITOR = 'monitor',
+  ENFORCED = 'enforced',
 }
