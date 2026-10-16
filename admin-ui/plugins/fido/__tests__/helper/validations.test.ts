@@ -125,13 +125,27 @@ describe('fido validations', () => {
       ).rejects.toBeTruthy()
     })
 
-    it('rejects a static config with an invalid attestation mode', async () => {
-      await expect(
-        validationSchema.staticConfigValidationSchema.validateAt('attestationMode', {
-          attestationMode: 'INVALID_MODE',
-        }),
-      ).rejects.toBeTruthy()
-    })
+    it.each(['INVALID_MODE', 'none', 'direct'])(
+      'rejects a static config with attestation mode %s',
+      async (attestationMode) => {
+        await expect(
+          validationSchema.staticConfigValidationSchema.validateAt('attestationMode', {
+            attestationMode,
+          }),
+        ).rejects.toBeTruthy()
+      },
+    )
+
+    it.each(['disabled', 'monitor', 'enforced'])(
+      'accepts the server attestation mode %s',
+      async (attestationMode) => {
+        await expect(
+          validationSchema.staticConfigValidationSchema.validateAt('attestationMode', {
+            attestationMode,
+          }),
+        ).resolves.toBe(attestationMode)
+      },
+    )
 
     it('rejects a static config requestedParties row with empty key/value', async () => {
       await expect(

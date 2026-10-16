@@ -61,6 +61,19 @@ describe('transformToFormValues (static)', () => {
     // Unknown hints are dropped by arrayValidationWithSchema.
     expect(result.hints).toEqual([])
   })
+
+  it.each([
+    ['disabled', 'disabled'],
+    ['monitor', 'monitor'],
+    ['enforced', 'enforced'],
+    ['direct', ''],
+  ])('maps attestation mode %s to %j', (mode, expected) => {
+    const result = transformToFormValues(
+      cfg({ attestationMode: mode }),
+      fidoConstants.STATIC,
+    ) as StaticConfigFormValues
+    expect(result.attestationMode).toBe(expected)
+  })
 })
 
 describe('createFidoConfigPayload (dynamic)', () => {
@@ -90,6 +103,43 @@ describe('createFidoConfigPayload (static)', () => {
       type: fidoConstants.STATIC,
     })
     expect(result.data.fido2Configuration?.unfinishedRequestExpiration).toBe(120)
+  })
+
+  it('keeps the policy and app lists of each relying party it saves', () => {
+    const kept = {
+      id: 'example.com',
+      origins: ['https://example.com'],
+      androidApps: [{ packageName: 'com.example.app' }],
+      iosApps: [{ teamId: 'TEAM', bundleId: 'com.example' }],
+      policy: { attestationMode: 'enforced' },
+    }
+    const source = {
+      fido2Configuration: {
+        rp: [kept, { id: 'removed.org', origins: ['https://removed.org'] }],
+      },
+    }
+    const data = transformToFormValues(
+      source.fido2Configuration,
+      fidoConstants.STATIC,
+    ) as StaticConfigFormValues
+    const result = createFidoConfigPayload({
+      fidoConfiguration: source,
+      data: {
+        ...data,
+        requestedParties: [
+          { key: 'example.com', value: 'https://example.com, https://login.example.com' },
+          { key: 'new.org', value: 'https://new.org' },
+        ],
+      },
+      type: fidoConstants.STATIC,
+    })
+
+    expect(result.data.fido2Configuration?.rp).toEqual([
+      { ...kept, origins: ['https://example.com', 'https://login.example.com'] },
+      { id: 'new.org', origins: ['https://new.org'] },
+    ])
+    expect(source.fido2Configuration.rp[0]).toBe(kept)
+    expect(kept.origins).toEqual(['https://example.com'])
   })
 })
 
