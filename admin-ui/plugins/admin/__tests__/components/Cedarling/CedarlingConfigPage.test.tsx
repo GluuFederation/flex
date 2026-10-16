@@ -292,7 +292,10 @@ describe('CedarlingConfigPage', () => {
       'The hostname of the configuration_endpoint in policy-store does not matches with hostname of OpenID Provider.'
     mockCreatePolicyStore.mockRejectedValueOnce(
       Object.assign(new Error('Request failed with status code 400'), {
-        response: { status: 400, data: { description: serverMessage } },
+        response: {
+          status: 400,
+          data: { success: false, responseCode: 400, responseMessage: serverMessage },
+        },
       }),
     )
     const dispatchSpy = jest.spyOn(store, 'dispatch')
@@ -317,11 +320,14 @@ describe('CedarlingConfigPage', () => {
     })
     await waitFor(() => {
       const errorToasts = dispatchSpy.mock.calls
-        .map(([action]) => action as { type?: string; payload?: { type?: string } })
+        .map(
+          ([action]) => action as { type?: string; payload?: { type?: string; message?: string } },
+        )
         .filter(
           (action) => action?.type === 'toast/updateToast' && action.payload?.type === 'error',
         )
       expect(errorToasts).toHaveLength(1)
+      expect(errorToasts[0].payload?.message).toBe(serverMessage)
     })
     dispatchSpy.mockRestore()
   })
