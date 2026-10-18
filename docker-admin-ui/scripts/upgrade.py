@@ -341,6 +341,14 @@ class Upgrade:
                 "dn": "inum=adbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
                 "jansScope": "https://jans.io/oauth/jans-auth-server/config/adminui/security.delete",
             },
+            {
+                "dn": "inum=f9c23f63-184a-4777-a01c-ea928eb96054,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/config/openid/clients.readonly",
+            },
+            {
+                "dn": "inum=f9c23f63-184a-4777-a01c-ea928eb96054,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/lock/read-all",
+            },
         ]:
             add_scope(scope["dn"], scope["jansScope"])
 
