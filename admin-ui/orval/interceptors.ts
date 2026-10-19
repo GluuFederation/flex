@@ -1,6 +1,11 @@
-import { AxiosHeaders } from 'axios'
+import { AxiosHeaders, type AxiosError, type AxiosInstance } from 'axios'
 import { AXIOS_INSTANCE, getApiToken } from './axiosInstance'
-import { createAdminUiSession } from '@/redux/api/backend-api'
+import backendAxios from '@/redux/api/axios'
+import {
+  API_PROTECTION_TOKEN_ENDPOINT,
+  SESSION_ENDPOINT,
+  createAdminUiSession,
+} from '@/redux/api/backend-api'
 import { clearApiToken, ensureApiToken } from '@/redux/api/apiToken'
 import { handleSessionExpired } from '@/redux/features/initSlice'
 import { logger } from '@/utils/logger'
@@ -11,6 +16,21 @@ import type { RetriableAxiosRequestConfig } from './types'
 
 let installed = false
 let sessionRecoveryPromise: Promise<boolean> | null = null
+
+const SESSION_BOOTSTRAP_ENDPOINTS: readonly string[] = [
+  SESSION_ENDPOINT,
+  API_PROTECTION_TOKEN_ENDPOINT,
+]
+
+const isRecoverableBackendRequest = (url?: string): boolean =>
+  Boolean(url?.startsWith('/')) && !SESSION_BOOTSTRAP_ENDPOINTS.includes(url ?? '')
+
+const switchToSessionCookie = (request: RetriableAxiosRequestConfig): void => {
+  const headers = AxiosHeaders.from(request.headers as AxiosHeaders)
+  headers.delete('Authorization')
+  request.headers = headers
+  request.withCredentials = true
+}
 
 export const installInterceptors = (getState: () => RootState, dispatch: AppDispatch): void => {
   if (installed) return
@@ -61,6 +81,28 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
     return sessionRecoveryPromise
   }
 
+  const retryAfterSessionRecovery = async (
+    instance: AxiosInstance,
+    error: AxiosError,
+    prepareRetry?: (request: RetriableAxiosRequestConfig) => void,
+  ) => {
+    const originalRequest = error.config as RetriableAxiosRequestConfig | undefined
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest._sessionRetryAttempted
+    ) {
+      return null
+    }
+
+    originalRequest._sessionRetryAttempted = true
+    clearApiToken()
+
+    if (!(await recoverAdminUiSession())) return null
+    prepareRetry?.(originalRequest)
+    return instance(originalRequest)
+  }
+
   AXIOS_INSTANCE.interceptors.request.use((config) => {
     const { issuer, userInum, hasSession, canAttemptSessionAuth } = getAuthSessionContext()
     const shouldSendSession = hasSession || canAttemptSessionAuth
@@ -87,27 +129,25 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
 
   AXIOS_INSTANCE.interceptors.response.use(
     (response) => response,
-    async (error) => {
-      const originalRequest = error.config as RetriableAxiosRequestConfig | undefined
-
-      if (
-        error.response?.status === 401 &&
-        originalRequest &&
-        !originalRequest._sessionRetryAttempted
-      ) {
-        originalRequest._sessionRetryAttempted = true
-        clearApiToken()
-
-        const sessionRecovered = await recoverAdminUiSession()
-        if (sessionRecovered) {
-          return AXIOS_INSTANCE(originalRequest)
-        }
-      }
+    async (error: AxiosError) => {
+      const retried = await retryAfterSessionRecovery(AXIOS_INSTANCE, error)
+      if (retried) return retried
 
       if (error.response?.status === 403) {
         dispatch(handleSessionExpired({ isSessionExpired: true }))
       }
 
+      return Promise.reject(error)
+    },
+  )
+
+  backendAxios.interceptors.response.use(
+    (response) => response,
+    async (error: AxiosError) => {
+      if (isRecoverableBackendRequest(error.config?.url)) {
+        const retried = await retryAfterSessionRecovery(backendAxios, error, switchToSessionCookie)
+        if (retried) return retried
+      }
       return Promise.reject(error)
     },
   )
