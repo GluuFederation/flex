@@ -6,4 +6,5 @@ export const STORAGE_KEYS = {
   ISSUER: 'issuer',
   PAGING_SIZE: 'gluu.pagingSize',
   LOG_LEVEL: 'gluu.logLevel',
+  AUTH_TOKENS: 'gluu.authTokens',
 } as const

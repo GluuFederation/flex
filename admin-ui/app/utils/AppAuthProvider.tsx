@@ -190,7 +190,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (!issuer) return
     if (userInfoUnavailable) return
     if (signedOutForNoRole) return
-    if (userinfo_jwt || hasSession) return
+    if (userinfo_jwt) return
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
 
@@ -241,7 +241,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     isLicenseValid,
     issuer,
     userinfo_jwt,
-    hasSession,
     location.pathname,
     location.search,
     location.hash,

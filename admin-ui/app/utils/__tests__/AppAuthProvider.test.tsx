@@ -2,6 +2,7 @@ import React from 'react'
 import { render, act } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { AuthorizationServiceConfiguration } from '@openid/appauth'
 import AppAuthProvider from '../AppAuthProvider'
 import authReducer from '@/redux/features/authSlice'
 import licenseReducer from '@/redux/features/licenseSlice'
@@ -142,6 +143,43 @@ describe('AppAuthProvider', () => {
       })
 
       expect(dispatchSpy).not.toHaveBeenCalledWith(auditLogoutLogs({ message: NO_VALID_ROLE }))
+    })
+  })
+
+  describe('starting sign-in', () => {
+    const signedInLicense = { isLicenseValid: true }
+    let fetchFromIssuer: jest.SpyInstance
+
+    beforeEach(() => {
+      fetchFromIssuer = jest
+        .spyOn(AuthorizationServiceConfiguration, 'fetchFromIssuer')
+        .mockReturnValue(new Promise(() => undefined))
+    })
+
+    afterEach(() => fetchFromIssuer.mockRestore())
+
+    it('starts sign-in in a new tab that has a session but no tokens', () => {
+      renderProvider(
+        buildStore(signedInLicense, {
+          issuer: 'https://issuer.example.com',
+          hasSession: true,
+          userinfo_jwt: null,
+        }),
+      )
+
+      expect(fetchFromIssuer).toHaveBeenCalledWith('https://issuer.example.com', expect.anything())
+    })
+
+    it('does not start sign-in when the tab already has its tokens', () => {
+      renderProvider(
+        buildStore(signedInLicense, {
+          issuer: 'https://issuer.example.com',
+          hasSession: true,
+          userinfo_jwt: 'userinfo-jwt',
+        }),
+      )
+
+      expect(fetchFromIssuer).not.toHaveBeenCalled()
     })
   })
 })

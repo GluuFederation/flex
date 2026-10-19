@@ -14,6 +14,7 @@ import { setHasSessionReader } from '../api/sessionState'
 import type { Reducer, UnknownAction } from '@reduxjs/toolkit'
 import type { ReducerMap, RootState } from '../types'
 import { hmrAccept } from '@/utils/hmr'
+import { authTokensTransform } from './authTokensTransform'
 
 type LooseReducerMap = Record<string, Reducer<RootState[keyof RootState], UnknownAction>>
 
@@ -23,7 +24,7 @@ declare global {
   }
 }
 
-const persistConfig = {
+export const persistConfig = {
   key: 'root',
   storage,
   blacklist: [
@@ -36,6 +37,7 @@ const persistConfig = {
     'licenseReducer',
     'logoutReducer',
   ],
+  transforms: [authTokensTransform],
   version: 1,
   migrate: (state: PersistedState) => Promise.resolve(state),
 }
