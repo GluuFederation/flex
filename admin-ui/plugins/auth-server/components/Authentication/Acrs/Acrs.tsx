@@ -229,6 +229,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
         value: displayOrDash(row.description),
         doc_entry: 'description',
         doc_category: AUTHN,
+        grow: true,
       },
     ],
     [themeColors.badges.filledBadgeBg, themeColors.badges.filledBadgeText],

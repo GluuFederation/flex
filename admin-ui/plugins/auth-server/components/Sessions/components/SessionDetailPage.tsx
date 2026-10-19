@@ -72,6 +72,7 @@ const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
         label: 'fields.permission_granted_map',
         value: permissionGrantedMapText,
         doc_entry: 'permissionGrantedMap',
+        grow: true,
       },
       {
         label: 'fields.jans_sess_state',
