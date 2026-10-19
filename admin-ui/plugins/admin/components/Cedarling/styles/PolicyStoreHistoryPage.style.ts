@@ -55,18 +55,6 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
 
     cellName: { color: themeColors.fontColor, fontWeight: 500, overflowWrap: 'anywhere' },
     cellMuted: { color: themeColors.fontColor, fontFamily },
-    cellComments: {
-      color: themeColors.fontColor,
-      fontFamily,
-      display: 'block',
-      wordBreak: 'break-word',
-    },
-    cellCommentsCollapsed: {
-      display: '-webkit-box',
-      WebkitLineClamp: 2,
-      WebkitBoxOrient: 'vertical',
-      overflow: 'hidden',
-    },
     statusBadge: { minWidth: 80 },
     addIcon: { fontSize: ICON_SIZE.MD },
     viewIcon: { fontSize: ICON_SIZE.SM },

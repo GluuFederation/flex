@@ -30,6 +30,13 @@ export const useStyles = makeStyles()(() => ({
       flex: `1 1 ${MOBILE_DETAIL_COL_MIN}px`,
     },
   },
+  detailItemGrow: {
+    ...itemBase,
+    flex: `1 1 ${ITEM_BASIS}`,
+    [`@media ${MOBILE_MEDIA_QUERY}`]: {
+      flex: `1 1 ${MOBILE_DETAIL_COL_MIN}px`,
+    },
+  },
   detailItemFullWidth: {
     ...itemBase,
     flex: '1 1 100%',

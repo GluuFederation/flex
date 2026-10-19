@@ -22,7 +22,7 @@ jest.mock('@/cedarling', () => ({
   CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [] },
 }))
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Security: 'Security', Webhooks: 'Webhooks' },
+  ADMIN_UI_RESOURCES: { Security: 'Security', Webhooks: 'Webhooks', Users: 'Users' },
   CEDAR_RESOURCE_SCOPES: { Security: [], Webhooks: [] },
 }))
 jest.mock('@/cedarling/hooks/usePermission', () => ({
@@ -66,6 +66,9 @@ jest.mock('JansConfigApi', () => ({
   useDeleteAdminuiPolicyStore: jest.fn(() => ({ mutateAsync: mockDeleteMutate, isPending: false })),
   useSyncRoleToScopesMappings: jest.fn(() => ({ mutateAsync: mockSyncMutate, isPending: false })),
   useGetWebhooksByFeatureId: jest.fn(() => ({ data: [], isLoading: false, isFetched: true })),
+  useGetUserByInum: jest.fn((_inum: string, options?: { query?: { enabled?: boolean } }) => ({
+    data: options?.query?.enabled ? { userId: 'admin' } : undefined,
+  })),
   getGetAdminuiPolicyStoreQueryKey: () => [
     jest.requireActual('@/constants/policyStore').POLICY_STORE_PATH,
   ],
@@ -145,24 +148,44 @@ describe('PolicyStoreHistoryPage', () => {
     expect(screen.getByText('backup-1')).toBeInTheDocument()
     const headers = screen.getAllByRole('columnheader').map((header) => header.textContent?.trim())
     expect(headers.filter(Boolean)[0]).toBe('Inum')
+    expect(headers).not.toContain('Comments')
   })
 
-  it('shows the last update, uploader and size when a row is expanded', async () => {
+  it('shows the last update, uploader, size and comments when a row is expanded', async () => {
     render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
     await screen.findByText('current-policies.cjar')
-    expect(screen.queryByText('admin-user')).not.toBeInTheDocument()
+    expect(screen.queryByText('admin (admin-user)')).not.toBeInTheDocument()
+
+    const [activeRowExpand] = document.querySelectorAll<HTMLButtonElement>('[data-expand-button]')
+    fireEvent.click(activeRowExpand)
+
+    expect(await screen.findByText('admin (admin-user)')).toBeInTheDocument()
+    expect(screen.getByText(formatBytes('active-archive-bytes'.length))).toBeInTheDocument()
+    expect(
+      screen.getByText(new Date(mockActiveStore.jansLastUpd).toLocaleString()),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Live policies')).toBeInTheDocument()
+    expect(
+      screen
+        .getAllByText(/^(Last Updated|Uploaded By|Size|Comments):$/)
+        .map((label) => label.textContent),
+    ).toEqual(['Last Updated:', 'Uploaded By:', 'Size:', 'Comments:'])
+  })
+
+  it('shows only the uploader inum when users cannot be read', async () => {
+    mockUsePermission.mockImplementation((resource: string) => ({
+      canRead: resource !== 'Users',
+      canWrite: true,
+      canDelete: true,
+    }))
+    render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('current-policies.cjar')
 
     const [activeRowExpand] = document.querySelectorAll<HTMLButtonElement>('[data-expand-button]')
     fireEvent.click(activeRowExpand)
 
     expect(await screen.findByText('admin-user')).toBeInTheDocument()
-    expect(screen.getByText(formatBytes('active-archive-bytes'.length))).toBeInTheDocument()
-    expect(
-      screen.getByText(new Date(mockActiveStore.jansLastUpd).toLocaleString()),
-    ).toBeInTheDocument()
-    expect(
-      screen.getAllByText(/^(Last Updated|Uploaded By|Size):$/).map((label) => label.textContent),
-    ).toEqual(['Last Updated:', 'Uploaded By:', 'Size:'])
+    expect(screen.queryByText('admin (admin-user)')).not.toBeInTheDocument()
   })
 
   it('shows a dash for details a policy store does not have', async () => {
@@ -175,8 +198,14 @@ describe('PolicyStoreHistoryPage', () => {
     expect(await screen.findAllByText('-')).toHaveLength(2)
   })
 
-  it('shows the comments recorded at upload time', async () => {
+  it('shows the comments recorded at upload time in the expanded row', async () => {
     render(<PolicyStoreHistoryPage />, { wrapper: Wrapper })
+    await screen.findByText('previous-policies.cjar')
+    expect(screen.queryByText('Kept as a rollback point')).not.toBeInTheDocument()
+
+    const expandButtons = document.querySelectorAll<HTMLButtonElement>('[data-expand-button]')
+    fireEvent.click(expandButtons[1])
+
     expect(await screen.findByText('Kept as a rollback point')).toBeInTheDocument()
   })
 

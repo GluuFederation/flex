@@ -2,6 +2,7 @@ export const COLUMN_WIDTHS = {
   PILL_SINGLE_SHORT: 140,
   PILL_SINGLE: 180,
   PILL_LIST: 280,
+  INUM: 320,
 } as const
 
 export const EMPTY_CELL_PLACEHOLDER = '—'

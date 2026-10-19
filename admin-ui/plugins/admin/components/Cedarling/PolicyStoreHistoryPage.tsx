@@ -24,7 +24,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
+import { useGetAdminuiPolicyStore, useGetUserByInum, type AdminUIPolicyStore } from 'JansConfigApi'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { MOBILE_MEDIA_QUERY, TOOLBAR } from '@/constants'
 import { adminUiFeatures } from '@/constants'
@@ -46,7 +46,7 @@ import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
 
-const COLUMN_MIN_WIDTHS = { FILENAME: 280, INUM: 220, COMMENTS: 200 } as const
+const COLUMN_MIN_WIDTHS = { FILENAME: 280 } as const
 
 const RESTART_DELAY_MS = 3000
 
@@ -73,6 +73,18 @@ const formatDate = (value: string | undefined): string => {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString()
 }
 
+const PolicyStoreUploader: React.FC<{ userDn?: string; canLookup: boolean }> = ({
+  userDn,
+  canLookup,
+}) => {
+  const inum = extractDnInum(userDn)
+  const { data: user } = useGetUserByInum(inum ?? '', {
+    query: { enabled: canLookup && !!inum },
+  })
+  if (!inum) return <>-</>
+  return <>{user?.userId ? `${user.userId} (${inum})` : inum}</>
+}
+
 const PolicyStoreHistoryPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -82,6 +94,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
     usePermission(SECURITY_RESOURCE_ID)
+  const { canRead: canReadUsers } = usePermission(ADMIN_UI_RESOURCES.Users)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -250,7 +263,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
       {
         key: 'inum',
         label: t('fields.inum'),
-        minWidth: COLUMN_MIN_WIDTHS.INUM,
+        width: COLUMN_WIDTHS.INUM,
         render: (_value, row) => (
           <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
             {row.inum || '-'}
@@ -298,20 +311,6 @@ const PolicyStoreHistoryPage: React.FC = () => {
           </GluuText>
         ),
       },
-      {
-        key: 'description',
-        label: t('fields.comments'),
-        minWidth: COLUMN_MIN_WIDTHS.COMMENTS,
-        render: (_value, row, _rowIdx, context) => (
-          <GluuText
-            variant="div"
-            disableThemeColor
-            className={`${classes.cellComments} ${context?.isExpanded ? '' : classes.cellCommentsCollapsed}`}
-          >
-            {row.description || '-'}
-          </GluuText>
-        ),
-      },
     ],
     [t, classes, badgeStyles],
   )
@@ -325,12 +324,16 @@ const PolicyStoreHistoryPage: React.FC = () => {
     (row: AdminUIPolicyStore) => {
       const fields: GluuDetailGridField[] = [
         { label: 'fields.last_updated', value: formatDate(row.jansLastUpd) },
-        { label: 'fields.uploaded_by', value: extractDnInum(row.jansUsrDN) || '-' },
+        {
+          label: 'fields.uploaded_by',
+          valueNode: <PolicyStoreUploader userDn={row.jansUsrDN} canLookup={canReadUsers} />,
+        },
         { label: 'fields.size', value: formatBytes(decodedByteLength(row.policyStore)) },
+        { label: 'fields.comments', value: row.description || '-', grow: true },
       ]
       return <GluuDetailGrid fields={fields} labelStyle={detailLabelStyle} layout="column" />
     },
-    [detailLabelStyle],
+    [detailLabelStyle, canReadUsers],
   )
 
   const actions: ActionDef<AdminUIPolicyStore>[] = useMemo(() => {
