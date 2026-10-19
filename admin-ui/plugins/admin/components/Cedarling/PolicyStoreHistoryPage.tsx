@@ -9,6 +9,7 @@ import PolicyStoreConfirmDialog from './components/PolicyStoreConfirmDialog'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import { GluuBadge } from '@/components/GluuBadge'
 import { GluuTable, COLUMN_WIDTHS } from '@/components/GluuTable'
+import { GluuDetailGrid, type GluuDetailGridField } from '@/components/GluuDetailGrid'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import {
   Add,
@@ -23,7 +24,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import { usePermission } from '@/cedarling/hooks/usePermission'
 import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
-import { useGetAdminuiPolicyStore, type AdminUIPolicyStore } from 'JansConfigApi'
+import { useGetAdminuiPolicyStore, useGetUserByInum, type AdminUIPolicyStore } from 'JansConfigApi'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { MOBILE_MEDIA_QUERY, TOOLBAR } from '@/constants'
 import { adminUiFeatures } from '@/constants'
@@ -37,6 +38,7 @@ import {
 import { formatBytes } from '@/utils/cjarArchive'
 import { ensureCjarExtension } from '@/utils/policyStore'
 import { logger } from '@/utils/logger'
+import { extractDnInum } from '@/utils/Util'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateToast } from '@/redux/features/toastSlice'
 import type { ColumnDef, ActionDef, PaginationConfig } from '@/components/GluuTable'
@@ -44,7 +46,7 @@ import type { FilterDef } from '@/components/GluuSearchToolbar/types'
 import { usePolicyStoreMutations } from './hooks/usePolicyStoreMutations'
 import { useStyles } from './styles/PolicyStoreHistoryPage.style'
 
-const COLUMN_MIN_WIDTHS = { FILENAME: 280, SIZE: 110, COMMENTS: 200 } as const
+const COLUMN_MIN_WIDTHS = { FILENAME: 280 } as const
 
 const RESTART_DELAY_MS = 3000
 
@@ -71,6 +73,18 @@ const formatDate = (value: string | undefined): string => {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString()
 }
 
+const PolicyStoreUploader: React.FC<{ userDn?: string; canLookup: boolean }> = ({
+  userDn,
+  canLookup,
+}) => {
+  const inum = extractDnInum(userDn)
+  const { data: user } = useGetUserByInum(inum ?? '', {
+    query: { enabled: canLookup && !!inum },
+  })
+  if (!inum) return <>-</>
+  return <>{user?.userId ? `${user.userId} (${inum})` : inum}</>
+}
+
 const PolicyStoreHistoryPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -80,6 +94,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const { canRead: canReadSecurity, canWrite: canWriteSecurity } =
     usePermission(SECURITY_RESOURCE_ID)
+  const { canRead: canReadUsers } = usePermission(ADMIN_UI_RESOURCES.Users)
 
   const { state: themeState } = useTheme()
   const isDark = themeState.theme === THEME_DARK
@@ -246,6 +261,16 @@ const PolicyStoreHistoryPage: React.FC = () => {
   const columns: ColumnDef<AdminUIPolicyStore>[] = useMemo(
     () => [
       {
+        key: 'inum',
+        label: t('fields.inum'),
+        width: COLUMN_WIDTHS.INUM,
+        render: (_value, row) => (
+          <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
+            {row.inum || '-'}
+          </GluuText>
+        ),
+      },
+      {
         key: 'displayname',
         label: t('fields.filename'),
         minWidth: COLUMN_MIN_WIDTHS.FILENAME,
@@ -286,32 +311,29 @@ const PolicyStoreHistoryPage: React.FC = () => {
           </GluuText>
         ),
       },
-      {
-        key: 'policyStore',
-        label: t('fields.size'),
-        width: COLUMN_MIN_WIDTHS.SIZE,
-        render: (_value, row) => (
-          <GluuText variant="span" disableThemeColor className={classes.cellMuted}>
-            {formatBytes(decodedByteLength(row.policyStore))}
-          </GluuText>
-        ),
-      },
-      {
-        key: 'description',
-        label: t('fields.comments'),
-        minWidth: COLUMN_MIN_WIDTHS.COMMENTS,
-        render: (_value, row, _rowIdx, context) => (
-          <GluuText
-            variant="div"
-            disableThemeColor
-            className={`${classes.cellComments} ${context?.isExpanded ? '' : classes.cellCommentsCollapsed}`}
-          >
-            {row.description || '-'}
-          </GluuText>
-        ),
-      },
     ],
     [t, classes, badgeStyles],
+  )
+
+  const detailLabelStyle = useMemo(
+    () => ({ color: themeColors.fontColor }),
+    [themeColors.fontColor],
+  )
+
+  const renderExpandedRow = useCallback(
+    (row: AdminUIPolicyStore) => {
+      const fields: GluuDetailGridField[] = [
+        { label: 'fields.last_updated', value: formatDate(row.jansLastUpd) },
+        {
+          label: 'fields.uploaded_by',
+          valueNode: <PolicyStoreUploader userDn={row.jansUsrDN} canLookup={canReadUsers} />,
+        },
+        { label: 'fields.size', value: formatBytes(decodedByteLength(row.policyStore)) },
+        { label: 'fields.comments', value: row.description || '-', grow: true },
+      ]
+      return <GluuDetailGrid fields={fields} labelStyle={detailLabelStyle} layout="column" />
+    },
+    [detailLabelStyle, canReadUsers],
   )
 
   const actions: ActionDef<AdminUIPolicyStore>[] = useMemo(() => {
@@ -479,6 +501,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
               loading={false}
               expandable
               expandColumnWidth={40}
+              renderExpandedRow={renderExpandedRow}
               pagination={pagination}
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}

@@ -57,7 +57,9 @@ jest.mock('@/redux/api/backend-api', () => ({
 
 const store = configureStore({
   reducer: combineReducers({
-    authReducer: (state = { userinfo: { name: 'Test' }, config: { clientId: '123' } }) => state,
+    authReducer: (
+      state = { userinfo: { name: 'Test', inum: 'admin-inum' }, config: { clientId: '123' } },
+    ) => state,
     noReducer: (state = {}) => state,
   }),
 })
@@ -217,6 +219,30 @@ describe('CedarlingConfigPage', () => {
     expect(mockMutateAsync).not.toHaveBeenCalled()
   })
 
+  it('records the signed-in user as the uploader', async () => {
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    fireEvent.click(await screen.findByText('Upload'))
+    fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'Upload store' } })
+    fireEvent.click(screen.getByText('Yes'))
+
+    await waitFor(() => {
+      expect(mockCreatePolicyStore).toHaveBeenCalledWith({
+        data: expect.objectContaining({ jansUsrDN: 'inum=admin-inum,ou=people,o=jans' }),
+      })
+    })
+  })
+
   it('triggers the policy store add/edit webhook after the upload succeeds', async () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch')
     render(<CedarlingConfigPage />, { wrapper: Wrapper })
@@ -258,6 +284,51 @@ describe('CedarlingConfigPage', () => {
     expect(Object.keys(triggers[0].payload?.createdFeatureValue ?? {})).toEqual(
       expect.arrayContaining(shortCodes.policy_store_edit.fields.map(({ key }) => key)),
     )
+    dispatchSpy.mockRestore()
+  })
+
+  it('shows a single error toast when the server rejects the upload', async () => {
+    const serverMessage =
+      'The hostname of the configuration_endpoint in policy-store does not matches with hostname of OpenID Provider.'
+    mockCreatePolicyStore.mockRejectedValueOnce(
+      Object.assign(new Error('Request failed with status code 400'), {
+        response: {
+          status: 400,
+          data: { success: false, responseCode: 400, responseMessage: serverMessage },
+        },
+      }),
+    )
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+    render(<CedarlingConfigPage />, { wrapper: Wrapper })
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['policy-data'], 'test-policy.cjar', { type: 'application/zip' })
+    fireEvent.drop(input, {
+      dataTransfer: {
+        files: [file],
+        items: [{ kind: 'file', type: file.type, getAsFile: () => file }],
+        types: ['Files'],
+      },
+    })
+
+    fireEvent.click(await screen.findByText('Upload'))
+    fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'Upload store' } })
+    fireEvent.click(screen.getByText('Yes'))
+
+    await waitFor(() => {
+      expect(mockCreatePolicyStore).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      const errorToasts = dispatchSpy.mock.calls
+        .map(
+          ([action]) => action as { type?: string; payload?: { type?: string; message?: string } },
+        )
+        .filter(
+          (action) => action?.type === 'toast/updateToast' && action.payload?.type === 'error',
+        )
+      expect(errorToasts).toHaveLength(1)
+      expect(errorToasts[0].payload?.message).toBe(serverMessage)
+    })
     dispatchSpy.mockRestore()
   })
 })

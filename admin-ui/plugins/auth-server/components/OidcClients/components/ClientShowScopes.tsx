@@ -10,7 +10,7 @@ import { useStyles } from './styles/ClientShowScopes.style'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { getClientScopeByInum } from '@/utils/Util'
+import { extractDnInum } from '@/utils/Util'
 import { useGetOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import type { ClientShowScopesProps } from '../types'
@@ -34,7 +34,9 @@ const ClientShowScopes = ({
     if (!data || data.length === 0) {
       return []
     }
-    return data.map((scopeDn) => getClientScopeByInum(scopeDn)).filter(Boolean)
+    return data
+      .map((scopeDn) => extractDnInum(scopeDn))
+      .filter((inum): inum is string => Boolean(inum))
   }, [data])
 
   const {

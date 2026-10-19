@@ -328,7 +328,7 @@ const ClientListPage: React.FC = () => {
     const cols: ColumnDef<ClientRow>[] = [
       {
         key: 'inum',
-        label: t('fields.client_id'),
+        label: t('fields.inum'),
         sortable: true,
         render: (_value, row) => (
           <GluuText variant="span" className={classes.cellText} disableThemeColor>

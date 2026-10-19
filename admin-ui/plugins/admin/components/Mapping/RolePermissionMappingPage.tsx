@@ -86,7 +86,6 @@ const RolePermissionMappingPage: React.FC = React.memo(() => {
                           key={`${roleKey}-${idx}`}
                           candidate={candidate}
                           allPermissions={allPermissions}
-                          totalPermissions={allPermissions.length}
                           itemIndex={idx}
                         />
                       )

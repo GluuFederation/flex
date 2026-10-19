@@ -120,6 +120,3 @@ export const appendDynamicListItem = (
   current: GluuDynamicListItem[],
   value = '',
 ): GluuDynamicListItem[] => [...current, { id: uuidv4(), value }]
-
-export const extractDnInum = (dn: string | null | undefined): string | null =>
-  dn?.split(',')[0]?.split('=')[1] ?? null
