@@ -1,5 +1,9 @@
 import type { JsonPatch } from './configApiTypes'
-import type { PropertyValue, SchemaProperty } from '../../AuthServerProperties/types'
+import type {
+  EditedPropertyValue,
+  PropertyValue,
+  SchemaProperty,
+} from '../../AuthServerProperties/types'
 import type { FormikErrors, FormikTouched } from 'formik'
 import type { ApiAppConfiguration } from './configApiTypes'
 import { Accordion } from 'Components'
@@ -17,6 +21,7 @@ export type JsonPropertyBuilderConfigApiProps = {
   parent?: string
   disabled?: boolean
   errors?: FormikErrors<ApiAppConfiguration>
+  editedTopLevelValue?: EditedPropertyValue
   touched?: FormikTouched<ApiAppConfiguration>
 }
 
