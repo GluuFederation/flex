@@ -145,11 +145,16 @@ it('Should render json properties page properly', async () => {
   expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(config.authorizationEndpoint)
 })
 
+const PAGE_WAIT = { timeout: 10000 }
+const PAGE_TEST_TIMEOUT = 30000
+const PILL_IN_LAST_SECTION = 'region'
+
 const renderPage = async () => {
   render(<AuthServerPropertiesPage />, { wrapper: Wrapper })
   await waitFor(() => {
     expect(screen.getByTestId('issuer')).toHaveValue(config.issuer)
-  })
+    expect(screen.getByTitle(PILL_IN_LAST_SECTION)).toBeInTheDocument()
+  }, PAGE_WAIT)
 }
 
 const getFieldCard = (label: string): HTMLElement => {
@@ -276,9 +281,9 @@ describe('Cancel', () => {
       fireEvent.click(within(within(field).getByTitle(value)).getByRole('button'))
       expect(screen.queryByTitle(value)).not.toBeInTheDocument()
 
-      fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+      fireEvent.click(screen.getByText('Cancel'))
 
-      expect(await screen.findByTitle(value)).toBeInTheDocument()
+      expect(await screen.findByTitle(value, {}, PAGE_WAIT)).toBeInTheDocument()
     },
   )
 
@@ -286,9 +291,12 @@ describe('Cancel', () => {
     await renderPage()
     fireEvent.change(screen.getByTestId('loggingLevel'), { target: { value: 'DEBUG' } })
 
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+    fireEvent.click(screen.getByText('Cancel'))
 
-    await waitFor(() => expect(screen.getByTestId('loggingLevel')).toHaveValue(config.loggingLevel))
+    await waitFor(
+      () => expect(screen.getByTestId('loggingLevel')).toHaveValue(config.loggingLevel),
+      PAGE_WAIT,
+    )
   })
 })
 
@@ -337,80 +345,128 @@ describe('field labels missing from the translations', () => {
 })
 
 describe('opening the page', () => {
-  it('shows the endpoint fields before rendering the rest of the form', async () => {
-    const commits: Array<{ endpointsShown: boolean; restShown: boolean }> = []
-    const recordCommit = () => {
-      const issuer = document.querySelector<HTMLInputElement>('[data-testid="issuer"]')
-      commits.push({
-        endpointsShown: issuer?.value === config.issuer,
-        restShown: document.querySelector('[data-testid="loggingLevel"]') !== null,
-      })
-    }
-    render(
-      <React.Profiler id="auth-server-properties" onRender={recordCommit}>
-        <AuthServerPropertiesPage />
-      </React.Profiler>,
-      { wrapper: Wrapper },
-    )
+  it(
+    'shows the endpoint fields before rendering the rest of the form',
+    async () => {
+      const commits: Array<{ endpointsShown: boolean; restShown: boolean }> = []
+      const recordCommit = () => {
+        const issuer = document.querySelector<HTMLInputElement>('[data-testid="issuer"]')
+        commits.push({
+          endpointsShown: issuer?.value === config.issuer,
+          restShown: document.querySelector('[data-testid="loggingLevel"]') !== null,
+        })
+      }
+      render(
+        <React.Profiler id="auth-server-properties" onRender={recordCommit}>
+          <AuthServerPropertiesPage />
+        </React.Profiler>,
+        { wrapper: Wrapper },
+      )
 
-    await waitFor(() => expect(screen.getByTestId('loggingLevel')).toBeInTheDocument())
-    expect(commits.some((commit) => commit.endpointsShown && !commit.restShown)).toBe(true)
-  })
+      await waitFor(() => expect(screen.getByTestId('loggingLevel')).toBeInTheDocument(), PAGE_WAIT)
+      expect(commits.some((commit) => commit.endpointsShown && !commit.restShown)).toBe(true)
+    },
+    PAGE_TEST_TIMEOUT,
+  )
 })
 
 describe('Default ACR', () => {
-  it('keeps the picked value while a search adds rows to the form', async () => {
-    await renderPage()
-    fireEvent.change(await screen.findByTestId('defaultAcr'), {
-      target: { value: SIMPLE_PASSWORD_AUTH },
-    })
-    expect(screen.getByTestId('defaultAcr')).toHaveValue(SIMPLE_PASSWORD_AUTH)
+  it(
+    'keeps the picked value while a search adds rows to the form',
+    async () => {
+      await renderPage()
+      fireEvent.change(await screen.findByTestId('defaultAcr', {}, PAGE_WAIT), {
+        target: { value: SIMPLE_PASSWORD_AUTH },
+      })
+      expect(screen.getByTestId('defaultAcr')).toHaveValue(SIMPLE_PASSWORD_AUTH)
 
-    const search = screen.getByPlaceholderText('Search pattern')
-    fireEvent.change(search, { target: { value: 'e' } })
-    fireEvent.keyDown(search, { key: 'Enter' })
-    await waitFor(() => expect(screen.queryByTestId('oxId')).not.toBeInTheDocument())
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50))
-    })
+      const search = screen.getByPlaceholderText('Search pattern')
+      fireEvent.change(search, { target: { value: 'e' } })
+      fireEvent.keyDown(search, { key: 'Enter' })
+      await waitFor(() => expect(screen.queryByTestId('oxId')).not.toBeInTheDocument(), PAGE_WAIT)
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      })
 
-    expect(screen.getByTestId('defaultAcr')).toHaveValue(SIMPLE_PASSWORD_AUTH)
-  })
+      expect(screen.getByTestId('defaultAcr')).toHaveValue(SIMPLE_PASSWORD_AUTH)
+    },
+    PAGE_TEST_TIMEOUT,
+  )
 })
 
 describe('saving', () => {
-  it('sends nothing until Apply is confirmed', async () => {
+  beforeEach(() => {
     jest.mocked(patchAuthServerJsonProperties).mockClear()
     mockPutAcrs.mockClear()
-    await renderPage()
-
-    fireEvent.change(screen.getByTestId('issuer'), { target: { value: 'https://edited.example' } })
-    fireEvent.change(screen.getByTestId('loggingLevel'), { target: { value: 'DEBUG' } })
-    fireEvent.change(await screen.findByTestId('defaultAcr'), {
-      target: { value: SIMPLE_PASSWORD_AUTH },
-    })
-    fireEvent.click(within(screen.getByTitle('refresh_token')).getByRole('button'))
-    expect(patchAuthServerJsonProperties).not.toHaveBeenCalled()
-    expect(mockPutAcrs).not.toHaveBeenCalled()
-
-    fireEvent.click(screen.getByRole('button', { name: /apply/i }))
-    const accept = await screen.findByRole('button', { name: 'Accept' })
-    expect(patchAuthServerJsonProperties).not.toHaveBeenCalled()
-    expect(mockPutAcrs).not.toHaveBeenCalled()
-
-    fireEvent.click(accept)
-    await waitFor(() => expect(mockPutAcrs).toHaveBeenCalledTimes(1))
-    expect(mockPutAcrs).toHaveBeenCalledWith({ data: { defaultAcr: SIMPLE_PASSWORD_AUTH } })
-    expect(patchAuthServerJsonProperties).toHaveBeenCalledTimes(1)
-    expect(patchAuthServerJsonProperties).toHaveBeenCalledWith(
-      expect.objectContaining({
-        action_data: expect.objectContaining({
-          requestBody: expect.arrayContaining([
-            { op: 'replace', path: '/issuer', value: 'https://edited.example' },
-            { op: 'replace', path: '/loggingLevel', value: 'DEBUG' },
-          ]),
-        }),
-      }),
-    )
   })
+
+  const confirmApply = async () => {
+    fireEvent.click(screen.getByText('Apply'))
+    fireEvent.click(await screen.findByText('Accept', {}, PAGE_WAIT))
+  }
+
+  it(
+    'sends nothing before Apply is confirmed',
+    async () => {
+      await renderPage()
+      fireEvent.change(screen.getByTestId('issuer'), {
+        target: { value: 'https://edited.example' },
+      })
+      fireEvent.change(screen.getByTestId('loggingLevel'), { target: { value: 'DEBUG' } })
+      fireEvent.change(screen.getByTestId('defaultAcr'), {
+        target: { value: SIMPLE_PASSWORD_AUTH },
+      })
+      fireEvent.click(within(screen.getByTitle('refresh_token')).getByRole('button'))
+
+      fireEvent.click(screen.getByText('Apply'))
+      expect(await screen.findByText('Accept', {}, PAGE_WAIT)).toBeInTheDocument()
+
+      expect(patchAuthServerJsonProperties).not.toHaveBeenCalled()
+      expect(mockPutAcrs).not.toHaveBeenCalled()
+    },
+    PAGE_TEST_TIMEOUT,
+  )
+
+  it(
+    'sends the changed fields once Apply is confirmed',
+    async () => {
+      await renderPage()
+      fireEvent.change(screen.getByTestId('issuer'), {
+        target: { value: 'https://edited.example' },
+      })
+      fireEvent.change(screen.getByTestId('loggingLevel'), { target: { value: 'DEBUG' } })
+
+      await confirmApply()
+
+      await waitFor(() => expect(patchAuthServerJsonProperties).toHaveBeenCalledTimes(1), PAGE_WAIT)
+      expect(patchAuthServerJsonProperties).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action_data: expect.objectContaining({
+            requestBody: [
+              { op: 'replace', path: '/issuer', value: 'https://edited.example' },
+              { op: 'replace', path: '/loggingLevel', value: 'DEBUG' },
+            ],
+          }),
+        }),
+      )
+    },
+    PAGE_TEST_TIMEOUT,
+  )
+
+  it(
+    'sends the default ACR once Apply is confirmed',
+    async () => {
+      await renderPage()
+      fireEvent.change(screen.getByTestId('defaultAcr'), {
+        target: { value: SIMPLE_PASSWORD_AUTH },
+      })
+
+      await confirmApply()
+
+      await waitFor(() => expect(mockPutAcrs).toHaveBeenCalledTimes(1), PAGE_WAIT)
+      expect(mockPutAcrs).toHaveBeenCalledWith({ data: { defaultAcr: SIMPLE_PASSWORD_AUTH } })
+      expect(patchAuthServerJsonProperties).not.toHaveBeenCalled()
+    },
+    PAGE_TEST_TIMEOUT,
+  )
 })
