@@ -1009,6 +1009,7 @@
   "messages": {
     "copy_failed": "Error al copiar al portapapeles",
     "multi_select_hint": "Ingrese varios elementos seleccionando del menú desplegable que aparece después de ingresar cada elemento.",
+    "grant_types_from_server": "Solo se muestran los tipos de concesión habilitados en las propiedades del Auth Server (grantTypesSupported).",
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
@@ -1364,7 +1365,8 @@
     "lock_url_invalid": "Ingrese una URL http(s) válida",
     "lock_trace_domain_id_invalid": "Use de 1 a 64 letras, dígitos, puntos, guiones bajos, dos puntos o guiones",
     "lock_no_policy_sources": "No hay fuentes de políticas configuradas",
-    "lock_no_client_bindings": "No hay vínculos de cliente configurados"
+    "lock_no_client_bindings": "No hay vínculos de cliente configurados",
+    "no_associated_clients": "No hay clientes asociados a este scope"
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",
@@ -2597,7 +2599,8 @@
       "iconUrl": "URL del icono de este scope UMA, devuelta como icon_uri en la descripción del scope.",
       "creationDate": "Fecha y hora en que se creó el scope. La define el servidor.",
       "creatorType": "Qué creó este scope: un usuario, un cliente, el servidor automáticamente (auto) o ninguno.",
-      "scopeAttributes": "Ajustes extra del scope, como mostrarlo en el descubrimiento."
+      "scopeAttributes": "Ajustes extra del scope, como mostrarlo en el descubrimiento.",
+      "associatedClients": "Clientes que usan este scope. Seleccione uno para abrirlo."
     },
     "attribute": {
       "inum": "Identificador único del atributo",

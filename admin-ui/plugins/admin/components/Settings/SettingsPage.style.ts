@@ -3,7 +3,7 @@ import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
 import { SPACING, BORDER_RADIUS, OPACITY, MOBILE_MEDIA_QUERY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
@@ -17,8 +17,8 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const settings = themeColors.settings
+  const formCardStyles = createFormCardStyles({ isDark, cardBg: settings.cardBackground })
 
   const customParamsBorder = isDark ? customColors.darkBorder : customColors.borderInput
 
@@ -40,15 +40,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     settingsCard: {
-      backgroundColor: settings.cardBackground,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative',
-      overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
+      ...formCardStyles.formCard,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         borderRadius: BORDER_RADIUS.MEDIUM_SMALL,
       },
@@ -99,17 +91,7 @@ export const useStyles = makeStyles<SettingsStylesParams>()((
         letterSpacing: letterSpacing.normal,
       },
     },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
-      [theme.breakpoints.down('sm')]: {
-        padding: SPACING.PAGE,
-      },
-    },
+    content: formCardStyles.content,
     formSection: {
       display: 'flex',
       flexDirection: 'column',

@@ -57,7 +57,7 @@ export const createPropertiesPageStyles = (
       flexDirection: 'column' as const,
     },
     formContent: {
-      'padding': SPACING.CONTENT_PADDING,
+      'padding': SPACING.CARD_PADDING,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         'padding': `${SPACING.PAGE}px 0`,
         '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle': {
@@ -176,9 +176,9 @@ export const createPropertiesPageStyles = (
     stickyFooter: {
       'backgroundColor': cardBg,
       'paddingTop': 0,
-      'paddingLeft': SPACING.CONTENT_PADDING,
-      'paddingRight': SPACING.CONTENT_PADDING,
-      'paddingBottom': SPACING.CONTENT_PADDING,
+      'paddingLeft': SPACING.CARD_PADDING,
+      'paddingRight': SPACING.CARD_PADDING,
+      'paddingBottom': SPACING.CARD_PADDING,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         paddingLeft: 0,
         paddingRight: 0,

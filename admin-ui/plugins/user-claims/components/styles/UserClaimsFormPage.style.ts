@@ -8,8 +8,7 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
-import { createFormGroupOverrides } from '@/styles/formStyles'
+import { createFormGroupOverrides, createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface AttributeFormPageStylesParams {
@@ -26,30 +25,16 @@ export const useStyles = makeStyles<AttributeFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      boxSizing: 'border-box' as const,
-    },
+    formCard: formCardStyles.formCard,
     content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
+      ...formCardStyles.content,
       [`@media ${MOBILE_MEDIA_QUERY}`]: {
         '& input, & select, & textarea, & .custom-select, & .form-control, & .react-toggle, & [role="combobox"]':
           {

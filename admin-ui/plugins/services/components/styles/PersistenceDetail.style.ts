@@ -8,7 +8,7 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
 interface PersistenceDetailStylesParams {
@@ -27,32 +27,18 @@ export const useStyles = makeStyles<PersistenceDetailStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const settings = themeColors.settings
+  const formCardStyles = createFormCardStyles({
+    isDark,
+    cardBg: settings?.cardBackground ?? themeColors.card.background,
+  })
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    persistenceCard: {
-      backgroundColor: settings?.cardBackground ?? themeColors.card.background,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative',
-      overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
-    },
+    persistenceCard: formCardStyles.formCard,
+    content: formCardStyles.content,
     fieldsGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import ScopeForm from 'Plugins/auth-server/components/Scopes/components/ScopeForm'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -11,6 +11,15 @@ import type {
   ScopeClaim,
   ModifiedFields,
 } from 'Plugins/auth-server/components/Scopes/types'
+
+jest.mock('@/utils/hooks/useWebhookDialogAction', () => ({
+  __esModule: true,
+  default: () => ({
+    webhookTriggerModal: () => null,
+    onCloseModal: jest.fn(),
+    webhookCheckComplete: true,
+  }),
+}))
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -179,4 +188,75 @@ it('Should render with empty scripts and attributes gracefully', () => {
   )
 
   expect(container).toBeTruthy()
+})
+
+const renderScopeForm = (scope: ExtendedScope) =>
+  render(
+    <ScopeForm
+      scope={scope}
+      scripts={mockScripts}
+      attributes={mockClaims}
+      handleSubmit={jest.fn()}
+      modifiedFields={{}}
+      setModifiedFields={jest.fn()}
+    />,
+    { wrapper: Wrapper },
+  )
+
+it('shows associated clients as links for a non-UMA scope', () => {
+  renderScopeForm({
+    ...mockOpenidScope,
+    clients: [{ inum: '1201.abc', displayName: 'SCIM client' }, { inum: '1202.def' }],
+  })
+
+  expect(screen.getByText(/Associated Clients/i)).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'SCIM client' })).toHaveAttribute(
+    'href',
+    expect.stringContaining('1201.abc'),
+  )
+  expect(screen.getByRole('link', { name: '1202.def' })).toBeInTheDocument()
+})
+
+it('says so when no clients are associated', () => {
+  renderScopeForm(mockOpenidScope)
+
+  expect(screen.getByText('No clients are associated with this scope')).toBeInTheDocument()
+})
+
+it('hides associated clients for a scope that is not saved yet', () => {
+  renderScopeForm({ ...mockOpenidScope, inum: undefined })
+
+  expect(screen.queryByText(/Associated Clients/i)).toBeNull()
+})
+
+it('leaves associated clients out of the saved scope', async () => {
+  const handleSubmit = jest.fn()
+  render(
+    <ScopeForm
+      scope={{ ...mockOauthScope, clients: [{ inum: '1201.abc', displayName: 'SCIM client' }] }}
+      scripts={mockScripts}
+      attributes={mockClaims}
+      handleSubmit={handleSubmit}
+      modifiedFields={{}}
+      setModifiedFields={jest.fn()}
+    />,
+    { wrapper: Wrapper },
+  )
+
+  fireEvent.change(screen.getByDisplayValue('View LDAP database related information'), {
+    target: { value: 'View LDAP database details' },
+  })
+  const applyButton = screen.getByText(/Apply/i).closest('button') as HTMLButtonElement
+  await waitFor(() => expect(applyButton).not.toBeDisabled())
+  fireEvent.click(applyButton)
+
+  fireEvent.change(await screen.findByPlaceholderText('Provide the reason of this change'), {
+    target: { value: 'Shorter scope description' },
+  })
+  fireEvent.click(screen.getByText(/^Yes$/i))
+
+  await waitFor(() => expect(handleSubmit).toHaveBeenCalledTimes(1))
+  const saved = JSON.parse(handleSubmit.mock.calls[0][0])
+  expect(saved.description).toBe('View LDAP database details')
+  expect(saved).not.toHaveProperty('clients')
 })

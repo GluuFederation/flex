@@ -1007,6 +1007,7 @@
   "messages": {
     "copy_failed": "Falha ao copiar para a área de transferência",
     "multi_select_hint": "Insira vários itens selecionando no menu suspenso que aparece após inserir cada item.",
+    "grant_types_from_server": "Somente os tipos de concessão habilitados nas propriedades do Auth Server (grantTypesSupported) são listados.",
     "add_permission": "Adicionar permissão",
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Adicionar recurso Jans",
@@ -1362,7 +1363,8 @@
     "lock_url_invalid": "Informe uma URL http(s) válida",
     "lock_trace_domain_id_invalid": "Use de 1 a 64 letras, dígitos, pontos, sublinhados, dois-pontos ou hifens",
     "lock_no_policy_sources": "Nenhuma fonte de políticas configurada",
-    "lock_no_client_bindings": "Nenhum vínculo de cliente configurado"
+    "lock_no_client_bindings": "Nenhum vínculo de cliente configurado",
+    "no_associated_clients": "Nenhum cliente está associado a este escopo"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -2165,7 +2167,8 @@
       "iconUrl": "URL do ícone deste escopo UMA, retornada como icon_uri na descrição do escopo.",
       "creationDate": "Data e hora em que o scope foi criado. Definidas pelo servidor.",
       "creatorType": "O que criou este scope: um usuário, um cliente, o servidor automaticamente (auto) ou nenhum.",
-      "scopeAttributes": "Configurações extras do scope, como exibi-lo na descoberta."
+      "scopeAttributes": "Configurações extras do scope, como exibi-lo na descoberta.",
+      "associatedClients": "Clientes que usam este escopo. Selecione um para abri-lo."
     },
     "license": {
       "productName": "A licença está registrada sob o seguinte produto.",

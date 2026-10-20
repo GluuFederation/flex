@@ -1,7 +1,11 @@
 import React from 'react'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import type { GetOauthScopesParams, GetAttributesParams } from 'JansConfigApi'
+import type {
+  GetOauthScopesParams,
+  GetAttributesParams,
+  GetConfigScriptsParams,
+} from 'JansConfigApi'
 import { useScopes, useScopeAttributes, useScopeScripts } from '../useScopeQueries'
 
 type QueryOptions = { query?: Record<string, boolean | number> }
@@ -13,7 +17,7 @@ const mockGetAttributes = jest.fn()
 jest.mock('JansConfigApi', () => ({
   useGetOauthScopes: (params: GetOauthScopesParams, options: QueryOptions) =>
     mockUseGetOauthScopes(params, options),
-  useGetConfigScripts: (params: undefined, options: QueryOptions) =>
+  useGetConfigScripts: (params: GetConfigScriptsParams, options: QueryOptions) =>
     mockUseGetConfigScripts(params, options),
   getAttributes: (params: GetAttributesParams, _options: undefined, signal?: AbortSignal) =>
     mockGetAttributes(params, _options, signal),
@@ -49,6 +53,12 @@ describe('useScopeQueries', () => {
   })
 
   describe('useScopeScripts', () => {
+    it('requests the same scripts list as the client pages', () => {
+      mockUseGetConfigScripts.mockReturnValue({ data: undefined, isLoading: false, error: null })
+      renderHook(() => useScopeScripts())
+      expect(mockUseGetConfigScripts).toHaveBeenCalledWith({ limit: 200 }, expect.anything())
+    })
+
     it('returns empty scripts when there is no data', () => {
       mockUseGetConfigScripts.mockReturnValue({ data: undefined, isLoading: false, error: null })
       const { result } = renderHook(() => useScopeScripts())

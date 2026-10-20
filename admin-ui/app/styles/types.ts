@@ -6,6 +6,11 @@ export type CardBorderStyleOptions = {
   ellipseSize?: string
 }
 
+export type FormCardStyleOptions = {
+  isDark: boolean
+  cardBg: string
+}
+
 export type DynamicListColorOptions = {
   boxBg: string
   inputBg: string

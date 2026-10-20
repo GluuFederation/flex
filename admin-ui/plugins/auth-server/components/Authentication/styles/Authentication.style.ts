@@ -1,13 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import type { Theme } from '@mui/material/styles'
-import {
-  SPACING,
-  BORDER_RADIUS,
-  ICON_SIZE,
-  MOBILE_MEDIA_QUERY,
-  createMobilePageTitleStyle,
-} from '@/constants'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { ICON_SIZE, createMobilePageTitleStyle } from '@/constants'
+import { createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
 type AuthenticationStylesParams = {
@@ -16,44 +10,22 @@ type AuthenticationStylesParams = {
 }
 
 const WIDTH_FULL = '100%'
-const BOX_SIZING_BORDER = 'border-box'
-const DISPLAY_FLEX = 'flex'
-const FLEX_DIRECTION_COLUMN = 'column'
 
 export const useStyles = makeStyles<AuthenticationStylesParams>()((
   _theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
 
   return {
     addIcon: { fontSize: ICON_SIZE.MD },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: WIDTH_FULL,
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN as 'column',
-      boxSizing: BOX_SIZING_BORDER as 'border-box',
-    },
+    formCard: formCardStyles.formCard,
     content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: WIDTH_FULL,
+      ...formCardStyles.content,
       maxWidth: WIDTH_FULL,
       minWidth: 0,
-      boxSizing: BOX_SIZING_BORDER as 'border-box',
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN as 'column',
-      gap: 0,
-      overflow: 'visible',
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        padding: SPACING.PAGE,
-      },
     },
   }
 })

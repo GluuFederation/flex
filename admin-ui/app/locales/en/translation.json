@@ -1009,6 +1009,7 @@
   "messages": {
     "copy_failed": "Failed to copy to clipboard",
     "multi_select_hint": "Enter multiple items by selecting each one from the dropdown that appears after typing an item.",
+    "grant_types_from_server": "Only grant types enabled in Auth Server properties (grantTypesSupported) are listed.",
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
@@ -1364,7 +1365,8 @@
     "lock_url_invalid": "Enter a valid http(s) URL",
     "lock_trace_domain_id_invalid": "Use 1–64 letters, digits, dots, underscores, colons or hyphens",
     "lock_no_policy_sources": "No policy sources configured",
-    "lock_no_client_bindings": "No client bindings configured"
+    "lock_no_client_bindings": "No client bindings configured",
+    "no_associated_clients": "No clients are associated with this scope"
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",
@@ -2597,7 +2599,8 @@
       "iconUrl": "Icon URL for this UMA scope, returned as icon_uri in the UMA scope description.",
       "creationDate": "Date and time the scope was created. Set by the server.",
       "creatorType": "What created this scope: a user, a client, the server automatically (auto), or none.",
-      "scopeAttributes": "Extra scope settings, such as showing it in discovery."
+      "scopeAttributes": "Extra scope settings, such as showing it in discovery.",
+      "associatedClients": "Clients that use this scope. Select one to open it."
     },
     "attribute": {
       "inum": "Identifier to uniquely identify the attribute.",

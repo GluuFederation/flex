@@ -5,6 +5,7 @@ export type SsaFormProps = {
   isSubmitting: boolean
   customAttributes: string[]
   softwareRolesOptions: string[]
+  grantTypesSupported?: string[]
 }
 
 export type CustomAttributesPanelProps = {

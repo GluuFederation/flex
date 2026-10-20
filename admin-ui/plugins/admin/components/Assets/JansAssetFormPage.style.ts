@@ -1,16 +1,9 @@
 import { makeStyles } from 'tss-react/mui'
 import { createMobilePageTitleStyle } from '@/constants'
 import type { Theme } from '@mui/material/styles'
-import {
-  SPACING,
-  BORDER_RADIUS,
-  CEDARLING_CONFIG_SPACING,
-  MAPPING_SPACING,
-  ICON_SIZE,
-  OPACITY,
-} from '@/constants'
+import { SPACING, CEDARLING_CONFIG_SPACING, MAPPING_SPACING, ICON_SIZE, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights, letterSpacing } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -30,12 +23,12 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const settings = themeColors.settings
   const infoBg = themeColors.infoAlert?.background ?? customColors.cedarInfoBgLight
   const infoBorder = themeColors.infoAlert?.border ?? customColors.cedarInfoBorderLight
   const infoText = themeColors.infoAlert?.text ?? customColors.cedarInfoTextLight
   const cardBg = settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
 
@@ -45,28 +38,8 @@ export const useStyles = makeStyles<AssetFormPageStylesParams>()((
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: WIDTH_FULL,
-      position: 'relative',
-      overflow: 'visible',
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      boxSizing: BOX_SIZING_BORDER,
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: WIDTH_FULL,
-      boxSizing: BOX_SIZING_BORDER,
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: SPACING.SECTION_GAP,
-      [theme.breakpoints.down('sm')]: {
-        padding: SPACING.PAGE,
-      },
-    },
+    formCard: formCardStyles.formCard,
+    content: { ...formCardStyles.content, gap: SPACING.SECTION_GAP },
     formSection: {
       display: DISPLAY_FLEX,
       flexDirection: FLEX_DIRECTION_COLUMN,

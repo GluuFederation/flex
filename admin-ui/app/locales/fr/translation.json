@@ -1011,6 +1011,7 @@
   "messages": {
     "copy_failed": "Échec de la copie dans le presse-papiers",
     "multi_select_hint": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après chaque saisie.",
+    "grant_types_from_server": "Seuls les types d'autorisation activés dans les propriétés de l'Auth Server (grantTypesSupported) sont listés.",
     "add_permission": "Ajouter une autorisation",
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",
@@ -1366,7 +1367,8 @@
     "lock_url_invalid": "Saisissez une URL http(s) valide",
     "lock_trace_domain_id_invalid": "Utilisez de 1 à 64 lettres, chiffres, points, tirets bas, deux-points ou tirets",
     "lock_no_policy_sources": "Aucune source de politiques configurée",
-    "lock_no_client_bindings": "Aucune liaison client configurée"
+    "lock_no_client_bindings": "Aucune liaison client configurée",
+    "no_associated_clients": "Aucun client n'est associé à ce scope"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -2068,7 +2070,8 @@
       "iconUrl": "URL de l'icône de cette portée UMA, renvoyée comme icon_uri dans sa description.",
       "creationDate": "Date et heure de création du scope. Définies par le serveur.",
       "creatorType": "Ce qui a créé ce scope : un utilisateur, un client, le serveur automatiquement (auto) ou aucun.",
-      "scopeAttributes": "Réglages supplémentaires du scope, comme son affichage dans la découverte."
+      "scopeAttributes": "Réglages supplémentaires du scope, comme son affichage dans la découverte.",
+      "associatedClients": "Clients qui utilisent ce scope. Sélectionnez-en un pour l'ouvrir."
     },
     "json_properties": {
       "parEndpoint": "URL du point de terminaison de demande d'autorisation poussée (PAR)",

@@ -12,7 +12,7 @@ import { fontSizes } from '@/styles/fonts'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import { getAccordionStyles } from '@/styles/accordionStyles'
 import type { ThemeConfig } from '@/context/theme/config'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import { createDisabledInputStyles } from '@/styles/disabledFieldStyles'
 import {
   createFormGroupOverrides,
@@ -53,6 +53,7 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
   { isDark, themeColors },
 ) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const inputColors = {
@@ -73,27 +74,15 @@ export const useStyles = makeStyles<JansLockFormPageStylesParams>()((
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
+      ...formCardStyles.formCard,
       'backgroundColor': `${cardBg} !important`,
-      ...getCardBorderStyle({ isDark }),
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'width': '100%',
-      'position': 'relative',
-      'overflow': 'visible',
-      'display': 'flex',
-      'flexDirection': 'column',
-      'boxSizing': 'border-box',
       '& .card-body': {
         backgroundColor: `${cardBg} !important`,
         borderRadius: BORDER_RADIUS.DEFAULT,
       },
     },
     content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
+      ...formCardStyles.content,
       ...getAccordionStyles(
         isDark,
         themeColors,

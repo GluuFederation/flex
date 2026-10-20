@@ -5,6 +5,7 @@ import { logAuditUserAction } from 'Utils/AuditLogger'
 import { logger } from '@/utils/logger'
 import { isScriptEntry } from '../Properties/utils'
 import { FETCH_SCRIPTS_FOR_STAT, SCRIPT } from '@/audit'
+import { CONFIG_SCRIPTS_PARAMS } from 'Plugins/auth-server/common/Constants'
 import type { GenericItem } from 'Redux/types'
 import type { Script } from '../types'
 
@@ -12,7 +13,7 @@ export const useAuthServerScripts = (): Script[] => {
   const clientId = useAppSelector((state) => state.authReducer?.config?.clientId)
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
 
-  const { data, isSuccess } = useGetConfigScripts()
+  const { data, isSuccess } = useGetConfigScripts(CONFIG_SCRIPTS_PARAMS)
 
   const scripts = useMemo<Script[]>(
     () => ((data?.entries ?? []) as GenericItem[]).filter(isScriptEntry),

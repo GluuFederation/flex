@@ -9,7 +9,7 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -32,8 +32,11 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const settings = themeColors.settings
+  const formCardStyles = createFormCardStyles({
+    isDark,
+    cardBg: settings?.cardBackground ?? themeColors.card.background,
+  })
   const formInputBg = settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = settings?.inputBorder ?? themeColors.borderColor
   const sectionBorderColor = isDark ? customColors.darkBorder : customColors.borderInput
@@ -57,25 +60,8 @@ export const useStyles = makeStyles<CachePageStylesParams>()((
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    cacheCard: {
-      backgroundColor: settings?.cardBackground ?? themeColors.card.background,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative',
-      overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
-    },
+    cacheCard: formCardStyles.formCard,
+    content: formCardStyles.content,
     formLabels: {
       '& label, & label h5, & label h5 span, & label .MuiSvgIcon-root': {
         color: `${themeColors.fontColor} !important`,

@@ -16,8 +16,6 @@ import {
   CLIENT_DYNAMIC_LIST_I18N,
   DOC_CATEGORY,
   FETCH_LIMITS,
-  GRANT_TYPE_OPTIONS,
-  RESPONSE_TYPE_OPTIONS,
   APPLICATION_TYPE_OPTIONS,
   SUBJECT_TYPE_OPTIONS,
   CLIENT_BASIC_SECTION_GROUPS,
@@ -32,6 +30,7 @@ import {
   mapDynamicListValues,
   uriValidator,
 } from 'Plugins/auth-server/utils'
+import { GRANT_TYPES, RESPONSE_TYPES } from 'Plugins/auth-server/common/Constants'
 import { useStyles } from './styles/ClientBasicPanel.style'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 import type { ClientBasicPanelProps } from '../types'
@@ -130,10 +129,28 @@ const ClientBasicPanel = ({
       buildGrantTypeOptions(
         oidcConfiguration?.grantTypesSupported,
         formik.values.grantTypes as string[] | undefined,
-        GRANT_TYPE_OPTIONS.map((option) => option.value),
+        Object.values(GRANT_TYPES),
       ),
     [oidcConfiguration?.grantTypesSupported, formik.values.grantTypes],
   )
+
+  const responseTypeOptions = useMemo(() => {
+    const supported = oidcConfiguration?.grantTypesSupported
+    const selected = (formik.values.responseTypes as string[] | undefined) ?? []
+    const implicit = !supported?.length || supported.includes(GRANT_TYPES.IMPLICIT)
+    const allowed: Partial<Record<string, boolean>> = {
+      [RESPONSE_TYPES.TOKEN]: implicit,
+      [RESPONSE_TYPES.ID_TOKEN]:
+        implicit || !!oidcConfiguration?.allowIdTokenWithoutImplicitGrantType,
+    }
+    return Object.values(RESPONSE_TYPES).filter(
+      (value) => selected.includes(value) || (allowed[value] ?? true),
+    )
+  }, [
+    oidcConfiguration?.grantTypesSupported,
+    oidcConfiguration?.allowIdTokenWithoutImplicitGrantType,
+    formik.values.responseTypes,
+  ])
 
   const [redirectUriItems, setRedirectUriItems] = useState<GluuDynamicListItem[]>([])
   const isRedirectUriSyncingRef = useRef(false)
@@ -422,7 +439,7 @@ const ClientBasicPanel = ({
             name="responseTypes"
             label={t('fields.response_types')}
             value={(formik.values.responseTypes as string[] | undefined) ?? []}
-            options={RESPONSE_TYPE_OPTIONS.map((option) => option.value)}
+            options={responseTypeOptions}
             onChange={(vals) => formik.setFieldValue('responseTypes', vals)}
             onBlur={() => formik.setFieldTouched?.('responseTypes', true, false)}
             disabled={viewOnly}
@@ -450,6 +467,7 @@ const ClientBasicPanel = ({
             onBlur={() => formik.setFieldTouched?.('grantTypes', true, false)}
             disabled={viewOnly}
             placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
+            helperText={t('messages.grant_types_from_server')}
             showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
             errorMessage={getFieldError('grantTypes')}
             doc_category={DOC_CATEGORY}

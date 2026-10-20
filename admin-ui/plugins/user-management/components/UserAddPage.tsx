@@ -88,13 +88,15 @@ const UserAddPage = () => {
     <GluuPageContent>
       <div className={classes.page}>
         <div className={classes.formCard}>
-          <GluuLoader blocking={loadingAttributes || isSubmitting}>
-            <UserForm
-              onSubmitData={submitData}
-              personAttributes={personAttributes}
-              isSubmitting={isSubmitting}
-            />
-          </GluuLoader>
+          <div className={classes.content}>
+            <GluuLoader blocking={loadingAttributes || isSubmitting}>
+              <UserForm
+                onSubmitData={submitData}
+                personAttributes={personAttributes}
+                isSubmitting={isSubmitting}
+              />
+            </GluuLoader>
+          </div>
         </div>
       </div>
     </GluuPageContent>
