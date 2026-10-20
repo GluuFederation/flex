@@ -59,6 +59,17 @@ describe('SsaForm', () => {
       expect(options).toEqual(['authorization_code', 'client_credentials'])
     })
 
+    it('does not offer a typed grant type the server does not support', async () => {
+      render(<SsaForm {...defaultProps} grantTypesSupported={['authorization_code']} />, {
+        wrapper: Wrapper,
+      })
+      const comboboxes = screen.getAllByRole('combobox')
+      const grantInput = comboboxes[comboboxes.length - 1]
+      fireEvent.focus(grantInput)
+      fireEvent.change(grantInput, { target: { value: 'password' } })
+      await waitFor(() => expect(screen.queryAllByRole('option')).toHaveLength(0))
+    })
+
     it('renders the toggle rows for one time use, rotate ssa and is expirable', () => {
       render(<SsaForm {...defaultProps} />, { wrapper: Wrapper })
       expect(document.querySelector('input#one_time_use')).toBeTruthy()

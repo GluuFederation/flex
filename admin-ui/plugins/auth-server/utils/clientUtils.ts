@@ -50,7 +50,7 @@ export const buildGrantTypeOptions = (
   selected: string[] | undefined,
   fallback: string[],
 ): AutocompleteOption[] => {
-  const base = supported?.length ? supported : fallback
+  const base = supported ?? fallback
   const values = [...new Set([...base, ...(selected ?? [])].filter(Boolean))]
   return values.map((value) => ({ value, label: getGrantTypeLabel(value) }))
 }

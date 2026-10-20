@@ -170,6 +170,14 @@ it('offers token and id_token only when the server supports the implicit grant',
   ).toEqual(['code'])
 })
 
+it('offers only code when the server supports no grant types', async () => {
+  expect(await renderResponseTypeOptions({ grantTypesSupported: [] })).toEqual(['code'])
+})
+
+it('offers every response type when the server config is not loaded', async () => {
+  expect(await renderResponseTypeOptions({})).toEqual(['code', 'token', 'id_token'])
+})
+
 it('offers every response type when the server supports the implicit grant', async () => {
   expect(
     await renderResponseTypeOptions({ grantTypesSupported: ['authorization_code', 'implicit'] }),

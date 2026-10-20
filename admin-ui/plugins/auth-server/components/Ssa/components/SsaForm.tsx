@@ -291,7 +291,6 @@ const SsaForm: React.FC<SsaFormProps> = ({
                         name="grant_types"
                         value={formik.values.grant_types}
                         options={grantTypeOptions}
-                        allowCustom
                         required
                         onChange={(nextValues) =>
                           handleAutocompleteChange('grant_types', nextValues)

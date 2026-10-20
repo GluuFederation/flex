@@ -137,7 +137,7 @@ const ClientBasicPanel = ({
   const responseTypeOptions = useMemo(() => {
     const supported = oidcConfiguration?.grantTypesSupported
     const selected = (formik.values.responseTypes as string[] | undefined) ?? []
-    const implicit = !supported?.length || supported.includes(GRANT_TYPES.IMPLICIT)
+    const implicit = !supported || supported.includes(GRANT_TYPES.IMPLICIT)
     const allowed: Partial<Record<string, boolean>> = {
       [RESPONSE_TYPES.TOKEN]: implicit,
       [RESPONSE_TYPES.ID_TOKEN]:
