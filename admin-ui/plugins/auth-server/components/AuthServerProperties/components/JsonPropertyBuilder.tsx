@@ -25,6 +25,7 @@ import type {
   StringArrayFieldProps,
   ArrayItemSelectProps,
   PropertyValue,
+  EditedPropertyValue,
 } from '../types'
 import type { JsonPatch } from 'JansConfigApi'
 import {
@@ -43,6 +44,9 @@ import {
   LOGGING_LEVEL_FIELD_KEYS,
   LOGGING_LEVEL_OPTIONS,
 } from '../../ConfigApiProperties/utils'
+import { PROPERTY_OPTION_VALUES, NESTED_ITEMS_PER_CHUNK } from '../constants'
+import { useChunkedCount } from '@/hooks/useChunkedCount'
+import { getEditedValueAtPath } from 'Plugins/auth-server/common/propertiesUtils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
@@ -83,7 +87,7 @@ const ArrayItemSelect = React.memo(
   },
 )
 
-export const NumberField = React.memo(
+const NumberField = React.memo(
   ({
     propKey,
     value,
@@ -176,6 +180,7 @@ const JsonPropertyBuilder = ({
   schema,
   isRenamedKey = false,
   errors,
+  editedTopLevelValue,
   formResetKey = 0,
 }: JsonPropertyBuilderProps): JSX.Element => {
   const { t, i18n } = useTranslation()
@@ -197,7 +202,7 @@ const JsonPropertyBuilder = ({
       const fallbackKey = `fields.${key}`
       if (!i18n.exists(fallbackKey)) {
         const fallback = migratingTextIfRenamed(isRenamedKey, key)
-        i18n.addResource(i18n.language, 'translation', fallbackKey, fallback)
+        i18n.addResource(i18n.language, 'translation', fallbackKey, fallback, { silent: true })
       }
       return fallbackKey
     },
@@ -212,6 +217,11 @@ const JsonPropertyBuilder = ({
     if (!trimmed) return [propKey]
     return trimmed.split('/')
   }, [path, propKey])
+
+  const currentValue = useMemo<EditedPropertyValue>(() => {
+    const editedValue = getEditedValueAtPath(editedTopLevelValue, formikPathSegments)
+    return editedValue !== undefined ? editedValue : propValue
+  }, [editedTopLevelValue, formikPathSegments, propValue])
 
   const fieldError = useMemo(() => {
     if (!errors) return undefined
@@ -283,6 +293,14 @@ const JsonPropertyBuilder = ({
     return sortKeysByFieldType(Object.keys(objVal), objVal as Record<string, PropertyValue>)
   }, [propValue])
 
+  const nestedItemCount =
+    Array.isArray(propValue) && isObjectArray(propValue)
+      ? propValue.length
+      : sortedObjectKeys.length
+  const renderedNestedCount = useChunkedCount(nestedItemCount, NESTED_ITEMS_PER_CHUNK, {
+    initialCount: NESTED_ITEMS_PER_CHUNK,
+  })
+
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
       <>
@@ -315,7 +333,7 @@ const JsonPropertyBuilder = ({
         <GluuSelectRow
           label={getLocalizedLabelKey(propKey)}
           name={propKey}
-          value={propValue as string}
+          value={typeof currentValue === 'string' ? currentValue : (propValue as string)}
           formik={selectFormikAdapter}
           values={LOGGING_LEVEL_OPTIONS}
           lsize={lSize}
@@ -356,7 +374,7 @@ const JsonPropertyBuilder = ({
       <>
         <NumberField
           propKey={propKey}
-          value={propValue as number}
+          value={typeof currentValue === 'number' ? currentValue : (propValue as number)}
           label={getLocalizedLabelKey(propKey)}
           path={path}
           handler={handler}
@@ -370,8 +388,15 @@ const JsonPropertyBuilder = ({
   }
 
   if (isStringArray(propValue) || isEmptyArray(propValue) || shouldRenderAsStringArray(schema)) {
-    const arrayValues = (propValue as string[]) || []
-    const enumOptions = [...new Set(schema?.items?.enum || arrayValues)]
+    const loadedValues = Array.isArray(propValue) ? (propValue as string[]) : []
+    const arrayValues = Array.isArray(currentValue) ? (currentValue as string[]) : loadedValues
+    const enumOptions = [
+      ...new Set([
+        ...(schema?.items?.enum || PROPERTY_OPTION_VALUES[propKey] || []),
+        ...loadedValues,
+        ...arrayValues,
+      ]),
+    ]
     const selectOptions: AutocompleteOption[] = enumOptions.map((v: string) => ({
       value: v,
       label: v,
@@ -399,9 +424,10 @@ const JsonPropertyBuilder = ({
     const isArrayOfArrays = arrayValue.every((nestedValue) => Array.isArray(nestedValue))
 
     if (isArrayOfArrays) {
-      const stringRows = arrayValue as string[][]
-      const allValues = new Set<string>()
-      for (const subArray of stringRows) {
+      const loadedRows = arrayValue as string[][]
+      const stringRows = (Array.isArray(currentValue) ? currentValue : loadedRows) as string[][]
+      const allValues = new Set<string>(PROPERTY_OPTION_VALUES[propKey] ?? [])
+      for (const subArray of [...loadedRows, ...stringRows]) {
         for (const item of subArray) {
           if (item != null) allValues.add(item)
         }
@@ -410,7 +436,9 @@ const JsonPropertyBuilder = ({
         value: v,
         label: v,
       }))
-      const rowItems = stringRows.map((nestedValue, index) => ({ nestedValue, index }))
+      const rowItems = stringRows
+        .slice(0, renderedNestedCount)
+        .map((nestedValue, index) => ({ nestedValue, index }))
       const paired = toPairs(rowItems)
 
       return (
@@ -471,7 +499,7 @@ const JsonPropertyBuilder = ({
           {arrayValue.length === 0 ? (
             <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
           ) : (
-            arrayValue.map((nestedValue, index) => (
+            arrayValue.slice(0, renderedNestedCount).map((nestedValue, index) => (
               <div key={String(index)} className={classes.nestedAccordionItem}>
                 <JsonPropertyBuilder
                   propKey={String(index)}
@@ -481,6 +509,7 @@ const JsonPropertyBuilder = ({
                   parentIsArray={true}
                   path={path}
                   errors={errors}
+                  editedTopLevelValue={editedTopLevelValue}
                   formResetKey={formResetKey}
                 />
               </div>
@@ -526,7 +555,7 @@ const JsonPropertyBuilder = ({
                 <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
               ) : (
                 <div className={classes.objectFieldsGrid}>
-                  {sortedObjectKeys.map((objKey) => {
+                  {sortedObjectKeys.slice(0, renderedNestedCount).map((objKey) => {
                     const nestedValue = objectValue[objKey]
                     const isComplex = isObject(nestedValue) || isObjectArray(nestedValue)
                     return (
@@ -546,6 +575,7 @@ const JsonPropertyBuilder = ({
                           parentIsArray={false}
                           path={path}
                           errors={errors}
+                          editedTopLevelValue={editedTopLevelValue}
                           formResetKey={formResetKey}
                         />
                       </div>

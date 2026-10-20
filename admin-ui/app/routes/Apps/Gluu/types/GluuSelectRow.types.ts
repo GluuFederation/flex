@@ -3,7 +3,7 @@ export type SelectOption = {
   label: string
 }
 
-export type GluuSelectRowFormik = {
+type GluuSelectRowFormik = {
   handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
   handleBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void
 }

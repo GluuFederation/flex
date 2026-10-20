@@ -14,6 +14,11 @@ import { redirectSessionExpired } from '../utils/sessionExpiredRedirect'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
 
+interface PatchActionData {
+  deletedMapping?: boolean
+  requestBody?: JsonPatch[]
+}
+
 const createAuditLog = (): AuditLog => {
   return createSuccessAuditInit(getCurrentAuditContext()) as AuditLog
 }
@@ -31,7 +36,12 @@ export const fetchAuthServerJsonProperties = async (): Promise<AppConfiguration>
   addAdditionalData(audit as AuditRecord, FETCH, JSON_CONFIG, {})
   try {
     const data = await callFetchJsonProperties()
-    await postUserAction(audit as UserActionPayload)
+    void postUserAction(audit as UserActionPayload).catch((error) =>
+      logger.error(
+        'Failed to audit the auth server JSON properties fetch: ' +
+          resolveApiErrorMessage(error as Error),
+      ),
+    )
     return data
   } catch (e) {
     logger.error(
@@ -40,11 +50,6 @@ export const fetchAuthServerJsonProperties = async (): Promise<AppConfiguration>
     await handleForbidden(e as HttpErrorLike)
     throw e
   }
-}
-
-interface PatchActionData {
-  deletedMapping?: boolean
-  requestBody?: JsonPatch[]
 }
 
 export const patchAuthServerJsonProperties = async (

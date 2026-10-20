@@ -1,6 +1,11 @@
+import { getIn } from 'formik'
 import type { JsonPatch } from 'JansConfigApi'
 import { REGEX_LEADING_SLASH, REGEX_UPPERCASE_LETTER } from '@/utils/regex'
-import type { AppConfiguration, PropertyValue } from '../components/AuthServerProperties/types'
+import type {
+  AppConfiguration,
+  EditedPropertyValue,
+  PropertyValue,
+} from '../components/AuthServerProperties/types'
 import type { JsonValue } from 'Routes/Apps/Gluu/types/index'
 
 export const toPairs = (keys: string[]): Array<[string, string | null]> => {
@@ -27,6 +32,12 @@ export const isSimplePropertyValue = (value: PropertyValue): boolean => {
   }
   return false
 }
+
+export const getEditedValueAtPath = (
+  editedTopLevelValue: EditedPropertyValue,
+  pathSegments: string[],
+): EditedPropertyValue =>
+  pathSegments.length <= 1 ? editedTopLevelValue : getIn(editedTopLevelValue, pathSegments.slice(1))
 
 export const formatPatchValue = (patch: JsonPatch): JsonValue => {
   if (patch.op === 'remove') return '(removed)'
