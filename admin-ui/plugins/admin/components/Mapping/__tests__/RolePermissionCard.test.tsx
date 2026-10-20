@@ -11,7 +11,6 @@ const renderCard = (props: Partial<React.ComponentProps<typeof RolePermissionCar
     <RolePermissionCard
       candidate={candidate as never}
       allPermissions={allPermissions}
-      totalPermissions={allPermissions.length}
       {...props}
     />,
     { wrapper: AppTestWrapper },
@@ -43,9 +42,18 @@ describe('RolePermissionCard', () => {
       .forEach((box) => expect(box).toHaveAttribute('aria-checked', 'true'))
   })
 
-  it('counts assigned permissions against the full catalog', () => {
+  it('shows how many permissions are mapped to the role', () => {
     renderCard()
-    expect(screen.getByText('2')).toBeInTheDocument()
+    const header = screen.getByRole('button', { name: /admin/i })
+    expect(header).toHaveTextContent('2 permissions mapped to the role')
+    expect(header).not.toHaveTextContent(/out of/i)
+  })
+
+  it('uses the singular for a single mapped permission', () => {
+    renderCard({ candidate: { role: 'viewer', permissions: ['users-read'] } as never })
+    expect(screen.getByRole('button', { name: /viewer/i })).toHaveTextContent(
+      '1 permission mapped to the role',
+    )
   })
 
   it('shows the empty state when the role has no assigned permissions', () => {

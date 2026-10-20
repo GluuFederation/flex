@@ -425,6 +425,7 @@ const SsaListPage: React.FC = () => {
           isBadge: true,
           badgeBackgroundColor: themeColors.badges.statusActiveBg,
           badgeTextColor: themeColors.badges.statusActive,
+          grow: true,
         },
       ]
     },

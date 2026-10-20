@@ -182,6 +182,7 @@ const UserList = (): JSX.Element => {
 
   const columns: ColumnDef<UserTableRowData>[] = useMemo(
     () => [
+      { key: 'inum', label: t('fields.inum') },
       { key: 'displayName', label: t('fields.name') },
       { key: 'userId', label: t('fields.userName') },
       { key: 'mail', label: t('fields.email') },

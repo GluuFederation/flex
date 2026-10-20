@@ -23,7 +23,6 @@ const ARIA_NOT_ASSIGNED = 'not assigned'
 
 interface ExtendedRolePermissionCardProps extends RolePermissionCardProps {
   allPermissions: string[]
-  totalPermissions: number
   itemIndex?: number
 }
 
@@ -54,7 +53,7 @@ const PermissionCheckbox: React.FC<{
 PermissionCheckbox.displayName = 'PermissionCheckbox'
 
 const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo(
-  ({ candidate, allPermissions, totalPermissions, itemIndex = 0 }) => {
+  ({ candidate, allPermissions, itemIndex = 0 }) => {
     const { t } = useTranslation()
     const [isExpanded, setIsExpanded] = useState(false)
 
@@ -122,7 +121,7 @@ const RolePermissionCard: React.FC<ExtendedRolePermissionCardProps> = React.memo
           <Box className={classes.roleHeaderRight}>
             <GluuText variant="span" className={classes.permissionCount} disableThemeColor>
               <span className={classes.permissionCountHighlight}>{assignedCount}</span>{' '}
-              {t('messages.out_of')} {totalPermissions} {t('messages.permission_label')}
+              {t('messages.permissions_mapped_to_role', { count: assignedCount })}
             </GluuText>
             <ExpandMore
               className={`${classes.chevronIcon} ${isExpanded ? classes.chevronIconOpen : ''}`}
