@@ -180,6 +180,7 @@ const ClientDetailPage: React.FC<ClientDetailPageProps> = ({ row, scopes }) => {
         value: formatBadgeList(row.postLogoutRedirectUris),
         doc_entry: DOC_ENTRIES.POST_LOGOUT_REDIRECT_URIS,
         doc_category: DOC_CATEGORY,
+        grow: true,
       },
     ],
     [row, displayName, description, isEnabled, clientScopes, t, themeColors],

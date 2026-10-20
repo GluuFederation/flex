@@ -1,6 +1,6 @@
 import {
   uuidv4,
-  getClientScopeByInum,
+  extractDnInum,
   getYearMonth,
   formatDate,
   trimObjectStrings,
@@ -17,13 +17,33 @@ describe('uuidv4', () => {
   })
 })
 
-describe('getClientScopeByInum', () => {
-  it('extracts the value after the first equals in the first comma segment', () => {
-    expect(getClientScopeByInum('inum=abc123,ou=scopes,o=jans')).toBe('abc123')
+describe('extractDnInum', () => {
+  it('reads the inum from a DN', () => {
+    expect(extractDnInum('inum=abc123,ou=scopes,o=jans')).toBe('abc123')
   })
 
-  it('reads only the first comma-delimited segment', () => {
-    expect(getClientScopeByInum('id=first,id=second')).toBe('first')
+  it('finds the id attribute wherever it sits in the DN', () => {
+    expect(extractDnInum('ou=people,inum=abc123,o=jans')).toBe('abc123')
+  })
+
+  it('matches the attribute name case-insensitively and trims the value', () => {
+    expect(extractDnInum(' INUM = abc123 ,ou=people,o=jans')).toBe('abc123')
+  })
+
+  it('accepts other id attributes when asked', () => {
+    expect(extractDnInum('jansId=xyz,ou=people,o=jans', ['inum', 'jansid'])).toBe('xyz')
+    expect(extractDnInum('jansId=xyz,ou=people,o=jans')).toBeNull()
+  })
+
+  it('returns null when there is no DN or no id attribute', () => {
+    expect(extractDnInum(null)).toBeNull()
+    expect(extractDnInum(undefined)).toBeNull()
+    expect(extractDnInum('')).toBeNull()
+    expect(extractDnInum('abc123')).toBeNull()
+  })
+
+  it('keeps an empty inum as an empty string', () => {
+    expect(extractDnInum('inum=,ou=people,o=jans')).toBe('')
   })
 })
 

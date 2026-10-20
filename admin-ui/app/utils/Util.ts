@@ -12,10 +12,18 @@ export const uuidv4 = (): string => {
   })
 }
 
-export const getClientScopeByInum = (str: string): string => {
-  const inum = str.split(',')[0]
-  const value = inum.split('=')[1]
-  return value
+export const extractDnInum = (
+  dn: string | null | undefined,
+  idAttributes: readonly string[] = ['inum'],
+): string | null => {
+  if (!dn) return null
+  for (const part of dn.split(',')) {
+    const equalIndex = part.indexOf('=')
+    if (equalIndex === -1) continue
+    const attribute = part.slice(0, equalIndex).trim().toLowerCase()
+    if (idAttributes.includes(attribute)) return part.slice(equalIndex + 1).trim()
+  }
+  return null
 }
 
 const getMonth = (aDate: Date): string => {

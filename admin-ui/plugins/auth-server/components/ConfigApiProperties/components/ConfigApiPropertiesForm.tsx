@@ -15,6 +15,7 @@ import { THEME_DARK } from '@/context/theme/constants'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useChunkedCount } from '@/hooks/useChunkedCount'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
 import type { GluuCommitDialogOperation } from 'Routes/Apps/Gluu/types/index'
 import type { FormikTouched } from 'formik'
@@ -24,6 +25,8 @@ import {
   updateValuesAfterRemoval,
   applyRemovePatchToValues,
   getConfigApiPropertiesSchema,
+  ARRAY_ROWS_PER_CHUNK,
+  COMPLEX_ENTRIES_PER_CHUNK,
 } from '../utils'
 import {
   toPairs,
@@ -170,11 +173,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
         const removalPath = typeof patch.path === 'string' ? patch.path : ''
         const removalPathNormalized = removalPath.replace(REGEX_LEADING_SLASH, '')
 
-        let hasExistingRemove = false
         const filteredPatches = existingPatches.filter((existingPatch) => {
-          if (existingPatch.path === patch.path && existingPatch.op === 'remove') {
-            hasExistingRemove = true
-            return false
+          if (existingPatch.op === 'remove') {
+            return true
           }
 
           const existingPath = typeof existingPatch.path === 'string' ? existingPatch.path : ''
@@ -190,11 +191,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
 
           return true
         })
-
-        if (hasExistingRemove) {
-          processingRemovalsRef.current.delete(removalKey)
-          return existingPatches
-        }
 
         return [...filteredPatches, patch]
       })
@@ -379,6 +375,19 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
     }
   }, [filteredEntries])
 
+  const renderedArrayCount = useChunkedCount(arrayEntries.length, ARRAY_ROWS_PER_CHUNK)
+  const renderedComplexCount = useChunkedCount(complexEntries.length, COMPLEX_ENTRIES_PER_CHUNK, {
+    enabled: renderedArrayCount >= arrayEntries.length,
+  })
+  const renderedArrayEntries = useMemo(
+    () => arrayEntries.slice(0, renderedArrayCount),
+    [arrayEntries, renderedArrayCount],
+  )
+  const renderedComplexEntries = useMemo(
+    () => complexEntries.slice(0, renderedComplexCount),
+    [complexEntries, renderedComplexCount],
+  )
+
   const handleFormSubmitEvent = useCallback(
     (e: React.SyntheticEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -388,8 +397,6 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
   )
 
   const readOnlySet = useMemo(() => new Set(READ_ONLY_FIELDS), [])
-  // Mobile is a view-only layout, so fields are disabled to be semantically
-  // non-editable for keyboard and assistive tech, not just unclickable.
   const isFieldDisabled = (key: string) => isMobile || readOnlySet.has(key)
 
   return (
@@ -408,6 +415,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     doc_category="config_api_properties"
                     disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
+                    editedTopLevelValue={
+                      formik.values[leftKey as keyof ApiAppConfiguration] as PropertyValue
+                    }
                   />
                 </div>
                 <div className={classes.fieldItem}>
@@ -422,13 +432,16 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       doc_category="config_api_properties"
                       disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
+                      editedTopLevelValue={
+                        formik.values[rightKey as keyof ApiAppConfiguration] as PropertyValue
+                      }
                     />
                   )}
                 </div>
               </React.Fragment>
             ))}
 
-            {arrayEntries.map(([leftKey, rightKey]) => (
+            {renderedArrayEntries.map(([leftKey, rightKey]) => (
               <React.Fragment key={`array-${leftKey}-${rightKey ?? 'none'}-${resetKey}`}>
                 <div className={classes.fieldItem}>
                   <JsonPropertyBuilderConfigApi
@@ -439,6 +452,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                     doc_category="config_api_properties"
                     disabled={isFieldDisabled(leftKey)}
                     errors={formik.errors}
+                    editedTopLevelValue={
+                      formik.values[leftKey as keyof ApiAppConfiguration] as PropertyValue
+                    }
                   />
                 </div>
                 <div className={classes.fieldItem}>
@@ -453,13 +469,16 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                       doc_category="config_api_properties"
                       disabled={isFieldDisabled(rightKey)}
                       errors={formik.errors}
+                      editedTopLevelValue={
+                        formik.values[rightKey as keyof ApiAppConfiguration] as PropertyValue
+                      }
                     />
                   )}
                 </div>
               </React.Fragment>
             ))}
 
-            {complexEntries.map(({ propKey, propValue }) => (
+            {renderedComplexEntries.map(({ propKey, propValue }) => (
               <div key={`complex-${propKey}-${resetKey}`} className={classes.fieldItemFullWidth}>
                 <JsonPropertyBuilderConfigApi
                   propKey={propKey}
@@ -469,6 +488,9 @@ const ConfigApiPropertiesForm: React.FC<ConfigApiPropertiesFormProps> = ({
                   doc_category="config_api_properties"
                   disabled={isFieldDisabled(propKey)}
                   errors={formik.errors}
+                  editedTopLevelValue={
+                    formik.values[propKey as keyof ApiAppConfiguration] as PropertyValue
+                  }
                 />
               </div>
             ))}

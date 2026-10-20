@@ -544,6 +544,7 @@ const ScopeListPage: React.FC = () => {
         ),
         doc_entry: 'scopeAttributes',
         doc_category: SCOPE,
+        grow: true,
       },
     ],
     [t, badgeStyles],

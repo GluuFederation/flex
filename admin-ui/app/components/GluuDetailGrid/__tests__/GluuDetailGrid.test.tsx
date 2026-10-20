@@ -38,7 +38,7 @@ it('renders with labelStyle', () => {
 })
 
 it('sizes each field to its own label', () => {
-  const labelWidths: Record<string, number> = { 'inum:': 40, 'Name:': 60, 'Script Type:': 180 }
+  const labelWidths: Record<string, number> = { 'Inum:': 40, 'Name:': 60, 'Script Type:': 180 }
   const rectSpy = jest
     .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
     .mockImplementation(function (this: HTMLElement) {
@@ -52,4 +52,20 @@ it('sizes each field to its own label', () => {
 
   expect(items).toEqual(['40px', '60px', '180px'])
   rectSpy.mockRestore()
+})
+
+it('lets a grow field fill the rest of its line', () => {
+  const { container } = render(
+    <GluuDetailGrid
+      fields={[...mockFields, { label: 'fields.description', value: 'Long text', grow: true }]}
+    />,
+    { wrapper: Wrapper },
+  )
+  const css = Array.from(document.styleSheets)
+    .flatMap((sheet) => Array.from(sheet.cssRules, (rule) => rule.cssText))
+    .join('\n')
+  const flexGrow = (item: Element) =>
+    css.match(new RegExp(`\\.${item.className}\\s*\\{[^}]*?flex:\\s*(\\d)`))?.[1]
+  const items = Array.from(container.querySelectorAll('[style*="--detail-label-width"]'))
+  expect(items.map(flexGrow)).toEqual(['0', '0', '0', '1'])
 })

@@ -16,7 +16,6 @@ import {
   fromBooleanSelectValue,
   mapDynamicListValues,
   appendDynamicListItem,
-  extractDnInum,
 } from 'Plugins/auth-server/utils/clientUtils'
 import type { GluuDynamicListItem } from '@/components/GluuDynamicList'
 
@@ -187,16 +186,5 @@ describe('dynamic list value helpers', () => {
     const result = appendDynamicListItem(current)
     expect(result).toHaveLength(2)
     expect(result[1].value).toBe('')
-  })
-})
-
-describe('extractDnInum', () => {
-  it('extracts the inum from a DN string', () => {
-    expect(extractDnInum('inum=abc-123,ou=clients,o=jans')).toBe('abc-123')
-  })
-
-  it('returns null for nullish input', () => {
-    expect(extractDnInum(null)).toBeNull()
-    expect(extractDnInum(undefined)).toBeNull()
   })
 })

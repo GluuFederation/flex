@@ -8,7 +8,7 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '@/routes/Apps/Gluu/GluuViewWrapper'
 import GluuUploadFile from '@/routes/Apps/Gluu/GluuUploadFile'
 import { updateToast } from '@/redux/features/toastSlice'
-import { getErrorMessage, type ApiError } from '@/utils/errorHandler'
+import { getErrorMessage } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 import { Box, Link } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -133,10 +133,20 @@ const CedarlingConfigPage: React.FC = () => {
       try {
         setIsLoading(true)
 
+        const policyStore = await fileToBase64(selectedFile).catch((error: Error) => {
+          dispatch(
+            updateToast(
+              true,
+              'error',
+              getErrorMessage(error, 'documentation.cedarlingConfig.uploadFailed', t),
+            ),
+          )
+          throw error
+        })
         await createPolicyStore({
           displayname: selectedFile.name,
           description: comments,
-          policyStore: await fileToBase64(selectedFile),
+          policyStore,
         })
 
         setSelectedFile(null)
@@ -147,12 +157,6 @@ const CedarlingConfigPage: React.FC = () => {
           'Policy store upload flow failed:',
           error instanceof Error ? error : String(error),
         )
-        const errorMessage = getErrorMessage(
-          error as Error | ApiError,
-          'documentation.cedarlingConfig.uploadFailed',
-          t,
-        )
-        dispatch(updateToast(true, 'error', errorMessage))
       } finally {
         setIsLoading(false)
       }
