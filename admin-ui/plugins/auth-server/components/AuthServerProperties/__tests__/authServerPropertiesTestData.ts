@@ -1,5 +1,8 @@
 export const mockAuthServerJsonProperties = {
   issuer: 'https://admin-ui-test.gluu.org',
+  grantTypesSupported: ['authorization_code', 'refresh_token', 'client_credentials'],
+  responseTypesSupported: [['code'], ['code', 'id_token']],
+  ssaConfiguration: { ssaSigningAlg: 'RS256', ssaCustomAttributes: ['country', 'region'] },
   baseEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1',
   authorizationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/authorize',
   tokenEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/token',

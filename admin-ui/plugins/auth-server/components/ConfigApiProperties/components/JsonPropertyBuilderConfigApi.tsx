@@ -44,8 +44,11 @@ import {
   isObjectArray,
   LOGGING_LEVEL_FIELD_KEYS,
   LOGGING_LEVEL_OPTIONS,
+  NESTED_ITEMS_PER_CHUNK,
 } from '../utils'
-import { AppConfiguration } from '../../AuthServerProperties/types'
+import { useChunkedCount } from '@/hooks/useChunkedCount'
+import type { AppConfiguration } from '../../AuthServerProperties/types'
+import { getEditedValueAtPath } from 'Plugins/auth-server/common/propertiesUtils'
 
 const AccordionWithSub = Accordion as AccordionWithSubComponents
 const AccordionHeader = AccordionWithSub.Header
@@ -64,6 +67,7 @@ const JsonPropertyBuilderConfigApi = ({
   parent,
   disabled = false,
   errors,
+  editedTopLevelValue,
 }: JsonPropertyBuilderConfigApiProps): JSX.Element => {
   const { t, i18n } = useTranslation()
   const { classes } = useStyles()
@@ -83,7 +87,9 @@ const JsonPropertyBuilderConfigApi = ({
 
       const fallbackKey = `fields.${key}`
       if (!i18n.exists(fallbackKey)) {
-        i18n.addResource(i18n.language, 'translation', fallbackKey, generateLabel(key))
+        i18n.addResource(i18n.language, 'translation', fallbackKey, generateLabel(key), {
+          silent: true,
+        })
       }
       return fallbackKey
     },
@@ -118,6 +124,12 @@ const JsonPropertyBuilderConfigApi = ({
     if (!errors) return undefined
     return getIn(errors, formikPath)
   }, [errors, formikPath])
+
+  const editedValue = useMemo(
+    () =>
+      getEditedValueAtPath(editedTopLevelValue, path.replace(REGEX_LEADING_SLASH, '').split('/')),
+    [editedTopLevelValue, path],
+  )
 
   const removeHandler = useCallback(() => {
     if (!show) {
@@ -165,7 +177,7 @@ const JsonPropertyBuilderConfigApi = ({
     [handler, path],
   )
 
-  const arrayValues = useMemo(
+  const loadedArrayValues = useMemo(
     () =>
       isStringArray(propValue) || shouldRenderAsStringArray(schema)
         ? getStringArrayValue(propValue, schema)
@@ -173,11 +185,24 @@ const JsonPropertyBuilderConfigApi = ({
     [propValue, schema],
   )
 
+  const arrayValues = useMemo(
+    () =>
+      isStringArray(propValue) || shouldRenderAsStringArray(schema)
+        ? getStringArrayValue(
+            Array.isArray(editedValue) ? (editedValue as string[]) : propValue,
+            schema,
+          )
+        : [],
+    [propValue, editedValue, schema],
+  )
+
   const selectOptions = useMemo<AutocompleteOption[]>(() => {
     if (!isStringArray(propValue) && !shouldRenderAsStringArray(schema)) return []
-    const enumOptions = Array.from(new Set(schema?.items?.enum || arrayValues))
+    const enumOptions = Array.from(
+      new Set(schema?.items?.enum || [...loadedArrayValues, ...arrayValues]),
+    )
     return enumOptions.map((v: string) => ({ value: v, label: v }))
-  }, [propValue, schema, arrayValues])
+  }, [propValue, schema, loadedArrayValues, arrayValues])
 
   const sortedObjectKeys = useMemo(() => {
     if (!isObject(propValue)) return []
@@ -195,6 +220,14 @@ const JsonPropertyBuilderConfigApi = ({
     const complexKeys = allKeys.filter((k) => isObject(objVal[k]) || isObjectArray(objVal[k]))
     return [...inputKeys, ...booleanKeys, ...arrKeys, ...complexKeys]
   }, [propValue])
+
+  const nestedItemCount =
+    Array.isArray(propValue) && isObjectArray(propValue)
+      ? propValue.length
+      : sortedObjectKeys.length
+  const renderedNestedCount = useChunkedCount(nestedItemCount, NESTED_ITEMS_PER_CHUNK, {
+    initialCount: NESTED_ITEMS_PER_CHUNK,
+  })
 
   if (isBoolean(propValue) || shouldRenderAsBoolean(schema)) {
     return (
@@ -228,7 +261,7 @@ const JsonPropertyBuilderConfigApi = ({
         <GluuSelectRow
           label={getLocalizedLabelKey(propKey)}
           name={tooltipPropKey || propKey}
-          value={getStringValue(propValue, schema)}
+          value={getStringValue(typeof editedValue === 'string' ? editedValue : propValue, schema)}
           formik={selectFormikAdapter}
           values={LOGGING_LEVEL_OPTIONS}
           lsize={lSize}
@@ -296,7 +329,9 @@ const JsonPropertyBuilderConfigApi = ({
           lsize={lSize}
           rsize={lSize}
           label={getLocalizedLabelKey(propKey)}
-          value={getNumberValue(propValue, schema) ?? 0}
+          value={
+            getNumberValue(typeof editedValue === 'number' ? editedValue : propValue, schema) ?? 0
+          }
           doc_category={doc_category}
           doc_entry={tooltipPropKey || propKey}
           disabled={disabled}
@@ -347,7 +382,7 @@ const JsonPropertyBuilderConfigApi = ({
           {arrayValue.length === 0 ? (
             <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
           ) : (
-            arrayValue.map((item, index) => {
+            arrayValue.slice(0, renderedNestedCount).map((item, index) => {
               const itemPath = `${path}/${index}`
               const itemObj = item as AppConfiguration
               const itemIdentifier =
@@ -366,6 +401,7 @@ const JsonPropertyBuilderConfigApi = ({
                     doc_category={doc_category}
                     disabled={disabled}
                     errors={errors}
+                    editedTopLevelValue={editedTopLevelValue}
                   />
                 </div>
               )
@@ -421,7 +457,7 @@ const JsonPropertyBuilderConfigApi = ({
                 <GluuText variant="span">{t('messages.no_data_available')}</GluuText>
               ) : (
                 <div className={classes.objectFieldsGrid}>
-                  {sortedObjectKeys.map((objKey) => {
+                  {sortedObjectKeys.slice(0, renderedNestedCount).map((objKey) => {
                     const objVal = propValue as AppConfiguration
                     let tooltipKey = ''
 
@@ -453,6 +489,7 @@ const JsonPropertyBuilderConfigApi = ({
                           doc_category={doc_category}
                           disabled={disabled}
                           errors={errors}
+                          editedTopLevelValue={editedTopLevelValue}
                         />
                       </div>
                     )

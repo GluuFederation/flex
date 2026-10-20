@@ -75,6 +75,23 @@ describe('fetchAuthServerJsonProperties', () => {
     expect(mockPostUserAction).toHaveBeenCalledWith({ audit: true })
   })
 
+  it('returns the config without waiting for the audit log to be saved', async () => {
+    mockFetch.mockResolvedValue({ some: 'config' })
+    mockPostUserAction.mockReturnValue(new Promise(() => {}))
+    const result = await Promise.race([
+      fetchAuthServerJsonProperties(),
+      new Promise((resolve) => setTimeout(() => resolve('still waiting for the audit log'), 100)),
+    ])
+    expect(result).toEqual({ some: 'config' })
+    expect(mockPostUserAction).toHaveBeenCalledWith({ audit: true })
+  })
+
+  it('returns the config when saving the audit log fails', async () => {
+    mockFetch.mockResolvedValue({ some: 'config' })
+    mockPostUserAction.mockRejectedValue(new Error('audit down'))
+    await expect(fetchAuthServerJsonProperties()).resolves.toEqual({ some: 'config' })
+  })
+
   it('rethrows and does not redirect on a non-403 failure', async () => {
     mockFetch.mockRejectedValue(new Error('500'))
     await expect(fetchAuthServerJsonProperties()).rejects.toThrow('500')

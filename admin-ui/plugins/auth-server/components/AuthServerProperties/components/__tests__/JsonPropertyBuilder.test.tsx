@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { useTranslation } from 'react-i18next'
 import JsonPropertyBuilder from '../JsonPropertyBuilder'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 
@@ -29,5 +30,38 @@ describe('JsonPropertyBuilder', () => {
     expect(handler).toHaveBeenCalledWith(
       expect.objectContaining({ op: 'replace', path: '/myField', value: 'world' }),
     )
+  })
+})
+
+const probeRenders = jest.fn()
+const TranslatedProbe = () => {
+  useTranslation()
+  probeRenders()
+  return null
+}
+const MemoizedProbe = React.memo(TranslatedProbe)
+
+describe('JsonPropertyBuilder label for a key missing from the translations', () => {
+  it('is added without re-rendering other translated components', () => {
+    const Harness = ({ showField }: { showField: boolean }) => (
+      <>
+        <MemoizedProbe />
+        {showField && (
+          <JsonPropertyBuilder
+            propKey="zzAuthServerLabelProbe"
+            propValue="value"
+            lSize={4}
+            handler={jest.fn()}
+          />
+        )}
+      </>
+    )
+    const { rerender } = render(<Harness showField={false} />, { wrapper: AppTestWrapper })
+    probeRenders.mockClear()
+
+    rerender(<Harness showField />)
+
+    expect(screen.getByText(/Zz Auth Server Label Probe/)).toBeInTheDocument()
+    expect(probeRenders).not.toHaveBeenCalled()
   })
 })

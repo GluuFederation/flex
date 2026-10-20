@@ -1,19 +1,14 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef, useDeferredValue } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { useFormik, type FormikProps } from 'formik'
+import { getIn, useFormik, type FormikProps } from 'formik'
 import * as Yup from 'yup'
 import { Card, CardBody, Form } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuThemeFormFooter from 'Routes/Apps/Gluu/GluuThemeFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
-import GluuAutocomplete from 'Routes/Apps/Gluu/GluuAutocomplete'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import type { AutocompleteOption } from 'Routes/Apps/Gluu/types/GluuAutocomplete.types'
-import type { GluuSelectRowFormik } from 'Routes/Apps/Gluu/types/GluuSelectRow.types'
-import PropertyBuilder, { NumberField } from './JsonPropertyBuilder'
+import PropertyBuilder from './JsonPropertyBuilder'
 import DefaultAcrInput from './DefaultAcrInput'
 import SetTitle from 'Utils/SetTitle'
 import { logger } from '@/utils/logger'
@@ -37,8 +32,7 @@ import { GluuPageContent } from '@/components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { GluuSearchToolbar } from '@/components/GluuSearchToolbar'
 import { buildKeyCandidates } from '@/utils/stringUtils'
-import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH, REGEX_NON_LOWERCASE_ALPHA } from '@/utils/regex'
-import { getFieldPlaceholder } from '@/utils/placeholderUtils'
+import { REGEX_LEADING_SLASH, REGEX_FORWARD_SLASH } from '@/utils/regex'
 import { SCRIPT_TYPES } from '@/constants'
 import { useStyles } from './styles/AuthServerPropertiesPage.style'
 import { useAcrAudit } from '../../Authentication/Acrs/hooks'
@@ -50,6 +44,8 @@ import {
   ACR_CHALLENGE_KEY,
   KEY_GROUP_ORDER,
   DEFAULT_AUTH_SERVER_CONFIG,
+  SIMPLE_ROWS_PER_CHUNK,
+  COMPLEX_ENTRIES_PER_CHUNK,
 } from '../constants'
 import {
   isRenamedKey,
@@ -57,7 +53,6 @@ import {
   DISCOVERY_DENY_KEYS_I18N,
   createAppConfigurationSchema,
 } from '../Properties/utils'
-import { LOGGING_LEVEL_FIELD_KEYS, LOGGING_LEVEL_OPTIONS } from '../../ConfigApiProperties/utils'
 import {
   toPairs,
   generateLabel,
@@ -75,6 +70,7 @@ import type {
 import type { GluuCommitDialogOperation, JsonValue } from 'Routes/Apps/Gluu/types/index'
 import type { UserAction } from 'Utils/types'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useChunkedCount } from '@/hooks/useChunkedCount'
 import { MOBILE_MEDIA_QUERY } from '@/constants'
 
 const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
@@ -240,7 +236,9 @@ const AuthServerPropertiesPage: React.FC = () => {
 
       const fallbackKey = `fields.${propKey}`
       if (!i18n.exists(fallbackKey)) {
-        i18n.addResource(i18n.language, 'translation', fallbackKey, generateLabel(propKey))
+        i18n.addResource(i18n.language, 'translation', fallbackKey, generateLabel(propKey), {
+          silent: true,
+        })
       }
       return fallbackKey
     },
@@ -318,6 +316,19 @@ const AuthServerPropertiesPage: React.FC = () => {
     ]
   }, [hasActiveSearch, remainingSimpleKeys, simpleEntries, simpleEntriesByKey])
 
+  const renderedSimpleRowCount = useChunkedCount(groupedSimpleRows.length, SIMPLE_ROWS_PER_CHUNK)
+  const renderedComplexCount = useChunkedCount(complexEntries.length, COMPLEX_ENTRIES_PER_CHUNK, {
+    enabled: renderedSimpleRowCount >= groupedSimpleRows.length,
+  })
+  const renderedSimpleRows = useMemo(
+    () => groupedSimpleRows.slice(0, renderedSimpleRowCount),
+    [groupedSimpleRows, renderedSimpleRowCount],
+  )
+  const renderedComplexEntries = useMemo(
+    () => complexEntries.slice(0, renderedComplexCount),
+    [complexEntries, renderedComplexCount],
+  )
+
   const simpleFieldModels = useMemo(() => {
     return Object.entries(simpleEntriesByKey).reduce<Record<string, SimpleFieldModel>>(
       (acc, [propKey, propValue]) => {
@@ -333,19 +344,12 @@ const AuthServerPropertiesPage: React.FC = () => {
               ? propValue
               : String(propValue ?? '')
 
-        acc[propKey] = {
-          propKey,
-          label: getPropertyLabel(propKey),
-          value: normalizedValue,
-          isBoolean,
-          isArray,
-          options: isArray ? (propValue as string[]) : undefined,
-        }
+        acc[propKey] = { value: normalizedValue }
         return acc
       },
       {},
     )
-  }, [getPropertyLabel, isSimplePropertyValue, simpleEntriesByKey])
+  }, [isSimplePropertyValue, simpleEntriesByKey])
   const authScripts = useMemo(() => {
     const filteredScripts = scripts
       .filter((item) => item.scriptType === SCRIPT_TYPES.PERSON_AUTHENTICATION)
@@ -461,116 +465,22 @@ const AuthServerPropertiesPage: React.FC = () => {
     },
     [patches, put, acrs, patchJsonPropertiesMutation, putAcrsMutation, logAcrUpdate, t],
   )
-  const arrayMultiSelectOptions = useMemo(() => {
-    const optionsMap: Record<string, AutocompleteOption[]> = {}
-    for (const [propKey, model] of Object.entries(simpleFieldModels)) {
-      if (!model?.isArray || !model.options) continue
-      const unique = [...new Set(model.options)]
-      optionsMap[propKey] = unique.map((v) => ({ value: v, label: v }))
-    }
-    return optionsMap
-  }, [simpleFieldModels])
-
-  const loggingLevelFormikAdapters = useMemo(() => {
-    const adapters: Record<string, GluuSelectRowFormik> = {}
-    for (const propKey of Object.keys(simpleFieldModels)) {
-      const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
-      if (LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey)) {
-        adapters[propKey] = {
-          handleChange: (event) => {
-            patchHandler({ op: 'replace', path: `/${propKey}`, value: event.target.value })
-          },
-          handleBlur: () => {},
-        }
-      }
-    }
-    return adapters
-  }, [simpleFieldModels, patchHandler])
-
   const renderSimpleField = useCallback(
     (propKey: string) => {
       const model = simpleFieldModels[propKey]
       if (!model) return null
-
-      if (model.isArray) {
-        return (
-          <GluuAutocomplete
-            key={`${model.propKey}-${resetKey}`}
-            label={t(model.label)}
-            name={model.propKey}
-            value={(model.value as string[]) ?? []}
-            onChange={(vals) => patchHandler({ op: 'replace', path: `/${propKey}`, value: vals })}
-            options={arrayMultiSelectOptions[propKey] || []}
-            allowCustom
-            disabled={isMobile}
-            doc_category="json_properties"
-          />
-        )
-      }
-
-      if (typeof model.value === 'number') {
-        return (
-          <NumberField
-            key={`${model.propKey}-${resetKey}`}
-            propKey={model.propKey}
-            value={model.value}
-            label={model.label}
-            path={`/${model.propKey}`}
-            handler={patchHandler}
-            lSize={12}
-            formResetKey={resetKey}
-            disabled={isMobile}
-          />
-        )
-      }
-
-      const normalizedKey = propKey.toLowerCase().replace(REGEX_NON_LOWERCASE_ALPHA, '')
-      if (LOGGING_LEVEL_FIELD_KEYS.has(normalizedKey) && loggingLevelFormikAdapters[propKey]) {
-        return (
-          <GluuSelectRow
-            key={`${model.propKey}-${resetKey}`}
-            label={model.label}
-            name={model.propKey}
-            value={model.value as string}
-            formik={loggingLevelFormikAdapters[propKey]}
-            values={LOGGING_LEVEL_OPTIONS}
-            lsize={12}
-            rsize={12}
-            doc_category="json_properties"
-            doc_entry={model.propKey}
-            disabled={isMobile}
-          />
-        )
-      }
-
       return (
-        <GluuInlineInput
-          key={`${model.propKey}-${resetKey}`}
-          id={model.propKey}
-          name={model.propKey}
-          label={model.label}
-          value={model.value}
-          lsize={12}
-          rsize={12}
-          isBoolean={model.isBoolean}
-          isArray={false}
+        <PropertyBuilder
+          propKey={propKey}
+          propValue={model.value}
+          lSize={12}
           handler={patchHandler}
-          path={`/${model.propKey}`}
-          showSaveButtons={false}
-          placeholder={getFieldPlaceholder(t, model.label)}
-          disabled={isMobile}
+          editedTopLevelValue={getIn(formik.values, propKey)}
+          formResetKey={resetKey}
         />
       )
     },
-    [
-      patchHandler,
-      simpleFieldModels,
-      arrayMultiSelectOptions,
-      loggingLevelFormikAdapters,
-      resetKey,
-      t,
-      isMobile,
-    ],
+    [patchHandler, simpleFieldModels, formik.values, resetKey],
   )
 
   const simpleFieldsContent = useMemo(
@@ -594,7 +504,7 @@ const AuthServerPropertiesPage: React.FC = () => {
             )
           })}
 
-        {groupedSimpleRows.map(([leftKey, rightKey]) => (
+        {renderedSimpleRows.map(([leftKey, rightKey]) => (
           <React.Fragment key={`grouped-${leftKey}-${rightKey ?? 'none'}-${resetKey}`}>
             <div className={classes.fieldItem}>{renderSimpleField(leftKey)}</div>
             <div className={classes.fieldItem}>{rightKey ? renderSimpleField(rightKey) : null}</div>
@@ -604,7 +514,7 @@ const AuthServerPropertiesPage: React.FC = () => {
     ),
     [
       classes.fieldItem,
-      groupedSimpleRows,
+      renderedSimpleRows,
       hasActiveSearch,
       prioritizedSimpleKeys,
       renderSimpleField,
@@ -681,7 +591,7 @@ const AuthServerPropertiesPage: React.FC = () => {
                         </React.Fragment>
                       )}
 
-                    {complexEntries.map(({ propKey, propValue }) => (
+                    {renderedComplexEntries.map(({ propKey, propValue }) => (
                       <div
                         key={`complex-${propKey}-${resetKey}`}
                         className={classes.fieldItemFullWidth}
@@ -693,6 +603,7 @@ const AuthServerPropertiesPage: React.FC = () => {
                           lSize={lSize}
                           handler={patchHandler}
                           errors={formik.errors}
+                          editedTopLevelValue={getIn(formik.values, propKey)}
                           formResetKey={resetKey}
                         />
                       </div>

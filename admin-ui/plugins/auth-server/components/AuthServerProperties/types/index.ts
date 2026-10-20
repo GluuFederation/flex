@@ -44,6 +44,8 @@ export type ArrayItemSelectProps = {
 export type PropertyValue =
   string | number | boolean | string[] | AppConfiguration | null | undefined
 
+export type EditedPropertyValue = PropertyValue | AppConfiguration[]
+
 export type JsonPropertyBuilderProps = {
   propKey: string
   propValue?: PropertyValue
@@ -54,6 +56,7 @@ export type JsonPropertyBuilderProps = {
   schema?: SchemaProperty
   isRenamedKey?: boolean
   errors?: FormikErrors<AppConfiguration>
+  editedTopLevelValue?: EditedPropertyValue
   formResetKey?: number
 }
 
@@ -90,12 +93,7 @@ export type Script = GenericItem & {
 }
 
 export type SimpleFieldModel = {
-  propKey: string
-  label: string
   value: string | number | boolean | string[]
-  isBoolean: boolean
-  isArray: boolean
-  options?: string[]
 }
 
 export type AccordionWithSubComponents = typeof Accordion & {
