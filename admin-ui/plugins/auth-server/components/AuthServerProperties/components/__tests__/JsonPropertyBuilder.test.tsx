@@ -65,3 +65,35 @@ describe('JsonPropertyBuilder label for a key missing from the translations', ()
     expect(probeRenders).not.toHaveBeenCalled()
   })
 })
+
+describe('JsonPropertyBuilder number field', () => {
+  const numberField = (props: Partial<React.ComponentProps<typeof JsonPropertyBuilder>>) => (
+    <JsonPropertyBuilder
+      propKey="lifetime"
+      propValue={300}
+      lSize={4}
+      handler={jest.fn()}
+      formResetKey={0}
+      {...props}
+    />
+  )
+
+  it('shows the edited value when it mounts with an edit pending', () => {
+    render(numberField({ editedTopLevelValue: 500 }), { wrapper: AppTestWrapper })
+
+    expect(screen.getByDisplayValue('500')).toBeInTheDocument()
+  })
+
+  it('shows the loaded value again after Cancel', () => {
+    const { rerender } = render(numberField({ editedTopLevelValue: 300 }), {
+      wrapper: AppTestWrapper,
+    })
+    fireEvent.change(screen.getByDisplayValue('300'), { target: { value: '500' } })
+    rerender(numberField({ editedTopLevelValue: 500 }))
+    expect(screen.getByDisplayValue('500')).toBeInTheDocument()
+
+    rerender(numberField({ editedTopLevelValue: 300, formResetKey: 1 }))
+
+    expect(screen.getByDisplayValue('300')).toBeInTheDocument()
+  })
+})

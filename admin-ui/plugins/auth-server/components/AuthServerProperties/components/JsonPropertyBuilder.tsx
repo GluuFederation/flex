@@ -374,7 +374,7 @@ const JsonPropertyBuilder = ({
       <>
         <NumberField
           propKey={propKey}
-          value={propValue as number}
+          value={typeof currentValue === 'number' ? currentValue : (propValue as number)}
           label={getLocalizedLabelKey(propKey)}
           path={path}
           handler={handler}
