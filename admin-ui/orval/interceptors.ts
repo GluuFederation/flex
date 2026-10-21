@@ -10,6 +10,7 @@ import { clearApiToken, ensureApiToken } from '@/redux/api/apiToken'
 import { handleSessionExpired } from '@/redux/features/initSlice'
 import { logger } from '@/utils/logger'
 import { getIssuer } from '@/utils/TokenController'
+import { isSignedOutSinceSignIn, leaveAfterSignOut } from '@/utils/authSync'
 import type { RootState } from '@/redux/types'
 import type { AppDispatch } from '@/redux/hooks'
 import type { RetriableAxiosRequestConfig } from './types'
@@ -52,6 +53,11 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
     const { userJwt, canAttemptSessionAuth } = getAuthSessionContext()
 
     if (!canAttemptSessionAuth || !userJwt) {
+      return false
+    }
+
+    if (isSignedOutSinceSignIn()) {
+      leaveAfterSignOut()
       return false
     }
 

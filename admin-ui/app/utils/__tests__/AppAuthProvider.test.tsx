@@ -1,8 +1,9 @@
 import React from 'react'
-import { render, act } from '@testing-library/react'
+import { render, act, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { AuthorizationServiceConfiguration } from '@openid/appauth'
+import i18n from '@/i18n'
 import AppAuthProvider from '../AppAuthProvider'
 import authReducer from '@/redux/features/authSlice'
 import licenseReducer from '@/redux/features/licenseSlice'
@@ -55,6 +56,12 @@ const renderProvider = (store = buildStore()) =>
   )
 
 describe('AppAuthProvider', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    window.sessionStorage.clear()
+    window.history.replaceState({}, '', '/')
+  })
+
   it('renders the redirect fallback and hides protected children while unauthenticated', () => {
     const { container, queryByTestId } = renderProvider()
 
@@ -180,6 +187,80 @@ describe('AppAuthProvider', () => {
       )
 
       expect(fetchFromIssuer).not.toHaveBeenCalled()
+    })
+
+    it('keeps the sign-in in progress in this tab only', async () => {
+      fetchFromIssuer.mockResolvedValue(
+        new AuthorizationServiceConfiguration({
+          authorization_endpoint: 'https://issuer.example.com/authorize',
+          token_endpoint: 'https://issuer.example.com/token',
+          revocation_endpoint: 'https://issuer.example.com/revoke',
+        }),
+      )
+
+      renderProvider(buildStore(signedInLicense, { issuer: 'https://issuer.example.com' }))
+
+      await waitFor(() =>
+        expect(
+          window.sessionStorage.getItem('appauth_current_authorization_request'),
+        ).not.toBeNull(),
+      )
+      expect(Object.keys(window.localStorage).filter((key) => key.includes('appauth'))).toEqual([])
+    })
+  })
+
+  describe('finishing sign-in', () => {
+    beforeEach(() => {
+      window.localStorage.setItem('issuer', 'https://issuer.example.com')
+      window.history.replaceState({}, '', '/?code=auth-code&state=auth-state')
+    })
+
+    it('restarts sign-in once when this tab cannot finish the sign-in it returned from', async () => {
+      renderProvider()
+
+      await waitFor(() =>
+        expect(window.sessionStorage.getItem('gluu.signInRestarted')).toBe('true'),
+      )
+    })
+
+    it('shows an error instead of restarting a second time', async () => {
+      window.sessionStorage.setItem('gluu.signInRestarted', 'true')
+      const store = buildStore()
+
+      renderProvider(store)
+
+      await waitFor(() =>
+        expect(store.getState().toastReducer).toMatchObject({
+          showToast: true,
+          type: 'error',
+          message: i18n.t('messages.sign_in_incomplete'),
+        }),
+      )
+    })
+  })
+
+  describe('a sign-out in another tab', () => {
+    const signOutElsewhere = () => {
+      window.localStorage.setItem('gluu.signedOutAt', String(Date.now() + 1000))
+      act(() => {
+        window.dispatchEvent(new StorageEvent('storage', { key: 'gluu.signedOutAt' }))
+      })
+    }
+
+    it('sends a signed-in tab to the login page', () => {
+      renderProvider(buildStore({}, { userinfo_jwt: 'userinfo-jwt' }))
+
+      signOutElsewhere()
+
+      expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
+    })
+
+    it('leaves a tab that is not signed in alone', () => {
+      renderProvider()
+
+      signOutElsewhere()
+
+      expect(window.sessionStorage.getItem('forceLogin')).toBeNull()
     })
   })
 })

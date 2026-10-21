@@ -68,7 +68,17 @@ const createStorage = (area: StorageArea, label: string) => {
     }
   }
 
-  return { get, set, getJSON, setJSON, remove, clear }
+  const keys = (): string[] => {
+    if (!isAvailable()) return []
+    try {
+      return Object.keys(window[area])
+    } catch (e) {
+      logger.error(`${label}.keys failed:`, e instanceof Error ? e : String(e))
+      return []
+    }
+  }
+
+  return { get, set, getJSON, setJSON, remove, clear, keys }
 }
 
 export const storage = createStorage('localStorage', 'storage')

@@ -1,4 +1,5 @@
 import { ROUTES } from '@/helpers/navigation'
+import { REGEX_LEADING_SLASH } from '@/utils/regex'
 
 const withTrailingSlash = (value: string): string => (value.endsWith('/') ? value : `${value}/`)
 
@@ -10,7 +11,7 @@ export const resolveStartPath = (
 ): string | null => {
   const base = withTrailingSlash(basePath)
   if (pathname === base || pathname === base.slice(0, -1)) return null
-  if (pathname === ROUTES.LOGOUT) return null
+  if (pathname === `${base}${ROUTES.LOGOUT.replace(REGEX_LEADING_SLASH, '')}`) return null
   return `${base}${search}${hash}`
 }
 

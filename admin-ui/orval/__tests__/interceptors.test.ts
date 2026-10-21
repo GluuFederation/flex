@@ -52,6 +52,8 @@ describe('orval interceptors', () => {
     mockDeleteAdminUiSession.mockReset()
     mockCreateAdminUiSession.mockReset()
     noopDispatch.mockReset()
+    window.localStorage.clear()
+    window.sessionStorage.clear()
   })
 
   it('attaches session credentials and standard headers when a session exists', async () => {
@@ -253,6 +255,21 @@ describe('orval interceptors', () => {
       const retried = adapter.mock.calls[0][0] as InternalAxiosRequestConfig
       expect(retried.withCredentials).toBe(true)
       expect(retried.headers.get('Authorization')).toBeUndefined()
+    })
+
+    it('leaves for the login page instead of renewing the session after a sign-out in another tab', async () => {
+      window.localStorage.setItem('gluu.signedOutAt', String(Date.now()))
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: { url: '/admin-ui/config', headers: new AxiosHeaders() },
+        response: { status: 401 },
+      }
+      await expect(rejected?.(error)).rejects.toBe(error)
+
+      expect(mockFetchApiTokenWithDefaultScopes).not.toHaveBeenCalled()
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+      expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
     })
 
     it.each([

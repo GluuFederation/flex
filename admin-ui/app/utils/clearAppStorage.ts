@@ -1,7 +1,6 @@
 import { DEFAULT_THEME } from '@/context/theme/constants'
 import { STORAGE_KEYS, DEFAULT_LANG } from '@/constants'
 import { storage } from '@/utils/storage'
-import { clearSessionTokens } from '@/utils/sessionTokens'
 
 const clearAppStorage = (): void => {
   const userConfig = storage.get(STORAGE_KEYS.USER_CONFIG)
@@ -9,12 +8,13 @@ const clearAppStorage = (): void => {
   const initLang = storage.get(STORAGE_KEYS.INIT_LANG)
   const pagingSize = storage.get(STORAGE_KEYS.PAGING_SIZE)
   const logLevel = storage.get(STORAGE_KEYS.LOG_LEVEL)
+  const signedOutAt = storage.get(STORAGE_KEYS.SIGNED_OUT_AT)
   storage.clear()
-  clearSessionTokens()
   storage.set(STORAGE_KEYS.INIT_THEME, initTheme || DEFAULT_THEME)
   storage.set(STORAGE_KEYS.INIT_LANG, initLang || DEFAULT_LANG)
   if (pagingSize) storage.set(STORAGE_KEYS.PAGING_SIZE, pagingSize)
   if (logLevel) storage.set(STORAGE_KEYS.LOG_LEVEL, logLevel)
+  if (signedOutAt) storage.set(STORAGE_KEYS.SIGNED_OUT_AT, signedOutAt)
 
   if (userConfig && userConfig !== 'null') {
     storage.set(STORAGE_KEYS.USER_CONFIG, userConfig)

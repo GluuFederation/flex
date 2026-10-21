@@ -101,6 +101,18 @@ describe('storage', () => {
       expect(consoleError).toHaveBeenCalled()
     })
   })
+
+  describe('keys', () => {
+    it('lists the stored keys', () => {
+      storage.set('a', '1')
+      storage.set('b', '2')
+      expect(storage.keys().sort()).toEqual(['a', 'b'])
+    })
+
+    it('returns an empty list when nothing is stored', () => {
+      expect(storage.keys()).toEqual([])
+    })
+  })
 })
 
 describe('sessionStore', () => {
@@ -120,5 +132,11 @@ describe('sessionStore', () => {
     sessionStore.set('k', 'v')
     sessionStore.remove('k')
     expect(sessionStore.get('k')).toBeNull()
+  })
+
+  it('lists only the keys of sessionStorage', () => {
+    sessionStore.set('tab', '1')
+    window.localStorage.setItem('shared', '1')
+    expect(sessionStore.keys()).toEqual(['tab'])
   })
 })

@@ -55,7 +55,6 @@ sequenceDiagram
     participant Browser as Browser
     participant Entry as app/index.tsx
     participant Store as Redux store
-    participant Persistor as redux-persist
     participant QC as QueryClient
     participant App as App component
     participant Reducers as PluginReducersResolver
@@ -67,9 +66,9 @@ sequenceDiagram
     Entry->>Store: configStore(): build the Redux store
     Store->>Listeners: process(startListening): register every plugin's listeners
     Store->>Store: core + plugin listeners registered on the listener middleware
-    Entry->>Persistor: PersistGate rehydrates persisted slices
     Entry->>QC: new QueryClient(queryDefaults)
-    Entry->>App: render <Provider><PersistGate><QueryClientProvider><ThemeProvider><App/>
+    Entry->>Entry: clearLegacyAuthStorage(), startAtRoot()
+    Entry->>App: render <Provider><QueryClientProvider><ThemeProvider><App/>
     App->>Routes: processRoutes(): async-load plugin route definitions
     Routes-->>App: PluginRoute[]
     App->>App: render <Routes> with host + plugin routes
@@ -79,8 +78,8 @@ sequenceDiagram
 
 1. **Entry point** ([`app/index.tsx`](../app/index.tsx)) runs as the browser parses the JS bundle. Before rendering anything, it wires up the Redux store and the React Query client.
 2. **`PluginReducersResolver.process()`** runs eagerly, _before_ the store is built. It iterates over [`admin-ui/plugins.config.json`](../plugins.config.json), calls `loadPluginMetadata(metadataFile)` for each plugin (synchronously, via `import.meta.glob` references), and registers every reducer the plugin exports into the reducer registry. Doing this _before_ `configStore()` means the store is constructed with the full set of slices already known, so no late-registration is needed.
-3. The Redux store is built at module load of [`app/redux/store/index.ts`](../app/redux/store/index.ts): the listener middleware is prepended onto the default middleware, the host's core listeners self-register via side-effect imports, and `PluginListenersResolver.process(startAppListening)` registers every plugin's listeners. `configStore()` (called from the entry point) then creates the persistor and wires HMR. All of this runs before `<App />` renders.
-4. **`PersistGate`** waits for `redux-persist` to rehydrate the persisted slices before rendering anything below it. The persist config uses a blacklist (`cedarPermissions`, `toastReducer`, `sessionReducer`, `initReducer`, `webhookReducer`, `scopeReducer`, `licenseReducer`, `logoutReducer`), so everything else persists, including the `userinfo` in `authReducer` that keeps the user signed in across reloads. Theme and language are restored separately from `localStorage` by `themeContext` and `i18n`.
+3. The Redux store is built at module load of [`app/redux/store/index.ts`](../app/redux/store/index.ts): the listener middleware is prepended onto the default middleware, the host's core listeners self-register via side-effect imports, and `PluginListenersResolver.process(startAppListening)` registers every plugin's listeners. `configStore()` (called from the entry point) then wires reducer replacement and HMR. All of this runs before `<App />` renders.
+4. **Startup cleanup**: [`clearLegacyAuthStorage()`](../app/utils/legacyAuthStorage.ts) removes the `persist:root` state and AppAuth sign-in requests that older builds left in `localStorage`, and [`startAtRoot()`](../app/utils/startAtRoot.ts) starts every page load at `/admin/`, except `/admin/logout` so a sign-out can finish. Redux state is not persisted: auth state lives in memory, so a reload signs in again through the Auth Server session (see [auth.md](./auth.md)). Theme and language are restored from `localStorage` by `themeContext` and `i18n`.
 5. **`QueryClient`** is constructed with the project's default query options (defined in [`app/utils/queryUtils.ts`](../app/utils/queryUtils.ts)). It is provided via `QueryClientProvider` so every `useGet*` / `usePut*` hook in the app uses the same cache.
 6. **`<App />`** renders inside the providers. With the store and listeners already wired, it proceeds to load plugin routes.
 7. **`processRoutes()`** (asynchronously this time) collects the route definitions from each plugin's `plugin-metadata.ts` and stitches them into the React Router tree alongside the host's own routes. From here, the user sees the sidebar, the navigation works, and the rest of the app lifecycle (OIDC, license check, Cedarling bootstrap) takes over. See [auth.md](./auth.md) and [cedarling.md](./cedarling.md).

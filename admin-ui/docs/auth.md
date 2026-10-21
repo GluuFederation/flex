@@ -14,9 +14,10 @@ Out of scope here:
 - **OIDC sign-in**: [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx), [`app/utils/TokenController.ts`](../app/utils/TokenController.ts), [`app/utils/urlSecurity.ts`](../app/utils/urlSecurity.ts)
 - **Auth state**: [`app/redux/features/authSlice.ts`](../app/redux/features/authSlice.ts), [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts)
 - **License flow**: [`app/redux/features/licenseSlice.ts`](../app/redux/features/licenseSlice.ts), [`app/redux/listeners/licenseListener.ts`](../app/redux/listeners/licenseListener.ts)
-- **Idle timeout**: [`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx)
-- **Logout**: [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx), [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts)
-- **Storage keys (all)**: [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts) (single source of truth)
+- **Idle timeout**: [`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx), [`app/hooks/useIdleTimer/useIdleTimer.ts`](../app/hooks/useIdleTimer/useIdleTimer.ts)
+- **Logout**: [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx), [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts), [`app/redux/listeners/sessionListener.ts`](../app/redux/listeners/sessionListener.ts)
+- **Startup and tabs**: [`app/utils/startAtRoot.ts`](../app/utils/startAtRoot.ts), [`app/utils/legacyAuthStorage.ts`](../app/utils/legacyAuthStorage.ts), [`app/utils/authSync.ts`](../app/utils/authSync.ts), [`app/utils/forceLogin.ts`](../app/utils/forceLogin.ts)
+- **Storage keys**: [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts), see [Storage keys](#storage-keys)
 
 ## OAuth / PKCE sign-in
 
@@ -50,7 +51,7 @@ The browser opens the Admin UI at `/admin/`. [`app/utils/AppAuthProvider.tsx`](.
 
 **PKCE** replaces the client secret. The browser generates a random secret called a **code verifier**, hashes it into a **code challenge**, and sends only the challenge with the redirect to the auth server. The auth server stores the challenge against this login attempt. When the browser later exchanges its authorization code for tokens, it sends the original verifier. The server hashes it and compares to the stored challenge. This proves the same browser that started the login is finishing it, without the Admin UI ever needing to hold a client secret.
 
-The browser is redirected to the Jans Auth Server's `/authorize` endpoint. The user signs in there. Jans redirects back to `http://<admin-ui-host>/?code=…&state=…`: note this lands at the **origin**, not under `/admin/`, because the redirect URI is registered without a path.
+The browser is redirected to the Jans Auth Server's `/authorize` endpoint. The user signs in there. Jans redirects back to the registered redirect URI with `?code=…&state=…`. A standard install registers `https://<host>/admin`, so the callback lands on the app's base path, which [`startAtRoot`](../app/utils/startAtRoot.ts) leaves as it is.
 
 `AppAuthProvider` sees the `code` in the URL and exchanges it for tokens by POSTing to the auth server's `/token` endpoint with `grant_type=authorization_code`, the code, and the original code verifier. No client secret is involved.
 
@@ -77,7 +78,7 @@ sequenceDiagram
     API-->>Listener: { access_token, scopes, issuer }
     Listener->>Orval: setApiToken(access_token)
     Listener->>API: POST /session { ujwt, apiProtectionToken } (withCredentials: true)
-    API-->>Listener: Set-Cookie: admin-ui-session=…
+    API-->>Listener: Set-Cookie: admin_ui_session_id=…
     Listener->>Listener: createAdminUiSessionResponse(success: true)
 ```
 
@@ -85,7 +86,7 @@ sequenceDiagram
 
 The flow is driven by [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts). After the OAuth/PKCE step writes the user info into Redux, `AppAuthProvider` dispatches `getAPIAccessToken`. The listener calls `fetchApiTokenWithDefaultScopes()` and receives back an `access_token` along with side values (`issuer` and the requested scopes). Separately, the `getOAuth2Config` listener calls `fetchServerConfiguration()` and dispatches the result (including `postLogoutRedirectUri`) into `authReducer.config`.
 
-The listener hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The OAuth2 server config (including `postLogoutRedirectUri`) is dispatched into Redux `authReducer.config` and persisted there, so [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) reads it as the logout fallback.
+The listener hands the token to the Orval client by calling `setApiToken(access_token)` so the upcoming `POST /session` call carries the right header. Once the session cookie is set, regular Config API traffic authenticates off the cookie (see [config-api.md](./config-api.md)). The OAuth2 server config (including `postLogoutRedirectUri`) is dispatched into Redux `authReducer.config` and kept there, so [`ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx) reads it as the logout fallback.
 
 Then comes the session creation. The listener dispatches `createAdminUiSession({ ujwt, apiProtectionToken })`:
 
@@ -98,7 +99,7 @@ The Config API creates a server-side session record, sets a cookie, and returns 
 
 If `createAdminUiSession` returns 403, that means the user signed in successfully but does not have the `jansAdminUIRole` claim. The listener in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) then calls `auditSessionExpired()`, which dispatches `auditLogoutLogs` and forces sign-out (see [Trigger paths](#trigger-paths)).
 
-After this, every Config API call goes through the shared axios instance in [`orval/axiosInstance.ts`](../orval/axiosInstance.ts). The browser sends the `admin-ui-session` cookie alongside each request, and the Config API authenticates the caller off that cookie.
+After this, every Config API call goes through the shared axios instance in [`orval/axiosInstance.ts`](../orval/axiosInstance.ts). The browser sends the `admin_ui_session_id` cookie alongside each request, and the Config API authenticates the caller off that cookie.
 
 ## License verification
 
@@ -188,33 +189,49 @@ The `licenseSlice` exposes several booleans that the app shell uses to decide wh
 
 Two OIDC tokens, **not interchangeable**:
 
-- **OIDC `id_token`**: JWT proof of identity. Decoded by `jwt-decode` to populate `userinfo`. Stored in `state.authReducer.userinfo` and persisted via `redux-persist` (so a page reload doesn't kick the user out).
-- **OIDC `access_token` (UI scopes)**: for the UI's own calls back to the issuer (e.g. fetching the userinfo endpoint). Held by AppAuth's `LocalStorageBackend` per the OAuth spec.
+- **OIDC `id_token`**: JWT proof of identity, kept in `state.authReducer.idToken`. The signed userinfo response is kept in `userinfo_jwt` and decoded into `userinfo`.
+- **OIDC `access_token` (UI scopes)**: for the UI's own calls back to the issuer (e.g. fetching the userinfo endpoint). Kept in `state.authReducer.jwtToken`.
 
-Never reach into `localStorage` directly for tokens. Go through [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) or the auth listener.
+Tokens live in memory only and are never written to `localStorage` or `sessionStorage`. AppAuth keeps the sign-in in progress (state and PKCE verifier) in `sessionStorage`, so it belongs to one tab and is removed when that sign-in completes. The few small values the app does store (issuer, sign-out time, one-tab flags) are listed under [Storage keys](#storage-keys).
+
+### Reloads and new tabs
+
+A reload or a new tab starts with empty memory, so the app runs the normal sign-in. While the Auth Server session is still valid, Jans returns a code without asking for credentials, so the user only sees a short redirect. [`startAtRoot`](../app/utils/startAtRoot.ts) always starts the app at `/admin/`, except a load on `/admin/logout`, which it leaves alone so the sign-out can finish.
+
+If a tab returns from the Auth Server with a code it can't use, it restarts sign-in once, then shows an error. This happens when two tabs sit on the login page at the same time, for example after a sign-out sends every open tab there. Jans keeps one pending sign-in per browser session, so the tab that submits the form can come back with the other tab's sign-in request. The restart signs that tab in silently. The other tab's login page no longer works on the Auth Server side: reloading or submitting it shows "This flow may have already finished/timed out". Opening `/admin/` again in that tab signs it in silently.
 
 ## Storage keys
 
-`localStorage` is used for state that needs to be readable **before** React and Redux even boot. Theme and language need to be available for the first paint, otherwise the user sees a flash of the wrong theme. Every key lives in [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts). Inline string keys are a lint regression.
+`localStorage` holds two kinds of values. Preferences have to be readable **before** React and Redux boot: theme and language are needed for the first paint, otherwise the user sees a flash of the wrong theme. A few small values are shared between tabs: the last sign-out time and the last activity time. No token is stored.
 
-Application code reads and writes through the `storage` helper in [`app/utils/storage.ts`](../app/utils/storage.ts) (`get` / `set` / `getJSON` / `setJSON` / `remove` / `clear`), which guards SSR and swallows quota and parse errors. The only raw `localStorage` access is the pre-paint theme script in `index.html`, which has to run before the bundle loads.
+Every key lives in [`app/constants/storageKeys.ts`](../app/constants/storageKeys.ts), except two older `sessionStorage` flags that are defined in their own helpers: `forceLogin` in [`forceLogin.ts`](../app/utils/forceLogin.ts) and `noRoleSignOut` in [`noRoleSignOut.ts`](../app/utils/noRoleSignOut.ts). Don't add inline string keys.
 
-| Key           | Feature                                      | Set by                              | Read by                               |
-| ------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------- |
-| `USER_CONFIG` | User prefs blob (theme + language)           | `LanguageMenu`, `ThemeDropdown`     | `i18n.ts`, `themeContext`             |
-| `INIT_THEME`  | UI theme (light/dark)                        | `themeContext`, `logoutSlice` reset | `themeContext`, `default.tsx` layout  |
-| `INIT_LANG`   | UI language                                  | `LanguageMenu`, `logoutSlice` reset | `i18n.ts`, `LanguageMenu`             |
-| `USER_INFO`   | Decoded OIDC `userinfo` (theme/lang restore) | no current writer                   | `themeContext`                        |
-| `ISSUER`      | OIDC issuer URL                              | `TokenController` after discovery   | `TokenController` on subsequent boots |
+Application code reads and writes through the `storage` helper in [`app/utils/storage.ts`](../app/utils/storage.ts) (`get` / `set` / `getJSON` / `setJSON` / `remove` / `clear` / `keys`), which guards SSR and swallows quota and parse errors. `sessionStore` is the same helper for `sessionStorage`. Raw `localStorage` access is limited to two places: the pre-paint theme script in `index.html`, which has to run before the bundle loads, and [`logLevel.ts`](../app/utils/logLevel.ts), which the logger reads. The `storage` helper logs through the logger, so using it in `logLevel.ts` would be a circular import.
+
+| Key                 | Feature                                                               | Set by                                                                  | Read by                                                                                          |
+| ------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `USER_CONFIG`       | Per-user theme and language preferences                               | `useThemePersistence`, `useLangPersistence`                             | `userConfig.ts`, `i18n.ts`, `themeContext`                                                       |
+| `INIT_THEME`        | UI theme (light/dark)                                                 | `themeContext`, `useThemePersistence`, `clearAppStorage` reset          | `themeContext`, `default.tsx` layout, `index.html` pre-paint script                              |
+| `INIT_LANG`         | UI language                                                           | `useLangPersistence`, `clearAppStorage` reset                           | `i18n.ts`, `useLangPersistence`                                                                  |
+| `ISSUER`            | OIDC issuer URL                                                       | `TokenController.saveIssuer` when sign-in starts                        | `TokenController.getIssuer`: the callback load, and the fallback for the `issuer` request header |
+| `PAGING_SIZE`       | Rows per page in tables                                               | `pagingUtils`                                                           | `pagingUtils`                                                                                    |
+| `LOG_LEVEL`         | Browser log level (default `INFO`)                                    | `logLevel.ts`, from the Settings page                                   | `logger`, through `logLevel.ts`                                                                  |
+| `SIGNED_OUT_AT`     | Time of the last sign-out, so the other open tabs follow it           | `sessionListener` on `logoutUser`; kept by `clearAppStorage`            | `authSync`, in the other tabs and in the 401 recovery                                            |
+| `LAST_ACTIVITY`     | Last user activity in any tab, for the shared idle timer              | `useIdleTimer` (at most every 10 s)                                     | `useIdleTimer` in every tab                                                                      |
+| `SIGN_IN_RESTARTED` | `sessionStorage`: sign-in was restarted once in this tab              | `authSync.restartSignInOnce`                                            | `authSync`; removed on sign-in                                                                   |
+| `forceLogin`        | `sessionStorage`: the next sign-in must show the login form           | `ByeBye` fallbacks, a sign-out in another tab, the sign-in retry button | `AppAuthProvider`, which adds `prompt=login` and removes the flag                                |
+| `noRoleSignOut`     | `sessionStorage`: the user was signed out for having no Admin UI role | `AppAuthProvider`                                                       | `AppAuthProvider`, which shows the role error instead of signing in again                        |
+
+On startup, [`clearLegacyAuthStorage`](../app/utils/legacyAuthStorage.ts) removes what older builds left in `localStorage`: the `persist:root` Redux state (which held the tokens) and AppAuth sign-in requests.
 
 ## 401 vs 403
 
 The Config API rejects with two distinct status codes, and the shared axios response interceptor in [`orval/interceptors.ts`](../orval/interceptors.ts) handles each globally:
 
-- **401 (unauthorized)**: the token is missing, expired, or invalid. The interceptor calls `recoverAdminUiSession()` once to re-mint the Admin UI session, then retries the original request. If recovery fails, the error propagates.
-- **403 (forbidden)**: the interceptor treats this as a dead session. It audits the logout (`auditLogoutLogs`), cleans up the server-side session, and redirects the browser to `/admin/logout`.
+- **401 (unauthorized)**: no session cookie and no valid token. The interceptor calls `recoverAdminUiSession()` once to re-mint the Admin UI session, then retries the original request. The same applies to the backend client in [`app/redux/api/axios.ts`](../app/redux/api/axios.ts), except for the session and API protection token endpoints. If the user signed out in another tab since this tab signed in, the tab goes to the login page instead of recovering. If recovery fails, the error propagates.
+- **403 (forbidden)**: the session cookie names a session the server no longer has. It expired (no API call for `sessionTimeoutInMins`) or was revoked, for example after a password change. The Orval interceptor opens the session-expired modal, and signing out from it runs the logout flow below. A 403 is never recovered automatically, so the UI can't undo a revocation.
 
-`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) detects a 403. Both paths are global, so individual mutations do not handle 401 or 403 themselves.
+`isFourZeroThreeError(err)` in [`app/utils/TokenController.ts`](../app/utils/TokenController.ts) detects a 403. Both paths are global, so pages don't handle 401 or 403 themselves. A few listeners still react to an auth failure directly, for example the license config check above and the auth listener's config fetch and save.
 
 ## Idle timeout
 
@@ -222,23 +239,28 @@ Users who leave the Admin UI open without interaction are signed out automatical
 
 [`app/routes/Apps/Gluu/GluuSessionTimeout.tsx`](../app/routes/Apps/Gluu/GluuSessionTimeout.tsx) wraps the app and tracks activity with the app's own [`useIdleTimer`](../app/hooks/useIdleTimer/useIdleTimer.ts) hook. The defaults are 30 minutes idle, then a ten-second countdown modal warning the user, then a forced logout. The idle window is configurable per environment via `sessionTimeoutInMins` on the auth slice. When the modal countdown expires, the component dispatches `auditLogoutLogs`, which records the involuntary logout in the audit trail and sets `logoutRequested`. [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx) then navigates to `/logout`, and the logout flow below takes over.
 
+Idle time is shared between tabs. Each tab records its last activity in `LAST_ACTIVITY` (at most every 10 seconds) and restarts its own timer when another tab records one. The user is signed out only when every open tab has been idle, and activity in another tab also closes an open countdown modal.
+
 ## Logout
 
-Logout is one cleanup path with three different triggers. All of them end up routing the browser to `/logout`, which is served by [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx).
+Logout is one cleanup path. Every trigger routes the browser to `/logout`, which is served by [`app/routes/Pages/ByeBye.tsx`](../app/routes/Pages/ByeBye.tsx).
 
 ### Trigger paths
 
 - **User-initiated**: the sidebar logout link routes to `/logout` → `ByeBye.tsx`.
 - **Forced**: when a listener in [`app/redux/listeners/authListener.ts`](../app/redux/listeners/authListener.ts) hits a fatal auth error (e.g. 403 from `createAdminUiSession`), it calls `auditSessionExpired()`, which dispatches `auditLogoutLogs`. That sets `logoutRequested` in the session slice, and [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx) navigates to `/logout`.
 - **Idle timeout**: `GluuSessionTimeout` dispatches `auditLogoutLogs`, which audits the involuntary exit and leads to the same navigation to `/logout`.
+- **Other pages**: the License page (after a license reset, or when the license has expired), activating a different policy store, and a role that can open no page at all also navigate to `/logout`.
+
+A sign-out in one tab reaches the others without routing them to `/logout`. The other signed-in tabs see `SIGNED_OUT_AT` change (or find it newer than their own sign-in when they become visible again). They set the force-login flag and reload to the start, which shows the login page. They don't repeat the end-session call: Jans answers a second end-session request for an ended session with a 400 error.
 
 ### What `ByeBye.tsx` does, in order
 
 1. `dispatch(setAuthState({ state: false }))`: flips the auth flag immediately so any guarded UI hides while the rest of the cleanup runs.
 2. If `state.authReducer.hasSession` is `true`, calls `deleteAdminUiSession()` against `ENDPOINTS.SESSION` (DELETE) so the Config API invalidates the admin-UI session cookie. Failures are logged but do not block the rest of logout.
-3. `dispatch(logoutUser())`: the `logoutSlice` reducer wipes `localStorage` of tokens and userinfo, **preserves** `USER_CONFIG`, and resets `INIT_THEME` + `INIT_LANG` to defaults so the next visitor lands on a clean theme.
-4. If the OAuth config has an `endSessionEndpoint`, builds the end-session URL with `buildSafeLogoutUrl(endSessionEndpoint, postLogoutRedirectUri, state)` (from [`app/utils/urlSecurity.ts`](../app/utils/urlSecurity.ts)) and redirects there. Jans clears its own session and returns the browser to the redirect URI.
-5. **Fallback**: if no `endSessionEndpoint` is available, redirects to `config.postLogoutRedirectUri` from `authReducer.config` (validated via `buildSafeNavigationUrl`), or `/` as a last resort.
+3. `dispatch(logoutUser())`: the `logoutSlice` reducer runs [`clearAppStorage`](../app/utils/clearAppStorage.ts), which clears `localStorage` except the preferences (`USER_CONFIG`, `INIT_THEME`, `INIT_LANG`, paging size, log level) and `SIGNED_OUT_AT`. Keeping `SIGNED_OUT_AT` means no clear, here or on a sign-in retry, can hide a sign-out from a tab that hasn't seen it yet. The session listener then records the new sign-out time so the other tabs follow.
+4. If the OAuth config has an `endSessionEndpoint`, builds the end-session URL with `buildSafeLogoutUrl(endSessionEndpoint, postLogoutRedirectUri, state, idToken)` (from [`app/utils/urlSecurity.ts`](../app/utils/urlSecurity.ts)), which sends the `id_token` as `id_token_hint`, and redirects there. Jans clears its own session and returns the browser to the redirect URI.
+5. **Fallback**: if no `endSessionEndpoint` is available, redirects to `config.postLogoutRedirectUri` from `authReducer.config` (validated via `buildSafeNavigationUrl`), or the app's base path (`/admin/`) as a last resort. Every fallback, including an end-session URL that fails the safety check, sets the force-login flag first: without the end-session call the Auth Server session is still alive, so the next sign-in must ask for the password. This also covers a reload on `/logout`, where the config is no longer in memory.
 
 `buildSafeLogoutUrl` and `buildSafeNavigationUrl` exist because constructing these URLs by hand is error-prone. A crafted `post_logout_redirect_uri` is a URL-injection vector. Always go through them.
 
