@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { storage } from '@/utils/storage'
 import type { UseIdleTimerOptions, UseIdleTimerResult } from './types'
 
@@ -33,12 +33,14 @@ const useIdleTimer = ({
   const lastActivityRef = useRef(Number.NEGATIVE_INFINITY)
   const lastSyncWriteRef = useRef(Number.NEGATIVE_INFINITY)
 
-  onIdleRef.current = onIdle
-  onActiveRef.current = onActive
-  onRemoteActivityRef.current = onRemoteActivity
-  timeoutRef.current = timeout
-  debounceRef.current = debounce
-  syncKeyRef.current = syncKey
+  useLayoutEffect(() => {
+    onIdleRef.current = onIdle
+    onActiveRef.current = onActive
+    onRemoteActivityRef.current = onRemoteActivity
+    timeoutRef.current = timeout
+    debounceRef.current = debounce
+    syncKeyRef.current = syncKey
+  })
 
   const clearTimer = useCallback(() => {
     if (timeoutIdRef.current !== null) {

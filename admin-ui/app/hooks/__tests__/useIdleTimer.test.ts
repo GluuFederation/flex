@@ -86,6 +86,22 @@ describe('useIdleTimer', () => {
     expect(onActive).toHaveBeenCalledTimes(1)
   })
 
+  it('calls the latest onIdle after a re-render', () => {
+    const firstOnIdle = jest.fn()
+    const latestOnIdle = jest.fn()
+    const { rerender } = renderHook(({ onIdle }) => useIdleTimer({ timeout: 1000, onIdle }), {
+      initialProps: { onIdle: firstOnIdle },
+    })
+
+    rerender({ onIdle: latestOnIdle })
+    act(() => {
+      jest.advanceTimersByTime(1000)
+    })
+
+    expect(firstOnIdle).not.toHaveBeenCalled()
+    expect(latestOnIdle).toHaveBeenCalledTimes(1)
+  })
+
   describe('across tabs', () => {
     const SYNC_KEY = 'test.lastActivity'
 
