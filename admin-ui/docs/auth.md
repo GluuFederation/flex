@@ -187,10 +187,18 @@ The `licenseSlice` exposes several booleans that the app shell uses to decide wh
 
 ## Tokens
 
-Two OIDC tokens, **not interchangeable**:
+Four tokens are held in memory, and they are **not interchangeable**:
 
-- **OIDC `id_token`**: JWT proof of identity, kept in `state.authReducer.idToken`. The signed userinfo response is kept in `userinfo_jwt` and decoded into `userinfo`.
-- **OIDC `access_token` (UI scopes)**: for the UI's own calls back to the issuer (e.g. fetching the userinfo endpoint). Kept in `state.authReducer.jwtToken`.
+| Token                      | Kept in                                                   | Returned by                                                                 | Used for                                                                                     |
+| -------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| API protection token       | `orval/axiosInstance.ts` (`setApiToken` / `getApiToken`)  | Config API `POST /jans-config-api/app/admin-ui/oauth2/api-protection-token` | The bootstrap calls (license checks, OAuth config) and `POST /session`                       |
+| `id_token`                 | `state.authReducer.idToken`                               | Auth Server `POST /jans-auth/restv1/token` (code + PKCE verifier)           | `id_token_hint` on the end-session call at sign-out                                          |
+| `access_token` (UI scopes) | `state.authReducer.jwtToken`                              | The same `/token` call                                                      | Calling `/userinfo`                                                                          |
+| `userinfo_jwt`             | `state.authReducer.userinfo_jwt`, decoded into `userinfo` | Auth Server `GET /jans-auth/restv1/userinfo` (`access_token` as Bearer)     | The user's profile and `jansAdminUIRole`, and the `ujwt` sent to create the Admin UI session |
+
+The Admin UI session itself is the `admin_ui_session_id` cookie, set by Config API `POST /jans-config-api/app/admin-ui/oauth2/session` from `userinfo_jwt` and the API protection token. It is HttpOnly, so the app never reads it; the browser sends it with every later Config API call.
+
+Every page load runs the same order: API protection token, license checks, `/authorize`, `/token`, `/userinfo`, then `/session`. On a reload the `/authorize` step needs no password while the Auth Server session is valid.
 
 Tokens live in memory only and are never written to `localStorage` or `sessionStorage`. AppAuth keeps the sign-in in progress (state and PKCE verifier) in `sessionStorage`, so it belongs to one tab and is removed when that sign-in completes. The few small values the app does store (issuer, sign-out time, one-tab flags) are listed under [Storage keys](#storage-keys).
 
