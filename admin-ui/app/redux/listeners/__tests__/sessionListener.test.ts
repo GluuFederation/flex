@@ -2,6 +2,8 @@ import { configureStore } from '@reduxjs/toolkit'
 import { listenerMiddleware } from '../index'
 import sessionReducer, { auditLogoutLogs } from '../../features/sessionSlice'
 import authReducer from '../../features/authSlice'
+import { logoutUser } from '../../features/logoutSlice'
+import { STORAGE_KEYS } from '@/constants'
 import { postUserAction } from '../../api/backend-api'
 import { isFourZeroThreeError } from 'Utils/TokenController'
 
@@ -59,5 +61,20 @@ describe('sessionListener - auditLogoutLogs', () => {
     await flush()
 
     expect(store.getState().sessionReducer.logoutRequested).toBe(true)
+  })
+})
+
+describe('sessionListener - logoutUser', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('records the sign-out so the other open tabs follow it', async () => {
+    const store = buildStore()
+
+    store.dispatch(logoutUser())
+    await flush()
+
+    expect(Number(window.localStorage.getItem(STORAGE_KEYS.SIGNED_OUT_AT))).toBeGreaterThan(0)
   })
 })

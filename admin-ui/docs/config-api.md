@@ -36,7 +36,7 @@ sequenceDiagram
     else miss or stale
         Hook->>Mutator: customInstance(config)
         Mutator->>Axios: AXIOS_INSTANCE.request(...)
-        Axios->>API: HTTP request<br/>(admin-ui-session cookie)
+        Axios->>API: HTTP request<br/>(admin_ui_session_id cookie)
         API-->>Axios: response
         Axios-->>Mutator: { data }
         Mutator-->>Hook: data
@@ -51,8 +51,8 @@ sequenceDiagram
 2. The hook asks **React Query** for the cached entry for this `queryKey`. If the entry exists and is still considered fresh (within the configured `staleTime`), React Query returns it immediately and no network request happens. This is what makes the same hook safe to call from three different components on the same page. They all see one shared response.
 3. On a cache miss, the hook calls **Orval's mutator function `customInstance`**, defined in [`admin-ui/orval/axiosInstance.ts`](../orval/axiosInstance.ts). The mutator wraps every request with a cancel token so React Query can abort in-flight calls if the component unmounts before the response arrives.
 4. **`customInstance` calls the shared axios instance `AXIOS_INSTANCE`.** The instance was created with the resolved base URL (see [Base URL resolution](#base-url-resolution)).
-5. **The HTTP request reaches the Config API.** The browser attaches the `admin-ui-session` cookie automatically (set by `POST /session` during the auth bootstrap, see [auth.md](./auth.md#admin-ui-session)). The Config API authenticates the caller off that cookie.
-6. **The Config API responds.** A `401` is caught by the axios response interceptor in [`orval/interceptors.ts`](../orval/interceptors.ts), which calls `recoverAdminUiSession()` (re-mint the API token, re-create the session) and retries the request once; the auth listener only handles follow-up side-effects. A `403` triggers a forced logout: the interceptor audits the event, clears the session, and redirects to the logout route (see [auth.md](./auth.md#401-vs-403)).
+5. **The HTTP request reaches the Config API.** The browser attaches the `admin_ui_session_id` cookie automatically (set by `POST /session` during the auth bootstrap, see [auth.md](./auth.md#admin-ui-session)). The Config API authenticates the caller off that cookie.
+6. **The Config API responds.** A `401` is caught by the axios response interceptor in [`orval/interceptors.ts`](../orval/interceptors.ts), which calls `recoverAdminUiSession()` (re-mint the API token, re-create the session) and retries the request once, unless the user signed out in another tab since this tab signed in. The auth listener only handles follow-up side-effects. A `403` opens the session-expired modal, and signing out from it runs the logout flow (see [auth.md](./auth.md#401-vs-403)).
 7. **The data is written to the React Query cache** under its `queryKey` and returned to the component. The next call to the same hook anywhere in the app reuses this cache entry.
 
 Mutations (`usePutXxx`, `usePostXxx`, etc.) follow the same path but skip the cache read and explicitly invalidate query keys on success. See [React Query conventions](#react-query-conventions).

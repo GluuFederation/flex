@@ -12,6 +12,7 @@ import { DEFAULT_THEME } from '@/context/theme/constants'
 import getThemeColor from '@/context/theme/config'
 import { logger } from '@/utils/logger'
 import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
+import { markForceLogin } from '@/utils/forceLogin'
 import { APP_BASE_URL } from '@/helpers/navigation'
 
 const ByeBye = () => {
@@ -56,16 +57,19 @@ const ByeBye = () => {
           return
         }
       } else {
+        markForceLogin()
         const fallbackUri = buildSafeNavigationUrl(config.postLogoutRedirectUri) || APP_BASE_URL
         window.location.href = fallbackUri
         return
       }
 
+      markForceLogin()
       window.location.href = APP_BASE_URL
     }
 
     performLogout().catch((error) => {
       logger.error('Logout failed:', error instanceof Error ? error : String(error))
+      markForceLogin()
       window.location.href = APP_BASE_URL
     })
   }, [])

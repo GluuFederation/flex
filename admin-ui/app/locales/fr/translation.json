@@ -1356,6 +1356,7 @@
     "logging_layout_required": "Le format de journalisation est obligatoire",
     "logging_layout_invalid": "Format de journalisation non valide",
     "user_info_fetch_failed": "Impossible de récupérer les informations utilisateur depuis le serveur d'authentification. La connexion a été interrompue.",
+    "sign_in_incomplete": "La connexion n'a pas pu être finalisée. Veuillez réessayer.",
     "zoom_in": "Zoom avant",
     "zoom_out": "Zoom arrière",
     "reset_zoom": "Réinitialiser le zoom",
