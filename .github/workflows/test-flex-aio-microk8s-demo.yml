@@ -38,7 +38,7 @@ jobs:
       VERSION: ${{ inputs.version || '0.0.0-nightly' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Point demo FQDN at localhost
         run: echo "127.0.0.1 $FQDN" | sudo tee -a /etc/hosts
