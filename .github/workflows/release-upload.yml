@@ -36,11 +36,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python_version }}
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
       with:
         python-version: ${{ matrix.python_version }}
 
@@ -74,7 +74,7 @@ jobs:
         sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
         ls
 
-    - uses: addnab/docker-run-action@v3
+    - uses: addnab/docker-run-action@4f65fabd2431ebc8d299f8e5a018d79a769ae185 # v3
       if: matrix.asset_name == 'flex-linux-setup-centos8-amd64.pyz'
       name: Build with CentOS8
       continue-on-error: true
@@ -108,7 +108,7 @@ jobs:
 
     - name: Upload binaries to release
       continue-on-error: true
-      uses: svenstaro/upload-release-action@v2
+      uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_directory }}/${{ steps.output.outputs.artifact_name }}
@@ -118,7 +118,7 @@ jobs:
 
     - name: Upload shas to release
       continue-on-error: true
-      uses: svenstaro/upload-release-action@v2
+      uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_directory }}/${{ steps.output.outputs.artifact_name }}.sha256sum
