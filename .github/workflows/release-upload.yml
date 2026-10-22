@@ -26,21 +26,23 @@ jobs:
             artifact_name: flex-linux-setup.pyz
             asset_name: flex-linux-setup-ubuntu-amd64.pyz
             asset_directory: flex-linux-setup
-            python_version: 3.8
+            python_version: '3.10'
             # flex linux setup on CentOS8
           - os: ubuntu-latest
             artifact_name: flex-linux-setup.pyz
             asset_name: flex-linux-setup-centos-amd64.pyz
             asset_directory: flex-linux-setup
-            python_version: 3.8
+            python_version: '3.10'
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
-    - name: Set up Python 3.8
+      with:
+        persist-credentials: false
+    - name: Set up Python ${{ matrix.python_version }}
       uses: actions/setup-python@v6
       with:
-        python-version: 3.8
+        python-version: ${{ matrix.python_version }}
 
     - name: Map outputs
       id: output
