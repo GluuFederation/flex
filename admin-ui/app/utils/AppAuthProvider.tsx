@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
@@ -41,9 +41,14 @@ import { useTranslation } from 'react-i18next'
 import decodeJwt from '@/utils/jwtDecode'
 import type { UserInfo, UserInfoValue } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
-import { rememberIntendedRoute, consumeIntendedRoute } from '@/utils/intendedRoute'
 import { markNoRoleSignOut, isNoRoleSignOut, clearNoRoleSignOut } from '@/utils/noRoleSignOut'
 import { markForceLogin, isForceLogin, clearForceLogin } from '@/utils/forceLogin'
+import {
+  leaveAfterSignOut,
+  markSignedIn,
+  restartSignInOnce,
+  watchSignOutInOtherTabs,
+} from '@/utils/authSync'
 import clearAppStorage from '@/utils/clearAppStorage'
 import { logger } from '@/utils/logger'
 import { resolveApiErrorMessage } from '@/utils/apiErrorMessage'
@@ -51,10 +56,17 @@ import { APP_BASE_URL } from '@/helpers/navigation'
 
 const LOGOUT_DELAY_SECONDS = 3
 
+const createRedirectHandler = () =>
+  new RedirectRequestHandler(
+    new LocalStorageBackend(window.sessionStorage),
+    new NoHashQueryStringUtils(),
+    window.location,
+    new DefaultCrypto(),
+  )
+
 const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const navigate = useNavigate()
   const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [signedOutForNoRole] = useState(isNoRoleSignOut)
@@ -105,6 +117,11 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
       clearNoRoleSignOut()
     }
   }, [signedOutForNoRole])
+
+  useEffect(() => {
+    if (!userinfo_jwt) return undefined
+    return watchSignOutInOtherTabs(leaveAfterSignOut)
+  }, [userinfo_jwt])
 
   useEffect(() => {
     if (!roleNotFound) return undefined
@@ -179,18 +196,13 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   }, [hasSession, dispatch])
 
   useEffect(() => {
-    const authorizationHandler = new RedirectRequestHandler(
-      new LocalStorageBackend(),
-      new NoHashQueryStringUtils(),
-      window.location,
-      new DefaultCrypto(),
-    )
+    const authorizationHandler = createRedirectHandler()
 
     if (!isLicenseValid) return
     if (!issuer) return
     if (userInfoUnavailable) return
     if (signedOutForNoRole) return
-    if (userinfo_jwt || hasSession) return
+    if (userinfo_jwt) return
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
 
@@ -223,7 +235,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           extras,
         })
         saveIssuer(issuer)
-        rememberIntendedRoute(`${location.pathname}${location.search}${location.hash}`)
         authorizationHandler.performAuthorizationRequest(response, authRequest)
       })
       .catch((fetchError: Error) => {
@@ -241,10 +252,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     isLicenseValid,
     issuer,
     userinfo_jwt,
-    hasSession,
-    location.pathname,
     location.search,
-    location.hash,
     config,
     userInfoUnavailable,
     signedOutForNoRole,
@@ -253,21 +261,22 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
 
   useEffect(() => {
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
-    const authorizationHandler = new RedirectRequestHandler(
-      new LocalStorageBackend(),
-      new NoHashQueryStringUtils(),
-      window.location,
-      new DefaultCrypto(),
-    )
+    const authorizationHandler = createRedirectHandler()
     const notifier = new AuthorizationNotifier()
     const savedIssuer = getIssuer()
+    let notified = false
 
     notifier.setAuthorizationListener(
       (
         request: AuthorizationRequest,
         response: AuthorizationResponse | null,
-        _error: AuthorizationError | null,
+        authError: AuthorizationError | null,
       ) => {
+        notified = true
+        if (authError) {
+          setError(authError.errorDescription || authError.error)
+          return
+        }
         if (response && savedIssuer) {
           const tokenRequest = new TokenRequest({
             client_id: request.clientId,
@@ -308,6 +317,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
               const ujwt = value
 
               const decoded = decodeJwt<UserInfo>(ujwt)
+              markSignedIn()
               dispatch(
                 getUserInfoResponse({
                   userinfo: decoded,
@@ -317,11 +327,6 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
                   isUserInfoFetched: true,
                 }),
               )
-
-              const intendedRoute = consumeIntendedRoute()
-              if (intendedRoute) {
-                navigate(intendedRoute, { replace: true })
-              }
             })
             .catch((oError: Error) => {
               logger.error(
@@ -341,8 +346,19 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
       return
     }
 
+    const handleUnfinishedSignIn = () => {
+      if (!notified && !restartSignInOnce()) {
+        setError(t('messages.sign_in_incomplete'))
+      }
+    }
+
     authorizationHandler.setAuthorizationNotifier(notifier)
-    authorizationHandler.completeAuthorizationRequestIfPossible()
+    authorizationHandler
+      .completeAuthorizationRequestIfPossible()
+      .then(handleUnfinishedSignIn, (completionError: Error) => {
+        logger.error('Failed to complete sign-in: ' + resolveApiErrorMessage(completionError))
+        handleUnfinishedSignIn()
+      })
   }, [code])
 
   useEffect(() => {

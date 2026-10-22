@@ -1355,6 +1355,7 @@
     "logging_layout_required": "Logging layout is required",
     "logging_layout_invalid": "Invalid logging layout",
     "user_info_fetch_failed": "Unable to retrieve user information from the authentication server. Sign-in has been stopped.",
+    "sign_in_incomplete": "Sign-in could not be completed. Please try again.",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "reset_zoom": "Reset zoom",

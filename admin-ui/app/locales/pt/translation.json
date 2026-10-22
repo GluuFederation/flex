@@ -1353,6 +1353,7 @@
     "logging_layout_required": "O formato de log é obrigatório",
     "logging_layout_invalid": "Formato de log inválido",
     "user_info_fetch_failed": "Não foi possível obter as informações do utilizador a partir do servidor de autenticação. A autenticação foi interrompida.",
+    "sign_in_incomplete": "Não foi possível concluir a autenticação. Tente novamente.",
     "zoom_in": "Ampliar",
     "zoom_out": "Reduzir",
     "reset_zoom": "Redefinir zoom",

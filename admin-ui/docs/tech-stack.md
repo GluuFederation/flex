@@ -9,7 +9,7 @@ One-page reference for every notable library. What it is, where it's wired, when
 | Language            | TypeScript 6 (strict)                                                                       |
 | Framework           | React 19                                                                                    |
 | Build               | Vite 8 (Rolldown bundler)                                                                   |
-| State (client/auth) | Redux Toolkit (+ listener middleware) + redux-persist                                       |
+| State (client/auth) | Redux Toolkit (+ listener middleware)                                                       |
 | State (server)      | TanStack React Query 5                                                                      |
 | HTTP                | axios (driven by Orval-generated hooks)                                                     |
 | Forms               | Formik + Yup                                                                                |
@@ -39,9 +39,8 @@ One-page reference for every notable library. What it is, where it's wired, when
 
 Two libraries, intentional split. See [architecture.md](./architecture.md#state-management).
 
-- **Redux Toolkit**: store in `app/redux/`. Client / auth / session state. (Theme and language live in React context + `localStorage`, not Redux.)
+- **Redux Toolkit**: store in `app/redux/`. Client / auth / session state, in memory only (not persisted). (Theme and language live in React context + `localStorage`, not Redux.)
 - **RTK listener middleware**: side-effect runtime for async flows (auth, license, webhooks). Core listeners in `app/redux/listeners/`, per-plugin listeners in `plugins/*/redux/listeners/`. A trigger action dispatched from a component runs the matching listener `effect`; `cancelActiveListeners()` gives takeLatest semantics.
-- **redux-persist**: persists chosen Redux slices to storage. Keeps the user signed in across reloads.
 - **TanStack React Query 5**: server-state cache via Orval-generated hooks (`useGet*`, `usePut*`). Use on **every** Config API read/write.
 
 ### HTTP / API client

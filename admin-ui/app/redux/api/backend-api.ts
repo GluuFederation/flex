@@ -35,6 +35,7 @@ const ENDPOINTS = {
 } as const
 
 export const SESSION_ENDPOINT = ENDPOINTS.SESSION
+export const API_PROTECTION_TOKEN_ENDPOINT = ENDPOINTS.API_PROTECTION_TOKEN
 
 const getAuthConfig = (token?: string) =>
   !hasActiveSession() && token
