@@ -64,9 +64,11 @@ jobs:
             docker-flex-all-in-one
       - name: Check docker directories that changed
         id: build_docker_image
+        env:
+          SERVICES: ${{ github.event.inputs.services }}
         run: |
           BUILD=true
-          DEFAULT_ALL=${{ github.event.inputs.services }}
+          DEFAULT_ALL="$SERVICES"
           if [ -z "$DEFAULT_ALL" ]
           then
             DEFAULT_ALL="docker-admin-ui docker-persistence-loader docker-flex-all-in-one"
@@ -96,6 +98,8 @@ jobs:
         id: prep
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_TAG_INPUT: ${{ github.event.inputs.image_tag }}
+          GLUU_VERSION_INPUT: ${{ github.event.inputs.gluu_version }}
         run: |
           REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           MAIN_VERSION=$(python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; print(dfparser.labels['org.opencontainers.image.version'])")
@@ -116,7 +120,7 @@ jobs:
             TAGS="$TAGS,${DOCKER_IMAGE}:${MAIN_VERSION}"
           fi
           # If the user passed a manual image tag to build a custom manual image
-          MANUAL_IMAGE_TAG=${{ github.event.inputs.image_tag }}
+          MANUAL_IMAGE_TAG="$IMAGE_TAG_INPUT"
           if [ ! -z "$MANUAL_IMAGE_TAG" ]
           then
             TAGS="$TAGS,${DOCKER_IMAGE}:${MANUAL_IMAGE_TAG}"
@@ -126,10 +130,10 @@ jobs:
             echo "$TAGS"
           fi
           # If the user passed a war version to build off ,change this war version.
-          GLUU_VERSION=${{ github.event.inputs.gluu_version }}
+          GLUU_VERSION="$GLUU_VERSION_INPUT"
           if [ ! -z "$GLUU_VERSION" ]
           then
-            python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; dfparser.envs['CN_VERSION'] = '${{ github.event.inputs.gluu_version }}'"
+            python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; import os ; dfparser.envs['CN_VERSION'] = os.environ['GLUU_VERSION_INPUT']"
             echo "War version has been modified."
           else
             echo "$GLUU_VERSION"
