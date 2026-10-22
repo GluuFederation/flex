@@ -180,3 +180,5 @@ export const REGEX_BASE64URL_MINUS = /-/g
 export const REGEX_BASE64URL_UNDERSCORE = /_/g
 export const REGEX_APPAUTH_STORAGE_KEY = /(^|_)appauth_/
 export const REGEX_ARCHIVE_FILE_EXTENSION = /^(.*?)(\.[^./\\]+)?$/
+export const REGEX_NON_RECOVERABLE_401 =
+  /insufficient[ _]scope|issuer is invalid|denied by external script|does not correspond to user token/i
