@@ -23,7 +23,8 @@ import { useAppNavigation, ROUTES } from '@/helpers/navigation'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import AvailableCustomAttributesPanel from './AvailableCustomAttributesPanel'
 import { useStyles } from './styles/SsaForm.style'
-import { GRANT_TYPES } from '../helper/constants'
+import { GRANT_TYPES } from 'Plugins/auth-server/common/Constants'
+import { buildGrantTypeOptions } from 'Plugins/auth-server/utils'
 import { useSsaValidationState } from '../hooks'
 import { getSsaValidationSchema } from '../helper/validations'
 import {
@@ -41,6 +42,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
   isSubmitting,
   customAttributes,
   softwareRolesOptions,
+  grantTypesSupported,
 }) => {
   const { t } = useTranslation()
   const { navigateBack } = useAppNavigation()
@@ -178,6 +180,15 @@ const SsaForm: React.FC<SsaFormProps> = ({
   )
 
   const grantTypesPlaceholder = useMemo(() => getFieldPlaceholder(t, 'fields.grant_types'), [t])
+  const grantTypeOptions = useMemo(
+    () =>
+      buildGrantTypeOptions(
+        grantTypesSupported,
+        formik.values.grant_types,
+        Object.values(GRANT_TYPES),
+      ),
+    [grantTypesSupported, formik.values.grant_types],
+  )
 
   const handleFormSubmit = useCallback(
     (e: React.SyntheticEvent) => {
@@ -279,14 +290,14 @@ const SsaForm: React.FC<SsaFormProps> = ({
                         label={t('fields.grant_types')}
                         name="grant_types"
                         value={formik.values.grant_types}
-                        options={GRANT_TYPES}
-                        allowCustom
+                        options={grantTypeOptions}
                         required
                         onChange={(nextValues) =>
                           handleAutocompleteChange('grant_types', nextValues)
                         }
                         onBlur={() => formik.setFieldTouched('grant_types', true, false)}
                         placeholder={grantTypesPlaceholder}
+                        helperText={t('messages.grant_types_from_server')}
                         showError={false}
                         doc_category={SSA}
                       />

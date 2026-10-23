@@ -1,5 +1,13 @@
-import { CEDARLING_CONFIG_SPACING, MAPPING_SPACING, OPACITY } from '@/constants'
+import {
+  BORDER_RADIUS,
+  CEDARLING_CONFIG_SPACING,
+  MAPPING_SPACING,
+  OPACITY,
+  SPACING,
+} from '@/constants'
 import { fontFamily, fontSizes, fontWeights, lineHeights, letterSpacing } from '@/styles/fonts'
+import { getCardBorderStyle } from './cardBorderStyles'
+import type { FormCardStyleOptions } from './types'
 
 type InfoAlertColors = {
   background: string
@@ -132,5 +140,26 @@ export const createInfoAlertStyles = (infoAlert: InfoAlertColors) => ({
     fontWeight: fontWeights.medium,
     lineHeight: lineHeights.tight,
     color: infoAlert.text,
+  },
+})
+
+export const createFormCardStyles = ({ isDark, cardBg }: FormCardStyleOptions) => ({
+  formCard: {
+    backgroundColor: cardBg,
+    ...getCardBorderStyle({ isDark }),
+    borderRadius: BORDER_RADIUS.DEFAULT,
+    width: '100%',
+    position: 'relative' as const,
+    overflow: 'visible' as const,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    boxSizing: 'border-box' as const,
+  },
+  content: {
+    padding: SPACING.CARD_PADDING,
+    width: '100%',
+    boxSizing: 'border-box' as const,
+    display: 'flex',
+    flexDirection: 'column' as const,
   },
 })

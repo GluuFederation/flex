@@ -1,4 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react'
+import type { GetConfigScriptsParams } from 'JansConfigApi'
 import type { LogAuditParams } from 'Utils/AuditLogger'
 import { useAuthServerScripts } from 'Plugins/auth-server/components/AuthServerProperties/hooks/useAuthServerScripts'
 
@@ -7,7 +8,7 @@ const mockLoggerError = jest.fn()
 const mockUseGetConfigScripts = jest.fn()
 
 jest.mock('JansConfigApi', () => ({
-  useGetConfigScripts: () => mockUseGetConfigScripts(),
+  useGetConfigScripts: (params: GetConfigScriptsParams) => mockUseGetConfigScripts(params),
 }))
 
 type AuthState = {
@@ -51,6 +52,11 @@ describe('useAuthServerScripts', () => {
   it('returns an empty array when there is no data', () => {
     const { result } = renderHook(() => useAuthServerScripts())
     expect(result.current).toEqual([])
+  })
+
+  it('requests the same scripts list as the client pages', () => {
+    renderHook(() => useAuthServerScripts())
+    expect(mockUseGetConfigScripts).toHaveBeenCalledWith({ limit: 200 })
   })
 
   it('filters out entries that are not valid script entries', () => {

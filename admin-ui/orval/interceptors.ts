@@ -11,6 +11,7 @@ import { handleSessionExpired } from '@/redux/features/initSlice'
 import { logger } from '@/utils/logger'
 import { getIssuer } from '@/utils/TokenController'
 import { isSignedOutSinceSignIn, leaveAfterSignOut } from '@/utils/authSync'
+import { REGEX_NON_RECOVERABLE_401 } from '@/utils/regex'
 import type { RootState } from '@/redux/types'
 import type { AppDispatch } from '@/redux/hooks'
 import type { RetriableAxiosRequestConfig } from './types'
@@ -25,6 +26,13 @@ const SESSION_BOOTSTRAP_ENDPOINTS: readonly string[] = [
 
 const isRecoverableBackendRequest = (url?: string): boolean =>
   Boolean(url?.startsWith('/')) && !SESSION_BOOTSTRAP_ENDPOINTS.includes(url ?? '')
+
+const isNonRecoverableUnauthorized = (error: AxiosError): boolean => {
+  const data = error.response?.data
+  const message = typeof data === 'string' ? data : JSON.stringify(data ?? '')
+  const challenge = String(error.response?.headers?.['www-authenticate'] ?? '')
+  return REGEX_NON_RECOVERABLE_401.test(message) || REGEX_NON_RECOVERABLE_401.test(challenge)
+}
 
 const switchToSessionCookie = (request: RetriableAxiosRequestConfig): void => {
   const headers = AxiosHeaders.from(request.headers as AxiosHeaders)
@@ -95,6 +103,7 @@ export const installInterceptors = (getState: () => RootState, dispatch: AppDisp
     const originalRequest = error.config as RetriableAxiosRequestConfig | undefined
     if (
       error.response?.status !== 401 ||
+      isNonRecoverableUnauthorized(error) ||
       !originalRequest ||
       originalRequest._sessionRetryAttempted
     ) {

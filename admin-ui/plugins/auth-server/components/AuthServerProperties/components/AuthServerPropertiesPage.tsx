@@ -554,7 +554,6 @@ const AuthServerPropertiesPage: React.FC = () => {
               <Form
                 onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) => {
                   e.preventDefault()
-                  // Mobile is view-only, so never open the commit dialog.
                   if (isMobile) return
                   toggle()
                 }}

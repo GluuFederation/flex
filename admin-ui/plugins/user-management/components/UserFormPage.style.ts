@@ -1,8 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import type { ThemeConfig } from '@/context/theme/config'
-import { BORDER_RADIUS, SPACING } from '@/constants'
+import { SPACING } from '@/constants'
 import { fontFamily } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 
 interface UserFormPageStylesParams {
   isDark: boolean
@@ -11,23 +11,14 @@ interface UserFormPageStylesParams {
 
 export const useStyles = makeStyles<UserFormPageStylesParams>()((_, { isDark, themeColors }) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
-
-  const cardBorderStyle = getCardBorderStyle({ isDark, borderRadius: BORDER_RADIUS.DEFAULT })
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
 
   return {
     page: {
       fontFamily,
       paddingTop: SPACING.PAGE,
     },
-    formCard: {
-      width: '100%',
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      padding: `${SPACING.CARD_PADDING}px`,
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      boxSizing: 'border-box',
-    },
+    formCard: formCardStyles.formCard,
+    content: formCardStyles.content,
   }
 })

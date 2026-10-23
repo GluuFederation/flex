@@ -75,14 +75,17 @@ const SsaAddPage: React.FC = () => {
           {pageTitle}
         </GluuText>
         <div className={classes.formCard}>
-          <GluuLoader blocking={isLoading || isSubmitting}>
-            <SsaForm
-              onSubmitData={handleSubmitData}
-              isSubmitting={isSubmitting}
-              customAttributes={customAttributes}
-              softwareRolesOptions={softwareRolesOptions}
-            />
-          </GluuLoader>
+          <div className={classes.content}>
+            <GluuLoader blocking={isLoading || isSubmitting}>
+              <SsaForm
+                onSubmitData={handleSubmitData}
+                isSubmitting={isSubmitting}
+                customAttributes={customAttributes}
+                grantTypesSupported={configuration?.grantTypesSupported}
+                softwareRolesOptions={softwareRolesOptions}
+              />
+            </GluuLoader>
+          </div>
         </div>
       </div>
     </GluuPageContent>

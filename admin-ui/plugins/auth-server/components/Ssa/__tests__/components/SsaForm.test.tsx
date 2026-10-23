@@ -40,6 +40,36 @@ describe('SsaForm', () => {
       expect(screen.getByText(/Apply/i)).toBeInTheDocument()
     })
 
+    it('lists only the grant types the server supports', async () => {
+      render(
+        <SsaForm
+          {...defaultProps}
+          grantTypesSupported={['authorization_code', 'client_credentials']}
+        />,
+        { wrapper: Wrapper },
+      )
+      expect(
+        screen.getByText(
+          'Only grant types enabled in Auth Server properties (grantTypesSupported) are listed.',
+        ),
+      ).toBeInTheDocument()
+      const comboboxes = screen.getAllByRole('combobox')
+      fireEvent.focus(comboboxes[comboboxes.length - 1])
+      const options = (await screen.findAllByRole('option')).map((o) => o.textContent)
+      expect(options).toEqual(['authorization_code', 'client_credentials'])
+    })
+
+    it('does not offer a typed grant type the server does not support', async () => {
+      render(<SsaForm {...defaultProps} grantTypesSupported={['authorization_code']} />, {
+        wrapper: Wrapper,
+      })
+      const comboboxes = screen.getAllByRole('combobox')
+      const grantInput = comboboxes[comboboxes.length - 1]
+      fireEvent.focus(grantInput)
+      fireEvent.change(grantInput, { target: { value: 'password' } })
+      await waitFor(() => expect(screen.queryAllByRole('option')).toHaveLength(0))
+    })
+
     it('renders the toggle rows for one time use, rotate ssa and is expirable', () => {
       render(<SsaForm {...defaultProps} />, { wrapper: Wrapper })
       expect(document.querySelector('input#one_time_use')).toBeTruthy()

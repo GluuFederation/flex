@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import omit from 'lodash/omit'
 import { useAppSelector } from '@/redux/hooks'
 import {
   Col,
@@ -11,6 +12,8 @@ import {
   Badge,
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuText from 'Routes/Apps/Gluu/GluuText'
+import { GluuBadge } from '@/components/GluuBadge'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -182,7 +185,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
         setCommitOperations(operations)
 
         const result = {
-          ...scope,
+          ...omit(scope, 'clients'),
           ...values,
           attributes: {
             ...scope.attributes,
@@ -568,24 +571,6 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                   </div>
                   {scope.inum && (
                     <>
-                      <FormGroup row>
-                        <GluuLabel label="fields.associatedClients" size={4} />
-                        <Col sm={8}>
-                          {client.map((item, key) => (
-                            <div key={'uma-client' + key}>
-                              <Link
-                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  goToClientViewPage(item.inum, item)
-                                }}
-                              >
-                                {item.displayName ? item.displayName : item.inum}
-                              </Link>
-                            </div>
-                          ))}
-                        </Col>
-                      </FormGroup>
                       <div className={classes.formGrid}>
                         <div className={classes.fieldItem}>
                           <GluuInputRow
@@ -678,6 +663,56 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     </FormGroup>
                   </AccordionBody>
                 </Accordion>
+              )}
+
+              {scope.inum && (
+                <div className={classes.formGrid}>
+                  <div className={classes.fieldItem}>
+                    <FormGroup row>
+                      <GluuLabel
+                        label="fields.associatedClients"
+                        size={12}
+                        doc_category={SCOPE}
+                        doc_entry="associatedClients"
+                      />
+                      <Col sm={12}>
+                        <div className={classes.associatedClients}>
+                          {client.length === 0 ? (
+                            <GluuText
+                              variant="span"
+                              className={classes.associatedClientsEmpty}
+                              disableThemeColor
+                            >
+                              {t('messages.no_associated_clients')}
+                            </GluuText>
+                          ) : (
+                            client.map((item, key) => (
+                              <Link
+                                key={'associated-client' + key}
+                                className={classes.clientPill}
+                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  goToClientViewPage(item.inum, item)
+                                }}
+                              >
+                                <GluuBadge
+                                  size="md"
+                                  pill
+                                  backgroundColor={themeColors.badges.filledBadgeBg}
+                                  textColor={themeColors.badges.filledBadgeText}
+                                  borderColor="transparent"
+                                >
+                                  {item.displayName ? item.displayName : item.inum}
+                                </GluuBadge>
+                              </Link>
+                            ))
+                          )}
+                        </div>
+                      </Col>
+                    </FormGroup>
+                  </div>
+                </div>
               )}
 
               <GluuThemeFormFooter

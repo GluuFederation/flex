@@ -3,7 +3,7 @@ import { createMobilePageTitleStyle } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
 
@@ -28,8 +28,8 @@ const MOBILE_ERROR_LINE_HEIGHT = 1.2
 const MOBILE_ERROR_RESERVED_SPACE = 29
 
 export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, themeColors }) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
@@ -39,27 +39,8 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
       overflow: 'auto',
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      boxSizing: 'border-box' as const,
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      [`@media (max-width: ${MOBILE_BREAKPOINT}px)`]: {
-        padding: SPACING.PAGE,
-      },
-    },
+    formCard: formCardStyles.formCard,
+    content: formCardStyles.content,
     formGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
@@ -145,6 +126,37 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
     },
     fieldItemFullWidth: {
       gridColumn: '1 / -1',
+    },
+    associatedClients: {
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      alignItems: 'center',
+      gap: SPACING.CARD_CONTENT_GAP,
+      minHeight: INPUT_HEIGHT,
+      padding: `${INPUT_PADDING_VERTICAL}px ${INPUT_PADDING_HORIZONTAL}px`,
+      backgroundColor: formInputBg,
+      border: `1px solid ${inputBorderColor}`,
+      borderRadius: BORDER_RADIUS.SMALL,
+      boxSizing: 'border-box' as const,
+    },
+    associatedClientsEmpty: {
+      color: themeColors.textMuted,
+      fontFamily,
+      fontSize: fontSizes.base,
+    },
+    clientPill: {
+      'display': 'inline-flex',
+      'maxWidth': '100%',
+      'borderRadius': 50,
+      'textDecoration': 'none',
+      '&:hover, &:focus': {
+        textDecoration: 'none',
+        opacity: OPACITY.OVERLAY,
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${themeColors.fontColor}`,
+        outlineOffset: 2,
+      },
     },
     autocompleteField: {
       marginBottom: 20,

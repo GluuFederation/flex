@@ -5,13 +5,13 @@ import type { CustomScript } from 'JansConfigApi'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
-import { FETCH_LIMITS } from '../constants'
+import { CONFIG_SCRIPTS_PARAMS } from 'Plugins/auth-server/common/Constants'
 
 export const useClientScripts = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
-  const query = useGetConfigScripts({ limit: FETCH_LIMITS.SCRIPTS })
+  const query = useGetConfigScripts(CONFIG_SCRIPTS_PARAMS)
 
   useEffect(() => {
     if (!query.isError) return
