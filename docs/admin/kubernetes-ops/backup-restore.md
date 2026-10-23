@@ -8,7 +8,7 @@ tags:
   - restore
 ---
 
-This guide shows how to back up a Gluu Flex Helm deployment and restore it, into the same cluster or a new one. Take a backup before every [upgrade](./upgrade.md). It uses only `kubectl`, `helm` and the database's own tools.
+This guide shows how to back up a Gluu Flex Helm deployment and restore it, into the same cluster or a new one. Take a backup before every [upgrade](./upgrade.md). It uses only `kubectl`, `helm`, `curl` and the database's own tools.
 
 We recommend a backup **once daily**, and always before an upgrade or any change to the values file.
 
@@ -28,11 +28,13 @@ Flex keeps its state in four places. A restore needs all four.
 
 ## Manual Backup
 
-Set these once and reuse them in the commands below:
+Set these once and reuse them in the commands below. The values shown are examples: replace them with your namespace, Helm release name, database pod name and Flex host name.
 
 ```bash
-export NS=<namespace>
-export RELEASE=<release-name>
+export NS=gluu
+export RELEASE=flex
+export DB_POD=postgresql-0
+export FQDN=flex.example.com
 ```
 
 1.  Configmap backup:
@@ -47,14 +49,14 @@ export RELEASE=<release-name>
     kubectl get secret cn -n $NS -o yaml > secret-backup.yaml
     ```
 
-3.  Get the user supplied values:
+3.  Get the user-supplied values:
 
     Save the `override.yaml` that was used to install Flex with helm.
 
     If the file was lost, you can obtain the values with:
 
     ```bash
-    helm get values $RELEASE -n $NS > override.yaml
+    helm get values $RELEASE -n $NS -o yaml > override.yaml
     ```
 
 4.  Keep note of the installed chart version:
@@ -63,22 +65,25 @@ export RELEASE=<release-name>
     helm list -n $NS
     ```
 
-    Keep note of the chart version. For example: `replace-flex-version`
+    Record only the chart version from the `CHART` column, not the chart name. For example, if the value is `gluu-replace-flex-version`, record `replace-flex-version`. You need this value for `--version` when you restore.
 
 5.  Back up the customizations that your values mount from the cluster.
 
     List the ConfigMaps and Secrets that your values use under `volumes`:
 
     ```bash
-    helm get values $RELEASE -n $NS | grep -B1 -A3 -E "configMap|secret|persistentVolumeClaim"
+    helm get values $RELEASE -n $NS -o yaml | grep -B1 -A3 -E "configMap|secret|persistentVolumeClaim"
     ```
 
-    Save each ConfigMap and Secret that you created for customizations (replace `<name>`):
+    Save each ConfigMap and Secret that you created for customizations. Set `CUSTOM` to the name of the object (repeat for each one):
 
     ```bash
-    kubectl get configmap <name> -n $NS -o yaml > custom-configmap-<name>.yaml
-    kubectl get secret <name> -n $NS -o yaml > custom-secret-<name>.yaml
+    export CUSTOM=my-login-pages
+    kubectl get configmap $CUSTOM -n $NS -o yaml > custom-configmap-$CUSTOM.yaml
+    kubectl get secret $CUSTOM -n $NS -o yaml > custom-secret-$CUSTOM.yaml
     ```
+
+    Skip the command for an object type that does not exist.
 
     If your customizations live on a PersistentVolumeClaim instead, back it up with your storage's snapshot feature. Also keep the source files of anything you deployed to Flex, for example the `.gama` archive of a customized Agama project.
 
@@ -87,13 +92,19 @@ export RELEASE=<release-name>
     **PostgreSQL in the cluster**
 
     ```bash
-    kubectl exec <postgresql-pod> -n $NS -- pg_dump -U postgres -Fc gluu > gluu-db-backup.dump
+    kubectl exec $DB_POD -n $NS -- pg_dump -U postgres -Fc gluu > gluu-db-backup.dump
     ```
 
     **MySQL in the cluster**
 
     ```bash
-    kubectl exec <mysql-pod> -n $NS -- mysqldump --single-transaction --routines -u root -p<password> gluu > gluu-db-backup.sql
+    kubectl exec $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --single-transaction --routines -u root gluu' > gluu-db-backup.sql
+    ```
+
+    The password is read inside the pod, so it does not appear in your shell history or in the process list. The name of the password variable depends on your MySQL image. List the variable names (not their values) with:
+
+    ```bash
+    kubectl exec $DB_POD -n $NS -- env | cut -d= -f1 | grep -i mysql
     ```
 
     **External database**
@@ -106,8 +117,25 @@ export RELEASE=<release-name>
 
     ```bash
     ls -lh *.yaml *.dump *.sql 2>/dev/null
+    ```
+
+    Check the database backup for your database type.
+
+    **PostgreSQL**
+
+    ```bash
     pg_restore -l gluu-db-backup.dump | head
     ```
+
+    **MySQL**
+
+    ```bash
+    grep -c "CREATE TABLE" gluu-db-backup.sql
+    ```
+
+    **External database**
+
+    Confirm in your provider's console or tool that the snapshot or dump completed.
 
     The Secret backup contains credentials. Keep it encrypted, and never put it in a ticket or a repository.
 
@@ -130,11 +158,38 @@ Use these steps to restore into a new cluster, or into the same cluster after th
     kubectl create -f secret-backup.yaml -n $NS
     ```
 
-3.  Restore your customizations (the ConfigMaps and Secrets from backup step 5). They must exist **before** Flex is installed, because the pods mount them at start:
+3.  Restore your customizations (backup step 5). They must exist **before** Flex is installed, because the pods mount them at start.
+
+    ConfigMaps and Secrets (set `CUSTOM` to each object's name, as in the backup):
 
     ```bash
-    kubectl create -f custom-configmap-<name>.yaml -n $NS
-    kubectl create -f custom-secret-<name>.yaml -n $NS
+    kubectl create -f custom-configmap-$CUSTOM.yaml -n $NS
+    kubectl create -f custom-secret-$CUSTOM.yaml -n $NS
+    ```
+
+    PersistentVolumeClaims: if your customizations live on a volume, restore the volume from your storage snapshot, using the same claim name that `override.yaml` refers to. The exact steps depend on your storage provider. With a CSI driver that supports snapshots, create the claim from the snapshot:
+
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: custom-files
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      dataSource:
+        apiGroup: snapshot.storage.k8s.io
+        kind: VolumeSnapshot
+        name: custom-files-backup
+    ```
+
+    Apply it with `kubectl create -f <file> -n $NS`, then wait until the claim is bound:
+
+    ```bash
+    kubectl get pvc -n $NS
     ```
 
 4.  Restore the database.
@@ -144,13 +199,13 @@ Use these steps to restore into a new cluster, or into the same cluster after th
     **PostgreSQL**
 
     ```bash
-    kubectl exec -i <postgresql-pod> -n $NS -- pg_restore -U postgres -d gluu --no-owner < gluu-db-backup.dump
+    kubectl exec -i $DB_POD -n $NS -- pg_restore -U postgres -d gluu --no-owner < gluu-db-backup.dump
     ```
 
     **MySQL**
 
     ```bash
-    kubectl exec -i <mysql-pod> -n $NS -- mysql -u root -p<password> gluu < gluu-db-backup.sql
+    kubectl exec -i $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root gluu' < gluu-db-backup.sql
     ```
 
     **External database**
@@ -169,10 +224,10 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
     ```bash
     kubectl get pods -n $NS
-    curl -k https://<fqdn>/.well-known/openid-configuration
+    curl -k https://$FQDN/.well-known/openid-configuration
     ```
 
-    Sign in to the Admin UI at `https://<fqdn>/admin` as a user with an Admin UI role, and confirm that your users, clients and scopes are present and that your customized login pages appear.
+    Sign in to the Admin UI at `https://$FQDN/admin` (your Flex host name) as a user with an Admin UI role, and confirm that your users, clients and scopes are present and that your customized login pages appear.
 
 ## Customizations after a restore or an upgrade
 

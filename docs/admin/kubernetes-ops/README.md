@@ -17,7 +17,7 @@ This Operation guide helps you learn about the common operations for Gluu Flex o
 ## Common Operations
 
 - [Upgrade](upgrade.md)
-- [Backup and Restore](backup-restore.md)
+- [Flex Backup and Restore](backup-restore.md)
 - [Admin-UI Private](admin-ui-private.md)
 - [Scaling](https://docs.jans.io/head/janssen-server/kubernetes-ops/scaling/)
 - [Backup and Restore](https://docs.jans.io/head/janssen-server/kubernetes-ops/backup-restore/)  
