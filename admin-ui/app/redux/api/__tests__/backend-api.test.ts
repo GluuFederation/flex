@@ -20,6 +20,7 @@ import {
   fetchActivePolicyStoreBytes,
   createAdminUiSession,
   deleteAdminUiSession,
+  setSessionRefreshToken,
   SESSION_ENDPOINT,
 } from '../backend-api'
 import { setHasSessionReader } from '../sessionState'
@@ -287,6 +288,18 @@ describe('session endpoints', () => {
     expect(ax.post).toHaveBeenCalledWith(
       '/app/admin-ui/oauth2/session',
       { ujwt: 'the-ujwt' },
+      { headers: { Authorization: 'Bearer prot-token' }, withCredentials: true },
+    )
+  })
+
+  it('sends the refresh token from sign-in with the session request', async () => {
+    ax.post.mockResolvedValue({ data: { created: true } })
+    setSessionRefreshToken('the-refresh-token')
+    await createAdminUiSession('the-ujwt', 'prot-token')
+    setSessionRefreshToken(null)
+    expect(ax.post).toHaveBeenCalledWith(
+      '/app/admin-ui/oauth2/session',
+      { ujwt: 'the-ujwt', refreshToken: 'the-refresh-token' },
       { headers: { Authorization: 'Bearer prot-token' }, withCredentials: true },
     )
   })

@@ -176,12 +176,18 @@ export const fetchActivePolicyStoreBytes = async (token?: string): Promise<strin
   return legacyBytes && legacyBytes.trim().length > 0 ? legacyBytes : undefined
 }
 
+let sessionRefreshToken: string | null = null
+
+export const setSessionRefreshToken = (token?: string | null): void => {
+  sessionRefreshToken = token ?? null
+}
+
 export const createAdminUiSession = async (ujwt: string, apiProtectionToken: string) => {
   try {
     const headers = { Authorization: `Bearer ${apiProtectionToken}` }
     const response = await axios.post(
       ENDPOINTS.SESSION,
-      { ujwt },
+      { ujwt, ...(sessionRefreshToken ? { refreshToken: sessionRefreshToken } : {}) },
       { headers, withCredentials: true },
     )
     return response.data
