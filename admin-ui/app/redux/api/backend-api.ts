@@ -199,6 +199,7 @@ export const createAdminUiSession = async (ujwt: string, apiProtectionToken: str
 
 export const deleteAdminUiSession = async (token?: string) => {
   try {
+    setSessionRefreshToken(null)
     const response = await axios.delete(ENDPOINTS.SESSION, getAuthConfig(token))
     return response.data
   } catch (error) {

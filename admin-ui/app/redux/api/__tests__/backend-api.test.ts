@@ -312,6 +312,19 @@ describe('session endpoints', () => {
     })
   })
 
+  it('stops sending the refresh token once sign-out deletes the session', async () => {
+    ax.delete.mockResolvedValue({ data: {} })
+    ax.post.mockResolvedValue({ data: { created: true } })
+    setSessionRefreshToken('the-refresh-token')
+    await deleteAdminUiSession()
+    await createAdminUiSession('the-ujwt', 'prot-token')
+    expect(ax.post).toHaveBeenCalledWith(
+      '/app/admin-ui/oauth2/session',
+      { ujwt: 'the-ujwt' },
+      { headers: { Authorization: 'Bearer prot-token' }, withCredentials: true },
+    )
+  })
+
   it('rethrows when session deletion fails', async () => {
     ax.delete.mockRejectedValue(new Error('nope'))
     await expect(deleteAdminUiSession()).rejects.toThrow('nope')
