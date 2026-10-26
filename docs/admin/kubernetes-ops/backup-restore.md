@@ -21,19 +21,20 @@ Flex keeps its state in four places. A restore needs all four.
 | Configuration and secrets | ConfigMap `cn` and Secret `cn` | Server configuration, client credentials, keystore passwords and other secrets that the database contents depend on |
 | Data | The database (MySQL or PostgreSQL) | Users, clients, scopes, Admin UI roles and settings, custom scripts, deployed Agama projects |
 | Helm values | Your `override.yaml` and the chart version | How the release was installed |
-| Customizations mounted from the cluster | ConfigMaps, Secrets or volumes named in `volumes` and `volumeMounts` of your values | For example custom login pages, CSS, logos and fonts |
+| Customizations and other objects your values point to | ConfigMaps, Secrets or volumes named in `volumes` and `volumeMounts` of your values, and any Secret or ConfigMap that you created yourself and that the values name (for example `global.cnConfiguratorCustomSchema.secretName`) | For example custom login pages, CSS, logos and fonts, or a custom configuration schema |
 
 !!! Note
     The ConfigMap, the Secret and the database are a set. Restore them together from the same backup. A database restored with a `cn` Secret from a different installation cannot be used.
 
 ## Manual Backup
 
-Set these once and reuse them in the commands below. The values shown are examples: replace them with your namespace, Helm release name, database pod name and Flex host name.
+Set these once and reuse them in the commands below. The values shown are examples: replace them with your namespace, Helm release name, database pod name, the database user that Flex uses (`configmap.cnSqlDbUser` in your values) and your Flex host name.
 
 ```bash
 export NS=gluu
 export RELEASE=flex
 export DB_POD=postgresql-0
+export DB_USER=gluu
 export FQDN=flex.example.com
 ```
 
@@ -69,13 +70,13 @@ export FQDN=flex.example.com
 
 5.  Back up the customizations that your values mount from the cluster.
 
-    List the ConfigMaps and Secrets that your values use under `volumes`:
+    List the ConfigMaps, Secrets and volumes that your values refer to:
 
     ```bash
-    helm get values $RELEASE -n $NS -o yaml | grep -B1 -A3 -E "configMap|secret|persistentVolumeClaim"
+    helm get values $RELEASE -n $NS -o yaml | grep -B1 -A3 -E "configMap|secret|Secret|persistentVolumeClaim"
     ```
 
-    Save each ConfigMap and Secret that you created for customizations. Set `CUSTOM` to the name of the object (repeat for each one):
+    Save every ConfigMap and Secret that you created yourself and that your values name: the ones under `volumes`, and any other object the values point to, for example the Secret in `global.cnConfiguratorCustomSchema.secretName`. If such an object is missing after a restore, the Flex pods stay in `ContainerCreating`. Set `CUSTOM` to the name of the object (repeat for each one):
 
     ```bash
     export CUSTOM=my-login-pages
@@ -151,7 +152,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
 2.  Restore the ConfigMap and Secret:
 
-    Before you apply the backups, remove the lines `resourceVersion`, `uid`, `creationTimestamp` and the `managedFields` block from `metadata`. They identify the old objects and the cluster rejects them on creation.
+    Before you apply **any** saved YAML file (these two and the customization files in the next step), remove the lines `resourceVersion`, `uid`, `creationTimestamp` and the `managedFields` block from `metadata`. They identify the old objects and the cluster rejects them on creation.
 
     ```bash
     kubectl create -f configmap-backup.yaml -n $NS
@@ -160,7 +161,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
 3.  Restore your customizations (backup step 5). They must exist **before** Flex is installed, because the pods mount them at start.
 
-    ConfigMaps and Secrets (set `CUSTOM` to each object's name, as in the backup):
+    ConfigMaps and Secrets, including any object your values name such as the one in `global.cnConfiguratorCustomSchema.secretName`. First clean each saved file as described in step 2, then create it (set `CUSTOM` to each object's name, as in the backup):
 
     ```bash
     kubectl create -f custom-configmap-$CUSTOM.yaml -n $NS
@@ -199,8 +200,10 @@ Use these steps to restore into a new cluster, or into the same cluster after th
     **PostgreSQL**
 
     ```bash
-    kubectl exec -i $DB_POD -n $NS -- pg_restore -U postgres -d gluu --no-owner < gluu-db-backup.dump
+    kubectl exec -i $DB_POD -n $NS -- pg_restore -U postgres -d gluu --no-owner --role=$DB_USER < gluu-db-backup.dump
     ```
+
+    `--role` makes the restored tables belong to the database user that Flex connects as (`configmap.cnSqlDbUser`). Without it they belong to `postgres`, and Flex cannot read them if its user is a different one (the chart default is `gluu`). The user must exist before you restore.
 
     **MySQL**
 
