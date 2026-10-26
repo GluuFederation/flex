@@ -277,7 +277,7 @@ A sign-out in one tab reaches the others without routing them to `/logout`. The 
 Two unrelated things are both called "scopes":
 
 - **OIDC scopes** are declared in the auth config the Jans server hands back. AppAuth lists them in the `AuthorizationRequest`. They control what the OIDC token can be used for.
-- **Cedarling resource scopes** are derived from [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts) and evaluated at the page boundary by `usePermission()`. They control which UI elements render for which role.
+- **Cedarling resource scopes** are derived from [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), evaluated once right after Cedarling starts, and read at the page boundary by `usePermission()`. They control which UI elements render for which role.
 
 A user can be signed in (OIDC scopes valid) but unauthorized (Cedarling denies). That is the normal case for role-restricted pages. See [cedarling.md](./cedarling.md).
 

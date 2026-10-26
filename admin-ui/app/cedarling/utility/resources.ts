@@ -18,3 +18,6 @@ export const CEDAR_RESOURCE_SCOPES = Object.fromEntries(
     RESOURCE_ACTIONS[resourceId].map((action) => ({ action, resourceId })),
   ]),
 ) as Record<AdminUiFeatureResource, ResourceScopeEntry[]>
+
+export const ALL_CEDAR_RESOURCE_SCOPES: ResourceScopeEntry[] =
+  Object.values(CEDAR_RESOURCE_SCOPES).flat()

@@ -6,6 +6,8 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { ALL_CEDAR_RESOURCE_SCOPES } from '@/cedarling/utility'
 import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
@@ -27,6 +29,13 @@ const PermissionsPolicyInitializer = () => {
   )
   const cedarlingLogType =
     useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CEDARLING_LOG_TYPE.OFF
+  const { authorizeHelper } = useCedarling()
+
+  useEffect(() => {
+    if (initialized) {
+      authorizeHelper(ALL_CEDAR_RESOURCE_SCOPES)
+    }
+  }, [initialized, authorizeHelper])
 
   useEffect(() => {
     const isValidPolicyStoreBytes = (bytes: string): boolean => {

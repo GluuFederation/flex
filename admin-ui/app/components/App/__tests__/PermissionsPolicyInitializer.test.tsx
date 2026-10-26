@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import PermissionsPolicyInitializer from '../PermissionsPolicyInitializer'
-import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
+import { CEDARLING_LOG_TYPE, RESOURCE_ACTIONS } from '@/cedarling/constants'
 import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 
 type CedarInitState = {
@@ -26,6 +26,10 @@ jest.mock('@/cedarling/client', () => ({
   cedarlingClient: {
     initialize: (config: object, bytes: Uint8Array) => mockInitialize(config, bytes),
   },
+}))
+const mockAuthorizeHelper = jest.fn().mockResolvedValue([])
+jest.mock('@/cedarling/hooks/useCedarling', () => ({
+  useCedarling: () => ({ authorizeHelper: mockAuthorizeHelper }),
 }))
 jest.mock('@/cedarling/utility/cedarLogger', () => ({
   cedarLogger: {
@@ -60,7 +64,34 @@ describe('PermissionsPolicyInitializer', () => {
   beforeEach(() => {
     mockDispatch.mockClear()
     mockInitialize.mockReset()
+    mockAuthorizeHelper.mockClear()
     resetState()
+  })
+
+  it('authorizes every resource action once cedarling is initialized, while the tokens are fresh', () => {
+    mockState.cedarPermissions.initialized = true as never
+    const everyResourceAction = Object.entries(RESOURCE_ACTIONS).flatMap(([resourceId, actions]) =>
+      actions.map((action) => ({ resourceId, action })),
+    )
+
+    render(<PermissionsPolicyInitializer />)
+
+    expect(mockAuthorizeHelper).toHaveBeenCalledTimes(1)
+    const requested = mockAuthorizeHelper.mock.calls[0][0]
+    expect(requested).toHaveLength(everyResourceAction.length)
+    expect(requested).toEqual(expect.arrayContaining(everyResourceAction))
+    expect(requested).toEqual(
+      expect.arrayContaining([
+        { resourceId: 'Attributes', action: 'write' },
+        { resourceId: 'Users', action: 'delete' },
+      ]),
+    )
+  })
+
+  it('does not request decisions before cedarling is initialized', () => {
+    mockInitialize.mockReturnValue(new Promise(() => {}))
+    render(<PermissionsPolicyInitializer />)
+    expect(mockAuthorizeHelper).not.toHaveBeenCalled()
   })
 
   it('renders nothing', () => {
