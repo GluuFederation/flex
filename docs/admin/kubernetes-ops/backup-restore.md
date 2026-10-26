@@ -28,12 +28,13 @@ Flex keeps its state in four places. A restore needs all four.
 
 ## Manual Backup
 
-Set these once and reuse them in the commands below. The values shown are examples: replace them with your namespace, Helm release name, database pod name, the database user that Flex uses (`configmap.cnSqlDbUser` in your values) and your Flex host name.
+Set these once and reuse them in the commands below. The values shown are examples: replace them with your namespace, Helm release name, database pod name, the database name and user that Flex uses (`configmap.cnSqlDbName` and `configmap.cnSqlDbUser` in your values) and your Flex host name.
 
 ```bash
 export NS=gluu
 export RELEASE=flex
 export DB_POD=postgresql-0
+export DB_NAME=gluu
 export DB_USER=gluu
 export FQDN=flex.example.com
 ```
@@ -93,16 +94,16 @@ export FQDN=flex.example.com
     **PostgreSQL in the cluster**
 
     ```bash
-    kubectl exec $DB_POD -n $NS -- pg_dump -U postgres -Fc gluu > gluu-db-backup.dump
+    kubectl exec $DB_POD -n $NS -- pg_dump -U postgres -Fc $DB_NAME > gluu-db-backup.dump
     ```
 
     **MySQL in the cluster**
 
     ```bash
-    kubectl exec $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --single-transaction --routines -u root gluu' > gluu-db-backup.sql
+    kubectl exec $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --single-transaction --routines -u root "$1"' sh $DB_NAME > gluu-db-backup.sql
     ```
 
-    The password is read inside the pod, so it does not appear in your shell history or in the process list. The name of the password variable depends on your MySQL image. List the variable names (not their values) with:
+    The password is read inside the pod, so it does not appear in your shell history or in the process list. The commands read the variable `MYSQL_ROOT_PASSWORD`, but the name depends on your MySQL image. List the variable names (not their values) with the command below, and if your image uses a different name, replace `MYSQL_ROOT_PASSWORD` with it in the backup and restore commands:
 
     ```bash
     kubectl exec $DB_POD -n $NS -- env | cut -d= -f1 | grep -i mysql
@@ -152,7 +153,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
 2.  Restore the ConfigMap and Secret:
 
-    Before you apply **any** saved YAML file (these two and the customization files in the next step), remove the lines `resourceVersion`, `uid`, `creationTimestamp` and the `managedFields` block from `metadata`. They identify the old objects and the cluster rejects them on creation.
+    Before you apply **any** saved YAML file (these two and the customization files in the next step), remove the lines `resourceVersion`, `uid`, `creationTimestamp`, `namespace` and the `managedFields` block from `metadata`. They identify the old objects and the old namespace, and the cluster rejects them on creation (the `-n $NS` option sets the namespace).
 
     ```bash
     kubectl create -f configmap-backup.yaml -n $NS
@@ -161,7 +162,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
 3.  Restore your customizations (backup step 5). They must exist **before** Flex is installed, because the pods mount them at start.
 
-    ConfigMaps and Secrets, including any object your values name such as the one in `global.cnConfiguratorCustomSchema.secretName`. First clean each saved file as described in step 2, then create it (set `CUSTOM` to each object's name, as in the backup):
+    ConfigMaps and Secrets, including any object your values name such as the one in `global.cnConfiguratorCustomSchema.secretName`. First clean each saved file as described in step 2, then create only the objects that you saved in the backup, since a customization may have only a ConfigMap or only a Secret (set `CUSTOM` to each object's name, as in the backup):
 
     ```bash
     kubectl create -f custom-configmap-$CUSTOM.yaml -n $NS
@@ -187,9 +188,10 @@ Use these steps to restore into a new cluster, or into the same cluster after th
         name: custom-files-backup
     ```
 
-    Apply it with `kubectl create -f <file> -n $NS`, then wait until the claim is bound:
+    Save it as `pvc-restore.yaml`, create it, then wait until the claim is bound:
 
     ```bash
+    kubectl create -f pvc-restore.yaml -n $NS
     kubectl get pvc -n $NS
     ```
 
@@ -200,7 +202,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
     **PostgreSQL**
 
     ```bash
-    kubectl exec -i $DB_POD -n $NS -- pg_restore -U postgres -d gluu --no-owner --role=$DB_USER < gluu-db-backup.dump
+    kubectl exec -i $DB_POD -n $NS -- pg_restore -U postgres -d $DB_NAME --no-owner --role=$DB_USER < gluu-db-backup.dump
     ```
 
     `--role` makes the restored tables belong to the database user that Flex connects as (`configmap.cnSqlDbUser`). Without it they belong to `postgres`, and Flex cannot read them if its user is a different one (the chart default is `gluu`). The user must exist before you restore.
@@ -208,7 +210,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
     **MySQL**
 
     ```bash
-    kubectl exec -i $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root gluu' < gluu-db-backup.sql
+    kubectl exec -i $DB_POD -n $NS -- sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root "$1"' sh $DB_NAME < gluu-db-backup.sql
     ```
 
     **External database**
@@ -227,7 +229,7 @@ Use these steps to restore into a new cluster, or into the same cluster after th
 
     ```bash
     kubectl get pods -n $NS
-    curl -k https://$FQDN/.well-known/openid-configuration
+    curl -k --fail https://$FQDN/.well-known/openid-configuration
     ```
 
     Sign in to the Admin UI at `https://$FQDN/admin` (your Flex host name) as a user with an Admin UI role, and confirm that your users, clients and scopes are present and that your customized login pages appear.
