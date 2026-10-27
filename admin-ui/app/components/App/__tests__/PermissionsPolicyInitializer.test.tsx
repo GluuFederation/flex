@@ -88,6 +88,56 @@ describe('PermissionsPolicyInitializer', () => {
     )
   })
 
+  it('retries only the failed decisions, at most twice', async () => {
+    jest.useFakeTimers()
+    try {
+      mockState.cedarPermissions.initialized = true as never
+      const failing = (scopes: { resourceId: string; action: string }[]) =>
+        Promise.resolve(
+          scopes.map((scope) =>
+            scope.resourceId === 'Users' && scope.action === 'delete'
+              ? { isAuthorized: false, error: 'wasm error' }
+              : { isAuthorized: true },
+          ),
+        )
+      mockAuthorizeHelper.mockImplementation(failing)
+
+      render(<PermissionsPolicyInitializer />)
+      await jest.advanceTimersByTimeAsync(10000)
+
+      expect(mockAuthorizeHelper).toHaveBeenCalledTimes(3)
+      expect(mockAuthorizeHelper.mock.calls[1][0]).toEqual([
+        { resourceId: 'Users', action: 'delete' },
+      ])
+      expect(mockAuthorizeHelper.mock.calls[2][0]).toEqual([
+        { resourceId: 'Users', action: 'delete' },
+      ])
+    } finally {
+      mockAuthorizeHelper.mockImplementation(() => Promise.resolve([]))
+      jest.useRealTimers()
+    }
+  })
+
+  it('stops retrying after unmount', async () => {
+    jest.useFakeTimers()
+    try {
+      mockState.cedarPermissions.initialized = true as never
+      mockAuthorizeHelper.mockImplementation((scopes: { resourceId: string; action: string }[]) =>
+        Promise.resolve(scopes.map(() => ({ isAuthorized: false, error: 'wasm error' }))),
+      )
+
+      const { unmount } = render(<PermissionsPolicyInitializer />)
+      await jest.advanceTimersByTimeAsync(0)
+      unmount()
+      await jest.advanceTimersByTimeAsync(10000)
+
+      expect(mockAuthorizeHelper).toHaveBeenCalledTimes(1)
+    } finally {
+      mockAuthorizeHelper.mockImplementation(() => Promise.resolve([]))
+      jest.useRealTimers()
+    }
+  })
+
   it('does not request decisions before cedarling is initialized', () => {
     mockInitialize.mockReturnValue(new Promise(() => {}))
     render(<PermissionsPolicyInitializer />)
