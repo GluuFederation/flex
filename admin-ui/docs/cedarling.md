@@ -28,7 +28,7 @@ sequenceDiagram
     participant Client as cedarlingClient
     participant Wasm as Cedarling WASM
 
-    Auth->>API: fetchPolicyStore() after OIDC sign-in
+    Auth->>API: fetchActivePolicyStoreBytes() after OIDC sign-in
     API-->>Auth: base64-encoded policy store
     Auth->>Redux: setPolicyStoreBytes(base64)
     Init->>Redux: watch (hasSession, policyStoreBytes, cedarlingLogType)
@@ -77,9 +77,9 @@ sequenceDiagram
 
 ### Phase 1: Bootstrap
 
-When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx) does two things: it stores the tokens, and it calls `fetchPolicyStore()` against the Jans Config API. The response is a base64-encoded blob containing the Cedar policies that describe who can do what. `AppAuthProvider` writes that blob into the [`cedarPermissions` slice](../app/redux/features/cedarPermissionsSlice.ts) (`setPolicyStoreBytes`).
+When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx) does two things: it stores the tokens, and it calls `fetchActivePolicyStoreBytes()` against the Jans Config API. The response is a base64-encoded blob containing the Cedar policies that describe who can do what. `AppAuthProvider` writes that blob into the [`cedarPermissions` slice](../app/redux/features/cedarPermissionsSlice.ts) (`setPolicyStoreBytes`).
 
-[`app/components/App/PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx) is a render-less component mounted at the top of the app tree. It watches the Redux store and waits until three things are present at the same time:
+[`app/components/App/PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx) is a render-less component mounted inside the signed-in layout by [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx), so it lives for the whole signed-in session and unmounts on `/logout`. It watches the Redux store and waits until three things are present at the same time:
 
 - a session exists (`hasSession`)
 - the policy store bytes have arrived (`policyStoreBytes` is non-empty)
@@ -101,11 +101,11 @@ Take the OIDC Clients list page as a concrete example. The page calls [`usePermi
 
 `usePermission` does two things. On mount it looks up the resource's scope list in `CEDAR_RESOURCE_SCOPES` and passes it to `authorizeHelper` inside a `useEffect`. Normally the initializer has already cached every pair, so this is a cache read. It only reaches Cedarling for a pair that is not cached yet. On every render it reads the cached decisions back through `hasCedarReadPermission`, `hasCedarWritePermission`, and `hasCedarDeletePermission`, defaulting each to `false` when no decision exists yet.
 
-Under the hood `usePermission` is built on [`useCedarling()`](../app/cedarling/hooks/useCedarling.ts), the lower-level hook that pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission }`. Most components use `usePermission`. `useCedarling` is used directly only where a component needs to evaluate many resources at once, such as the sidebar.
+Under the hood `usePermission` is built on [`useCedarling()`](../app/cedarling/hooks/useCedarling.ts), the lower-level hook that pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission }`. Most components use `usePermission`. `useCedarling` is used directly only where a component needs to evaluate many resources at once, such as the sidebar and `PermissionsPolicyInitializer`.
 
 **`authorizeHelper`** is the one entry point for asking Cedarling about decisions. It takes an array of `ResourceScopeEntry` objects (each shaped `{ action, resourceId }`), dedupes by `(resourceId, action)` so it fires exactly one WASM call per unique pair, and returns an `AuthorizationResult[]` aligned to the original input.
 
-**Where do the scopes come from?** A single catalog, [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), declares the allowed actions per resource, for example `Clients: ['read', 'write', 'delete']`. Two things derive from it in [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
+**Where do the scopes come from?** A single catalog, [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), declares the allowed actions per resource, for example `Clients: ['read', 'write', 'delete']`. Three things derive from it in [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
 
 - `ADMIN_UI_RESOURCES`: the resource-id map, one key per resource.
 - `CEDAR_RESOURCE_SCOPES`: for each resource, its action list turned into `{ action, resourceId }` entries, which is exactly what `authorizeHelper` consumes.

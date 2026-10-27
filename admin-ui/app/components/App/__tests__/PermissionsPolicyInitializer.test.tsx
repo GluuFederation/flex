@@ -138,6 +138,30 @@ describe('PermissionsPolicyInitializer', () => {
     }
   })
 
+  it('does not schedule a retry when unmounted while a check is running', async () => {
+    jest.useFakeTimers()
+    try {
+      mockState.cedarPermissions.initialized = true as never
+      let finishCheck: (results: { isAuthorized: boolean; error?: string }[]) => void = () => {}
+      mockAuthorizeHelper.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            finishCheck = resolve
+          }),
+      )
+
+      const { unmount } = render(<PermissionsPolicyInitializer />)
+      unmount()
+      finishCheck([{ isAuthorized: false, error: 'wasm error' }])
+      await jest.advanceTimersByTimeAsync(10000)
+
+      expect(mockAuthorizeHelper).toHaveBeenCalledTimes(1)
+    } finally {
+      mockAuthorizeHelper.mockImplementation(() => Promise.resolve([]))
+      jest.useRealTimers()
+    }
+  })
+
   it('does not request decisions before cedarling is initialized', () => {
     mockInitialize.mockReturnValue(new Promise(() => {}))
     render(<PermissionsPolicyInitializer />)
