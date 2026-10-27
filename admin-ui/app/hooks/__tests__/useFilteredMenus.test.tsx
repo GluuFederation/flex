@@ -94,9 +94,8 @@ describe('useFilteredMenus', () => {
     expect(mockProcessMenus).not.toHaveBeenCalled()
   })
 
-  it('does not resolve while the health checks are still loading', async () => {
+  it('does not resolve while the health check is still loading', async () => {
     mockUseHealthStatus.mockReturnValue({ allServices: [], isLoading: true })
-    mockUseFido2HealthStatus.mockReturnValue({ data: undefined, isLoading: true })
     const store = buildStore(true)
     renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
 
@@ -104,9 +103,8 @@ describe('useFilteredMenus', () => {
     expect(mockProcessMenus).not.toHaveBeenCalled()
   })
 
-  it('still builds the menus when both health checks fail', async () => {
+  it('still builds the menus when the health check fails', async () => {
     mockUseHealthStatus.mockReturnValue({ allServices: [], isLoading: false, isError: true })
-    mockUseFido2HealthStatus.mockReturnValue({ data: undefined, isLoading: false, isError: true })
     const store = buildStore(true)
     const { result } = renderHook(() => useFilteredMenus(), { wrapper: createWrapper(store) })
 
@@ -115,9 +113,10 @@ describe('useFilteredMenus', () => {
     expect(result.current.firstPath).toBe('/home')
   })
 
-  it('includes fido2 health data in the combined services passed to the health filter', async () => {
-    const fido2 = { name: 'fido2', status: 'up' }
-    mockUseFido2HealthStatus.mockReturnValue({ data: fido2 })
+  it('builds the menus without waiting for the FIDO2 metrics check', async () => {
+    const services = [{ name: 'jans-fido2', status: 'up' }]
+    mockUseHealthStatus.mockReturnValue({ allServices: services, isLoading: false })
+    mockUseFido2HealthStatus.mockReturnValue({ data: undefined, isLoading: true })
     const store = buildStore(true)
     const { result } = renderHook(() => useFilteredMenus(), {
       wrapper: createWrapper(store),
@@ -126,7 +125,8 @@ describe('useFilteredMenus', () => {
     await waitFor(() => {
       expect(result.current.isReady).toBe(true)
     })
-    expect(mockFilterMenusByHealth).toHaveBeenCalledWith(menus, expect.arrayContaining([fido2]))
+    expect(mockFilterMenusByHealth).toHaveBeenCalledWith(menus, services)
+    expect(mockUseFido2HealthStatus).not.toHaveBeenCalled()
   })
 
   it('returns a null path when no leaf path can be resolved', async () => {

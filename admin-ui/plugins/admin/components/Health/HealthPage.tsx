@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { isAxiosError } from 'axios'
 import { useTranslation } from 'react-i18next'
 import Paper from '@mui/material/Paper'
 import { InfoOutlined, WarningAmberOutlined } from '@/components/icons'
@@ -31,13 +32,22 @@ const HealthPage: React.FC = () => {
     useHealthStatus()
 
   const fido2Health = useFido2HealthStatus()
+  const isFido2Unauthorized =
+    isAxiosError(fido2Health.error) && fido2Health.error.response?.status === 401
 
-  const fido2HealthCard: ServiceHealth = useMemo(() => {
+  const fido2HealthCard: ServiceHealth | null = useMemo(() => {
+    if (isFido2Unauthorized) return null
     if (fido2Health.isError) return FIDO2_FALLBACK_DOWN
     if (fido2Health.isLoading || fido2Health.isFetching || !fido2Health.data)
       return FIDO2_FALLBACK_UNKNOWN
     return fido2Health.data
-  }, [fido2Health.isError, fido2Health.isLoading, fido2Health.isFetching, fido2Health.data])
+  }, [
+    isFido2Unauthorized,
+    fido2Health.isError,
+    fido2Health.isLoading,
+    fido2Health.isFetching,
+    fido2Health.data,
+  ])
 
   const handleRefresh = useCallback(() => {
     refetch()
@@ -72,8 +82,8 @@ const HealthPage: React.FC = () => {
               {!isLoading && !isError && totalCount > 0 && (
                 <GluuText variant="div" className={classes.headerTitle}>
                   {t('messages.services_healthy_count', {
-                    healthyCount: healthyCount + (fido2HealthCard.status === 'up' ? 1 : 0),
-                    totalCount: totalCount + 1,
+                    healthyCount: healthyCount + (fido2HealthCard?.status === 'up' ? 1 : 0),
+                    totalCount: totalCount + (fido2HealthCard ? 1 : 0),
                   })}
                 </GluuText>
               )}
@@ -111,9 +121,11 @@ const HealthPage: React.FC = () => {
                     <ServiceStatusCard service={service} isDark={isDark} />
                   </div>
                 ))}
-                <div className={classes.serviceCardWrapper}>
-                  <ServiceStatusCard service={fido2HealthCard} isDark={isDark} />
-                </div>
+                {fido2HealthCard && (
+                  <div className={classes.serviceCardWrapper}>
+                    <ServiceStatusCard service={fido2HealthCard} isDark={isDark} />
+                  </div>
+                )}
               </div>
             )}
           </Paper>

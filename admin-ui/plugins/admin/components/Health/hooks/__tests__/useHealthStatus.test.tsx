@@ -110,4 +110,19 @@ describe('useHealthStatus', () => {
     expect(result.current.totalCount).toBe(0)
     expect(result.current.healthyCount).toBe(0)
   })
+
+  it('keeps the same empty list across renders when there is no data', () => {
+    mockUseGetServiceStatus.mockImplementation((_params, options: ServiceStatusOptions) =>
+      buildQueryResult(undefined, options),
+    )
+
+    const store = buildStore(true)
+    const { result, rerender } = renderHook(() => useHealthStatus(), {
+      wrapper: createWrapper(store),
+    })
+    const firstServices = result.current.allServices
+    rerender()
+
+    expect(result.current.allServices).toBe(firstServices)
+  })
 })
