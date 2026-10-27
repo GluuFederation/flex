@@ -11,6 +11,8 @@ const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   return statusMap[normalized] ?? DEFAULT_STATUS
 }
 
+const NO_SERVICES: ServiceHealth[] = []
+
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   up: 0,
   degraded: 1,
@@ -43,7 +45,7 @@ export const useHealthStatus = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
   const {
-    data: allServices = [],
+    data: allServices = NO_SERVICES,
     isLoading,
     isFetching,
     isError,
