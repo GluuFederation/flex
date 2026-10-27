@@ -6,10 +6,16 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '@/cedarling/client'
+import { useCedarling } from '@/cedarling/hooks/useCedarling'
+import { ALL_CEDAR_RESOURCE_SCOPES } from '@/cedarling/utility'
 import { cedarLogger } from '@/cedarling/utility/cedarLogger'
 import { CEDARLING_LOG_TYPE } from '@/cedarling/constants'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 import { base64ToUint8Array } from '@/utils/policyStore'
+import type { ResourceScopeEntry } from '@/cedarling/types'
+
+const PRECOMPUTE_MAX_RETRIES = 2
+const PRECOMPUTE_RETRY_DELAY_MS = 1000
 
 const PermissionsPolicyInitializer = () => {
   const dispatch = useAppDispatch()
@@ -27,6 +33,31 @@ const PermissionsPolicyInitializer = () => {
   )
   const cedarlingLogType =
     useAppSelector((state) => state.authReducer?.config?.cedarlingLogType) || CEDARLING_LOG_TYPE.OFF
+  const { authorizeHelper } = useCedarling()
+
+  useEffect(() => {
+    if (!initialized) return
+
+    let cancelled = false
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+
+    const authorizeAll = async (scopes: ResourceScopeEntry[], attempt: number) => {
+      const results = await authorizeHelper(scopes)
+      const failed = scopes.filter((_, index) => results[index]?.error)
+      if (cancelled || failed.length === 0 || attempt >= PRECOMPUTE_MAX_RETRIES) return
+      retryTimer = setTimeout(
+        () => authorizeAll(failed, attempt + 1),
+        PRECOMPUTE_RETRY_DELAY_MS * 2 ** attempt,
+      )
+    }
+
+    authorizeAll(ALL_CEDAR_RESOURCE_SCOPES, 0)
+
+    return () => {
+      cancelled = true
+      clearTimeout(retryTimer)
+    }
+  }, [initialized, authorizeHelper])
 
   useEffect(() => {
     const isValidPolicyStoreBytes = (bytes: string): boolean => {

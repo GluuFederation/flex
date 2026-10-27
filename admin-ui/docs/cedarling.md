@@ -10,7 +10,7 @@ Three things make this design unusual:
 - **Policies are data, not code.** The rules ("a user with role X can read resource Y") live in a JSON file called a **policy store**, loaded into Cedarling at startup. Changing who can do what is a policy-store edit, not a component change.
 - **The UI gate is the first gate, not the only one.** Even when Cedarling says "yes", the Jans Config API revalidates server-side and can still return 403. Cedarling hides UI elements the user can't use. It does not replace server-side authorization.
 
-The check itself is simple: every page that gates a button, an action, or a whole section calls `usePermission(resource)` and gets back `{ canRead, canWrite, canDelete }`. The first answer for each `(resource, action)` pair triggers a WASM call. Every later answer is a Redux cache read.
+The check itself is simple: every page that gates a button, an action, or a whole section calls `usePermission(resource)` and gets back `{ canRead, canWrite, canDelete }`. Every `(resource, action)` pair is evaluated once, right after Cedarling starts, while the sign-in tokens are still valid. Every later answer is a Redux cache read.
 
 ## Flow diagram
 
@@ -28,7 +28,7 @@ sequenceDiagram
     participant Client as cedarlingClient
     participant Wasm as Cedarling WASM
 
-    Auth->>API: fetchPolicyStore() after OIDC sign-in
+    Auth->>API: fetchActivePolicyStoreBytes() after OIDC sign-in
     API-->>Auth: base64-encoded policy store
     Auth->>Redux: setPolicyStoreBytes(base64)
     Init->>Redux: watch (hasSession, policyStoreBytes, cedarlingLogType)
@@ -39,6 +39,8 @@ sequenceDiagram
     Client->>Wasm: initFromArchiveBytes(config, bytes)
     Wasm-->>Client: Cedarling instance ready
     Init->>Redux: setCedarlingInitialized(true)
+    Init->>Client: token_authorize for every (resource, action) via authorizeHelper(ALL_CEDAR_RESOURCE_SCOPES)
+    Init->>Redux: setCedarlingPermission(key, decision) for each pair
 ```
 
 ### Phase 2: Per-page permission check
@@ -75,9 +77,9 @@ sequenceDiagram
 
 ### Phase 1: Bootstrap
 
-When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx) does two things: it stores the tokens, and it calls `fetchPolicyStore()` against the Jans Config API. The response is a base64-encoded blob containing the Cedar policies that describe who can do what. `AppAuthProvider` writes that blob into the [`cedarPermissions` slice](../app/redux/features/cedarPermissionsSlice.ts) (`setPolicyStoreBytes`).
+When the user finishes signing in, [`app/utils/AppAuthProvider.tsx`](../app/utils/AppAuthProvider.tsx) does two things: it stores the tokens, and it calls `fetchActivePolicyStoreBytes()` against the Jans Config API. The response is a base64-encoded blob containing the Cedar policies that describe who can do what. `AppAuthProvider` writes that blob into the [`cedarPermissions` slice](../app/redux/features/cedarPermissionsSlice.ts) (`setPolicyStoreBytes`).
 
-[`app/components/App/PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx) is a render-less component mounted at the top of the app tree. Its only job is to watch the Redux store and wait until three things are present at the same time:
+[`app/components/App/PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx) is a render-less component mounted inside the signed-in layout by [`AuthenticatedRouteSelector`](../app/components/App/AuthenticatedRouteSelector.tsx), so it lives for the whole signed-in session and unmounts on `/logout`. It watches the Redux store and waits until three things are present at the same time:
 
 - a session exists (`hasSession`)
 - the policy store bytes have arrived (`policyStoreBytes` is non-empty)
@@ -89,6 +91,7 @@ Once all three are ready, it:
 2. **Merges the bootstrap config**: a static JSON file at [`app/cedarling/config/cedarling-bootstrap-TBAC.json`](../app/cedarling/config/cedarling-bootstrap-TBAC.json) gets combined with the runtime-configured log type to produce the full bootstrap configuration that Cedarling will initialize with. The log type comes from the Config API (`authReducer.config.cedarlingLogType`) and is one of the values in [`CEDARLING_LOG_TYPE`](../app/cedarling/constants/cedarlingConstants.ts): `OFF` (default) or `STD_OUT`. This step tells Cedarling _how_ to behave (logging, schema, token issuers). The policy store tells it _what to enforce_. The same value also gates the Admin UI's own Cedarling console output through `cedarLogger` - see [Logging](#logging).
 3. **Initializes Cedarling** by calling `cedarlingClient.initialize(bootstrap config, policy store bytes)`. [`cedarlingClient`](../app/cedarling/client/) is a thin singleton wrapper around the WASM module. Its `initialize` function loads the WASM binary (`initWasm()`) and asks the WASM module to construct a `Cedarling` instance from the bootstrap config and the policy store bytes (`initFromArchiveBytes`). The client guards against double-init using a promise singleton. If Phase 1 re-runs while initialization is mid-flight, the second call returns the in-progress promise instead of starting over.
 4. **Marks Cedarling ready** with `setCedarlingInitialized(true)`. From this point on, any component can ask Cedarling for a decision.
+5. **Evaluates every decision up front** by passing `ALL_CEDAR_RESOURCE_SCOPES` to `authorizeHelper`, which fills the cache for every `(resource, action)` pair. This has to happen while the tokens are fresh. The tokens are never refreshed after sign-in, and the access token and userinfo JWT can be short-lived. Cedarling rejects a token 60 seconds after its `exp`, drops it from the request and evaluates without it, so a pair first asked for later comes back `false`, with no error, and that `false` would stay cached until a reload. This is what made write and delete buttons disappear in [#3123](https://github.com/GluuFederation/flex/issues/3123). A pair whose call throws is not cached, so the initializer retries only those pairs, up to twice, after 1 and then 2 seconds, and stops if it unmounts.
 
 If initialization fails, the initializer retries up to **10 times with a 1-second delay** between tries (both values are inline in [`PermissionsPolicyInitializer.tsx`](../app/components/App/PermissionsPolicyInitializer.tsx)). If it still fails after 10 attempts, it dispatches `setCedarFailedStatusAfterMaxTries`, which is the signal the rest of the app uses to render a "Cedarling unavailable" fallback instead of the normal UI.
 
@@ -96,16 +99,17 @@ If initialization fails, the initializer retries up to **10 times with a 1-secon
 
 Take the OIDC Clients list page as a concrete example. The page calls [`usePermission(ADMIN_UI_RESOURCES.Clients)`](../app/cedarling/hooks/usePermission.ts) and gets back `{ canRead, canWrite, canDelete }`. Those three booleans decide whether the table renders and which action buttons appear.
 
-`usePermission` does two things. On mount it looks up the resource's scope list in `CEDAR_RESOURCE_SCOPES` and passes it to `authorizeHelper` inside a `useEffect`, which fills the decision cache. On every render it reads the cached decisions back through `hasCedarReadPermission`, `hasCedarWritePermission`, and `hasCedarDeletePermission`, defaulting each to `false` when no decision exists yet.
+`usePermission` does two things. On mount it looks up the resource's scope list in `CEDAR_RESOURCE_SCOPES` and passes it to `authorizeHelper` inside a `useEffect`. Normally the initializer has already cached every pair, so this is a cache read. It only reaches Cedarling for a pair that is not cached yet. On every render it reads the cached decisions back through `hasCedarReadPermission`, `hasCedarWritePermission`, and `hasCedarDeletePermission`, defaulting each to `false` when no decision exists yet.
 
-Under the hood `usePermission` is built on [`useCedarling()`](../app/cedarling/hooks/useCedarling.ts), the lower-level hook that pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission }`. Most components use `usePermission`. `useCedarling` is used directly only where a component needs to evaluate many resources at once, such as the sidebar.
+Under the hood `usePermission` is built on [`useCedarling()`](../app/cedarling/hooks/useCedarling.ts), the lower-level hook that pulls the three tokens (`id_token`, `access_token`, `userinfo_token`) out of `authReducer`, reads the decision cache out of `cedarPermissions`, and returns a stable object: `{ authorizeHelper, hasCedarReadPermission, hasCedarWritePermission, hasCedarDeletePermission }`. Most components use `usePermission`. `useCedarling` is used directly only where a component needs to evaluate many resources at once, such as the sidebar and `PermissionsPolicyInitializer`.
 
 **`authorizeHelper`** is the one entry point for asking Cedarling about decisions. It takes an array of `ResourceScopeEntry` objects (each shaped `{ action, resourceId }`), dedupes by `(resourceId, action)` so it fires exactly one WASM call per unique pair, and returns an `AuthorizationResult[]` aligned to the original input.
 
-**Where do the scopes come from?** A single catalog, [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), declares the allowed actions per resource, for example `Clients: ['read', 'write', 'delete']`. Two things derive from it in [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
+**Where do the scopes come from?** A single catalog, [`RESOURCE_ACTIONS`](../app/cedarling/constants/resourceCatalog.ts), declares the allowed actions per resource, for example `Clients: ['read', 'write', 'delete']`. Three things derive from it in [`app/cedarling/utility/resources.ts`](../app/cedarling/utility/resources.ts):
 
 - `ADMIN_UI_RESOURCES`: the resource-id map, one key per resource.
 - `CEDAR_RESOURCE_SCOPES`: for each resource, its action list turned into `{ action, resourceId }` entries, which is exactly what `authorizeHelper` consumes.
+- `ALL_CEDAR_RESOURCE_SCOPES`: every entry of `CEDAR_RESOURCE_SCOPES` in one flat list, which the initializer evaluates right after Cedarling starts.
 
 So adding a resource or changing its allowed actions is a single edit to `RESOURCE_ACTIONS`.
 
