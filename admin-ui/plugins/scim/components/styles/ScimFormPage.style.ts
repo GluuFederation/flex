@@ -8,7 +8,7 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import type { ThemeConfig } from '@/context/theme/config'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import {
   createFormGroupOverrides,
   createFormLabelStyles,
@@ -32,6 +32,7 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   { isDark, themeColors },
 ) => {
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const inputColors = {
@@ -44,28 +45,14 @@ export const useStyles = makeStyles<ScimFormPageStylesParams>()((
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
     formCard: {
+      ...formCardStyles.formCard,
       'backgroundColor': `${cardBg} !important`,
-      ...getCardBorderStyle({ isDark }),
-      'borderRadius': BORDER_RADIUS.DEFAULT,
-      'width': '100%',
-      'position': 'relative',
-      'overflow': 'visible',
-      'display': 'flex',
-      'flexDirection': 'column',
-      'boxSizing': 'border-box',
       '& .card-body': {
         backgroundColor: `${cardBg} !important`,
         borderRadius: BORDER_RADIUS.DEFAULT,
       },
     },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
-    },
+    content: formCardStyles.content,
     formSection: {
       display: 'flex',
       flexDirection: 'column',

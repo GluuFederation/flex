@@ -4,6 +4,7 @@ import { useIdleTimer } from '@/hooks/useIdleTimer'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { MANUAL_LOGOUT, SESSION_TIMED_OUT } from '@/audit/messages'
+import { STORAGE_KEYS } from '@/constants'
 import { logger } from '@/utils/logger'
 
 type SessionTimeoutProps = {
@@ -102,8 +103,10 @@ const SessionTimeout = ({ isAuthenticated }: SessionTimeoutProps) => {
     timeout: sessionTimeout * 60 * 1000,
     onActive,
     onIdle,
+    onRemoteActivity: handleContinue,
     debounce: 250,
     disabled: !isAuthenticated,
+    syncKey: STORAGE_KEYS.LAST_ACTIVITY,
   })
 
   useEffect(() => {

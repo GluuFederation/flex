@@ -8,9 +8,8 @@ import {
   OPACITY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
-import { createFormGroupOverrides } from '@/styles/formStyles'
+import { createFormGroupOverrides, createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 
 type AcrsFormStylesParams = {
@@ -23,8 +22,8 @@ const SELECT_ARROW_SPACE = 44
 const PROPS_HEADER_MB = 16
 
 export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeColors }) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
 
@@ -38,27 +37,8 @@ export const useStyles = makeStyles<AcrsFormStylesParams>()((_, { isDark, themeC
   })
 
   return {
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      boxSizing: 'border-box' as const,
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      [`@media ${MOBILE_MEDIA_QUERY}`]: {
-        padding: SPACING.PAGE,
-      },
-    },
+    formCard: formCardStyles.formCard,
+    content: formCardStyles.content,
     formGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',

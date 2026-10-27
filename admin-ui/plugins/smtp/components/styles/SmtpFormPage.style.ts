@@ -8,7 +8,7 @@ import {
   createMobilePageTitleStyle,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors from '@/customColors'
 
@@ -66,8 +66,8 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
   const sectionBoxBg = formInputBg
@@ -79,25 +79,8 @@ export const useStyles = makeStyles<SmtpFormPageStylesParams>()((
 
   return {
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: '100%',
-      position: 'relative',
-      overflow: 'visible',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 0,
-    },
+    formCard: formCardStyles.formCard,
+    content: formCardStyles.content,
     formSection: {
       display: 'flex',
       flexDirection: 'column',

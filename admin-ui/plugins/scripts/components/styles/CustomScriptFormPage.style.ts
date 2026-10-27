@@ -10,7 +10,7 @@ import {
   OPACITY,
 } from '@/constants'
 import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
-import { getCardBorderStyle } from '@/styles/cardBorderStyles'
+import { createFormCardStyles } from '@/styles/formStyles'
 import { getDynamicListStyles } from '@/styles/dynamicListStyles'
 import type { ThemeConfig } from '@/context/theme/config'
 import customColors, { getLoadingOverlayRgba } from '@/customColors'
@@ -41,9 +41,9 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
   theme: Theme,
   { isDark, themeColors },
 ) => {
-  const cardBorderStyle = getCardBorderStyle({ isDark })
   const hoverOpacity = getHoverOpacity(isDark)
   const cardBg = themeColors.settings?.cardBackground ?? themeColors.card.background
+  const formCardStyles = createFormCardStyles({ isDark, cardBg })
   const formInputBg = themeColors.settings?.formInputBackground ?? themeColors.inputBackground
   const inputBorderColor = themeColors.settings?.inputBorder ?? themeColors.borderColor
 
@@ -64,25 +64,8 @@ export const useStyles = makeStyles<CustomScriptFormPageStylesParams>()((
   })
 
   return {
-    formCard: {
-      backgroundColor: cardBg,
-      ...cardBorderStyle,
-      borderRadius: BORDER_RADIUS.DEFAULT,
-      width: WIDTH_FULL,
-      position: 'relative' as const,
-      overflow: 'visible' as const,
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      boxSizing: BOX_SIZING_BORDER,
-    },
-    content: {
-      padding: SPACING.CONTENT_PADDING,
-      width: WIDTH_FULL,
-      boxSizing: BOX_SIZING_BORDER,
-      display: DISPLAY_FLEX,
-      flexDirection: FLEX_DIRECTION_COLUMN,
-      gap: CONTENT_GAP,
-    },
+    formCard: formCardStyles.formCard,
+    content: { ...formCardStyles.content, gap: CONTENT_GAP },
     formSection: {
       'display': DISPLAY_FLEX,
       'flexDirection': FLEX_DIRECTION_COLUMN,

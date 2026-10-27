@@ -136,7 +136,7 @@ const FEATURE_GROUPS: ReadonlyArray<readonly [name: string, packages: readonly s
   ],
   ['vendor-mui-icons', ['@mui/icons-material']],
   ['vendor-mui-pickers', ['@mui/x-date-pickers']],
-  ['vendor-state', ['@reduxjs/toolkit', 'redux-persist', '@tanstack/react-query']],
+  ['vendor-state', ['@reduxjs/toolkit', '@tanstack/react-query']],
   ['vendor-editor', ['react-ace', 'ace-builds']],
   [
     'vendor-charts',

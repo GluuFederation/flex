@@ -187,19 +187,21 @@ const UserEditPage = () => {
     <GluuPageContent>
       <div className={classes.page}>
         <div className={classes.formCard}>
-          {persistenceError && (
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              {t('messages.persistence_config_load_failed_detail')}
-            </Alert>
-          )}
-          <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
-            <UserForm
-              onSubmitData={submitData}
-              userDetails={userDetails}
-              personAttributes={personAttributes}
-              isSubmitting={isSubmitting}
-            />
-          </GluuLoader>
+          <div className={classes.content}>
+            {persistenceError && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                {t('messages.persistence_config_load_failed_detail')}
+              </Alert>
+            )}
+            <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
+              <UserForm
+                onSubmitData={submitData}
+                userDetails={userDetails}
+                personAttributes={personAttributes}
+                isSubmitting={isSubmitting}
+              />
+            </GluuLoader>
+          </div>
         </div>
       </div>
     </GluuPageContent>

@@ -38,6 +38,11 @@ describe('useClientScripts', () => {
     expect(result.current.scripts).toEqual([])
   })
 
+  it('requests the shared scripts list', () => {
+    renderHook(() => useClientScripts())
+    expect(mockUseGetConfigScripts).toHaveBeenCalledWith({ limit: 200 })
+  })
+
   it('returns scripts from query data', () => {
     mockUseGetConfigScripts.mockReturnValue({
       data: {

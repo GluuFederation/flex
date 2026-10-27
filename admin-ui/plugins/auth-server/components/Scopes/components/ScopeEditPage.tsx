@@ -9,6 +9,7 @@ import ScopeForm from './ScopeForm'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useGetOauthScopesByInum } from 'JansConfigApi'
+import type { GetOauthScopesByInumParams } from 'JansConfigApi'
 import type { ExtendedScope, ScopeClient, ModifiedFields } from '../types'
 import { EMPTY_SCOPE } from '../types'
 import { useScopeAttributes, useScopeScripts, useUpdateScope } from '../hooks'
@@ -21,6 +22,8 @@ import { useStyles } from './styles/ScopeFormPage.style'
 import { logger } from '@/utils/logger'
 import { REGEX_LEADING_COLON } from '@/utils/regex'
 import SetTitle from 'Utils/SetTitle'
+
+const SCOPE_PARAMS: GetOauthScopesByInumParams = { withAssociatedClients: true }
 
 const ScopeEditPage: React.FC = () => {
   const { t } = useTranslation()
@@ -67,7 +70,7 @@ const ScopeEditPage: React.FC = () => {
 
   const { data: scopeData, isLoading: scopeLoading } = useGetOauthScopesByInum(
     inum,
-    undefined,
+    SCOPE_PARAMS,
     scopeQueryOptions,
   )
 

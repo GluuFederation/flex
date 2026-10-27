@@ -5,7 +5,13 @@ import type { Store } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import GluuSessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 
-type IdleHandlers = { onIdle?: () => void; onActive?: () => void; disabled?: boolean }
+type IdleHandlers = {
+  onIdle?: () => void
+  onActive?: () => void
+  onRemoteActivity?: () => void
+  disabled?: boolean
+  syncKey?: string
+}
 
 const mockReset = jest.fn()
 let capturedHandlers: IdleHandlers = {}
@@ -122,5 +128,32 @@ describe('GluuSessionTimeout', () => {
   it('resets the idle timer when authenticated', () => {
     renderTimeout(true)
     expect(mockReset).toHaveBeenCalled()
+  })
+
+  it('shares idle time with the other open tabs', () => {
+    renderTimeout(true)
+    expect(capturedHandlers.syncKey).toBe('gluu.lastActivity')
+  })
+
+  it('closes the timeout dialog and stays signed in when another tab is in use', () => {
+    const { dispatchSpy } = renderTimeout(true)
+    act(() => {
+      capturedHandlers.onIdle?.()
+      jest.advanceTimersByTime(1000)
+    })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    dispatchSpy.mockClear()
+
+    act(() => {
+      capturedHandlers.onRemoteActivity?.()
+    })
+    act(() => {
+      jest.advanceTimersByTime(15 * 1000)
+    })
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: expect.stringContaining('auditLogoutLogs') }),
+    )
   })
 })

@@ -62,6 +62,7 @@ jest.mock('@/context/theme/config', () => ({
 
 describe('ByeBye', () => {
   beforeEach(() => {
+    window.sessionStorage.clear()
     mockDispatch.mockClear()
     mockDeleteSession.mockReset().mockResolvedValue(undefined)
     mockBuildSafeLogoutUrl.mockReset()
@@ -133,6 +134,29 @@ describe('ByeBye', () => {
       expect(mockBuildSafeNavigationUrl).toHaveBeenCalledWith('https://app.example.com/'),
     )
     expect(mockBuildSafeLogoutUrl).not.toHaveBeenCalled()
+  })
+
+  it('leaves the next sign-in alone when the Auth Server session is ended', async () => {
+    mockBuildSafeLogoutUrl.mockReturnValue('https://idp.example.com/end?state=fixed-state')
+    render(<ByeBye />)
+    await waitFor(() => expect(mockBuildSafeLogoutUrl).toHaveBeenCalled())
+    expect(window.sessionStorage.getItem('forceLogin')).toBeNull()
+  })
+
+  it('asks for the password on the next sign-in when no end-session endpoint is configured', async () => {
+    mockState.authReducer.config = {
+      endSessionEndpoint: '',
+      postLogoutRedirectUri: 'https://app.example.com/',
+    } as never
+    mockBuildSafeNavigationUrl.mockReturnValue('https://app.example.com/')
+    render(<ByeBye />)
+    await waitFor(() => expect(window.sessionStorage.getItem('forceLogin')).toBe('true'))
+  })
+
+  it('asks for the password on the next sign-in when the end-session URL cannot be built', async () => {
+    mockBuildSafeLogoutUrl.mockReturnValue(null)
+    render(<ByeBye />)
+    await waitFor(() => expect(window.sessionStorage.getItem('forceLogin')).toBe('true'))
   })
 
   it('still resolves the navigation fallback when the redirect URI is unsafe', async () => {

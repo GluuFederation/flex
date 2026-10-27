@@ -19,8 +19,16 @@ describe('resolveStartPath', () => {
     )
   })
 
-  it('leaves the logout route alone', () => {
-    expect(resolveStartPath(BASE, ROUTES.LOGOUT, '', '')).toBeNull()
+  it('leaves the logout route alone so a reload there finishes the sign-out', () => {
+    expect(resolveStartPath(BASE, `/admin${ROUTES.LOGOUT}`, '', '')).toBeNull()
+  })
+
+  it('leaves the logout route alone when the app is served from the root', () => {
+    expect(resolveStartPath('/', ROUTES.LOGOUT, '', '')).toBeNull()
+  })
+
+  it('still sends a route that only ends like the logout route back to the base path', () => {
+    expect(resolveStartPath(BASE, `/admin/home${ROUTES.LOGOUT}`, '', '')).toBe('/admin/')
   })
 
   it('accepts a base path given without a trailing slash', () => {

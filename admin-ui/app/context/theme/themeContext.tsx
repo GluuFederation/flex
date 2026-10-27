@@ -9,7 +9,7 @@ export type { ThemeContextType }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-const extractUserTheme = (currentInum?: string | null): ThemeValue => {
+const extractUserTheme = (): ThemeValue => {
   if (typeof window === 'undefined') {
     return DEFAULT_THEME
   }
@@ -22,13 +22,7 @@ const extractUserTheme = (currentInum?: string | null): ThemeValue => {
       return DEFAULT_THEME
     }
 
-    let userTheme: string | undefined
-
-    if (typeof userConfig.theme === 'string') {
-      userTheme = userConfig.theme
-    } else if (typeof userConfig.theme === 'object' && currentInum) {
-      userTheme = userConfig.theme[currentInum]
-    }
+    const userTheme = typeof userConfig.theme === 'string' ? userConfig.theme : undefined
 
     if (userTheme && isValidTheme(userTheme)) {
       return userTheme
@@ -101,16 +95,6 @@ interface ThemeProviderProps {
   children: ReactNode
 }
 
-const getUserInum = (): string | null => {
-  try {
-    const userInfo = storage.getJSON<{ inum?: string }>(STORAGE_KEYS.USER_INFO)
-    return userInfo?.inum || null
-  } catch (e) {
-    logger.error('Failed to parse userInfo from localStorage:', e instanceof Error ? e : String(e))
-  }
-  return null
-}
-
 export const ThemeProvider = (props: ThemeProviderProps) => {
   const [state, dispatch] = useReducer(themeReducer, initialState)
   const hasSyncedRef = useRef(false)
@@ -126,8 +110,7 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         return
       }
 
-      const currentInum = getUserInum()
-      const userTheme = extractUserTheme(currentInum)
+      const userTheme = extractUserTheme()
 
       if (userTheme !== DEFAULT_THEME) {
         storage.set(STORAGE_KEYS.INIT_THEME, userTheme)

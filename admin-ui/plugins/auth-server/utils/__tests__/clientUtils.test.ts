@@ -77,9 +77,14 @@ describe('buildGrantTypeOptions', () => {
     expect(result.map((o) => o.value)).toEqual(['a', 'b', 'c'])
   })
 
-  it('falls back when supported is empty', () => {
-    const result = buildGrantTypeOptions([], undefined, ['fb'])
+  it('falls back when the server config is not loaded', () => {
+    const result = buildGrantTypeOptions(undefined, undefined, ['fb'])
     expect(result).toEqual([{ value: 'fb', label: 'fb' }])
+  })
+
+  it('offers only the selected values when the server supports none', () => {
+    const result = buildGrantTypeOptions([], ['a'], ['fb'])
+    expect(result.map((o) => o.value)).toEqual(['a'])
   })
 
   it('labels urn grant types', () => {

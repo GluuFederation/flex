@@ -4,6 +4,7 @@ import { getAttributes, useGetConfigScripts, useGetOauthScopes } from 'JansConfi
 import type { GetAttributesParams, GetOauthScopesParams } from 'JansConfigApi'
 import type { ScopeScript, ScopeClaim, AttributeEntry, ConfigScriptEntry } from '../types'
 import { SCOPE_CACHE_CONFIG, DEFAULT_ATTRIBUTES_LIMIT } from '../constants'
+import { CONFIG_SCRIPTS_PARAMS } from 'Plugins/auth-server/common/Constants'
 
 export const useScopes = (params: GetOauthScopesParams) => {
   const queryOptions = useMemo(
@@ -81,7 +82,7 @@ export const useScopeScripts = () => {
     [],
   )
 
-  const { data, isLoading, error } = useGetConfigScripts(undefined, queryOptions)
+  const { data, isLoading, error } = useGetConfigScripts(CONFIG_SCRIPTS_PARAMS, queryOptions)
 
   const scripts = useMemo<ScopeScript[]>(() => {
     if (!data?.entries) return []

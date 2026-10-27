@@ -8,6 +8,8 @@ const mockDeleteAdminUiSession = jest.fn()
 const mockCreateAdminUiSession = jest.fn()
 
 jest.mock('@/redux/api/backend-api', () => ({
+  SESSION_ENDPOINT: '/app/admin-ui/oauth2/session',
+  API_PROTECTION_TOKEN_ENDPOINT: '/app/admin-ui/oauth2/api-protection-token',
   fetchApiTokenWithDefaultScopes: mockFetchApiTokenWithDefaultScopes,
   deleteAdminUiSession: mockDeleteAdminUiSession,
   createAdminUiSession: mockCreateAdminUiSession,
@@ -32,7 +34,7 @@ describe('orval interceptors', () => {
 
   type ResponseRejection = {
     config: Partial<InternalAxiosRequestConfig>
-    response?: { status?: number }
+    response?: { status?: number; data?: string; headers?: Record<string, string> }
   }
 
   type ResponseInterceptorManager = {
@@ -50,6 +52,8 @@ describe('orval interceptors', () => {
     mockDeleteAdminUiSession.mockReset()
     mockCreateAdminUiSession.mockReset()
     noopDispatch.mockReset()
+    window.localStorage.clear()
+    window.sessionStorage.clear()
   })
 
   it('attaches session credentials and standard headers when a session exists', async () => {
@@ -210,5 +214,153 @@ describe('orval interceptors', () => {
     expect(dispatch).toHaveBeenCalledWith(handleSessionExpired({ isSessionExpired: true }))
     expect(dispatch).toHaveBeenCalledTimes(1)
     expect(mockDeleteAdminUiSession).not.toHaveBeenCalled()
+  })
+
+  describe('backend client', () => {
+    const signedInState = () =>
+      ({
+        authReducer: {
+          issuer: 'https://issuer.example.com',
+          userInum: '12345',
+          userinfo_jwt: 'ujwt',
+        },
+      }) as object as RootState
+
+    const loadBackendRejection = async () => {
+      const { installInterceptors } = await import('../index')
+      const { default: backendAxios } = await import('@/redux/api/axios')
+      installInterceptors(signedInState, noopDispatch)
+      return (backendAxios.interceptors.response as ResponseInterceptorManager).handlers[0]
+        ?.rejected
+    }
+
+    it('renews the session on a 401 and retries with the session cookie', async () => {
+      mockFetchApiTokenWithDefaultScopes.mockResolvedValue({ access_token: 'fresh-token' })
+      mockCreateAdminUiSession.mockResolvedValue({})
+      const adapter = jest.fn().mockResolvedValue({ status: 200, data: { ok: true }, headers: {} })
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: {
+          url: '/admin-ui/config',
+          headers: new AxiosHeaders({ Authorization: 'Bearer stale' }),
+          adapter,
+        },
+        response: { status: 401 },
+      }
+      const response = await rejected?.(error)
+
+      expect(mockCreateAdminUiSession).toHaveBeenCalledWith('ujwt', 'fresh-token')
+      expect(response?.data).toEqual({ ok: true })
+      const retried = adapter.mock.calls[0][0] as InternalAxiosRequestConfig
+      expect(retried.withCredentials).toBe(true)
+      expect(retried.headers.get('Authorization')).toBeUndefined()
+    })
+
+    it('leaves for the login page instead of renewing the session after a sign-out in another tab', async () => {
+      window.localStorage.setItem('gluu.signedOutAt', String(Date.now()))
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: { url: '/admin-ui/config', headers: new AxiosHeaders() },
+        response: { status: 401 },
+      }
+      await expect(rejected?.(error)).rejects.toBe(error)
+
+      expect(mockFetchApiTokenWithDefaultScopes).not.toHaveBeenCalled()
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+      expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
+    })
+
+    const insufficientScopeResponse = {
+      status: 401,
+      data: 'oAuth authorization error Insufficient scopes! , Required scope: [https://jans.io/oauth/config/ssa.delete]',
+      headers: { 'www-authenticate': 'Bearer' },
+    }
+
+    it.each([
+      'oAuth authorization error Insufficient scopes! , Required scope: [https://jans.io/oauth/config/ssa.delete]',
+      'Insufficient scopes!!! Required scope: [https://jans.io/oauth/config/user.write], token scopes: []',
+      'oAuth authorization error Header Issuer is Invalid.',
+      'oAuth authorization error Authorization denied by external script',
+      'Header attribute `User-inum` does not correspond to User token',
+    ])('does not renew the session when a 401 says "%s"', async (data) => {
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: { url: '/admin-ui/config', headers: new AxiosHeaders() },
+        response: { status: 401, data, headers: { 'www-authenticate': 'Bearer' } },
+      }
+      await expect(rejected?.(error)).rejects.toBe(error)
+
+      expect(mockFetchApiTokenWithDefaultScopes).not.toHaveBeenCalled()
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+    })
+
+    it('still renews the session when a 401 says no token was sent', async () => {
+      mockFetchApiTokenWithDefaultScopes.mockResolvedValue({ access_token: 'fresh-token' })
+      mockCreateAdminUiSession.mockResolvedValue({})
+      const adapter = jest.fn().mockResolvedValue({ status: 200, data: { ok: true }, headers: {} })
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: { url: '/admin-ui/config', headers: new AxiosHeaders(), adapter },
+        response: {
+          status: 401,
+          data: 'ONLY TOKEN BASED AUTHORIZATION IS SUPPORTED!',
+          headers: { 'www-authenticate': 'Bearer' },
+        },
+      }
+      const response = await rejected?.(error)
+
+      expect(mockCreateAdminUiSession).toHaveBeenCalledWith('ujwt', 'fresh-token')
+      expect(response?.data).toEqual({ ok: true })
+    })
+
+    it('does not renew the session when an Orval request gets a 401 for missing scopes', async () => {
+      const { AXIOS_INSTANCE, installInterceptors } = await import('../index')
+      installInterceptors(signedInState, noopDispatch)
+      const rejected = (AXIOS_INSTANCE.interceptors.response as ResponseInterceptorManager)
+        .handlers[0]?.rejected
+
+      const error = {
+        config: { url: '/api/v1/jans-auth-server/ssa', headers: new AxiosHeaders() },
+        response: insufficientScopeResponse,
+      }
+      await expect(rejected?.(error)).rejects.toBe(error)
+
+      expect(mockFetchApiTokenWithDefaultScopes).not.toHaveBeenCalled()
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+      expect(noopDispatch).not.toHaveBeenCalled()
+    })
+
+    it('does not renew the session when the challenge header reports insufficient_scope', async () => {
+      const rejected = await loadBackendRejection()
+
+      const error = {
+        config: { url: '/admin-ui/config', headers: new AxiosHeaders() },
+        response: {
+          status: 401,
+          data: '',
+          headers: { 'www-authenticate': 'Bearer error="insufficient_scope"' },
+        },
+      }
+      await expect(rejected?.(error)).rejects.toBe(error)
+
+      expect(mockFetchApiTokenWithDefaultScopes).not.toHaveBeenCalled()
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      '/app/admin-ui/oauth2/session',
+      '/app/admin-ui/oauth2/api-protection-token',
+      'https://issuer.example.com/jans-auth/restv1/userinfo',
+    ])('does not try to renew the session when %s returns 401', async (url) => {
+      const rejected = await loadBackendRejection()
+
+      const error = { config: { url }, response: { status: 401 } }
+      await expect(rejected?.(error)).rejects.toBe(error)
+      expect(mockCreateAdminUiSession).not.toHaveBeenCalled()
+    })
   })
 })

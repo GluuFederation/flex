@@ -7,6 +7,7 @@ import type { UserActionPayload } from '../api/types/BackendApi'
 import { addAdditionalData } from 'Utils/TokenController'
 import { CREATE } from '@/audit/UserActionType'
 import { logger } from '@/utils/logger'
+import { markSignedOut } from '@/utils/authSync'
 import type { AuditLog } from '../types/audit'
 
 const API_USERS = '/api/v1/users'
@@ -44,5 +45,6 @@ startAppListening({
   actionCreator: logoutUser,
   effect: () => {
     clearApiToken()
+    markSignedOut()
   },
 })
