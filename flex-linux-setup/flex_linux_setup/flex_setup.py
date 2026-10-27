@@ -32,7 +32,7 @@ app_versions = {
     "JANS_APP_VERSION": "0.0.0",
     "JANS_BUILD": "-nightly",
     "FLEX_RELEASE_TAG": "",
-    "NODE_VERSION": "v18.16.0",
+    "NODE_VERSION": "v26.12.1",
     "GLUU_FLEX_POLICY_STORE": 'v2.0.0',
 }
 
