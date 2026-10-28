@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { processMenus } from 'Plugins/PluginMenuResolver'
-import { useHealthStatus, useFido2HealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { useCedarling } from '@/cedarling/hooks/useCedarling'
 import { useAppSelector } from '@/redux/hooks'
 import { filterMenusByHealth, filterMenusByAuth, findFirstLeafPath } from '@/utils/menuFilters'
@@ -22,28 +22,20 @@ const collectPaths = (menus: readonly MenuItem[], paths: Set<string>): void => {
 
 const useFilteredMenus = (): FilteredMenus => {
   const { allServices, isLoading: isHealthLoading } = useHealthStatus()
-  const { data: fido2HealthData, isLoading: isFido2Loading } = useFido2HealthStatus()
   const { authorizeHelper } = useCedarling()
   const initialized = useAppSelector((state) => state.cedarPermissions?.initialized)
 
   const [menus, setMenus] = useState<PluginMenu[] | null>(null)
 
-  const combinedServices = useMemo(
-    () => (fido2HealthData ? [...allServices, fido2HealthData] : allServices),
-    [allServices, fido2HealthData],
-  )
-
-  const isHealthSettled = !isHealthLoading && !isFido2Loading
-
   useEffect(() => {
-    if (!isHealthSettled || !initialized) return
+    if (isHealthLoading || !initialized) return
 
     let cancelled = false
 
     const resolveMenus = async (): Promise<void> => {
       try {
         const all: PluginMenu[] = await processMenus()
-        const healthy = filterMenusByHealth(all, combinedServices)
+        const healthy = filterMenusByHealth(all, allServices)
         const authorized = await filterMenusByAuth(healthy, authorizeHelper)
         if (cancelled) return
         setMenus(authorized)
@@ -59,7 +51,7 @@ const useFilteredMenus = (): FilteredMenus => {
     return () => {
       cancelled = true
     }
-  }, [isHealthSettled, initialized, combinedServices, authorizeHelper])
+  }, [isHealthLoading, initialized, allServices, authorizeHelper])
 
   const allowedPaths = useMemo(() => {
     if (!menus) return null

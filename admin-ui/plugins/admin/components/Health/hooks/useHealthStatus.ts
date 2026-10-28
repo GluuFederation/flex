@@ -11,6 +11,8 @@ const normalizeStatus = (apiStatus: string): ServiceStatusValue => {
   return statusMap[normalized] ?? DEFAULT_STATUS
 }
 
+const NO_SERVICES: ServiceHealth[] = []
+
 const STATUS_SORT_ORDER: Record<ServiceStatusValue, number> = {
   up: 0,
   degraded: 1,
@@ -42,14 +44,19 @@ const transformServiceStatus = (data: JsonNode | undefined): ServiceHealth[] => 
 export const useHealthStatus = () => {
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
 
-  const query = useGetServiceStatus(undefined, {
+  const {
+    data: allServices = NO_SERVICES,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetServiceStatus(undefined, {
     query: {
       enabled: hasSession === true,
       select: transformServiceStatus,
     },
   })
-
-  const allServices = query.data ?? []
 
   const services = useMemo(
     () =>
@@ -59,23 +66,17 @@ export const useHealthStatus = () => {
     [allServices],
   )
 
-  const { healthyCount, totalCount } = useMemo(
-    () => ({
-      healthyCount: services.filter((s) => s.status === 'up').length,
-      totalCount: services.length,
-    }),
-    [services],
-  )
+  const healthyCount = useMemo(() => services.filter((s) => s.status === 'up').length, [services])
 
   return {
     services,
     allServices,
     healthyCount,
-    totalCount,
-    isLoading: query.isLoading,
-    isFetching: query.isFetching,
-    isError: query.isError,
-    error: query.error,
-    refetch: query.refetch,
+    totalCount: services.length,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
   }
 }
