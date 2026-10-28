@@ -18,6 +18,7 @@ export type GluuRemovableInputRowProps<TValues extends FormikValues = FormikValu
   isDirect?: boolean
   isBoolean?: boolean
   hideRemoveButton?: boolean
+  disabled?: boolean
   modifiedFields?: Record<string, ModifiedFieldValue>
   setModifiedFields?: React.Dispatch<React.SetStateAction<Record<string, ModifiedFieldValue>>>
 }

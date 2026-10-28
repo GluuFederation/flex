@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { Button } from 'Components'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
@@ -70,6 +72,12 @@ const ClientCibaParUmaPanel = ({
 }: ClientCibaParUmaPanelProps) => {
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
+  const { canWrite: canWriteScopes } = usePermission(ADMIN_UI_RESOURCES.Scopes)
+  const { canWrite: canWriteClients } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const scopePath = (inum: string) =>
+    canWriteScopes ? ROUTES.AUTH_SERVER_SCOPE_EDIT(inum) : ROUTES.AUTH_SERVER_SCOPE_VIEW(inum)
+  const clientPath = (inum: string) =>
+    canWriteClients ? ROUTES.AUTH_SERVER_CLIENT_EDIT(inum) : ROUTES.AUTH_SERVER_CLIENT_VIEW(inum)
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
@@ -160,14 +168,14 @@ const ClientCibaParUmaPanel = ({
   }
 
   const handleScopeNavigate = (scopeInum: string) => {
-    return navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(scopeInum))
+    return navigateToRoute(scopePath(scopeInum))
   }
 
-  const handleClientEdit = (inum: string | null) => {
+  const handleClientNavigate = (inum: string | null) => {
     if (!inum) return
     setOpen(false)
     setCurrentStep(sequence[0])
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum))
+    return navigateToRoute(clientPath(inum))
   }
 
   useEffect(() => {
@@ -611,7 +619,7 @@ const ClientCibaParUmaPanel = ({
                             }}
                           >
                             <Link
-                              onClick={() => handleClientEdit(inum)}
+                              onClick={() => handleClientNavigate(inum)}
                               className={classes.clickableLink}
                             >
                               {inum}

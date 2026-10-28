@@ -114,6 +114,11 @@ describe('GluuRemovableSelectRow', () => {
     expect(screen.queryByRole('button', { name: /remove/i })).not.toBeInTheDocument()
   })
 
+  it('disables the select when disabled is true', () => {
+    renderRow(baseProps({ disabled: true }))
+    expect(screen.getByTestId('country')).toBeDisabled()
+  })
+
   it('calls formik.handleChange when the select changes', () => {
     const formik = createMockFormik({ country: 'US' })
     const setModifiedFields = jest.fn()

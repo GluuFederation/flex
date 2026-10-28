@@ -43,6 +43,8 @@ import { getScopeValidationSchema } from '../helper/validations'
 import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import { Link } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { useStyles, errorTextStyle } from './styles/ScopeFormPage.style'
@@ -77,6 +79,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
     [themeColors.background],
   )
   const { navigateBack, navigateToRoute } = useAppNavigation()
+  const { canWrite: canWriteClients } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const clientPath = (inum: string) =>
+    canWriteClients ? ROUTES.AUTH_SERVER_CLIENT_EDIT(inum) : ROUTES.AUTH_SERVER_CLIENT_VIEW(inum)
   const client = scope.clients || []
 
   const authReducer = useAppSelector((state) => state.authReducer)
@@ -169,7 +174,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const goToClientViewPage = (clientId: string, clientData?: ScopeClient) => {
     if (!clientData) return
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(clientId))
+    return navigateToRoute(clientPath(clientId))
   }
 
   return (
@@ -622,7 +627,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                           {client.map((item, key) => (
                             <div key={'spontaneous-client' + key}>
                               <Link
-                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                to={clientPath(item.inum)}
                                 onClick={(e) => {
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)
@@ -690,7 +695,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                               <Link
                                 key={'associated-client' + key}
                                 className={classes.clientPill}
-                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                to={clientPath(item.inum)}
                                 onClick={(e) => {
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)

@@ -36,6 +36,12 @@ const pluginMetadata = {
       action: CEDAR_ACTIONS.WRITE,
       resourceKey: ADMIN_UI_RESOURCES.Users,
     },
+    {
+      component: UserEditPage,
+      path: ROUTES.USER_VIEW_TEMPLATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Users,
+    },
   ],
   reducers: [],
 }

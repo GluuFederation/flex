@@ -123,6 +123,12 @@ const pluginMetadata = {
       resourceKey: ADMIN_UI_RESOURCES.Clients,
     },
     {
+      component: ClientEditPage,
+      path: ROUTES.AUTH_SERVER_CLIENT_VIEW_TEMPLATE,
+      action: CEDAR_ACTIONS.READ,
+      resourceKey: ADMIN_UI_RESOURCES.Clients,
+    },
+    {
       component: ScopeListPage,
       path: ROUTES.AUTH_SERVER_SCOPES_LIST,
       action: CEDAR_ACTIONS.READ,
