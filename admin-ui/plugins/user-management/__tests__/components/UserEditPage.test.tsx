@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import {
   createUserManagementTestStore,
   createUserManagementQueryClient,
@@ -7,23 +7,30 @@ import {
 import UserEditPage from 'Plugins/user-management/components/UserEditPage'
 import { ROUTES } from '@/helpers/navigation'
 import { useCedarling } from '@/cedarling'
+import { useGetUserByInum } from 'JansConfigApi'
 
 const mockMatchedPattern = { current: '' }
+const mockSelectedUser = {
+  inum: 'test-inum-123',
+  userId: 'testuser',
+  displayName: 'Test User',
+  mail: 'test@example.com',
+  dn: 'dn=test',
+}
+const mockLocationState: { current: { selectedUser?: typeof mockSelectedUser } | null } = {
+  current: { selectedUser: mockSelectedUser },
+}
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useMatch: (pattern: string) => (pattern === mockMatchedPattern.current ? { params: {} } : null),
   useParams: jest.fn(() => ({ id: 'test-inum-123' })),
-  useLocation: jest.fn(() => ({
-    state: {
-      selectedUser: {
-        inum: 'test-inum-123',
-        userId: 'testuser',
-        displayName: 'Test User',
-        mail: 'test@example.com',
-        dn: 'dn=test',
-      },
-    },
-  })),
+  useLocation: jest.fn(() => ({ state: mockLocationState.current })),
+}))
+
+const mockNavigateBack = jest.fn()
+jest.mock('@/helpers/navigation', () => ({
+  ...jest.requireActual('@/helpers/navigation'),
+  useAppNavigation: () => ({ navigateBack: mockNavigateBack, navigateToRoute: jest.fn() }),
 }))
 
 const store = createUserManagementTestStore()
@@ -34,6 +41,40 @@ describe('UserEditPage', () => {
   afterEach(() => {
     queryClient.clear()
     mockMatchedPattern.current = ''
+    mockLocationState.current = { selectedUser: mockSelectedUser }
+    mockNavigateBack.mockClear()
+    ;(useGetUserByInum as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetched: false,
+    })
+  })
+
+  it('loads the user from the route id when there is no navigation state', async () => {
+    mockLocationState.current = null
+    mockMatchedPattern.current = ROUTES.USER_VIEW_TEMPLATE
+    ;(useGetUserByInum as jest.Mock).mockReturnValue({
+      data: mockSelectedUser,
+      isLoading: false,
+      isFetched: true,
+    })
+    render(<UserEditPage />, { wrapper: Wrapper })
+    expect(await screen.findByTestId('displayName')).toHaveValue('Test User')
+    expect(useGetUserByInum).toHaveBeenCalledWith('test-inum-123', {
+      query: { enabled: true },
+    })
+    expect(mockNavigateBack).not.toHaveBeenCalled()
+  })
+
+  it('goes back to the list when the route id matches no user', async () => {
+    mockLocationState.current = null
+    ;(useGetUserByInum as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetched: true,
+    })
+    render(<UserEditPage />, { wrapper: Wrapper })
+    await waitFor(() => expect(mockNavigateBack).toHaveBeenCalledWith(ROUTES.USER_MANAGEMENT))
   })
 
   it('renders the user edit page with form fields', async () => {
