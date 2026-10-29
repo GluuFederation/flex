@@ -80,6 +80,8 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-app-verison', help="Jannsen applications version",
                         default=app_versions['JANS_APP_VERSION'])
     parser.add_argument('--jans-app-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
+    parser.add_argument('--node-version', help=argparse.SUPPRESS)
+
 
     return parser
 
