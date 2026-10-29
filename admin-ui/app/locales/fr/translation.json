@@ -253,6 +253,8 @@
   "serviceDownTitle": "Service indisponible",
   "mauLimitTitle": "Limite de MAU dépassée",
   "mauLimitDescription": "Les utilisateurs actifs mensuels dépassent le seuil autorisé par votre plan d'abonnement de licence. Veuillez mettre à niveau le plan sur Agama Lab pour profiter d'un service ininterrompu de votre destination numérique.",
+  "mauCheckFailedTitle": "Impossible de vérifier les utilisateurs actifs mensuels",
+  "mauCheckFailedDescription": "Admin UI n'a pas pu charger le nombre d'utilisateurs actifs mensuels, la connexion est donc bloquée. Veuillez réessayer plus tard ou contacter votre administrateur.",
   "licenseCard": {
     "freeTrial": "Essai gratuit",
     "description": "Démarrez votre essai gratuit pour gérer et configurer votre serveur d'authentification avec une interface web simplifiée.",

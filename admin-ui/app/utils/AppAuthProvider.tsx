@@ -81,8 +81,14 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   } = useAppSelector((state) => state.authReducer)
   const config = rawConfig as OAuthConfig
 
-  const { islicenseCheckResultLoaded, isLicenseValid, isConfigValid, isUnderThresholdLimit } =
-    useAppSelector((state) => state.licenseReducer)
+  const {
+    islicenseCheckResultLoaded,
+    isLicenseValid,
+    isConfigValid,
+    isUnderThresholdLimit,
+    isMauCheckFailed,
+    error: licenseError,
+  } = useAppSelector((state) => state.licenseReducer)
 
   useEffect(() => {
     if (!userinfo) return
@@ -375,6 +381,16 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
       {!isUnderThresholdLimit && (
         <GluuErrorModal message={t('mauLimitTitle')} description={t('mauLimitDescription')} />
       )}
+      {isMauCheckFailed && (
+        <GluuErrorModal
+          message={t('mauCheckFailedTitle')}
+          description={
+            licenseError
+              ? `${t('mauCheckFailedDescription')} (${licenseError})`
+              : t('mauCheckFailedDescription')
+          }
+        />
+      )}
       {showAdminUI && children}
       {!showAdminUI && signedOutForNoRole && (
         <GluuErrorModal
@@ -384,7 +400,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           onRetry={handleRetrySignIn}
         />
       )}
-      {!showAdminUI && !signedOutForNoRole && (
+      {!showAdminUI && !signedOutForNoRole && !isMauCheckFailed && (
         <ApiKeyRedirect
           isLicenseValid={isLicenseValid}
           isConfigValid={isConfigValid}
