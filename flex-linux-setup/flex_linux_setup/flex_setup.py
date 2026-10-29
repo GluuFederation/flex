@@ -413,8 +413,6 @@ class flex_installer(JettyInstaller):
                              base.current_app.app_info['jans_version'])), self.agama_pw_fn)
             ]
 
-            if argsp.update_admin_ui:
-                self.source_files.pop(0)
 
         for download_url, target in self.source_files:
             if force or not os.path.exists(target):
