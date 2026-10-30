@@ -35,6 +35,7 @@ setFlag('IS_LOG', false)
 import {
   fetchActivePolicyStoreBytes,
   fetchUserInformation,
+  setSessionRefreshToken,
   type FetchUserInfoResult,
 } from 'Redux/api/backend-api'
 import { useTranslation } from 'react-i18next'
@@ -302,6 +303,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
             .then((token) => {
               idToken = token.idToken
               oauthAccessToken = token.accessToken
+              setSessionRefreshToken(token.refreshToken)
               return fetchUserInformation({
                 userInfoEndpoint: authConfigs?.userInfoEndpoint ?? '',
                 access_token: token.accessToken,
