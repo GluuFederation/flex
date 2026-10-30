@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Formik } from 'formik'
 import ClientCibaParUmaPanel from 'Plugins/auth-server/components/OidcClients/components/ClientCibaParUmaPanel'
 import { Provider } from 'react-redux'
@@ -14,6 +14,7 @@ import type {
 } from 'Plugins/auth-server/components/OidcClients/types'
 import type { CustomScript } from 'JansConfigApi'
 import type { SetStateAction } from 'react'
+import { useClientUmaResources } from 'Plugins/auth-server/components/OidcClients/hooks'
 
 jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   ...jest.requireActual('Plugins/auth-server/components/OidcClients/hooks'),
@@ -24,14 +25,34 @@ jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   })),
 }))
 
+const mockNavigateToRoute = jest.fn()
 jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: jest.fn(() => ({
-    navigateToRoute: jest.fn(),
+    navigateToRoute: mockNavigateToRoute,
   })),
   ROUTES: {
-    AUTH_SERVER_SCOPE_EDIT: jest.fn((id: string) => `/scope/${id}`),
-    AUTH_SERVER_CLIENT_EDIT: jest.fn((id: string) => `/client/${id}`),
+    AUTH_SERVER_SCOPE_EDIT: jest.fn((id: string) => `/scope/edit/${id}`),
+    AUTH_SERVER_SCOPE_VIEW: jest.fn((id: string) => `/scope/view/${id}`),
+    AUTH_SERVER_CLIENT_EDIT: jest.fn((id: string) => `/client/edit/${id}`),
+    AUTH_SERVER_CLIENT_VIEW: jest.fn((id: string) => `/client/view/${id}`),
   },
+}))
+
+const mockCanWrite: Record<string, boolean> = {}
+jest.mock('@/cedarling/hooks/useCedarling', () => ({
+  useCedarling: () => ({
+    authorizeHelper: jest.fn(() => Promise.resolve([])),
+    hasCedarReadPermission: () => false,
+    hasCedarWritePermission: () => false,
+    hasCedarDeletePermission: () => false,
+  }),
+}))
+jest.mock('@/cedarling/hooks/usePermission', () => ({
+  usePermission: (resource: string) => ({
+    canRead: true,
+    canWrite: mockCanWrite[resource] ?? false,
+    canDelete: false,
+  }),
 }))
 
 jest.mock('@/redux/hooks', () => ({
@@ -197,4 +218,64 @@ it('Should render with empty scripts list gracefully', () => {
     { wrapper: Wrapper },
   )
   expect(container).toBeTruthy()
+})
+
+describe('UMA resource links', () => {
+  const renderWithUma = () => {
+    jest.mocked(useClientUmaResources).mockReturnValue({
+      umaResources: [
+        {
+          id: 'uma-1',
+          name: 'UMA one',
+          scopes: ['inum=SCOPE-1,ou=scopes,o=jans'],
+          clients: ['inum=CLIENT-2,ou=clients,o=jans'],
+        },
+      ],
+      isLoading: false,
+      deleteUmaResource: jest.fn(),
+      isDeleting: false,
+      refetch: jest.fn(),
+    })
+    render(
+      <Formik<ClientWizardFormValues> initialValues={mockValues} onSubmit={jest.fn()}>
+        {(formik: ClientPanelFormik) => (
+          <ClientCibaParUmaPanel
+            client={mockClientData}
+            scripts={mockScripts}
+            formik={formik}
+            viewOnly
+            modifiedFields={{}}
+            setModifiedFields={mockSetModifiedFields}
+            setCurrentStep={jest.fn()}
+            sequence={mockSequence}
+          />
+        )}
+      </Formik>,
+      { wrapper: Wrapper },
+    )
+    fireEvent.click(screen.getByText('uma-1'))
+  }
+
+  beforeEach(() => {
+    mockNavigateToRoute.mockClear()
+    Object.keys(mockCanWrite).forEach((key) => delete mockCanWrite[key])
+  })
+
+  it('opens scopes and clients read-only when the user cannot write them', () => {
+    renderWithUma()
+    fireEvent.click(screen.getByText('SCOPE-1'))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/scope/view/SCOPE-1')
+    fireEvent.click(screen.getByText('CLIENT-2'))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/client/view/CLIENT-2')
+  })
+
+  it('opens the edit pages when the user can write scopes and clients', () => {
+    mockCanWrite.Scopes = true
+    mockCanWrite.Clients = true
+    renderWithUma()
+    fireEvent.click(screen.getByText('SCOPE-1'))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/scope/edit/SCOPE-1')
+    fireEvent.click(screen.getByText('CLIENT-2'))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/client/edit/CLIENT-2')
+  })
 })

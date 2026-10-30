@@ -1,12 +1,29 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import {
   createUserManagementTestStore,
   createUserManagementTestWrapper,
 } from 'Plugins/user-management/__tests__/helpers/userManagementTestUtils'
 import UserList from 'Plugins/user-management/components/UserList'
+import { useGetUser } from 'JansConfigApi'
 import { useCedarling } from '@/cedarling'
 import type { UseCedarlingReturn } from '@/cedarling'
+
+const mockNavigateToRoute = jest.fn()
+jest.mock('@/helpers/navigation', () => ({
+  ...jest.requireActual('@/helpers/navigation'),
+  useAppNavigation: () => ({ navigateToRoute: mockNavigateToRoute, navigateBack: jest.fn() }),
+}))
+
+const showOneUser = () =>
+  (useGetUser as jest.Mock).mockReturnValue({
+    data: {
+      entries: [{ inum: 'user-1', userId: 'jdoe', displayName: 'John Doe', mail: 'j@x.org' }],
+      totalEntriesCount: 1,
+    },
+    isLoading: false,
+    refetch: jest.fn(),
+  })
 
 const makeMockCedarling = (overrides?: Partial<UseCedarlingReturn>): UseCedarlingReturn =>
   ({
@@ -53,5 +70,32 @@ describe('UserList', () => {
       .map((header) => header.textContent?.trim())
       .filter(Boolean)
     expect(headers[0]).toBe('Inum')
+  })
+
+  it('opens a user read-only from View and editable from Edit', () => {
+    jest.mocked(useCedarling).mockReturnValue(makeMockCedarling())
+    showOneUser()
+    render(<UserList />, { wrapper: Wrapper })
+
+    fireEvent.click(screen.getByRole('button', { name: 'View User' }))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/user/usermanagement/view/user-1', {
+      state: { selectedUser: expect.objectContaining({ inum: 'user-1' }) },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit User' }))
+    expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/user/usermanagement/edit/user-1', {
+      state: { selectedUser: expect.objectContaining({ inum: 'user-1' }) },
+    })
+  })
+
+  it('offers View but not Edit without Users write', () => {
+    jest
+      .mocked(useCedarling)
+      .mockReturnValue(makeMockCedarling({ hasCedarWritePermission: jest.fn(() => false) }))
+    showOneUser()
+    render(<UserList />, { wrapper: Wrapper })
+
+    expect(screen.getByRole('button', { name: 'View User' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit User' })).not.toBeInTheDocument()
   })
 })

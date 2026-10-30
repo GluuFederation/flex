@@ -1470,6 +1470,7 @@
     "clear_filters": "Borrar todos los filtros",
     "add_user": "Agregar usuario",
     "edit_user": "Editar usuario",
+    "view_user": "Ver usuario",
     "delete_user": "Eliminar usuario",
     "insert_shortcode": "Insertar shortcode",
     "add_attribute": "Añadir atributo",

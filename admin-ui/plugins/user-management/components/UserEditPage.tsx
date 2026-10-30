@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useMatch, useParams } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import UserForm from './UserForm'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -16,7 +18,9 @@ import type {
 } from '../types'
 import {
   usePutUser,
+  useGetUserByInum,
   getGetUserQueryKey,
+  getGetUserByInumQueryKey,
   useGetAttributes,
   useRevokeUserSession,
   useGetPropertiesPersistence,
@@ -64,15 +68,27 @@ const UserEditPage = () => {
   const isDark = (themeState?.theme ?? DEFAULT_THEME) === THEME_DARK
   const { classes } = useStyles({ isDark, themeColors })
 
-  SetTitle(t('tooltips.edit_user', { defaultValue: 'Edit User' }))
+  const viewMatch = useMatch(ROUTES.USER_VIEW_TEMPLATE)
+  const { canWrite } = usePermission(ADMIN_UI_RESOURCES.Users)
+  const viewOnly = !!viewMatch || !canWrite
 
-  const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
+  SetTitle(
+    viewOnly ? t('tooltips.view_user') : t('tooltips.edit_user', { defaultValue: 'Edit User' }),
+  )
+
+  const { id: routeInum } = useParams<{ id: string }>()
+  const [stateUser] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
+  const {
+    data: fetchedUser,
+    isLoading: loadingUser,
+    isFetched: userFetched,
+  } = useGetUserByInum(routeInum ?? '', { query: { enabled: !stateUser && !!routeInum } })
+  const userDetails: CustomUser | null = stateUser ?? fetchedUser ?? null
   useEffect(() => {
-    if (!userDetails) {
+    if (!userDetails && (!routeInum || userFetched)) {
       navigateBack(ROUTES.USER_MANAGEMENT)
-      return
     }
-  }, [userDetails, navigateBack])
+  }, [userDetails, routeInum, userFetched, navigateBack])
 
   const { data: attributesData, isLoading: loadingAttributes } = useGetAttributes({
     limit: 200,
@@ -140,6 +156,9 @@ const UserEditPage = () => {
         }
         triggerUserWebhook(data as CustomUser, adminUiFeatures.users_edit)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+        if (userDetails?.inum) {
+          queryClient.invalidateQueries({ queryKey: getGetUserByInumQueryKey(userDetails.inum) })
+        }
         navigateBack(ROUTES.USER_MANAGEMENT)
       },
       onError: (error: CaughtError) => {
@@ -193,13 +212,18 @@ const UserEditPage = () => {
                 {t('messages.persistence_config_load_failed_detail')}
               </Alert>
             )}
-            <GluuLoader blocking={loadingAttributes || loadingPersistence || isSubmitting}>
-              <UserForm
-                onSubmitData={submitData}
-                userDetails={userDetails}
-                personAttributes={personAttributes}
-                isSubmitting={isSubmitting}
-              />
+            <GluuLoader
+              blocking={loadingAttributes || loadingPersistence || loadingUser || isSubmitting}
+            >
+              {userDetails && (
+                <UserForm
+                  onSubmitData={submitData}
+                  userDetails={userDetails}
+                  personAttributes={personAttributes}
+                  isSubmitting={isSubmitting}
+                  viewOnly={viewOnly}
+                />
+              )}
             </GluuLoader>
           </div>
         </div>

@@ -1467,6 +1467,7 @@
     "add_attribute": "Adicionar atributo",
     "add_user": "Adicionar usuário",
     "edit_user": "Editar usuário",
+    "view_user": "Ver usuário",
     "delete_user": "Excluir usuário",
     "add_ldap": "Adicionar LDAP",
     "advanced_search_options": "Opções de pesquisa avançada",

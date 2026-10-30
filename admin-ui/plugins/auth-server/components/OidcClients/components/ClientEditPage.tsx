@@ -1,27 +1,29 @@
 import { useState, useCallback, useMemo, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useMatch } from 'react-router-dom'
 import { useGetOauthOpenidClientsByInum } from 'JansConfigApi'
 import { useAppSelector } from '@/redux/hooks'
 import { GluuPageContent } from '@/components'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { logger } from '@/utils/logger'
 import SetTitle from 'Utils/SetTitle'
 import { useUpdateClient, useClientScripts, useOidcProperties } from '../hooks'
-import { CLIENT_VIEW_QUERY_PARAM, CLIENT_VIEW_QUERY_VALUE } from '../constants'
 import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
 import type { ClientModifiedFields, ClientWizardSubmitData } from '../types'
 
 const ClientEditPage = (): JSX.Element => {
   const { t } = useTranslation()
-  SetTitle(t('messages.edit_client'))
-
   const { navigateBack } = useAppNavigation()
   const { id: routeInum } = useParams<{ id: string }>()
-  const [searchParams] = useSearchParams()
-  const viewOnly = searchParams.get(CLIENT_VIEW_QUERY_PARAM) === CLIENT_VIEW_QUERY_VALUE
+  const viewMatch = useMatch(ROUTES.AUTH_SERVER_CLIENT_VIEW_TEMPLATE)
+  const { canWrite } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const viewOnly = !!viewMatch || !canWrite
+
+  SetTitle(t(viewOnly ? 'messages.view_client_details' : 'messages.edit_client'))
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const authClientId = useAppSelector((state) => state.authReducer?.config?.clientId)

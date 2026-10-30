@@ -12,6 +12,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 import type { PluginRoute } from 'Plugins/internal'
 import ProtectedRoute from './Pages/ProtectRoutes'
+import RouteGuard from './Pages/RouteGuard'
 import { LazyRoutes } from 'Utils/RouteLoader'
 import useFilteredMenus from '@/hooks/useFilteredMenus'
 
@@ -70,9 +71,7 @@ const LandingRedirect = () => {
 }
 
 export const RoutedContent = () => {
-  const [pluginMenus, setPluginMenus] = useState<
-    Array<{ path: string; component: React.ComponentType }>
-  >([])
+  const [pluginMenus, setPluginMenus] = useState<PluginRoute[]>([])
 
   useEffect(() => {
     const loadPlugins = async () => {
@@ -122,7 +121,15 @@ export const RoutedContent = () => {
 
           {/* -------- Plugins ---------*/}
           {pluginMenus.map((item, key) => (
-            <Route key={key} path={item.path} element={<item.component />} />
+            <Route
+              key={key}
+              path={item.path}
+              element={
+                <RouteGuard resourceKey={item.resourceKey} action={item.action}>
+                  <item.component />
+                </RouteGuard>
+              }
+            />
           ))}
 
           {/*    Pages Routes    */}

@@ -96,6 +96,18 @@ describe('GluuRemovableInputRow', () => {
     expect(screen.queryByRole('button', { name: /remove/i })).not.toBeInTheDocument()
   })
 
+  it('disables the input when disabled is true', () => {
+    renderRow(baseProps({ disabled: true }))
+    expect(screen.getByTestId('myField')).toBeDisabled()
+  })
+
+  it('disables the toggle when disabled is true', () => {
+    const { container } = renderRow(
+      baseProps({ isBoolean: true, disabled: true, formik: createMockFormik({ myField: true }) }),
+    )
+    expect(container.querySelector('input#myField')).toBeDisabled()
+  })
+
   it('renders a toggle (checkbox) instead of a text input when isBoolean is true', () => {
     const { container } = renderRow(
       baseProps({ isBoolean: true, formik: createMockFormik({ myField: true }) }),
