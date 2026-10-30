@@ -11,6 +11,7 @@ const initialState = {
   generatingTrialKey: false,
   isNoValidLicenseKeyFound: false,
   isUnderThresholdLimit: true,
+  isMauCheckFailed: false,
   isValidatingFlow: false,
 }
 
@@ -20,6 +21,7 @@ const licenseSlice = createSlice({
   reducers: {
     checkLicensePresent: (state, _action) => {
       state.islicenseCheckResultLoaded = false
+      state.isMauCheckFailed = false
     },
     checkUserLicenseKeyResponse: (state, action) => {
       if (action.payload?.success) {
@@ -63,6 +65,10 @@ const licenseSlice = createSlice({
       state.isUnderThresholdLimit = action.payload.isUnderThresholdLimit
       state.isLoading = false
     },
+    setMauCheckFailed: (state, action) => {
+      state.isMauCheckFailed = action.payload
+      state.isLoading = false
+    },
     setValidatingFlow: (state, action) => {
       state.isValidatingFlow = action.payload.isValidatingFlow
     },
@@ -84,6 +90,7 @@ export const {
   generateTrialLicenseResponse,
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
+  setMauCheckFailed,
   setValidatingFlow,
   setLicenseError,
 } = licenseSlice.actions
