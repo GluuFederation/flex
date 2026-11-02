@@ -101,6 +101,8 @@
   "serviceDownTitle": "Servicio no disponible",
   "mauLimitTitle": "Límite de MAU superado",
   "mauLimitDescription": "Los usuarios activos mensuales superan el límite permitido por su plan de suscripción de licencia. Actualice el plan en Agama Lab para disfrutar del servicio ininterrumpido de su destino digital.",
+  "mauCheckFailedTitle": "No se pueden verificar los usuarios activos mensuales",
+  "mauCheckFailedDescription": "Admin UI no pudo cargar el número de usuarios activos mensuales, por lo que el inicio de sesión está bloqueado. Inténtelo de nuevo más tarde o contacte con su administrador.",
   "licenseCard": {
     "freeTrial": "Prueba gratuita",
     "description": "Comience su prueba gratuita para gestionar y configurar su servidor de autenticación con una interfaz web simplificada.",

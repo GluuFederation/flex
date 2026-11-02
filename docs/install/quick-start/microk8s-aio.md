@@ -29,6 +29,7 @@ System should meet the following requirements:
 Start a fresh Ubuntu VM with ports `443` and `80` open, then download the installation script and make it executable:
 
 ```bash
+# Helm chart: gluu-flex/gluu-all-in-one
 wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/start_flex_aio_microk8s_demo.sh
 chmod u+x start_flex_aio_microk8s_demo.sh
 ```
@@ -43,12 +44,14 @@ Next, execute the script. You will need to provide the following details:
 === "MySQL"
 
     ```bash
+    # Helm chart: gluu-flex/gluu-all-in-one
     sudo bash start_flex_aio_microk8s_demo.sh demoexample.gluu.org MYSQL "" <VM_IP>
     ```
 
 === "PostgreSQL"
 
     ```bash
+    # Helm chart: gluu-flex/gluu-all-in-one
     sudo bash start_flex_aio_microk8s_demo.sh demoexample.gluu.org PGSQL "" <VM_IP>
     ```
 
