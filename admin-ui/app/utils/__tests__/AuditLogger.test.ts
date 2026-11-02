@@ -114,4 +114,21 @@ describe('logAuditUserAction', () => {
     const [posted] = mockedPostUserAction.mock.calls[0]
     expect(posted.client_id).toBe('cid-1')
   })
+
+  it('resolves without waiting for a slow audit post', async () => {
+    mockedPostUserAction.mockReturnValueOnce(new Promise(() => undefined))
+
+    await expect(
+      logAuditUserAction({ action: 'update', resource: 'client', message: 'slow audit' }),
+    ).resolves.toBeUndefined()
+    expect(mockedPostUserAction).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not reject when the audit post fails', async () => {
+    mockedPostUserAction.mockRejectedValueOnce(new Error('timeout of 60000ms exceeded'))
+
+    await expect(
+      logAuditUserAction({ action: 'update', resource: 'client', message: 'failed audit' }),
+    ).resolves.toBeUndefined()
+  })
 })

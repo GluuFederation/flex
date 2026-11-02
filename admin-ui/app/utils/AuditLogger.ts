@@ -49,5 +49,5 @@ export const logAuditUserAction = async ({
   }
 
   addAdditionalData(audit, action, resource, payloadWrapper)
-  await postUserAction(audit as UserActionPayload)
+  void postUserAction(audit as UserActionPayload).catch(() => undefined)
 }

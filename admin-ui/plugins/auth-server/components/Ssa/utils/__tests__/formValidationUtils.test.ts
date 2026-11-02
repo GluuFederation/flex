@@ -12,7 +12,7 @@ describe('getSsaInitialValues', () => {
       org_id: '',
       description: '',
       software_roles: [],
-      rotate_ssa: true,
+      rotate_ssa: false,
       grant_types: [],
       is_expirable: false,
       expirationDate: null,

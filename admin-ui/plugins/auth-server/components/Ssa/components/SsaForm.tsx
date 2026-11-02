@@ -361,6 +361,11 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       isDark={isDark}
                       doc_category={SSA}
                     />
+                    {validationState.rotateSsaError && (
+                      <GluuText disableThemeColor className={classes.toggleError}>
+                        {validationState.rotateSsaErrorMessage}
+                      </GluuText>
+                    )}
                   </div>
 
                   <div className={classes.toggleCell}>
