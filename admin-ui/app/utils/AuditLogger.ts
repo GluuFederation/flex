@@ -17,6 +17,7 @@ export const logAuditUserAction = async ({
   status = 'success',
   client_id,
   payload,
+  onError,
 }: LogAuditParams): Promise<void> => {
   const audit: Partial<UserActionPayload> &
     Record<string, JsonValue | undefined | { user_inum: string; userId: string }> = {
@@ -49,5 +50,7 @@ export const logAuditUserAction = async ({
   }
 
   addAdditionalData(audit, action, resource, payloadWrapper)
-  void postUserAction(audit as UserActionPayload).catch(() => undefined)
+  void postUserAction(audit as UserActionPayload).catch((error) =>
+    onError?.(error instanceof Error ? error : new Error(String(error))),
+  )
 }

@@ -362,7 +362,7 @@ const SsaForm: React.FC<SsaFormProps> = ({
                       doc_category={SSA}
                     />
                     {validationState.rotateSsaError && (
-                      <GluuText disableThemeColor className={classes.toggleError}>
+                      <GluuText role="alert" disableThemeColor className={classes.toggleError}>
                         {validationState.rotateSsaErrorMessage}
                       </GluuText>
                     )}

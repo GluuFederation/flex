@@ -396,7 +396,7 @@ const DashboardPage = () => {
               </Grid>
             </Grid>
 
-            {hasLoadFailure && (
+            {hasLoadFailure && !isBlocking && (
               <GluuLoadError message={t('dashboard.load_failed')} onRetry={handleRetry} />
             )}
 

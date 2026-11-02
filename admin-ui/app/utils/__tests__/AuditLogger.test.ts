@@ -131,4 +131,32 @@ describe('logAuditUserAction', () => {
       logAuditUserAction({ action: 'update', resource: 'client', message: 'failed audit' }),
     ).resolves.toBeUndefined()
   })
+
+  it('reports a failed audit post to onError', async () => {
+    const failure = new Error('timeout of 60000ms exceeded')
+    mockedPostUserAction.mockRejectedValueOnce(failure)
+    const onError = jest.fn()
+
+    await logAuditUserAction({
+      action: 'delete',
+      resource: 'session',
+      message: 'failed audit',
+      onError,
+    })
+
+    expect(onError).toHaveBeenCalledWith(failure)
+  })
+
+  it('does not pass onError into the audit payload', async () => {
+    await logAuditUserAction({
+      action: 'delete',
+      resource: 'session',
+      message: 'msg',
+      onError: jest.fn(),
+    })
+
+    const [audit, , , wrapper] = mockedAddAdditionalData.mock.calls[0]
+    expect(audit).not.toHaveProperty('onError')
+    expect(wrapper.action.action_data).not.toHaveProperty('onError')
+  })
 })
