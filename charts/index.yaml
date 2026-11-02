@@ -3,6 +3,83 @@ entries:
   gluu:
   - annotations:
       artifacthub.io/containsSecurityUpdates: 'true'
+      artifacthub.io/images: "- name: auth-server\n  image: ghcr.io/janssenproject/jans/auth-server:2.6.0-1\n- name: auth-server-key-rotation\n  image: ghcr.io/janssenproject/jans/cloudtools:2.6.0-1\n- name: configuration-manager\n  image: ghcr.io/janssenproject/jans/configurator:2.6.0-1\n- name:  config-api\n  image: ghcr.io/janssenproject/jans/config-api:2.6.0-1\n- name: fido2\n  image: ghcr.io/janssenproject/jans/fido2:2.6.0-1\n- name: persistence\n  image: ghcr.io/gluufederation/flex/persistence-loader:6.6.0-1\n- name: scim\n  image: ghcr.io/janssenproject/jans/scim:2.6.0-1\n- name: casa\n  image: ghcr.io/janssenproject/jans/casa:2.6.0-1\n- name: admin-ui\n  image: ghcr.io/gluufederation/flex/admin-ui:6.6.0-1\n"
+      artifacthub.io/license: Apache-2.0
+      catalog.cattle.io/certified: partner
+      catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management
+      catalog.cattle.io/release-name: gluu
+    apiVersion: v2
+    appVersion: 6.6.0
+    created: '2026-11-02T09:35:12.74741625Z'
+    dependencies:
+    - condition: global.config.enabled
+      name: config
+      repository: ''
+      version: 6.6.0
+    - condition: global.config-api.enabled
+      name: config-api
+      repository: ''
+      version: 6.6.0
+    - condition: global.auth-server.enabled
+      name: auth-server
+      repository: ''
+      version: 6.6.0
+    - condition: global.admin-ui.enabled
+      name: admin-ui
+      repository: ''
+      version: 6.6.0
+    - condition: global.fido2.enabled
+      name: fido2
+      repository: ''
+      version: 6.6.0
+    - condition: global.scim.enabled
+      name: scim
+      repository: ''
+      version: 6.6.0
+    - condition: global.nginx-ingress.enabled
+      name: nginx-ingress
+      repository: ''
+      version: 6.6.0
+    - condition: global.casa.enabled
+      name: casa
+      repository: ''
+      version: 6.6.0
+    - condition: global.auth-server-key-rotation.enabled
+      name: auth-server-key-rotation
+      repository: ''
+      version: 6.6.0
+    - condition: global.persistence.enabled
+      name: persistence
+      repository: ''
+      version: 6.6.0
+    - condition: global.istio.ingress
+      name: cn-istio-ingress
+      repository: ''
+      version: 6.6.0
+    - condition: global.cleanup.enabled
+      name: cleanup
+      repository: ''
+      version: 6.6.0
+    - condition: global.gateway-api.enabled
+      name: gateway-api
+      repository: ''
+      version: 6.6.0
+    description: Gluu Access and Identity Management
+    digest: 2f73769b55c14106658432e85cfc480a4d657b723d093f7a0facc284cf60ec5f
+    home: https://www.gluu.org
+    icon: https://gluu.org/brand/favicon.png
+    kubeVersion: '>=v1.23.0-0'
+    maintainers:
+    - email: team@gluu.org
+      name: moabu
+    name: gluu
+    sources:
+    - https://docs.gluu.org
+    urls:
+    - https://github.com/GluuFederation/flex/releases/download/v6.6.0/gluu-6.6.0.tgz
+    version: 6.6.0
+  - annotations:
+      artifacthub.io/containsSecurityUpdates: 'true'
       artifacthub.io/images: "- name: auth-server\n  image: ghcr.io/janssenproject/jans/auth-server:2.5.0-1\n- name: auth-server-key-rotation\n  image: ghcr.io/janssenproject/jans/cloudtools:2.5.0-1\n- name: configuration-manager\n  image: ghcr.io/janssenproject/jans/configurator:2.5.0-1\n- name:  config-api\n  image: ghcr.io/janssenproject/jans/config-api:2.5.0-1\n- name: fido2\n  image: ghcr.io/janssenproject/jans/fido2:2.5.0-1\n- name: persistence\n  image: ghcr.io/gluufederation/flex/persistence-loader:6.5.1-1\n- name: scim\n  image: ghcr.io/janssenproject/jans/scim:2.5.0-1\n- name: casa\n  image: ghcr.io/janssenproject/jans/casa:2.5.0-1\n- name: admin-ui\n  image: ghcr.io/gluufederation/flex/admin-ui:6.5.1-1\n"
       artifacthub.io/license: Apache-2.0
       catalog.cattle.io/certified: partner
@@ -4861,6 +4938,33 @@ entries:
   gluu-all-in-one:
   - annotations:
       artifacthub.io/containsSecurityUpdates: 'true'
+      artifacthub.io/images: "- name: all-in-one\n  image: ghcr.io/gluufederation/flex/flex-all-in-one:6.6.0-1\n"
+      artifacthub.io/license: Apache-2.0
+      catalog.cattle.io/certified: partner
+      catalog.cattle.io/display-name: Gluu Flex Cloud Identity and Access Management All-in-One
+      catalog.cattle.io/release-name: gluu-all-in-one
+    apiVersion: v2
+    appVersion: 6.6.0
+    created: '2026-11-02T09:35:12.750094498Z'
+    description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected Gluu flex all-in-one microservice deployment.
+    digest: f5323ec095c015b3e94e40c63cc2fbf8bb24fa34651bb885195f45c012a219bc
+    home: https://docs.gluu.org
+    icon: https://gluu.org/brand/favicon.png
+    kubeVersion: '>=v1.23.0-0'
+    maintainers:
+    - email: team@gluu.org
+      name: moabu
+    name: gluu-all-in-one
+    sources:
+    - https://docs.gluu.org
+    - https://github.com/JanssenProject/jans/tree/main/charts/janssen-all-in-one
+    - https://github.com/GluuFederation/flex/tree/main/docker-flex-all-in-one
+    - https://github.com/GluuFederation/flex/tree/main/charts/gluu-all-in-one
+    urls:
+    - https://github.com/GluuFederation/flex/releases/download/v6.6.0/gluu-all-in-one-6.6.0.tgz
+    version: 6.6.0
+  - annotations:
+      artifacthub.io/containsSecurityUpdates: 'true'
       artifacthub.io/images: "- name: all-in-one\n  image: ghcr.io/gluufederation/flex/flex-all-in-one:6.5.1-1\n"
       artifacthub.io/license: Apache-2.0
       catalog.cattle.io/certified: partner
@@ -5904,4 +6008,4 @@ entries:
     urls:
     - https://github.com/GluuFederation/flex/releases/download/nightly/gluu-all-in-one-0.0.0-nightly.tgz
     version: 0.0.0-nightly
-generated: '2026-11-01T23:09:00.437281294Z'
+generated: '2026-11-02T09:35:12.721368183Z'
