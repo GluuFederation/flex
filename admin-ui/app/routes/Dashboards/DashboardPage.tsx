@@ -13,6 +13,8 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { THEME_DARK, DEFAULT_THEME } from '@/context/theme/constants'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoadError from 'Routes/Apps/Gluu/GluuLoadError'
+import { isFourZeroThreeError } from 'Utils/TokenController'
 import { formatDate } from 'Utils/Util'
 import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
@@ -20,6 +22,7 @@ import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { DEFAULT_STATUS, JANS_SERVICES } from '@/constants'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
+import type { GenericResponse } from 'JansConfigApi'
 import DashboardChart from './Chart/DashboardChart'
 import { CHART_LEGEND_CONFIG, STATUS_DETAILS, DATE_RANGE_TYPE } from './constants'
 import type { DateRangeType } from './types'
@@ -43,6 +46,9 @@ import {
 } from '@/utils/dayjsUtils'
 
 const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
+
+const isLoadFailure = (error: Error | GenericResponse | null | void): boolean =>
+  error instanceof Error && !isFourZeroThreeError(error)
 
 const DashboardPage = () => {
   const { t } = useTranslation()
@@ -106,9 +112,24 @@ const DashboardPage = () => {
 
   SetTitle(t('menus.dashboard'))
 
-  const { item: license, loading: licenseLoading } = useLicenseDetails()
-  const { totalCount: totalClientsEntries, isLoading: clientsLoading } = useClients()
-  const { allServices, isLoading: healthLoading } = useHealthStatus()
+  const {
+    item: license,
+    loading: licenseLoading,
+    error: licenseError,
+    refetch: refetchLicense,
+  } = useLicenseDetails()
+  const {
+    totalCount: totalClientsEntries,
+    isLoading: clientsLoading,
+    error: clientsError,
+    refetch: refetchClients,
+  } = useClients()
+  const {
+    allServices,
+    isLoading: healthLoading,
+    error: healthError,
+    refetch: refetchHealth,
+  } = useHealthStatus()
 
   const isLockServiceAvailable = useMemo(() => {
     const lockService = allServices.find((s) => s.name === JANS_SERVICES.LOCK)
@@ -131,9 +152,36 @@ const DashboardPage = () => {
     [debouncedStartDate, debouncedEndDate],
   )
 
-  const { data: mauData, isLoading: mauLoading } = useMauStats(dateRange, {
+  const {
+    data: mauData,
+    isLoading: mauLoading,
+    error: mauError,
+    refetch: refetchMau,
+  } = useMauStats(dateRange, {
     enabled: hasViewPermissions && hasSession,
   })
+
+  const licenseFailed = isLoadFailure(licenseError)
+  const clientsFailed = isLoadFailure(clientsError)
+  const healthFailed = isLoadFailure(healthError)
+  const mauFailed = isLoadFailure(mauError)
+  const hasLoadFailure = licenseFailed || clientsFailed || healthFailed || mauFailed
+
+  const handleRetry = useCallback(() => {
+    if (licenseFailed) void refetchLicense()
+    if (clientsFailed) void refetchClients()
+    if (healthFailed) void refetchHealth()
+    if (mauFailed) void refetchMau()
+  }, [
+    licenseFailed,
+    clientsFailed,
+    healthFailed,
+    mauFailed,
+    refetchLicense,
+    refetchClients,
+    refetchHealth,
+    refetchMau,
+  ])
 
   const { mauCount, tokenCount } = useMemo(() => {
     if (!mauData || mauData.length === 0) {
@@ -158,15 +206,15 @@ const DashboardPage = () => {
     const baseData = [
       {
         text: t('dashboard.oidc_clients_count'),
-        value: totalClientsEntries,
+        value: clientsFailed ? null : totalClientsEntries,
       },
       {
         text: t('dashboard.active_users_count'),
-        value: mauCount ?? 0,
+        value: mauFailed ? null : (mauCount ?? 0),
       },
       {
         text: t('dashboard.token_issued_count'),
-        value: tokenCount ?? 0,
+        value: mauFailed ? null : (tokenCount ?? 0),
       },
     ]
 
@@ -184,7 +232,7 @@ const DashboardPage = () => {
     }
 
     return baseData
-  }, [t, totalClientsEntries, mauCount, tokenCount, lockData, lockStats])
+  }, [t, clientsFailed, totalClientsEntries, mauFailed, mauCount, tokenCount, lockData, lockStats])
 
   const userInfo = useMemo(
     () => [
@@ -237,6 +285,9 @@ const DashboardPage = () => {
   )
 
   const visibleStatusDetails = useMemo(() => {
+    if (healthFailed) {
+      return []
+    }
     if (healthLoading) {
       return [...STATUS_DETAILS]
     }
@@ -244,7 +295,7 @@ const DashboardPage = () => {
       const service = allServices.find((s) => s.name === key)
       return service?.status != null
     })
-  }, [allServices, healthLoading])
+  }, [allServices, healthLoading, healthFailed])
 
   const hasAnyDashboardData = useMemo(
     () => Boolean(mauData?.length) || totalClientsEntries > 0 || Boolean(lockData?.length),
@@ -344,6 +395,10 @@ const DashboardPage = () => {
                 </div>
               </Grid>
             </Grid>
+
+            {hasLoadFailure && !isBlocking && (
+              <GluuLoadError message={t('dashboard.load_failed')} onRetry={handleRetry} />
+            )}
 
             {isTabletDown && (
               <GluuText variant="div" className={classes.summarySectionTitle}>

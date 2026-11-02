@@ -1,10 +1,12 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import DashboardPage from 'Routes/Dashboards/DashboardPage'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
+import { useClients } from 'Plugins/auth-server/components/OidcClients/hooks'
+import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
 import { JANS_SERVICES } from '@/constants/jansServices'
 
 jest.mock('@/cedarling', () => ({
@@ -96,7 +98,17 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
   </AppTestWrapper>
 )
 
+const defaultHealthImpl = jest.mocked(useHealthStatus).getMockImplementation()
+const defaultClientsImpl = jest.mocked(useClients).getMockImplementation()
+
+const timeoutError = () => new Error('timeout of 60000ms exceeded')
+
 describe('DashboardPage', () => {
+  afterEach(() => {
+    jest.mocked(useHealthStatus).mockImplementation(defaultHealthImpl)
+    jest.mocked(useClients).mockImplementation(defaultClientsImpl)
+  })
+
   it('renders the dashboard page with system status and summary cards', () => {
     render(<DashboardPage />, { wrapper: Wrapper })
     expect(screen.getByText(/System Status/i)).toBeInTheDocument()
@@ -115,5 +127,47 @@ describe('DashboardPage', () => {
     } as ReturnType<typeof useHealthStatus>)
     render(<DashboardPage />, { wrapper: Wrapper })
     expect(screen.queryByText('Service status unavailable')).not.toBeInTheDocument()
+  })
+
+  it('shows a load error and hides stale statuses and counts when data cannot be loaded', () => {
+    const refetchHealth = jest.fn()
+    const refetchClients = jest.fn()
+    jest.mocked(useHealthStatus).mockReturnValue({
+      ...defaultHealthImpl!(),
+      allServices: [{ name: JANS_SERVICES.CONFIG_API, status: 'up' }],
+      isError: true,
+      error: timeoutError() as never,
+      refetch: refetchHealth,
+    } as ReturnType<typeof useHealthStatus>)
+    jest.mocked(useClients).mockReturnValue({
+      ...defaultClientsImpl!(),
+      totalCount: 0,
+      isError: true,
+      error: timeoutError() as never,
+      refetch: refetchClients,
+    } as ReturnType<typeof useClients>)
+
+    render(<DashboardPage />, { wrapper: Wrapper })
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Some dashboard data could not be loaded')
+    expect(screen.getByText('Service status unavailable')).toBeInTheDocument()
+    expect(screen.getByText(/OIDC Clients Count/i).nextElementSibling).toHaveTextContent('—')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
+    expect(refetchHealth).toHaveBeenCalledTimes(1)
+    expect(refetchClients).toHaveBeenCalledTimes(1)
+    expect(jest.mocked(useLicenseDetails)().refetch).not.toHaveBeenCalled()
+  })
+
+  it('does not report a permission denial as a load failure', () => {
+    jest.mocked(useClients).mockReturnValue({
+      ...defaultClientsImpl!(),
+      isError: true,
+      error: Object.assign(new Error('Forbidden'), { response: { status: 403 } }) as never,
+    } as ReturnType<typeof useClients>)
+
+    render(<DashboardPage />, { wrapper: Wrapper })
+
+    expect(screen.queryByText(/Some dashboard data could not be loaded/)).not.toBeInTheDocument()
   })
 })

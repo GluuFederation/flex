@@ -71,7 +71,12 @@ export const patchAuthServerJsonProperties = async (
   try {
     const patches = actionData?.requestBody ?? []
     const data = await callPatchJsonProperties(patches)
-    await postUserAction(audit as UserActionPayload)
+    void postUserAction(audit as UserActionPayload).catch((error) =>
+      logger.error(
+        'Failed to audit the auth server JSON properties patch: ' +
+          resolveApiErrorMessage(error as Error),
+      ),
+    )
     return data
   } catch (e) {
     logger.error(

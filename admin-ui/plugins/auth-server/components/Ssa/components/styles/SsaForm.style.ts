@@ -163,6 +163,12 @@ export const useStyles = makeStyles<SsaFormStylesParams>()((_, { isDark, themeCo
       fontSize: fontSizes.sm,
       margin: '1px 2px',
     },
+    toggleError: {
+      display: 'block',
+      color: themeColors.errorColor,
+      fontSize: fontSizes.sm,
+      margin: '2px 2px 0',
+    },
     datePickerCell: {
       'position': 'relative' as const,
       'minWidth': 0,

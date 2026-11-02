@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { useGetOauthOpenidClientsByInum } from 'JansConfigApi'
 import { ClientEditPage } from 'Plugins/auth-server/components/OidcClients'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -95,4 +96,24 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 it('Should render the client edit page and mount the wizard form', () => {
   render(<ClientEditPage />, { wrapper: Wrapper })
   expect(screen.getByTestId('client-wizard-form')).toBeInTheDocument()
+})
+
+it('shows a load error with a retry instead of an empty form when the client cannot be loaded', () => {
+  const refetch = jest.fn()
+  jest.mocked(useGetOauthOpenidClientsByInum).mockReturnValue({
+    data: undefined,
+    isLoading: false,
+    isError: true,
+    refetch,
+  } as Partial<ReturnType<typeof useGetOauthOpenidClientsByInum>> as ReturnType<
+    typeof useGetOauthOpenidClientsByInum
+  >)
+
+  render(<ClientEditPage />, { wrapper: Wrapper })
+
+  expect(screen.getByRole('alert')).toHaveTextContent('This client could not be loaded')
+  expect(screen.queryByTestId('client-wizard-form')).not.toBeInTheDocument()
+
+  fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
+  expect(refetch).toHaveBeenCalledTimes(1)
 })

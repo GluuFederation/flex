@@ -112,11 +112,12 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
     () => ({
       item,
       loading,
+      error: query.error,
       refetch: query.refetch,
       queryKey: getGetAdminuiLicenseQueryKey(),
       resetLicense,
       isResetting: mutation.isPending,
     }),
-    [item, loading, query.refetch, resetLicense, mutation.isPending],
+    [item, loading, query.error, query.refetch, resetLicense, mutation.isPending],
   )
 }

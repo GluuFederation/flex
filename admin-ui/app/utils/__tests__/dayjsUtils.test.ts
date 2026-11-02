@@ -11,6 +11,7 @@ import {
   addDate,
   subtractDate,
   toApiDatetime,
+  toApiEndDatetime,
 } from '@/utils/dayjsUtils'
 
 const A = '2026-01-10 08:30:00'
@@ -129,5 +130,11 @@ describe('addDate / subtractDate', () => {
 describe('toApiDatetime', () => {
   it('truncates to the start of the minute and formats without a Z suffix', () => {
     expect(toApiDatetime(createDate('2026-01-15 09:30:45'))).toBe('2026-01-15T09:30:00')
+  })
+})
+
+describe('toApiEndDatetime', () => {
+  it('extends to the end of the minute so entries from that minute are included', () => {
+    expect(toApiEndDatetime(createDate('2026-01-15 09:30:45'))).toBe('2026-01-15T09:30:59')
   })
 })

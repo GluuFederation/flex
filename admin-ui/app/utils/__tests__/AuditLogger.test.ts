@@ -114,4 +114,49 @@ describe('logAuditUserAction', () => {
     const [posted] = mockedPostUserAction.mock.calls[0]
     expect(posted.client_id).toBe('cid-1')
   })
+
+  it('resolves without waiting for a slow audit post', async () => {
+    mockedPostUserAction.mockReturnValueOnce(new Promise(() => undefined))
+
+    await expect(
+      logAuditUserAction({ action: 'update', resource: 'client', message: 'slow audit' }),
+    ).resolves.toBeUndefined()
+    expect(mockedPostUserAction).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not reject when the audit post fails', async () => {
+    mockedPostUserAction.mockRejectedValueOnce(new Error('timeout of 60000ms exceeded'))
+
+    await expect(
+      logAuditUserAction({ action: 'update', resource: 'client', message: 'failed audit' }),
+    ).resolves.toBeUndefined()
+  })
+
+  it('reports a failed audit post to onError', async () => {
+    const failure = new Error('timeout of 60000ms exceeded')
+    mockedPostUserAction.mockRejectedValueOnce(failure)
+    const onError = jest.fn()
+
+    await logAuditUserAction({
+      action: 'delete',
+      resource: 'session',
+      message: 'failed audit',
+      onError,
+    })
+
+    expect(onError).toHaveBeenCalledWith(failure)
+  })
+
+  it('does not pass onError into the audit payload', async () => {
+    await logAuditUserAction({
+      action: 'delete',
+      resource: 'session',
+      message: 'msg',
+      onError: jest.fn(),
+    })
+
+    const [audit, , , wrapper] = mockedAddAdditionalData.mock.calls[0]
+    expect(audit).not.toHaveProperty('onError')
+    expect(wrapper.action.action_data).not.toHaveProperty('onError')
+  })
 })
