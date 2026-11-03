@@ -20,7 +20,8 @@ import { useDebounce } from 'Utils/hooks'
 import SetTitle from 'Utils/SetTitle'
 import { useMauStats } from 'Plugins/admin/components/MAU/hooks'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
-import { DEFAULT_STATUS, JANS_SERVICES } from '@/constants'
+import { DEFAULT_STATUS } from '@/constants'
+// import { JANS_SERVICES } from '@/constants'
 import type { MauDateRange } from 'Plugins/admin/components/MAU/types'
 import type { GenericResponse } from 'JansConfigApi'
 import DashboardChart from './Chart/DashboardChart'
@@ -131,17 +132,18 @@ const DashboardPage = () => {
     refetch: refetchHealth,
   } = useHealthStatus()
 
-  const isLockServiceAvailable = useMemo(() => {
-    const lockService = allServices.find((s) => s.name === JANS_SERVICES.LOCK)
-    return lockService?.status === 'up'
-  }, [allServices])
+  // const isLockServiceAvailable = useMemo(() => {
+  //   const lockService = allServices.find((s) => s.name === JANS_SERVICES.LOCK)
+  //   return lockService?.status === 'up'
+  // }, [allServices])
 
   const {
     latestStats: lockStats,
     isLoading: lockLoading,
     data: lockData,
   } = useDashboardLockStats({
-    enabled: isLockServiceAvailable,
+    // enabled: isLockServiceAvailable,
+    enabled: false,
   })
 
   const dateRange: MauDateRange = useMemo(
