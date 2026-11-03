@@ -58,7 +58,6 @@ const buildStore = () =>
       authReducer: (state = { config: { clientId: '' }, location: { IPv4: '' }, userinfo: null }) =>
         state,
       webhookReducer: (state = { webhookModal: false, triggerWebhookInProgress: false }) => state,
-      initReducer: (state = { isSessionExpired: false }) => state,
     }),
   })
 

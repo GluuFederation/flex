@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { useGetOauthOpenidClients } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getQueryErrorMessage } from '@/utils/errorHandler'
+import { isFourZeroThreeError } from '@/utils/TokenController'
 import type { UseClientsParams, ClientRow } from '../types'
 
 export const useClients = <T = ClientRow>(params?: UseClientsParams) => {
@@ -24,6 +25,7 @@ export const useClients = <T = ClientRow>(params?: UseClientsParams) => {
 
   useEffect(() => {
     if (!query.isError) return
+    if (isFourZeroThreeError(query.error as Parameters<typeof isFourZeroThreeError>[0])) return
     const errorMsg = getQueryErrorMessage(query.error, t('messages.error_in_loading'))
     dispatch(updateToast(true, 'error', errorMsg))
   }, [query.isError, query.error, dispatch, t])

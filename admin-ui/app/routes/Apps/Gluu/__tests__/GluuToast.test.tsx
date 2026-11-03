@@ -20,7 +20,7 @@ const initialToastState: ToastReducerState = {
   onCloseRedirectUrl: '',
 }
 
-const createTestStore = (toastState: ToastReducerState, isSessionExpired: boolean): Store =>
+const createTestStore = (toastState: ToastReducerState): Store =>
   configureStore({
     reducer: combineReducers({
       toastReducer: (
@@ -32,15 +32,11 @@ const createTestStore = (toastState: ToastReducerState, isSessionExpired: boolea
         }
         return state
       },
-      initReducer: (state = { isSessionExpired }) => state,
     }),
   })
 
-const renderToast = (
-  toastState: ToastReducerState = initialToastState,
-  isSessionExpired = false,
-) => {
-  const store = createTestStore(toastState, isSessionExpired)
+const renderToast = (toastState: ToastReducerState = initialToastState) => {
+  const store = createTestStore(toastState)
   const result = render(
     <Provider store={store}>
       <AppTestWrapper>
@@ -72,24 +68,6 @@ describe('GluuToast', () => {
   it('renders nothing when showToast is false', () => {
     renderToast({ ...initialToastState, showToast: false })
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-  })
-
-  it('does not show an error toast once the session has expired', () => {
-    const { store } = renderToast(
-      { ...initialToastState, type: 'error', message: 'Request failed with status code 403' },
-      true,
-    )
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    expect(store.getState().toastReducer.showToast).toBe(false)
-  })
-
-  it('still shows an error toast while the session is active', () => {
-    renderToast({
-      ...initialToastState,
-      type: 'error',
-      message: 'Request failed with status code 500',
-    })
-    expect(screen.getByText('Request failed with status code 500')).toBeInTheDocument()
   })
 
   it('dismisses the toast when the close button is clicked', () => {
