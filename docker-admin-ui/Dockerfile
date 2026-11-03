@@ -22,7 +22,7 @@ EXPOSE 8080
 
 RUN mkdir -p /app/static/rdbm /app/schema /app/templates/admin-ui
 
-ENV JANS_SOURCE_VERSION=324c6d78038c8a4eb13e5af7480f9f01893586c7
+ENV JANS_SOURCE_VERSION=e790bb44acd321a824e7d481db47e409cd07455a
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,7 +44,7 @@ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https:
 
 WORKDIR /tmp/flex
 
-ENV FLEX_SOURCE_VERSION=bf613b218d35a722e2dc4c3c6250f60c4077ba05
+ENV FLEX_SOURCE_VERSION=18e242bcfd6cce8777e4d39e6e84b95739a76159
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 
 RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex . \
@@ -61,7 +61,7 @@ WORKDIR /
 # Admin UI
 # ========
 
-ENV ADMIN_UI_VERSION=main
+ENV ADMIN_UI_VERSION=v6.6.1
 ENV GLUU_BUILD_DATE='2026-08-24T23:07:11Z'
 
 # Admin UI assets are published to GitHub Releases by .github/workflows/build-admin-ui.yml:
@@ -185,7 +185,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="0.0.0-nightly" \
+    org.opencontainers.image.version="6.6.1-1" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
