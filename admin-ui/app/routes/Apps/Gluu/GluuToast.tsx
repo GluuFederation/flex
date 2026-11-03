@@ -67,6 +67,7 @@ const GluuToast = () => {
   const { showToast, message, type, onCloseRedirectUrl } = useAppSelector(
     (reduxState) => reduxState.toastReducer,
   )
+  const isSessionExpired = useAppSelector((reduxState) => reduxState.initReducer.isSessionExpired)
 
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const [paused, setPaused] = useState(false)
@@ -147,6 +148,10 @@ const GluuToast = () => {
 
   useEffect(() => {
     if (!showToast) return
+    if (isSessionExpired && type === 'error') {
+      dispatch(updateToast(false, 'success', ''))
+      return
+    }
     counterRef.current += 1
     const id = `toast-${counterRef.current}`
     const onClose = onCloseRedirectUrl
