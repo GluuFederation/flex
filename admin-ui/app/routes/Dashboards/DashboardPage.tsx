@@ -137,7 +137,7 @@ const DashboardPage = () => {
   }, [allServices])
 
   const {
-    latestStats: lockStats,
+    maxStats: lockStats,
     isLoading: lockLoading,
     data: lockData,
   } = useDashboardLockStats({

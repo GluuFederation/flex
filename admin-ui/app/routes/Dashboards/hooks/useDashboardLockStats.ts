@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetLockStat, type JsonNode } from 'JansConfigApi'
-import { createDate, DATE_FORMATS, formatDate } from '@/utils/dayjsUtils'
+import { createDate, DATE_FORMATS, formatDate, subtractDate } from '@/utils/dayjsUtils'
 import type { LockStatEntry } from '../types'
 
 const EMPTY_LOCK_STATS: LockStatEntry[] = []
+const MONTHS_BEFORE_CURRENT = 11
 
 const transformLockStats = (data: JsonNode[] | undefined): LockStatEntry[] => {
   if (!data || !Array.isArray(data)) {
@@ -25,7 +26,16 @@ interface UseDashboardLockStatsOptions {
 export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
-  const params = useMemo(() => ({ month: formatDate(createDate(), DATE_FORMATS.MONTH_KEY) }), [])
+  const params = useMemo(() => {
+    const now = createDate()
+    return {
+      'start-month': formatDate(
+        subtractDate(now, MONTHS_BEFORE_CURRENT, 'month'),
+        DATE_FORMATS.MONTH_KEY,
+      ),
+      'end-month': formatDate(now, DATE_FORMATS.MONTH_KEY),
+    }
+  }, [])
 
   const { data = EMPTY_LOCK_STATS, isLoading } = useGetLockStat(params, {
     query: {
@@ -35,13 +45,16 @@ export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}
     },
   })
 
-  const latestStats = useMemo(
+  const maxStats = useMemo(
     () => ({
-      monthly_active_users: data[0]?.monthly_active_users ?? 0,
-      monthly_active_clients: data[0]?.monthly_active_clients ?? 0,
+      monthly_active_users: Math.max(0, ...data.map((entry) => entry.monthly_active_users ?? 0)),
+      monthly_active_clients: Math.max(
+        0,
+        ...data.map((entry) => entry.monthly_active_clients ?? 0),
+      ),
     }),
     [data],
   )
 
-  return { data, isLoading, latestStats }
+  return { data, isLoading, maxStats }
 }

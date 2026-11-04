@@ -58,14 +58,18 @@ describe('useDashboardLockStats', () => {
     jest.useRealTimers()
   })
 
-  it('requests the current month', () => {
-    jest.useFakeTimers({ now: new Date(2026, 10, 15) })
+  it.each([
+    ['mid-year', new Date(2026, 10, 15), '202512', '202611'],
+    ['January', new Date(2027, 0, 15), '202602', '202701'],
+    ['the 31st', new Date(2026, 2, 31), '202504', '202603'],
+  ])('requests the last 12 months from %s', (_label, now, start, end) => {
+    jest.useFakeTimers({ now })
     mockQueryReturn(undefined)
     const store = buildStore(true)
     renderHook(() => useDashboardLockStats(), { wrapper: createWrapper(store) })
 
     const [params] = mockUseGetLockStat.mock.calls[0]
-    expect(params).toEqual({ month: '202611' })
+    expect(params).toEqual({ 'start-month': start, 'end-month': end })
   })
 
   it('returns an empty data array and zeroed stats when there is no data', () => {
@@ -76,7 +80,7 @@ describe('useDashboardLockStats', () => {
     })
 
     expect(result.current.data).toHaveLength(0)
-    expect(result.current.latestStats).toEqual({
+    expect(result.current.maxStats).toEqual({
       monthly_active_users: 0,
       monthly_active_clients: 0,
     })
@@ -90,9 +94,27 @@ describe('useDashboardLockStats', () => {
     })
 
     expect(result.current.data).toHaveLength(1)
-    expect(result.current.latestStats).toEqual({
+    expect(result.current.maxStats).toEqual({
       monthly_active_users: 10,
       monthly_active_clients: 5,
+    })
+  })
+
+  it('returns the highest month for each field in any response order', () => {
+    mockQueryReturn([
+      { monthly_active_users: 10, monthly_active_clients: 9, month: '202609' },
+      { monthly_active_users: 30, monthly_active_clients: 2, month: '202611' },
+      { monthly_active_users: 5, monthly_active_clients: 4, month: '202610' },
+    ])
+    const store = buildStore(true)
+    const { result } = renderHook(() => useDashboardLockStats(), {
+      wrapper: createWrapper(store),
+    })
+
+    expect(result.current.data).toHaveLength(3)
+    expect(result.current.maxStats).toEqual({
+      monthly_active_users: 30,
+      monthly_active_clients: 9,
     })
   })
 
@@ -103,7 +125,7 @@ describe('useDashboardLockStats', () => {
       wrapper: createWrapper(store),
     })
 
-    expect(result.current.latestStats).toEqual({
+    expect(result.current.maxStats).toEqual({
       monthly_active_users: 7,
       monthly_active_clients: 0,
     })
@@ -115,12 +137,12 @@ describe('useDashboardLockStats', () => {
     const { result, rerender } = renderHook(() => useDashboardLockStats(), {
       wrapper: createWrapper(store),
     })
-    const { data, latestStats } = result.current
+    const { data, maxStats } = result.current
 
     rerender()
 
     expect(result.current.data).toBe(data)
-    expect(result.current.latestStats).toBe(latestStats)
+    expect(result.current.maxStats).toBe(maxStats)
     expect(mockUseGetLockStat.mock.calls[1][0]).toBe(mockUseGetLockStat.mock.calls[0][0])
   })
 

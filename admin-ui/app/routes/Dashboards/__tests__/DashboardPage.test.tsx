@@ -46,7 +46,7 @@ jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
 
 jest.mock('Routes/Dashboards/hooks', () => ({
   useDashboardLockStats: jest.fn(() => ({
-    latestStats: null,
+    maxStats: null,
     isLoading: false,
     data: null,
   })),
