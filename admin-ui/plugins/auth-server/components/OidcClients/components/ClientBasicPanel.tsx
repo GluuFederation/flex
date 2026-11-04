@@ -135,22 +135,12 @@ const ClientBasicPanel = ({
   )
 
   const responseTypeOptions = useMemo(() => {
-    const supported = oidcConfiguration?.grantTypesSupported
+    const supported = oidcConfiguration?.responseTypesSupported?.flat()
     const selected = (formik.values.responseTypes as string[] | undefined) ?? []
-    const implicit = !supported || supported.includes(GRANT_TYPES.IMPLICIT)
-    const allowed: Partial<Record<string, boolean>> = {
-      [RESPONSE_TYPES.TOKEN]: implicit,
-      [RESPONSE_TYPES.ID_TOKEN]:
-        implicit || !!oidcConfiguration?.allowIdTokenWithoutImplicitGrantType,
-    }
     return Object.values(RESPONSE_TYPES).filter(
-      (value) => selected.includes(value) || (allowed[value] ?? true),
+      (value) => !supported || supported.includes(value) || selected.includes(value),
     )
-  }, [
-    oidcConfiguration?.grantTypesSupported,
-    oidcConfiguration?.allowIdTokenWithoutImplicitGrantType,
-    formik.values.responseTypes,
-  ])
+  }, [oidcConfiguration?.responseTypesSupported, formik.values.responseTypes])
 
   const [redirectUriItems, setRedirectUriItems] = useState<GluuDynamicListItem[]>([])
   const isRedirectUriSyncingRef = useRef(false)
