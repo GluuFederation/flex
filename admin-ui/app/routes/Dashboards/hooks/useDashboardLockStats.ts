@@ -1,7 +1,10 @@
 import { useMemo } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { useGetLockStat, type JsonNode } from 'JansConfigApi'
+import { createDate, DATE_FORMATS, formatDate } from '@/utils/dayjsUtils'
 import type { LockStatEntry } from '../types'
+
+const EMPTY_LOCK_STATS: LockStatEntry[] = []
 
 const transformLockStats = (data: JsonNode[] | undefined): LockStatEntry[] => {
   if (!data || !Array.isArray(data)) {
@@ -22,8 +25,9 @@ interface UseDashboardLockStatsOptions {
 export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}) => {
   const { enabled = true } = options
   const hasSession = useAppSelector((state) => state.authReducer?.hasSession)
+  const params = useMemo(() => ({ month: formatDate(createDate(), DATE_FORMATS.MONTH_KEY) }), [])
 
-  const query = useGetLockStat(undefined, {
+  const { data = EMPTY_LOCK_STATS, isLoading } = useGetLockStat(params, {
     query: {
       enabled: hasSession === true && enabled,
       select: transformLockStats,
@@ -31,34 +35,13 @@ export const useDashboardLockStats = (options: UseDashboardLockStatsOptions = {}
     },
   })
 
-  const latestStats = useMemo(() => {
-    const data = query.data
-    if (!data || data.length === 0) {
-      return {
-        monthly_active_users: 0,
-        monthly_active_clients: 0,
-      }
-    }
+  const latestStats = useMemo(
+    () => ({
+      monthly_active_users: data[0]?.monthly_active_users ?? 0,
+      monthly_active_clients: data[0]?.monthly_active_clients ?? 0,
+    }),
+    [data],
+  )
 
-    if (data.length === 1) {
-      return {
-        monthly_active_users: data[0].monthly_active_users ?? 0,
-        monthly_active_clients: data[0].monthly_active_clients ?? 0,
-      }
-    }
-
-    return {
-      monthly_active_users: data.reduce((sum, entry) => sum + (entry.monthly_active_users ?? 0), 0),
-      monthly_active_clients: data.reduce(
-        (sum, entry) => sum + (entry.monthly_active_clients ?? 0),
-        0,
-      ),
-    }
-  }, [query.data])
-
-  return {
-    ...query,
-    data: query.data ?? [],
-    latestStats,
-  }
+  return { data, isLoading, latestStats }
 }
