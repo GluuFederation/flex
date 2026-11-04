@@ -7,7 +7,10 @@ import DashboardPage from 'Routes/Dashboards/DashboardPage'
 import { useHealthStatus } from 'Plugins/admin/components/Health/hooks'
 import { useClients } from 'Plugins/auth-server/components/OidcClients/hooks'
 import { useLicenseDetails } from '@/routes/License/hooks/useLicenseDetails'
+import { useDashboardLockStats } from 'Routes/Dashboards/hooks'
 import { JANS_SERVICES } from '@/constants/jansServices'
+
+const mockUsePermission = jest.fn()
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -20,8 +23,12 @@ jest.mock('@/cedarling', () => ({
 }))
 
 jest.mock('@/cedarling/utility', () => ({
-  ADMIN_UI_RESOURCES: { Dashboard: 'dashboard' },
-  CEDAR_RESOURCE_SCOPES: { dashboard: [] },
+  ADMIN_UI_RESOURCES: { Dashboard: 'dashboard', Lock: 'lock' },
+  CEDAR_RESOURCE_SCOPES: { dashboard: [], lock: [] },
+}))
+
+jest.mock('@/cedarling/hooks/usePermission', () => ({
+  usePermission: (resource: string) => mockUsePermission(resource),
 }))
 
 jest.mock('@/routes/License/hooks/useLicenseDetails', () => ({
@@ -104,6 +111,10 @@ const defaultClientsImpl = jest.mocked(useClients).getMockImplementation()
 const timeoutError = () => new Error('timeout of 60000ms exceeded')
 
 describe('DashboardPage', () => {
+  beforeEach(() => {
+    mockUsePermission.mockReturnValue({ canRead: true, canWrite: true, canDelete: true })
+  })
+
   afterEach(() => {
     jest.mocked(useHealthStatus).mockImplementation(defaultHealthImpl)
     jest.mocked(useClients).mockImplementation(defaultClientsImpl)
@@ -169,5 +180,25 @@ describe('DashboardPage', () => {
     render(<DashboardPage />, { wrapper: Wrapper })
 
     expect(screen.queryByText(/Some dashboard data could not be loaded/)).not.toBeInTheDocument()
+  })
+
+  it.each([
+    ['Lock is running and the user can read it', 'up', true, true],
+    ['the user cannot read Lock', 'up', false, false],
+    ['Lock is not installed', 'unknown', true, false],
+  ])('sets the Lock stats request when %s', (_label, status, canReadLock, enabled) => {
+    mockUsePermission.mockImplementation((resource: string) => ({
+      canRead: resource === 'lock' ? canReadLock : true,
+      canWrite: true,
+      canDelete: true,
+    }))
+    jest.mocked(useHealthStatus).mockReturnValue({
+      ...defaultHealthImpl!(),
+      allServices: [{ name: JANS_SERVICES.LOCK, status }],
+    } as ReturnType<typeof useHealthStatus>)
+
+    render(<DashboardPage />, { wrapper: Wrapper })
+
+    expect(jest.mocked(useDashboardLockStats)).toHaveBeenLastCalledWith({ enabled })
   })
 })

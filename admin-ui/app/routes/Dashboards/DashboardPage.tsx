@@ -46,6 +46,7 @@ import {
 } from '@/utils/dayjsUtils'
 
 const DASHBOARD_RESOURCE_ID = ADMIN_UI_RESOURCES.Dashboard
+const LOCK_RESOURCE_ID = ADMIN_UI_RESOURCES.Lock
 
 const isLoadFailure = (error: Error | GenericResponse | null | void): boolean =>
   error instanceof Error && !isFourZeroThreeError(error)
@@ -100,6 +101,7 @@ const DashboardPage = () => {
   const { hasSession } = useAppSelector((state) => state.authReducer)
 
   const { canRead: canViewDashboard } = usePermission(DASHBOARD_RESOURCE_ID)
+  const { canRead: canReadLock } = usePermission(LOCK_RESOURCE_ID)
   const cedarInitialized = useAppSelector((state) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useAppSelector((state) => state.cedarPermissions?.isInitializing)
 
@@ -141,7 +143,7 @@ const DashboardPage = () => {
     isLoading: lockLoading,
     data: lockData,
   } = useDashboardLockStats({
-    enabled: isLockServiceAvailable,
+    enabled: isLockServiceAvailable && canReadLock,
   })
 
   const dateRange: MauDateRange = useMemo(
