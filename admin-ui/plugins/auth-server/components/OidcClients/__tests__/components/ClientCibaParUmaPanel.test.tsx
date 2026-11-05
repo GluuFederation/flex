@@ -221,7 +221,7 @@ it('Should render with empty scripts list gracefully', () => {
 })
 
 describe('UMA resource links', () => {
-  const renderWithUma = () => {
+  const renderWithUma = (viewOnly = true) => {
     jest.mocked(useClientUmaResources).mockReturnValue({
       umaResources: [
         {
@@ -243,7 +243,7 @@ describe('UMA resource links', () => {
             client={mockClientData}
             scripts={mockScripts}
             formik={formik}
-            viewOnly
+            viewOnly={viewOnly}
             modifiedFields={{}}
             setModifiedFields={mockSetModifiedFields}
             setCurrentStep={jest.fn()}
@@ -277,5 +277,17 @@ describe('UMA resource links', () => {
     expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/scope/edit/SCOPE-1')
     fireEvent.click(screen.getByText('CLIENT-2'))
     expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/client/edit/CLIENT-2')
+  })
+
+  it('hides both UMA delete buttons in view mode', () => {
+    renderWithUma()
+    expect(screen.queryByRole('button', { name: 'X' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /delete/i })).not.toBeInTheDocument()
+  })
+
+  it('shows both UMA delete buttons when the client is editable', () => {
+    renderWithUma(false)
+    expect(screen.getByRole('button', { name: 'X', hidden: true })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument()
   })
 })

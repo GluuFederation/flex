@@ -484,15 +484,21 @@ const ClientCibaParUmaPanel = ({
                             >
                               {uma.name as string}
                             </Box>
-                            <Box
-                              sx={{
-                                width: '10%',
-                              }}
-                            >
-                              <Button color="danger" size="sm" onClick={() => handleDeleteUMA(uma)}>
-                                <span className="fw-bold">X</span>
-                              </Button>
-                            </Box>
+                            {!viewOnly && (
+                              <Box
+                                sx={{
+                                  width: '10%',
+                                }}
+                              >
+                                <Button
+                                  color="danger"
+                                  size="sm"
+                                  onClick={() => handleDeleteUMA(uma)}
+                                >
+                                  <span className="fw-bold">X</span>
+                                </Button>
+                              </Box>
+                            )}
                           </Box>
                         </Box>
                       ))}
@@ -639,11 +645,13 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
             </Card>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-              <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
-                {t('actions.delete')}
-              </Button>
-            </Box>
+            {!viewOnly && (
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
+                  {t('actions.delete')}
+                </Button>
+              </Box>
+            )}
           </>
         </GluuViewDetailModal>
 
