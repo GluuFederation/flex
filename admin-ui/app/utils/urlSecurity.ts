@@ -1,3 +1,5 @@
+import { isJwtExpired } from '@/utils/jwtDecode'
+
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:'])
 const ABSOLUTE_URL_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i
 
@@ -30,6 +32,7 @@ export const buildSafeLogoutUrl = (
   postLogoutRedirectUri: string | null | undefined,
   state: string,
   idTokenHint?: string | null,
+  clientId?: string | null,
 ): string | null => {
   const safeEndSessionEndpoint = buildSafeNavigationUrl(endSessionEndpoint)
   if (!safeEndSessionEndpoint) {
@@ -40,8 +43,13 @@ export const buildSafeLogoutUrl = (
   logoutUrl.searchParams.set('state', state)
 
   const trimmedIdTokenHint = idTokenHint?.trim()
-  if (trimmedIdTokenHint) {
+  if (trimmedIdTokenHint && !isJwtExpired(trimmedIdTokenHint)) {
     logoutUrl.searchParams.set('id_token_hint', trimmedIdTokenHint)
+  }
+
+  const trimmedClientId = clientId?.trim()
+  if (trimmedClientId) {
+    logoutUrl.searchParams.set('client_id', trimmedClientId)
   }
 
   const configuredPostLogoutRedirectUri = postLogoutRedirectUri?.trim()
