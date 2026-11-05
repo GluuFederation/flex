@@ -69,8 +69,8 @@
     "access_denied": "Accès refusé",
     "access_denied_message": "Vous n'êtes pas autorisé à accéder à cette page",
     "access_contact_admin": "Veuillez contacter l'administrateur pour obtenir de l'aide",
-    "mau_users": "Max. MAU pour LTM (Verrouillage)",
-    "mau_clients": "Clients Jans Lock"
+    "mau_users": "Max. MAU pour LTM (Lock)",
+    "mau_clients": "Max. clients pour LTM (Lock)"
   },
   "menus": {
     "hello": "Bonjour {{name}}",

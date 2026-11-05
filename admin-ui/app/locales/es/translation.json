@@ -164,7 +164,7 @@
     "access_denied_message": "No tienes permiso para acceder a esta página",
     "access_contact_admin": "Por favor contacta a tu administrador para más información",
     "mau_users": "Máx. MAU para LTM (Lock)",
-    "mau_clients": "Clientes de Jans Lock"
+    "mau_clients": "Máx. clientes para LTM (Lock)"
   },
   "fields": {
     "actions": "Acciones",

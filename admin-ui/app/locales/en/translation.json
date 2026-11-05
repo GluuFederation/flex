@@ -164,7 +164,7 @@
     "access_denied_message": "You do not have permission to access this page",
     "access_contact_admin": "Please contact your administrator for more information",
     "mau_users": "Max. MAU for LTM (Lock)",
-    "mau_clients": "Jans Lock Clients"
+    "mau_clients": "Max. Clients for LTM (Lock)"
   },
   "fields": {
     "add_attribute": "Add User Claim",
