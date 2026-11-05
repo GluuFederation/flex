@@ -533,6 +533,7 @@ jansScope: https://jans.io/oauth/lock/read-all
 jansScope: jans_stat
 jansScope: https://jans.io/oauth/lock/telemetry.readonly
 jansScope: https://jans.io/oauth/config/data.readonly
+jansScope: https://jans.io/oauth/lock/stat.readonly
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 
@@ -544,6 +545,7 @@ jansScope: https://jans.io/oauth/lock-config.write
 jansScope: https://jans.io/oauth/lock/telemetry.write
 jansScope: https://jans.io/oauth/lock/log.write
 jansScope: https://jans.io/oauth/lock/health.write
+jansScope: https://jans.io/oauth/config/lock.admin
 objectClass: top
 objectClass: adminUIResourceScopesMapping
 

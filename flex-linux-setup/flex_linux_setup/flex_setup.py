@@ -32,7 +32,6 @@ app_versions = {
     "JANS_APP_VERSION": "0.0.0",
     "JANS_BUILD": "-nightly",
     "FLEX_RELEASE_TAG": "",
-    "NODE_VERSION": "v24.22.1",
     "GLUU_FLEX_POLICY_STORE": 'v2.0.0',
 }
 
@@ -81,7 +80,8 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-app-verison', help="Jannsen applications version",
                         default=app_versions['JANS_APP_VERSION'])
     parser.add_argument('--jans-app-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
-    parser.add_argument('--node-version', help="Node version", default=app_versions['NODE_VERSION'])
+    parser.add_argument('--node-version', help=argparse.SUPPRESS)
+
 
     return parser
 
@@ -144,7 +144,6 @@ def set_app_versions_from_arguments(brgsp):
 
     app_versions['JANS_APP_VERSION'] = brgsp.jans_app_verison
     app_versions['JANS_BUILD'] = brgsp.jans_app_build
-    app_versions['NODE_VERSION'] = brgsp.node_version
     app_versions['SETUP_BRANCH'] = brgsp.jans_setup_branch
     app_versions['FLEX_BRANCH'] = brgsp.flex_branch
     app_versions['JANS_BRANCH'] = brgsp.jans_branch
@@ -266,7 +265,6 @@ from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
 from setup_app.utils.collect_properties import CollectProperties
-from setup_app.installers.node import NodeInstaller
 from setup_app.installers.httpd import HttpdInstaller
 from setup_app.installers.config_api import ConfigApiInstaller
 from setup_app.installers.jetty import JettyInstaller
@@ -298,7 +296,6 @@ if not installed:
         base.argsp = arg_parser.get_parser()
         set_app_versions_from_arguments(base.argsp)
 
-node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
 jans_installer = JansInstaller()
 config_api_installer = ConfigApiInstaller()
@@ -399,8 +396,6 @@ class flex_installer(JettyInstaller):
 
         if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
             self.source_files += [
-                ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']),
-                 os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                 (base.determine_jans_artifact_url(
                          'maven/io/jans/jans-config-api/plugins/admin-ui-plugin/{0}/admin-ui-plugin-{0}-distribution.jar'.format(
                              base.current_app.app_info['jans_version'])),
@@ -418,8 +413,6 @@ class flex_installer(JettyInstaller):
                              base.current_app.app_info['jans_version'])), self.agama_pw_fn)
             ]
 
-            if argsp.update_admin_ui:
-                self.source_files.pop(0)
 
         for download_url, target in self.source_files:
             if force or not os.path.exists(target):
@@ -986,9 +979,6 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
 
         if install_components['admin_ui']:
-            if not node_installer.installed():
-                print("Installing node")
-                node_installer.install()
             installer_obj.install_gluu_admin_ui()
         if install_components['casa']:
             installer_obj.install_casa()

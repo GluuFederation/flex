@@ -26,7 +26,7 @@ FROM ${FLEX_PERSISTENCE_LOADER_IMAGE} AS flex-persistence-loader-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.20@sha256:1aa69057bcd3eafa77738ec58ba8b969fd621212e3f280d3774e64409bf6333d
+FROM bellsoft/liberica-openjdk-alpine:17.0.21@sha256:a16eb904aa472d560ff3fb6a77de0efc3482be938210d2caef0bd1f89c10d356
 
 # hadolint ignore=DL3018
 RUN apk update \
@@ -70,7 +70,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=55d68f4c54a89a8e020485c252dad3f8524f54d8
+ENV JANS_SOURCE_VERSION=324c6d78038c8a4eb13e5af7480f9f01893586c7
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -166,11 +166,6 @@ RUN cp /app/templates/nginx/*-upstream.conf /etc/nginx/jans-aio/ \
     && cp /app/templates/nginx/*-location.conf /etc/nginx/jans-aio
 
 RUN touch /run/nginx/nginx.pid
-
-# a workaround to block compromised emudhra certs while waiting updates from jvm distro
-COPY contrib/emudhra_blocked.certs /tmp/emudhra_blocked.certs
-RUN cat /tmp/emudhra_blocked.certs >> /opt/java/lib/security/blocked.certs \
-    && rm -f /tmp/emudhra_blocked.certs
 
 # create non-root user
 RUN adduser -s /bin/sh -h /home/1000 -D -u 1000 flex \

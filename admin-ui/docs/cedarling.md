@@ -131,7 +131,7 @@ A failed authorization is not cached: the catch path returns `false` for that ca
 
 After the first `usePermission` call on a page, every subsequent render costs nothing: no WASM, no network, just a cache hit.
 
-A 403 from the Config API is still possible if a Cedarling decision and the server-side policy check disagree. Cedarling is the **early gate** for what the user can see and click, not the final word. The Config API always revalidates. When the API disagrees, the user sees a toast and the affected query fails. Cached decisions stay.
+A 403 from the Config API is still possible if a Cedarling decision and the server-side policy check disagree. Cedarling is the **early gate** for what the user can see and click, not the final word. The Config API always revalidates. When the API disagrees, the affected query fails. The app treats every Config API 403 as an expired session ([`installInterceptors`](../orval/interceptors.ts)), so the user sees the Session Expired popup. Cached decisions stay.
 
 ## Logging
 

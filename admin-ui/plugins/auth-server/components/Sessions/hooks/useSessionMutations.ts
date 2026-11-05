@@ -45,22 +45,18 @@ export const useDeleteSessionWithAudit = (
         throw error
       }
 
-      try {
-        await logAuditUserAction({
-          userinfo: auditContext.userinfo,
-          action: DELETION,
-          resource: SESSION,
-          message: message || 'Session deleted',
-          client_id: auditContext.client_id,
-          payload: { sessionId, username },
-        })
-      } catch (auditError) {
-        logger.error(
-          'Audit logging failed:',
-          auditError instanceof Error ? auditError : String(auditError),
-        )
-        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
-      }
+      await logAuditUserAction({
+        userinfo: auditContext.userinfo,
+        action: DELETION,
+        resource: SESSION,
+        message: message || 'Session deleted',
+        client_id: auditContext.client_id,
+        payload: { sessionId, username },
+        onError: (auditError) => {
+          logger.error('Audit logging failed:', auditError)
+          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+        },
+      })
 
       try {
         await invalidateSessionQueries(queryClient)
@@ -107,22 +103,18 @@ export const useRevokeSessionWithAudit = (
         throw error
       }
 
-      try {
-        await logAuditUserAction({
-          userinfo: auditContext.userinfo,
-          action: DELETION,
-          resource: SESSION,
-          message: message || 'Session revoked',
-          client_id: auditContext.client_id,
-          payload: { userDn, username },
-        })
-      } catch (auditError) {
-        logger.error(
-          'Audit logging failed:',
-          auditError instanceof Error ? auditError : String(auditError),
-        )
-        dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
-      }
+      await logAuditUserAction({
+        userinfo: auditContext.userinfo,
+        action: DELETION,
+        resource: SESSION,
+        message: message || 'Session revoked',
+        client_id: auditContext.client_id,
+        payload: { userDn, username },
+        onError: (auditError) => {
+          logger.error('Audit logging failed:', auditError)
+          dispatch(updateToast(true, 'warning', t('messages.audit_logging_failed')))
+        },
+      })
 
       try {
         await invalidateSessionQueries(queryClient)

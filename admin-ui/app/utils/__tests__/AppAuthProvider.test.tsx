@@ -6,7 +6,11 @@ import { AuthorizationServiceConfiguration } from '@openid/appauth'
 import i18n from '@/i18n'
 import AppAuthProvider from '../AppAuthProvider'
 import authReducer from '@/redux/features/authSlice'
-import licenseReducer from '@/redux/features/licenseSlice'
+import licenseReducer, {
+  checkLicensePresentResponse,
+  setLicenseError,
+  setMauCheckFailed,
+} from '@/redux/features/licenseSlice'
 import { reducer as initReducer } from '@/redux/features/initSlice'
 import cedarPermissionsReducer from '@/redux/features/cedarPermissionsSlice'
 import toastReducer from '@/redux/features/toastSlice'
@@ -73,6 +77,23 @@ describe('AppAuthProvider', () => {
     const { getByText } = renderProvider(buildStore({ isUnderThresholdLimit: false }))
 
     expect(getByText(/monthly active users exceed/i)).toBeInTheDocument()
+  })
+
+  it('blocks sign-in with the MAU check error when the stat call fails', () => {
+    const store = buildStore({ isConfigValid: true, isNoValidLicenseKeyFound: true })
+    const { container, getByText, queryByTestId, queryByText } = renderProvider(store)
+
+    act(() => {
+      store.dispatch(setLicenseError('HTTP 401 Unauthorized'))
+      store.dispatch(setMauCheckFailed(true))
+      store.dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+    })
+
+    expect(getByText('Unable to Verify Monthly Active Users')).toBeInTheDocument()
+    expect(getByText(/\(HTTP 401 Unauthorized\)/)).toBeInTheDocument()
+    expect(queryByText(/free trial/i)).not.toBeInTheDocument()
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument()
+    expect(queryByTestId('admin-content')).not.toBeInTheDocument()
   })
 
   describe('a user without a valid Admin UI role', () => {

@@ -101,6 +101,8 @@
   "serviceDownTitle": "Service Unavailable",
   "mauLimitTitle": "MAU Limit Exceeded",
   "mauLimitDescription": "The monthly active users exceed the allowed threshold of your license subscription plan. Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.",
+  "mauCheckFailedTitle": "Unable to Verify Monthly Active Users",
+  "mauCheckFailedDescription": "Admin UI could not load the monthly active users count, so sign-in is blocked. Please try again later or contact your administrator.",
   "licenseCard": {
     "freeTrial": "Free Trial",
     "description": "Start your free trial to manage and configure your Auth Server using simplified web interface.",
@@ -151,6 +153,7 @@
     "end_date_time": "End Date & Time",
     "system_status": "System Status",
     "status_unavailable": "Service status unavailable",
+    "load_failed": "Some dashboard data could not be loaded, so the values below may be missing or out of date.",
     "config_api": "Config API",
     "config_api_status": "Config API Status",
     "key_cloak": "Keycloak",
@@ -161,7 +164,7 @@
     "access_denied_message": "You do not have permission to access this page",
     "access_contact_admin": "Please contact your administrator for more information",
     "mau_users": "Max. MAU for LTM (Lock)",
-    "mau_clients": "Jan lock clients"
+    "mau_clients": "Max. Clients for LTM (Lock)"
   },
   "fields": {
     "add_attribute": "Add User Claim",
@@ -1342,6 +1345,7 @@
     "no_mau_data": "No data available for the selected period.",
     "aggregation_coming_soon": "Aggregation view coming soon.",
     "error_loading_data": "An error occurred while loading data. Please try again.",
+    "client_load_failed": "This client could not be loaded. Check that the server is reachable and try again.",
     "auth_error_policy_store": "Failed to load policy store",
     "auth_error_authorization_config": "Authorization configuration failed",
     "auth_error_token_fetch": "Token or user info fetch failed",
@@ -1435,6 +1439,7 @@
     "grant_types_required": "Grant types are required",
     "expiration_date_required": "Expiration date is required",
     "expiration_date_future": "Expiration date must be in the future",
+    "rotate_ssa_with_one_time_use": "One-time use and Rotate SSA cannot both be enabled",
     "software_id_min_length": "Software ID must be at least 3 characters",
     "org_id_min_length": "Organization ID must be at least 3 characters",
     "description_min_length": "Description must be at least 10 characters",

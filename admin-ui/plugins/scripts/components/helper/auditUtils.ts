@@ -14,12 +14,10 @@ export const logAuditAction = async (
 
   addAdditionalData(audit, actionType, resource, data)
 
-  try {
-    await postUserAction(audit as UserActionPayload)
-  } catch (error) {
+  void postUserAction(audit as UserActionPayload).catch((error) =>
     logger.error(
       `Audit logging failed for ${actionType}:`,
       error instanceof Error ? error : String(error),
-    )
-  }
+    ),
+  )
 }

@@ -18,4 +18,5 @@ export type LogAuditParams = {
   status?: string
   client_id?: string
   payload?: object | string | number | boolean | null
+  onError?: (error: Error) => void
 }

@@ -166,14 +166,34 @@ describe('licenseListener', () => {
       expect(license().isLicenseValid).toBe(false)
     })
 
-    it('falls back to no-valid-key when the stat call throws', async () => {
+    it('blocks sign-in with the server error and no trial offer when the stat call fails', async () => {
       mockedIsLicenseActive.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
-      mockedGetStat.mockRejectedValue(new Error('stat boom'))
+      mockedGetStat.mockRejectedValue({
+        response: { status: 400, data: { code: '400', message: 'HTTP 401 Unauthorized' } },
+        message: 'Request failed with status code 400',
+      })
 
       store.dispatch(checkLicensePresent(undefined))
 
-      await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
+      await waitFor(() => expect(license().isMauCheckFailed).toBe(true))
+      expect(license().error).toBe('HTTP 401 Unauthorized')
+      expect(license().isNoValidLicenseKeyFound).toBe(false)
       expect(license().isLicenseValid).toBe(false)
+      expect(license().islicenseCheckResultLoaded).toBe(true)
+      expect(license().isValidatingFlow).toBe(false)
+    })
+
+    it('clears a previous stat failure when the license check runs again', async () => {
+      mockedIsLicenseActive.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockRejectedValueOnce(new Error('stat boom'))
+      store.dispatch(checkLicensePresent(undefined))
+      await waitFor(() => expect(license().isMauCheckFailed).toBe(true))
+
+      mockedGetStat.mockResolvedValueOnce([{ monthly_active_users: 10 }] as never)
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(license().isMauCheckFailed).toBe(false)
     })
 
     it.each([
@@ -327,14 +347,66 @@ describe('licenseListener', () => {
   })
 
   describe('Step 5: generateTrialLicense, which activates on the server (GET /trial)', () => {
-    it('marks the license valid when the trial is activated', async () => {
-      mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
+    it('marks the license valid when the trial is activated under its MAU threshold', async () => {
+      mockedGetTrialLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
 
       store.dispatch(generateTrialLicense())
 
       await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(license().isUnderThresholdLimit).toBe(true)
       expect(license().generatingTrialKey).toBe(false)
       expect(license().error).toBe('')
+      expect(mockedIsLicenseActive).not.toHaveBeenCalled()
+    })
+
+    it('keeps the trial license invalid when MAU exceeds its threshold', async () => {
+      mockedGetTrialLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 200 }] as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isUnderThresholdLimit).toBe(false))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
+    })
+
+    it('keeps the trial license invalid and blocks sign-in when the stat call fails', async () => {
+      mockedGetTrialLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockRejectedValue({
+        response: { status: 400, data: { code: '400', message: 'HTTP 401 Unauthorized' } },
+      })
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isMauCheckFailed).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().error).toBe('HTTP 401 Unauthorized')
+      expect(license().generatingTrialKey).toBe(false)
+    })
+
+    it('reads the trial MAU threshold from /isActive when the trial response has none', async () => {
+      mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
+      mockedIsLicenseActive.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(mockedIsLicenseActive).toHaveBeenCalledTimes(1)
+      expect(mockedGetStat).toHaveBeenCalled()
+    })
+
+    it('keeps the trial license invalid when no MAU threshold can be resolved', async () => {
+      mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
+      mockedIsLicenseActive.mockResolvedValue({ success: false } as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
     })
 
     it('stores the server message and stops loading when the trial is not activated', async () => {

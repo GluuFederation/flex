@@ -16,7 +16,7 @@ const validValues = {
   software_roles: ['role-1'],
   grant_types: ['authorization_code'],
   one_time_use: true,
-  rotate_ssa: true,
+  rotate_ssa: false,
   is_expirable: false,
   expirationDate: null,
 }
@@ -60,6 +60,20 @@ describe('getSsaValidationSchema', () => {
     await expect(schema.validate({ ...validValues, grant_types: [] })).rejects.toThrow(
       'validation_messages.grant_types_min',
     )
+  })
+
+  describe('one-time use and rotation rules', () => {
+    it('rejects an SSA that is both one-time use and rotated', async () => {
+      await expect(
+        schema.validate({ ...validValues, one_time_use: true, rotate_ssa: true }),
+      ).rejects.toThrow('validation_messages.rotate_ssa_with_one_time_use')
+    })
+
+    it('accepts rotation when the SSA is not one-time use', async () => {
+      await expect(
+        schema.isValid({ ...validValues, one_time_use: false, rotate_ssa: true }),
+      ).resolves.toBe(true)
+    })
   })
 
   describe('expiration date rules', () => {

@@ -17,6 +17,7 @@ import {
   checkUserLicenseKeyResponse,
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
+  setMauCheckFailed,
   setValidatingFlow,
   setLicenseError,
   checkLicensePresent,
@@ -48,6 +49,9 @@ const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
   if (typeof asApiError?.response?.data?.responseMessage === 'string') {
     return asApiError.response!.data!.responseMessage!
   }
+  if (typeof asApiError?.response?.data?.message === 'string') {
+    return asApiError.response!.data!.message!
+  }
   return error instanceof Error ? error.message : String(error)
 }
 
@@ -75,7 +79,10 @@ const showNoValidLicense = (dispatch: AppDispatch): void => {
   dispatch(generateTrialLicenseResponse(null))
 }
 
-const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): Promise<void> => {
+const checkMauThreshold = async (
+  dispatch: AppDispatch,
+  mau_threshold: number,
+): Promise<boolean> => {
   await ensureApiToken(dispatch)
   try {
     const data = (await getStat({
@@ -87,15 +94,17 @@ const checkMauThreshold = async (dispatch: AppDispatch, mau_threshold: number): 
     if (limit > (firstMau ?? 0) || !data?.length) {
       dispatch(checkLicensePresentResponse({ isLicenseValid: true }))
       dispatch(checkThresholdLimit({ isUnderThresholdLimit: true }))
-    } else {
-      dispatch(checkThresholdLimit({ isUnderThresholdLimit: false }))
-      dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+      return true
     }
+    dispatch(checkThresholdLimit({ isUnderThresholdLimit: false }))
+    dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+    return false
   } catch (err) {
     logger.error('Error checking MAU threshold:', resolveApiErrorMessage(err as Error))
     dispatch(setLicenseError(getLicenseErrorMessage(err as Error | ApiErrorLike)))
-    dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
+    dispatch(setMauCheckFailed(true))
     dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+    return false
   } finally {
     dispatch(setValidatingFlow({ isValidatingFlow: false }))
   }
@@ -130,8 +139,20 @@ const startTrialLicense = async (dispatch: AppDispatch): Promise<void> => {
     await ensureApiToken(dispatch)
     const response = (await getTrialLicense()) as GenericResponse | null
     dispatch(generateTrialLicenseResponse(response))
-    dispatch(checkLicensePresentResponse({ isLicenseValid: response?.success ?? false }))
-    if (response) {
+    if (!response?.success) {
+      dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+      if (response) {
+        dispatch(checkUserLicenseKeyResponse(response))
+      }
+      return
+    }
+    const mauThreshold = await resolveActivatedMauThreshold(response)
+    if (mauThreshold === null) {
+      logger.error('Could not confirm the trial license with a valid mau_threshold.')
+      showNoValidLicense(dispatch)
+      return
+    }
+    if (await checkMauThreshold(dispatch, mauThreshold)) {
       dispatch(checkUserLicenseKeyResponse(response))
     }
   } catch (err) {
