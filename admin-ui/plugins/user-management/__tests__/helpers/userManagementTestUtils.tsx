@@ -42,9 +42,11 @@ jest.mock('JansConfigApi', () => ({
     refetch: jest.fn(),
   })),
   getGetUserQueryKey: jest.fn(() => ['users']),
+  getGetUserByInumQueryKey: jest.fn((inum: string) => [`/mgt/configuser/${inum}`]),
   useGetAttributes: jest.fn(() => ({ data: { entries: [] }, isLoading: false })),
   usePostUser: jest.fn(() => ({ mutate: jest.fn(), mutateAsync: jest.fn(), isPending: false })),
   usePutUser: jest.fn(() => ({ mutate: jest.fn(), mutateAsync: jest.fn(), isPending: false })),
+  useGetUserByInum: jest.fn(() => ({ data: undefined, isLoading: false, isFetched: false })),
   useGetPropertiesPersistence: jest.fn(() => ({
     data: { persistenceType: 'ldap' },
     isLoading: false,

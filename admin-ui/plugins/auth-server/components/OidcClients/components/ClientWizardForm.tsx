@@ -355,6 +355,7 @@ const ClientWizardForm = ({
                 onHasDataChange={handleTokenHasDataChange}
                 activePattern={tokenActivePattern}
                 filterField={tokenSearchFilter}
+                viewOnly={isViewOnly}
               />
             </div>
           )

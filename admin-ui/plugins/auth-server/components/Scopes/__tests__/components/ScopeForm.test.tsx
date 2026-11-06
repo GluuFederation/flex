@@ -217,6 +217,62 @@ it('shows associated clients as links for a non-UMA scope', () => {
   expect(screen.getByRole('link', { name: '1202.def' })).toBeInTheDocument()
 })
 
+it('links associated clients to the read-only client page without Clients write', () => {
+  renderScopeForm({
+    ...mockOpenidScope,
+    clients: [{ inum: '1201.abc', displayName: 'SCIM client' }],
+  })
+
+  expect(screen.getByRole('link', { name: 'SCIM client' })).toHaveAttribute(
+    'href',
+    expect.stringMatching(/\/client\/view\/1201\.abc$/),
+  )
+})
+
+it('links associated clients to the client edit page with Clients write', () => {
+  const writerStore = configureStore({
+    reducer: combineReducers({
+      authReducer: (state = INIT_STATE) => state,
+      cedarPermissions: (
+        state = {
+          permissions: { 'Clients::write': true },
+          loading: false,
+          error: null,
+          initialized: true,
+          isInitializing: false,
+        },
+      ) => state,
+      webhookReducer: (state = { webhookModal: false }) => state,
+      noReducer: (state = {}) => state,
+    }),
+  })
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  render(
+    <QueryClientProvider client={queryClient}>
+      <AppTestWrapper>
+        <Provider store={writerStore}>
+          <ScopeForm
+            scope={{
+              ...mockOpenidScope,
+              clients: [{ inum: '1201.abc', displayName: 'SCIM client' }],
+            }}
+            scripts={mockScripts}
+            attributes={mockClaims}
+            handleSubmit={jest.fn()}
+            modifiedFields={{}}
+            setModifiedFields={jest.fn()}
+          />
+        </Provider>
+      </AppTestWrapper>
+    </QueryClientProvider>,
+  )
+
+  expect(screen.getByRole('link', { name: 'SCIM client' })).toHaveAttribute(
+    'href',
+    expect.stringMatching(/\/client\/edit\/1201\.abc$/),
+  )
+})
+
 it('says so when no clients are associated', () => {
   renderScopeForm(mockOpenidScope)
 

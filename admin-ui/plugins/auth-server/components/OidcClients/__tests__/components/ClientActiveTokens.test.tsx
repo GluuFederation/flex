@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import ClientActiveTokens from 'Plugins/auth-server/components/OidcClients/components/ClientActiveTokens'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
@@ -85,4 +85,31 @@ it('Should call onExportReady callback if provided', () => {
   })
   // onExportReady is called with the export function after mount
   expect(onExportReady).toHaveBeenCalledWith(expect.any(Function))
+})
+
+describe('revoke action', () => {
+  const mockTokenRows = () => {
+    const { useClientTokens } = jest.requireMock(
+      'Plugins/auth-server/components/OidcClients/hooks',
+    ) as { useClientTokens: jest.Mock }
+    useClientTokens.mockReturnValueOnce({
+      rows: [{ id: 'token-1', tokenCode: 'code-1', deletable: true }],
+      totalItems: 1,
+      isLoading: false,
+      revokeToken: jest.fn(),
+      refetch: jest.fn(),
+    })
+  }
+
+  it('shows the revoke action when the client is editable', () => {
+    mockTokenRows()
+    render(<ClientActiveTokens client={mockClient} />, { wrapper: Wrapper })
+    expect(screen.getByRole('button', { name: /revoke/i })).toBeInTheDocument()
+  })
+
+  it('hides the revoke action in view mode', () => {
+    mockTokenRows()
+    render(<ClientActiveTokens client={mockClient} viewOnly />, { wrapper: Wrapper })
+    expect(screen.queryByRole('button', { name: /revoke/i })).not.toBeInTheDocument()
+  })
 })

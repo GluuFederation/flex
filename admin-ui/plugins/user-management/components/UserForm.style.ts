@@ -61,8 +61,9 @@ export const useStyles = makeStyles<UserFormStylesParams>()((_, { isDark, themeC
         createFormInputFocusStyles(inputColors),
 
       '& input:disabled, & select:disabled, & textarea:disabled, & .custom-select:disabled': {
-        opacity: OPACITY.DISABLED,
+        opacity: OPACITY.FULL,
         cursor: 'not-allowed',
+        backgroundColor: inputBg,
       },
 
       '& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active':

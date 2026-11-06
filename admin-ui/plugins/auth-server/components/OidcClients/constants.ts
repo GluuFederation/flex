@@ -15,8 +15,6 @@ export const CLIENT_SECRET_MASK = '••••••••'
 export const TWO_DASH_PLACEHOLDER = '--'
 
 export const SCOPE_INUM_PARAM = 'scopeInum'
-export const CLIENT_VIEW_QUERY_PARAM = 'view'
-export const CLIENT_VIEW_QUERY_VALUE = '1'
 
 export const FETCH_LIMITS = {
   CLIENT_LIST: 100,

@@ -43,9 +43,11 @@ import { getScopeValidationSchema } from '../helper/validations'
 import { SCOPE_TYPES } from 'Plugins/auth-server/common/Constants'
 import { Link } from 'react-router-dom'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { getFieldPlaceholder } from '@/utils/placeholderUtils'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
-import { useStyles, errorTextStyle } from './styles/ScopeFormPage.style'
+import { useStyles } from './styles/ScopeFormPage.style'
 import { Formik, FormikHelpers } from 'formik'
 
 const ScopeForm: React.FC<ScopeFormProps> = ({
@@ -77,6 +79,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
     [themeColors.background],
   )
   const { navigateBack, navigateToRoute } = useAppNavigation()
+  const { canWrite: canWriteClients } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const clientPath = (inum: string) =>
+    canWriteClients ? ROUTES.AUTH_SERVER_CLIENT_EDIT(inum) : ROUTES.AUTH_SERVER_CLIENT_VIEW(inum)
   const client = scope.clients || []
 
   const authReducer = useAppSelector((state) => state.authReducer)
@@ -169,7 +174,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const goToClientViewPage = (clientId: string, clientData?: ScopeClient) => {
     if (!clientData) return
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(clientId))
+    return navigateToRoute(clientPath(clientId))
   }
 
   return (
@@ -455,7 +460,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       viewOnly={viewOnly}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
-                      <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
+                      <div className={classes.errorText}>
+                        {t(formikProps.errors.claims as string)}
+                      </div>
                     )}
                   </div>
                 )}
@@ -481,7 +488,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                     />
                     {formikProps.errors.dynamicScopeScripts &&
                       formikProps.touched.dynamicScopeScripts && (
-                        <div style={errorTextStyle}>
+                        <div className={classes.errorText}>
                           {t(formikProps.errors.dynamicScopeScripts as string)}
                         </div>
                       )}
@@ -506,7 +513,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       viewOnly={viewOnly}
                     />
                     {formikProps.errors.claims && formikProps.touched.claims && (
-                      <div style={errorTextStyle}>{t(formikProps.errors.claims as string)}</div>
+                      <div className={classes.errorText}>
+                        {t(formikProps.errors.claims as string)}
+                      </div>
                     )}
                   </div>
                 )}
@@ -563,7 +572,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       />
                       {formikProps.errors.umaAuthorizationPolicies &&
                         formikProps.touched.umaAuthorizationPolicies && (
-                          <div style={errorTextStyle}>
+                          <div className={classes.errorText}>
                             {t(formikProps.errors.umaAuthorizationPolicies as string)}
                           </div>
                         )}
@@ -622,7 +631,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                           {client.map((item, key) => (
                             <div key={'spontaneous-client' + key}>
                               <Link
-                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                to={clientPath(item.inum)}
                                 onClick={(e) => {
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)
@@ -690,7 +699,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                               <Link
                                 key={'associated-client' + key}
                                 className={classes.clientPill}
-                                to={ROUTES.AUTH_SERVER_CLIENT_EDIT(item.inum)}
+                                to={clientPath(item.inum)}
                                 onClick={(e) => {
                                   e.preventDefault()
                                   goToClientViewPage(item.inum, item)
@@ -702,6 +711,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                                   backgroundColor={themeColors.badges.filledBadgeBg}
                                   textColor={themeColors.badges.filledBadgeText}
                                   borderColor="transparent"
+                                  className={classes.clientPillBadge}
                                 >
                                   {item.displayName ? item.displayName : item.inum}
                                 </GluuBadge>

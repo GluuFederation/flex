@@ -214,4 +214,83 @@ describe('UserForm', () => {
       })
     })
   })
+
+  describe('view mode', () => {
+    const nicknameAttribute: PersonAttribute = {
+      name: 'nickname',
+      displayName: 'Nickname',
+      description: 'Casual name of the user',
+      dataType: 'string',
+      editType: ['admin'],
+      viewType: ['admin'],
+      oxMultiValuedAttribute: false,
+    }
+    const countryAttribute: PersonAttribute = {
+      name: 'c',
+      displayName: 'Country',
+      description: 'Country of the user',
+      dataType: 'string',
+      editType: ['admin'],
+      viewType: ['admin'],
+      oxMultiValuedAttribute: false,
+    }
+    const emailsAttribute: PersonAttribute = {
+      name: 'secondaryEmail',
+      displayName: 'Secondary Email',
+      description: 'Additional email addresses of the user',
+      dataType: 'string',
+      editType: ['admin'],
+      viewType: ['admin'],
+      oxMultiValuedAttribute: true,
+    }
+    const userWithNickname: CustomUser = {
+      ...mockUser,
+      customAttributes: [
+        snAttribute,
+        { name: 'nickname', values: ['Johnny'] },
+        { name: 'c', values: ['US'] },
+        { name: 'secondaryEmail', values: ['a@x.org', 'b@x.org'] },
+      ] as CustomUser['customAttributes'],
+    }
+
+    const renderView = (viewOnly: boolean) =>
+      renderForm(
+        <UserForm
+          userDetails={userWithNickname}
+          personAttributes={[nicknameAttribute, countryAttribute, emailsAttribute]}
+          onSubmitData={onSubmitData}
+          viewOnly={viewOnly}
+        />,
+      )
+
+    it('shows every field read-only', async () => {
+      await renderView(true)
+      for (const field of ['givenName', 'middleName', 'sn', 'userId', 'displayName', 'mail']) {
+        expect(screen.getByTestId(field)).toBeDisabled()
+      }
+      expect(await screen.findByTestId('nickname')).toBeDisabled()
+      expect(screen.getByTestId('c')).toBeDisabled()
+      expect(screen.getByText('a@x.org')).toBeInTheDocument()
+      expect(screen.getByText('b@x.org')).toBeInTheDocument()
+    })
+
+    it('hides Apply, Cancel, Change Password, claim removal and the claims panel', async () => {
+      await renderView(true)
+      await screen.findByTestId('nickname')
+      expect(screen.getByText(/Back/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Apply/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Change Password/i)).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /remove/i })).not.toBeInTheDocument()
+      expect(screen.queryByText(/Available Claims/i)).not.toBeInTheDocument()
+    })
+
+    it('keeps the same claim editable in edit mode', async () => {
+      await renderView(false)
+      expect(await screen.findByTestId('nickname')).not.toBeDisabled()
+      expect(screen.getByTestId('c')).not.toBeDisabled()
+      expect(screen.getAllByRole('button', { name: /remove/i })).toHaveLength(5)
+      expect(screen.getByText(/Available Claims/i)).toBeInTheDocument()
+    })
+  })
 })

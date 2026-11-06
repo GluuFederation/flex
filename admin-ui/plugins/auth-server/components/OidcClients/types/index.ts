@@ -141,6 +141,7 @@ export type ClientActiveTokensProps = {
   onHasDataChange?: (hasData: boolean) => void
   activePattern?: TokenSearchPattern
   filterField?: TokenSearchFilterField
+  viewOnly?: boolean
 }
 
 export type TokenSearchFilterField = 'expirationDate' | 'creationDate'

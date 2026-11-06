@@ -41,6 +41,7 @@ const UserForm = ({
   userDetails,
   personAttributes,
   isSubmitting = false,
+  viewOnly = false,
 }: Readonly<UserFormProps>) => {
   const { navigateBack } = useAppNavigation()
   const { t } = useTranslation()
@@ -106,13 +107,13 @@ const UserForm = ({
   }, [])
 
   const handleApply = useCallback(() => {
-    if (isSubmitting || !hasChanges || !formik.isValid) {
+    if (viewOnly || isSubmitting || !hasChanges || !formik.isValid) {
       return
     }
 
     setOperations(buildFormOperations(changedFields))
     toggle()
-  }, [isSubmitting, hasChanges, formik.isValid, changedFields, toggle])
+  }, [viewOnly, isSubmitting, hasChanges, formik.isValid, changedFields, toggle])
 
   const handleNavigateBack = useCallback(() => {
     navigateBack(ROUTES.USER_MANAGEMENT)
@@ -220,7 +221,7 @@ const UserForm = ({
         }}
       >
         <FormGroup row className={classes.formRoot}>
-          <Col sm={8}>
+          <Col sm={viewOnly ? 12 : 8}>
             <div ref={formContentRef} className={classes.leftStack}>
               <div className={classes.sectionCard}>
                 {userDetails && (
@@ -241,6 +242,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.firstName"
                     name="givenName"
+                    disabled={viewOnly}
                     required
                     value={formik.values.givenName || ''}
                     formik={formik}
@@ -259,6 +261,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.middleName"
                     name="middleName"
+                    disabled={viewOnly}
                     value={formik.values.middleName || ''}
                     formik={formik}
                     lsize={12}
@@ -277,6 +280,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.sn"
                     name="sn"
+                    disabled={viewOnly}
                     required
                     value={formik.values.sn || ''}
                     formik={formik}
@@ -293,6 +297,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.userName"
                     name="userId"
+                    disabled={viewOnly}
                     required
                     value={formik.values.userId || ''}
                     formik={formik}
@@ -310,6 +315,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.displayName"
                     name="displayName"
+                    disabled={viewOnly}
                     required
                     value={formik.values.displayName || ''}
                     formik={formik}
@@ -328,6 +334,7 @@ const UserForm = ({
                     doc_category={DOC_SECTION}
                     label="fields.mail"
                     name="mail"
+                    disabled={viewOnly}
                     required
                     type="email"
                     value={formik.values.mail || ''}
@@ -399,6 +406,7 @@ const UserForm = ({
                       value={formik.values.status || ''}
                       values={['active', 'inactive']}
                       formik={formik}
+                      disabled={viewOnly}
                       lsize={12}
                       rsize={12}
                       handleChange={handleChange}
@@ -415,12 +423,13 @@ const UserForm = ({
                         data={data}
                         formik={formik}
                         handler={removeSelectedClaimsFromState}
+                        viewOnly={viewOnly}
                       />
                     ))}
                   </div>
                 )}
 
-                {userDetails && (
+                {userDetails && !viewOnly && (
                   <div className={classes.changePasswordRow}>
                     <GluuButton
                       type="button"
@@ -437,29 +446,31 @@ const UserForm = ({
               </div>
             </div>
           </Col>
-          <Col sm={4}>
-            <div
-              className={`${classes.claimsPanelLayout} ${classes.claimsPanelWrap}`}
-              style={formHeight ? { maxHeight: formHeight } : undefined}
-            >
-              <AvailableClaimsPanel
-                searchClaims={searchClaims}
-                setSearchClaims={setSearchClaims}
-                personAttributes={memoizedPersonAttributes}
-                selectedClaims={selectedClaims}
-                setSelectedClaimsToState={setSelectedClaimsToState}
-              />
-            </div>
-          </Col>
+          {!viewOnly && (
+            <Col sm={4}>
+              <div
+                className={`${classes.claimsPanelLayout} ${classes.claimsPanelWrap}`}
+                style={formHeight ? { maxHeight: formHeight } : undefined}
+              >
+                <AvailableClaimsPanel
+                  searchClaims={searchClaims}
+                  setSearchClaims={setSearchClaims}
+                  personAttributes={memoizedPersonAttributes}
+                  selectedClaims={selectedClaims}
+                  setSelectedClaimsToState={setSelectedClaimsToState}
+                />
+              </div>
+            </Col>
+          )}
         </FormGroup>
 
         <GluuThemeFormFooter
           showBack
           onBack={handleNavigateBack}
-          showCancel
+          showCancel={!viewOnly}
           onCancel={handleCancel}
           disableCancel={isSubmitting || !hasChanges}
-          showApply
+          showApply={!viewOnly}
           onApply={handleApply}
           disableApply={isSubmitting || !hasChanges || !formik.isValid}
           applyButtonType="button"
