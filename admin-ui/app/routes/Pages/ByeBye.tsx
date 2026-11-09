@@ -42,6 +42,7 @@ const ByeBye = () => {
       }
 
       dispatch(logoutUser())
+      markForceLogin()
 
       if (config && Object.keys(config).length > 0 && config.endSessionEndpoint) {
         const state = uuidv4()
@@ -50,6 +51,7 @@ const ByeBye = () => {
           config.postLogoutRedirectUri,
           state,
           idToken,
+          config.clientId,
         )
 
         if (sessionEndpoint) {
@@ -57,13 +59,11 @@ const ByeBye = () => {
           return
         }
       } else {
-        markForceLogin()
         const fallbackUri = buildSafeNavigationUrl(config.postLogoutRedirectUri) || APP_BASE_URL
         window.location.href = fallbackUri
         return
       }
 
-      markForceLogin()
       window.location.href = APP_BASE_URL
     }
 

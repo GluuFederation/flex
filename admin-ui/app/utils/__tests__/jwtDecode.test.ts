@@ -1,4 +1,4 @@
-import decodeJwt from '../jwtDecode'
+import decodeJwt, { isJwtExpired } from '../jwtDecode'
 
 const toJwt = (payload: Record<string, string | number | boolean>): string => {
   const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url')
@@ -35,5 +35,25 @@ describe('decodeJwt', () => {
   it('throws when the payload is not valid JSON', () => {
     const body = Buffer.from('not json').toString('base64url')
     expect(() => decodeJwt(`aaa.${body}.ccc`)).toThrow('not valid JSON')
+  })
+})
+
+describe('isJwtExpired', () => {
+  const nowInSeconds = () => Math.floor(Date.now() / 1000)
+
+  it('is true once exp has passed', () => {
+    expect(isJwtExpired(toJwt({ exp: nowInSeconds() - 1 }))).toBe(true)
+  })
+
+  it('is false before exp', () => {
+    expect(isJwtExpired(toJwt({ exp: nowInSeconds() + 60 }))).toBe(false)
+  })
+
+  it('is false when the token has no exp', () => {
+    expect(isJwtExpired(toJwt({ sub: '123' }))).toBe(false)
+  })
+
+  it('is false when the value is not a JWT', () => {
+    expect(isJwtExpired('the-id-token')).toBe(false)
   })
 })
