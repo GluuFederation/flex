@@ -557,14 +557,12 @@ const ClientCibaParUmaPanel = ({
                       control={<Radio color="primary" />}
                       label={t('fields.scope')}
                       checked={showScopeSection === 'scope'}
-                      disabled={viewOnly}
                     />
                     <FormControlLabel
                       value={'expression'}
                       control={<Radio color="primary" />}
                       label={t('fields.scopeExpression')}
                       checked={showScopeSection === 'expression'}
-                      disabled={viewOnly}
                     />
                   </RadioGroup>
                 </Col>

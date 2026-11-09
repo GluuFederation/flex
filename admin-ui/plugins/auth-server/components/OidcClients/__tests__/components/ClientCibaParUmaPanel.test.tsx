@@ -290,4 +290,13 @@ describe('UMA resource links', () => {
     expect(screen.getByRole('button', { name: 'X', hidden: true })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument()
   })
+
+  it('lets a reader switch to the scope expression in view mode', () => {
+    renderWithUma()
+    const expressionRadio = screen.getByRole('radio', { name: 'Scope Expression' })
+    expect(expressionRadio).toBeEnabled()
+    fireEvent.click(expressionRadio)
+    expect(expressionRadio).toBeChecked()
+    expect(screen.queryByText('SCOPE-1')).not.toBeInTheDocument()
+  })
 })
