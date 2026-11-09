@@ -438,6 +438,7 @@ const ClientCibaParUmaPanel = ({
                     value={selectedRptScriptDns}
                     options={rptScriptOptions}
                     disabled={viewOnly}
+                    viewOnly={viewOnly}
                     withWrapper={false}
                     placeholder={t('placeholders.search_here')}
                     onChange={(selectedDns) => {
@@ -601,6 +602,7 @@ const ClientCibaParUmaPanel = ({
                           height="300px"
                           name="scopeExpression"
                           defaultValue={JSON.stringify(scopeExpression, null, 2)}
+                          setOptions={{ useWorker: false }}
                         />
                       ) : (
                         '-'

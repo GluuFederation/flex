@@ -82,6 +82,7 @@ const ClientScriptPanel = ({
               onChange={(selectedDns: string[]) => updateScriptSelection(field, selectedDns)}
               onBlur={() => formik.setFieldTouched?.(field.name, true, false)}
               disabled={viewOnly}
+              viewOnly={viewOnly}
               doc_category={DOC_CATEGORY}
             />
           </div>

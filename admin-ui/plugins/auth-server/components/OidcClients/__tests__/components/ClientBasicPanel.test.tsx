@@ -139,6 +139,31 @@ it('Should render in viewOnly mode without crashing', () => {
   expect(container).toBeTruthy()
 })
 
+it('Should show selections without remove controls in viewOnly mode', () => {
+  render(
+    <Formik<ClientWizardFormValues> initialValues={mockValues} onSubmit={jest.fn()}>
+      {(formik: ClientPanelFormik) => (
+        <ClientBasicPanel
+          client={mockClientData}
+          formik={formik}
+          oidcConfiguration={mockOidcConfiguration as AppConfiguration}
+          viewOnly={true}
+          modifiedFields={{}}
+          setModifiedFields={mockSetModifiedFields}
+        />
+      )}
+    </Formik>,
+    { wrapper: Wrapper },
+  )
+  expect(screen.getByText('code')).toBeInTheDocument()
+  expect(screen.getByText('authorization_code')).toBeInTheDocument()
+  expect(screen.queryByPlaceholderText(/response types/i)).toBeNull()
+  const enabledRemoveButtons = screen
+    .queryAllByRole('button', { name: /remove/i })
+    .filter((button) => !(button as HTMLButtonElement).disabled)
+  expect(enabledRemoveButtons).toHaveLength(0)
+})
+
 const renderResponseTypeOptions = async (
   oidcConfiguration: Partial<AppConfiguration>,
   responseTypes: ClientWizardFormValues['responseTypes'] = [],

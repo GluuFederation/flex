@@ -589,7 +589,7 @@ const ClientWizardForm = ({
                         ? () => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
                         : prevStep
                     }
-                    showCancel={!isMobile}
+                    showCancel={!isViewOnly}
                     cancelButtonLabel={t('actions.cancel')}
                     onCancel={() => formik.resetForm()}
                     showApply={!isViewOnly && canWriteClient}

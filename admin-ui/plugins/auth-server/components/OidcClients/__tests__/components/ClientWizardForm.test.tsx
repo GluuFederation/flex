@@ -226,6 +226,28 @@ it('Should render in viewOnly mode without crashing', () => {
   expect(container).toBeTruthy()
 })
 
+it('Should hide Cancel in viewOnly mode and show it in edit mode', () => {
+  const renderForm = (viewOnly: boolean) =>
+    render(
+      <ClientWizardForm
+        client_data={mockClientData}
+        viewOnly={viewOnly}
+        scripts={[]}
+        oidcConfiguration={undefined}
+        isEdit={true}
+        modifiedFields={{}}
+        setModifiedFields={mockSetModifiedFields}
+        customOnSubmit={jest.fn()}
+      />,
+      { wrapper: Wrapper },
+    )
+  const viewRender = renderForm(true)
+  expect(viewRender.queryByRole('button', { name: /cancel/i })).toBeNull()
+  viewRender.unmount()
+  const editRender = renderForm(false)
+  expect(editRender.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+})
+
 it('Should render for a new client (no inum)', () => {
   const newClientData: ClientFormInitialData = {
     clientName: '',
