@@ -1,0 +1,142 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="open-banking-topology" name="Open Banking Topology">
+    <mxGraphModel dx="2578" dy="654" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="820" background="#071525" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="provider-frame" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#0A1B2B;fillOpacity=40;strokeColor=#398FE0;strokeOpacity=65;strokeWidth=2;dashed=1;dashPattern=8 6;" value="" vertex="1">
+          <mxGeometry height="345" width="555" x="475" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="customer-to-fintech" edge="1" parent="1" source="ACdFGz-xiRu59Y2_Ew1a-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;endArrow=block;endFill=1;exitX=1.004;exitY=0.717;entryX=0;entryY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" target="fintech" value="">
+          <mxGeometry relative="1" x="0.3663" as="geometry">
+            <mxPoint x="230" y="432.5" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fintech-to-gateway" edge="1" parent="1" source="fintech" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;endArrow=none;endFill=0;exitX=0.65;exitY=0;entryX=0;entryY=0.667;entryDx=0;entryDy=0;entryPerimeter=0;exitDx=0;exitDy=0;exitPerimeter=0;" target="gateway" value="">
+          <mxGeometry relative="1" x="0.25" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-to-api" edge="1" parent="1" source="gateway" style="edgeStyle=none;rounded=0;html=1;strokeColor=#51D6C7;strokeWidth=2.5;endArrow=none;endFill=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="banking-api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fintech-to-regulator" edge="1" parent="1" source="fintech" style="edgeStyle=none;rounded=0;html=1;strokeColor=#51D6C7;strokeWidth=2.5;startArrow=block;startFill=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="regulator" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-to-provider" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=0.5;exitY=1;entryX=0.357;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="openid-provider" value="">
+          <mxGeometry relative="1" x="0.275" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="provider-to-database" edge="1" parent="1" source="openid-provider" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=1;exitY=0.4;entryX=0;entryY=0.392;entryDx=0;entryDy=0;entryPerimeter=0;" target="cloud-database" value="">
+          <mxGeometry relative="1" x="0.0056" as="geometry">
+            <Array as="points">
+              <mxPoint x="1065" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="openid-to-config" edge="1" parent="1" source="openid-provider" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=1;exitY=0.75;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="config-api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="openid-to-consent" edge="1" parent="1" source="openid-provider" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=0.5;exitY=1;entryX=0.367;entryY=-0.035;entryDx=0;entryDy=0;entryPerimeter=0;" target="consent-service" value="">
+          <mxGeometry relative="1" x="0.1058" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="config-to-database" edge="1" parent="1" source="config-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=1;exitY=0.25;entryX=0;entryY=0.8;" target="cloud-database" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="consent-to-accounts" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=1;strokeColor=#51D6C7;strokeWidth=2;endArrow=none;entryX=0.002;entryY=0.432;entryDx=0;entryDy=0;entryPerimeter=0;" target="user-accounts" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="720" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=none;fillColor=none;fontColor=#EAF2FA;fontSize=26;fontStyle=1;fontFamily=Arial;" value="Open Banking Topology" vertex="1">
+          <mxGeometry height="50" width="540" x="340" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="provider-label" parent="1" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=none;fillColor=none;fontColor=#63AEFF;fontSize=15;fontStyle=1;fontFamily=Arial;" value="GLUU OPEN BANKING PROVIDER" vertex="1">
+          <mxGeometry height="30" width="260" x="630" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="fintech" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Fintech / Payment&lt;/b&gt;&lt;br&gt;Processor" vertex="1">
+          <mxGeometry height="95" width="200" x="190" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="regulator" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=16;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="Bank Regulatory&lt;br&gt;Directory" vertex="1">
+          <mxGeometry height="85" width="200" x="190" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Open Banking&lt;/b&gt;&lt;br&gt;API Gateway" vertex="1">
+          <mxGeometry height="90" width="200" x="510" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="banking-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Open Banking API&lt;/b&gt;" vertex="1">
+          <mxGeometry height="88" width="200" x="800" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="openid-provider" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Open Banking&lt;/b&gt;&lt;br&gt;OpenID Provider" vertex="1">
+          <mxGeometry height="100" width="210" x="505" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="config-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Config API&lt;/b&gt;" vertex="1">
+          <mxGeometry height="88" width="190" x="690" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud-database" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;" value="&lt;b&gt;Cloud Database&lt;/b&gt;" vertex="1">
+          <mxGeometry height="120" width="220" x="1065" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="consent-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=16;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;" value="&lt;b&gt;Internal Authentication&lt;/b&gt;&lt;br&gt;and Consent Service" vertex="1">
+          <mxGeometry height="90" width="230" x="525" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="user-accounts" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=17;fontFamily=Arial;align=center;verticalAlign=middle;" value="&lt;b&gt;User Accounts&lt;/b&gt;" vertex="1">
+          <mxGeometry height="95" width="190" x="840" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-6" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="135" width="130" x="-60" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-1" parent="ACdFGz-xiRu59Y2_Ew1a-6" style="shape=actor;whiteSpace=wrap;html=1;fontSize=23;fillColor=#10343d;strokeColor=#16d8c6;strokeWidth=2;fontColor=#ffffff;fontFamily=system-ui;" value="" vertex="1">
+          <mxGeometry height="100" width="80" x="25" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-5" parent="ACdFGz-xiRu59Y2_Ew1a-6" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;br&gt;&lt;div&gt;&lt;font color=&quot;#eaf2fa&quot; face=&quot;Arial&quot;&gt;&lt;span style=&quot;font-size: 17px;&quot;&gt;Bank Customer&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="130" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-7" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="135" width="130" x="1090" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-8" parent="ACdFGz-xiRu59Y2_Ew1a-7" style="shape=actor;whiteSpace=wrap;html=1;fontSize=23;fillColor=#10343d;strokeColor=#16d8c6;strokeWidth=2;fontColor=#ffffff;fontFamily=system-ui;" value="" vertex="1">
+          <mxGeometry height="100" width="80" x="25" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-9" parent="ACdFGz-xiRu59Y2_Ew1a-7" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;br&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(234, 242, 250); font-family: Arial; font-size: 17px; font-weight: 400;&quot;&gt;Bank IT Admin&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="130" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-10" edge="1" parent="1" source="ACdFGz-xiRu59Y2_Ew1a-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=classic;endFill=1;entryX=1.001;entryY=0.625;entryDx=0;entryDy=0;entryPerimeter=0;innerLoopWaypoints=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="config-api" value="">
+          <mxGeometry relative="1" x="0.5127" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="620" />
+              <mxPoint x="1060" y="540" />
+            </Array>
+            <mxPoint x="1100" y="600" as="sourcePoint" />
+            <mxPoint x="880.1300000000001" y="540.13" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-12" connectable="0" parent="ACdFGz-xiRu59Y2_Ew1a-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;" value="&lt;span style=&quot;color: rgb(185, 201, 219); font-family: Arial; font-size: 14px; background-color: rgb(7, 21, 37);&quot;&gt;Config CLI&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.5254" y="2" as="geometry">
+            <mxPoint x="25" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-13" edge="1" parent="1" source="fintech" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;entryX=0.005;entryY=0.091;entryDx=0;entryDy=0;exitX=1.012;exitY=0.725;exitDx=0;exitDy=0;entryPerimeter=0;exitPerimeter=0;" target="openid-provider" value="">
+          <mxGeometry relative="1" x="-0.7351" as="geometry">
+            <Array as="points" />
+            <mxPoint x="400" y="341.25" as="sourcePoint" />
+            <mxPoint x="515" y="405" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ACdFGz-xiRu59Y2_Ew1a-15" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4BA3FF;strokeWidth=1;endArrow=none;exitX=1.012;exitY=0.725;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.006;entryY=0.819;entryDx=0;entryDy=0;entryPerimeter=0;" target="openid-provider" value="">
+          <mxGeometry relative="1" x="-0.8408" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="560" />
+              <mxPoint x="450" y="411.9" />
+            </Array>
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="450" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

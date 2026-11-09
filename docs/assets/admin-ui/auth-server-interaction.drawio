@@ -1,0 +1,91 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="auth-server-interaction" name="Auth Server Interaction">
+    <mxGraphModel dx="1414" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="720" background="#071525" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ui-to-api" edge="1" parent="1" source="admin-ui" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;endArrow=block;endFill=1;exitX=1.008;exitY=0.289;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.004;entryY=0.352;entryDx=0;entryDy=0;entryPerimeter=0;" target="config-api" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="300.41499999999996" as="sourcePoint" />
+            <mxPoint x="437.6" y="298.8" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-to-ui" edge="1" parent="1" source="config-api" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;endArrow=block;endFill=1;exitX=-0.005;exitY=0.437;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.003;entryY=0.634;entryDx=0;entryDy=0;entryPerimeter=0;" target="admin-ui" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="326" as="sourcePoint" />
+            <mxPoint x="330" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-to-auth" edge="1" parent="1" source="config-api" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;exitX=1;exitY=0.19;endArrow=block;endFill=1;entryX=0;entryY=0.381;entryDx=0;entryDy=0;entryPerimeter=0;" target="auth-server" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="245" as="sourcePoint" />
+            <mxPoint x="730" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="auth-to-api" edge="1" parent="1" source="auth-server" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;entryX=1;entryY=0.29;endArrow=block;endFill=1;exitX=-0.003;exitY=0.698;exitDx=0;exitDy=0;exitPerimeter=0;" target="config-api" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="280" as="sourcePoint" />
+            <mxPoint x="685" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-to-persistence" edge="1" parent="1" source="config-api" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;exitX=1;exitY=0.74;endArrow=block;endFill=1;entryX=0.015;entryY=0.353;entryDx=0;entryDy=0;entryPerimeter=0;" target="persistence" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="430" as="sourcePoint" />
+            <mxPoint x="800" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="persistence-to-api" edge="1" parent="1" source="persistence" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#51D6C7;strokeWidth=2.5;entryX=1;entryY=0.84;endArrow=block;endFill=1;exitX=-0.002;exitY=0.696;exitDx=0;exitDy=0;exitPerimeter=0;" target="config-api" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="465.6" as="sourcePoint" />
+            <mxPoint x="685" y="465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=none;fillColor=none;fontColor=#EAF2FA;fontSize=24;fontStyle=1;fontFamily=Arial;" value="Interaction with Jans Auth Server" vertex="1">
+          <mxGeometry height="45" width="810" x="160" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="admin-ui" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=20;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;" value="&lt;b&gt;Gluu Flex&lt;/b&gt;&lt;br&gt;Admin UI" vertex="1">
+          <mxGeometry height="85" width="160" x="160" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="config-api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;arcSize=12;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2.5;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="340" width="190" x="445" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="api-heading" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=none;fillColor=none;fontColor=#F3F7FC;fontSize=21;fontStyle=1;fontFamily=Arial;" value="Jans Config API" vertex="1">
+          <mxGeometry height="38" width="215" x="435" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="plugin-caption" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=none;fillColor=none;fontColor=#70B8FF;fontSize=13;fontStyle=1;fontFamily=Arial;" value="Plugins..." vertex="1">
+          <mxGeometry height="28" width="215" x="435" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-server" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#112B49;strokeColor=#4BA3FF;strokeWidth=2;fontColor=#EAF2FA;fontSize=19;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;" value="&lt;b&gt;Jans Auth Server&lt;/b&gt;" vertex="1">
+          <mxGeometry height="105" width="205" x="800" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="persistence" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#10343F;strokeColor=#00CDB8;strokeWidth=2;fontColor=#EAF2FA;fontSize=18;fontFamily=Arial;align=center;verticalAlign=middle;" value="&lt;b&gt;Persistence&lt;/b&gt;" vertex="1">
+          <mxGeometry height="95" width="205" x="800" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-11" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="28" width="112" x="490" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-1" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-4" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="14" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-6" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="28" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-7" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="42" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-8" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="56" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-9" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="70" as="geometry" />
+        </mxCell>
+        <mxCell id="pwlGeWbi4wZs-0hePQos-10" parent="pwlGeWbi4wZs-0hePQos-11" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#112B49;strokeColor=#FF9933;strokeWidth=2;fontColor=#000000;gradientColor=none;spacingRight=0;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="84" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
