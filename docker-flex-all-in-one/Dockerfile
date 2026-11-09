@@ -3,7 +3,7 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=2.6.1-1
+ARG BASE_VERSION=2.6.1-2
 ARG FLEX_BASE_VERSION=6.6.1-1
 
 # the following ARGs set default base images
