@@ -146,9 +146,9 @@ const ClientCibaParUmaPanel = ({
   const handleUMADetail = (uma: UmaResource) => {
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
-      if (!isEmpty(uma.scopeExpression)) {
-        setScopeExpression(JSON.parse(uma.scopeExpression as string))
-      }
+      setScopeExpression(
+        isEmpty(uma.scopeExpression) ? undefined : JSON.parse(uma.scopeExpression as string),
+      )
     }
     setOpen(true)
   }
