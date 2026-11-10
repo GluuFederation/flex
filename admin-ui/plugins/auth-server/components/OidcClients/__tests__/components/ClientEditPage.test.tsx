@@ -134,6 +134,31 @@ it('keeps the stored fields the form does not show when saving', async () => {
   )
 })
 
+it('saves a renamed client under the new name instead of the stored display name', async () => {
+  const updateClient = jest.fn().mockResolvedValue({})
+  jest.mocked(useUpdateClient).mockReturnValue({
+    updateClient,
+    isUpdating: false,
+  } as Partial<ReturnType<typeof useUpdateClient>> as ReturnType<typeof useUpdateClient>)
+  jest.mocked(useGetOauthOpenidClientsByInum).mockReturnValue({
+    data: { ...mockClients[0], clientName: 'old name', displayName: 'old name' },
+    isLoading: false,
+    isError: false,
+  } as Partial<ReturnType<typeof useGetOauthOpenidClientsByInum>> as ReturnType<
+    typeof useGetOauthOpenidClientsByInum
+  >)
+
+  render(<ClientEditPage />, { wrapper: Wrapper })
+  const { customOnSubmit } = jest.mocked(ClientWizardForm).mock.lastCall![0]
+  await act(async () => {
+    customOnSubmit({ clientName: 'new name', displayName: 'old name' })
+  })
+
+  expect(updateClient).toHaveBeenCalledWith(
+    expect.objectContaining({ clientName: 'new name', displayName: 'new name' }),
+  )
+})
+
 it('shows a load error with a retry instead of an empty form when the client cannot be loaded', () => {
   const refetch = jest.fn()
   jest.mocked(useGetOauthOpenidClientsByInum).mockReturnValue({

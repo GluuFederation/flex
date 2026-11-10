@@ -59,7 +59,7 @@ const ClientEditPage = (): JSX.Element => {
     async (data: ClientWizardSubmitData) => {
       if (!data) return
       try {
-        await updateClient({ ...clientData, ...data })
+        await updateClient({ ...clientData, ...data, displayName: data.clientName })
         navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
         logger.error('Failed to update client:', error instanceof Error ? error : String(error))

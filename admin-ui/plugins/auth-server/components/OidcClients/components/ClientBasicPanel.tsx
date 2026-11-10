@@ -217,6 +217,7 @@ const ClientBasicPanel = ({
       const nextRedirectUris = items.map((item) => item.value ?? '')
       isRedirectUriSyncingRef.current = true
       formik.setFieldValue('redirectUris', nextRedirectUris, true)
+      formik.setFieldTouched('redirectUris', true, false)
       setModifiedFields((prev) => ({
         ...prev,
         [CLIENT_BASIC_MODIFIED_FIELDS.REDIRECT_URIS]: nextRedirectUris.filter(Boolean),
@@ -592,6 +593,7 @@ const ClientBasicPanel = ({
           disabled={viewOnly}
           showError={
             !viewOnly &&
+            (isEdit || isFieldTouched('redirectUris')) &&
             redirectUriItems.length === 0 &&
             typeof formik.errors.redirectUris === 'string'
           }
