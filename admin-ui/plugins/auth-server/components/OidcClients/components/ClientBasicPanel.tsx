@@ -590,6 +590,14 @@ const ClientBasicPanel = ({
                 }
           }
           disabled={viewOnly}
+          showError={
+            !viewOnly &&
+            redirectUriItems.length === 0 &&
+            typeof formik.errors.redirectUris === 'string'
+          }
+          errorMessage={
+            typeof formik.errors.redirectUris === 'string' ? formik.errors.redirectUris : undefined
+          }
           onAdd={handleAddRedirectUri}
           onChange={handleChangeRedirectUri}
           onRemove={handleRemoveRedirectUri}
