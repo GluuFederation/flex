@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, type JSX } from 'react'
-import { Add, DeleteOutlined, Edit, LockOpenIcon } from '@/components/icons'
+import { Add, DeleteOutlined, Edit, LockOpenIcon, VisibilityOutlined } from '@/components/icons'
 import UserDetailViewPage from './UserDetailViewPage'
 import User2FADevicesModal from './User2FADevicesModal'
 import { useTranslation } from 'react-i18next'
@@ -136,15 +136,25 @@ const UserList = (): JSX.Element => {
     setSelectedUserFor2FA(null)
   }, [])
 
-  const handleGoToUserEditPage = useCallback(
-    (row: UserTableRowData): void => {
+  const navigateToUser = useCallback(
+    (row: UserTableRowData, toRoute: (id: string) => string): void => {
       const userId = row.tableData?.uuid || row.inum
       if (!userId) return
       const { tableData, ...userData } = row
       void tableData
-      navigateToRoute(ROUTES.USER_EDIT(userId), { state: { selectedUser: userData as CustomUser } })
+      navigateToRoute(toRoute(userId), { state: { selectedUser: userData as CustomUser } })
     },
     [navigateToRoute],
+  )
+
+  const handleGoToUserEditPage = useCallback(
+    (row: UserTableRowData): void => navigateToUser(row, ROUTES.USER_EDIT),
+    [navigateToUser],
+  )
+
+  const handleGoToUserViewPage = useCallback(
+    (row: UserTableRowData): void => navigateToUser(row, ROUTES.USER_VIEW),
+    [navigateToUser],
   )
 
   const { classes } = useStyles({ isDark, themeColors })
@@ -205,7 +215,15 @@ const UserList = (): JSX.Element => {
       onClick: handleView2FADetails,
     }
 
+    const viewAction = {
+      icon: <VisibilityOutlined className={classes.actionIcon} />,
+      tooltip: t('tooltips.view_user'),
+      id: 'viewUser',
+      onClick: handleGoToUserViewPage,
+    }
+
     if (isMobile) {
+      if (canReadUsers) list.push(viewAction)
       list.push(credentialsAction)
       return list
     }
@@ -217,6 +235,13 @@ const UserList = (): JSX.Element => {
         id: 'editUser',
         onClick: handleGoToUserEditPage,
       })
+    }
+
+    if (canReadUsers) {
+      list.push(viewAction)
+    }
+
+    if (canWriteUsers) {
       list.push(credentialsAction)
     }
 
@@ -235,10 +260,12 @@ const UserList = (): JSX.Element => {
     return list
   }, [
     isMobile,
+    canReadUsers,
     canWriteUsers,
     canDeleteUsers,
     t,
     handleGoToUserEditPage,
+    handleGoToUserViewPage,
     handleView2FADetails,
     classes.actionIcon,
     toggle,

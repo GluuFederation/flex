@@ -36,8 +36,6 @@ import {
   CLIENT_SORT_ORDER,
   DEFAULT_CLIENT_SORT_BY,
   FETCH_LIMITS,
-  CLIENT_VIEW_QUERY_PARAM,
-  CLIENT_VIEW_QUERY_VALUE,
   EM_DASH_PLACEHOLDER,
   ORG_ATTR_NAME,
   ORG_ATTR_NAME_FULL,
@@ -204,12 +202,15 @@ const ClientListPage: React.FC = () => {
   )
 
   const handleGoToClientEditPage = useCallback(
-    (row: ClientRow, isViewOnly: boolean) => {
-      const editPath = ROUTES.AUTH_SERVER_CLIENT_EDIT(row.inum)
-      const target = isViewOnly
-        ? `${editPath}?${CLIENT_VIEW_QUERY_PARAM}=${CLIENT_VIEW_QUERY_VALUE}`
-        : editPath
-      navigateToRoute(target)
+    (row: ClientRow) => {
+      navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(row.inum))
+    },
+    [navigateToRoute],
+  )
+
+  const handleGoToClientViewPage = useCallback(
+    (row: ClientRow) => {
+      navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_VIEW(row.inum))
     },
     [navigateToRoute],
   )
@@ -434,7 +435,7 @@ const ClientListPage: React.FC = () => {
         icon: <Edit className={classes.editIcon} />,
         tooltip: t('messages.edit_client'),
         id: CLIENT_ACTION_IDS.EDIT,
-        onClick: (row) => handleGoToClientEditPage(row, false),
+        onClick: handleGoToClientEditPage,
       })
     }
     if (canRead) {
@@ -442,7 +443,7 @@ const ClientListPage: React.FC = () => {
         icon: <VisibilityOutlined className={classes.viewIcon} />,
         tooltip: t('messages.view_client_details'),
         id: CLIENT_ACTION_IDS.VIEW,
-        onClick: (row) => handleGoToClientEditPage(row, true),
+        onClick: handleGoToClientViewPage,
       })
     }
     if (canDelete && !isMobile) {
@@ -462,6 +463,7 @@ const ClientListPage: React.FC = () => {
     t,
     classes,
     handleGoToClientEditPage,
+    handleGoToClientViewPage,
     handleDeleteClick,
   ])
 

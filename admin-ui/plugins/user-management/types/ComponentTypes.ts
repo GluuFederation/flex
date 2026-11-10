@@ -31,6 +31,7 @@ export type UserClaimEntryProps = {
   entry: string | number
   formik: FormikProps<UserFormValues>
   handler: (name: string) => void
+  viewOnly?: boolean
 }
 
 export type UserFormProps = {
@@ -42,6 +43,7 @@ export type UserFormProps = {
   userDetails?: CustomUser | null
   personAttributes: PersonAttribute[]
   isSubmitting?: boolean
+  viewOnly?: boolean
 }
 
 export type FormOperation = {

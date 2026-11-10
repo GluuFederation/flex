@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { ClientListPage } from 'Plugins/auth-server/components/OidcClients'
 import { Provider } from 'react-redux'
 import mockClients from '../fixtures/mockClients'
@@ -86,6 +86,12 @@ jest.mock('Plugins/auth-server/components/OidcClients/hooks', () => ({
   })),
 }))
 
+const mockNavigateToRoute = jest.fn()
+jest.mock('@/helpers/navigation', () => ({
+  ...jest.requireActual('@/helpers/navigation'),
+  useAppNavigation: () => ({ navigateToRoute: mockNavigateToRoute, navigateBack: jest.fn() }),
+}))
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ search: '', pathname: '/clients' }),
@@ -145,4 +151,14 @@ it('Should render the client list page properly', () => {
   expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
   expect(within(container).getAllByText(client.inum).length).toBeGreaterThan(0)
   expect(screen.getByText(client.clientName!)).toBeInTheDocument()
+})
+
+it('opens the read-only client page from View and the edit page from Edit', () => {
+  render(<ClientListPage />, { wrapper: Wrapper })
+
+  fireEvent.click(screen.getByRole('button', { name: 'View client details' }))
+  expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/auth-server/client/view/0008-0DB1')
+
+  fireEvent.click(screen.getByRole('button', { name: 'Edit Client' }))
+  expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/auth-server/client/edit/0008-0DB1')
 })

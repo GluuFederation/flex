@@ -97,6 +97,8 @@ If initialization fails, the initializer retries up to **10 times with a 1-secon
 
 ### Phase 2: Per-page permission check
 
+The router checks the route before the page renders. [`RouteGuard`](../app/routes/Pages/RouteGuard.tsx) wraps every plugin route in [`app/routes/index.tsx`](../app/routes/index.tsx) and reads the `resourceKey` and `action` the route declares in its `plugin-metadata.ts`. A cached `true` renders the page. A cached `false` renders the "missing required permission" view, so typing the URL of a page the role cannot use no longer opens it. While no decision is cached it shows the loader and asks Cedarling for that pair; if that call fails without caching a decision, it shows the missing-permission view. `CEDARLING_BYPASS` routes always render, and a route that declares no permission never does. The dashboard and profile routes are not plugin routes and are not wrapped.
+
 Take the OIDC Clients list page as a concrete example. The page calls [`usePermission(ADMIN_UI_RESOURCES.Clients)`](../app/cedarling/hooks/usePermission.ts) and gets back `{ canRead, canWrite, canDelete }`. Those three booleans decide whether the table renders and which action buttons appear.
 
 `usePermission` does two things. On mount it looks up the resource's scope list in `CEDAR_RESOURCE_SCOPES` and passes it to `authorizeHelper` inside a `useEffect`. Normally the initializer has already cached every pair, so this is a cache read. It only reaches Cedarling for a pair that is not cached yet. On every render it reads the cached decisions back through `hasCedarReadPermission`, `hasCedarWritePermission`, and `hasCedarDeletePermission`, defaulting each to `false` when no decision exists yet.
@@ -236,16 +238,18 @@ Rules:
 
 2. Add the Cedar policy to the policy store served by the Config API (upload it from the Policy Store page). A missing policy returns "deny" with no obvious error.
 
-3. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` as shown above.
+3. Declare `resourceKey` and `action` on the page's route in `plugin-metadata.ts`; `RouteGuard` enforces them. Use `write` for add and edit routes. A page that also shows a record read-only needs its own view route with `read`, as clients, scopes, scripts, claims, users, webhooks and assets have, because read-only users cannot open the edit route.
 
-4. Verify in the browser. Sign in as a user with the role that should have access and confirm the page renders. Sign in as a user without it and confirm the page is gated.
+4. Gate the component with `usePermission(ADMIN_UI_RESOURCES.MyNewFeature)` as shown above.
+
+5. Verify in the browser. Sign in as a user with the role that should have access and confirm the page renders. Sign in as a user without it and confirm the page is gated.
 
 ## The `CEDARLING_BYPASS` sentinel
 
-`CEDARLING_BYPASS` (`'CEDARLING_BYPASS'`, exported from [`app/cedarling/constants/resourceCatalog.ts`](../app/cedarling/constants/resourceCatalog.ts)) is a **production sentinel**, not a debug switch. Use it as the `resourceKey` on a menu item or route whose visibility should not depend on a Cedar decision. The sidebar code recognizes this exact value and short-circuits the permission check, returning the item unconditionally:
+`CEDARLING_BYPASS` (`'CEDARLING_BYPASS'`, exported from [`app/cedarling/constants/resourceCatalog.ts`](../app/cedarling/constants/resourceCatalog.ts)) is a **production sentinel**, not a debug switch. Use it as the `resourceKey` on a menu item or route whose visibility should not depend on a Cedar decision. The sidebar's menu filter and the router's `RouteGuard` recognize this exact value and skip the permission check, so the item and its page always render:
 
 ```ts
-// app/routes/Apps/Gluu/GluuAppSidebar.tsx
+// app/utils/menuFilters.ts
 if (item.resourceKey === CEDARLING_BYPASS) {
   return item
 }

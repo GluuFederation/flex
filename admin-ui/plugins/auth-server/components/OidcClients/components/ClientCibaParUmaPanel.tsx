@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { Button } from 'Components'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
@@ -70,6 +72,12 @@ const ClientCibaParUmaPanel = ({
 }: ClientCibaParUmaPanelProps) => {
   const { t } = useTranslation()
   const { navigateToRoute } = useAppNavigation()
+  const { canWrite: canWriteScopes } = usePermission(ADMIN_UI_RESOURCES.Scopes)
+  const { canWrite: canWriteClients } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const scopePath = (inum: string) =>
+    canWriteScopes ? ROUTES.AUTH_SERVER_SCOPE_EDIT(inum) : ROUTES.AUTH_SERVER_SCOPE_VIEW(inum)
+  const clientPath = (inum: string) =>
+    canWriteClients ? ROUTES.AUTH_SERVER_CLIENT_EDIT(inum) : ROUTES.AUTH_SERVER_CLIENT_VIEW(inum)
   const { state } = useTheme()
   const selectedTheme = state?.theme ?? DEFAULT_THEME
   const isDark = selectedTheme === THEME_DARK
@@ -138,9 +146,9 @@ const ClientCibaParUmaPanel = ({
   const handleUMADetail = (uma: UmaResource) => {
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
-      if (!isEmpty(uma.scopeExpression)) {
-        setScopeExpression(JSON.parse(uma.scopeExpression as string))
-      }
+      setScopeExpression(
+        isEmpty(uma.scopeExpression) ? undefined : JSON.parse(uma.scopeExpression as string),
+      )
     }
     setOpen(true)
   }
@@ -160,14 +168,14 @@ const ClientCibaParUmaPanel = ({
   }
 
   const handleScopeNavigate = (scopeInum: string) => {
-    return navigateToRoute(ROUTES.AUTH_SERVER_SCOPE_EDIT(scopeInum))
+    return navigateToRoute(scopePath(scopeInum))
   }
 
-  const handleClientEdit = (inum: string | null) => {
+  const handleClientNavigate = (inum: string | null) => {
     if (!inum) return
     setOpen(false)
     setCurrentStep(sequence[0])
-    return navigateToRoute(ROUTES.AUTH_SERVER_CLIENT_EDIT(inum))
+    return navigateToRoute(clientPath(inum))
   }
 
   useEffect(() => {
@@ -430,6 +438,7 @@ const ClientCibaParUmaPanel = ({
                     value={selectedRptScriptDns}
                     options={rptScriptOptions}
                     disabled={viewOnly}
+                    viewOnly={viewOnly}
                     withWrapper={false}
                     placeholder={t('placeholders.search_here')}
                     onChange={(selectedDns) => {
@@ -476,15 +485,21 @@ const ClientCibaParUmaPanel = ({
                             >
                               {uma.name as string}
                             </Box>
-                            <Box
-                              sx={{
-                                width: '10%',
-                              }}
-                            >
-                              <Button color="danger" size="sm" onClick={() => handleDeleteUMA(uma)}>
-                                <span className="fw-bold">X</span>
-                              </Button>
-                            </Box>
+                            {!viewOnly && (
+                              <Box
+                                sx={{
+                                  width: '10%',
+                                }}
+                              >
+                                <Button
+                                  color="danger"
+                                  size="sm"
+                                  onClick={() => handleDeleteUMA(uma)}
+                                >
+                                  <span className="fw-bold">X</span>
+                                </Button>
+                              </Box>
+                            )}
                           </Box>
                         </Box>
                       ))}
@@ -543,14 +558,12 @@ const ClientCibaParUmaPanel = ({
                       control={<Radio color="primary" />}
                       label={t('fields.scope')}
                       checked={showScopeSection === 'scope'}
-                      disabled={viewOnly}
                     />
                     <FormControlLabel
                       value={'expression'}
                       control={<Radio color="primary" />}
                       label={t('fields.scopeExpression')}
                       checked={showScopeSection === 'expression'}
-                      disabled={viewOnly}
                     />
                   </RadioGroup>
                 </Col>
@@ -589,6 +602,7 @@ const ClientCibaParUmaPanel = ({
                           height="300px"
                           name="scopeExpression"
                           defaultValue={JSON.stringify(scopeExpression, null, 2)}
+                          setOptions={{ useWorker: false }}
                         />
                       ) : (
                         '-'
@@ -611,7 +625,7 @@ const ClientCibaParUmaPanel = ({
                             }}
                           >
                             <Link
-                              onClick={() => handleClientEdit(inum)}
+                              onClick={() => handleClientNavigate(inum)}
                               className={classes.clickableLink}
                             >
                               {inum}
@@ -631,11 +645,13 @@ const ClientCibaParUmaPanel = ({
                 </Col>
               </FormGroup>
             </Card>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-              <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
-                {t('actions.delete')}
-              </Button>
-            </Box>
+            {!viewOnly && (
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
+                  {t('actions.delete')}
+                </Button>
+              </Box>
+            )}
           </>
         </GluuViewDetailModal>
 

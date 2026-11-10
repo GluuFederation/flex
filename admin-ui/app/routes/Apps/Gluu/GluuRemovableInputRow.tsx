@@ -24,6 +24,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
   isDirect,
   isBoolean,
   hideRemoveButton,
+  disabled,
   modifiedFields,
   setModifiedFields,
 }: GluuRemovableInputRowProps<TValues>) => {
@@ -62,6 +63,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           id={name}
           formik={formik}
           value={isChecked}
+          disabled={disabled}
           handler={(e: React.ChangeEvent<HTMLInputElement>) => {
             setModifiedFields?.({
               ...modifiedFields,
@@ -92,6 +94,7 @@ const GluuRemovableInputRow = <TValues extends FormikValues = FormikValues>({
           type={type}
           name={name}
           className={classes.input}
+          disabled={disabled}
           value={(currentValue as string) ?? (value as string) ?? ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setModifiedFields?.({

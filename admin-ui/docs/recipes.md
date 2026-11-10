@@ -31,7 +31,7 @@ plugins/<plugin>/components/hooks/useYourPageApi.ts   # if needed
             action: CEDAR_ACTIONS.READ, resourceKey: ADMIN_UI_RESOURCES.<Resource> }]
    ```
 
-3. Gate the render with `usePermission()`: see [Add an authorization check](#add-an-authorization-check).
+3. The router only renders the page when the route's `resourceKey` and `action` allow it (`RouteGuard`). Use `CEDAR_ACTIONS.WRITE` for add and edit routes, and add a separate view route with `READ` if read-only users should see the record. Inside the page, gate buttons and sections with `usePermission()`: see [Add an authorization check](#add-an-authorization-check).
 4. Add the `menus.your_page` key to **all four** `app/locales/{en,es,fr,pt}/translation.json`.
 5. Add a sibling test under `plugins/<plugin>/__tests__/components/YourPage.test.tsx`: see [testing.md](./testing.md).
 

@@ -433,6 +433,7 @@ const ClientBasicPanel = ({
             onChange={(vals) => formik.setFieldValue('responseTypes', vals)}
             onBlur={() => formik.setFieldTouched?.('responseTypes', true, false)}
             disabled={viewOnly}
+            viewOnly={viewOnly}
             placeholder={getFieldPlaceholder(t, 'fields.response_types')}
             showError={isFieldTouched('responseTypes') && Boolean(getFieldError('responseTypes'))}
             errorMessage={getFieldError('responseTypes')}
@@ -456,6 +457,7 @@ const ClientBasicPanel = ({
             onChange={(vals) => formik.setFieldValue('grantTypes', vals)}
             onBlur={() => formik.setFieldTouched?.('grantTypes', true, false)}
             disabled={viewOnly}
+            viewOnly={viewOnly}
             placeholder={getFieldPlaceholder(t, 'fields.grant_types')}
             helperText={t('messages.grant_types_from_server')}
             showError={isFieldTouched('grantTypes') && Boolean(getFieldError('grantTypes'))}
@@ -555,6 +557,7 @@ const ClientBasicPanel = ({
             onSearch={setScopeSearchQuery}
             isLoading={scopeLoading}
             disabled={viewOnly}
+            viewOnly={viewOnly}
             placeholder={t('placeholders.search_scope')}
             doc_category={DOC_CATEGORY}
             surfaceColor={themeColors.settings?.formInputBackground ?? themeColors.inputBackground}
