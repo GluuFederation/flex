@@ -59,13 +59,13 @@ const ClientEditPage = (): JSX.Element => {
     async (data: ClientWizardSubmitData) => {
       if (!data) return
       try {
-        await updateClient(data)
+        await updateClient({ ...clientData, ...data })
         navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
         logger.error('Failed to update client:', error instanceof Error ? error : String(error))
       }
     },
-    [updateClient, navigateBack],
+    [clientData, updateClient, navigateBack],
   )
 
   const handleRetry = useCallback(() => {

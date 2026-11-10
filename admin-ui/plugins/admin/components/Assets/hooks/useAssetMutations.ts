@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '@/redux/hooks'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useDeleteAsset, getGetAllAssetsQueryKey } from 'JansConfigApi'
+import { useDeleteAsset, getGetAllAssetsQueryKey, getGetAssetByInumQueryKey } from 'JansConfigApi'
 import { customInstance } from 'Orval'
 import { invalidateQueriesByKey } from '@/utils/queryUtils'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -31,20 +31,30 @@ const buildAssetUploadFormData = (body: AssetFormData, isUpdate: boolean): FormD
     document: body.fileName,
     service: body?.service,
     enabled: body.enabled,
-    ...(isUpdate ? { inum: body.inum, dn: body.dn, baseDn: body.baseDn } : {}),
+    ...(isUpdate
+      ? {
+          inum: body.inum,
+          dn: body.dn,
+          baseDn: body.baseDn,
+          creationDate: body.creationDate || undefined,
+          level: body.level,
+          revision: body.revision,
+        }
+      : {}),
   }
-  const assetFile: Blob | File =
-    body.document instanceof File
-      ? body.document
-      : body.document instanceof Blob
-        ? body.document
-        : new Blob([body.document as BlobPart], { type: 'application/octet-stream' })
   const formData = new FormData()
   formData.append(
     'document',
     new Blob([JSON.stringify({ ...document })], { type: 'application/json' }),
   )
-  formData.append('assetFile', assetFile)
+  if (body.document instanceof Blob) {
+    formData.append('assetFile', body.document)
+  } else if (!isUpdate) {
+    formData.append(
+      'assetFile',
+      new Blob([body.document as BlobPart], { type: 'application/octet-stream' }),
+    )
+  }
   return formData
 }
 
@@ -83,6 +93,9 @@ const useAssetSaveMutation = (
         )
         dispatch(updateToast(true, 'success', t(successKey)))
         await invalidateQueriesByKey(queryClient, getGetAllAssetsQueryKey())
+        if (body.inum) {
+          await invalidateQueriesByKey(queryClient, getGetAssetByInumQueryKey(body.inum))
+        }
         callbacksRef.current?.onSuccess?.()
         return result
       } catch (error) {

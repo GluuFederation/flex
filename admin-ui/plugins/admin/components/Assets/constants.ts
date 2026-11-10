@@ -26,7 +26,7 @@ export const T_KEYS = {
   MSG_ASSET_UPDATED_SUCCESSFULLY: 'messages.asset_updated_successfully',
   MSG_FAILED_TO_CREATE_ASSET: 'messages.failed_to_create_asset',
   MSG_FAILED_TO_UPDATE_ASSET: 'messages.failed_to_update_asset',
-  MSG_DISPLAY_NAME_ERROR: 'messages.display_name_error',
+  MSG_ASSET_NAME_ERROR: 'messages.asset_name_error',
   MSG_NO_SPACES: 'messages.no_spaces',
   MSG_SERVICE_REQUIRED: 'messages.service_required',
   MSG_ASSET_DOCUMENT_ERROR: 'messages.asset_document_error',

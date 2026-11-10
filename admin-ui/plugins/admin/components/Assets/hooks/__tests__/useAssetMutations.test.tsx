@@ -29,6 +29,7 @@ jest.mock('JansConfigApi', () => ({
     error: null,
   }),
   getGetAllAssetsQueryKey: () => ['/api/v1/jans-assets'],
+  getGetAssetByInumQueryKey: (inum: string) => [`/api/v1/jans-assets/${inum}`],
 }))
 
 jest.mock('../useAssetAudit', () => ({
@@ -73,6 +74,15 @@ const formData: AssetFormData = {
   enabled: true,
 }
 
+const sentForm = (): FormData => mockCustomInstance.mock.calls[0][0].data
+
+const readSentDocument = (): Promise<Record<string, string | number | boolean>> =>
+  new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(JSON.parse(String(reader.result)))
+    reader.readAsText(sentForm().get('document') as Blob)
+  })
+
 describe('useAssetMutations', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -114,6 +124,18 @@ describe('useAssetMutations', () => {
       )
       expect(mockInvalidate).toHaveBeenCalled()
       expect(onSuccess).toHaveBeenCalledTimes(1)
+    })
+
+    it('always sends a file when creating', async () => {
+      const { result } = renderHook(() => useCreateAssetWithAudit(), {
+        wrapper: createWrapper(buildStore()),
+      })
+
+      await act(async () => {
+        await result.current.createAsset(formData)
+      })
+
+      expect(sentForm().has('assetFile')).toBe(true)
     })
 
     it('dispatches an error toast and calls onError when upload fails', async () => {
@@ -171,6 +193,51 @@ describe('useAssetMutations', () => {
   })
 
   describe('useUpdateAssetWithAudit', () => {
+    const updateWith = async (changes: Partial<AssetFormData>) => {
+      const { result } = renderHook(() => useUpdateAssetWithAudit(), {
+        wrapper: createWrapper(buildStore()),
+      })
+      await act(async () => {
+        await result.current.updateAsset({ ...formData, inum: 'asset-1', ...changes })
+      })
+    }
+
+    it('leaves the stored file alone when no new file was picked', async () => {
+      await updateWith({ document: 'c3RvcmVkIGNvbnRlbnQ=' })
+
+      expect(sentForm().has('assetFile')).toBe(false)
+    })
+
+    it('uploads the new file when one was picked', async () => {
+      const file = new File(['new content'], 'logo.png', { type: 'image/png' })
+
+      await updateWith({ document: file })
+
+      expect((sentForm().get('assetFile') as File).name).toBe('logo.png')
+    })
+
+    it('sends the stored fields the form does not edit', async () => {
+      await updateWith({ creationDate: '2026-10-29T05:40:47', level: 3, revision: 2 })
+
+      await expect(readSentDocument()).resolves.toEqual(
+        expect.objectContaining({ creationDate: '2026-10-29T05:40:47', level: 3, revision: 2 }),
+      )
+    })
+
+    it('leaves out an empty creation date', async () => {
+      await updateWith({ creationDate: '' })
+
+      await expect(readSentDocument()).resolves.not.toHaveProperty('creationDate')
+    })
+
+    it('refreshes the asset details after saving', async () => {
+      await updateWith({})
+
+      expect(mockInvalidate).toHaveBeenCalledWith(expect.anything(), [
+        '/api/v1/jans-assets/asset-1',
+      ])
+    })
+
     it('uploads via PUT, logs an UPDATE audit and shows a success toast', async () => {
       const store = buildStore()
       const dispatchSpy = jest.spyOn(store, 'dispatch')

@@ -38,7 +38,7 @@ const useStylesBase = makeStyles<{ isDark: boolean; themeColors: ThemeConfig }>(
     },
     mobilePageTitle: createMobilePageTitleStyle(themeColors.fontColor),
 
-    searchCard: createSearchCardStyle({ cardBg, isDark }),
+    searchCard: { ...createSearchCardStyle({ cardBg, isDark }), zIndex: 3 },
     searchCardContent: {
       position: 'relative',
       zIndex: 2,

@@ -10,7 +10,13 @@ const schema = getClientValidationSchema(t)
 const validate = (
   values: Record<
     string,
-    string | string[] | number | boolean | null | undefined | Record<string, string | null>
+    | string
+    | (string | undefined)[]
+    | number
+    | boolean
+    | null
+    | undefined
+    | Record<string, string | null>
   >,
 ) => schema.validate(values, { abortEarly: false })
 
@@ -101,6 +107,22 @@ describe('clientSecret validation', () => {
 // ---------------------------------------------------------------------------
 
 describe('redirectUris validation', () => {
+  it('rejects a list holding only an empty row', async () => {
+    await expect(validate({ clientName: 'Valid Client', redirectUris: [''] })).rejects.toThrow()
+  })
+
+  it('rejects the empty row Formik passes to Yup as undefined', async () => {
+    await expect(
+      validate({ clientName: 'Valid Client', redirectUris: [undefined] }),
+    ).rejects.toThrow('validation_messages.redirect_uri_required')
+  })
+
+  it('accepts an empty row next to a real redirect uri', async () => {
+    await expect(
+      validate({ clientName: 'Valid Client', redirectUris: ['https://example.com', undefined] }),
+    ).resolves.toBeDefined()
+  })
+
   it('rejects empty redirectUris array', async () => {
     await expect(validate({ clientName: 'Valid Client', redirectUris: [] })).rejects.toThrow()
   })

@@ -1015,6 +1015,7 @@
     "thanks_for_using_admin_ui": "Obrigado por usar a interface de administração.",
     "add_asset": "Adicionar recurso Jans",
     "asset_document_error": "O documento é obrigatório.",
+    "asset_name_error": "Por favor, insira o Nome do Recurso.",
     "asset_file_type_invalid": "Somente arquivos .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif e .xhtml podem ser enviados.",
     "metadata_file_type_invalid": "Somente arquivos de metadados .xml e .json podem ser enviados.",
     "service_required": "Serviços relacionados são obrigatórios.",
