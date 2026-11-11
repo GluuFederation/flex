@@ -592,6 +592,7 @@ const ClientWizardForm = ({
                     showCancel={!isViewOnly}
                     cancelButtonLabel={t('actions.cancel')}
                     onCancel={() => formik.resetForm()}
+                    disableCancel={!formik.dirty}
                     showApply={!isViewOnly && canWriteClient}
                     applyButtonType="button"
                     applyButtonLabel={t('actions.apply')}

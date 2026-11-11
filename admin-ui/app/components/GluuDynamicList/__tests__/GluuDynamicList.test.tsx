@@ -117,6 +117,16 @@ describe('GluuDynamicList', () => {
     expect(screen.getByText('Bad input')).toBeInTheDocument()
   })
 
+  it('announces the list error and links it to the add button', () => {
+    renderList({ showError: true, errorMessage: 'Bad input' })
+    const error = screen.getByRole('alert')
+    expect(error).toHaveTextContent('Bad input')
+    expect(screen.getByRole('button', { name: 'Add' })).toHaveAttribute(
+      'aria-describedby',
+      error.id,
+    )
+  })
+
   it('renders a per-item error in single mode via getItemError', () => {
     const items: GluuDynamicListItem[] = [{ id: '1', value: 'v1' }]
     renderList({
