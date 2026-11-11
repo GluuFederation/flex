@@ -1019,6 +1019,7 @@
     "thanks_for_using_admin_ui": "Merci d'avoir utilisé l'interface d'administration.",
     "add_asset": "Ajouter une ressource Jans",
     "asset_document_error": "Le document est obligatoire.",
+    "asset_name_error": "Veuillez entrer le nom de la ressource.",
     "asset_file_type_invalid": "Seuls les fichiers .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif et .xhtml peuvent être téléversés.",
     "metadata_file_type_invalid": "Seuls les fichiers de métadonnées .xml et .json peuvent être téléversés.",
     "service_required": "Les services associés sont obligatoires.",

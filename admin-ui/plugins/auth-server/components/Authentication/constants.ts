@@ -10,8 +10,6 @@ export const AUTH_METHOD_NAMES = {
   DEFAULT_LDAP: 'default_ldap_password',
 } as const
 
-export { SCRIPT_TYPES } from '@/constants'
-
 export const JSON_PATCH_PATHS = {
   ACR_MAPPINGS: '/acrMappings',
 } as const

@@ -1,7 +1,9 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { useGetOauthOpenidClientsByInum } from 'JansConfigApi'
 import { ClientEditPage } from 'Plugins/auth-server/components/OidcClients'
+import ClientWizardForm from 'Plugins/auth-server/components/OidcClients/components/ClientWizardForm'
+import { useUpdateClient } from 'Plugins/auth-server/components/OidcClients/hooks'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
@@ -96,6 +98,65 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 it('Should render the client edit page and mount the wizard form', () => {
   render(<ClientEditPage />, { wrapper: Wrapper })
   expect(screen.getByTestId('client-wizard-form')).toBeInTheDocument()
+})
+
+it('keeps the stored fields the form does not show when saving', async () => {
+  const updateClient = jest.fn().mockResolvedValue({})
+  jest.mocked(useUpdateClient).mockReturnValue({
+    updateClient,
+    isUpdating: false,
+  } as Partial<ReturnType<typeof useUpdateClient>> as ReturnType<typeof useUpdateClient>)
+  jest.mocked(useGetOauthOpenidClientsByInum).mockReturnValue({
+    data: {
+      ...mockClients[0],
+      description: 'stored description',
+      tokenEndpointAuthSigningAlg: 'RS256',
+      claims: ['inum=CAE3,ou=attributes,o=jans'],
+    },
+    isLoading: false,
+    isError: false,
+  } as Partial<ReturnType<typeof useGetOauthOpenidClientsByInum>> as ReturnType<
+    typeof useGetOauthOpenidClientsByInum
+  >)
+
+  render(<ClientEditPage />, { wrapper: Wrapper })
+  const { customOnSubmit } = jest.mocked(ClientWizardForm).mock.lastCall![0]
+  await act(async () => {
+    customOnSubmit({ description: '' })
+  })
+
+  expect(updateClient).toHaveBeenCalledWith(
+    expect.objectContaining({
+      description: '',
+      tokenEndpointAuthSigningAlg: 'RS256',
+      claims: ['inum=CAE3,ou=attributes,o=jans'],
+    }),
+  )
+})
+
+it('saves a renamed client under the new name instead of the stored display name', async () => {
+  const updateClient = jest.fn().mockResolvedValue({})
+  jest.mocked(useUpdateClient).mockReturnValue({
+    updateClient,
+    isUpdating: false,
+  } as Partial<ReturnType<typeof useUpdateClient>> as ReturnType<typeof useUpdateClient>)
+  jest.mocked(useGetOauthOpenidClientsByInum).mockReturnValue({
+    data: { ...mockClients[0], clientName: 'old name', displayName: 'old name' },
+    isLoading: false,
+    isError: false,
+  } as Partial<ReturnType<typeof useGetOauthOpenidClientsByInum>> as ReturnType<
+    typeof useGetOauthOpenidClientsByInum
+  >)
+
+  render(<ClientEditPage />, { wrapper: Wrapper })
+  const { customOnSubmit } = jest.mocked(ClientWizardForm).mock.lastCall![0]
+  await act(async () => {
+    customOnSubmit({ clientName: 'new name', displayName: 'old name' })
+  })
+
+  expect(updateClient).toHaveBeenCalledWith(
+    expect.objectContaining({ clientName: 'new name', displayName: 'new name' }),
+  )
 })
 
 it('shows a load error with a retry instead of an empty form when the client cannot be loaded', () => {

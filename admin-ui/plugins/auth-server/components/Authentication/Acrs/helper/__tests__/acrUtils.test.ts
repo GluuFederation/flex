@@ -60,6 +60,13 @@ describe('getPropertiesConfig', () => {
     const result = getPropertiesConfig({ configurationProperties: [{}] })
     expect(result[0]).toMatchObject({ key: '', value: '' })
   })
+
+  it('keeps the hide flag of a stored property', () => {
+    const result = getPropertiesConfig({
+      configurationProperties: [{ value1: 'k', value2: 'v', hide: true }],
+    })
+    expect(result[0]).toMatchObject({ key: 'k', value: 'v', hide: true })
+  })
 })
 
 describe('isDefaultAuthNMethod', () => {
@@ -91,6 +98,12 @@ describe('transformConfigurationProperties', () => {
     expect(result).toEqual([
       { value1: 'a', value2: 'b', hide: false },
       { value1: 'c', value2: 'd', hide: false },
+    ])
+  })
+
+  it('keeps a hidden property hidden', () => {
+    expect(transformConfigurationProperties([{ key: 'a', value: 'b', hide: true }])).toEqual([
+      { value1: 'a', value2: 'b', hide: true },
     ])
   })
 })
@@ -198,6 +211,16 @@ describe('buildAcrTableRows', () => {
 
   it('lists only the built-in ACR when there is nothing else', () => {
     expect(acrNames(buildAcrTableRows({}))).toEqual(['simple_password_auth'])
+  })
+
+  it('keeps the LDAP fields the form does not edit', () => {
+    const rows = buildAcrTableRows({
+      ldapConfigurations: [{ ...mockLdapConfigurations[0], useAnonymousBind: true, version: 4 }],
+    })
+    expect(rows.find((row) => row.acrName === 'test-ldap')).toMatchObject({
+      useAnonymousBind: true,
+      version: 4,
+    })
   })
 
   it('puts the built-in ACR first, then LDAP and scripts by level, then Agama ACRs by name', () => {

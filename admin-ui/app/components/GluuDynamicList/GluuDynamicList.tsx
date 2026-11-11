@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useId } from 'react'
 import { Input } from '@/components'
 import { Add as AddIcon, Delete as DeleteIcon } from '@/components/icons'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
@@ -42,6 +42,8 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
   const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
   const { classes } = useStyles({ isDark, themeColors })
   const isEmpty = items.length === 0
+  const errorId = useId()
+  const hasListError = showError && Boolean(errorMessage?.trim())
   const hasIncompleteItem = useMemo(
     () =>
       items.some((item) => {
@@ -115,6 +117,7 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
             <button
               type="button"
               disabled={isAddDisabled}
+              aria-describedby={hasListError ? errorId : undefined}
               className={classes.addBtn}
               onClick={onAdd}
             >
@@ -197,8 +200,14 @@ const GluuDynamicListBase: React.FC<GluuDynamicListProps> = ({
         </div>
       </div>
 
-      {showError && errorMessage?.trim() && (
-        <GluuText variant="span" className={classes.error} disableThemeColor>
+      {hasListError && (
+        <GluuText
+          variant="span"
+          id={errorId}
+          role="alert"
+          className={classes.error}
+          disableThemeColor
+        >
           {errorMessage}
         </GluuText>
       )}

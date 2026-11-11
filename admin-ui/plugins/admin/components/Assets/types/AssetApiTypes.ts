@@ -22,5 +22,8 @@ export type AssetFormData = {
   inum?: string
   dn?: string
   baseDn?: string
+  creationDate?: string | Date
+  level?: number
+  revision?: number
   [key: string]: string | number | boolean | object | string[] | File | Blob | null | undefined
 }

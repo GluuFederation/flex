@@ -9,6 +9,7 @@ import {
   getGetAcrsQueryKey,
   getGetConfigDatabaseLdapQueryKey,
   getGetConfigScriptsByTypeQueryKey,
+  getConfigScriptsByInum,
   usePutAcrs,
   usePutConfigDatabaseLdap,
   usePutConfigScripts,
@@ -21,7 +22,7 @@ import { useAppDispatch } from '@/redux/hooks'
 import type { AcrsFormValues, AuthnLocationState } from '../types'
 import { isDefaultAuthNMethod, transformConfigurationProperties } from './helper/acrUtils'
 import { logger } from '@/utils/logger'
-import { AUTH_METHOD_NAMES, SCRIPT_TYPES } from '../constants'
+import { AUTH_METHOD_NAMES } from '../constants'
 import { DEFAULT_SCRIPT_TYPE } from 'Plugins/scripts/components'
 import { GluuPageContent } from '@/components'
 import { useTheme } from '@/context/theme/themeContext'
@@ -149,7 +150,9 @@ const AcrsEditPage = (): ReactElement => {
                 ? parseInt(data.maxConnections, 10)
                 : data.maxConnections,
             useSSL: data.useSSL,
+            useAnonymousBind: atomItem.useAnonymousBind,
             enabled: data.enabled,
+            version: atomItem.version,
             level: data.level,
           }
 
@@ -193,13 +196,18 @@ const AcrsEditPage = (): ReactElement => {
           }
           handleSuccess()
         } else {
+          let storedScript: CustomScript
+          try {
+            storedScript = await getConfigScriptsByInum(data.inum ?? '')
+          } catch (error) {
+            handleError(error as Error)
+            return
+          }
+
           const scriptPayload: CustomScript = {
-            inum: data.inum,
-            dn: data.baseDn,
-            name: atomItem.acrName || '',
+            ...storedScript,
             description: data.description,
             level: data.level,
-            scriptType: SCRIPT_TYPES.PERSON_AUTHENTICATION,
             configurationProperties: transformConfigurationProperties(data.configurationProperties),
           }
 

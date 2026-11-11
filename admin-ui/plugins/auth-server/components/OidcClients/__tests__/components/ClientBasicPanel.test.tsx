@@ -164,6 +164,40 @@ it('Should show selections without remove controls in viewOnly mode', () => {
   expect(enabledRemoveButtons).toHaveLength(0)
 })
 
+it('Should show the redirect URI required error on edit or after the list is touched, not on a fresh add form', () => {
+  const requiredMessage = 'At least one redirect URI is required'
+  const renderPanel = (isEdit: boolean, touched: boolean) =>
+    render(
+      <Formik<ClientWizardFormValues>
+        initialValues={{ ...mockValues, redirectUris: [] }}
+        initialErrors={{ redirectUris: requiredMessage }}
+        initialTouched={touched ? { redirectUris: true } : {}}
+        onSubmit={jest.fn()}
+      >
+        {(formik: ClientPanelFormik) => (
+          <ClientBasicPanel
+            client={mockClientData}
+            formik={formik}
+            oidcConfiguration={mockOidcConfiguration as AppConfiguration}
+            viewOnly={false}
+            isEdit={isEdit}
+            modifiedFields={{}}
+            setModifiedFields={mockSetModifiedFields}
+          />
+        )}
+      </Formik>,
+      { wrapper: Wrapper },
+    )
+  const freshAdd = renderPanel(false, false)
+  expect(freshAdd.queryByText(requiredMessage)).toBeNull()
+  freshAdd.unmount()
+  const touchedAdd = renderPanel(false, true)
+  expect(touchedAdd.getByText(requiredMessage)).toBeInTheDocument()
+  touchedAdd.unmount()
+  const edit = renderPanel(true, false)
+  expect(edit.getByText(requiredMessage)).toBeInTheDocument()
+})
+
 const renderResponseTypeOptions = async (
   oidcConfiguration: Partial<AppConfiguration>,
   responseTypes: ClientWizardFormValues['responseTypes'] = [],

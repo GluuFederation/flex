@@ -1016,6 +1016,7 @@
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
+    "asset_name_error": "Por favor ingrese el Nombre del Recurso.",
     "asset_file_type_invalid": "Solo se pueden cargar archivos .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif y .xhtml.",
     "metadata_file_type_invalid": "Solo se pueden cargar archivos de metadatos .xml y .json.",
     "service_required": "Los servicios relacionados son obligatorios.",

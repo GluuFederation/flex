@@ -1016,6 +1016,7 @@
     "add_permission": "Add Permission",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
+    "asset_name_error": "Please enter Asset Name.",
     "asset_file_type_invalid": "Only .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif and .xhtml files can be uploaded.",
     "metadata_file_type_invalid": "Only .xml and .json metadata files can be uploaded.",
     "service_required": "Related Services are required.",

@@ -77,7 +77,9 @@ export const getClientValidationSchema = (t: TFunction) =>
           ),
       )
       .ensure()
-      .min(1, t('validation_messages.redirect_uri_required')),
+      .test('redirect-uri-required', t('validation_messages.redirect_uri_required'), (uris) =>
+        Boolean(uris?.some(Boolean)),
+      ),
 
     accessTokenLifetime: Yup.number()
       .transform((_v, orig) => (orig === '' || orig == null ? undefined : Number(orig)))
