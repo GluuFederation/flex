@@ -125,8 +125,14 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
     void refetchAgama()
   }, [canLoadAcrList, refetchAcrs, refetchLdap, refetchScripts, refetchAgama])
 
+  const rowSourcesFailed =
+    canLoadAcrList &&
+    ((ldapLoadFailed && !ldapConfigurations) ||
+      (scriptsLoadFailed && !scriptsResponse) ||
+      (agamaLoadFailed && !agamaProjects))
+
   const tableData = useMemo<AuthNItem[]>(() => {
-    if (isLoading) {
+    if (isLoading || rowSourcesFailed) {
       return []
     }
     if (isBuiltIn) {
@@ -137,7 +143,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       scripts: scriptsResponse?.entries,
       deployments: agamaProjects?.entries,
     })
-  }, [isLoading, isBuiltIn, ldapConfigurations, scriptsResponse, agamaProjects])
+  }, [isLoading, rowSourcesFailed, isBuiltIn, ldapConfigurations, scriptsResponse, agamaProjects])
 
   const columns: ColumnDef<AuthNItem>[] = useMemo(
     () => [

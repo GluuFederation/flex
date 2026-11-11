@@ -19,6 +19,7 @@ import { logger } from '@/utils/logger'
 import { GluuButton } from '@/components/GluuButton'
 import GluuText from 'Routes/Apps/Gluu/GluuText'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuLoadError from 'Routes/Apps/Gluu/GluuLoadError'
 import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useStyles } from './AgamaProjectConfigModal.style'
@@ -316,7 +317,16 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
             <div className={classes.modalBody}>
               {!projectDetailsFetching && !projectDetailsData && isOpen && (
-                <p>{t('messages.agama_project_deploying', { name })}</p>
+                <>
+                  {projectDetailsLoadFailed ? (
+                    <GluuLoadError
+                      message={t('messages.error_loading_data')}
+                      onRetry={refetchProjectDetails}
+                    />
+                  ) : (
+                    <p>{t('messages.agama_project_deploying', { name })}</p>
+                  )}
+                </>
               )}
 
               {!!projectDetailsData && (
