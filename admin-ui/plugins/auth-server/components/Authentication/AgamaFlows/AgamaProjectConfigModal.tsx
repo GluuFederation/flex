@@ -73,14 +73,16 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   const [isCopied, setIsCopied] = useState<boolean>(false)
 
-  const { data: projectDetailsData, isFetching: projectDetailsFetching } = useGetAgamaPrjByName(
-    name,
-    {
-      query: {
-        enabled: !!name && isOpen,
-      },
+  const {
+    data: projectDetailsData,
+    isFetching: projectDetailsFetching,
+    isError: projectDetailsLoadFailed,
+    refetch: refetchProjectDetails,
+  } = useGetAgamaPrjByName(name, {
+    query: {
+      enabled: !!name && isOpen,
     },
-  )
+  })
 
   const {
     data: configDetailsData,
@@ -380,6 +382,8 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                           data={flowErrors}
                           loading={projectDetailsFetching}
                           getRowKey={(row) => row.id}
+                          loadFailed={projectDetailsLoadFailed}
+                          onRetry={refetchProjectDetails}
                         />
                       </Box>
                       {projectConfigs ? (

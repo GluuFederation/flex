@@ -13,6 +13,7 @@ export const T_KEYS = {
   FIELDS_ROWS_PER_PAGE: 'fields.rows_per_page',
   MESSAGES_LOADING: 'messages.loading',
   MESSAGES_NO_DATA: 'messages.no_data_available',
+  MESSAGES_LOAD_FAILED: 'messages.error_loading_data',
   MESSAGES_COLLAPSE: 'messages.collapse',
   MESSAGES_EXPAND: 'messages.expand',
   MESSAGES_PREVIOUS_PAGE: 'messages.previous_page',

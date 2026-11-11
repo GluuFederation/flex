@@ -58,7 +58,12 @@ const SessionListPage: React.FC = () => {
   const { canDelete } = usePermission(sessionResourceId)
   const { t } = useTranslation()
 
-  const { data: sessionsData, isLoading: sessionsLoading } = useGetSessions()
+  const {
+    data: sessionsData,
+    isLoading: sessionsLoading,
+    isError: isSessionsError,
+    refetch: refetchSessions,
+  } = useGetSessions()
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const client_id = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -634,6 +639,8 @@ const SessionListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={t('messages.no_sessions_found')}
+              loadFailed={isSessionsError}
+              onRetry={refetchSessions}
             />
           </div>
         </GluuViewWrapper>

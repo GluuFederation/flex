@@ -325,6 +325,8 @@ const User2FADevicesModal = ({ isOpen, onClose, userDetails, theme }: User2FADev
             actions={actions}
             getRowKey={(row, index) => row.id ?? `row-${index}`}
             emptyMessage={t('messages.no_data_available')}
+            loadFailed={isFido2Error}
+            onRetry={refetchFido2Details}
             expandable
             renderExpandedRow={renderExpandedRow}
           />

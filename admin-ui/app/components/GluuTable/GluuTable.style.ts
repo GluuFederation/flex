@@ -467,6 +467,10 @@ export const useStyles = makeStyles<GluuTableStyleParams>()((
       color: themeColors.textMuted,
       fontSize: fontSizes.base,
     },
+    loadError: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
     expandIcon: {
       display: 'inline-flex',
       flexShrink: 0,
