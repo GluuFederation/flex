@@ -20,6 +20,7 @@ import {
   fetchActivePolicyStoreBytes,
   createAdminUiSession,
   deleteAdminUiSession,
+  setSessionRefreshToken,
   SESSION_ENDPOINT,
 } from '../backend-api'
 import { setHasSessionReader } from '../sessionState'
@@ -291,12 +292,37 @@ describe('session endpoints', () => {
     )
   })
 
+  it('sends the refresh token from sign-in with the session request', async () => {
+    ax.post.mockResolvedValue({ data: { created: true } })
+    setSessionRefreshToken('the-refresh-token')
+    await createAdminUiSession('the-ujwt', 'prot-token')
+    setSessionRefreshToken(null)
+    expect(ax.post).toHaveBeenCalledWith(
+      '/app/admin-ui/oauth2/session',
+      { ujwt: 'the-ujwt', refreshToken: 'the-refresh-token' },
+      { headers: { Authorization: 'Bearer prot-token' }, withCredentials: true },
+    )
+  })
+
   it('deletes the session using the token-derived auth config', async () => {
     ax.delete.mockResolvedValue({ data: {} })
     await deleteAdminUiSession()
     expect(ax.delete).toHaveBeenCalledWith('/app/admin-ui/oauth2/session', {
       withCredentials: true,
     })
+  })
+
+  it('stops sending the refresh token once sign-out deletes the session', async () => {
+    ax.delete.mockResolvedValue({ data: {} })
+    ax.post.mockResolvedValue({ data: { created: true } })
+    setSessionRefreshToken('the-refresh-token')
+    await deleteAdminUiSession()
+    await createAdminUiSession('the-ujwt', 'prot-token')
+    expect(ax.post).toHaveBeenCalledWith(
+      '/app/admin-ui/oauth2/session',
+      { ujwt: 'the-ujwt' },
+      { headers: { Authorization: 'Bearer prot-token' }, withCredentials: true },
+    )
   })
 
   it('rethrows when session deletion fails', async () => {
