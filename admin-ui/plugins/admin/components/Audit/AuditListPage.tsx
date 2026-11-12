@@ -45,7 +45,6 @@ const T_KEYS = {
   TITLE_AUDIT_LOGS: 'titles.audit_logs',
   FIELD_LOG_ENTRY: 'fields.log_entry',
   ACTION_SEARCH: 'actions.search',
-  MSG_ERROR_LOADING: 'messages.error_loading_data',
   MSG_NO_DATA: 'messages.no_data',
   PLACEHOLDER_SEARCH_PATTERN: 'placeholders.search_pattern',
 } as const
@@ -82,7 +81,7 @@ const AuditListPage: React.FC = () => {
     end_date: toApiEndDatetime(initialRange.current.end),
   }))
 
-  const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
+  const { data, isLoading, isFetching, isError, refetch } = useGetAuditData(queryParams, {
     query: { enabled: canReadAuditLogs, refetchOnMount: 'always' },
   })
   const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data?.totalEntriesCount])
@@ -328,10 +327,7 @@ const AuditListPage: React.FC = () => {
     [startDate, endDate, handleStartDate, handleEndDate],
   )
 
-  const emptyMessage = useMemo(
-    () => (isError ? t(T_KEYS.MSG_ERROR_LOADING) : t(T_KEYS.MSG_NO_DATA)),
-    [isError, t],
-  )
+  const emptyMessage = useMemo(() => t(T_KEYS.MSG_NO_DATA), [t])
 
   return (
     <GluuLoader blocking={isLoading}>
@@ -368,6 +364,8 @@ const AuditListPage: React.FC = () => {
                 pagination={pagination}
                 onPagingSizeSync={handlePagingSizeSync}
                 emptyMessage={emptyMessage}
+                loadFailed={isError}
+                onRetry={refetch}
               />
             </div>
           </div>

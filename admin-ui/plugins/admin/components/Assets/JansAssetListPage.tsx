@@ -82,7 +82,7 @@ const JansAssetListPage: React.FC = () => {
   SetTitle(t(T_KEYS.TITLE_ASSETS))
   const pageTitle = usePageTitle()
 
-  const { data, isLoading, isFetching, refetch } = useGetAllAssets(
+  const { data, isLoading, isFetching, isError, refetch } = useGetAllAssets(
     {
       limit,
       pattern: pattern || undefined,
@@ -355,6 +355,8 @@ const JansAssetListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

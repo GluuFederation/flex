@@ -78,6 +78,7 @@ const CustomScriptListPage: React.FC = () => {
   const {
     data: scriptsResponse,
     isLoading,
+    isError,
     refetch,
   } = useCustomScriptsByType(scriptType, {
     pattern: pattern || undefined,
@@ -568,6 +569,8 @@ const CustomScriptListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

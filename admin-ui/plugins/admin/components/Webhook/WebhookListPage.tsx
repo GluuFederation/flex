@@ -65,7 +65,7 @@ const WebhookListPage: React.FC = () => {
   SetTitle(t(PAGE_TITLE_KEY))
   const pageTitle = t(PAGE_TITLE_KEY)
 
-  const { data, isLoading, isFetching, refetch } = useGetAllWebhooks(
+  const { data, isLoading, isFetching, isError, refetch } = useGetAllWebhooks(
     {
       limit,
       pattern: pattern || undefined,
@@ -390,6 +390,8 @@ const WebhookListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

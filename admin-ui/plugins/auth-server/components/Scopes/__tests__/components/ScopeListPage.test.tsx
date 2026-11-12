@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import { useGetOauthScopes } from 'JansConfigApi'
 import { ScopeListPage } from 'Plugins/auth-server/components/Scopes'
 import { Provider } from 'react-redux'
 import mockScopes from '../fixtures/mockScopes'
@@ -127,4 +128,31 @@ it('Should render the scope list page properly', () => {
   expect(screen.getByPlaceholderText('search', { exact: false })).toBeInTheDocument()
   expect(within(container).getAllByText(id).length).toBeGreaterThan(0)
   expect(screen.getByText(description)).toBeInTheDocument()
+})
+
+it('shows the load error with Try Again instead of "No scopes found" when loading fails', () => {
+  const refetch = jest.fn()
+  const mockedUseGetOauthScopes = jest.mocked(useGetOauthScopes)
+  const defaultImplementation = mockedUseGetOauthScopes.getMockImplementation()
+  mockedUseGetOauthScopes.mockImplementation(
+    () =>
+      ({
+        data: undefined,
+        isLoading: false,
+        isFetching: false,
+        isError: true,
+        refetch,
+      }) as Partial<ReturnType<typeof useGetOauthScopes>> as ReturnType<typeof useGetOauthScopes>,
+  )
+  try {
+    render(<ScopeListPage />, { wrapper: Wrapper })
+    expect(screen.queryByText('No scopes found')).not.toBeInTheDocument()
+    expect(
+      screen.getByText('An error occurred while loading data. Please try again.'),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
+    expect(refetch).toHaveBeenCalledTimes(1)
+  } finally {
+    mockedUseGetOauthScopes.mockImplementation(defaultImplementation)
+  }
 })

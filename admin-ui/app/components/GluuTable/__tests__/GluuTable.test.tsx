@@ -54,6 +54,34 @@ describe('GluuTable', () => {
     expect(screen.getByText('Nothing here')).toBeInTheDocument()
   })
 
+  it('shows the load error with Try Again instead of the empty message when loading failed', () => {
+    const onRetry = jest.fn()
+    render(
+      <GluuTable
+        columns={columns}
+        data={[]}
+        emptyMessage="Nothing here"
+        loadFailed
+        onRetry={onRetry}
+      />,
+      { wrapper: Wrapper },
+    )
+    expect(screen.queryByText('Nothing here')).not.toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'An error occurred while loading data. Please try again.',
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Try Again' }))
+    expect(onRetry).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps the loaded rows when a later reload fails', () => {
+    render(<GluuTable columns={columns} data={data} loadFailed onRetry={jest.fn()} />, {
+      wrapper: Wrapper,
+    })
+    expect(screen.getByText('Charlie')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Try Again' })).not.toBeInTheDocument()
+  })
+
   it('sorts ascending on first header click and toggles to descending on second click (never clears)', () => {
     render(<GluuTable columns={columns} data={data} />, { wrapper: Wrapper })
     const nameHeader = screen.getByRole('button', { name: /Name/i })

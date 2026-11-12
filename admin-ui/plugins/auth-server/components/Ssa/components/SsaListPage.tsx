@@ -79,7 +79,12 @@ const SsaListPage: React.FC = () => {
   const pageTitle = t('titles.ssa_management')
   SetTitle(pageTitle)
 
-  const { data: items = [], isLoading: loading } = useGetAllSsas()
+  const {
+    data: items = [],
+    isLoading: loading,
+    isError: isSsasError,
+    refetch: refetchSsas,
+  } = useGetAllSsas()
   const downloadSsaJwtMutation = useGetSsaJwt()
   const ssaJwtQuery = useSsaJwtQuery(selectedSsaJti, ssaDialogOpen)
   const { revokeSsa, isLoading: isDeleting } = useRevokeSsaWithAudit()
@@ -476,6 +481,8 @@ const SsaListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isSsasError}
+              onRetry={refetchSsas}
               expandable
               renderExpandedRow={renderExpandedRow}
             />
