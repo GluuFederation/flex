@@ -200,8 +200,8 @@ jobs:
       run: |
         cd flex/
         sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="${{ env.JANS_BRANCH }}" --jans-setup-branch="${{ env.JANS_SETUP_BRANCH }}" -download-exit -yes --keep-downloads --keep-setup -force-download
-        cp -r /opt/dist flex-src/opt/
-        cp -r /opt/jans flex-src/opt/
+        sudo cp -r /opt/dist /opt/jans flex-src/opt/
+        sudo chown -R "$(id -u):$(id -g)" flex-src/opt
         touch flex-src/opt/jans/jans-setup/package
         rm -rf install.py install jans-cli
         rm -rf flex-src/opt/jans/jans-setup/logs/setup.log

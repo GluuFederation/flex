@@ -20,7 +20,7 @@ jobs:
     # This cannot run on forks as the user mo-auto does not have access to forks
     if: github.repository_owner == 'GluuFederation'
     name: label PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: check out code
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
