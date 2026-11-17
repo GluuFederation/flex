@@ -70,7 +70,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=e790bb44acd321a824e7d481db47e409cd07455a
+ENV JANS_SOURCE_VERSION=9e4dae026bb63ca030cff2bb925d1c625e1542de
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
