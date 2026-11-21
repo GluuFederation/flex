@@ -137,7 +137,7 @@ nav:
             - 'Microsoft AKS': 'install/helm-install/prerequisites/microsoft-aks.md'
             - 'Local (Minikube/MicroK8s)': 'install/helm-install/prerequisites/local.md'
             - 'Rancher Marketplace': 'install/helm-install/prerequisites/rancher.md'
-          - 'Ingress Setup': 'install/helm-install/ingress-setup.md'
+          - 'External Access': 'install/helm-install/external-access.md'
           - 'Database Setup': 'install/helm-install/database-setup.md'
           - 'Install Flex': 'install/helm-install/install-flex.md'
           - 'Post-Installation': 'install/helm-install/post-install.md'
