@@ -977,8 +977,12 @@ global:
       authServerProtectedRegister: false
       # -- Enable endpoint /.well-known/lock-server-configuration (if enabled, global.auth-server.lockEnabled must be enabled)
       lockConfigEnabled: false
-      # -- Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, global.auth-server.lockEnabled must be enabled)
+      # -- Enable Lock Audit gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, global.auth-server.lockEnabled must be enabled)
       lockAuditEnabled: false
+      # -- Enable Lock Trace gRPC endpoint /io.jans.lock.trace.TraceService (if enabled, global.auth-server.lockEnabled must be enabled)
+      lockTraceEnabled: false
+      # -- Enable Lock Trace Admin gRPC endpoint /io.jans.lock.trace.TraceAdminService (if enabled, global.auth-server.lockEnabled must be enabled)
+      lockTraceAdminEnabled: false
       # -- Lock config ingress resource labels. key app is taken
       lockConfigLabels: { }
       # -- Lock config ingress resource additional annotations.
@@ -1487,8 +1491,12 @@ gateway-api:
     authServerProtectedRegister: false
     # -- Enable endpoint /.well-known/lock-server-configuration (if enabled, global.auth-server.lockEnabled must be enabled)
     lockConfigEnabled: false
-    # -- Enable gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, global.auth-server.lockEnabled must be enabled)
+    # -- Enable Lock Audit gRPC endpoint /io.jans.lock.audit.AuditService (if enabled, global.auth-server.lockEnabled must be enabled)
     lockAuditEnabled: false
+    # -- Enable Lock Trace gRPC endpoint /io.jans.lock.trace.TraceService (if enabled, global.auth-server.lockEnabled must be enabled)
+    lockTraceEnabled: false
+    # -- Enable Lock Trace Admin gRPC endpoint /io.jans.lock.trace.TraceAdminService (if enabled, global.auth-server.lockEnabled must be enabled)
+    lockTraceAdminEnabled: false
     # -- Enable Casa endpoints /jans-casa
     casaEnabled: false
     # -- Enable Config API endpoints /jans-config-api

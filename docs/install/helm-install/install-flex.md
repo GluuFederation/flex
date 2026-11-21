@@ -80,7 +80,7 @@ Wait for all pods to reach `Running` or `Completed` status.
 To apply configuration changes:
 
 ```bash
-helm upgrade gluu gluu-flex/gluu -n gluu --create-namespace -f override.yaml
+helm upgrade gluu gluu-flex/gluu -n gluu -f override.yaml
 ```
 
 ## Uninstall
