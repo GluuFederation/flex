@@ -38,6 +38,9 @@ const ROUTES = {
   USER_EDIT: (id: string) =>
     `${PLUGIN_BASE_PATHS.USER_MANAGEMENT}/usermanagement/edit/${encodeURIComponent(id)}`,
   USER_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.USER_MANAGEMENT}/usermanagement/edit/:id`,
+  USER_VIEW: (id: string) =>
+    `${PLUGIN_BASE_PATHS.USER_MANAGEMENT}/usermanagement/view/${encodeURIComponent(id)}`,
+  USER_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.USER_MANAGEMENT}/usermanagement/view/:id`,
 
   // ========== Admin Console Plugin ==========
   // Dashboard
@@ -102,6 +105,9 @@ const ROUTES = {
   AUTH_SERVER_CLIENT_EDIT: (inum: string) =>
     `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/edit/${encodeURIComponent(inum)}`,
   AUTH_SERVER_CLIENT_EDIT_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/edit/:id`,
+  AUTH_SERVER_CLIENT_VIEW: (inum: string) =>
+    `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/view/${encodeURIComponent(inum)}`,
+  AUTH_SERVER_CLIENT_VIEW_TEMPLATE: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/client/view/:id`,
 
   // Scopes
   AUTH_SERVER_SCOPES_LIST: `${PLUGIN_BASE_PATHS.AUTH_SERVER}/scopes`,

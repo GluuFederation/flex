@@ -34,6 +34,7 @@ jest.mock('JansConfigApi', () => ({
   }),
   useDeleteAsset: () => ({ mutateAsync: jest.fn(), isPending: false, isError: false }),
   getGetAllAssetsQueryKey: () => ['/api/v1/jans-assets'],
+  getGetAssetByInumQueryKey: (inum: string) => [`/api/v1/jans-assets/${inum}`],
   useGetWebhooksByFeatureId: () => ({ data: [], isFetching: false, isFetched: true }),
 }))
 jest.mock('../hooks/useAssetQueries', () => ({

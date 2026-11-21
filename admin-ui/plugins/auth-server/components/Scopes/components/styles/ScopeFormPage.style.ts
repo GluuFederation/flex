@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import { createMobilePageTitleStyle } from '@/constants'
 import { makeStyles } from 'tss-react/mui'
 import { SPACING, BORDER_RADIUS, OPACITY } from '@/constants'
@@ -6,11 +5,6 @@ import { fontFamily, fontWeights, fontSizes, lineHeights } from '@/styles/fonts'
 import { createFormCardStyles } from '@/styles/formStyles'
 import customColors from '@/customColors'
 import type { ThemeConfig } from '@/context/theme/config'
-
-export const errorTextStyle: CSSProperties = {
-  color: customColors.accentRed,
-  margin: '1px 2px',
-}
 
 interface ScopeFormPageStylesParams {
   isDark: boolean
@@ -157,6 +151,13 @@ export const useStyles = makeStyles<ScopeFormPageStylesParams>()((_, { isDark, t
         outline: `2px solid ${themeColors.fontColor}`,
         outlineOffset: 2,
       },
+    },
+    clientPillBadge: {
+      cursor: 'pointer !important',
+    },
+    errorText: {
+      color: customColors.accentRed,
+      margin: '1px 2px',
     },
     autocompleteField: {
       marginBottom: 20,

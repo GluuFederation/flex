@@ -108,6 +108,7 @@ export type GluuRemovableSelectRowProps = {
   doc_category?: string
   isDirect?: boolean
   hideRemoveButton?: boolean
+  disabled?: boolean
   modifiedFields?: Record<string, RemovableModifiedFieldValue>
   setModifiedFields?: React.Dispatch<
     React.SetStateAction<Record<string, RemovableModifiedFieldValue>>

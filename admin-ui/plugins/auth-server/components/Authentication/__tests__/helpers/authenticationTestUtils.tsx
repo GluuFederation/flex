@@ -45,6 +45,7 @@ jest.mock('JansConfigApi', () => ({
     mutateAsync: jest.fn(),
     isPending: false,
   })),
+  getConfigScriptsByInum: jest.fn(() => Promise.resolve({})),
   getGetAcrsQueryKey: jest.fn(() => ['/api/v1/acrs']),
   getGetConfigDatabaseLdapQueryKey: jest.fn(() => ['/api/v1/config/database/ldap']),
   getGetConfigScriptsByTypeQueryKey: jest.fn((type: string) => [

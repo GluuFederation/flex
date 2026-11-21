@@ -68,4 +68,11 @@ describe('logAuditAction', () => {
 
     expect(mockedLoggerError).toHaveBeenCalledWith('Audit logging failed for UPDATE:', 'boom')
   })
+
+  it('resolves without waiting for a slow audit post', async () => {
+    mockedPost.mockReturnValueOnce(new Promise(() => undefined))
+
+    await expect(logAuditAction('DELETION', 'customScript', {})).resolves.toBeUndefined()
+    expect(mockedPost).toHaveBeenCalledTimes(1)
+  })
 })

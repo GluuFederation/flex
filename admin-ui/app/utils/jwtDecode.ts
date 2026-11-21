@@ -33,4 +33,14 @@ const decodeJwt = <T = JsonObject>(token: string): T => {
     throw new Error('decodeJwt: token payload is not valid JSON')
   }
 }
+
+export const isJwtExpired = (token: string): boolean => {
+  try {
+    const { exp } = decodeJwt<{ exp?: number }>(token)
+    return typeof exp === 'number' && exp * 1000 <= Date.now()
+  } catch {
+    return false
+  }
+}
+
 export default decodeJwt

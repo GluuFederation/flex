@@ -139,9 +139,74 @@ it('Should render in viewOnly mode without crashing', () => {
   expect(container).toBeTruthy()
 })
 
-const renderResponseTypeOptions = async (oidcConfiguration: Partial<AppConfiguration>) => {
+it('Should show selections without remove controls in viewOnly mode', () => {
   render(
     <Formik<ClientWizardFormValues> initialValues={mockValues} onSubmit={jest.fn()}>
+      {(formik: ClientPanelFormik) => (
+        <ClientBasicPanel
+          client={mockClientData}
+          formik={formik}
+          oidcConfiguration={mockOidcConfiguration as AppConfiguration}
+          viewOnly={true}
+          modifiedFields={{}}
+          setModifiedFields={mockSetModifiedFields}
+        />
+      )}
+    </Formik>,
+    { wrapper: Wrapper },
+  )
+  expect(screen.getByText('code')).toBeInTheDocument()
+  expect(screen.getByText('authorization_code')).toBeInTheDocument()
+  expect(screen.queryByPlaceholderText(/response types/i)).toBeNull()
+  const enabledRemoveButtons = screen
+    .queryAllByRole('button', { name: /remove/i })
+    .filter((button) => !(button as HTMLButtonElement).disabled)
+  expect(enabledRemoveButtons).toHaveLength(0)
+})
+
+it('Should show the redirect URI required error on edit or after the list is touched, not on a fresh add form', () => {
+  const requiredMessage = 'At least one redirect URI is required'
+  const renderPanel = (isEdit: boolean, touched: boolean) =>
+    render(
+      <Formik<ClientWizardFormValues>
+        initialValues={{ ...mockValues, redirectUris: [] }}
+        initialErrors={{ redirectUris: requiredMessage }}
+        initialTouched={touched ? { redirectUris: true } : {}}
+        onSubmit={jest.fn()}
+      >
+        {(formik: ClientPanelFormik) => (
+          <ClientBasicPanel
+            client={mockClientData}
+            formik={formik}
+            oidcConfiguration={mockOidcConfiguration as AppConfiguration}
+            viewOnly={false}
+            isEdit={isEdit}
+            modifiedFields={{}}
+            setModifiedFields={mockSetModifiedFields}
+          />
+        )}
+      </Formik>,
+      { wrapper: Wrapper },
+    )
+  const freshAdd = renderPanel(false, false)
+  expect(freshAdd.queryByText(requiredMessage)).toBeNull()
+  freshAdd.unmount()
+  const touchedAdd = renderPanel(false, true)
+  expect(touchedAdd.getByText(requiredMessage)).toBeInTheDocument()
+  touchedAdd.unmount()
+  const edit = renderPanel(true, false)
+  expect(edit.getByText(requiredMessage)).toBeInTheDocument()
+})
+
+const renderResponseTypeOptions = async (
+  oidcConfiguration: Partial<AppConfiguration>,
+  responseTypes: ClientWizardFormValues['responseTypes'] = [],
+) => {
+  render(
+    <Formik<ClientWizardFormValues>
+      initialValues={{ ...mockValues, responseTypes }}
+      onSubmit={jest.fn()}
+    >
       {(formik: ClientPanelFormik) => (
         <ClientBasicPanel
           client={mockClientData}
@@ -162,33 +227,56 @@ const renderResponseTypeOptions = async (oidcConfiguration: Partial<AppConfigura
     .map((option) => option.textContent)
 }
 
-it('offers token and id_token only when the server supports the implicit grant', async () => {
+it('offers every response type from the default server list without the implicit grant', async () => {
   expect(
     await renderResponseTypeOptions({
       grantTypesSupported: ['authorization_code', 'refresh_token'],
+      responseTypesSupported: [
+        ['code', 'token'],
+        ['code'],
+        ['code', 'id_token'],
+        ['token'],
+        ['token', 'id_token'],
+        ['code', 'token', 'id_token'],
+        ['id_token'],
+      ],
     }),
-  ).toEqual(['code'])
+  ).toEqual(['code', 'token', 'id_token'])
 })
 
-it('offers only code when the server supports no grant types', async () => {
-  expect(await renderResponseTypeOptions({ grantTypesSupported: [] })).toEqual(['code'])
+it('splits server combinations into single response types', async () => {
+  expect(
+    await renderResponseTypeOptions({ responseTypesSupported: [['code'], ['code', 'id_token']] }),
+  ).toEqual(['code', 'id_token'])
+})
+
+it('hides a response type the server does not list', async () => {
+  expect(await renderResponseTypeOptions({ responseTypesSupported: [['token']] })).toEqual([
+    'token',
+  ])
+})
+
+it('follows the server list even when the implicit grant is supported', async () => {
+  expect(
+    await renderResponseTypeOptions({
+      grantTypesSupported: ['authorization_code', 'implicit'],
+      responseTypesSupported: [['code']],
+    }),
+  ).toEqual(['code'])
 })
 
 it('offers every response type when the server config is not loaded', async () => {
   expect(await renderResponseTypeOptions({})).toEqual(['code', 'token', 'id_token'])
 })
 
-it('offers every response type when the server supports the implicit grant', async () => {
+it('keeps a selected response type the server no longer lists', async () => {
   expect(
-    await renderResponseTypeOptions({ grantTypesSupported: ['authorization_code', 'implicit'] }),
-  ).toEqual(['code', 'token', 'id_token'])
+    await renderResponseTypeOptions({ responseTypesSupported: [['code']] }, ['token']),
+  ).toEqual(['code', 'token'])
 })
 
-it('offers id_token without implicit when the server allows it', async () => {
-  expect(
-    await renderResponseTypeOptions({
-      grantTypesSupported: ['authorization_code'],
-      allowIdTokenWithoutImplicitGrantType: true,
-    }),
-  ).toEqual(['code', 'id_token'])
+it('offers only selected response types when the server list is empty', async () => {
+  expect(await renderResponseTypeOptions({ responseTypesSupported: [] }, ['code'])).toEqual([
+    'code',
+  ])
 })

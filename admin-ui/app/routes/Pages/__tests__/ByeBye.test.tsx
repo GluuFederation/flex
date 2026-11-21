@@ -4,8 +4,9 @@ import ByeBye from '../ByeBye'
 
 type ByeByeState = {
   authReducer: {
-    config: { endSessionEndpoint: string; postLogoutRedirectUri: string }
+    config: { endSessionEndpoint: string; postLogoutRedirectUri: string; clientId: string }
     hasSession: boolean
+    idToken: string
   }
 }
 type AuthStatePayload = { state: boolean }
@@ -17,8 +18,10 @@ const mockState: ByeByeState = {
     config: {
       endSessionEndpoint: 'https://idp.example.com/end',
       postLogoutRedirectUri: 'https://app.example.com/',
+      clientId: 'admin-ui-client',
     },
     hasSession: true,
+    idToken: 'the-id-token',
   },
 }
 jest.mock('@/redux/hooks', () => ({
@@ -38,8 +41,13 @@ jest.mock('@/utils/logger', () => ({ logger: { error: jest.fn(), info: jest.fn()
 const mockBuildSafeLogoutUrl = jest.fn()
 const mockBuildSafeNavigationUrl = jest.fn()
 jest.mock('@/utils/urlSecurity', () => ({
-  buildSafeLogoutUrl: (endpoint: string, redirectUri: string, state: string) =>
-    mockBuildSafeLogoutUrl(endpoint, redirectUri, state),
+  buildSafeLogoutUrl: (
+    endpoint: string,
+    redirectUri: string,
+    state: string,
+    idToken: string,
+    clientId: string,
+  ) => mockBuildSafeLogoutUrl(endpoint, redirectUri, state, idToken, clientId),
   buildSafeNavigationUrl: (rawUrl: string) => mockBuildSafeNavigationUrl(rawUrl),
 }))
 
@@ -71,8 +79,10 @@ describe('ByeBye', () => {
       config: {
         endSessionEndpoint: 'https://idp.example.com/end',
         postLogoutRedirectUri: 'https://app.example.com/',
+        clientId: 'admin-ui-client',
       },
       hasSession: true,
+      idToken: 'the-id-token',
     }
   })
 
@@ -118,6 +128,8 @@ describe('ByeBye', () => {
         'https://idp.example.com/end',
         'https://app.example.com/',
         'fixed-state',
+        'the-id-token',
+        'admin-ui-client',
       ),
     )
     expect(mockBuildSafeNavigationUrl).not.toHaveBeenCalled()
@@ -136,11 +148,11 @@ describe('ByeBye', () => {
     expect(mockBuildSafeLogoutUrl).not.toHaveBeenCalled()
   })
 
-  it('leaves the next sign-in alone when the Auth Server session is ended', async () => {
+  it('asks for the password on the next sign-in even when the end-session call goes out', async () => {
     mockBuildSafeLogoutUrl.mockReturnValue('https://idp.example.com/end?state=fixed-state')
     render(<ByeBye />)
     await waitFor(() => expect(mockBuildSafeLogoutUrl).toHaveBeenCalled())
-    expect(window.sessionStorage.getItem('forceLogin')).toBeNull()
+    expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
   })
 
   it('asks for the password on the next sign-in when no end-session endpoint is configured', async () => {

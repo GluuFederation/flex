@@ -25,7 +25,13 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
     try {
       const errorData = await response.json()
-      errorMessage = errorData.message || errorData.description || errorData.error || errorMessage
+      errorMessage =
+        errorData.message ||
+        errorData.state ||
+        errorData.error_description ||
+        errorData.description ||
+        errorData.error ||
+        errorMessage
     } catch (parseError) {
       errorMessage = `${errorMessage}: ${response.statusText} (Failed to parse error response: ${parseError instanceof Error ? parseError.message : 'Unknown error'})`
     }

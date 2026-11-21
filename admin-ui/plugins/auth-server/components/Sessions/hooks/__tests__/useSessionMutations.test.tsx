@@ -139,7 +139,9 @@ describe('useDeleteSessionWithAudit', () => {
 
   it('dispatches a warning toast when audit logging fails', async () => {
     mockDeleteMutateAsync.mockResolvedValue(undefined)
-    mockLogAuditUserAction.mockRejectedValue(new Error('audit boom'))
+    mockLogAuditUserAction.mockImplementation(async (params: LogAuditParams) => {
+      params.onError?.(new Error('audit boom'))
+    })
     const store = buildStore()
     const { result } = renderHook(() => useDeleteSessionWithAudit(auditContext), {
       wrapper: createWrapper(store),
@@ -211,8 +213,9 @@ describe('useRevokeSessionWithAudit', () => {
 
   it('still succeeds with a warning toast when audit logging fails after a revoke', async () => {
     mockRevokeMutateAsync.mockResolvedValue(undefined)
-    const auditFailure = new Error('audit boom')
-    mockLogAuditUserAction.mockRejectedValue(auditFailure)
+    mockLogAuditUserAction.mockImplementation(async (params: LogAuditParams) => {
+      params.onError?.(new Error('audit boom'))
+    })
     const onSuccess = jest.fn()
     const onError = jest.fn()
     const store = buildStore()

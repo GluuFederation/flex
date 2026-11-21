@@ -1,27 +1,30 @@
 import { useState, useCallback, useMemo, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useMatch } from 'react-router-dom'
 import { useGetOauthOpenidClientsByInum } from 'JansConfigApi'
 import { useAppSelector } from '@/redux/hooks'
 import { GluuPageContent } from '@/components'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuLoadError from 'Routes/Apps/Gluu/GluuLoadError'
 import { useAppNavigation, ROUTES } from '@/helpers/navigation'
+import { usePermission } from '@/cedarling/hooks/usePermission'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { logger } from '@/utils/logger'
 import SetTitle from 'Utils/SetTitle'
 import { useUpdateClient, useClientScripts, useOidcProperties } from '../hooks'
-import { CLIENT_VIEW_QUERY_PARAM, CLIENT_VIEW_QUERY_VALUE } from '../constants'
 import type { JsonValue } from '@/routes/Apps/Gluu/types/common'
 import type { ClientModifiedFields, ClientWizardSubmitData } from '../types'
 
 const ClientEditPage = (): JSX.Element => {
   const { t } = useTranslation()
-  SetTitle(t('messages.edit_client'))
-
   const { navigateBack } = useAppNavigation()
   const { id: routeInum } = useParams<{ id: string }>()
-  const [searchParams] = useSearchParams()
-  const viewOnly = searchParams.get(CLIENT_VIEW_QUERY_PARAM) === CLIENT_VIEW_QUERY_VALUE
+  const viewMatch = useMatch(ROUTES.AUTH_SERVER_CLIENT_VIEW_TEMPLATE)
+  const { canWrite } = usePermission(ADMIN_UI_RESOURCES.Clients)
+  const viewOnly = !!viewMatch || !canWrite
+
+  SetTitle(t(viewOnly ? 'messages.view_client_details' : 'messages.edit_client'))
 
   const userinfo = useAppSelector((state) => state.authReducer?.userinfo)
   const authClientId = useAppSelector((state) => state.authReducer?.config?.clientId)
@@ -29,10 +32,12 @@ const ClientEditPage = (): JSX.Element => {
 
   const [modifiedFields, setModifiedFields] = useState<ClientModifiedFields>({})
 
-  const { data: clientData, isLoading: isClientLoading } = useGetOauthOpenidClientsByInum(
-    routeInum ?? '',
-    { query: { enabled: !!routeInum } },
-  )
+  const {
+    data: clientData,
+    isLoading: isClientLoading,
+    isError: isClientError,
+    refetch: refetchClient,
+  } = useGetOauthOpenidClientsByInum(routeInum ?? '', { query: { enabled: !!routeInum } })
 
   const { scripts, isLoading: isScriptsLoading } = useClientScripts()
   const { oidcConfiguration, isLoading: isOidcLoading } = useOidcProperties()
@@ -54,31 +59,39 @@ const ClientEditPage = (): JSX.Element => {
     async (data: ClientWizardSubmitData) => {
       if (!data) return
       try {
-        await updateClient(data)
+        await updateClient({ ...clientData, ...data, displayName: data.clientName })
         navigateBack(ROUTES.AUTH_SERVER_CLIENTS_LIST)
       } catch (error) {
         logger.error('Failed to update client:', error instanceof Error ? error : String(error))
       }
     },
-    [updateClient, navigateBack],
+    [clientData, updateClient, navigateBack],
   )
+
+  const handleRetry = useCallback(() => {
+    void refetchClient()
+  }, [refetchClient])
 
   const blocking = isUpdating || isOidcLoading || isClientLoading || isScriptsLoading
 
   return (
     <GluuLoader blocking={blocking}>
       <GluuPageContent>
-        <ClientWizardForm
-          client_data={formClientData}
-          viewOnly={viewOnly}
-          scripts={scripts}
-          permissions={permissions}
-          oidcConfiguration={oidcConfiguration}
-          customOnSubmit={handleSubmit}
-          isEdit={true}
-          modifiedFields={modifiedFields}
-          setModifiedFields={setModifiedFields}
-        />
+        {isClientError && !clientData ? (
+          <GluuLoadError message={t('messages.client_load_failed')} onRetry={handleRetry} />
+        ) : (
+          <ClientWizardForm
+            client_data={formClientData}
+            viewOnly={viewOnly}
+            scripts={scripts}
+            permissions={permissions}
+            oidcConfiguration={oidcConfiguration}
+            customOnSubmit={handleSubmit}
+            isEdit={true}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        )}
       </GluuPageContent>
     </GluuLoader>
   )

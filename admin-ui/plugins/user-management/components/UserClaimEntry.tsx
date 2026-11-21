@@ -13,7 +13,13 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { useStyles } from './UserClaimEntry.style'
 import { UserClaimEntryProps } from '../types'
-const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) => {
+const UserClaimEntry = ({
+  data,
+  entry,
+  formik,
+  handler,
+  viewOnly = false,
+}: UserClaimEntryProps) => {
   const { t } = useTranslation()
   const { state: themeState } = useTheme()
   const themeColors = useMemo(() => getThemeColor(themeState.theme), [themeState.theme])
@@ -70,6 +76,7 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
               options={multiValueOptions}
               onChange={handleMultiValueChange}
               disabled={isRolesUnavailable}
+              viewOnly={viewOnly}
               placeholder={
                 isRolesUnavailable
                   ? rolesLoading
@@ -83,14 +90,16 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
               withWrapper={false}
             />
           </div>
-          <button
-            type="button"
-            className={classes.removeButton}
-            onClick={doHandle}
-            aria-label={t('actions.remove')}
-          >
-            <CloseIcon />
-          </button>
+          {!viewOnly && (
+            <button
+              type="button"
+              className={classes.removeButton}
+              onClick={doHandle}
+              aria-label={t('actions.remove')}
+            >
+              <CloseIcon />
+            </button>
+          )}
         </div>
       </div>
     )
@@ -108,6 +117,8 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
           values={countries}
           formik={formik as React.ComponentProps<typeof GluuRemovableSelectRow>['formik']}
           handler={doHandle}
+          hideRemoveButton={viewOnly}
+          disabled={viewOnly}
           lsize={12}
         />
       </div>
@@ -129,6 +140,8 @@ const UserClaimEntry = ({ data, entry, formik, handler }: UserClaimEntryProps) =
         }
         formik={formik}
         handler={doHandle}
+        hideRemoveButton={viewOnly}
+        disabled={viewOnly}
         doc_category={typeof data.description === 'string' ? data.description : undefined}
         lsize={12}
         isBoolean={isBoolean}

@@ -23,6 +23,7 @@ const ClientActiveTokens = ({
   onHasDataChange,
   activePattern,
   filterField,
+  viewOnly,
 }: ClientActiveTokensProps): JSX.Element => {
   const { t } = useTranslation()
   const { classes } = useStyles()
@@ -116,7 +117,7 @@ const ClientActiveTokens = ({
             expandable
             stickyHeader
             renderExpandedRow={renderExpandedRow}
-            actions={actions}
+            actions={viewOnly ? undefined : actions}
             getRowKey={(row) => row.id}
             pagination={{
               page: pageNumber,

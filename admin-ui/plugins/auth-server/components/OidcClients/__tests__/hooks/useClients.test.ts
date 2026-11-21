@@ -82,6 +82,21 @@ describe('useClients', () => {
     expect(mockDispatch).toHaveBeenCalled()
   })
 
+  it('does not dispatch an error toast for a 403, since the Session Expired popup covers it', () => {
+    mockUseGetOauthOpenidClients.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: true,
+      error: Object.assign(new Error('Request failed with status code 403'), {
+        response: { status: 403 },
+      }),
+      refetch: mockRefetch,
+    })
+    renderHook(() => useClients({ limit: 10 }))
+    expect(mockDispatch).not.toHaveBeenCalled()
+  })
+
   it('does not dispatch an error toast when there is no error', () => {
     renderHook(() => useClients({ limit: 10 }))
     expect(mockDispatch).not.toHaveBeenCalled()

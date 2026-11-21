@@ -198,7 +198,7 @@ export const useStyles = makeStyles<ClientWizardFormStyleParams>()((_, { themeCo
       '& label, & label h5, & label span, & h5, & h4, & .MuiSvgIcon-root, & .fa': {
         color: `${themeColors.fontColor} !important`,
       },
-      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled, & select[aria-disabled="true"], & .custom-select[aria-disabled="true"], & input[aria-disabled="true"]:not([type="checkbox"]):not(.MuiOutlinedInput-input), & textarea[aria-disabled="true"]':
+      '& input:not([type="checkbox"]):not(.MuiOutlinedInput-input):not(.gluu-dynamic-list-input):disabled, & select:disabled, & .custom-select:disabled, & textarea:disabled, & select[aria-disabled="true"], & .custom-select[aria-disabled="true"], & input[aria-disabled="true"]:not([type="checkbox"]):not(.MuiOutlinedInput-input):not(.gluu-dynamic-list-input), & textarea[aria-disabled="true"]':
         {
           backgroundColor: `${formInputBg} !important`,
           border: `1px solid ${inputBorderColor} !important`,

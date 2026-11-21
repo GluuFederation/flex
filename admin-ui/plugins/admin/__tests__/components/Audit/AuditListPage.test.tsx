@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper'
 import AuditListPage from 'Plugins/admin/components/Audit/AuditListPage'
+import { useGetAuditData } from 'JansConfigApi'
 
 jest.mock('@/cedarling', () => ({
   useCedarling: jest.fn(() => ({
@@ -49,5 +50,12 @@ describe('AuditListPage', () => {
   it('shows no data message when entries are empty', () => {
     render(<AuditListPage />, { wrapper: Wrapper })
     expect(screen.getByText(/No data/i)).toBeInTheDocument()
+  })
+
+  it('refetches on every visit and includes entries from the current minute', () => {
+    render(<AuditListPage />, { wrapper: Wrapper })
+    const [params, options] = jest.mocked(useGetAuditData).mock.calls[0]
+    expect(params?.end_date).toMatch(/T\d{2}:\d{2}:59$/)
+    expect(options?.query?.refetchOnMount).toBe('always')
   })
 })

@@ -150,12 +150,14 @@ const AssetForm: React.FC<AssetFormProps> = ({ viewOnly = false }) => {
         payload['inum'] = formik.values.inum
         payload['dn'] = formik.values.dn
         payload['baseDn'] = formik.values.baseDn
+        payload['level'] = asset?.level
+        payload['revision'] = asset?.revision
         void updateAsset(payload, userMessage).catch(() => {})
       } else {
         void createAsset(payload, userMessage).catch(() => {})
       }
     },
-    [closeCommitDialog, formik, id, createAsset, updateAsset],
+    [closeCommitDialog, formik, id, asset, createAsset, updateAsset],
   )
 
   const handleCancel = useCallback(() => {

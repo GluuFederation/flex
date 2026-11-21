@@ -139,6 +139,26 @@ describe('patchAuthServerJsonProperties', () => {
     expect(actionType()).toBe('PATCH')
   })
 
+  it('returns the saved config without waiting for the audit log to be saved', async () => {
+    mockPatch.mockResolvedValue({ ok: true })
+    mockPostUserAction.mockReturnValue(new Promise(() => {}))
+    const result = await Promise.race([
+      patchAuthServerJsonProperties(action({ requestBody: [{ op: 'replace' }] })),
+      new Promise((resolve) => setTimeout(() => resolve('still waiting for the audit log'), 100)),
+    ])
+    expect(result).toEqual({ ok: true })
+    expect(mockPostUserAction).toHaveBeenCalledWith({ audit: true })
+  })
+
+  it('returns the saved config when saving the audit log fails', async () => {
+    mockPatch.mockResolvedValue({ ok: true })
+    mockPostUserAction.mockRejectedValue(new Error('audit down'))
+    await expect(
+      patchAuthServerJsonProperties(action({ requestBody: [{ op: 'replace' }] })),
+    ).resolves.toEqual({ ok: true })
+    expect(mockRedirect).not.toHaveBeenCalled()
+  })
+
   it('redirects on a 403 patch failure and rethrows', async () => {
     mockPatch.mockRejectedValue(new Error('403'))
     mockIsForbidden.mockReturnValue(true)

@@ -117,6 +117,29 @@ describe('useGetAllSsas', () => {
     })
     expect(result.current.error?.message).toBe('forbidden')
   })
+
+  it('surfaces the reason jans-auth gives for a rejected request', async () => {
+    mockFetch.mockResolvedValue(
+      jsonResponse(
+        {
+          error: 'invalid_ssa_metadata',
+          error_description: 'The value of one of the SSA Metadata fields is invalid.',
+          state: "Invalid SSA Metadata: 'one_time_use' and 'rotate_ssa' cannot both be true",
+        },
+        false,
+        400,
+      ),
+    )
+    const store = buildStore()
+    const { result } = renderHook(() => useGetAllSsas(), { wrapper: createWrapper(store) })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+    expect(result.current.error?.message).toBe(
+      "Invalid SSA Metadata: 'one_time_use' and 'rotate_ssa' cannot both be true",
+    )
+  })
 })
 
 describe('useSsaJwtQuery', () => {

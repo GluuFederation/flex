@@ -153,6 +153,7 @@
     "end_date_time": "Fecha y Hora de Fin",
     "system_status": "Estado del Sistema",
     "status_unavailable": "Estado de los servicios no disponible",
+    "load_failed": "No se pudieron cargar algunos datos del panel, por lo que los valores a continuación pueden faltar o estar desactualizados.",
     "config_api": "API de Configuración",
     "config_api_status": "Estado de la API de Configuración",
     "key_cloak": "Keycloak",
@@ -163,7 +164,7 @@
     "access_denied_message": "No tienes permiso para acceder a esta página",
     "access_contact_admin": "Por favor contacta a tu administrador para más información",
     "mau_users": "Máx. MAU para LTM (Lock)",
-    "mau_clients": "Clientes de Jans Lock"
+    "mau_clients": "Máx. clientes para LTM (Lock)"
   },
   "fields": {
     "actions": "Acciones",
@@ -1015,6 +1016,7 @@
     "add_permission": "Agregar Permiso",
     "add_asset": "Agregar Jans Asset",
     "asset_document_error": "El documento es obligatorio.",
+    "asset_name_error": "Por favor ingrese el Nombre del Recurso.",
     "asset_file_type_invalid": "Solo se pueden cargar archivos .properties, .css, .js, .jar, .jpeg, .jpg, .png, .gif y .xhtml.",
     "metadata_file_type_invalid": "Solo se pueden cargar archivos de metadatos .xml y .json.",
     "service_required": "Los servicios relacionados son obligatorios.",
@@ -1339,6 +1341,7 @@
     "status_unknown": "Desconocido",
     "no_mau_data": "No hay datos disponibles para el período seleccionado.",
     "error_loading_data": "Ocurrió un error al cargar los datos. Por favor, inténtelo de nuevo.",
+    "client_load_failed": "No se pudo cargar este cliente. Verifique que el servidor esté disponible e inténtelo de nuevo.",
     "auth_error_policy_store": "Error al cargar el almacén de políticas",
     "auth_error_authorization_config": "Error en la configuración de autorización",
     "auth_error_token_fetch": "Error al obtener el token o la información del usuario",
@@ -1428,6 +1431,7 @@
     "email_required": "El correo electrónico es obligatorio.",
     "description_required": "La descripción es obligatoria",
     "expiration_date_future": "La fecha de expiración debe estar en el futuro",
+    "rotate_ssa_with_one_time_use": "Uso único y Rotar SSA no pueden estar habilitados a la vez",
     "expiration_date_required": "La fecha de expiración es obligatoria",
     "grant_type_invalid": "El tipo de concesión debe ser una cadena u objeto",
     "grant_types_min": "Se requiere al menos un tipo de concesión",
@@ -1470,6 +1474,7 @@
     "clear_filters": "Borrar todos los filtros",
     "add_user": "Agregar usuario",
     "edit_user": "Editar usuario",
+    "view_user": "Ver usuario",
     "delete_user": "Eliminar usuario",
     "insert_shortcode": "Insertar shortcode",
     "add_attribute": "Añadir atributo",

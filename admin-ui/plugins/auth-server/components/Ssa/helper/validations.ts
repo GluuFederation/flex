@@ -42,7 +42,14 @@ export const getSsaValidationSchema = () =>
       .min(1, () => i18n.t('validation_messages.grant_types_min'))
       .required(() => i18n.t('validation_messages.grant_types_required')),
     one_time_use: Yup.boolean(),
-    rotate_ssa: Yup.boolean(),
+    rotate_ssa: Yup.boolean().test(
+      'not-with-one-time-use',
+      () => i18n.t('validation_messages.rotate_ssa_with_one_time_use'),
+      function (value) {
+        const { one_time_use } = this.parent as SsaFormValues
+        return !(value && one_time_use)
+      },
+    ),
     is_expirable: Yup.boolean(),
     expirationDate: Yup.mixed()
       .nullable()

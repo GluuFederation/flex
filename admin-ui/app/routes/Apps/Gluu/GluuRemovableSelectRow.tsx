@@ -19,6 +19,7 @@ const GluuRemovableSelectRow = ({
   doc_category,
   isDirect,
   hideRemoveButton,
+  disabled,
   modifiedFields,
   setModifiedFields,
 }: GluuRemovableSelectRowProps) => {
@@ -46,6 +47,7 @@ const GluuRemovableSelectRow = ({
             data-testid={name}
             name={name}
             value={currentValue}
+            disabled={disabled}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setModifiedFields?.({
                 ...modifiedFields,

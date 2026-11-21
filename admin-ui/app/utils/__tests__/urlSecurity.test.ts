@@ -1,5 +1,8 @@
 import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '../urlSecurity'
 
+const buildIdToken = (exp: number): string =>
+  `header.${Buffer.from(JSON.stringify({ exp })).toString('base64url')}.signature`
+
 describe('urlSecurity', () => {
   it('allows same-origin relative navigation urls', () => {
     expect(buildSafeNavigationUrl('/admin/logout')).toMatch(/\/admin\/logout$/)
@@ -37,6 +40,57 @@ describe('urlSecurity', () => {
       )
 
       expect(new URL(logoutUrl as string).searchParams.has('id_token_hint')).toBe(false)
+    })
+  })
+
+  it('omits an expired id token hint, which the provider would reject', () => {
+    const logoutUrl = buildSafeLogoutUrl(
+      'https://auth.example.com/logout',
+      'https://admin.example.com/post-logout',
+      'state-123',
+      buildIdToken(Math.floor(Date.now() / 1000) - 60),
+    )
+
+    expect(new URL(logoutUrl as string).searchParams.has('id_token_hint')).toBe(false)
+  })
+
+  it('keeps an id token hint that has not expired', () => {
+    const idToken = buildIdToken(Math.floor(Date.now() / 1000) + 60)
+    const logoutUrl = buildSafeLogoutUrl(
+      'https://auth.example.com/logout',
+      'https://admin.example.com/post-logout',
+      'state-123',
+      idToken,
+    )
+
+    expect(new URL(logoutUrl as string).searchParams.get('id_token_hint')).toBe(idToken)
+  })
+
+  it('sends the client id so the provider redirects back on an error', () => {
+    const logoutUrl = buildSafeLogoutUrl(
+      'https://auth.example.com/logout',
+      'https://admin.example.com/post-logout',
+      'state-123',
+      undefined,
+      'admin-ui-client',
+    )
+
+    expect(new URL(logoutUrl as string).searchParams.get('client_id')).toBe('admin-ui-client')
+  })
+
+  it('omits the client id when none is configured', () => {
+    const cases = [undefined, null, '', '   ']
+
+    cases.forEach((clientId) => {
+      const logoutUrl = buildSafeLogoutUrl(
+        'https://auth.example.com/logout',
+        'https://admin.example.com/post-logout',
+        'state-123',
+        undefined,
+        clientId,
+      )
+
+      expect(new URL(logoutUrl as string).searchParams.has('client_id')).toBe(false)
     })
   })
 

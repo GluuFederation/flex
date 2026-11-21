@@ -105,3 +105,6 @@ export const subtractDate = (
 
 export const toApiDatetime = (date: Dayjs): string =>
   date.startOf('minute').format(DATE_FORMATS.API_DATETIME)
+
+export const toApiEndDatetime = (date: Dayjs): string =>
+  date.endOf('minute').format(DATE_FORMATS.API_DATETIME)

@@ -6,6 +6,7 @@ import {
   isValidDate,
   DATE_FORMATS,
   toApiDatetime,
+  toApiEndDatetime,
 } from '@/utils/dayjsUtils'
 import type { Dayjs } from '@/utils/dayjsUtils'
 import { AccessTimeIcon, SearchIcon } from '@/components/icons'
@@ -78,11 +79,11 @@ const AuditListPage: React.FC = () => {
     limit: getDefaultPagingSize(),
     startIndex: 0,
     start_date: toApiDatetime(initialRange.current.start),
-    end_date: toApiDatetime(initialRange.current.end),
+    end_date: toApiEndDatetime(initialRange.current.end),
   }))
 
   const { data, isLoading, isFetching, isError } = useGetAuditData(queryParams, {
-    query: { enabled: canReadAuditLogs },
+    query: { enabled: canReadAuditLogs, refetchOnMount: 'always' },
   })
   const totalItems = useMemo(() => data?.totalEntriesCount ?? 0, [data?.totalEntriesCount])
   const entries = useMemo(() => data?.entries ?? [], [data?.entries])
@@ -91,7 +92,7 @@ const AuditListPage: React.FC = () => {
     () => ({
       hasBothDates: hasBothDates(startDate, endDate),
       startDateApi: isValidDate(startDate) ? toApiDatetime(startDate!) : '',
-      endDateApi: isValidDate(endDate) ? toApiDatetime(endDate!) : '',
+      endDateApi: isValidDate(endDate) ? toApiEndDatetime(endDate!) : '',
     }),
     [startDate, endDate],
   )
@@ -148,7 +149,7 @@ const AuditListPage: React.FC = () => {
     const resetParams = buildQueryParams(limit, 0, '', {
       hasBothDates: true,
       startDateApi: toApiDatetime(resetStart),
-      endDateApi: toApiDatetime(resetEnd),
+      endDateApi: toApiEndDatetime(resetEnd),
     })
     setStartDate(resetStart)
     setEndDate(resetEnd)

@@ -7,7 +7,7 @@ export const getAssetValidationSchema = (t: TFunction, isEdit = false) =>
   Yup.object().shape({
     fileName: Yup.string()
       .nullable()
-      .required(t(T_KEYS.MSG_DISPLAY_NAME_ERROR))
+      .required(t(T_KEYS.MSG_ASSET_NAME_ERROR))
       .matches(REGEX_NO_WHITESPACE, `${t(T_KEYS.FIELD_ASSET_NAME)} ${t(T_KEYS.MSG_NO_SPACES)}`),
     service: Yup.array()
       .nullable()

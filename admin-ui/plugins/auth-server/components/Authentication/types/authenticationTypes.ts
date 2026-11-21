@@ -12,6 +12,7 @@ export type PropertyConfig = {
   id: string
   key: string
   value: string
+  hide?: boolean
 }
 
 export type AuthNItem = {
@@ -34,7 +35,9 @@ export type AuthNItem = {
   baseDNs?: string[]
   bindPassword?: string
   useSSL?: boolean
+  useAnonymousBind?: boolean
   enabled?: boolean
+  version?: number
   configId?: string
   baseDn?: string
   dn?: string

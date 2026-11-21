@@ -6,6 +6,12 @@ import {
   createAuthenticationTestWrapper,
   mockAppNavigation,
 } from '../../__tests__/helpers/authenticationTestUtils'
+import {
+  getConfigScriptsByInum,
+  usePutConfigDatabaseLdap,
+  usePutConfigScripts,
+  type CustomScript,
+} from 'JansConfigApi'
 import AcrsEditPage from '../AcrsEditPage'
 import type { AuthNItem } from '../../types'
 import {
@@ -77,6 +83,124 @@ describe('AcrsEditPage', () => {
     })
     render(<AcrsEditPage />, { wrapper: Wrapper })
     expect(screen.getByText(/Level/i)).toBeInTheDocument()
+  })
+
+  describe('saving an edit', () => {
+    const storedScript: CustomScript = {
+      inum: 'test-inum',
+      dn: 'inum=test-inum,ou=scripts,o=jans',
+      name: 'test_otp',
+      description: 'Test OTP authentication script',
+      script: 'stored script body',
+      scriptType: 'person_authentication',
+      programmingLanguage: 'python',
+      moduleProperties: [{ value1: 'usage_type', value2: 'interactive' }],
+      configurationProperties: [{ value1: 'key', value2: 'value', hide: true }],
+      level: 5,
+      revision: 7,
+      enabled: true,
+      locationType: 'db',
+      aliases: ['otp'],
+    }
+    const putScript = jest.fn()
+    const putLdap = jest.fn()
+
+    const submitEdit = async (selectedItem: AuthNItem, fieldName: string): Promise<void> => {
+      mockUseLocation.mockReturnValue({
+        state: { authnTab: 'acrs', selectedItem },
+        pathname: '/auth-server/authn/edit/test',
+      })
+      const { container } = render(<AcrsEditPage />, { wrapper: Wrapper })
+
+      fireEvent.change(container.querySelector(`[name="${fieldName}"]`) as HTMLInputElement, {
+        target: { value: '7' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /apply/i }))
+      const dialog = await screen.findByRole('dialog')
+      fireEvent.change(dialog.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'reason for this change' },
+      })
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /yes/i }))
+      })
+    }
+
+    beforeEach(() => {
+      putScript.mockReset().mockResolvedValue({})
+      putLdap.mockReset().mockResolvedValue({})
+      jest.mocked(getConfigScriptsByInum).mockReset().mockResolvedValue(storedScript)
+      jest.mocked(usePutConfigScripts).mockReturnValue({
+        mutateAsync: putScript,
+        isPending: false,
+      } as Partial<ReturnType<typeof usePutConfigScripts>> as ReturnType<
+        typeof usePutConfigScripts
+      >)
+      jest.mocked(usePutConfigDatabaseLdap).mockReturnValue({
+        mutateAsync: putLdap,
+        isPending: false,
+      } as Partial<ReturnType<typeof usePutConfigDatabaseLdap>> as ReturnType<
+        typeof usePutConfigDatabaseLdap
+      >)
+    })
+
+    it('saves a script on top of the stored one so its code and settings survive', async () => {
+      await submitEdit({ ...mockAuthenticationItem, isCustomScript: true }, 'description')
+
+      expect(getConfigScriptsByInum).toHaveBeenCalledWith('test-inum')
+      expect(putScript).toHaveBeenCalledTimes(1)
+      expect(putScript.mock.calls[0][0].data).toEqual({
+        ...storedScript,
+        description: '7',
+        configurationProperties: [],
+      })
+    })
+
+    it('keeps hidden script properties hidden', async () => {
+      await submitEdit(
+        {
+          ...mockAuthenticationItem,
+          isCustomScript: true,
+          configurationProperties: [{ value1: 'key', value2: 'value', hide: true }],
+        },
+        'description',
+      )
+
+      expect(putScript.mock.calls[0][0].data.configurationProperties).toEqual([
+        { value1: 'key', value2: 'value', hide: true },
+      ])
+    })
+
+    it('does not save the script when the stored one cannot be read', async () => {
+      jest.mocked(getConfigScriptsByInum).mockRejectedValue(new Error('script read failed'))
+
+      await submitEdit({ ...mockAuthenticationItem, isCustomScript: true }, 'description')
+
+      expect(putScript).not.toHaveBeenCalled()
+      expect(await screen.findByText('script read failed')).toBeInTheDocument()
+    })
+
+    it('keeps the LDAP fields the form does not edit', async () => {
+      await submitEdit(
+        {
+          ...mockAuthenticationItem,
+          name: 'default_ldap_password',
+          configId: 'test-ldap',
+          bindDN: 'cn=directory manager',
+          bindPassword: 'test-password',
+          servers: ['localhost:1636'],
+          baseDNs: ['ou=people,o=jans'],
+          primaryKey: 'uid',
+          localPrimaryKey: 'uid',
+          maxConnections: 10,
+          useAnonymousBind: true,
+          version: 4,
+        },
+        'maxConnections',
+      )
+
+      expect(putLdap).toHaveBeenCalledTimes(1)
+      expect(putLdap.mock.calls[0][0].data).toMatchObject({ useAnonymousBind: true, version: 4 })
+    })
   })
 
   describe('after a successful save', () => {

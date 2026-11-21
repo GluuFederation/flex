@@ -355,6 +355,7 @@ const ClientWizardForm = ({
                 onHasDataChange={handleTokenHasDataChange}
                 activePattern={tokenActivePattern}
                 filterField={tokenSearchFilter}
+                viewOnly={isViewOnly}
               />
             </div>
           )
@@ -588,9 +589,10 @@ const ClientWizardForm = ({
                         ? () => navigateToRoute(ROUTES.AUTH_SERVER_CLIENTS_LIST)
                         : prevStep
                     }
-                    showCancel={!isMobile}
+                    showCancel={!isViewOnly}
                     cancelButtonLabel={t('actions.cancel')}
                     onCancel={() => formik.resetForm()}
+                    disableCancel={!formik.dirty}
                     showApply={!isViewOnly && canWriteClient}
                     applyButtonType="button"
                     applyButtonLabel={t('actions.apply')}

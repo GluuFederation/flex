@@ -19,6 +19,7 @@ export const getPropertiesConfig = (entry: AuthNItem): PropertyConfig[] => {
       id: crypto.randomUUID(),
       key: e.key || e.value1 || '',
       value: e.value || e.value2 || '',
+      hide: e.hide,
     }))
   }
   return []
@@ -39,7 +40,7 @@ export const transformConfigurationProperties = (
     .map((e) => ({
       value1: e.key || e.value1 || '',
       value2: e.value || e.value2 || '',
-      hide: false,
+      hide: e.hide ?? false,
     }))
 }
 
@@ -98,7 +99,9 @@ const toLdapAcrItem = (config: GluuLdapConfiguration): AuthNItem => ({
   baseDNs: config.baseDNs,
   primaryKey: config.primaryKey,
   localPrimaryKey: config.localPrimaryKey,
+  useAnonymousBind: config.useAnonymousBind,
   enabled: config.enabled,
+  version: config.version,
   level: config.level,
   name: AUTH_METHOD_NAMES.DEFAULT_LDAP,
   acrName: config.configId,

@@ -15,6 +15,8 @@ type SsaValidationState = {
   descriptionErrorMessage: string
   expirationDateError: boolean
   expirationDateErrorMessage: string
+  rotateSsaError: boolean
+  rotateSsaErrorMessage: string
 }
 
 export const useSsaValidationState = (formik: FormikProps<SsaFormValues>): SsaValidationState => {
@@ -38,6 +40,9 @@ export const useSsaValidationState = (formik: FormikProps<SsaFormValues>): SsaVa
       expirationDateError: Boolean(formik.values.is_expirable && formik.errors.expirationDate),
       expirationDateErrorMessage:
         typeof formik.errors.expirationDate === 'string' ? formik.errors.expirationDate : '',
+      rotateSsaError: Boolean(formik.errors.rotate_ssa),
+      rotateSsaErrorMessage:
+        typeof formik.errors.rotate_ssa === 'string' ? formik.errors.rotate_ssa : '',
     }),
     [
       formik.touched.software_id,
@@ -52,6 +57,7 @@ export const useSsaValidationState = (formik: FormikProps<SsaFormValues>): SsaVa
       formik.errors.description,
       formik.values.is_expirable,
       formik.errors.expirationDate,
+      formik.errors.rotate_ssa,
     ],
   )
 }
