@@ -210,7 +210,7 @@ describe('AppAuthProvider', () => {
       expect(fetchFromIssuer).not.toHaveBeenCalled()
     })
 
-    it('waits on a Sign In prompt instead of opening the login page after the session ended', () => {
+    it('waits on the Signed out screen instead of opening the login page after the session ended', () => {
       window.sessionStorage.setItem('sessionEnded', 'true')
 
       const { getByText, getByRole, queryByTestId } = renderProvider(
@@ -218,13 +218,14 @@ describe('AppAuthProvider', () => {
       )
 
       expect(fetchFromIssuer).not.toHaveBeenCalled()
+      expect(getByRole('heading', { name: i18n.t('sessionEndedMessage') })).toBeInTheDocument()
       expect(getByText(i18n.t('sessionEndedDescription'))).toBeInTheDocument()
       expect(getByRole('button', { name: i18n.t('signInAgain') })).toBeInTheDocument()
       expect(queryByTestId('admin-content')).not.toBeInTheDocument()
       expect(window.sessionStorage.getItem('sessionEnded')).toBeNull()
     })
 
-    it('asks for the password again when the user clicks Sign In', () => {
+    it('asks for the password again when the user clicks Sign in again', () => {
       window.sessionStorage.setItem('sessionEnded', 'true')
       const { getByRole } = renderProvider(
         buildStore(signedInLicense, { issuer: 'https://issuer.example.com' }),

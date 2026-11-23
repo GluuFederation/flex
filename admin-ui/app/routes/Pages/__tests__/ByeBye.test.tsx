@@ -159,7 +159,7 @@ describe('ByeBye', () => {
     ['the end-session call goes out', 'https://idp.example.com/end?state=fixed-state'],
     ['the end-session URL cannot be built', null],
   ])(
-    'shows the Sign In prompt instead of the login page after the sign-out when %s',
+    'shows the Signed out screen instead of the login page after the sign-out when %s',
     async (_label, logoutUrl) => {
       mockBuildSafeLogoutUrl.mockReturnValue(logoutUrl)
       render(<ByeBye />)
@@ -167,7 +167,7 @@ describe('ByeBye', () => {
     },
   )
 
-  it('shows the Sign In prompt after the sign-out when no end-session endpoint is configured', async () => {
+  it('shows the Signed out screen after the sign-out when no end-session endpoint is configured', async () => {
     mockState.authReducer.config = {
       endSessionEndpoint: '',
       postLogoutRedirectUri: 'https://app.example.com/',

@@ -8,6 +8,7 @@ import { checkLicenseConfigValid, getUserInfoResponse } from '../redux/actions'
 import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
+import SignedOut from '@/components/SignedOut/SignedOut'
 import { updateToast } from 'Redux/features/toastSlice'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { NO_VALID_ROLE } from '@/audit/messages'
@@ -405,14 +406,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           onRetry={handleRetrySignIn}
         />
       )}
-      {!showAdminUI && signedOutForSessionEnd && (
-        <GluuErrorModal
-          message={t('sessionEndedMessage')}
-          description={t('sessionEndedDescription')}
-          retryLabel={t('signInAgain')}
-          onRetry={handleRetrySignIn}
-        />
-      )}
+      {!showAdminUI && signedOutForSessionEnd && <SignedOut onSignIn={handleRetrySignIn} />}
       {!showAdminUI && !signedOutForNoRole && !signedOutForSessionEnd && !isMauCheckFailed && (
         <ApiKeyRedirect
           isLicenseValid={isLicenseValid}
