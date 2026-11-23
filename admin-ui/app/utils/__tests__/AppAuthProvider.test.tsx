@@ -210,6 +210,33 @@ describe('AppAuthProvider', () => {
       expect(fetchFromIssuer).not.toHaveBeenCalled()
     })
 
+    it('waits on a Sign In prompt instead of opening the login page after the session ended', () => {
+      window.sessionStorage.setItem('sessionEnded', 'true')
+
+      const { getByText, getByRole, queryByTestId } = renderProvider(
+        buildStore(signedInLicense, { issuer: 'https://issuer.example.com' }),
+      )
+
+      expect(fetchFromIssuer).not.toHaveBeenCalled()
+      expect(getByText(i18n.t('sessionEndedDescription'))).toBeInTheDocument()
+      expect(getByRole('button', { name: i18n.t('signInAgain') })).toBeInTheDocument()
+      expect(queryByTestId('admin-content')).not.toBeInTheDocument()
+      expect(window.sessionStorage.getItem('sessionEnded')).toBeNull()
+    })
+
+    it('asks for the password again when the user clicks Sign In', () => {
+      window.sessionStorage.setItem('sessionEnded', 'true')
+      const { getByRole } = renderProvider(
+        buildStore(signedInLicense, { issuer: 'https://issuer.example.com' }),
+      )
+
+      act(() => {
+        getByRole('button', { name: i18n.t('signInAgain') }).click()
+      })
+
+      expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
+    })
+
     it('keeps the sign-in in progress in this tab only', async () => {
       fetchFromIssuer.mockResolvedValue(
         new AuthorizationServiceConfiguration({

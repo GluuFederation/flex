@@ -42,6 +42,7 @@ import decodeJwt from '@/utils/jwtDecode'
 import type { UserInfo, UserInfoValue } from '@/redux/features/types/authTypes'
 import type { OAuthConfig, AppAuthProviderProps } from '@/utils/types'
 import { markNoRoleSignOut, isNoRoleSignOut, clearNoRoleSignOut } from '@/utils/noRoleSignOut'
+import { isSessionEnded, clearSessionEnded } from '@/utils/sessionEnded'
 import { markForceLogin, isForceLogin, clearForceLogin } from '@/utils/forceLogin'
 import {
   leaveAfterSignOut,
@@ -70,6 +71,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
   const { t } = useTranslation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [signedOutForNoRole] = useState(isNoRoleSignOut)
+  const [signedOutForSessionEnd] = useState(() => !isNoRoleSignOut() && isSessionEnded())
   const [userInfoUnavailable, setUserInfoUnavailable] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
   const {
@@ -122,6 +124,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (signedOutForNoRole) {
       clearNoRoleSignOut()
     }
+    clearSessionEnded()
   }, [signedOutForNoRole])
 
   useEffect(() => {
@@ -208,6 +211,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     if (!issuer) return
     if (userInfoUnavailable) return
     if (signedOutForNoRole) return
+    if (signedOutForSessionEnd) return
     if (userinfo_jwt) return
     const callbackParams = new URLSearchParams(location.search)
     if (callbackParams.get('code')) return
@@ -262,6 +266,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     config,
     userInfoUnavailable,
     signedOutForNoRole,
+    signedOutForSessionEnd,
   ])
   const [code, setCode] = useState<string | null>(null)
 
@@ -400,7 +405,15 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           onRetry={handleRetrySignIn}
         />
       )}
-      {!showAdminUI && !signedOutForNoRole && !isMauCheckFailed && (
+      {!showAdminUI && signedOutForSessionEnd && (
+        <GluuErrorModal
+          message={t('sessionEndedMessage')}
+          description={t('sessionEndedDescription')}
+          retryLabel={t('signInAgain')}
+          onRetry={handleRetrySignIn}
+        />
+      )}
+      {!showAdminUI && !signedOutForNoRole && !signedOutForSessionEnd && !isMauCheckFailed && (
         <ApiKeyRedirect
           isLicenseValid={isLicenseValid}
           isConfigValid={isConfigValid}

@@ -1,6 +1,7 @@
 import { APP_BASE_URL } from '@/helpers/navigation'
 import { STORAGE_KEYS } from '@/constants'
 import { markForceLogin } from '@/utils/forceLogin'
+import { markSessionEnded } from '@/utils/sessionEnded'
 import { sessionStore, storage } from '@/utils/storage'
 
 let signedInAt = 0
@@ -23,6 +24,7 @@ export const isSignedOutSinceSignIn = (): boolean =>
 
 export const leaveAfterSignOut = (): void => {
   markForceLogin()
+  markSessionEnded()
   goToStart()
 }
 
