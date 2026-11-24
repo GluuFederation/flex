@@ -13,6 +13,7 @@ import getThemeColor from '@/context/theme/config'
 import { logger } from '@/utils/logger'
 import { buildSafeLogoutUrl, buildSafeNavigationUrl } from '@/utils/urlSecurity'
 import { markForceLogin } from '@/utils/forceLogin'
+import { markSessionEnded } from '@/utils/sessionEnded'
 import { APP_BASE_URL } from '@/helpers/navigation'
 
 const ByeBye = () => {
@@ -43,6 +44,7 @@ const ByeBye = () => {
 
       dispatch(logoutUser())
       markForceLogin()
+      markSessionEnded()
 
       if (config && Object.keys(config).length > 0 && config.endSessionEndpoint) {
         const state = uuidv4()
@@ -70,6 +72,7 @@ const ByeBye = () => {
     performLogout().catch((error) => {
       logger.error('Logout failed:', error instanceof Error ? error : String(error))
       markForceLogin()
+      markSessionEnded()
       window.location.href = APP_BASE_URL
     })
   }, [])

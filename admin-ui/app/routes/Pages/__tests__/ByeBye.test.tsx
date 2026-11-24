@@ -155,6 +155,28 @@ describe('ByeBye', () => {
     expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
   })
 
+  it.each([
+    ['the end-session call goes out', 'https://idp.example.com/end?state=fixed-state'],
+    ['the end-session URL cannot be built', null],
+  ])(
+    'shows the Signed out screen instead of the login page after the sign-out when %s',
+    async (_label, logoutUrl) => {
+      mockBuildSafeLogoutUrl.mockReturnValue(logoutUrl)
+      render(<ByeBye />)
+      await waitFor(() => expect(window.sessionStorage.getItem('sessionEnded')).toBe('true'))
+    },
+  )
+
+  it('shows the Signed out screen after the sign-out when no end-session endpoint is configured', async () => {
+    mockState.authReducer.config = {
+      endSessionEndpoint: '',
+      postLogoutRedirectUri: 'https://app.example.com/',
+    } as never
+    mockBuildSafeNavigationUrl.mockReturnValue('https://app.example.com/')
+    render(<ByeBye />)
+    await waitFor(() => expect(window.sessionStorage.getItem('sessionEnded')).toBe('true'))
+  })
+
   it('asks for the password on the next sign-in when no end-session endpoint is configured', async () => {
     mockState.authReducer.config = {
       endSessionEndpoint: '',

@@ -53,6 +53,7 @@ describe('authSync', () => {
     leaveAfterSignOut()
 
     expect(window.sessionStorage.getItem('forceLogin')).toBe('true')
+    expect(window.sessionStorage.getItem('sessionEnded')).toBe('true')
   })
 
   it('restarts sign-in only once until the next successful sign-in', async () => {
