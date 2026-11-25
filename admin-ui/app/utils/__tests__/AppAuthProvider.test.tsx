@@ -10,6 +10,7 @@ import licenseReducer, {
   checkLicensePresentResponse,
   setLicenseError,
   setMauCheckFailed,
+  setLicenseUnusable,
 } from '@/redux/features/licenseSlice'
 import { reducer as initReducer } from '@/redux/features/initSlice'
 import cedarPermissionsReducer from '@/redux/features/cedarPermissionsSlice'
@@ -91,6 +92,22 @@ describe('AppAuthProvider', () => {
 
     expect(getByText('Unable to Verify Monthly Active Users')).toBeInTheDocument()
     expect(getByText(/\(HTTP 401 Unauthorized\)/)).toBeInTheDocument()
+    expect(queryByText(/free trial/i)).not.toBeInTheDocument()
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument()
+    expect(queryByTestId('admin-content')).not.toBeInTheDocument()
+  })
+
+  it('blocks sign-in with the license-not-usable screen when the license cannot be used', () => {
+    const store = buildStore({ isConfigValid: true })
+    const { container, getByText, queryByTestId, queryByText } = renderProvider(store)
+
+    act(() => {
+      store.dispatch(setLicenseUnusable(true))
+      store.dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
+    })
+
+    expect(getByText(i18n.t('licenseNotUsableTitle'))).toBeInTheDocument()
+    expect(getByText(i18n.t('licenseNotUsableDescription'))).toBeInTheDocument()
     expect(queryByText(/free trial/i)).not.toBeInTheDocument()
     expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument()
     expect(queryByTestId('admin-content')).not.toBeInTheDocument()

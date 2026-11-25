@@ -73,6 +73,7 @@ type LicenseState = {
   isNoValidLicenseKeyFound: boolean
   isUnderThresholdLimit: boolean
   isMauCheckFailed: boolean
+  isLicenseUnusable: boolean
   isValidatingFlow: boolean
 }
 

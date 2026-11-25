@@ -18,6 +18,7 @@ import {
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setMauCheckFailed,
+  setLicenseUnusable,
   setValidatingFlow,
   setLicenseError,
   checkLicensePresent,
@@ -56,12 +57,19 @@ const getLicenseErrorMessage = (error: Error | ApiErrorLike): string => {
 }
 
 const getMauThreshold = (response: GenericResponse): number | null => {
-  const entries = Array.isArray(response.responseObject)
-    ? (response.responseObject as Array<{ name?: string; value?: string }>)
-    : []
-  const mauThreshold = entries.find((item) => item?.name === 'mau_threshold')
-  const threshold = parseInt(mauThreshold?.value ?? '', 10)
+  const data = response.responseObject
+  const value = Array.isArray(data)
+    ? (data as Array<{ name?: string; value?: string }>).find(
+        (item) => item?.name === 'mau_threshold',
+      )?.value
+    : data?.mauThreshold
+  const threshold = parseInt(String(value ?? ''), 10)
   return Number.isFinite(threshold) ? threshold : null
+}
+
+const isLicenseUnusable = (response: GenericResponse): boolean => {
+  const data = response.responseObject
+  return !Array.isArray(data) && data?.isLicenseUsable === false
 }
 
 const resolveActivatedMauThreshold = async (response: GenericResponse): Promise<number | null> => {
@@ -77,6 +85,12 @@ const showNoValidLicense = (dispatch: AppDispatch): void => {
   dispatch(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
   dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
   dispatch(generateTrialLicenseResponse(null))
+}
+
+const blockUnusableLicense = (dispatch: AppDispatch): void => {
+  logger.error('The license is not usable, so sign-in is blocked.')
+  dispatch(setLicenseUnusable(true))
+  dispatch(checkLicensePresentResponse({ isLicenseValid: false }))
 }
 
 const checkMauThreshold = async (
@@ -118,6 +132,10 @@ const retrieveAndActivateLicense = async (dispatch: AppDispatch): Promise<void> 
       showNoValidLicense(dispatch)
       return
     }
+    if (isLicenseUnusable(response)) {
+      blockUnusableLicense(dispatch)
+      return
+    }
     const mauThreshold = await resolveActivatedMauThreshold(response)
     if (mauThreshold === null) {
       logger.error('Could not confirm an active license with a valid mau_threshold.')
@@ -144,6 +162,10 @@ const startTrialLicense = async (dispatch: AppDispatch): Promise<void> => {
       if (response) {
         dispatch(checkUserLicenseKeyResponse(response))
       }
+      return
+    }
+    if (isLicenseUnusable(response)) {
+      blockUnusableLicense(dispatch)
       return
     }
     const mauThreshold = await resolveActivatedMauThreshold(response)
@@ -208,6 +230,10 @@ const checkLicensePresentWorker = async (dispatch: AppDispatch): Promise<void> =
     const response = (await isLicenseActive()) as GenericResponse | null
     if (!response?.success) {
       await retrieveAndActivateLicense(dispatch)
+      return
+    }
+    if (isLicenseUnusable(response)) {
+      blockUnusableLicense(dispatch)
       return
     }
     const mauThreshold = getMauThreshold(response)

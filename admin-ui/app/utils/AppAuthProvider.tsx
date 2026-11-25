@@ -90,6 +90,7 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
     isConfigValid,
     isUnderThresholdLimit,
     isMauCheckFailed,
+    isLicenseUnusable,
     error: licenseError,
   } = useAppSelector((state) => state.licenseReducer)
 
@@ -397,6 +398,12 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
           }
         />
       )}
+      {isLicenseUnusable && (
+        <GluuErrorModal
+          message={t('licenseNotUsableTitle')}
+          description={t('licenseNotUsableDescription')}
+        />
+      )}
       {showAdminUI && children}
       {!showAdminUI && signedOutForNoRole && (
         <GluuErrorModal
@@ -407,13 +414,17 @@ const AppAuthProvider = ({ children }: Readonly<AppAuthProviderProps>) => {
         />
       )}
       {!showAdminUI && signedOutForSessionEnd && <SignedOut onSignIn={handleRetrySignIn} />}
-      {!showAdminUI && !signedOutForNoRole && !signedOutForSessionEnd && !isMauCheckFailed && (
-        <ApiKeyRedirect
-          isLicenseValid={isLicenseValid}
-          isConfigValid={isConfigValid}
-          islicenseCheckResultLoaded={islicenseCheckResultLoaded}
-        />
-      )}
+      {!showAdminUI &&
+        !signedOutForNoRole &&
+        !signedOutForSessionEnd &&
+        !isMauCheckFailed &&
+        !isLicenseUnusable && (
+          <ApiKeyRedirect
+            isLicenseValid={isLicenseValid}
+            isConfigValid={isConfigValid}
+            islicenseCheckResultLoaded={islicenseCheckResultLoaded}
+          />
+        )}
     </React.Fragment>
   )
 }

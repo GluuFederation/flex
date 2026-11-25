@@ -15,8 +15,6 @@ export const REGEX_LEADING_SLASH = /^\//
 export const REGEX_FORWARD_SLASH = /\//g
 /** Leading colon only (e.g. strip leading colon from IDs). */
 export const REGEX_LEADING_COLON = /^:/
-/** Leading or trailing double-quote only; used to strip surrounding quotes from strings (e.g. license fields). */
-export const REGEX_SURROUNDING_QUOTES = /^"|"$/g
 /** Matches any character that is not alphanumeric, underscore, or hyphen — i.e. not valid in a slug or HTML id. */
 export const REGEX_NON_SLUG_CHARS = /[^a-zA-Z0-9_-]/g
 /** Matches one or more consecutive hyphens; use with replace('-') to collapse runs into a single hyphen. */

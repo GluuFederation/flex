@@ -4,7 +4,6 @@ import {
   REGEX_LEADING_SLASH,
   REGEX_FORWARD_SLASH,
   REGEX_LEADING_COLON,
-  REGEX_SURROUNDING_QUOTES,
   REGEX_NON_SLUG_CHARS,
   REGEX_CONSECUTIVE_HYPHENS,
   REGEX_LEADING_TRAILING_HYPHENS,
@@ -72,10 +71,6 @@ describe('string-stripping patterns', () => {
 
   it('REGEX_LEADING_COLON strips a leading colon', () => {
     expect(':id'.replace(REGEX_LEADING_COLON, '')).toBe('id')
-  })
-
-  it('REGEX_SURROUNDING_QUOTES strips surrounding double quotes', () => {
-    expect('"value"'.replace(REGEX_SURROUNDING_QUOTES, '')).toBe('value')
   })
 })
 

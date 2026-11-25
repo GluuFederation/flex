@@ -11,7 +11,6 @@ import {
 import { isFourZeroThreeError } from '@/utils/TokenController'
 import { postUserAction } from '@/redux/api/backend-api'
 import { updateToast } from '@/redux/features/toastSlice'
-import { REGEX_SURROUNDING_QUOTES } from '@/utils/regex'
 import { logger } from '@/utils/logger'
 import { API_LICENSE, createSuccessAuditInit, selectAuditContext, DELETION } from '@/audit'
 import type { RootState } from '@/redux/types'
@@ -19,22 +18,6 @@ import type { UserActionPayload } from '@/redux/api/types/BackendApi'
 
 interface UseLicenseDetailsOptions {
   onResetSuccess?: () => void
-}
-
-const stripSurroundingQuotes = (s: string | undefined): string =>
-  s?.replace(REGEX_SURROUNDING_QUOTES, '') ?? ''
-
-const transformLicenseResponse = (
-  data: LicenseResponse | undefined,
-): LicenseResponse | undefined => {
-  if (!data) return undefined
-  return {
-    ...data,
-    companyName: stripSurroundingQuotes(data.companyName),
-    customerFirstName: stripSurroundingQuotes(data.customerFirstName),
-    customerLastName: stripSurroundingQuotes(data.customerLastName),
-    customerEmail: stripSurroundingQuotes(data.customerEmail),
-  }
 }
 
 const EMPTY_ITEM: LicenseResponse = {}
@@ -57,7 +40,6 @@ export const useLicenseDetails = (options: UseLicenseDetailsOptions = {}) => {
   const query = useGetAdminuiLicense({
     query: {
       enabled: hasSession === true,
-      select: transformLicenseResponse,
     },
   })
 
