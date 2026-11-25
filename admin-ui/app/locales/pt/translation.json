@@ -2179,12 +2179,8 @@
     },
     "license": {
       "productName": "A licença está registrada sob o seguinte produto.",
-      "productCode": "O código curto é usado em nossas chamadas de API para identificar o produto.",
       "licenseType": "O tipo de licença (por exemplo: licenças perpétuas, baseadas em tempo, de assinatura e baseadas em consumo).",
       "licenseKey": "A chave da licença.",
-      "customerEmail": "O endereço de e-mail do cliente da licença registrada.",
-      "customerName": "O nome do cliente da licença registrada.",
-      "companyName": "O nome da empresa da licença registrada.",
       "validityPeriod": "A licença expirará na seguinte data.",
       "maxActivations": "O número máximo de ativações permitidas para esta licença em máquinas diferentes.",
       "isLicenseActive": "A licença está ativa?",

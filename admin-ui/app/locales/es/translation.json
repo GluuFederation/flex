@@ -2665,12 +2665,8 @@
     },
     "license": {
       "productName": "Producto registrado en la licencia",
-      "productCode": "Código corto usado en llamadas API para identificar el producto",
       "licenseType": "Tipo de licencia (Perpetua, Temporal, Suscripción, Basada en consumo)",
       "licenseKey": "Clave de licencia",
-      "customerEmail": "Email del cliente registrado",
-      "customerName": "Nombre del cliente registrado",
-      "companyName": "Nombre de la empresa registrada",
       "validityPeriod": "Fecha de expiración de la licencia",
       "isLicenseExpired": "Indica si la licencia está expirada",
       "maxActivations": "Máximo número de activaciones permitidas",

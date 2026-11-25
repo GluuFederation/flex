@@ -2828,15 +2828,11 @@
       "maxLength": "Nombre maximal de caractères autorisés pour la valeur de cet attribut."
     },
     "license": {
-      "companyName": "Le nom de la société de la licence enregistrée.",
-      "customerEmail": "L'adresse e-mail du client de la licence enregistrée.",
-      "customerName": "Le nom du client de la licence enregistrée.",
       "isLicenseActive": "La licence est-elle active ?",
       "isLicenseExpired": "La licence est-elle expirée ?",
       "licenseKey": "La clé de licence",
       "licenseType": "Le type de licence (ex. : Perpétuelle, Limitée dans le temps, Abonnement, Basée sur la consommation).",
       "maxActivations": "Le nombre maximal d'activations autorisées de cette licence sur différentes machines.",
-      "productCode": "Le code court utilisé dans nos appels API pour identifier le produit.",
       "productName": "La licence est enregistrée sous le produit suivant.",
       "validityPeriod": "La licence expirera à la date suivante."
     },

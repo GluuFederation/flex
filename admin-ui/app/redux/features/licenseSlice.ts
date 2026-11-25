@@ -34,12 +34,10 @@ const licenseSlice = createSlice({
       }
     },
     checkLicensePresentResponse: (state, action) => {
-      if (action.payload?.isLicenseValid) {
+      if (typeof action.payload?.isLicenseValid === 'boolean') {
         state.isLicenseValid = action.payload.isLicenseValid
-        state.islicenseCheckResultLoaded = true
-      } else {
-        state.islicenseCheckResultLoaded = true
       }
+      state.islicenseCheckResultLoaded = true
     },
     checkLicenseConfigValid: (_state, _action) => {},
     checkLicenseConfigValidResponse: (state, action) => {

@@ -72,13 +72,24 @@ const isLicenseUnusable = (response: GenericResponse): boolean => {
   return !Array.isArray(data) && data?.isLicenseUsable === false
 }
 
-const resolveActivatedMauThreshold = async (response: GenericResponse): Promise<number | null> => {
+const resolveActivatedMauThreshold = async (
+  response: GenericResponse,
+): Promise<{ mauThreshold: number | null; isUnusable: boolean }> => {
+  if (isLicenseUnusable(response)) {
+    return { mauThreshold: null, isUnusable: true }
+  }
   const threshold = getMauThreshold(response)
   if (threshold !== null) {
-    return threshold
+    return { mauThreshold: threshold, isUnusable: false }
   }
   const activeLicense = (await isLicenseActive()) as GenericResponse | null
-  return activeLicense?.success ? getMauThreshold(activeLicense) : null
+  if (!activeLicense?.success) {
+    return { mauThreshold: null, isUnusable: false }
+  }
+  return {
+    mauThreshold: getMauThreshold(activeLicense),
+    isUnusable: isLicenseUnusable(activeLicense),
+  }
 }
 
 const showNoValidLicense = (dispatch: AppDispatch): void => {
@@ -132,11 +143,11 @@ const retrieveAndActivateLicense = async (dispatch: AppDispatch): Promise<void> 
       showNoValidLicense(dispatch)
       return
     }
-    if (isLicenseUnusable(response)) {
+    const { mauThreshold, isUnusable } = await resolveActivatedMauThreshold(response)
+    if (isUnusable) {
       blockUnusableLicense(dispatch)
       return
     }
-    const mauThreshold = await resolveActivatedMauThreshold(response)
     if (mauThreshold === null) {
       logger.error('Could not confirm an active license with a valid mau_threshold.')
       showNoValidLicense(dispatch)
@@ -164,11 +175,11 @@ const startTrialLicense = async (dispatch: AppDispatch): Promise<void> => {
       }
       return
     }
-    if (isLicenseUnusable(response)) {
+    const { mauThreshold, isUnusable } = await resolveActivatedMauThreshold(response)
+    if (isUnusable) {
       blockUnusableLicense(dispatch)
       return
     }
-    const mauThreshold = await resolveActivatedMauThreshold(response)
     if (mauThreshold === null) {
       logger.error('Could not confirm the trial license with a valid mau_threshold.')
       showNoValidLicense(dispatch)
