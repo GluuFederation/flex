@@ -13,6 +13,7 @@ import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { extractDnInum } from '@/utils/Util'
 import { useGetOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
+import { FETCH_LIMITS } from '../constants'
 import type { ClientShowScopesProps } from '../types'
 
 const ClientShowScopes = ({
@@ -45,6 +46,7 @@ const ClientShowScopes = ({
     isFetching,
   } = useGetOauthScopes(
     {
+      limit: FETCH_LIMITS.SCOPES,
       pattern: scopeInums.join(','),
     },
     {

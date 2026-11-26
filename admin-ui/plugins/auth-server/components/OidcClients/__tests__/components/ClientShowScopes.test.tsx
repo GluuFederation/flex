@@ -59,6 +59,24 @@ it('Should show scope displayNames when modal is open and data loaded', () => {
   expect(screen.getAllByText(/OpenID Connect/i).length).toBeGreaterThan(0)
 })
 
+it('asks for up to 200 scopes so a client with more than 50 shows them all', () => {
+  const { useGetOauthScopes } = jest.requireMock('JansConfigApi') as {
+    useGetOauthScopes: jest.Mock
+  }
+  render(
+    <ClientShowScopes
+      handler={jest.fn()}
+      data={['inum=F0C4,ou=scopes,o=jans', 'inum=43F1,ou=scopes,o=jans']}
+      isOpen={true}
+    />,
+    { wrapper: Wrapper },
+  )
+  expect(useGetOauthScopes).toHaveBeenLastCalledWith(
+    { limit: 200, pattern: 'F0C4,43F1' },
+    expect.anything(),
+  )
+})
+
 it('Should render empty scopes gracefully when isOpen is true', () => {
   const { useGetOauthScopes } = jest.requireMock('JansConfigApi') as {
     useGetOauthScopes: jest.Mock
