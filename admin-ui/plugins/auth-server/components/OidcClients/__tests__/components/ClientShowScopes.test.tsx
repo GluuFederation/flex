@@ -11,17 +11,18 @@ jest.mock('react-dom', () => ({
 
 jest.mock('JansConfigApi', () => ({
   ...jest.requireActual('JansConfigApi'),
-  useGetOauthScopes: jest.fn(() => ({
-    data: {
+  getOauthScopes: jest.fn(() =>
+    Promise.resolve({
       entries: [
         { inum: 'F0C4', id: 'openid', displayName: 'OpenID Connect' },
         { inum: '43F1', id: 'profile', displayName: 'Profile' },
       ],
-    },
-    isLoading: false,
-    isFetching: false,
-  })),
+      totalEntriesCount: 2,
+    }),
+  ),
 }))
+
+const { getOauthScopes } = jest.requireMock('JansConfigApi') as { getOauthScopes: jest.Mock }
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -51,18 +52,21 @@ it('Should render the scopes modal when isOpen is true', () => {
   expect(container).toBeTruthy()
 })
 
-it('Should show scope displayNames when modal is open and data loaded', () => {
+it('Should show scope displayNames when modal is open and data loaded', async () => {
   render(
     <ClientShowScopes handler={jest.fn()} data={['inum=F0C4,ou=scopes,o=jans']} isOpen={true} />,
     { wrapper: Wrapper },
   )
-  expect(screen.getAllByText(/OpenID Connect/i).length).toBeGreaterThan(0)
+  expect((await screen.findAllByText(/OpenID Connect/i)).length).toBeGreaterThan(0)
 })
 
-it('asks for up to 200 scopes so a client with more than 50 shows them all', () => {
-  const { useGetOauthScopes } = jest.requireMock('JansConfigApi') as {
-    useGetOauthScopes: jest.Mock
-  }
+it('fetches every page so a client with more than 200 scopes shows them all', async () => {
+  const firstPage = Array.from({ length: 200 }, (_, i) => ({ inum: `A${i}`, id: `scope-a${i}` }))
+  const secondPage = [{ inum: 'B0', id: 'last-scope', displayName: 'Last Scope' }]
+  getOauthScopes
+    .mockResolvedValueOnce({ entries: firstPage, totalEntriesCount: 201 })
+    .mockResolvedValueOnce({ entries: secondPage, totalEntriesCount: 201 })
+
   render(
     <ClientShowScopes
       handler={jest.fn()}
@@ -71,22 +75,22 @@ it('asks for up to 200 scopes so a client with more than 50 shows them all', () 
     />,
     { wrapper: Wrapper },
   )
-  expect(useGetOauthScopes).toHaveBeenLastCalledWith(
-    { limit: 200, pattern: 'F0C4,43F1' },
+
+  expect(await screen.findByText('Last Scope')).toBeInTheDocument()
+  expect(screen.getByText('scope-a0')).toBeInTheDocument()
+  expect(getOauthScopes).toHaveBeenCalledWith(
+    { limit: 200, pattern: 'F0C4,43F1', startIndex: 0 },
+    undefined,
+    expect.anything(),
+  )
+  expect(getOauthScopes).toHaveBeenLastCalledWith(
+    { limit: 200, pattern: 'F0C4,43F1', startIndex: 200 },
+    undefined,
     expect.anything(),
   )
 })
 
 it('Should render empty scopes gracefully when isOpen is true', () => {
-  const { useGetOauthScopes } = jest.requireMock('JansConfigApi') as {
-    useGetOauthScopes: jest.Mock
-  }
-  useGetOauthScopes.mockReturnValueOnce({
-    data: { entries: [] },
-    isLoading: false,
-    isFetching: false,
-  })
-
   const { container } = render(<ClientShowScopes handler={jest.fn()} data={[]} isOpen={true} />, {
     wrapper: Wrapper,
   })
@@ -94,14 +98,7 @@ it('Should render empty scopes gracefully when isOpen is true', () => {
 })
 
 it('Should render loading state when fetching scopes', () => {
-  const { useGetOauthScopes } = jest.requireMock('JansConfigApi') as {
-    useGetOauthScopes: jest.Mock
-  }
-  useGetOauthScopes.mockReturnValueOnce({
-    data: undefined,
-    isLoading: true,
-    isFetching: true,
-  })
+  getOauthScopes.mockReturnValueOnce(new Promise(() => undefined))
 
   const { container } = render(
     <ClientShowScopes handler={jest.fn()} data={['inum=F0C4,ou=scopes,o=jans']} isOpen={true} />,

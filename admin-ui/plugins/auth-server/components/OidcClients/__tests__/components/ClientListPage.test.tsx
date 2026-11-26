@@ -35,6 +35,8 @@ jest.mock('JansConfigApi', () => ({
     isLoading: false,
   })),
   getGetOauthOpenidClientsQueryKey: jest.fn(() => ['/api/v1/openid/clients']),
+  getGetOauthScopesQueryKey: jest.fn(() => ['/api/v1/scopes']),
+  getOauthScopes: jest.fn(() => Promise.resolve({ entries: [] })),
 }))
 
 jest.mock('@/cedarling', () => ({

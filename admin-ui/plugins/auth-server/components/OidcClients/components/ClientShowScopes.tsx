@@ -11,7 +11,8 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { DEFAULT_THEME, THEME_DARK } from '@/context/theme/constants'
 import { extractDnInum } from '@/utils/Util'
-import { useGetOauthScopes } from 'JansConfigApi'
+import { useQuery } from '@tanstack/react-query'
+import { getGetOauthScopesQueryKey, getOauthScopes } from 'JansConfigApi'
 import type { Scope } from 'JansConfigApi'
 import { FETCH_LIMITS } from '../constants'
 import type { ClientShowScopesProps } from '../types'
@@ -40,24 +41,39 @@ const ClientShowScopes = ({
       .filter((inum): inum is string => Boolean(inum))
   }, [data])
 
-  const {
-    data: scopesResponse,
-    isLoading,
-    isFetching,
-  } = useGetOauthScopes(
-    {
-      limit: FETCH_LIMITS.SCOPES,
-      pattern: scopeInums.join(','),
-    },
-    {
-      query: {
-        enabled: isOpen && scopeInums.length > 0,
-      },
-    },
+  const scopesQueryParams = useMemo(
+    () => ({ limit: FETCH_LIMITS.SCOPES, pattern: scopeInums.join(',') }),
+    [scopeInums],
   )
 
+  const {
+    data: fetchedScopes = [],
+    isLoading,
+    isFetching,
+  } = useQuery<Scope[]>({
+    queryKey: [...getGetOauthScopesQueryKey(scopesQueryParams), 'all-pages'],
+    queryFn: async ({ signal }) => {
+      const aggregated: Scope[] = []
+      let startIndex = 0
+
+      while (true) {
+        const page = await getOauthScopes({ ...scopesQueryParams, startIndex }, undefined, signal)
+        const entries = (page?.entries ?? []) as Scope[]
+        aggregated.push(...entries)
+
+        if (entries.length < FETCH_LIMITS.SCOPES) break
+        const total = page?.totalEntriesCount
+        if (typeof total === 'number' && aggregated.length >= total) break
+
+        startIndex += FETCH_LIMITS.SCOPES
+      }
+
+      return aggregated
+    },
+    enabled: isOpen && scopeInums.length > 0,
+  })
+
   const loading = isLoading || isFetching
-  const fetchedScopes: Scope[] = (scopesResponse?.entries as Scope[]) ?? []
 
   const handleModalKeyDown = useCallback((e: React.KeyboardEvent) => {
     e.stopPropagation()
