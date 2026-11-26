@@ -51,10 +51,13 @@ jest.mock('react-i18next', () => ({
 }))
 
 const rawLicense: LicenseResponse = {
-  companyName: '"Acme Corp"',
-  customerFirstName: '"Jane"',
-  customerLastName: '"Doe"',
-  customerEmail: '"jane@example.com"',
+  licenseKey: 'TEST_LICENSE_KEY',
+  licenseEnabled: true,
+  productName: 'Gluu Admin UI',
+  licenseType: 'TIME_LIMITED',
+  licenseActive: true,
+  validityPeriod: '2027-10-01T00:00Z',
+  licenseMAUThreshold: 1000,
 }
 
 const buildStore = (hasSession = true) =>
@@ -90,15 +93,12 @@ describe('useLicenseDetails', () => {
     mockPostUserAction.mockResolvedValue({ status: 200 })
   })
 
-  it('strips surrounding quotes from the license fields', () => {
+  it('returns the license details as the server sends them', () => {
     mockQueryReturn(rawLicense)
     const store = buildStore(true)
     const { result } = renderHook(() => useLicenseDetails(), { wrapper: createWrapper(store) })
 
-    expect(result.current.item.companyName).toBe('Acme Corp')
-    expect(result.current.item.customerFirstName).toBe('Jane')
-    expect(result.current.item.customerLastName).toBe('Doe')
-    expect(result.current.item.customerEmail).toBe('jane@example.com')
+    expect(result.current.item).toEqual(rawLicense)
   })
 
   it('falls back to an empty item when there is no data', () => {

@@ -33,7 +33,7 @@ jest.mock('@/cedarling/hooks/usePermission', () => ({
 
 jest.mock('@/routes/License/hooks/useLicenseDetails', () => ({
   useLicenseDetails: jest.fn(() => ({
-    item: { licenseEnabled: true, productName: 'Gluu Flex', companyName: 'Gluu' },
+    item: { licenseEnabled: true, productName: 'Gluu Flex', licenseType: 'TIME_LIMITED' },
     loading: false,
     refetch: jest.fn(),
     queryKey: [],

@@ -54,6 +54,11 @@ const ACTIVE_WITH_THRESHOLD = {
   responseObject: [{ name: 'mau_threshold', value: '100' }],
 }
 
+const NEW_API_ACTIVE_WITH_THRESHOLD = {
+  success: true,
+  responseObject: { mauThreshold: 100, isLicenseUsable: true },
+}
+
 describe('licenseListener', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -132,7 +137,7 @@ describe('licenseListener', () => {
     })
   })
 
-  describe('Step 3 + 3a: checkLicensePresent (GET /isActive then GET /api/v1/stat)', () => {
+  describe('Step 3 + 3a: checkLicensePresent (GET /check then GET /api/v1/stat)', () => {
     it('marks the license valid and under threshold when active and MAU is below the limit', async () => {
       mockedIsLicenseActive.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
       mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
@@ -217,12 +222,12 @@ describe('licenseListener', () => {
     )
   })
 
-  describe('Step 4: retrieve, which activates on the server (GET /retrieve)', () => {
+  describe('Step 4: fetch, which activates on the server (GET /fetch)', () => {
     beforeEach(() => {
       mockedIsLicenseActive.mockResolvedValue({ success: false } as never)
     })
 
-    it('treats a successful retrieve as an activated license and validates MAU', async () => {
+    it('treats a successful fetch as an activated license and validates MAU', async () => {
       mockedRetrieveLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
       mockedGetStat.mockResolvedValue([] as never)
 
@@ -235,7 +240,7 @@ describe('licenseListener', () => {
       expect(mockedIsLicenseActive).toHaveBeenCalledTimes(1)
     })
 
-    it('uses the mau_threshold returned by retrieve', async () => {
+    it('uses the mau_threshold returned by fetch', async () => {
       mockedRetrieveLicense.mockResolvedValue({
         success: true,
         responseObject: [
@@ -251,7 +256,7 @@ describe('licenseListener', () => {
       expect(license().isUnderThresholdLimit).toBe(true)
     })
 
-    it('confirms an already-active license with /isActive and uses its threshold', async () => {
+    it('confirms an already-active license with /check and uses its threshold', async () => {
       mockedIsLicenseActive
         .mockResolvedValueOnce({ success: false } as never)
         .mockResolvedValueOnce(ACTIVE_WITH_THRESHOLD as never)
@@ -268,7 +273,7 @@ describe('licenseListener', () => {
       expect(mockedIsLicenseActive).toHaveBeenCalledTimes(2)
     })
 
-    it('shows the no-valid-key state when /isActive confirms the license without a mau_threshold', async () => {
+    it('shows the no-valid-key state when /check confirms the license without a mau_threshold', async () => {
       mockedIsLicenseActive
         .mockResolvedValueOnce({ success: false } as never)
         .mockResolvedValueOnce({ success: true, responseObject: [] } as never)
@@ -285,7 +290,7 @@ describe('licenseListener', () => {
       expect(mockedGetStat).not.toHaveBeenCalled()
     })
 
-    it('shows the no-valid-key state when a successful retrieve cannot be confirmed as active', async () => {
+    it('shows the no-valid-key state when a successful fetch cannot be confirmed as active', async () => {
       mockedRetrieveLicense.mockResolvedValue({
         success: true,
         responseObject: { licenseKey: 'key-123' },
@@ -300,7 +305,7 @@ describe('licenseListener', () => {
       expect(mockedGetStat).not.toHaveBeenCalled()
     })
 
-    it('flags over-threshold using the mau_threshold returned by retrieve', async () => {
+    it('flags over-threshold using the mau_threshold returned by fetch', async () => {
       mockedRetrieveLicense.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
       mockedGetStat.mockResolvedValue([{ monthly_active_users: 200 }] as never)
 
@@ -310,7 +315,7 @@ describe('licenseListener', () => {
       expect(license().isLicenseValid).toBe(false)
     })
 
-    it('shows the no-valid-key state when retrieve reports failure', async () => {
+    it('shows the no-valid-key state when fetch reports failure', async () => {
       mockedRetrieveLicense.mockResolvedValue({ success: false } as never)
 
       store.dispatch(checkLicensePresent(undefined))
@@ -322,7 +327,7 @@ describe('licenseListener', () => {
       expect(mockedGetStat).not.toHaveBeenCalled()
     })
 
-    it('shows the no-valid-key state and stores the error when retrieve throws', async () => {
+    it('shows the no-valid-key state and stores the error when fetch throws', async () => {
       mockedRetrieveLicense.mockRejectedValue({
         response: { status: 404, data: { responseMessage: 'No license found' } },
       })
@@ -335,7 +340,7 @@ describe('licenseListener', () => {
       expect(license().error).toBe('No license found')
     })
 
-    it('routes to retrieve when the isActive check itself throws', async () => {
+    it('routes to fetch when the license check itself throws', async () => {
       mockedIsLicenseActive.mockRejectedValue(new Error('isActive boom'))
       mockedRetrieveLicense.mockResolvedValue({ success: false } as never)
 
@@ -344,6 +349,159 @@ describe('licenseListener', () => {
       await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
       expect(mockedRetrieveLicense).toHaveBeenCalled()
     })
+  })
+
+  describe('new Agama Lab license API response ({ mauThreshold, isLicenseUsable })', () => {
+    it('reads the MAU threshold from the license check', async () => {
+      mockedIsLicenseActive.mockResolvedValue(NEW_API_ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 110 }] as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(license().isUnderThresholdLimit).toBe(true)
+      expect(mockedRetrieveLicense).not.toHaveBeenCalled()
+    })
+
+    it('flags over-threshold using the MAU threshold from the license check', async () => {
+      mockedIsLicenseActive.mockResolvedValue(NEW_API_ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 116 }] as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isUnderThresholdLimit).toBe(false))
+      expect(license().isLicenseValid).toBe(false)
+    })
+
+    it('reads the MAU threshold from fetch without checking the license again', async () => {
+      mockedIsLicenseActive.mockResolvedValue({ success: false } as never)
+      mockedRetrieveLicense.mockResolvedValue(NEW_API_ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(license().isNoValidLicenseKeyFound).toBe(false)
+      expect(mockedIsLicenseActive).toHaveBeenCalledTimes(1)
+    })
+
+    it('reads the MAU threshold from the trial without checking the license again', async () => {
+      mockedGetTrialLicense.mockResolvedValue(NEW_API_ACTIVE_WITH_THRESHOLD as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(mockedIsLicenseActive).not.toHaveBeenCalled()
+    })
+
+    it('blocks sign-in when the license check says the license is not usable', async () => {
+      mockedIsLicenseActive.mockResolvedValue({
+        success: true,
+        responseObject: { mauThreshold: 100, isLicenseUsable: false },
+      } as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseUnusable).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().islicenseCheckResultLoaded).toBe(true)
+      expect(license().isNoValidLicenseKeyFound).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
+      expect(mockedRetrieveLicense).not.toHaveBeenCalled()
+    })
+
+    it('blocks sign-in when fetch says the license is not usable', async () => {
+      mockedIsLicenseActive.mockResolvedValue({ success: false } as never)
+      mockedRetrieveLicense.mockResolvedValue({
+        success: true,
+        responseObject: { mauThreshold: 100, isLicenseUsable: false },
+      } as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseUnusable).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
+    })
+
+    it('blocks sign-in when the trial says the license is not usable', async () => {
+      mockedGetTrialLicense.mockResolvedValue({
+        success: true,
+        responseObject: { mauThreshold: 100, isLicenseUsable: false },
+      } as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isLicenseUnusable).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
+    })
+
+    it('blocks sign-in when fetch finds the license already active and /check says it is not usable', async () => {
+      mockedIsLicenseActive
+        .mockResolvedValueOnce({ success: false } as never)
+        .mockResolvedValueOnce({
+          success: true,
+          responseObject: { mauThreshold: 100, isLicenseUsable: false },
+        } as never)
+      mockedRetrieveLicense.mockResolvedValue({
+        success: true,
+        responseMessage: 'The license has been already activated.',
+      } as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseUnusable).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(mockedIsLicenseActive).toHaveBeenCalledTimes(2)
+      expect(mockedGetStat).not.toHaveBeenCalled()
+    })
+
+    it('blocks sign-in when the trial finds the license already active and /check says it is not usable', async () => {
+      mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
+      mockedIsLicenseActive.mockResolvedValue({
+        success: true,
+        responseObject: { mauThreshold: 100, isLicenseUsable: false },
+      } as never)
+
+      store.dispatch(generateTrialLicense())
+
+      await waitFor(() => expect(license().isLicenseUnusable).toBe(true))
+      expect(license().isLicenseValid).toBe(false)
+      expect(license().generatingTrialKey).toBe(false)
+      expect(mockedGetStat).not.toHaveBeenCalled()
+    })
+
+    it('does not block sign-in when the response has no isLicenseUsable flag', async () => {
+      mockedIsLicenseActive.mockResolvedValue({
+        success: true,
+        responseObject: { mauThreshold: 100 },
+      } as never)
+      mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)
+
+      store.dispatch(checkLicensePresent(undefined))
+
+      await waitFor(() => expect(license().isLicenseValid).toBe(true))
+      expect(license().isLicenseUnusable).toBe(false)
+    })
+
+    it.each([
+      ['missing', { isLicenseUsable: true }],
+      ['not a number', { mauThreshold: 'unlimited', isLicenseUsable: true }],
+    ])(
+      'shows the no-valid-key state when the license check mauThreshold is %s',
+      async (_label, responseObject) => {
+        mockedIsLicenseActive.mockResolvedValue({ success: true, responseObject } as never)
+
+        store.dispatch(checkLicensePresent(undefined))
+
+        await waitFor(() => expect(license().isNoValidLicenseKeyFound).toBe(true))
+        expect(license().isLicenseValid).toBe(false)
+        expect(mockedGetStat).not.toHaveBeenCalled()
+      },
+    )
   })
 
   describe('Step 5: generateTrialLicense, which activates on the server (GET /trial)', () => {
@@ -385,7 +543,7 @@ describe('licenseListener', () => {
       expect(license().generatingTrialKey).toBe(false)
     })
 
-    it('reads the trial MAU threshold from /isActive when the trial response has none', async () => {
+    it('reads the trial MAU threshold from /check when the trial response has none', async () => {
       mockedGetTrialLicense.mockResolvedValue({ success: true } as never)
       mockedIsLicenseActive.mockResolvedValue(ACTIVE_WITH_THRESHOLD as never)
       mockedGetStat.mockResolvedValue([{ monthly_active_users: 50 }] as never)

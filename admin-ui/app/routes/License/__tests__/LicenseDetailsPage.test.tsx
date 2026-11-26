@@ -30,17 +30,12 @@ jest.mock('../../Apps/Gluu/GluuCommitDialog', () => ({
 }))
 
 const mockLicense = {
-  companyName: 'Gluu',
-  customerEmail: 'arnab@gluu.org',
-  customerFirstName: 'Arnab',
-  customerLastName: 'Dutta',
   licenseActive: true,
   licenseEnabled: true,
   licenseExpired: false,
   licenseKey: 'TEST_LICENSE_KEY',
+  licenseMAUThreshold: 1000,
   licenseType: 'TIME_LIMITED',
-  maxActivations: 14,
-  productCode: 'adminui001',
   productName: 'Gluu Admin UI',
   validityPeriod: '2022-10-01T00:00Z',
 }
@@ -72,8 +67,14 @@ it('Should render the License details page properly', () => {
   render(<LicenseDetailsPage />, { wrapper: Wrapper })
   const key = mockLicense.licenseKey
   expect(screen.getByText(/Product Name/)).toBeInTheDocument()
-  expect(screen.getByText(/Product Code/)).toBeInTheDocument()
   expect(screen.getByText(/License Type/)).toBeInTheDocument()
   expect(screen.getByText(/License Key/)).toBeInTheDocument()
   expect(screen.getByText(key)).toBeInTheDocument()
+})
+
+it('does not show the fields the new license API no longer returns', () => {
+  render(<LicenseDetailsPage />, { wrapper: Wrapper })
+  expect(screen.queryByText(/product ?code/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/customer ?(email|name)/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/company ?name/i)).not.toBeInTheDocument()
 })

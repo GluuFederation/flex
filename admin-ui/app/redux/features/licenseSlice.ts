@@ -12,6 +12,7 @@ const initialState = {
   isNoValidLicenseKeyFound: false,
   isUnderThresholdLimit: true,
   isMauCheckFailed: false,
+  isLicenseUnusable: false,
   isValidatingFlow: false,
 }
 
@@ -22,6 +23,7 @@ const licenseSlice = createSlice({
     checkLicensePresent: (state, _action) => {
       state.islicenseCheckResultLoaded = false
       state.isMauCheckFailed = false
+      state.isLicenseUnusable = false
     },
     checkUserLicenseKeyResponse: (state, action) => {
       if (action.payload?.success) {
@@ -32,12 +34,10 @@ const licenseSlice = createSlice({
       }
     },
     checkLicensePresentResponse: (state, action) => {
-      if (action.payload?.isLicenseValid) {
+      if (typeof action.payload?.isLicenseValid === 'boolean') {
         state.isLicenseValid = action.payload.isLicenseValid
-        state.islicenseCheckResultLoaded = true
-      } else {
-        state.islicenseCheckResultLoaded = true
       }
+      state.islicenseCheckResultLoaded = true
     },
     checkLicenseConfigValid: (_state, _action) => {},
     checkLicenseConfigValidResponse: (state, action) => {
@@ -69,6 +69,10 @@ const licenseSlice = createSlice({
       state.isMauCheckFailed = action.payload
       state.isLoading = false
     },
+    setLicenseUnusable: (state, action) => {
+      state.isLicenseUnusable = action.payload
+      state.isLoading = false
+    },
     setValidatingFlow: (state, action) => {
       state.isValidatingFlow = action.payload.isValidatingFlow
     },
@@ -91,6 +95,7 @@ export const {
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setMauCheckFailed,
+  setLicenseUnusable,
   setValidatingFlow,
   setLicenseError,
 } = licenseSlice.actions

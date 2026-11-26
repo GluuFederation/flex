@@ -249,17 +249,6 @@ const DashboardPage = () => {
         isStatus: false,
       },
       {
-        text: t('dashboard.customer_email'),
-        value: license?.customerEmail,
-        isStatus: false,
-      },
-      {
-        text: t('dashboard.customer_name'),
-        value:
-          `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`.trim() || 'N/A',
-        isStatus: false,
-      },
-      {
         text: t('fields.validityPeriod'),
         value: formatDate(license?.validityPeriod),
         isStatus: false,

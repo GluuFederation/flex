@@ -25,12 +25,8 @@ const LICENSE_RESOURCE_ID = ADMIN_UI_RESOURCES.License
 
 const LICENSE_FIELD_CONFIG: ReadonlyArray<{ key: string; label: string }> = [
   { key: 'productName', label: 'fields.productName' },
-  { key: 'productCode', label: 'fields.productCode' },
   { key: 'licenseType', label: 'fields.licenseType' },
   { key: 'licenseKey', label: 'fields.licenseKey' },
-  { key: 'customerEmail', label: 'fields.customerEmail' },
-  { key: 'customerName', label: 'fields.customerName' },
-  { key: 'companyName', label: 'fields.companyName' },
   { key: 'validityPeriod', label: 'fields.validityPeriod' },
   { key: 'isLicenseActive', label: 'fields.isLicenseActive' },
   { key: 'isLicenseExpired', label: 'fields.isLicenseExpired' },
@@ -64,8 +60,6 @@ const LicenseDetailsPage = () => {
         let value: string | null
         if (loading) {
           value = PLACEHOLDER
-        } else if (key === 'customerName') {
-          value = [item.customerFirstName, item.customerLastName].filter(Boolean).join(' ') || null
         } else if (key === 'validityPeriod') {
           value = item.validityPeriod ? formatDate(item.validityPeriod) : null
         } else if (key === 'isLicenseActive') {

@@ -11,6 +11,7 @@ import reducer, {
   checkThresholdLimit,
   setValidatingFlow,
   setLicenseError,
+  setLicenseUnusable,
 } from '../licenseSlice'
 
 const getInitial = () => reducer(undefined, { type: '@@INIT' })
@@ -103,5 +104,12 @@ describe('licenseSlice', () => {
       reducer(getInitial(), setValidatingFlow({ isValidatingFlow: true })).isValidatingFlow,
     ).toBe(true)
     expect(reducer(getInitial(), setLicenseError('boom')).error).toBe('boom')
+  })
+
+  it('setLicenseUnusable sets the flag and clears loading, and a new license check resets it', () => {
+    const blocked = reducer({ ...getInitial(), isLoading: true }, setLicenseUnusable(true))
+    expect(blocked.isLicenseUnusable).toBe(true)
+    expect(blocked.isLoading).toBe(false)
+    expect(reducer(blocked, checkLicensePresent(undefined)).isLicenseUnusable).toBe(false)
   })
 })
