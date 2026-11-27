@@ -62,3 +62,15 @@ License validity period has expired.
 ```
 
 This message is displayed when a user attempts to generate a trial license (from the Admin UI) after the previously generated trial license has expired. Please note that the Admin UI 30-day trial license can only be generated once per Agama Lab user.
+
+### Why is the Gluu Flex Admin UI showing a License Not Usable page?
+
+The license check reports that the Admin UI license cannot be used (`isLicenseUsable` is `false`), so the Admin UI blocks sign-in. Check the license in [Agama Lab](https://cloud.gluu.org/agama-lab). The [license verification](./auth-server-interaction.md#license-verification) steps explain when the license is checked.
+
+### Why is the Gluu Flex Admin UI showing a MAU Limit Exceeded page?
+
+The monthly active users (MAU) of the current month have reached 115% of the MAU limit of the license, so the Admin UI blocks sign-in. Upgrade the license plan in [Agama Lab](https://cloud.gluu.org/agama-lab) to raise the limit.
+
+### Why is the Gluu Flex Admin UI showing an Unable to Verify Monthly Active Users page?
+
+The Admin UI could not load the MAU count of the current month from the Jans Config API, so it blocks sign-in. The page shows the error returned by the request. Check that the Jans Config API is running and reachable, then try again.

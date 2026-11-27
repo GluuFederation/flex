@@ -35,6 +35,7 @@ After successful authentication, the administrator is taken to the dashboard. Th
 - **Token Issued Count:** This figure is the sum of the access-tokens with grant-type `client credentials` and `authorization code` and id-token.
 - **Server statuses:** The health status of the `Auth Server` `CASA` `SCIM` `Config API` `FIDO` `Keycloak` `Jans Lock` . For e.g. `Running` or `Down`.
 - **Database status:** The health status of the persistence (e.g. PostgreSQL, MySQL etc).
+- **User Info:** The product name, license type, license validity date and license status of the Admin UI license.
 
 ### Access Token Graph
 
@@ -64,9 +65,11 @@ Admin UI uses [LicenseSpring](https://licensespring.com/) platform for customer 
 
 - **Product Name:** The name of the product created on the LicenseSpring platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring [docs](https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform) for more details.
 - **License Type:** The type of license issued. For e.g. Perpetual, Time Limited, Subscription and Consumption.
-- **Customer Email:** To issue a license, we need to enter customer details like first name, last name, company, email and phone number in the LicenseSpring platform. This field displays the email of the customer of the license.
-- **Company Name:** The company name of the registered product.
-- **License Status:** The status of the license (e.g. active or inactive).
+- **License Key:** The license key used to activate Admin UI.
+- **License Valid Upto:** The date on which the license expires.
+- **Is License Active:** Whether the license is active.
+- **Is License Expired:** Whether the license has expired.
+- **Reset License:** Removes the whole stored license configuration, including the SSA and the OIDC client used for the License APIs, and signs the user out. On the next load, the Admin UI asks for an SSA again and then runs the [license verification](./auth-server-interaction.md#license-verification). This button needs **Write** access to License.
 
 ![image](../../assets/admin-ui/license-details.png)
 
@@ -83,7 +86,7 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 - **List paging size:** This field allows to define the default paging size for all search pages within the Admin UI.
 - **Config API URL:** The read-only URL of the Jans Config API is used by the Admin UI for interaction.
 - **Gluu Flex Version:** The read-only version of the running Gluu Flex installation.
-- **Admin UI Session Timeout (In Minutes):** This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.
+- **Admin UI Session Timeout (In Minutes):** This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI. After a sign-out, including a session timeout, the Admin UI shows a **Signed out** page with a **Sign in again** button instead of opening the login page. A sign-out because the user has no Admin UI role shows a **Signed Out** message with a **Try Again** button instead.
 - **Cedarling Log enabled?:** This switch enables or disables Cedarling logs in the browser console.
 - **Admin UI Logging Level:** This field is used to set frontend log level on browser console.
 - **Admin UI authentication method (ACR):** This dropdown enables user to select the default authentication method to be used in the Admin UI.

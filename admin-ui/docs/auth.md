@@ -112,7 +112,7 @@ The check has two halves, run sequentially:
 1. **Config check** ([`checkLicenseConfigValid`](../app/redux/listeners/licenseListener.ts)): is the license-related OIDC configuration in persistence valid? In other words: is the Admin UI even able to _ask_ the License APIs anything?
 2. **Presence check** ([`checkLicensePresent`](../app/redux/listeners/licenseListener.ts)): given the config is valid, does this installation have an active license, and is the user under the licensed MAU (Monthly Active User) cap?
 
-If either half fails, the user lands on the license-error screen. If both pass, the rest of the app renders.
+If either half fails, sign-in stops: the user sees the license-error screen, or one of the full-screen license modals (MAU limit exceeded, MAU check failed, or License Not Usable). If both pass, the rest of the app renders.
 
 ### Flow diagram
 
@@ -133,19 +133,27 @@ sequenceDiagram
     Note over Provider,Slice: useEffect reacts to isConfigValid === true
 
     Provider->>Listener: dispatch checkLicensePresent()
-    Listener->>API: isLicenseActive()
+    Listener->>API: isLicenseActive() (GET /admin-ui/license/check)
     alt active
+        API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
+    else not active
+        Listener->>API: retrieveLicense() (GET /admin-ui/license/fetch)
+        Note over API: fetches the license from Agama Lab<br/>and activates it server-side
+        alt activated
+            API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
+        else not activated
+            Listener->>Slice: isNoValidLicenseKeyFound: true (trial offer)
+            Note over Listener,API: user starts the trial
+            Listener->>API: getTrialLicense() (GET /admin-ui/license/trial)
+            Note over API: generates the trial in Agama Lab<br/>and activates it server-side
+            API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
+        end
+    end
+    alt isLicenseUsable is false
+        Listener->>Slice: setLicenseUnusable(true)
+    else usable or flag missing
         Listener->>API: getStat(month): MAU usage
         Listener->>Slice: checkLicensePresentResponse + checkThresholdLimit<br/>(valid only while usage is under the limit)
-    else not active
-        Listener->>API: retrieveLicense()
-        Note over API: fetches the key from Agama Lab<br/>and activates it server-side
-        API-->>Listener: activation result (no license key)
-        alt activated
-            Listener->>Slice: generateTrialLicenseResponse + threshold check
-        else not activated
-            Listener->>Slice: isNoValidLicenseKeyFound: true
-        end
     end
 
     Slice-->>UI: isLicenseValid? → render normal app : render license screen
@@ -159,17 +167,20 @@ The flow is driven by [`app/redux/listeners/licenseListener.ts`](../app/redux/li
 
 If `isConfigValid` is `false`, the UI shows the SSA-upload screen and the flow stops. The user uploads a fresh SSA, which routes back through `uploadNewSsaToken` in the same listener. On success it re-runs the config check. If `isConfigValid` is `true`, a second `useEffect` in `AppAuthProvider` reacts and dispatches `checkLicensePresent()`.
 
-**Step 2: Presence check.** `checkLicensePresentWorker` calls the `isLicenseActive` Orval hook. The Config API resolves this against its license backend (at most once per 30 days, otherwise it returns the cached result from persistence). If `success: true`, the response carries license fields (expiry, MAU cap, etc.). The listener reads the MAU cap from the `mau_threshold` entry and moves on to Step 3. The license is not marked valid yet; that happens only after the MAU check passes. If that entry is missing or is not a number, the listener treats the installation as having no valid license and dispatches `isNoValidLicenseKeyFound: true`.
+**Step 2: Presence check.** `checkLicensePresentWorker` calls the `isLicenseActive` Orval function, which sends `GET /admin-ui/license/check`. The Config API answers from the license stored in persistence, and syncs it with Agama Lab (`/check`) on the first check after the Config API starts, every 30 days, or after the stored license expires. `success` is a root-level field of the response. If it is `true`, `responseObject` holds `{ mauThreshold, isLicenseUsable }`. If `isLicenseUsable` is `false`, the listener dispatches `setLicenseUnusable(true)`, the license is not marked valid, and `AppAuthProvider` shows the full-screen **License Not Usable** modal. A missing `isLicenseUsable` flag does not block sign-in. Otherwise the listener reads the MAU cap from `mauThreshold` (the older `responseObject` shape, `[{ name: 'mau_threshold', value }]`, is still read) and moves on to Step 3. The license is not marked valid yet; that happens only after the MAU check passes. If the MAU cap is missing or is not a number, the listener treats the installation as having no valid license and dispatches `isNoValidLicenseKeyFound: true`.
 
-**Step 3: MAU threshold.** With an active license, the listener calls the `getStat` Orval hook for the current month and compares the usage against a limit of the licensed MAU cap plus 15%. If usage is under that limit, or there is no usage data yet, the listener dispatches `checkLicensePresentResponse({ isLicenseValid: true })` and `checkThresholdLimit({ isUnderThresholdLimit: true })`, and sign-in continues. If usage is over the limit, it dispatches `checkThresholdLimit({ isUnderThresholdLimit: false })` and the license is not marked valid. `AppAuthProvider` then shows a full-screen `GluuErrorModal` telling the user to upgrade the plan in Agama Lab, and sign-in does not continue. If the `getStat` call itself fails, the listener sets the error and `isNoValidLicenseKeyFound: true`, so the user sees the license-error screen.
+**Step 3: MAU threshold.** With an active license, the listener calls the `getStat` Orval hook for the current month and compares the usage against a limit of the licensed MAU cap plus 15%. If usage is under that limit, or there is no usage data yet, the listener dispatches `checkLicensePresentResponse({ isLicenseValid: true })` and `checkThresholdLimit({ isUnderThresholdLimit: true })`, and sign-in continues. If usage is at or over the limit, it dispatches `checkThresholdLimit({ isUnderThresholdLimit: false })` and the license is not marked valid. `AppAuthProvider` then shows a full-screen `GluuErrorModal` telling the user to upgrade the plan in Agama Lab, and sign-in does not continue. If the `getStat` call itself fails, the listener sets the error and dispatches `setMauCheckFailed(true)`, and `AppAuthProvider` shows the **Unable to Verify Monthly Active Users** modal, so sign-in does not continue.
 
-**Step 4: Not active → retrieve and activate.** If `isLicenseActive` returned `{ success: false }`, the listener falls into `retrieveAndActivateLicense`. This calls `retrieveLicense` (Orval). In that one call, the Config API fetches the license key from Agama Lab and activates it on the server. The license key never reaches the browser, and the browser never sends it back. If the call succeeds (the user has subscribed in Agama Lab), the listener reads `mau_threshold` from the response. If the response does not include it, the listener calls `isLicenseActive` again to read it. The listener then dispatches `generateTrialLicenseResponse(...)` and runs the MAU threshold check. If the call fails (for example, the user has not subscribed), or no valid `mau_threshold` is found, the listener dispatches `isNoValidLicenseKeyFound: true` and the UI offers a 30-day trial. The trial can only be generated once per Agama Lab user. `generateTrialLicense` runs `startTrialLicense`, which calls `getTrialLicense` (Orval). The Config API generates the trial license and activates it on the server in the same way, so the trial key also stays on the server. The listener dispatches `generateTrialLicenseResponse(...)` with the result and sets `isLicenseValid` from its `success` flag.
+**Step 4: Not active → fetch and activate.** If `isLicenseActive` returned `{ success: false }`, or threw, the listener falls into `retrieveAndActivateLicense`. This calls the `retrieveLicense` Orval function, which sends `GET /admin-ui/license/fetch`. In that one call, the Config API fetches the license from Agama Lab (`/fetch`) and activates it (`/activation`) on the server. The license key never reaches the browser, and the browser never sends it back. If the call succeeds (the user has subscribed in Agama Lab), the listener applies the same `isLicenseUsable` check as in Step 2 and reads `mauThreshold` from the response. If the license was already active, the response has no license data, so the listener calls `isLicenseActive` again and reads both values from that. The listener then dispatches `generateTrialLicenseResponse(...)` and runs the MAU threshold check. If the call fails (for example, the user has not subscribed), or no valid MAU cap is found, the listener dispatches `isNoValidLicenseKeyFound: true` and the UI offers a 30-day trial. The trial can only be generated once per Agama Lab user. `generateTrialLicense` runs `startTrialLicense`, which calls the `getTrialLicense` Orval function (`GET /admin-ui/license/trial`). The Config API generates the trial license in Agama Lab (`/trial-license`) and activates it on the server in the same way, so the trial key also stays on the server. The listener applies the same `isLicenseUsable` and MAU checks, and marks the license valid (`checkUserLicenseKeyResponse`) only after the MAU check passes.
+
+The endpoint paths come from the Orval client, which is generated from the Janssen specs listed in [`openapi-merge.json`](../openapi-merge.json). The function names (`isLicenseActive`, `retrieveLicense`, `getTrialLicense`) did not change when the endpoints were renamed from `/isActive` and `/retrieve` to `/check` and `/fetch`.
 
 **Error / network handling.** Errors are handled differently at each step of [`licenseListener.ts`](../app/redux/listeners/licenseListener.ts):
 
-- **Retrieve, trial and MAU check:** the failure is turned into a message with `getLicenseErrorMessage` and dispatched with `setLicenseError`. The license-error screen ([`ApiKey.tsx`](../app/components/LicenseScreens/ApiKey.tsx)) shows it.
+- **Fetch and trial:** if `retrieveLicense()` or `getTrialLicense()` throws, the error is turned into a message with `getLicenseErrorMessage` and dispatched with `setLicenseError`. The license-error screen ([`ApiKey.tsx`](../app/components/LicenseScreens/ApiKey.tsx)) shows it. A `success: false` response does not call `setLicenseError`: from fetch, the UI offers the trial (Step 4); from trial, `checkUserLicenseKeyResponse` stores the response's `responseMessage` as the error.
+- **MAU check:** the message goes into `setLicenseError` too, and `setMauCheckFailed(true)` shows it inside the **Unable to Verify Monthly Active Users** modal.
 - **SSA upload:** the message goes into `errorSSA` through `uploadNewSsaTokenResponse`, and the SSA-upload screen shows it.
-- **Presence check:** if `isLicenseActive` throws, the error is only logged, and the listener falls back to retrieve and activate (Step 4).
+- **Presence check:** if `isLicenseActive` throws, the error is only logged, and the listener falls back to fetch and activate (Step 4).
 - **Config check:** any error other than an auth failure sets `isConfigValid` to `false`, which shows the SSA-upload screen.
 
 The license-config check also handles auth failures: `isAuthFailure` treats both 401 and 403 (`AUTH_FAILURE_STATUSES`) as a hard sign-out and dispatches `handleSessionExpired`. A 401 means the request was not authenticated, or the credentials were rejected; a 403 means the caller is authenticated but lacks the role to call the license endpoints. Either way the call cannot succeed by retrying, so the app signs out. Backend reachability is tracked separately: when the API-protection-token call fails, [`authListener.ts`](../app/redux/listeners/authListener.ts) dispatches `setBackendStatus` with the status code and message, and `ApiKeyRedirect` renders the global `GluuErrorModal` with the service-down image.
@@ -183,6 +194,8 @@ The `licenseSlice` exposes several booleans that the app shell uses to decide wh
 - `isNoValidLicenseKeyFound`, `error`, `errorSSA`: drive the license-error screen sub-states (trial offer, SSA upload prompt, plain error).
 - `isConfigValid`: the result of the config-check half. Tracked separately from `isLicenseValid` because the config check can fail on its own and produces the SSA-upload screen.
 - `isUnderThresholdLimit`: when `false`, shows the full-screen "MAU over the limit" error modal.
+- `isMauCheckFailed`: when `true`, shows the full-screen "Unable to Verify Monthly Active Users" modal. Reset each time `checkLicensePresent` runs.
+- `isLicenseUnusable`: when `true`, shows the full-screen "License Not Usable" modal. Reset each time `checkLicensePresent` runs.
 - `isValidatingFlow`, `generatingTrialKey`, `isLoading`: UI spinner state on the license screens.
 
 ## Tokens
