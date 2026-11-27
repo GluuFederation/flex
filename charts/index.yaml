@@ -10,7 +10,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 6.6.1
-    created: '2026-11-03T10:02:10.743437362Z'
+    created: '2026-11-27T13:00:02.769270748Z'
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -65,7 +65,7 @@ entries:
       repository: ''
       version: 6.6.1
     description: Gluu Access and Identity Management
-    digest: 5894b68099851d1f21d57b93381dd8247a542ce5b45aabbafe17ef3a5d4cedb8
+    digest: 97617e1fc8c76df133a53cdf9d077590c03f51100a6464e3c5ab308e15802125
     home: https://www.gluu.org
     icon: https://gluu.org/brand/favicon.png
     kubeVersion: '>=v1.23.0-0'
@@ -5022,9 +5022,9 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 6.6.1
-    created: '2026-11-03T10:02:10.745206423Z'
+    created: '2026-11-27T13:00:02.772330894Z'
     description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected Gluu flex all-in-one microservice deployment.
-    digest: 684a90f0e583e27140e44022d7d3a0c74331897a5fb0c9b023707bfcbcdf23e3
+    digest: c43d4ed7ffdde27365f3ade68e1f611afba79df28d58b5263f711ad87ad0097e
     home: https://docs.gluu.org
     icon: https://gluu.org/brand/favicon.png
     kubeVersion: '>=v1.23.0-0'
@@ -6112,4 +6112,4 @@ entries:
     urls:
     - https://github.com/GluuFederation/flex/releases/download/nightly/gluu-all-in-one-0.0.0-nightly.tgz
     version: 0.0.0-nightly
-generated: '2026-11-25T23:08:30.041509102Z'
+generated: '2026-11-27T13:00:02.744778617Z'
