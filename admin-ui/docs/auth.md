@@ -135,18 +135,18 @@ sequenceDiagram
     Provider->>Listener: dispatch checkLicensePresent()
     Listener->>API: isLicenseActive() (GET /admin-ui/license/check)
     alt active
-        API-->>Listener: { mauThreshold, isLicenseUsable }
+        API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
     else not active
         Listener->>API: retrieveLicense() (GET /admin-ui/license/fetch)
         Note over API: fetches the license from Agama Lab<br/>and activates it server-side
         alt activated
-            API-->>Listener: { mauThreshold, isLicenseUsable }
+            API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
         else not activated
             Listener->>Slice: isNoValidLicenseKeyFound: true (trial offer)
             Note over Listener,API: user starts the trial
             Listener->>API: getTrialLicense() (GET /admin-ui/license/trial)
             Note over API: generates the trial in Agama Lab<br/>and activates it server-side
-            API-->>Listener: { mauThreshold, isLicenseUsable }
+            API-->>Listener: { success: true, responseObject: { mauThreshold, isLicenseUsable } }
         end
     end
     alt isLicenseUsable is false
