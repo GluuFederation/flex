@@ -35,6 +35,8 @@ jest.mock('JansConfigApi', () => ({
     isLoading: false,
   })),
   getGetOauthOpenidClientsQueryKey: jest.fn(() => ['/api/v1/openid/clients']),
+  getGetOauthScopesQueryKey: jest.fn(() => ['/api/v1/scopes']),
+  getOauthScopes: jest.fn(() => Promise.resolve({ entries: [] })),
 }))
 
 jest.mock('@/cedarling', () => ({
@@ -92,10 +94,22 @@ jest.mock('@/helpers/navigation', () => ({
   useAppNavigation: () => ({ navigateToRoute: mockNavigateToRoute, navigateBack: jest.fn() }),
 }))
 
+let mockSearch = ''
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ search: '', pathname: '/clients' }),
+  useLocation: () => ({ search: mockSearch, pathname: '/clients' }),
 }))
+
+const { useGetOauthScopes, useGetOauthScopesByInum } = jest.requireMock('JansConfigApi') as {
+  useGetOauthScopes: jest.Mock
+  useGetOauthScopesByInum: jest.Mock
+}
+
+afterEach(() => {
+  mockSearch = ''
+  useGetOauthScopes.mockImplementation(() => ({ data: { entries: [] }, isLoading: false }))
+  useGetOauthScopesByInum.mockImplementation(() => ({ data: undefined, isLoading: false }))
+})
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
@@ -161,4 +175,39 @@ it('opens the read-only client page from View and the edit page from Edit', () =
 
   fireEvent.click(screen.getByRole('button', { name: 'Edit Client' }))
   expect(mockNavigateToRoute).toHaveBeenLastCalledWith('/auth-server/client/edit/0008-0DB1')
+})
+
+it('lists the clients of a scope that is not among the first 100 scopes', () => {
+  mockSearch = '?scopeInum=F0C4'
+  useGetOauthScopesByInum.mockImplementation(() => ({
+    data: { inum: 'F0C4', id: 'openid', clients: [mockClients[0], mockClients[3]] },
+    isLoading: false,
+  }))
+
+  render(<ClientListPage />, { wrapper: Wrapper })
+
+  expect(useGetOauthScopesByInum).toHaveBeenCalledWith(
+    'F0C4',
+    { withAssociatedClients: true },
+    expect.anything(),
+  )
+  expect(useGetOauthScopes).toHaveBeenCalledWith({ limit: 100 }, expect.anything())
+  expect(screen.getByText('Test Web Client')).toBeInTheDocument()
+  expect(screen.getByText('Password Flow Client')).toBeInTheDocument()
+})
+
+it('does not fill the scope view from the first page of clients when the scope has no clients', () => {
+  mockSearch = '?scopeInum=F0C4'
+  useGetOauthScopes.mockImplementation(() => ({
+    data: { entries: [{ inum: 'F0C4', id: 'openid', dn: 'inum=F0C4,ou=scopes,o=jans' }] },
+    isLoading: false,
+  }))
+  useGetOauthScopesByInum.mockImplementation(() => ({
+    data: { inum: 'F0C4', id: 'openid' },
+    isLoading: false,
+  }))
+
+  render(<ClientListPage />, { wrapper: Wrapper })
+
+  expect(screen.queryByText('Test Web Client')).not.toBeInTheDocument()
 })

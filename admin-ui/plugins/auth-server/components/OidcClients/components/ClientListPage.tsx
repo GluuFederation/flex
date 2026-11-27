@@ -23,11 +23,11 @@ import { adminUiFeatures, BORDER_RADIUS, MOBILE_MEDIA_QUERY } from '@/constants'
 import { logger } from '@/utils/logger'
 import { getRowsPerPageOptions, usePaginationState } from '@/utils/pagingUtils'
 import { useGetOauthScopes, useGetOauthScopesByInum } from 'JansConfigApi'
+import type { GetOauthScopesByInumParams } from 'JansConfigApi'
 import { getGrantTypeLabel } from 'Plugins/auth-server/utils'
 import { useClients, useDeleteClient } from '../hooks'
 import ClientDetailPage from './ClientDetailPage'
 import ClientShowScopes from './ClientShowScopes'
-import { findAndFilterScopeClients } from './ClientScopeUtils'
 import { useStyles } from './styles/ClientListPage.style'
 import {
   CLIENT_ACTION_IDS,
@@ -52,6 +52,7 @@ import {
 
 const LIMIT_OPTIONS = getRowsPerPageOptions()
 const clientResourceId = ADMIN_UI_RESOURCES.Clients
+const SCOPE_WITH_CLIENTS_PARAMS: GetOauthScopesByInumParams = { withAssociatedClients: true }
 
 const addOrg = (client: ClientRow): ClientRow => {
   if (!client) return client
@@ -126,10 +127,7 @@ const ClientListPage: React.FC = () => {
     refetch,
   } = useClients<ClientRow>(haveScopeINUMParam ? undefined : clientQueryParams)
 
-  const allScopesQueryParams = useMemo(
-    () => ({ limit: FETCH_LIMITS.CLIENT_LIST, withAssociatedClients: true as const }),
-    [],
-  )
+  const allScopesQueryParams = useMemo(() => ({ limit: FETCH_LIMITS.CLIENT_LIST }), [])
   const { data: allScopesResponse, isLoading: allScopesLoading } = useGetOauthScopes(
     allScopesQueryParams,
     { query: { enabled: haveScopeINUMParam } },
@@ -141,7 +139,7 @@ const ClientListPage: React.FC = () => {
 
   const { data: scopeByInumData, isLoading: scopeByInumLoading } = useGetOauthScopesByInum(
     scopeInumParam ?? '',
-    undefined,
+    SCOPE_WITH_CLIENTS_PARAMS,
     { query: { enabled: haveScopeINUMParam && !!scopeInumParam } },
   )
   const scopeItem = useMemo<ScopeItem | undefined>(
@@ -150,43 +148,12 @@ const ClientListPage: React.FC = () => {
   )
   const scopeLoading = allScopesLoading || scopeByInumLoading
 
-  const filterClientsByScope = useCallback(
-    (inum: string, scopeDn: string) => {
-      const normalizedDn = typeof scopeDn === 'string' && scopeDn.trim().length > 0 ? scopeDn : null
-      return nonExtensibleClients.filter((client) => {
-        if (!client.scopes || !Array.isArray(client.scopes)) return false
-        return client.scopes.some(
-          (s) => (normalizedDn && s === normalizedDn) || s.includes(`inum=${inum}`) || s === inum,
-        )
-      })
-    },
-    [nonExtensibleClients],
-  )
-
   const clients = useMemo(() => nonExtensibleClients.map(addOrg), [nonExtensibleClients])
 
   const scopeClients = useMemo((): ClientRow[] => {
-    if (!haveScopeINUMParam || !scopeInumParam) return []
-    if (scopeItem?.inum === scopeInumParam && Array.isArray(scopeItem.clients)) {
-      return scopeItem.clients.map(addOrg)
-    }
-    return (
-      findAndFilterScopeClients(
-        scopeInumParam,
-        allScopes,
-        nonExtensibleClients,
-        filterClientsByScope,
-        addOrg,
-      ) || []
-    )
-  }, [
-    haveScopeINUMParam,
-    scopeInumParam,
-    scopeItem,
-    allScopes,
-    nonExtensibleClients,
-    filterClientsByScope,
-  ])
+    if (!haveScopeINUMParam || !scopeInumParam || scopeItem?.inum !== scopeInumParam) return []
+    return (scopeItem.clients ?? []).map(addOrg)
+  }, [haveScopeINUMParam, scopeInumParam, scopeItem])
 
   const tableData = useMemo(
     () => (haveScopeINUMParam ? scopeClients : clients),

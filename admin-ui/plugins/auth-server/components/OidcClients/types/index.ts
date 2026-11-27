@@ -105,10 +105,6 @@ export type ClientFormInitialData = Omit<Client, 'attributes'> & {
   attributes?: Record<string, JsonValue>
 }
 
-export type FilterClientsByScope = (scopeInum: string, scopeDn: string) => ClientRow[]
-
-export type AddOrgFn = (client: ClientRow) => ClientRow
-
 export type ClientShowSpontaneousScopesStyleParams = {
   isDark: boolean
   themeColors: ThemeConfig
