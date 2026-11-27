@@ -35,6 +35,8 @@
 {{- $authServerProtectedRegister := or .Values.routes.authServerProtectedRegister (index .Values.global "auth-server" "ingress" "authServerProtectedRegister") -}}
 {{- $lockConfigEnabled := or .Values.routes.lockConfigEnabled (index .Values.global "auth-server" "ingress" "lockConfigEnabled") -}}
 {{- $lockAuditEnabled := or .Values.routes.lockAuditEnabled (index .Values.global "auth-server" "ingress" "lockAuditEnabled") -}}
+{{- $lockTraceEnabled := or .Values.routes.lockTraceEnabled (index .Values.global "auth-server" "ingress" "lockTraceEnabled") -}}
+{{- $lockTraceAdminEnabled := or .Values.routes.lockTraceAdminEnabled (index .Values.global "auth-server" "ingress" "lockTraceAdminEnabled") -}}
 {{- $casaEnabled := or .Values.routes.casaEnabled .Values.global.casa.ingress.casaEnabled -}}
 {{- $configApiEnabled := or .Values.routes.configApiEnabled (index .Values.global "config-api" "ingress" "configApiEnabled") -}}
 {{- $fido2Enabled := or .Values.routes.fido2Enabled .Values.global.fido2.ingress.fido2Enabled -}}
@@ -784,29 +786,32 @@ spec:
         statusCode: 301
 {{- end }}
 
-{{- if and (index .Values.global "auth-server" "lockEnabled") ($lockAuditEnabled) }}
----
 {{- /* ======================================================== */}}
 {{- /* 7. gRPC APPS                                             */}}
-{{- /* These endpoints use gRPC                                 */}}
+{{- /* Lock Audit, Lock Trace and Lock Trace Admin each get their own route, toggled by their own flag */}}
 {{- /* ======================================================== */}}
+{{- $lockGrpcRoutes := list (dict "name" "lock-audit" "enabled" $lockAuditEnabled "service" "io.jans.lock.audit.AuditService" "methods" (list "ProcessLog" "ProcessBulkLog" "ProcessHealth" "ProcessBulkHealth" "ProcessTelemetry" "ProcessBulkTelemetry")) (dict "name" "lock-trace" "enabled" $lockTraceEnabled "service" "io.jans.lock.trace.TraceService" "methods" (list "SubmitRecord" "SubmitBulkRecords" "GetRecord" "SearchRecords" "GetExecution")) (dict "name" "lock-trace-admin" "enabled" $lockTraceAdminEnabled "service" "io.jans.lock.trace.TraceAdminService" "methods" (list "RegisterProducerKey" "ListProducerKeys" "RevokeProducerKey" "RegisterProducerChain" "ListProducerChains")) -}}
+{{- if index .Values.global "auth-server" "lockEnabled" }}
+{{- range $lockGrpcRoute := $lockGrpcRoutes }}
+{{- if $lockGrpcRoute.enabled }}
+---
 apiVersion: gateway.networking.k8s.io/v1
-{{- if ne .Values.gateway.className "nginx" }}
+{{- if ne $.Values.gateway.className "nginx" }}
 kind: HTTPRoute
 {{- else }}
 kind: GRPCRoute
 {{- end }}
 metadata:
-  name: {{ $fullName }}-grpc-routes
+  name: {{ $fullName }}-{{ $lockGrpcRoute.name }}-grpc-routes
   namespace: {{ $namespace }}
   labels:
     app: {{ $fullName }}-routes
-{{- if .Values.routes.labels }}
-{{- toYaml .Values.routes.labels | nindent 4 }}
+{{- if $.Values.routes.labels }}
+{{- toYaml $.Values.routes.labels | nindent 4 }}
 {{- end }}
-{{- if .Values.routes.annotations }}
+{{- if $.Values.routes.annotations }}
   annotations:
-{{- toYaml .Values.routes.annotations | nindent 4 }}
+{{- toYaml $.Values.routes.annotations | nindent 4 }}
 {{- end }}
 spec:
   parentRefs:
@@ -814,54 +819,42 @@ spec:
     namespace: {{ $authGatewayNamespace }}
     sectionName: {{ $httpsSection }}
   hostnames:
-  - {{ .Values.global.fqdn | quote }}
+  - {{ $.Values.global.fqdn | quote }}
   rules:
-  {{- /* 1. Lock Server Audit */}}
-  {{- /* List all routable methods explicitly to satisfy different gateway implementation */}}
-  {{- if ne .Values.gateway.className "nginx" }}
+  {{- if ne $.Values.gateway.className "nginx" }}
   - matches:
     - path:
         type: PathPrefix
-        value: /io.jans.lock.audit.AuditService
+        value: /{{ $lockGrpcRoute.service }}
     filters:
     - type: URLRewrite
       urlRewrite:
         path:
           type: ReplacePrefixMatch
-          replacePrefixMatch: /jans-auth/io.jans.lock.audit.AuditService
+          replacePrefixMatch: /jans-auth/{{ $lockGrpcRoute.service }}
     backendRefs:
     - name: {{ $authSvc }}-grpc
       port: 50051
   {{- else }}
+  {{- /* One rule per service: a GRPCRoute rule allows at most 8 matches */}}
   - matches:
+    {{- range $grpcMethod := $lockGrpcRoute.methods }}
     - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessLog
-    - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessBulkLog
-    - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessHealth
-    - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessBulkHealth
-    - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessTelemetry
-    - method:
-        service: io.jans.lock.audit.AuditService
-        method: ProcessBulkTelemetry
-    {{- if .Values.additionalConfig.nginx.enableAuditGrpcRewriteSnippets }}
+        service: {{ $lockGrpcRoute.service }}
+        method: {{ $grpcMethod }}
+    {{- end }}
+    {{- if $.Values.additionalConfig.nginx.enableAuditGrpcRewriteSnippets }}
     filters:
     - type: ExtensionRef
       extensionRef:
         group: gateway.nginx.org
         kind: SnippetsFilter
-        name: {{ .Release.Name }}-nginx-audit-grpc-rewrite
+        name: {{ $.Release.Name }}-nginx-audit-grpc-rewrite
     {{- end }}
     backendRefs:
     - name: {{ $authSvc }}-grpc
       port: 50051
   {{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
