@@ -15,10 +15,14 @@ When accessing the Gluu Flex Admin UI through a web browser, the following steps
 1. The user accesses the Gluu Flex Admin UI frontend through a web browser.
 2. The frontend requests the Admin UI backend to retrieve Admin UI configuration from Janssen persistence. The [Admin UI configuration](./configuration.md) includes OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata. It's important to note that **the Admin UI backend is implemented as a Jans Config API plugin**.
 3. The frontend calls the Admin UI backend API (`/v1/license/isConfigValid`) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, `/v1/license/isConfigValid` verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, `/v1/license/isConfigValid` checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).
-4. After validating the OIDC client, the Admin UI calls the backend API (/v1/license/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the License API (/v1/license/isActive) in Agama Lab to verify license validity and sync its details into the license configuration (persistence).
-5. If a valid license is not present, the frontend calls the backend API (/v1/license/retrieve) to retrieve the license for the user via the Agama Lab's License API (/v1/license/retrieve). The license can only be retrieved if the user has subscribed to the Admin UI license in Agama Lab.
-6. If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.
-7. After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.
+4. After validating the OIDC client, the Admin UI calls the backend API (`/v1/license/check`) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. On the first check after the Jans Config API starts, at regular intervals (default is 30 days), and when the stored license has expired, the Admin UI backend calls the Agama Lab License API (`/check`) to verify the license and sync its details into the license configuration (persistence). The response contains the license's monthly active users limit (`mauThreshold`) and whether the license can be used (`isLicenseUsable`).
+5. If a valid license is not present, the frontend calls the backend API (`/v1/license/fetch`). The backend fetches the user's license from Agama Lab (`/fetch`) and activates it (`/activation`). The license can only be fetched if the user has subscribed to the Admin UI license in Agama Lab.
+6. If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. When the user starts the trial, the frontend calls the backend API (`/v1/license/trial`), and the backend generates the trial license in Agama Lab (`/trial-license`) and activates it. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.
+7. Even with a valid license from step 4, 5 or 6, the Admin UI blocks sign-in in these cases:
+    - The license response has `isLicenseUsable: false`. The Admin UI shows a **License Not Usable** page.
+    - The monthly active users (MAU) of the current month reach 115% of the license's `mauThreshold`. The Admin UI shows a **MAU Limit Exceeded** page.
+    - The MAU count of the current month cannot be loaded. The Admin UI shows an **Unable to Verify Monthly Active Users** page.
+8. After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.
 
 ```mermaid
 
@@ -46,23 +50,42 @@ else license client invalid
         Gluu Flex Admin UI->>Browser: Screen to Upload SSA
     end
 end
-Gluu Flex Admin UI->>Admin UI Backend: /license/isActive
+Gluu Flex Admin UI->>Admin UI Backend: /license/check
 Note over Gluu Flex Admin UI,Admin UI Backend: validate license
-Admin UI Backend->>Agama Lab: /license/isActive
+Admin UI Backend->>Agama Lab: /check (first check after start, every 30 days, or after the license expires)
 alt license active
-    Agama Lab->>Admin UI Backend: true
+    Admin UI Backend->>Gluu Flex Admin UI: mauThreshold, isLicenseUsable
 else license inactive / not present
-    Agama Lab->>Admin UI Backend: false
-    Admin UI Backend->>Agama Lab: /retrieve
+    Admin UI Backend->>Gluu Flex Admin UI: no valid license
+    Gluu Flex Admin UI->>Admin UI Backend: /license/fetch
+    Admin UI Backend->>Agama Lab: /fetch
     alt license subscribed
         Agama Lab->>Admin UI Backend: license
+        Admin UI Backend->>Agama Lab: /activation
+        Admin UI Backend->>Gluu Flex Admin UI: mauThreshold, isLicenseUsable
     else license not subscribed
-        Agama Lab->>Admin UI Backend: false
+        Agama Lab->>Admin UI Backend: no license
         Admin UI Backend->>Gluu Flex Admin UI: false
         Gluu Flex Admin UI->>Browser: Screen to generate Trial license
+        User->>Gluu Flex Admin UI: start trial
+        Gluu Flex Admin UI->>Admin UI Backend: /license/trial
+        Admin UI Backend->>Agama Lab: /trial-license
+        Admin UI Backend->>Agama Lab: /activation
+        Admin UI Backend->>Gluu Flex Admin UI: mauThreshold, isLicenseUsable
     end
 end
-Admin UI Backend->>Gluu Flex Admin UI: login page
+alt isLicenseUsable is false
+    Gluu Flex Admin UI->>Browser: License Not Usable screen
+else license usable
+    Note over Gluu Flex Admin UI: check MAU of the current month
+    alt MAU at or over 115% of mauThreshold
+        Gluu Flex Admin UI->>Browser: MAU Limit Exceeded screen
+    else MAU count cannot be loaded
+        Gluu Flex Admin UI->>Browser: Unable to Verify Monthly Active Users screen
+    else MAU under the limit
+        Gluu Flex Admin UI->>Browser: login page
+    end
+end
 ```
 
 ## The Authorization Code Flow

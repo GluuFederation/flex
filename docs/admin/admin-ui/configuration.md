@@ -108,13 +108,12 @@ The information is stored in json format with following attributes.
 |scanLicenseApiHostname| SCAN License server hostname |
 |licenseKey|License-key to access Admin UI|
 |licenseHardwareKey| Hardware key (org_id) to access license APIs |
-|intervalForSyncLicenseDetailsInDays| The Admin UI backend syncs license details into the configuration (persistence) after the set interval (default: 30 days). |
-|licenseValidUpto|Expiry date to the subscribed flex license|
-|licenseDetailsLastUpdatedOn|The date on which the license details were synced from Agama Lab to the Admin UI's License Configuration|
-|productCode|The product code of the issued license at [LicenseSpring](https://licensespring.com/)|
+|intervalForSyncLicenseDetailsInDays| The Admin UI backend syncs license details from Agama Lab into the configuration (persistence) after the set interval (default: 30 days). It also syncs on the first license check after the Jans Config API starts, and when the license has expired. |
+|productName|The product name of the issued license|
 |licenseType|The license type of the issued license at [LicenseSpring](https://licensespring.com/)
 |licenseActive|Is the license configured currently active?|
 |licenseExpired|Is the license configured expired?|
+|licenseUsable|Whether Agama Lab reported the license as usable at the last sync. The Admin UI does not read this stored value: it blocks sign-in when the license check itself reports the license as not usable.|
 |licenseMAUThreshold|The allowed monthly active users for issued license|
 |oidcClient|Object with details of OIDC client to access license API|
 
@@ -170,17 +169,11 @@ The information is stored in json format with following attributes.
     "scanLicenseApiHostname": "https://license-server-hostname.gluu.org",
     "licenseKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
     "licenseHardwareKey": "xxxx.xxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
-    "licenseValidUpto": "2026-07-07",
-    "licenseDetailsLastUpdatedOn": "2026-06-18",
-    "productCode": "adminui001",
     "productName": "Gluu Admin UI",
     "licenseType": "time-limited",
-    "customerFirstName": "",
-    "customerLastName": "",
-    "customerEmail": "trial_request",
-    "companyName": "",
     "licenseActive": true,
     "licenseExpired": false,
+    "licenseUsable": true,
     "licenseMAUThreshold": 1000,
     "intervalForSyncLicenseDetailsInDays": 30,
     "oidcClient": {

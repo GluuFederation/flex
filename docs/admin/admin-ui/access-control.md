@@ -208,6 +208,8 @@ when {
 };
 ```
 
+Every Admin UI feature page checks the permission it needs before it opens. If the user's role does not have that permission, the page shows **Missing required permission** instead of its content. Pages that add or edit an entry need **Write** access. A role with **Read** but not **Write** access cannot open them, and features that have a view page, such as Clients and Users, open their entries there in read-only mode. For example, the **viewer** role above opens users on the read-only view page.
+
 Below policy gives the users with role **auditor** the **Read**, **Write** and **Delete** access to only the **Clients** feature of Admin UI.
 
 ```cedar
