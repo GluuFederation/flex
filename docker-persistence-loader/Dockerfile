@@ -1,4 +1,4 @@
-FROM ghcr.io/janssenproject/jans/persistence-loader:2.6.1-1
+FROM ghcr.io/janssenproject/jans/persistence-loader:2.6.1-3
 
 # ===========
 # Assets sync
@@ -17,7 +17,7 @@ RUN wget -q https://github.com/GluuFederation/flex/raw/$FLEX_SOURCE_VERSION/flex
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/persistence-loader" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="6.6.1-1" \
+    org.opencontainers.image.version="6.6.1-3" \
     org.opencontainers.image.title="Gluu Flex Persistence loader"
 
 USER 1000
