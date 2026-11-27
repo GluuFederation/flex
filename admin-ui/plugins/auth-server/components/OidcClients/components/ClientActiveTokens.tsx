@@ -31,7 +31,7 @@ const ClientActiveTokens = ({
   const [pageNumber, setPageNumber] = useState(0)
   const [limit, setLimit] = useState(TOKEN_DEFAULT_PAGE_SIZE)
 
-  const { rows, totalItems, isLoading, revokeToken, refetch } = useClientTokens({
+  const { rows, totalItems, isLoading, isError, revokeToken, refetch } = useClientTokens({
     clientInum: client?.inum,
     pattern: activePattern ?? DEFAULT_PATTERN,
     filterField: filterField ?? TOKEN_FILTER_EXPIRATION_DATE,
@@ -127,6 +127,8 @@ const ClientActiveTokens = ({
               onRowsPerPageChange: onRowCountChangeClick,
             }}
             onPagingSizeSync={onRowCountChangeClick}
+            loadFailed={isError}
+            onRetry={refetch}
           />
         </div>
       </GluuViewWrapper>

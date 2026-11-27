@@ -55,6 +55,8 @@ export type GluuTableProps<T> = {
   actions?: ActionDef<T>[]
   getRowKey?: (item: T, index: number) => string | number
   emptyMessage?: string
+  loadFailed?: boolean
+  onRetry?: () => void
   stickyHeader?: boolean
   /** Optional class applied to the <table> for parent overrides (e.g. Audit) */
   tableClassName?: string

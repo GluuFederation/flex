@@ -123,6 +123,7 @@ const ClientListPage: React.FC = () => {
     clients: nonExtensibleClients,
     totalCount: totalItems,
     isLoading: clientLoading,
+    isError: clientLoadFailed,
     refetch,
   } = useClients<ClientRow>(haveScopeINUMParam ? undefined : clientQueryParams)
 
@@ -130,25 +131,39 @@ const ClientListPage: React.FC = () => {
     () => ({ limit: FETCH_LIMITS.CLIENT_LIST, withAssociatedClients: true as const }),
     [],
   )
-  const { data: allScopesResponse, isLoading: allScopesLoading } = useGetOauthScopes(
-    allScopesQueryParams,
-    { query: { enabled: haveScopeINUMParam } },
-  )
+  const {
+    data: allScopesResponse,
+    isLoading: allScopesLoading,
+    isError: allScopesLoadFailed,
+    refetch: refetchAllScopes,
+  } = useGetOauthScopes(allScopesQueryParams, { query: { enabled: haveScopeINUMParam } })
   const allScopes = useMemo<ScopeItem[]>(
     () => (allScopesResponse?.entries ?? []) as ScopeItem[],
     [allScopesResponse],
   )
 
-  const { data: scopeByInumData, isLoading: scopeByInumLoading } = useGetOauthScopesByInum(
-    scopeInumParam ?? '',
-    undefined,
-    { query: { enabled: haveScopeINUMParam && !!scopeInumParam } },
-  )
+  const {
+    data: scopeByInumData,
+    isLoading: scopeByInumLoading,
+    isError: scopeByInumLoadFailed,
+    refetch: refetchScopeByInum,
+  } = useGetOauthScopesByInum(scopeInumParam ?? '', undefined, {
+    query: { enabled: haveScopeINUMParam && !!scopeInumParam },
+  })
   const scopeItem = useMemo<ScopeItem | undefined>(
     () => (scopeByInumData ? (scopeByInumData as ScopeItem) : undefined),
     [scopeByInumData],
   )
   const scopeLoading = allScopesLoading || scopeByInumLoading
+  const listLoadFailed =
+    clientLoadFailed || (haveScopeINUMParam && (allScopesLoadFailed || scopeByInumLoadFailed))
+
+  const handleRetryLoad = useCallback(() => {
+    void refetch()
+    if (!haveScopeINUMParam) return
+    void refetchAllScopes()
+    void refetchScopeByInum()
+  }, [refetch, haveScopeINUMParam, refetchAllScopes, refetchScopeByInum])
 
   const filterClientsByScope = useCallback(
     (inum: string, scopeDn: string) => {
@@ -547,6 +562,8 @@ const ClientListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={t('messages.no_data')}
+              loadFailed={listLoadFailed}
+              onRetry={handleRetryLoad}
             />
           </div>
         </GluuViewWrapper>

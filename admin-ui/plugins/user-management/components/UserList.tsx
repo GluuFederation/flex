@@ -344,6 +344,8 @@ const UserList = (): JSX.Element => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isUsersError}
+              onRetry={refetchUsers}
               expandable
               renderExpandedRow={renderExpandedRow}
             />

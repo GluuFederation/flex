@@ -76,7 +76,7 @@ const UserClaimsListPage: React.FC = () => {
     data: attributesData,
     isFetching,
     isError,
-    error,
+    refetch,
   } = useAttributes({
     limit,
     startIndex,
@@ -482,13 +482,9 @@ const UserClaimsListPage: React.FC = () => {
               onPagingSizeSync={onPagingSizeSync}
               actions={actions}
               getRowKey={getRowKey}
-              emptyMessage={
-                isError
-                  ? t('errors.fetch_failed', {
-                      detail: error instanceof Error ? error.message : '',
-                    })
-                  : t('messages.no_data')
-              }
+              emptyMessage={t('messages.no_data')}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

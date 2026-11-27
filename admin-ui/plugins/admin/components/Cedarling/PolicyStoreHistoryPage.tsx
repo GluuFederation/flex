@@ -111,7 +111,7 @@ const PolicyStoreHistoryPage: React.FC = () => {
 
   const { setPolicyStoreActive, deletePolicyStore, isMutating } = usePolicyStoreMutations()
 
-  const { data, isLoading, isFetching, refetch } = useGetAdminuiPolicyStore(
+  const { data, isLoading, isFetching, isError, refetch } = useGetAdminuiPolicyStore(
     {
       limit,
       pattern: pattern || undefined,
@@ -507,6 +507,8 @@ const PolicyStoreHistoryPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

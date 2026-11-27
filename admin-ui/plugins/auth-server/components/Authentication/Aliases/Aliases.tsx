@@ -76,6 +76,8 @@ const Aliases = ({
     data: configuration = {},
     isLoading: configLoading,
     isFetching: configFetching,
+    isError: isConfigError,
+    refetch: refetchConfig,
   } = useAuthServerJsonPropertiesQuery({ enabled: canReadAuth })
 
   const acrConfig = configuration as { acrMappings?: Record<string, string> }
@@ -404,6 +406,8 @@ const Aliases = ({
               onRowsPerPageChange: handleRowsPerPageChange,
             }}
             emptyMessage={t('messages.no_data')}
+            loadFailed={isConfigError}
+            onRetry={refetchConfig}
           />
         </div>
       </GluuViewWrapper>

@@ -63,6 +63,8 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
     data: ldapConfigurations,
     isLoading: ldapLoading,
     isFetching: ldapFetching,
+    isError: ldapLoadFailed,
+    refetch: refetchLdap,
   } = useGetConfigDatabaseLdap({
     query: { enabled: canLoadAcrList },
   })
@@ -70,6 +72,8 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
     data: acrs,
     isLoading: acrsLoading,
     isFetching: acrsFetching,
+    isError: acrsLoadFailed,
+    refetch: refetchAcrs,
   } = useGetAcrs({
     query: { enabled: canReadAuthN },
   })
@@ -77,12 +81,16 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
     data: scriptsResponse,
     isLoading: scriptsLoading,
     isFetching: scriptsFetching,
+    isError: scriptsLoadFailed,
+    refetch: refetchScripts,
   } = useCustomScriptsByType(DEFAULT_SCRIPT_TYPE, undefined, { enabled: canLoadAcrList })
   const pollPendingDeployments = usePendingDeploymentPolling()
   const {
     data: agamaProjects,
     isLoading: agamaLoading,
     isFetching: agamaFetching,
+    isError: agamaLoadFailed,
+    refetch: refetchAgama,
   } = useGetAgamaPrj(
     { count: MAX_AGAMA_PROJECTS_FOR_ACR, start: 0 },
     { query: { enabled: canLoadAcrList, refetchInterval: pollPendingDeployments } },
@@ -106,9 +114,25 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
   const isLoading = ldapLoading || scriptsLoading || acrsLoading || agamaLoading
   const isAgamaRefreshing = agamaFetching && !hasPendingDeployment(agamaProjects?.entries)
   const isFetching = ldapFetching || scriptsFetching || acrsFetching || isAgamaRefreshing
+  const loadFailed =
+    acrsLoadFailed || (canLoadAcrList && (ldapLoadFailed || scriptsLoadFailed || agamaLoadFailed))
+
+  const handleRetryLoad = useCallback(() => {
+    void refetchAcrs()
+    if (!canLoadAcrList) return
+    void refetchLdap()
+    void refetchScripts()
+    void refetchAgama()
+  }, [canLoadAcrList, refetchAcrs, refetchLdap, refetchScripts, refetchAgama])
+
+  const rowSourcesFailed =
+    canLoadAcrList &&
+    ((ldapLoadFailed && !ldapConfigurations) ||
+      (scriptsLoadFailed && !scriptsResponse) ||
+      (agamaLoadFailed && !agamaProjects))
 
   const tableData = useMemo<AuthNItem[]>(() => {
-    if (isLoading) {
+    if (isLoading || rowSourcesFailed) {
       return []
     }
     if (isBuiltIn) {
@@ -119,7 +143,7 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
       scripts: scriptsResponse?.entries,
       deployments: agamaProjects?.entries,
     })
-  }, [isLoading, isBuiltIn, ldapConfigurations, scriptsResponse, agamaProjects])
+  }, [isLoading, rowSourcesFailed, isBuiltIn, ldapConfigurations, scriptsResponse, agamaProjects])
 
   const columns: ColumnDef<AuthNItem>[] = useMemo(
     () => [
@@ -280,6 +304,8 @@ const Acrs = ({ isBuiltIn = false }: AcrsProps): ReactElement => {
               onRowsPerPageChange: handleRowsPerPageChange,
             }}
             emptyMessage={t('messages.no_data')}
+            loadFailed={loadFailed}
+            onRetry={handleRetryLoad}
           />
         </div>
       </GluuLoader>

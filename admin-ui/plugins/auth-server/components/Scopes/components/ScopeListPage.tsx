@@ -106,7 +106,13 @@ const ScopeListPage: React.FC = () => {
     [limit, startIndex, debouncedPattern, scopeType, sortBy],
   )
 
-  const { data: scopesResponse, isLoading, isFetching, refetch } = useScopes(scopesQueryParams)
+  const {
+    data: scopesResponse,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useScopes(scopesQueryParams)
 
   const deleteScope = useDeleteOauthScopesByInum({
     mutation: {
@@ -619,6 +625,8 @@ const ScopeListPage: React.FC = () => {
               actions={actions}
               getRowKey={getRowKey}
               emptyMessage={emptyMessage}
+              loadFailed={isError}
+              onRetry={refetch}
             />
           </div>
         </GluuViewWrapper>

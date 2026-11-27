@@ -220,6 +220,18 @@ describe('Acrs — ACR list with Agama flows', () => {
     expect(screen.getByText('agama_org.gluu.agama.pw.main')).toBeInTheDocument()
   })
 
+  it('shows the load error instead of only the built-in ACR when Agama projects fail to load', () => {
+    jest.mocked(useGetAgamaPrj).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: true,
+    } as Partial<ReturnType<typeof useGetAgamaPrj>> as ReturnType<typeof useGetAgamaPrj>)
+    render(<Acrs />, { wrapper: Wrapper })
+    expect(screen.queryByText('simple_password_auth')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument()
+  })
+
   it('does not load LDAP, script or Agama data on the Built-In tab', () => {
     render(<Acrs isBuiltIn={true} />, { wrapper: Wrapper })
     expect(useGetAgamaPrj).toHaveBeenCalledWith(

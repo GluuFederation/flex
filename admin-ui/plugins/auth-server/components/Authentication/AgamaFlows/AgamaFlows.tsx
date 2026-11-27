@@ -992,6 +992,8 @@ const AgamaFlows: React.FC = () => {
               getRowKey={getRowKey}
               pagination={pagination}
               emptyMessage={t('messages.no_data')}
+              loadFailed={!!projectsError}
+              onRetry={refetchProjects}
             />
           </div>
         </div>

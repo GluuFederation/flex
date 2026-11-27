@@ -88,6 +88,7 @@ export const useClientTokens = ({
     rows,
     totalItems,
     isLoading: tokensQuery.isLoading || revokeMutation.isPending,
+    isError: tokensQuery.isError,
     refetch: tokensQuery.refetch,
     revokeToken,
   }

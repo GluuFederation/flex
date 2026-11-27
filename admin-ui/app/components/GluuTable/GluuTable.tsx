@@ -5,6 +5,7 @@ import { useTheme } from '@/context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 import { THEME_DARK } from '@/context/theme/constants'
 import GluuText from '@/routes/Apps/Gluu/GluuText'
+import GluuLoadError from '@/routes/Apps/Gluu/GluuLoadError'
 import { GluuButton } from '@/components/GluuButton'
 import { GluuSpinner } from '@/components/GluuSpinner'
 import {
@@ -190,6 +191,8 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
     actions,
     getRowKey,
     emptyMessage,
+    loadFailed = false,
+    onRetry,
     stickyHeader = false,
     tableClassName,
     onPagingSizeSync,
@@ -648,9 +651,15 @@ const GluuTable = <T,>(props: Readonly<GluuTableProps<T>>) => {
               {sortedData.length === 0 ? (
                 <tr>
                   <td colSpan={totalCols} className={classes.emptyRow}>
-                    <GluuText variant="span" disableThemeColor>
-                      {emptyMessage ?? defaultEmptyMessage}
-                    </GluuText>
+                    {loadFailed && onRetry ? (
+                      <div className={classes.loadError}>
+                        <GluuLoadError message={t(T_KEYS.MESSAGES_LOAD_FAILED)} onRetry={onRetry} />
+                      </div>
+                    ) : (
+                      <GluuText variant="span" disableThemeColor>
+                        {emptyMessage ?? defaultEmptyMessage}
+                      </GluuText>
+                    )}
                   </td>
                 </tr>
               ) : (
