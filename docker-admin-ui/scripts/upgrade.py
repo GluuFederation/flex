@@ -236,6 +236,9 @@ class Upgrade:
             if "inum=A44E-4F3D,ou=scripts,o=jans" in attrs["introspectionScripts"]:
                 attrs["introspectionScripts"].remove("inum=A44E-4F3D,ou=scripts,o=jans")
                 should_update = True
+            if "inum=1DAF-1A90,ou=scripts,o=jans" not in attrs["introspectionScripts"]:
+                attrs["introspectionScripts"].append("inum=1DAF-1A90,ou=scripts,o=jans")
+                should_update = True
             entry.attrs["jansAttrs"] = json.dumps(attrs)
 
         if should_update:
@@ -348,6 +351,14 @@ class Upgrade:
             {
                 "dn": "inum=f9c23f63-184a-4777-a01c-ea928eb96054,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
                 "jansScope": "https://jans.io/oauth/lock/read-all",
+            },
+            {
+                "dn": "inum=9fa4b8c8-e980-440e-b3cd-4ac1f01f8338,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/lock/stat.readonly",
+            },
+            {
+                "dn": "inum=4cb58914-f463-4015-beae-a36c38ec9f53,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans",
+                "jansScope": "https://jans.io/oauth/config/lock.admin",
             },
         ]:
             add_scope(scope["dn"], scope["jansScope"])
